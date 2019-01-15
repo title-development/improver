@@ -10,7 +10,7 @@
       {{review.score}} / 5
     </div>
     <div class="date" *ngIf="review.published">{{review.created | date:'longDate'}}</div>
-    <div class="date" *ngIf="!review.published" [title]="'Will be published on ' + (review.publishDate | date:'longDate')">Unpublished</div>
+    <div class="date unpublished" *ngIf="!review.published" [title]="'Will be published on ' + (review.publishDate | date:'longDate')">Unpublished</div>
 
   </div>
 </div>

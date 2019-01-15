@@ -107,9 +107,9 @@ public class MailService {
 
 
     /**
-     * Send email to User that have been updated his password.
+     * Send email to User that has been updated his password.
      *
-     * @param user user that have been updated his password
+     * @param user user that has been updated his password
      */
     public void sendPasswordUpdated(User user) {
         Context context = contextTemplate();
@@ -121,9 +121,9 @@ public class MailService {
 
 
     /**
-     * Send email to User that have been requested password reset.
+     * Send email to User that has been requested password reset.
      *
-     * @param user user that have been updated his password
+     * @param user user that has been updated his password
      */
     public void sendPasswordRestore(User user) {
         Context context = contextTemplate();
@@ -137,9 +137,9 @@ public class MailService {
 
 
     /**
-     * Send email to User that have been changed his email address to confirm it.
+     * Send email to User that has been changed his email address to confirm it.
      *
-     * @param user user that have been changed his email address
+     * @param user user that has been changed his email address
      */
     public void sendEmailChanged(User user) {
         Context context = contextTemplate();
@@ -154,9 +154,9 @@ public class MailService {
 
 
     /**
-     * Send notice email to User that have been changed his email address. Notice will be sent to his old email address.
+     * Send notice email to User that has been changed his email address. Notice will be sent to his old email address.
      *
-     * @param user user that have been changed his email address
+     * @param user user that has been changed his email address
      */
     public void sendEmailChangedNotice(User user) {
         Context context = contextTemplate();
@@ -180,6 +180,20 @@ public class MailService {
         context.setVariable(TITLE, "Your account has been restored.");
         context.setVariable(BODY, "Please visit " + wrapLink("Home Improve", siteUrl) + " to check your personal cabinet state");
         mailClient.sendMail("Account Restored", NOTICE_TEMPLATE, context, MailHolder.MessageType.NOREPLY, user.getEmail());
+    }
+
+
+    /**
+     * Send email to User that his account has been blocked
+     *
+     * @param user user whose account has been blocked
+     */
+    public void sendBlockAccount(User user) {
+        Context context = contextTemplate();
+        context.setVariable(USER_NAME, user.getFirstName());
+        context.setVariable(TITLE, "Your account has been blocked");
+        context.setVariable(BODY, "Your Home Improve account has been blocked. You can contact with a support team to appeal the decision.");
+        mailClient.sendMail("Account blocking", NOTICE_TEMPLATE, context, MailHolder.MessageType.NOREPLY, user.getEmail());
     }
 
 
@@ -389,7 +403,7 @@ public class MailService {
 
 
     /**
-     * Send email to Contractor that he have canceled subscription.
+     * Send email to Contractor that he has canceled subscription.
      *
      * @param company        current company
      * @param timeZoneOffset time zone offset

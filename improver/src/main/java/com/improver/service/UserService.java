@@ -111,6 +111,7 @@ public class UserService {
         User user = userRepository.findById(id)
             .orElseThrow(() -> new BadRequestException("Bad request"));
         user.setBlocked(blocked);
+        mailService.sendBlockAccount(user);
         userRepository.save(user);
     }
 
