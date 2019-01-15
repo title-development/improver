@@ -1,0 +1,91 @@
+@import "../../../../../improver-mixins.scss";
+
+:host {
+  display: block;
+}
+
+.level-block-title {
+  color: $black-150;
+  font-size: 14px;
+  padding: 10px 16px;
+  background-image: linear-gradient(to bottom, $primary-400, $primary-500);
+}
+
+.level-block-content {
+  background-color: $black-150;
+  padding:  32px 16px 16px 16px;
+
+  @include response(sm){
+    padding: 16px;
+  }
+}
+
+.level-block-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  span {
+    color: $black-500;
+    font-size: 12px;
+    line-height: 16px;
+    &.-percent {
+      color: #424242;
+    }
+  }
+}
+
+button {
+  color: $primary-500;
+  background-color: $white;
+  font-weight: 400;
+  font-size: 14px;
+  width: 100%;
+  text-align: center;
+  margin-top: 24px;
+
+  @include response(sm){
+    margin-top: 20px;
+  }
+}
+
+.level-progress {
+  background-color: $white;
+  height: 8px;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.08);
+  position: relative;
+  .progress {
+    @include background-image-gradient();
+    height: 100%;
+    border-radius: 4px;
+  }
+}
+
+.tooltip {
+  color: $black-primary;
+  font-size: 12px;
+  line-height: 16px;
+  border-radius: 2px;
+  background-color: $white;
+  box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.23);
+  padding: 7px 12px;
+  position: absolute;
+  bottom: 13px;
+  display: none;
+  transform: translateX(-50%);
+  &.show {
+    display: block;
+  }
+  &:after {
+    width: 0;
+    bottom: -3px;
+    position: absolute;
+    content: '';
+    left: 50%;
+    margin-left: -3px;
+    height: 0;
+    border-style: solid;
+    border-width: 3px 3px 0 3px;
+    border-color: $white transparent transparent transparent;
+  }
+}

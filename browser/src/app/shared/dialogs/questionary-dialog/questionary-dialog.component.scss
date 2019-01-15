@@ -1,0 +1,129 @@
+@import "../../../../improver-mixins.scss";
+
+.dialog-content-wrapper {
+  background: url(../../../../assets/img/start-screen-background.png) no-repeat;
+  background-size: cover;
+
+
+  .dialog-content-container {
+    background-color: rgba(0, 0, 0, 0.64);
+    overflow: inherit;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    height: 100%;
+    min-height: 140px;
+  }
+
+  @include response-to(sm) {
+    display: flex;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    overflow-y: auto;
+  }
+}
+
+
+
+.questionary-dialog-title {
+  text-align: center;
+  color: $primary-500;
+}
+
+.question-title {
+  text-align: center;
+  color: $primary-500;
+}
+
+.left-footer-button {
+  float: left;
+}
+
+.right-footer-button {
+  float: right;
+}
+
+.question-body {
+  margin-bottom: 30px;
+}
+
+.questionary-header {
+  height: 44px;
+  background-color: #f9f9f9;
+  flex: 0;
+
+  .questionary-progress-bar-wrapper {
+    height: 44px;
+    margin-left: 22px;
+    margin-right: 55px;
+
+    .questionary-progress-bar-empty {
+      width: 100%;
+      height: 11px;
+      background-color: #e8e6e6;
+
+      .questionary-progress-bar {
+        width: 0%;
+        transition: all 0.4s ease 0s;
+        height: 11px;
+        @include background-image-gradient();
+      }
+
+    }
+
+  }
+
+  &.start-screen {
+    background-color: transparent;
+
+    .questionary-progress-bar-wrapper {
+      height: 44px;
+      margin-left: 22px;
+      margin-right: 55px;
+
+      .questionary-progress-bar-empty {
+        width: 100%;
+        height: 11px;
+        background-color: transparent;
+
+        .questionary-progress-bar {
+          width: 0%;
+          height: 11px;
+          background: transparent none;
+        }
+
+      }
+
+    }
+
+  }
+
+}
+
+.close-modal {
+  position: relative;
+  right: 29px;
+  top: -18px;
+}
+
+.fix-height {
+  height: 436px;
+}
+
+.loading-spinner-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+    .imp-icon-loading-spinner {
+      font-size: 30px;
+      color: $primary-500;
+    }
+}
+
+
+

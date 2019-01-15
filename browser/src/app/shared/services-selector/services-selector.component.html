@@ -1,0 +1,69 @@
+<div class="services-selector-wrapper">
+  <div *ngIf="autocompleteData.length > 0" class="">
+
+    <form class="add-trade-form"
+          name="add-trade-form"
+          #addTradeForm="ngForm"
+          (ngSubmit)="addItem(addTradeForm)">
+
+      <cv-select #addingItem="ngModel"
+                 [(ngModel)]="model.addingItem"
+                 name="addingItem"
+                 [autocomplete]="true"
+                 [items]="filteredData"
+                 [grouped]="true"
+                 (autocompleteSearch)="filter($event)"
+                 labelKey="name"
+                 label="Add Business Category or Service e.g. Plumbing">
+      </cv-select>
+
+      <button class="add-service-button">Add</button>
+
+    </form>
+
+    <div class="selected-trades-list" *ngIf="tradesAndServiceTypes && tradesAndServiceTypes.services.length > 0">
+
+      <div class="trades-title">Selected Business Categories</div>
+
+      <ng-template ngFor [ngForOf]="tradesAndServiceTypes?.trades" let-trade let-i="index" [ngForTrackBy]="trackById">
+        <cv-collapse [title]="trade.name" [(collapsed)]="trade.collapsed"
+                     (toggle)="$event && scrollHolder.scrollTo(collapse.elementRef, 500)" #collapse>
+          <span header-content class="primary-trade" *ngIf="i == 0"><span>Primary</span></span>
+
+          <div content>
+
+            <div class="hint">Please check any service type that applies to you</div>
+
+            <div class="check-box-wrapper" [formGroup]="tradesControl">
+
+              <cv-checkbox-group [formControlName]="trade.name" #checkbox [items]="trade.services"
+                                 valueKey="id" (check)="onServiceCheck($event)">
+                <ng-template let-item cvTemplate>
+                  <div class="service-type" [ngClass]="{'-highlight': item?.highlight}">
+                    <div class="custom-check-box"></div>
+                    <div class="service-type-name">{{item.name}}</div>
+                  </div>
+                </ng-template>
+              </cv-checkbox-group>
+
+            </div>
+
+            <button cv-button-empty (click)="removeTrade(trade)" type="button">Remove</button>
+
+          </div>
+
+        </cv-collapse>
+
+
+      </ng-template>
+
+      <div class="empty-service-list-message" *ngIf="tradesAndServiceTypes.services.length == 0">You have not selected
+        any Business Category yet
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+

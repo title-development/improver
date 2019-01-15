@@ -1,0 +1,179 @@
+<div class="dialog-content-wrapper">
+  <!--HEADER-->
+  <div class="header lg-none xlg-none" *ngIf="showAddReviewForm == false">
+    <mat-icon class="close-modal" color="accent" (click)="close()">clear</mat-icon>
+
+    <div class="header-content" *ngIf="companyProfile">
+      <a href="/companies/{{companyProfile.id}}" class="logo" [ngClass]="{'-archived': companyProfile.deleted}"
+         [ngStyle]="companyProfile.iconUrl && companyProfile.iconUrl != '' && !companyProfile.deleted ? {'background-image':'url(' + companyProfile.iconUrl + ')'} : {'background-image':'url(assets/img/company-logo-placeholder.png)'}">
+        <span class="declined sm-none md-none" *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.DECLINED">
+              Declined
+            </span>
+        <span class="hired sm-none md-none" *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.HIRED">
+              Hired
+            </span>
+      </a>
+
+      <div class="info-block">
+        <a href="/companies/{{companyProfile.id}}" [ngClass]="{'-archived': companyProfile.deleted}" class="company-name">
+          {{companyProfile.name | truncate:26: '...'}}
+          <span class="declined xs-none" *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.DECLINED">
+              Declined
+            </span>
+          <span class="hired xs-none" *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.HIRED">
+              Hired
+            </span>
+        </a>
+        <div class="rating">
+          <div class="company-rating">{{companyProfile.rating | number: '1.0-1'}}
+          </div>
+          <rating-component [rating]="companyProfile.rating" [starSize]="14" [readOnly]="true"></rating-component>
+          <div class="company-reviews-count">({{companyProfile.reviewCount}})</div>
+        </div>
+        <div class="approve-mark" *ngIf="companyProfile.approved">
+          <img class="approve-icon" src="assets/icons/approve.svg">
+          <div class="approve-text">Approved by Home Improve</div>
+        </div>
+      </div>
+
+      <div class="add-review-button-container"
+           *ngIf="((projectRequest && projectRequest.status == ProjectRequest.Status.HIRED) || (projectRequest && projectRequest.status == ProjectRequest.Status.COMPLETED)) && !projectRequest.reviewed">
+        <button cv-button (click)="showAddReviewForm = true" class="add-review">
+          Leave review
+        </button>
+      </div>
+    </div>
+
+
+    <div class="buttons-block" *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.ACTIVE && !Project.isArchived(projectRequest.projectStatus)">
+      <div class="info-icon" (click)="openMessage = !openMessage">i</div>
+      <button cv-button class="hire-company-button" (click)="hireCompany(projectRequest)">
+        Hire
+      </button>
+      <button cv-button class="decline-company-button" (click)="declineCompany(projectRequest)">
+        Decline
+
+        <span class="message" *ngIf="openMessage">
+          Don't want to receive request and messages from other professionals? Hire one and let others know.
+        </span>
+      </button>
+
+      <span class="back-drop" [ngClass]="{'active': openMessage}" (click)="openMessage = false"></span>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="content-tabs">
+      <div class="tab-controls">
+        <div class="tab-name" [ngClass]="{'active' : activeTab == 'MESSAGES'}"
+             (click)=" activeTab = 'MESSAGES'">Chat
+        </div>
+        <div class="tab-name" *ngIf="companyProfile" [ngClass]="{'active' : activeTab == 'OVERVIEW'}"
+             (click)=" activeTab = 'OVERVIEW';">Company
+        </div>
+        <div class="tab-name" [ngClass]="{'active' : activeTab == 'REVIEWS'}"
+             (click)=" activeTab = 'REVIEWS';">Reviews
+        </div>
+      </div>
+
+      <div class="tab-panels">
+
+        <!--CHAT-->
+        <div class="tab-panel" [ngClass]="{'active' : activeTab == 'MESSAGES'}">
+          <div class="messenger-wrapper" *ngIf="projectRequest">
+
+            <messenger [projectStatus]="projectRequest.projectStatus"
+                       [projectRequestId]="projectRequest.id"
+                       [targetUserId]="projectRequest.contractor?.id"
+                       [projectRequestStatus]="projectRequest.status"
+                       [targetUserIcon]="projectRequest.company?.iconUrl"
+                       [companyName]="projectRequest.company?.name"
+                       [contractorName]="projectRequest.contractor?.name">
+            </messenger>
+
+          </div>
+        </div>
+
+        <!--ABOUT-->
+        <div class="tab-panel -about" [ngClass]="{'active' : activeTab == 'OVERVIEW'}">
+          <div class="company-overview-wrapper" *ngIf="companyProfile">
+            <customer-project-request-dialog-about [companyProfile]="companyProfile"></customer-project-request-dialog-about>
+          </div>
+        </div>
+
+
+        <!--REVIEWS-->
+        <div class="tab-panel" [ngClass]="{'active' : activeTab == 'REVIEWS'}">
+          <div class="company-reviews-wrapper">
+            <customer-project-request-dialog-reviews [(projectRequest)]="projectRequest" [(newReviewStatus)]="isReviewSend" (showAddReviewForm)="openAddReviewForm()"></customer-project-request-dialog-reviews>
+          </div>
+        </div>
+      </div>
+
+      <!--ADD REVIEW FOR DESKTOP-->
+      <div *ngIf="showAddReviewForm">
+        <customer-add-review-form [projectRequest]="projectRequest" (onLoadReviews)="reviewSend($event)"></customer-add-review-form>
+      </div>
+    </div>
+
+
+    <!--SIDEBAR-->
+    <div class="sidebar xs-none sm-none md-none" [cvSpinner]="!companyProfile" [cvSpinnerSize]="24">
+        <mat-icon class="close-modal" color="accent" (click)="close()">clear</mat-icon>
+      <div class="sidebar-information" *ngIf="companyProfile">
+        <a target="_blank" [routerLink]="['/companies', companyProfile.id]" class="logo" [ngClass]="{'-archived': companyProfile.deleted}"
+           [ngStyle]="companyProfile.iconUrl && companyProfile.iconUrl != '' && !companyProfile.deleted ? {'background-image':'url(' + companyProfile.iconUrl + ')'} : {'background-image':'url(assets/img/company-logo-placeholder.png)'}"></a>
+        <div class="info-block">
+          <a target="_blank" [routerLink]="['/companies', companyProfile.id]" [ngClass]="{'-archived': companyProfile.deleted}" class="company-name">{{companyProfile.name}}
+            <span class="declined" *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.DECLINED">
+              Declined
+            </span>
+            <span class="hired" *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.HIRED">
+              Hired
+            </span>
+          </a>
+
+          <div class="rating">
+            <div class="company-rating">{{companyProfile.rating | number:'1.0-1'}}</div>
+            <rating-component [rating]="companyProfile.rating" [starSize]="16"
+                              [readOnly]="true"></rating-component>
+            <div class="company-reviews-count">({{companyProfile.reviewCount}})
+            </div>
+          </div>
+
+          <div class="approve-mark" *ngIf="companyProfile.approved">
+            <img class="approve-icon" src="assets/icons/approve.svg">
+            <div class="approve-text">Approved by Home Improve</div>
+          </div>
+
+          <div class="phone-block" *ngIf="companyProfile.phone && companyProfile.pin">
+            <div class="phone-group">
+              <div class="label">Phone</div>
+              <div class="value">{{companyProfile.phone}}</div>
+            </div>
+            <div class="phone-group">
+              <div class="label">Pin</div>
+              <div class="value">{{companyProfile.pin}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="buttons-block"
+             *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.ACTIVE && !Project.isArchived(projectRequest.projectStatus)">
+          <button cv-button class="hire-company-button" (click)="hireCompany(projectRequest)">Hire</button>
+          <span class="message" (click)="event.preventDefault();">
+              Don't want to receive requests and messages from other professionals? Hire one and let other know.
+            </span>
+          <button cv-button class="decline-company-button" (click)="declineCompany(projectRequest)">Decline</button>
+        </div>
+        <div class="add-review-button-container"
+             *ngIf="((projectRequest && projectRequest.status == ProjectRequest.Status.HIRED) || (projectRequest && projectRequest.status == ProjectRequest.Status.COMPLETED)) && !projectRequest.reviewed">
+          <button cv-button (click)="showAddReviewForm = true" class="add-review">
+            Leave review
+          </button>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+</div>

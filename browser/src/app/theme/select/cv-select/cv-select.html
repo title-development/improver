@@ -1,0 +1,128 @@
+<div class="select-open" #targetElement
+     [ngClass]="{'-opened': opened, '-tags': tags, '-default-autocomplete': !multiple && autocomplete && !tags}"
+     (click)="openDropdown()">
+  <ng-container *ngIf="!multiple && !autocomplete && !tags">
+    <div class="select-label" [ngClass]="{'-has-items': selectedItemsCount > 0}">{{ selectedLabel ? selectedLabel :
+      label }}
+    </div>
+  </ng-container>
+  <ng-container *ngIf="!multiple && autocomplete && !tags">
+    <input cv-input name="search" [(ngModel)]="search" (ngModelChange)="autocompleteSearchHandler($event)"
+           autocomplete="off"
+           placeholder="{{label}}"
+           (focus)="openDropdown()"
+    />
+  </ng-container>
+  <ng-container *ngIf="multiple && !tags">
+    <div class="select-label" *ngIf="selectedItemsCount == 0">{{label}}</div>
+    <div class="select-label" [ngClass]="{'-has-items': selectedItemsCount > 0}" *ngIf="selectedItemsCount > 0">
+      {{selectedItemsCount}}
+      <ng-container [ngPlural]="selectedItemsCount">
+        <ng-template ngPluralCase="=1">item</ng-template>
+        <ng-template ngPluralCase="=2">items</ng-template>
+        <ng-template ngPluralCase="other">items</ng-template>
+      </ng-container>
+      selected
+    </div>
+  </ng-container>
+  <ng-container *ngIf="multiple && tags">
+    <div class="select-label" *ngIf="selectedItemsCount == 0">{{label}}</div>
+    <div class="tags-labels" *ngIf="selectedItemsCount > 0">
+      <ng-template ngFor [ngForOf]="getSelectedTags()" let-item="$implicit" let-i="index" [ngForTrackBy]="trackBy">
+        <div class="tag"><span>{{ labelKey && item[labelKey] ? item[labelKey] : item}}</span><i
+          (click)="deleteTag(item, $event)"></i>
+        </div>
+      </ng-template>
+    </div>
+  </ng-container>
+  <div class="dropdown-icon" *ngIf="!autocomplete && !tags"></div>
+</div>
+
+<ng-template
+  cv-overlay
+  [cvOverlayOpen]="opened">
+  <div class="host"
+       [ngClass]="{'-items-showed': isItemsShowed, '-border': border, '-up': (overlayRef.$isUpDirection | async)}"
+       (@dropDownAnimationState.done)="animationEnd($event)" [@dropDownAnimationState]="dropDownAnimationState">
+    <ng-container *ngIf="items">
+      <!--simple dropdown or with autocomplate-->
+      <ng-container *ngIf="!multiple && !grouped">
+        <div class="holder items" #itemsHolder>
+          <cdk-virtual-scroll-viewport itemSize="10" minBufferPx="46" maxBufferPx="60"
+                                       [ngStyle]="{'height.px': virtualScrollHeight(items)}">
+            <ng-template cdkVirtualFor [cdkVirtualForOf]="items" let-item="$implicit" let-i="index" let-even="even"
+                         let-last="last"
+                         [cdkVirtualForTrackBy]="trackBy">
+              <div class="item" [ngClass]="{'-choose': highlightedItemIndex == i}" (click)="add(item)">{{item[labelKey]
+                ||
+                item}}
+              </div>
+            </ng-template>
+          </cdk-virtual-scroll-viewport>
+          <span class="hint" *ngIf="items.length == 0 && search == undefined">{{hint}}</span>
+          <span class="no-results"
+                *ngIf="!disableItemsMatch && items.length == 0 && search != undefined">No results</span>
+        </div>
+      </ng-container>
+      <!--grooped-->
+      <ng-container *ngIf="!multiple && grouped">
+        <div class="holder items" #itemsHolder>
+          <ng-template ngFor [ngForOf]="items" let-group="$implicit" [ngForTrackBy]="trackBy" let-grx="index">
+            <div class="item -group-label">{{group[groupLabelKey]}}</div>
+            <ng-template ngFor [ngForOf]="group[groupContentKey]" let-item="$implicit" let-i="index" let-even="even"
+                         let-last="last">
+              <div class="item -group" (click)="add(item, $event)">{{item[labelKey] || item}}</div>
+            </ng-template>
+          </ng-template>
+          <span class="hint" *ngIf="items.length == 0 && search == undefined">{{hint}}</span>
+          <span class="no-results"
+                *ngIf="!disableItemsMatch && items.length == 0 && search != undefined">No results</span>
+        </div>
+      </ng-container>
+      <!--multiple-->
+      <ng-container *ngIf="multiple && !autocomplete && !grouped">
+        <div class="holder" #itemsHolder>
+          <div class="items">
+            <cdk-virtual-scroll-viewport itemSize="10" minBufferPx="46" maxBufferPx="60"
+                                         [ngStyle]="{'height.px': virtualScrollHeight(items)}">
+              <ng-template cdkVirtualFor [cdkVirtualForOf]="items" let-item="$implicit" let-i="index" let-even="even"
+                           let-last="last"
+                           [cdkVirtualForTrackBy]="trackBy">
+                <div class="item multiple" [ngClass]="{'-choose': highlightedItemIndex == i}">
+                  <cv-checkbox (onSelect)="add(item)" [checked]="isSelected(item)" [value]="true">{{item[labelKey] ||
+                    item}}
+                  </cv-checkbox>
+                </div>
+              </ng-template>
+            </cdk-virtual-scroll-viewport>
+          </div>
+          <span class="no-results" *ngIf="!items || (items | filterBy : filterArgs).length == 0">No results</span>
+        </div>
+      </ng-container>
+      <!--tags-->
+      <ng-container *ngIf="multiple && autocomplete && tags && !grouped">
+        <div class="holder">
+          <cv-input-field>
+            <cv-icon icon="imp-icon-search"></cv-icon>
+            <input type="text" autofocus cv-input [ngModel]="multipleSearchModel"
+                   (ngModelChange)="tagsSearchHandler($event)">
+          </cv-input-field>
+          <div class="results-holder items" #itemsHolder>
+            <cdk-virtual-scroll-viewport itemSize="6" minBufferPx="46" maxBufferPx="60"
+                                         [ngStyle]="{'height.px': virtualScrollHeight((items | filterBy : filterArgs), 3)}">
+              <ng-template cdkVirtualFor [cdkVirtualForOf]="items | filterBy : filterArgs" let-item="$implicit"
+                           let-i="index" let-even="even" let-last="last" [cdkVirtualForTrackBy]="trackBy">
+                <div class="item multiple" [ngClass]="{'-choose': highlightedItemIndex == i}">
+                  <cv-checkbox (onSelect)="add(item)" [checked]="isSelected(item)" [value]="true">{{item[labelKey] ||
+                    item}}
+                  </cv-checkbox>
+                </div>
+              </ng-template>
+            </cdk-virtual-scroll-viewport>
+            <span class="no-results" *ngIf="!items || (items | filterBy : filterArgs).length == 0">No results</span>
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+</ng-template>

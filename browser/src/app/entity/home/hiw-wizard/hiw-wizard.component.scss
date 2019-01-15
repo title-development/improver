@@ -1,0 +1,262 @@
+@import "../../../../improver-mixins.scss";
+
+$step: 0;
+
+:host {
+  width: 100%;
+  background-color: $black-100;
+  height: auto;
+}
+
+.hiw-wizard-wrapper {
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  padding: 40px 0;
+
+  @include response(xs) {
+    padding: 40px 0 0;
+  }
+
+  .container {
+    max-width: 1200px;
+
+  }
+}
+
+.hiw-wizard-title {
+  font-weight: 600;
+  font-size: 36px;
+  text-align: center;
+  color: #333333;
+  margin-bottom: 16px;
+
+  @include response-to(md) {
+    font-size: 30px;
+  }
+
+  @include response-to(sm) {
+    font-size: 25px;
+  }
+
+  @include response(xs) {
+    font-size: 20px;
+  }
+}
+
+.hiw-wizard-subtitle {
+  font-weight: 600;
+  font-size: 24px;
+  text-align: center;
+  color: $black-secondary;
+  margin-bottom: 40px;
+
+  @include response-to(md) {
+    font-size: 22px;
+  }
+
+  @include response-to(sm) {
+    font-size: 20px;
+  }
+
+  @include response(xs) {
+    font-size: 18px;
+  }
+}
+
+.hiw-wizard-content {
+  cursor: default;
+  display: flex;
+  max-height: 100%;
+  justify-content: space-between;
+  align-items: center;
+
+  @include response-to(md) {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  @include response(xs) {
+    flex-direction: column;
+  }
+
+  .arrow-wrapper {
+    margin-left: -1px;
+    height: 137px;
+    transition: all 0.1s ease-out 0s;
+
+    @include response-to(lg) {
+      display: none;
+    }
+
+    .line {
+      height: 2px;
+      background-color: $black-200;
+
+      width: 70px;
+
+      &.-top {
+        transform: rotateZ(62deg);
+        position: relative;
+        left: -18px;
+        top: 30px;
+      }
+
+      &.-bottom {
+        transform: rotateZ(118deg);
+        position: relative;
+        top: 90px;
+        left: -18px;
+      }
+
+    }
+
+    &.animate {
+
+    }
+
+    &.hover {
+      .line {
+        background-color: $primary-500;
+      }
+
+    }
+  }
+
+  .wizard-step {
+    width: 25%;
+    @include response-to(md) {
+      width: 50%;
+    }
+    @include response-to(xs) {
+      width: 271px;
+    }
+
+    i {
+      color: rgba(0, 0, 0, 0.4);
+    }
+
+    &.animate {
+
+      i {
+        color: $primary-500;
+      }
+
+      .wizard-step-border-bottom-fill {
+        width: 100%;
+        height: 3px;
+        background-color: $primary-500;
+        box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease-in 0s;
+      }
+    }
+
+    &.hover {
+
+      i {
+        color: $primary-500;
+      }
+
+      .wizard-step-border-bottom-fill {
+        width: 100%;
+        height: 3px;
+        background-color: $primary-500;
+      }
+    }
+
+    .wizard-step-content {
+      width: 100%;
+
+      @include response-to(xs) {
+        margin-bottom: 40px;
+      }
+
+      .wizard-step-image-block {
+        border-radius: 100px;
+        width: 85px;
+        height: 85px;
+        //background-color: $white;
+        //box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.15);
+        margin-bottom: 19px;
+
+        img {
+          height: 50px;
+        }
+
+        &.active {
+          i {
+            color: $primary-500;
+          }
+        }
+
+        i {
+          display: flex;
+          font-size: 50px;
+
+          &:before {
+            line-height: inherit;
+            margin: 0;
+            width: auto;
+          }
+        }
+
+      }
+
+      .wizard-step-text-block {
+
+        .wizard-step-title {
+          width: 100%;
+          margin-bottom: 16px;
+          font-size: 16px;
+          font-weight: 700;
+          line-height: 1.25;
+          text-align: center;
+          color: $black-primary;
+        }
+
+        .wizard-step-text {
+          width: 90%;
+          //margin-bottom: 22px;
+          font-size: 14px;
+          line-height: 1.5;
+          letter-spacing: 0.3px;
+          text-align: center;
+          color: $black-secondary;
+          min-height: 108px;
+
+          @include response-to(xs) {
+            min-height: inherit;
+            margin-bottom: 0;
+          }
+        }
+
+      }
+
+    }
+
+    .wizard-step-border-bottom {
+      width: 100%;
+      height: 3px;
+      background-color: #e8e8e8;
+
+      @include response-to(lg) {
+        display: none;
+      }
+    }
+
+    .wizard-step-border-bottom-fill {
+      position: relative;
+      top: -3px;
+      width: 0;
+      height: 3px;
+      background-color: $primary-500;
+      box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.15);
+
+      @include response-to(lg) {
+        display: none;
+      }
+    }
+  }
+
+}

@@ -1,0 +1,142 @@
+@import "../../../../../improver-mixins.scss";
+
+.account-top-line {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  height: 72px;
+}
+
+.account-nav-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: $black-primary;
+}
+
+.card {
+  border-radius: 2px;
+  background-color: $white;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
+  margin-bottom: 24px;
+  padding: 24px;
+}
+
+p {
+  margin: 0;
+  font-size: 14px;
+  color: $black-600;
+}
+
+.periods {
+  box-shadow: 0px 2px 4px 0 rgba(0, 0, 0, 0.15);
+  margin-top: 18px;
+}
+
+button {
+  display: block;
+  margin-left: auto;
+  margin-top: 20px;
+}
+
+.period {
+  background-color: $white;
+  padding: 20px 24px;
+  position: relative;
+  transition: transform .2s ease, box-shadow .2s ease;
+  box-shadow: 0px 2px 4px 0 rgba(0, 0, 0, 0);
+  transform: scale(1);
+  display: flex;
+  @include response(xs) {
+    flex-direction: column;
+  }
+  &:before {
+    content: '';
+    position: absolute;
+    height: 100%;
+    width: 2px;
+    background-color: transparent;
+    display: block;
+    left: -2px;
+    top: 0;
+    transition: background-color .2s ease;
+  }
+  &:hover {
+    transform: scale(1.01);
+    z-index: 1;
+    box-shadow: 0 0 16px 0 rgba(0, 0, 0, 0.14);
+    &:before {
+      background-color: $primary-600;
+    }
+    &:after {
+      background-color: transparent;
+    }
+  }
+  &:not(:last-child) {
+    &:after {
+      content: '';
+      display: block;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background-color: $black-300;
+    }
+  }
+  span {
+    color: $black-500;
+    font-size: 14px;
+    &.range {
+      width: 40%;
+      color: $black-primary;
+      font-weight: 600;
+      @include response(xs) {
+        width: 100%;
+      }
+    }
+    &.days {
+      width: 22%;
+      @include response(xs) {
+        width: 100%;
+      }
+    }
+    &.reason {
+      width: 22%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      @include response(xs) {
+        width: 100%;
+      }
+    }
+    &.actions {
+      margin-left: auto;
+      @include response(xs) {
+        position: absolute;
+        top: 20px;
+        right: 5px;
+        width: 20px;
+      }
+      i {
+        cursor: pointer;
+        font-size: 13px;
+        color: $black-300;
+        transition: color .3s ease;
+        @include response(xs) {
+          display: inline-block;
+        }
+        &:hover {
+          color: $black-primary
+        }
+        &:before {
+          margin: 0;
+        }
+        &:first-child {
+          margin-right: 12px;
+          @include response(xs) {
+            margin-bottom: 10px;
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,83 @@
+@import "../../../improver-mixins.scss";
+
+.container {
+  display: flex;
+  justify-content: center;
+
+  .card {
+    border-radius: 2px;
+    background-color: $white;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
+    margin-bottom: 24px;
+    width: 551px;
+    //height: 100%;
+
+    &.-space {
+      padding: 24px 24px;
+    }
+
+    .ticket-form {
+
+      .title {
+        color: $black-primary;
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 24px;
+      }
+
+      ::ng-deep cv-input-field {
+        margin-bottom: 24px;
+      }
+
+      .is-business-owner-title {
+        font-size: 12px;
+        color: $black-primary;
+        margin-bottom: 4px;
+      }
+
+      ::ng-deep cv-radio {
+        .radio-label {
+          margin-left: 2px;
+        }
+      }
+
+      ::ng-deep cv-select {
+        margin-bottom: 24px;
+      }
+
+      .buttons-wrapper {
+        display: flex;
+        button {
+          margin-left: auto;
+        }
+      }
+
+    }
+
+    .after-ticket {
+      img {
+        margin-bottom: 24px;
+      }
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      .title {
+        color: $black-primary;
+        font-size: 20px;
+        margin-bottom: 16px;
+      }
+      .message {
+        color: $black-secondary;
+        font-size: 16px;
+        margin-bottom: 16px;
+      }
+    }
+
+  }
+
+}
+
+
+
+

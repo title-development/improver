@@ -1,0 +1,111 @@
+@import "../../../improver-mixins";
+
+:host {
+  background: #000;
+}
+
+.dialog-content-wrapper {
+  height: 100%;
+  position: static;
+
+  ::ng-deep .cv-spinner-holder {
+
+    &.-background {
+      background: $black;
+    }
+  }
+
+}
+
+.dialog-content-container {
+  height: 100%;
+
+  .swiper-container {
+    width: 100%;
+    height: 300px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .swiper-slide {
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .gallery-top {
+    height: 80%;
+    width: 100%;
+    background: #222;
+
+    @include response-to(xs) {
+      height: 100%;
+    }
+  }
+
+  .gallery-thumbs {
+    height: 20%;
+    padding-top: 10px;
+    background: #222;
+
+    @include response-to(xs) {
+      display: none;
+    }
+  }
+
+  .gallery-thumbs .swiper-slide {
+    width: 25%;
+    height: 100%;
+    opacity: 0.4;
+  }
+
+  .gallery-thumbs .swiper-slide-active {
+    opacity: 1;
+  }
+
+  .close-modal {
+    position: absolute;
+    right: 16px;
+    top: 16px;
+    font-size: 17px;
+    font-weight: 800;
+    float: none;
+    margin: 0;
+    color: #ffffff;
+    z-index: 9999;
+    background: transparent;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+  }
+}
+
+::ng-deep .customer-gallery-position .mat-dialog-container {
+  padding: 10px;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  height: 100%;
+  max-width: 100%;
+  background: #222;
+
+}
+
+.overlay-spinner {
+  background: #222;
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+}

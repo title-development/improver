@@ -1,0 +1,46 @@
+<div class="dialog-holder" [cvSpinner]="processing" [cvSpinnerBackground]="true" [cvSpinnerSize]="32">
+  <div class="header">
+    <h2>{{title}}</h2>
+    <mat-icon class="close-modal" color="accent" (click)="close()">clear</mat-icon>
+  </div>
+
+  <div class="content" [cvSpinner]="imageLoading && cropperIsInit" [cvSpinnerBackground]="true" [cvSpinnerSize]="32">
+    <div [hidden]="!cropperIsInit">
+      <div class="photo-preview">
+        <img #cropperjs (load)="imageEvent()" (error)="imageEvent()" alt="Failed to load image">
+      </div>
+      <div class="actions">
+        <div class="icons-holder">
+          <cv-icon [icon]="'imp-icon-rotate-left'" (click)="rotate(-90)"></cv-icon>
+          <cv-icon [icon]="'imp-icon-rotate-right'" (click)="rotate(90)"></cv-icon>
+          <span></span>
+          <cv-icon [icon]="'imp-icon-zoom-in'" (click)="zoom(0.1)"></cv-icon>
+          <cv-icon [icon]="'imp-icon-zoom-out'" (click)="zoom(-0.1)"></cv-icon>
+        </div>
+      </div>
+    </div>
+    <ng-container *ngIf="!cropperIsInit">
+      <label class="choose-image-label" for="photo-input-label">
+        <div class="holder">
+          <img src="../../../../assets/icons/image.svg" alt="Click to upload image">
+          <h5>Click to upload image</h5>
+        </div>
+        <input id="photo-input-label" type="file" accept=".png, .jpg, .bmp" (change)="fileChangeListener($event)">
+      </label>
+    </ng-container>
+  </div>
+
+  <div class="footer" *ngIf="cropperIsInit">
+    <div class="change-button">
+      <label cv-button-flat [size]="'small'" for="photo-input">
+        Upload image
+      </label>
+      <input id="photo-input" type="file" accept=".png, .jpg, .bmp" (change)="fileChangeListener($event)">
+    </div>
+    <div class="buttons">
+      <button cv-button-flat [flatStyle]="'dark'" [size]="'small'" (click)="close()">Cancel</button>
+      <button cv-button [size]="'small'" (click)="submitPhoto()">Save</button>
+    </div>
+  </div>
+
+</div>

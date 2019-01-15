@@ -1,0 +1,166 @@
+@import "../../scss/variables";
+@import "../improver-mixins";
+
+:host {
+  display: flex;
+  &.ng-invalid:not(.ng-untouched), &.ng-invalid.-submitted, &.ng-invalid.ng-dirty {
+    .range-date-picker {
+      border-color: $red;
+    }
+  }
+}
+
+.range-date-picker {
+  display: flex;
+  border: 1px solid $black-300;
+}
+
+.month {
+  width: 248px;
+  &:last-child {
+    @include response(xs) {
+      display: none;
+    }
+  }
+}
+
+.header {
+  background-color: $black-100;
+  padding: 17px 0 7px;
+  border-bottom: 1px solid $black-300;
+  position: relative;
+  h4 {
+    margin: 0;
+    color: #3c3d41;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-align: center;
+    font-weight: 900;
+    margin-bottom: 9px;
+  }
+}
+
+.nav {
+  position: absolute;
+  top: 11px;
+  cursor: pointer;
+  width: 23px;
+  height: 23px;
+  border-radius: 50%;
+  border: 2px solid $black-300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color .3s ease;
+  &:hover {
+    border-color: $primary-300;
+    i {
+      color: $primary-300;
+    }
+  }
+  &.-disabled {
+    cursor: not-allowed;
+  }
+  i {
+    position: relative;
+    transition: color .3s ease;
+    color: $black-300;
+    font-size: 0;
+    &:before {
+      width: auto;
+      margin: 0;
+      font-size: 9px;
+    }
+  }
+  &.next {
+    right: 17px;
+    i {
+      left: 1px;
+    }
+  }
+  &.prev {
+    left: 17px;
+    i {
+      left: -1px;
+    }
+  }
+  &.-mobile {
+    display: none;
+    @include response(xs) {
+      display: flex;
+    }
+  }
+}
+
+.weeks, .days {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  > div {
+    width: calc(100% / 7);
+  }
+}
+
+.weeks {
+  padding: 5px 10px;
+  text-align: center;
+  >div {
+    font-size: 12px;
+    color: #a6a6a6;
+  }
+}
+
+.days {
+  padding: 10px;
+  height: 180px;
+  padding-bottom: 46px;
+  box-sizing: content-box;
+  > div {
+    height: 36px;
+    text-align: center;
+    font-size: 12px;
+    line-height: 36px;
+    cursor: pointer;
+    position: relative;
+    &.-current {
+      color: $black-primary;
+      &:before {
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        content: '';
+        display: block;
+        position: absolute;
+        border: 2px solid #dee7d7;
+      }
+      &.-range {
+        &:before {
+          border-color: $white;
+        }
+      }
+    }
+    &.-selected {
+      background-color: #9bbb89;
+      border-radius: 2px;
+    }
+    &.-range {
+      background-color: rgba(#bbcfad, .5);
+    }
+    &.-disabled {
+      background-color: $black-200;
+      pointer-events: none;
+    }
+    &:empty {
+      pointer-events: none;
+    }
+    &:not(:empty):hover {
+      background-color: #bbcfad;
+    }
+    &.other {
+      pointer-events: none;
+      color: #a6a6a6;
+    }
+  }
+}

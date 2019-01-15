@@ -1,0 +1,44 @@
+<div class="header">
+  <h3>Request review</h3>
+  <div class="close" (click)="close()">
+    <cv-icon icon="imp-icon-cancel"></cv-icon>
+  </div>
+</div>
+<div class="content" [cvSpinner]="processing" [cvSpinnerSize]="40" [cvSpinnerBackground]="true"
+     cvSpinnerBackgroundColor="white">
+  <form action="" #form="ngForm" (ngSubmit)="form.valid && submit()">
+    <p>Send requests for review so customers can rate you. This is not a group letter, each client will receive separate mail.</p>
+    <p>Enter up to 5 client comma-separated emails.</p>
+    <cv-input-field>
+      <cv-field-label>Emails</cv-field-label>
+      <textarea maxlength="500" multipleEmailsValidator #emailsEl="ngModel" placeholder="client1@mail.com, client2@mail.com, client3@mail.com" trim required cv-input name="emails" cols="30" rows="4" [(ngModel)]="emails"></textarea>
+      <cv-field-error *ngIf="emailsEl.dirty || emailsEl.touched || form.submitted">
+        <span *ngIf="emailsEl.errors?.required">{{messages.errors.default.required}}</span>
+        <span *ngIf="emailsEl.errors?.multipleEmails">Please enter a valid email</span>
+        <span *ngIf="emailsEl.errors?.maxlength">{{messages.errors.default.maxlength}}</span>
+      </cv-field-error>
+    </cv-input-field>
+    <cv-input-field>
+      <cv-field-label>Subject</cv-field-label>
+      <input minlength="10" maxlength="50" #subjectEl="ngModel" required cv-input type="text" name="subject" [(ngModel)]="subject">
+      <cv-field-error *ngIf="subjectEl.dirty || subjectEl.touched || form.submitted">
+        <span *ngIf="subjectEl.errors?.required">{{messages.errors.default.required}}</span>
+        <span *ngIf="subjectEl.errors?.minlength">Subject is too short</span>
+        <span *ngIf="subjectEl.errors?.maxlength">{{messages.errors.default.maxlength}}</span>
+      </cv-field-error>
+    </cv-input-field>
+    <cv-input-field>
+      <cv-field-label>Message</cv-field-label>
+      <textarea #messageEl="ngModel" minlength="10" maxlength="255" required trim cv-input name="message" id="" cols="30" rows="5" [(ngModel)]="message"></textarea>
+      <cv-field-error *ngIf="messageEl.dirty || messageEl.touched || form.submitted">
+        <span *ngIf="messageEl.errors?.required">Please enter a message</span>
+        <span *ngIf="messageEl.errors?.minlength">Please more describe your request</span>
+        <span *ngIf="messageEl.errors?.maxlength">{{messages.errors.default.maxlength}}</span>
+      </cv-field-error>
+    </cv-input-field>
+    <div class="actions">
+      <button cv-button-flat flatStyle="dark" (click)="close()" type="button">Cancel</button>
+      <button cv-button type="submit">Send</button>
+    </div>
+  </form>
+</div>

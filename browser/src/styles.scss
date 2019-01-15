@@ -1,0 +1,582 @@
+@import "theme";
+@import "loading-spinner.scss";
+@import "scss/variables";
+//BoxShadow elevations
+@import "app/theme/scss/bs-elevations";
+@import "app/theme/scss/colors";
+@import "improver-mixins";
+@import "new-spinnner";
+// You can add global styles to this file that will cascade like normal CSS
+
+html {
+  overflow: -moz-scrollbars-vertical;
+  overflow-y: auto;
+  font-family: 'Lato', sans-serif !important;
+  font-weight: normal !important;;
+  background-color: #fafafa !important;
+}
+
+body {
+  display: block;
+  margin: 0;
+  background: transparent !important;
+}
+
+button {
+  cursor: pointer;
+  &:active, &:focus, &:hover {
+    outline: 0;
+  }
+}
+
+/**
+ * Remove the inner border and padding in Firefox.
+ */
+
+button::-moz-focus-inner,
+[type="button"]::-moz-focus-inner,
+[type="reset"]::-moz-focus-inner,
+[type="submit"]::-moz-focus-inner {
+  border-style: none;
+  padding: 0;
+}
+
+/**
+ * Restore the focus styles unset by the previous rule.
+ */
+
+button:-moz-focusring,
+[type="button"]:-moz-focusring,
+[type="reset"]:-moz-focusring,
+[type="submit"]:-moz-focusring {
+  outline: 0px dotted ButtonText;
+}
+
+select, button, textarea, input {
+  font-family: 'Lato', sans-serif !important;
+}
+
+//Firefox fix
+
+input:required, textarea:required {
+  box-shadow: none;
+}
+
+input:invalid, textarea:invalid {
+  box-shadow: none;
+}
+
+a {
+  text-decoration: none;
+
+  &.link {
+    font-size: 14px;
+    line-height: 1.14;
+    text-align: left;
+    color: $link;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+*:focus {
+  outline: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.mat-tooltip {
+  margin: 14px 14px -5px!important;
+}
+
+
+.horizontal-separator {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  height: 1px;
+  background-color: $black-300;
+  width: 100%;
+}
+
+.full-width {
+  width: 100% !important;
+}
+
+.close-modal {
+  right: 8px;
+  top: 8px;
+  cursor: pointer;
+  float: right;
+  margin: -16px;
+}
+
+md-input-container {
+
+  md-hint {
+    color: $red;
+  }
+}
+
+.pointer-event-fix-none {
+  pointer-events: none !important;
+}
+
+body ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  color: #dddddd !important; //fix architecture bag
+}
+
+body ::-moz-placeholder { /* Firefox 19+ */
+  color: #dddddd;
+}
+
+
+body :-moz-placeholder { /* Firefox 18- */
+  color: #dddddd;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none;
+  /* Non-prefixed version, currently
+								   supported by Chrome and Opera */
+}
+
+.crop-canvas {
+  width: 100%;
+}
+
+.mat-dialog-container {
+  //margin: 25px auto;
+  margin-bottom: 20px;
+  padding: 0px !important;
+}
+
+.questionary-form {
+  .mat-form-field {
+    width: 100% !important;
+  }
+}
+
+.mat-icon {
+  width: auto !important;
+  height: auto !important;
+}
+
+/*
+  CDK Overlay
+ */
+.cdk-overlay-container {
+  overflow: auto;
+  .cdk-overlay-backdrop {
+    position: fixed;
+  }
+}
+
+.dialog-content-wrapper {
+  &.xs {
+    .questionary-dialog-footer {
+      position: fixed;
+      bottom: 0;
+      right: 25px;
+      left: 25px;
+    }
+  }
+}
+
+/**
+  Modals Responsive
+ */
+.dialog-fix-position {
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  @include response-to(sm) {
+    width: 100% !important;
+    margin: auto !important;
+    max-width: initial !important;
+    .mat-dialog-container {
+      max-width: 100%;
+      margin-bottom: auto;
+    }
+  }
+}
+
+.submit-button {
+  cursor: pointer;
+  background-color: $primary-500 !important;
+  color: #ffffff !important;
+  border: none !important;
+  padding: 8px 18px;
+  border-radius: 2px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.15);
+  font-size: 14px;
+
+  &:hover {
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.24);
+  }
+
+  &:active {
+    background-color: $primary-300;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.15);
+  }
+}
+
+.secondary-button {
+  cursor: pointer;
+  background-color: #ffffff !important;
+  color: $primary-500 !important;
+  border: none !important;
+  padding: 8px 18px;
+  border-radius: 2px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.15);
+  font-size: 14px;
+
+  &:hover {
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.24);
+  }
+
+  &:active {
+    background-color: $primary-300;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.15);
+  }
+}
+
+.cancel-button {
+  cursor: pointer;
+  background-color: transparent;
+  color: $black-400;
+  border: none;
+  padding: 0px;
+  //box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.15);
+  font-size: 14px;
+
+  &:hover {
+    color: $black-500;
+  }
+
+  &:active {
+    color: $black-300;
+  }
+}
+
+.cancel-button-pad {
+  @extend .cancel-button;
+  padding: 8px 18px;
+  border-radius: 2px;
+}
+
+questionary-form {
+  flex: 1;
+  @include response(xs) {
+    height: 100%;
+    display: flex;
+  }
+}
+
+.spinner {
+  &:before {
+    content: '';
+    box-sizing: border-box;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 90px;
+    height: 90px;
+    margin-top: -10px;
+    margin-left: -10px;
+    border-radius: 50%;
+    border-top: 3px solid $primary-500;
+    border-right: 3px solid transparent;
+    -webkit-animation: spinner .6s linear infinite;
+    animation: spinner .6s linear infinite;
+    z-index: 9999;
+  }
+
+  &.map-spinner {
+    &:before {
+      position: fixed;
+      width: 30px;
+      height: 30px;
+      top: 17px;
+      left: 0;
+      right: 0;
+      margin: auto;
+    }
+  }
+
+  &.main-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+
+    &:before {
+      position: relative;
+      margin: 0;
+      top: inherit;
+      left: inherit;
+    }
+  }
+}
+
+.spinner-wrapper {
+  position: relative;
+  pointer-events: none;
+}
+
+.cv-spinner-holder {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  z-index: 2;
+  &.-background {
+    background-color: #fff;
+  }
+  .cv-spinner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    border-color: $primary-500;
+    &:after {
+      display: block;
+      content: '';
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      position: relative;
+      border-top-width: 2px;
+      border-top-style: solid;
+      border-top-color: inherit;
+      border-right: 2px solid transparent;
+      animation: spinner .8s linear infinite;
+    }
+  }
+}
+
+
+@keyframes spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/**
+ Image Cropper
+ */
+
+.cropper-view-box {
+  box-shadow: 0 0 0 2px $primary-500;
+  outline: 0;
+}
+
+.cropper-line {
+  display: none;
+}
+
+.cropper-crop-box {
+  &.-circular {
+    border-radius: 50%;
+    .cropper-view-box {
+      border-radius: 50%;
+    }
+    .cropper-point {
+      width: 8px;
+      height: 8px;
+      padding: 10px;
+      background-clip: content-box;
+      box-sizing: content-box;
+      background-color: $primary-500;
+      opacity: 1;
+      &.point-w {
+        left: -15px;
+        margin-top: -13px;
+      }
+      &.point-n {
+        top: -15px;
+        margin-left: -13px;
+      }
+      &.point-e {
+        right: -15px;
+        margin-top: -13px;
+      }
+      &.point-s {
+        bottom: -15px;
+        margin-left: -13px;
+      }
+      &.point-nw, &.point-ne, &.point-sw, &.point-se {
+        display: none;
+      }
+    }
+    .cropper-dashed {
+      border-style: solid;
+      border-color: #ffffff;
+      &.dashed-h {
+        border-top-width: 1px;
+        border-bottom-width: 1px;
+        left: 3%;
+        width: 94.4%;
+      }
+      &.dashed-v {
+        border-left-width: 1px;
+        border-right-width: 1px;
+        top: 3%;
+        height: 94.4%;
+      }
+    }
+  }
+}
+
+
+.cropper-face {
+  opacity: 0;
+}
+
+.cv-error {
+  color: $red;
+}
+
+::ng-deep button.cancel-button.mat-menu-item {
+  color: $red !important;
+}
+
+[hidden] {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.flex-spacer {
+  flex-grow: 1;
+}
+
+.cv-slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 5px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+  margin: 16px 0px 24px;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &:focus {
+    outline: none; /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
+  }
+
+  &::-webkit-slider-thumb {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    cursor: pointer;
+    background-color: $primary-500;
+    border: 3px solid #ffffff;
+    margin-top: -4px;
+    box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.22);
+  }
+
+  &::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    cursor: pointer;
+    background-color: $primary-500;
+    border: 3px solid #ffffff;
+    box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.22);
+  }
+
+  &::-ms-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    cursor: pointer;
+    background-color: $primary-500;
+    border: 3px solid #ffffff;
+    box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.22);
+  }
+
+  &::-webkit-slider-runnable-track {
+    height: 8px;
+    border-radius: 50%;
+    opacity: 1;
+  }
+
+  &:focus::-webkit-slider-runnable-track {
+    background: #d3d3d3;
+    height: 8px;
+    border-radius: 50%;
+    opacity: 1;
+  }
+
+  &::-moz-range-track {
+    width: 100%;
+    height: 8px;
+    border-radius: 5px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 1;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+    margin: 16px 0px 24px;
+  }
+
+  &::-ms-track {
+    width: 100%;
+    height: 8px;
+    border-radius: 5px;
+    background: #d3d3d3;
+    outline: none;
+    color: transparent;
+  }
+  &::-ms-fill-lower {
+    opacity: 0.7;
+    background: #d3d3d3;
+    border: 0.2px solid #010101;
+    border-radius: 5px;
+  }
+  &:focus::-ms-fill-lower {
+    opacity: 1;
+  }
+  &::-ms-fill-upper {
+    opacity: 0.7;
+    background: #d3d3d3;
+    border: 0.2px solid #010101;
+    border-radius: 5px;
+  }
+  &:focus::-ms-fill-upper {
+    opacity: 1;
+  }
+
+}
+
+input[type=range]::-moz-focus-outer {
+  border: 0;
+}
+
+.textarea-formatting {
+  white-space: pre-line;
+}

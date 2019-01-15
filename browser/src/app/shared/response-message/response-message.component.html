@@ -1,0 +1,15 @@
+<div [@showHide]=""  class="response-message"  [ngStyle]="mainStyle"
+     [ngClass]="[type | toclassname]">
+  <div class="wrapper"  [ngStyle]="showIcon && {'padding-left.px': 24}">
+    <div class="icon" *ngIf="showIcon">
+      <mat-icon>info</mat-icon>
+    </div>
+    <div class="text" [ngStyle]="{'margin-top.px': paddingV, 'margin-bottom.px': paddingV, 'margin-left.px': paddingH, 'margin-right.px': paddingH}">{{message}}</div>
+    <div class="close-button-wrapper" [ngStyle]="{'margin-right.px': paddingH}">
+      <mat-icon (click)="destroy()">close</mat-icon>
+    </div>
+  </div>
+</div>
+
+
+

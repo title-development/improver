@@ -1,0 +1,57 @@
+@import "../../../../../improver-mixins.scss";
+@import "../../account.component.scss";
+
+.account-top-line {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  height: 72px;
+}
+
+.account-nav-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: $black-primary;
+}
+
+.quick-reply-form {
+
+  .title {
+    font-size: 18px;
+    text-align: left;
+    color: rgba(0, 0, 0, 0.87);
+  }
+
+  cv-checkbox {
+    margin-top: 24px;
+    margin-bottom: 24px;
+    display: flex;
+    &::ng-deep {
+      .checkbox-icon {
+        flex: none;
+      }
+    }
+  }
+
+}
+
+.buttons-wrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
+.card {
+  background-color: $white;
+  border-radius: 2px;
+  padding: 24px;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
+  h3 {
+    font-size: 20px;
+    text-align: left;
+    font-weight: 500;
+    margin: 0;
+    padding: 0;
+    color: $black-primary;
+    margin-bottom: 21px;
+  }
+}

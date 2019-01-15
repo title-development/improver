@@ -1,0 +1,7 @@
+<admin-header (toggleSidebar)="this.toggleSidebar = !this.toggleSidebar"></admin-header>
+<div class="scroll-holder" #scrollHolder>
+<admin-sidebar [toggleSidebar]="toggleSidebar"></admin-sidebar>
+  <div class="content" [ngClass]="{'-opened': toggleSidebar}">
+    <router-outlet></router-outlet>
+  </div>
+</div>

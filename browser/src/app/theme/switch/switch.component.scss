@@ -1,0 +1,44 @@
+@import "../scss/variables";
+:host {
+  display: inline-flex;
+  cursor: pointer;
+}
+.holder {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.slider {
+  width: 31px;
+  height: 15px;
+  border-radius: 15px;
+  background-color: #e7e7e7;
+  position: relative;
+  margin: 0 13px;
+  &:before {
+    display: block;
+    content: '';
+    width: 15px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background-color: $primary-500;
+    transform: translateX(16px);
+    transition: transform .3s ease;
+    border-radius: 50%;
+  }
+  &.-enabled {
+    &:before {
+      transform: translateX(0);
+    }
+  }
+}
+
+.label {
+  font-size: 14px;
+  color: #b5b5b5;
+  &.-enabled {
+    color: $primary-500;
+  }
+}

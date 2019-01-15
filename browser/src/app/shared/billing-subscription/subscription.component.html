@@ -1,0 +1,150 @@
+<div class="subscription-wrapper" *ngIf="subscription">
+
+  <div class="header">
+    <div class="holder">
+      <div class="subscribed" *ngIf="!subscription.active">
+        <h3>Subscribe to faster purchase</h3>
+        <p>Receive a steady stream of leads with minimal effort and be eligible for discounted leads</p>
+      </div>
+      <div class="not-subscribed" *ngIf="subscription.active">
+        <h3>You have been subscribed</h3>
+        <p>Receive a steady stream of leads with minimal effort and be eligible for discounted leads</p>
+      </div>
+    </div>
+    <span *ngIf="subscription.budget > 0">{{subscription.budget / 100 | currency:'USD':'symbol'}}/month</span>
+  </div>
+  <div class="content">
+
+    <form #monthlyBudgetForm="ngForm"
+          class="monthly-budget-form"
+          name="monthly-budget-form"
+          (ngSubmit)="monthlyBudgetForm.valid && setSubscriptionBudget()"
+          novalidate>
+
+      <div class="row">
+
+        <div class="col-sm-6">
+
+          <p class="subscription-hint">
+            You only pay for the leads you received up to amount you set.
+            <br/>Please set the amount of money you would like to spend on leads from Home Improve per month.
+          </p>
+
+          <div class="next-budget-holder">
+            <div class="row">
+
+              <div class="col-md-6">
+                <div class="field">
+
+                  <cv-input-field>
+                    <cv-field-label>Monthly budget</cv-field-label>
+                    <cv-icon icon="imp-icon-dollar"></cv-icon>
+                    <input cv-input class="monthly-budget" positiveNumeric maxlength="4"
+                           name="monthlyBudget" autocomplete="off" [(ngModel)]="model.nextMonthlyBudget"
+                           (ngModelChange)="validateBudget()"
+                           placeholder="Amount" #monthlyBudget="ngModel" type="text"
+                           required />
+                  </cv-input-field>
+                </div>
+                <cv-field-error *ngIf="(monthlyBudget.dirty || monthlyBudget.touched || monthlyBudgetForm.submitted) || formErrors" >
+                  <span *ngIf="model.nextMonthlyBudget == 0">Monthly budget is required</span>
+                  <span *ngIf="model.nextMonthlyBudget != 0 && monthlyBudget.dirty && model.nextMonthlyBudget < MINIMAL_MONTHLY_BUDGET">${{MINIMAL_MONTHLY_BUDGET}} minimum monthly budget</span>
+                </cv-field-error>
+              </div>
+
+              <div class="col-md-6" *ngIf="subscription.active">
+                <div class="field">
+                  <cv-field-label>Next billing date</cv-field-label>
+                  <div class="next-billing-date">{{subscription.nextBillingDate | date:'longDate'}}</div>
+                </div>
+              </div>
+
+            </div>
+
+
+          </div>
+
+        </div>
+        <div class="col-sm-6">
+
+          <ul class="subscription-benefits" *ngIf="!subscription.active">
+            <li>
+            <span class="icon-wrapper">
+               <i class="imp-icon-ok"></i>
+            </span>
+              <span>Get first access to leads.</span>
+
+            </li>
+            <li>
+            <span class="icon-wrapper">
+               <i class="imp-icon-ok"></i>
+            </span>
+              <span>Automatic stream of leads up to the budget you set.</span>
+            </li>
+            <li>
+            <span class="icon-wrapper">
+               <i class="imp-icon-ok"></i>
+            </span>
+              <span>Discounted leads in scope of subscription.</span>
+            </li>
+            <li>
+            <span class="icon-wrapper">
+               <i class="imp-icon-ok"></i>
+            </span>
+              <span>You still can browse and buy leads manually.</span>
+            </li>
+          </ul>
+
+          <div class="subscription-details" *ngIf="subscription.active">
+            <div class="subscription-details-header">Spend this cycle ({{formatSubsPeriod(subscription.startBillingDate,
+              subscription.nextBillingDate)}})
+            </div>
+            <div class="subscription-details-body">
+              <div class="row">
+                <div class="col-md-3">
+                  <div class="subscription-details-block">
+                    <div class="title">Leads</div>
+                    <div class="value">{{subscription.dealsCount}}</div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="subscription-details-block">
+                    <div class="title">Amount spent</div>
+                    <div class="value">{{subscription.spent / 100 | currency:'USD':'symbol'}}</div>
+                  </div>
+                </div>
+                <div class="col-md-5">
+                  <div class="subscription-details-block">
+                    <div class="title">Monthly budget</div>
+                    <div class="value">{{subscription.budget / 100 | currency:'USD':'symbol'}}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="hint-line" *ngIf="subscription.nextBudget > subscription.budget">
+        You've updated subscription budget to <span class="highlight">{{subscription.nextBudget / 100 | currency:'USD':'symbol'}}</span>.
+        Changes will apply starting from your next billing date.
+      </div>
+
+      <div class="hint-line" *ngIf="!subscription.autoContinue && subscription.active">You've canceled the subscription.
+        You still will receive automatic leads up to the end of current billing period.
+      </div>
+
+      <div class="buttons-wrapper">
+        <button cv-button-flat [flatStyle]="'dark'" type="button" *ngIf="subscription.autoContinue"
+                (click)="unsubscribe()">Unsubscribe
+        </button>
+        <button cv-button type="submit" *ngIf="subscription.nextBudget > 0" class="right-button">Update</button>
+        <button cv-button type="submit" *ngIf="subscription.nextBudget == 0" class="right-button">Continue</button>
+      </div>
+
+    </form>
+  </div>
+
+</div>

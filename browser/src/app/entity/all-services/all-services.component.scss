@@ -1,0 +1,132 @@
+@import "../../../improver-mixins.scss";
+
+.all-services-wrapper {
+  max-width: 1020px;
+  width: 100%;
+  margin: 0px auto 0;
+  padding: 0 12px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  @include response-to(sm) {
+    max-width: 100%;
+  }
+
+  @include response-to(xs) {
+    padding: 0px;
+  }
+
+}
+
+.all-services {
+  padding-top: 24px;
+  @include response-to(md) {
+    width: 100%;
+  }
+
+  .main-block {
+    max-width: 996px;
+    width: 100%;
+
+
+    .all-services-card {
+      padding: 24px;
+      //text-align: center;
+      @include response(xs) {
+        width: 100%;
+      }
+
+      .title {
+        font-size: 24px;
+        font-weight: 700;
+        color: $black-primary;
+        margin-bottom: 24px;
+        //text-align: center;
+      }
+
+      .services-filter {
+        height: 59px;
+        font-size: 16px;
+        margin-bottom: 48px;
+        max-width: 600px;
+        //border-color: $orange-primary;
+        border-width: 2px;
+
+        &:active {
+          border-color: $primary-600;
+        }
+
+      }
+
+      .main-wrapper {
+        column-count: 3;
+        column-gap: 24px;
+
+        @include response-to(md) {
+          column-count: 2;
+        }
+
+        @include response-to(xs) {
+          column-count: 1;
+          text-align: center;
+        }
+
+        .trade-wrapper {
+          margin-bottom: 24px;
+          text-align: left;
+          -webkit-column-break-inside: avoid;
+          page-break-inside: avoid;
+          break-inside: avoid;
+
+          .trade-icon {
+            cursor: pointer;
+            margin-bottom: 8px;
+            //width: 60px;
+            height: 60px;
+          }
+
+          @include response-to(xs) {
+            text-align: center;
+          }
+
+          .trade-name {
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 600;
+            color: $black-primary;
+            margin-bottom: 6px;
+          }
+
+          .service-type-wrapper {
+            padding-bottom: 8px;
+            cursor: pointer;
+            &:hover {
+              .service-type-name {
+                color: $primary-600;
+              }
+            }
+            .service-type-name {
+              //margin-bottom: 4px;
+              color: $black-secondary;
+              font-size: 14px;
+              text-align: left;
+              @include response-to(xs) {
+                border-left: none;
+                text-align: center;
+              }
+
+            }
+          }
+        }
+
+      }
+
+    }
+
+  }
+
+}
+
+.card {
+  margin-bottom: 24px;
+}

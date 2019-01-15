@@ -1,0 +1,44 @@
+<div class="holder">
+  <h3>{{question?.title}}</h3>
+  <ng-container *ngIf="question?.type == QuestionType.NUMERIC_INPUT">
+    <label for="type-numeric-input">{{question.label}}</label>
+    <input type="number" id="type-numeric-input">
+  </ng-container>
+  <ng-container *ngIf="question?.type == QuestionType.TEXT_INPUT">
+    <label for="type-numeric-input">{{question.label}}</label>
+    <input type="text" id="type-text-input">
+  </ng-container>
+  <ng-container *ngIf="question?.type == QuestionType.TEXT_AREA">
+    <label for="type-text-area">{{question.label}}</label>
+    <textarea name="" id="type-text-area" cols="30" rows="10"></textarea>
+  </ng-container>
+  <ng-container *ngIf="question?.type == QuestionType.CHECK_BOX">
+    <div class="field" *ngFor="let item of question.answers">
+      <input type="checkbox" name="checkbox" id="{{item.name}}"
+             value="{{item.name}}">
+      <label for="{{item.name}}">{{item.label}}</label>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="question?.type == QuestionType.RADIO_BUTTON">
+    <div class="field" *ngFor="let item of question.answers">
+      <input type="radio" name="radio" id="{{item.name}}" value="{{item.name}}">
+      <label for="{{item.name}}">{{item.label}}</label>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="question?.type == QuestionType.IMG_CHECK_BOX">
+    <div class="image-selector">
+      <div class="image-wrapper" *ngFor="let item of question.answers">
+        <div class="image-label">{{item.label}}</div>
+        <img  [src]="item.image" alt="">
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="question?.type == QuestionType.IMG_RADIO_BUTTON">
+    <div class="image-selector">
+      <div class="image-wrapper" *ngFor="let item of question.answers">
+        <div class="image-label">{{item.label}}</div>
+        <img  [src]="item.image" alt="">
+      </div>
+    </div>
+  </ng-container>
+</div>

@@ -1,0 +1,300 @@
+<ng-container *ngIf="company">
+  <div class="ui-grid ui-grid-responsive project-information">
+    <div class="ui-grid-row">
+      <div class="ui-g-6 ui-md-6">
+        <p-card title="Details">
+          <div class="ui-g">
+            <div class="ui-g-12 ui-md-12 ui-g-nopad ui-grid-space">
+              <div class="ui-g-4 ui-md-4 ui-g-nopad">
+                Company logo
+              </div>
+              <div class="ui-g-8 ui-md-8 ui-g-nopad">
+                <div class="icon" [ngStyle]="{'background-image': 'url('+company.iconUrl+')'}"></div>
+              </div>
+            </div>
+            <div class="ui-g-12 ui-md-12 ui-g-nopad ui-grid-space">
+              <div class="ui-g-4 ui-md-4 ui-g-nopad">
+                Name
+              </div>
+              <div class="ui-g-8 ui-md-8 ui-g-nopad">
+                {{company.name}}
+              </div>
+            </div>
+            <div class="ui-g-12 ui-md-12 ui-g-nopad ui-grid-space">
+              <div class="ui-g-4 ui-md-4 ui-g-nopad">
+                Description
+              </div>
+              <div class="ui-g-8 ui-md-8 ui-g-nopad">
+                {{company.description}}
+              </div>
+            </div>
+            <div class="ui-g-12 ui-md-12 ui-g-nopad ui-grid-space">
+              <div class="ui-g-4 ui-md-4 ui-g-nopad">
+                Founded
+              </div>
+              <div class="ui-g-8 ui-md-8 ui-g-nopad">
+                {{company.founded}}
+              </div>
+            </div>
+            <div class="ui-g-12 ui-md-12 ui-g-nopad ui-grid-space">
+              <div class="ui-g-4 ui-md-4 ui-g-nopad">
+                Rating
+              </div>
+              <div class="ui-g-8 ui-md-8 ui-g-nopad">
+                {{company.rating}}
+              </div>
+            </div>
+            <div class="ui-g-12 ui-md-12 ui-g-nopad">
+              <div class="ui-g-4 ui-md-4 ui-g-nopad">
+                Site url
+              </div>
+              <div class="ui-g-8 ui-md-8 ui-g-nopad">
+                <ng-container *ngIf="company.siteUrl">
+                  <a [href]="company.siteUrl">{{company.siteUrl}}</a>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </p-card>
+      </div>
+      <div class="ui-g-6 ui-md-6 ui-g-nopad">
+        <div class="ui-grid-row">
+          <div class="ui-g-12 ui-md-12">
+            <p-card title="Contact information">
+              <div class="ui-g">
+                <div class="ui-g-12 ui-md-12 ui-g-nopad ui-grid-space">
+                  <div class="ui-g-4 ui-md-4 ui-g-nopad">
+                    Email
+                  </div>
+                  <div class="ui-g-8 ui-md-8 ui-g-nopad">
+                    {{company.email}}
+                  </div>
+                </div>
+                <div class="ui-g-12 ui-md-12 ui-g-nopad ui-grid-space">
+                  <div class="ui-g-4 ui-md-4 ui-g-nopad">
+                    Address
+                  </div>
+                  <div class="ui-g-8 ui-md-8 ui-g-nopad">
+                    {{company.location.streetAddress}}, {{company.location.city}}, {{company.location.state}}
+                    {{company.location.zip}}
+                  </div>
+                </div>
+                <div class="ui-g-12 ui-md-12 ui-g-nopad ui-grid-space">
+                  <div class="ui-g-4 ui-md-4 ui-g-nopad">
+                    Internal phone
+                  </div>
+                  <div class="ui-g-8 ui-md-8 ui-g-nopad">
+                    {{company.internalPhone}}
+                  </div>
+                </div>
+              </div>
+            </p-card>
+          </div>
+        </div>
+        <div class="ui-grid-row">
+          <div class="ui-g-12 ui-md-12">
+            <p-card title="Licenses">
+              <div class="ui-g">
+                <div class="ui-g-12 ui-md-12 ui-g-nopad">
+                  <ng-container *ngFor="let license of company.licenses">
+                    <div class="ui-g-12 ui-md-12 ui-g-nopad">
+                      <div class="ui-g-4 ui-md-4 ui-g-nopad">
+                        Accreditation
+                      </div>
+                      <div class="ui-g-8 ui-md-8 ui-g-nopad">
+                        {{license.licenseType.accreditation}}
+                      </div>
+                    </div>
+                    <div class="ui-g-12 ui-md-12 ui-g-nopad">
+                      <div class="ui-g-4 ui-md-4 ui-g-nopad">
+                        Expired
+                      </div>
+                      <div class="ui-g-8 ui-md-8 ui-g-nopad">
+                        {{license.expired}}
+                      </div>
+                    </div>
+                    <div class="ui-g-12 ui-md-12 ui-g-nopad">
+                      <div class="ui-g-4 ui-md-4 ui-g-nopad">
+                        Number
+                      </div>
+                      <div class="ui-g-8 ui-md-8 ui-g-nopad">
+                        {{license.number}}
+                      </div>
+                    </div>
+                    <div class="ui-g-12 ui-md-12 ui-g-nopad">
+                      <div class="ui-g-4 ui-md-4 ui-g-nopad">
+                        State
+                      </div>
+                      <div class="ui-g-8 ui-md-8 ui-g-nopad">
+                        {{license.licenseType.state}}
+                      </div>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+            </p-card>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ui-grid-row">
+      <div class="ui-g-12 ui-md-12">
+        <p-accordion [multiple]="true" (onOpen)="onTabOpen($event)" (onClose)="onTabClose($event)">
+          <p-accordionTab header="Offered Services">
+            <p-dataTable *ngIf="accordionControls[0].active" [(first)]="accordionControls[0].first" [value]="offeredServicesPage.content"
+                         sortMode="single"
+                         [lazy]="true"
+                         [loading]="fetching"
+                         sortField="name"
+                         [rows]="rowsPerPage[0]" [totalRecords]="offeredServicesPage.totalElements" [rowsPerPageOptions]="rowsPerPage"
+                         (onLazyLoad)="loadLazy($event, getCompanyOfferedServices)"
+                         [paginator]="true"
+                         [responsive]="true">
+              <p-column field="name" header="Name" sortField="s.name" [sortable]="true"></p-column>
+            </p-dataTable>
+          </p-accordionTab>
+          <p-accordionTab header="Billing">
+            <p-dataTable *ngIf="accordionControls[1].active" [(first)]="accordionControls[0].first" [value]="transactionsPage.content"
+                         sortMode="single"
+                         selectionMode="single"
+                         [lazy]="true"
+                         [loading]="fetching"
+                         sortField="created"
+                         [rows]="rowsPerPage[0]" [totalRecords]="transactionsPage.totalElements" [rowsPerPageOptions]="rowsPerPage"
+                         (onLazyLoad)="loadLazy($event, getCompanyTransactions)"
+                         [paginator]="true"
+                         [responsive]="true">
+              <p-column field="id" header="ID" [sortable]="true"></p-column>
+              <p-column field="type" header="Type" [sortable]="true"></p-column>
+              <p-column field="purpose" header="Purpose" [sortable]="true"></p-column>
+              <p-column field="description" header="Description" [sortable]="true"></p-column>
+              <p-column field="created" header="Created" [sortable]="true">
+                <ng-template let-col let-created="rowData" pTemplate="body">
+                  {{created[col.field] | date: 'MMM d, y, h:mm a' }}
+                </ng-template>
+              </p-column>
+              <p-column field="amount" header="Amount" [sortable]="true">
+                <ng-template let-col let-amount="rowData" pTemplate="body">
+                  {{amount[col.field] / 100 | currency}}
+                </ng-template>
+              </p-column>
+              <p-column field="balance" header="Balance" [sortable]="true">
+                <ng-template let-col let-balance="rowData" pTemplate="body">
+                  {{balance[col.field] / 100 | currency}}
+                </ng-template>
+              </p-column>
+              <p-column field="outcome" header="Outcome"></p-column>
+            </p-dataTable>
+          </p-accordionTab>
+          <p-accordionTab header="Project Requests">
+            <p-dataTable *ngIf="accordionControls[2].active" [(first)]="accordionControls[1].first" [value]="projectPage.content"
+                         sortMode="single"
+                         selectionMode="single"
+                         [lazy]="true"
+                         [loading]="fetching"
+                         sortField="updated"
+                         [rows]="rowsPerPage[0]" [totalRecords]="projectPage.totalElements" [rowsPerPageOptions]="rowsPerPage"
+                         (onLazyLoad)="loadLazy($event, getProjects)"
+                         [paginator]="true"
+                         [responsive]="true">
+              <p-column field="id" header="ID" [sortable]="true"></p-column>
+              <p-column field="customer" header="Customer" [sortable]="true" sortField="customer">
+                <ng-template let-col let-customer="rowData" pTemplate="body">
+                  {{customer[col.field].name}}
+                </ng-template>
+              </p-column>
+              <p-column field="serviceType" header="Service Type" [sortable]="true"></p-column>
+              <p-column field="projectStatus" header="Project Status" [sortable]="true"></p-column>
+              <p-column field="status" header="Status"></p-column>
+              <p-column field="updated" header="Updated" [sortable]="true"></p-column>
+            </p-dataTable>
+          </p-accordionTab>
+          <p-accordionTab header="Reviews">
+            <p-dataTable *ngIf="accordionControls[3].active" [(first)]="accordionControls[2].first" [value]="reviewRating.reviews.content"
+                         sortMode="single"
+                         selectionMode="single"
+                         [lazy]="true"
+                         [loading]="fetching"
+                         sortField="created"
+                         [rows]="rowsPerPage[0]" [totalRecords]="reviewRating.reviews.totalElements" [rowsPerPageOptions]="rowsPerPage"
+                         (onLazyLoad)="loadLazy($event, getReviews)"
+                         [paginator]="true"
+                         [responsive]="true"
+                         (onRowSelect)="selectReview($event)"
+            >
+              <p-column field="id" header="ID" [sortable]="true"></p-column>
+              <p-column field="customer" sortField="customer.displayName" header="Customer" [sortable]="true">
+                <ng-template let-col let-review="rowData" pTemplate="body">
+                  {{review[col.field].name}}
+                </ng-template>
+              </p-column>
+              <p-column field="score" header="Score" [sortable]="true"></p-column>
+              <p-column field="description" header="Description" [sortable]="true">
+                <ng-template let-col let-description="rowData" pTemplate="body">
+                  <span>{{description[col.field] | slice:0:25}}{{description[col.field].length > 25 ? '...' : ''}}</span>
+                </ng-template>
+              </p-column>
+              <p-column field="created" header="Created" [sortable]="true">
+                <ng-template let-col let-review="rowData" pTemplate="body">
+                  {{review[col.field] | date: 'MMM d, y, h:mm a' }}
+                </ng-template>
+              </p-column>
+            </p-dataTable>
+          </p-accordionTab>
+          <p-accordionTab header="Actions log">
+            <p-dataTable *ngIf="accordionControls[4].active" [(first)]="accordionControls[3].first" [value]="companyLogsPage.content"
+                         sortMode="single"
+                         [rows]="rowsPerPage[0]"
+                         [lazy]="true"
+                         [loading]="fetching"
+                         sortField="created"
+                         [rows]="maxItemsPerPage" [totalRecords]="companyLogsPage.totalElements" [rowsPerPageOptions]="rowsPerPage"
+                         (onLazyLoad)="loadLazy($event, getCompanyLogs)"
+                         [paginator]="true"
+                         [responsive]="true">
+              <p-column field="id" header="ID" [sortable]="true"></p-column>
+              <p-column field="author" header="Author" [sortable]="true"></p-column>
+              <p-column field="text" header="Text" [sortable]="true"></p-column>
+              <p-column field="created" header="Created" [sortable]="true">
+                <ng-template let-col let-action="rowData" pTemplate="body">
+                  {{action[col.field] | date: 'MMM d, y, h:mm a' }}
+                </ng-template>
+              </p-column>
+              <p-column field="action" header="Action" [sortable]="true"></p-column>
+            </p-dataTable>
+          </p-accordionTab>
+        </p-accordion>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<p-dialog header="Review" [(visible)]="reviewDialogToggle" [responsive]="true" showEffect="fade" [width]="700"
+          [modal]="true">
+  <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="selectedReview">
+    <div class="ui-grid-row ui-grid-space">
+      <div class="ui-grid-col-4">Icon</div>
+      <div class="ui-grid-col-8"><span class="icon"
+                                       [ngStyle]="{'background-image': 'url('+selectedReview.customer.iconUrl+')'}"></span>
+      </div>
+    </div>
+    <div class="ui-grid-row ui-grid-space">
+      <div class="ui-grid-col-4">Author</div>
+      <div class="ui-grid-col-8">{{selectedReview.customer.name}}</div>
+    </div>
+    <div class="ui-grid-row ui-grid-space">
+      <div class="ui-grid-col-4">Score</div>
+      <div class="ui-grid-col-8">{{selectedReview.score}}</div>
+    </div>
+    <div class="ui-grid-row ui-grid-space">
+      <div class="ui-grid-col-4">Created</div>
+      <div class="ui-grid-col-8">{{selectedReview.created | date: 'MMM d, y, h:mm a' }}</div>
+    </div>
+
+    <div class="ui-grid-row ui-grid-space">
+      <div class="ui-grid-col-4">Description</div>
+      <div class="ui-grid-col-8">{{selectedReview.description }}</div>
+    </div>
+
+  </div>
+</p-dialog>

@@ -1,0 +1,41 @@
+.processing {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #fff;
+}
+
+.messanger-dialog::ng-deep {
+  padding: 0;
+  .ui-dialog-content {
+    padding: 0;
+  }
+}
+
+.messanger {
+  height: 500px;
+  overflow: auto;
+  padding: 1em 1.5em;
+  display: flex;
+  flex-direction: column;
+  .message {
+    max-width: 300px;
+    font-size: 13px;
+    &.align-right {
+      align-self: flex-end;
+    }
+    &:not(:last-child) {
+      margin-bottom: 25px;
+    }
+  }
+  h5 {
+    font-weight: 400;
+    margin: 0;
+    margin-bottom: 5px;
+  }
+}

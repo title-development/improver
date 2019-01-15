@@ -1,0 +1,285 @@
+<div class="header" *ngIf="companyProfile">
+  <div class="cover"
+       [ngStyle]="companyProfile.backgroundUrl && companyProfile.backgroundUrl != '' && {'background-image':'url(' + companyProfile.backgroundUrl + ')'}">
+    <div class="container">
+      <div class="icon -edit-background" title="Edit company cover" *ngIf="editMode"
+           [cvSpinner]="backgroundProcessing"
+           [cvSpinnerSize]="30"
+           [cvSpinnerBackground]="false"
+           cvSpinnerBackgroundColor="transparent">
+        <label for="background-file" *ngIf="!backgroundProcessing">
+          <i class="imp-icon-pencil"></i>
+        </label>
+        <input id="background-file" type="file" accept=".png, .jpg, .bmp" (change)="fileChangeListener($event)">
+      </div>
+    </div>
+  </div>
+  <div class="company-details">
+    <div class="container">
+      <div class="wrapper">
+        <h1>{{companyProfile.name}}</h1>
+        <div class="logo" [ngStyle]="companyProfile.iconUrl && companyProfile.iconUrl != '' && {'background-image':'url(' + companyProfile.iconUrl + ')'} ||
+                                            {'background-image':'url(assets/img/company-logo-placeholder.png)'}">
+          <div class="actions" *ngIf="editMode">
+            <div class="icon -edit" title="Edit icon" (click)="openDialogPhoto()">
+              <mat-icon class="edit">edit</mat-icon>
+            </div>
+          </div>
+        </div>
+        <div class="company-info">
+          <p>{{companyProfile.location?.city}}, {{companyProfile.location?.state}}</p>
+          <div class="services">
+            <ng-container *ngIf="companyProfile.trades.length > 0">
+              <ng-container *ngFor="let trade of companyProfile.trades; let i=index">
+                <span *ngIf="i < 3">{{trade}}</span>
+              </ng-container>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="mobile-details">
+    <div class="container">
+      <div class="company-info">
+        <p>{{companyProfile.location?.city}}, {{companyProfile.location?.state}}</p>
+        <div class="services">
+          <ng-container *ngIf="companyProfile.trades.length > 0">
+            <ng-container *ngFor="let trade of companyProfile.trades; let i=index">
+              <span *ngIf="i < 3">{{trade}}</span>
+            </ng-container>
+          </ng-container>
+        </div>
+      </div>
+      <div class="contacts">
+        <div class="info-block">
+          <i class="imp-icon-map-marker"></i>
+          <div class="group">
+            <p>{{companyProfile.location?.streetAddress}}, <br> {{companyProfile.location?.city}},
+              {{companyProfile.location?.state}}
+              {{companyProfile.location?.zip}}</p>
+          </div>
+        </div>
+        <!--TODO: Temporary hide before MVP-->
+        <!--<div class="info-block">-->
+          <!--<i class="imp-icon-phone-call"></i>-->
+          <!--<div class="group">-->
+            <!--<a [href]="'tel:' + companyProfile.phone">{{companyProfile.phone}}</a>-->
+          <!--</div>-->
+        <!--</div>-->
+      </div>
+      <!--TODO: Temporary hide before MVP-->
+      <!--<button *ngIf="!companyProfile.owner" cv-button>Request quote</button>-->
+    </div>
+  </div>
+</div>
+
+<div class="company-profile-page container" #container>
+  <div class="row" style="align-items: stretch;">
+    <!--Main block-->
+    <div class="main-block col-xs-12 col-md-8">
+      <div class="main-block-wrapper">
+        <div class="main-info-card card" *ngIf="companyProfile">
+          <div class="rating-block md-none lg-none xlg-none">
+            <h4>Company rating</h4>
+            <div class="rating-wrapper">
+              <rating-component [rating]="companyProfile.rating" [readOnly]="true"
+                                [starSize]="24"></rating-component>
+              <div class="rating">{{companyProfile.rating | number:'1.0-1'}}</div>
+            </div>
+            <button cv-button-empty (click)="requestReview()" *ngIf="editMode">Request review</button>
+            <button cv-button-empty [disabled]="isReviewSend"
+                    (click)="openDialogAddReview(companyProfile)" *ngIf="!editMode">Write review
+            </button>
+          </div>
+
+          <div class="approved-mark-block mobile md-none lg-none xlg-none" *ngIf="companyProfile.approved">
+            <div class="approve-mark">
+              <img class="approve-icon" src="assets/icons/approve.svg" alt="">
+              <div class="approve-text">Approved by Home Improve</div>
+            </div>
+          </div>
+
+          <agm-map class="company-location-map"
+                   [streetViewControl]="false"
+                   [disableDefaultUI]="true"
+                   [fullscreenControl]="true"
+                   [zoomControl]="true"
+                   [scrollwheel]="false"
+                   [zoom]="mapOptions.zoom"
+                   [gestureHandling]="mediaQuery.xs ? 'cooperative': ''"
+                   (mapReady)="onMapReady($event)">
+            <a *ngIf="editMode" class="update-service-areas-button" routerLink="/pro/settings/coverage">Update
+              service areas</a>
+          </agm-map>
+
+          <div class="details-list">
+            <div class="info-group">
+              <h4>About <i *ngIf="editMode" routerLink="/pro/settings/info" class="imp-icon-pencil-2 pencil"></i></h4>
+              <div class="content">
+                <p class="textarea-formatting">{{companyProfile.description | truncate:truncateAboutInfo:'...'}}
+                  <span class="show-more-button" (click)="truncateAboutInfo = 10000; updateGlueBox(true)"
+                        *ngIf="companyProfile.description.length > 300 && truncateAboutInfo == 300">Show more <i
+                    class="imp-icon-down-open"></i></span>
+                  <span class="show-more-button" (click)="truncateAboutInfo = 300; updateGlueBox(true)"
+                        *ngIf="truncateAboutInfo == 10000">Show less <i class="imp-icon-up-open"></i></span>
+                </p>
+
+              </div>
+            </div>
+            <div class="info-group">
+              <div class="row">
+                <div class="col-sm-6 col-xs-12">
+                  <h4>Additional info <i *ngIf="editMode" routerLink="/pro/settings/info" class="imp-icon-pencil-2 pencil"></i></h4>
+                  <div class="info-block">
+                    <i class="imp-icon-globe"></i>
+                    <div class="group">
+                      <h5>Website:</h5>
+                      <ng-container *ngIf="companyProfile.siteUrl">
+                        <a [href]="companyProfile.siteUrl | addHtml">{{companyProfile.siteUrl}}</a>
+                      </ng-container>
+                      <ng-container *ngIf="!companyProfile.siteUrl">
+                        <a>none</a>
+                      </ng-container>
+                    </div>
+                  </div>
+                  <div class="info-block">
+                    <i class="imp-icon-building-2"></i>
+                    <div class="group">
+                      <h5>Founded</h5>
+                      <p><span>{{companyProfile.founded}}</span> ({{companyProfile.yearsInBusiness}} years in
+                        business)
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6 col-xs-12">
+                  <h4>Licenses <i *ngIf="editMode" routerLink="/pro/settings/info" class="imp-icon-pencil-2 pencil"></i></h4>
+                  <div class="licenses">
+                    <ng-container *ngIf="companyProfile && companyProfile.licenses.length > 0">
+                      <ng-container *ngFor="let license of companyProfile.licenses">
+                        <p [attr.title]="license">{{license | truncate:30: '...'}}</p>
+                      </ng-container>
+                    </ng-container>
+                    <ng-container *ngIf="companyProfile && companyProfile.licenses == 0">
+                      <p>No added licenses</p>
+                    </ng-container>
+                    <div (click)="openLicenseDialog()" *ngIf="editMode" class="show-more-button">+ Add new license</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="info-group">
+              <h4>Services offered <i *ngIf="editMode" routerLink="/pro/settings/services" class="imp-icon-pencil-2 pencil"></i></h4>
+              <div class="content">
+                <div class="services">
+                  <ng-container *ngFor="let service of companyProfile.services; let i = index">
+                    <p [attr.title]="service.name" *ngIf="i < truncateOfferedServicesInfo">{{service.name | truncate:30:'...'}}</p>
+                  </ng-container>
+                </div>
+
+                <button class="show-more-btn" (click)="truncateOfferedServicesInfo = 10000; updateGlueBox(true)"
+                        *ngIf="truncateOfferedServicesInfo == 10 && companyProfile.services.length > 10">Show more </button>
+                <button class="show-more-btn" (click)="truncateOfferedServicesInfo = 10; updateGlueBox(true)"
+                        *ngIf="truncateOfferedServicesInfo == 10000 && companyProfile.services.length > 10">Show less</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <company-projects-gallery [companyId]="companyId" [editMode]="editMode"></company-projects-gallery>
+        <div *ngIf="companyProfile">
+          <company-reviews id="reviews" reviewsTitle="Reviews" (loadMore)="updateGlueBox($event)"
+                           [companyProfile]="companyProfile" [editMode]="editMode"></company-reviews>
+        </div>
+      </div>
+    </div>
+    <!--Right sidebar-->
+    <div class="col-md-4 xs-none sm-none">
+      <div class="holder">
+        <div class="glue-holder" [cvGlue]="boxGlue" [cvGlueParent]="container" [headerHeight]="50" [offset]="24">
+          <div class="secondary-block row" *ngIf="companyProfile">
+            <div class="col-md-12">
+              <!--TODO: Temporary hide before MVP-->
+              <!--<div class="card -space request-quote" *ngIf="!companyProfile?.owner">-->
+                <!--<h4>{{companyProfile.name}}</h4>-->
+                <!--<button cv-button>Request quote</button>-->
+              <!--</div>-->
+            </div>
+            <div class="col-md-12">
+              <div class="card -space rating-block">
+                <h4>Company rating</h4>
+
+                <!--<div class="approved-mark-block" *ngIf="companyProfile.approved">-->
+                  <!--<div class="approve-mark">-->
+                    <!--<img class="approve-icon" src="assets/icons/approve.svg" alt="">-->
+                    <!--<div class="approve-text">Approved by Home Improve</div>-->
+                  <!--</div>-->
+                <!--</div>-->
+
+                <div class="rating-wrapper">
+                  <rating-component [rating]="companyProfile.rating" [readOnly]="true"
+                                    [starSize]="24"></rating-component>
+                  <div class="rating">{{companyProfile.rating | number:'1.0-1'}}</div>
+                </div>
+
+
+
+                <button cv-button-empty (click)="requestReview()" *ngIf="editMode">Request review</button>
+                <button cv-button-empty [disabled]="isReviewSend"
+                        (click)="openDialogAddReview(companyProfile)" *ngIf="!editMode">Write review
+                </button>
+
+              </div>
+              <div class="card -space approved-mark-block" *ngIf="companyProfile.approved">
+                <div class="approve-mark" *ngIf="companyProfile.approved">
+                  <img class="approve-icon" src="assets/icons/approve.svg" alt="">
+                  <div class="approve-text">Approved by Home Improve</div>
+                </div>
+              </div>
+              <div class="card -space contacts">
+                <h4>Location <i *ngIf="editMode" routerLink="/pro/settings/info" class="imp-icon-pencil-2 pencil"></i></h4>
+                <div class="info-block">
+                  <i class="imp-icon-map-marker"></i>
+                  <div class="group">
+                    <!--<h5>Location:</h5>-->
+                    <p>{{companyProfile.location?.streetAddress}}, {{companyProfile.location?.city}},
+                      {{companyProfile.location?.state}}
+                      {{companyProfile.location?.zip}}</p>
+                  </div>
+                </div>
+                <!--TODO: Temporary hide before MVP-->
+                <!--<div class="info-block">-->
+                  <!--<i class="imp-icon-phone-call"></i>-->
+                  <!--<div class="group">-->
+                    <!--<h5>Phone:</h5>-->
+                    <!--<a [href]="'tel:' + companyProfile.phone">{{companyProfile.phone}}</a>-->
+                  <!--</div>-->
+                <!--</div>-->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="switch-mode" *ngIf="companyProfile?.owner" (click)="editMode = !editMode">
+  <ng-container *ngIf="editMode">
+    <i title="Switch to Customer view" class="imp-icon-eye"></i>
+    <span title="Switch to Customer view">
+      Switch to <br>
+      Customer view
+    </span>
+  </ng-container>
+  <ng-container *ngIf="!editMode">
+    <i class="imp-icon-pencil" title="Switch to Edit mode"></i>
+    <span title="Switch to Edit mode">
+      Switch to <br>
+      Edit mode
+    </span>
+  </ng-container>
+</div>
+
+<layout-footer></layout-footer>

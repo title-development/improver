@@ -1,0 +1,216 @@
+<div class="panel-header">
+  <h1>Account</h1>
+</div>
+<form #accountForm="ngForm" action="" *ngIf="user" (submit)="accountForm.valid && updateAccount(accountForm)">
+  <div class="ui-grid ui-grid-responsive ui-fluid">
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-2"><label for="icon">Icon</label></div>
+      <div class="ui-grid-col-6">
+        <image-cropper confirmTitle="Delete company logo" id="icon" [image]="user.iconUrl"
+                       (fileChange)="updateIcon($event)" (delete)="deleteAccountImage()"></image-cropper>
+      </div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-2"><label for="firstName">First Name</label></div>
+      <div class="ui-grid-col-6"><input
+        #firstName="ngModel"
+        name="firstName"
+        pInputText
+        id="firstName"
+        minlength="2"
+        required
+        [(ngModel)]="user.firstName"/></div>
+      <div class="ui-grid-col-4">
+        <ng-container *ngIf="firstName.dirty || firstName.touched || accountForm.submitted">
+          <p-message *ngIf="firstName.errors?.required" severity="error" text="First name is required"></p-message>
+          <p-message *ngIf="firstName.minlength?.required" severity="error"
+                     text="At least 2 letters required"></p-message>
+        </ng-container>
+      </div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-2"><label for="lastName">Last Name</label></div>
+      <div class="ui-grid-col-6"><input
+        #lastName="ngModel"
+        name="lastName"
+        pInputText
+        id="lastName"
+        [(ngModel)]="user.lastName"
+        minlength="2"
+        required/></div>
+      <div class="ui-grid-col-4">
+        <ng-container *ngIf="lastName.dirty || lastName.touched || accountForm.submitted">
+          <p-message *ngIf="lastName.errors?.required" severity="error" text="Last name is required"></p-message>
+          <p-message *ngIf="lastName.errors?.minlength" severity="error" text="At least 2 letters required"></p-message>
+        </ng-container>
+      </div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-2"><label for="phone">Phone</label></div>
+      <div class="ui-grid-col-6"><input name="phone" pInputText id="phone" [(ngModel)]="user.phone"/></div>
+    </div>
+  </div>
+  <div class="ui-grid-row ui-grid-field">
+    <div class="ui-grid-col-8">
+      <div class="footer">
+        <div class="spacer"></div>
+        <button type="submit" pButton icon="pi pi-check" class="ui-button-success" label="Update"></button>
+      </div>
+    </div>
+  </div>
+</form>
+<div class="panel-header">
+  <h1>Change email</h1>
+</div>
+<form #changeEmailForm="ngForm" *ngIf="user"
+      (submit)="changeEmailForm.valid && toggleEmailChangeDialog(changeEmailForm)">
+  <div class="ui-grid ui-grid-responsive ui-fluid">
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-2"><label for="email">Email</label></div>
+      <div class="ui-grid-col-6"><input
+        #email="ngModel"
+        name="email"
+        pInputText id="email"
+        [(ngModel)]="user.email"
+        required
+        pattern="{{constants.patterns.email}}"
+        [previousEmail]="previousEmail"
+        emailUniqueValidator/></div>
+      <div class="ui-grid-col-4">
+        <ng-container *ngIf="email.dirty || email.touched || changeEmailForm.submitted">
+          <p-message *ngIf="email.errors?.required" severity="error" text="Email is required"></p-message>
+          <p-message *ngIf="email.errors?.pattern" severity="error" text="Email is not valid"></p-message>
+          <p-message *ngIf="email.errors?.emailUnique" severity="error"
+                     text="This email already registered"></p-message>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+  <div class="ui-grid-row ui-grid-field">
+    <div class="ui-grid-col-8">
+      <div class="footer">
+        <div class="spacer"></div>
+        <button type="submit" pButton icon="pi pi-check" class="ui-button-success" label="Update"></button>
+      </div>
+    </div>
+  </div>
+</form>
+
+
+<div class="panel-header">
+  <h1>Change password</h1>
+</div>
+<form #changePasswordForm="ngForm" action="" *ngIf="user"
+      (submit)="changePasswordForm.valid && changePassword(changePasswordForm)">
+  <div class="ui-grid-row ui-grid-field">
+    <div class="ui-grid-col-2"><label for="oldPassword">Old password</label></div>
+    <div class="ui-grid-col-6"><input
+      #oldPassword="ngModel"
+      type="password"
+      name="oldPassword"
+      pInputText id="oldPassword"
+      [(ngModel)]="oldNewPassword.password"
+      validateEqual="confirmPassword"
+      validationEqualReverse="true"
+      required
+      minlength="8"
+      maxlength="32"
+      pattern="{{constants.patterns.password}}"/></div>
+    <div class="ui-grid-col-4">
+      <ng-container *ngIf="oldPassword.dirty || oldPassword.touched || changePasswordForm.submitted">
+        <p-message *ngIf="oldPassword.errors?.required" severity="error" text="Password is required"></p-message>
+        <p-message *ngIf="oldPassword.errors?.minlength" severity="error" text="Should contain 8 symbols"></p-message>
+        <p-message *ngIf="oldPassword.errors?.pattern && !oldPassword.errors?.minlength" severity="error"
+                   text="Should contain letters and numbers"></p-message>
+      </ng-container>
+    </div>
+  </div>
+  <div class="ui-grid-row ui-grid-field">
+    <div class="ui-grid-col-2"><label for="newPassword">New password</label></div>
+    <div class="ui-grid-col-6"><input
+      #newPassword="ngModel"
+      type="password"
+      name="newPassword"
+      pInputText id="newPassword"
+      [(ngModel)]="oldNewPassword.newPassword"
+      validateEqual="confirmPassword"
+      validationEqualReverse="true"
+      required
+      minlength="8"
+      maxlength="32"
+      pattern="{{constants.patterns.password}}"/></div>
+    <div class="ui-grid-col-4">
+      <ng-container *ngIf="newPassword.dirty || newPassword.touched || changePasswordForm.submitted">
+        <p-message *ngIf="newPassword.errors?.required" severity="error" text="Password is required"></p-message>
+        <p-message *ngIf="newPassword.errors?.minlength" severity="error" text="Should contain 8 symbols"></p-message>
+        <p-message *ngIf="newPassword.errors?.pattern && !newPassword.errors?.minlength" severity="error"
+                   text="Should contain letters and numbers"></p-message>
+      </ng-container>
+    </div>
+  </div>
+  <div class="ui-grid-row ui-grid-field">
+    <div class="ui-grid-col-2"><label for="confirmPassword">Confirm password</label></div>
+    <div class="ui-grid-col-6"><input
+      #confirmPassword="ngModel"
+      type="password"
+      name="confirmPassword"
+      pInputText id="confirmPassword"
+      [(ngModel)]="changePassword.confirmPassword"
+      validateEqual="newPassword"
+      validationEqualReverse="false"
+      required/></div>
+    <div class="ui-grid-col-4">
+      <ng-container *ngIf="confirmPassword.dirty || confirmPassword.touched || changePasswordForm.submitted">
+        <p-message *ngIf="confirmPassword.errors?.required" severity="error"
+                   text="Password confirmation is required"></p-message>
+        <p-message *ngIf="confirmPassword.errors?.validateEqual" severity="error" text="Password mismatch"></p-message>
+      </ng-container>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-8">
+        <div class="footer">
+          <div class="spacer"></div>
+          <button type="submit" pButton icon="pi pi-check" class="ui-button-success" label="Change"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<p-dialog header="Confirm email change" [(visible)]="emailChangeDialog" [modal]="true" [responsive]="true"
+          [width]="400" (onHide)="hideChangeEmailDialog(dialogForm)">
+  <form action="" #dialogForm="ngForm" (ngSubmit)="updateEmail(dialogForm)">
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-4"><label for="emailConfirmPassword">Password</label></div>
+      <div class="ui-grid-col-8">
+        <input type="password"
+               #emailConfirmPasswordControl="ngModel"
+               [(ngModel)]="emailConfirmPassword"
+               pInputText id="emailConfirmPassword"
+               name="emailConfirmPassword"
+               minlength="8"
+               maxlength="32"
+               pattern="{{constants.patterns.password}}"
+               required>
+      </div>
+    </div>
+    <div class="ui-grid-row ui-grid-field"
+         *ngIf="emailConfirmPasswordControl.errors && (emailConfirmPasswordControl.dirty || emailConfirmPasswordControl.touched || dialogForm.submitted)">
+      <div class="ui-grid-col-4">&nbsp;</div>
+      <div class="ui-grid-col-8">
+        <p-message *ngIf="emailConfirmPasswordControl.errors?.required" severity="error"
+                   text="Password is required"></p-message>
+        <p-message *ngIf="emailConfirmPasswordControl.errors?.minlength" severity="error"
+                   text="Should contain 8 symbols"></p-message>
+        <p-message
+          *ngIf="emailConfirmPasswordControl.errors?.pattern && !emailConfirmPasswordControl.errors?.minlength"
+          severity="error"
+          text="Should contain letters and numbers"></p-message>
+      </div>
+    </div>
+  </form>
+  <p-footer>
+    <button type="button" pButton icon="pi pi-check" (click)="dialogForm.ngSubmit.emit()"
+            label="Yes"></button>
+  </p-footer>
+</p-dialog>

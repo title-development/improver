@@ -1,0 +1,343 @@
+<div class="container">
+  <div class="row">
+
+    <div class="col-md-3 xs-none sm-none">
+      <div class="account-top-line"></div>
+      <account-nav></account-nav>
+    </div>
+
+    <div class="col-xs-12 col-md-9">
+
+      <div class="account-top-line">
+        <div class="account-nav-title">Company</div>
+      </div>
+      <div [cvSpinner]="!companyInfo" [cvSpinnerSize]="24">
+        <ng-container *ngIf="companyInfo">
+          <div class="company-info-card card">
+
+            <div class="tabs-menu">
+              <div class="tab-menu-item" [ngClass]="{'active': activeTab == Tabs.MAIN}" (click)="activeTab = Tabs.MAIN">
+                Main
+              </div>
+              <div class="tab-menu-item" [ngClass]="{'active': activeTab == Tabs.LOCATION}"
+                   (click)="activeTab = Tabs.LOCATION">Location
+              </div>
+              <div class="tab-menu-item" [ngClass]="{'active': activeTab == Tabs.LICENSES}"
+                   (click)="activeTab = Tabs.LICENSES">Licenses
+              </div>
+            </div>
+
+            <div class="account-nav-wrapper" *ngIf="companyInfo && activeTab == Tabs.MAIN">
+
+              <form class="company-info-form"
+                    name="company-info-form"
+                    #companyInfoForm="ngForm"
+                    (ngSubmit)="companyInfoForm.valid && updateCompanyInfo()"
+                    novalidate>
+
+                <div class="row -avatar">
+
+                  <div class="col-xs-12 avatar-block-wrapper">
+
+                    <div class="avatar-wrapper">
+                      <div class="avatar"
+                           [ngStyle]="companyInfo.iconUrl && companyInfo.iconUrl != '' && {'background-image':'url(' + companyInfo.iconUrl + ')'} || {'background-image':'url(/assets/img/company-logo-placeholder.png)'}"></div>
+                      <div class="actions">
+                        <div class="icon -delete" title="Delete icon"
+                             *ngIf="companyInfo.iconUrl && companyInfo.iconUrl != ''"
+                             (click)="deleteCompanyLogo()">
+                          <mat-icon class="delete">delete</mat-icon>
+                        </div>
+                        <div class="icon -edit" title="Edit icon" (click)="openDialogPhoto()">
+                          <mat-icon class="edit">edit</mat-icon>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="avatar-hint-wrapper" *ngIf="!companyInfo.iconUrl || companyInfo.iconUrl == ''">
+                      <div class="hint -arrow">Add company logo or picture. Profiles with a picture bring up to 300%
+                        more
+                        customers.
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+
+                <div class="row">
+
+                  <div class="col-xs-12 group-wrapper">
+                    <cv-input-field>
+                      <cv-field-label>Company name</cv-field-label>
+                      <input cv-input type="text"
+                             placeholder="Company name"
+                             #name="ngModel"
+                             name="name"
+                             disabled
+                             [(ngModel)]="companyInfo.name"
+                             required>
+                      <cv-field-error *ngIf="name.dirty || name.touched || companyInfoForm.submitted">
+                        <span *ngIf="name.errors?.required">Required</span>
+                      </cv-field-error>
+                    </cv-input-field>
+                  </div>
+
+                  <div class="col-xs-12 col-sm-6 group-wrapper">
+                    <cv-input-field>
+                      <cv-field-label>Founded</cv-field-label>
+                      <input cv-input type="text"
+                             placeholder="Founded year"
+                             name="founded"
+                             #founded="ngModel"
+                             disabled
+                             [(ngModel)]="companyInfo.founded"
+                             required>
+                      <cv-field-error *ngIf="founded.dirty || founded.touched || companyInfoForm.submitted">
+                        <span *ngIf="founded.errors?.required">Required</span>
+                      </cv-field-error>
+                    </cv-input-field>
+                  </div>
+
+
+                  <div class="col-xs-12 col-sm-6 group-wrapper">
+                    <cv-input-field>
+                      <cv-field-label>Company website</cv-field-label>
+                      <input cv-input type="text"
+                             trim
+                             placeholder="Website"
+                             #siteUrl="ngModel"
+                             name="siteUrl"
+                             [(ngModel)]="companyInfo.siteUrl">
+                      <cv-field-error *ngIf="siteUrl.dirty || siteUrl.touched || companyInfoForm.submitted">
+                        <span *ngIf="siteUrl.errors?.required">Required</span>
+                      </cv-field-error>
+                    </cv-input-field>
+                  </div>
+
+                  <div class="col-xs-12 group-wrapper">
+                    <cv-input-field>
+                      <cv-field-label>Description</cv-field-label>
+                      <textarea cv-input placeholder="Description"
+                                #description="ngModel"
+                                name="description"
+                                rows="6"
+                                type="text"
+                                [(ngModel)]="companyInfo.description"
+                                trim
+                                required>
+                  </textarea>
+                      <cv-field-error *ngIf="description.dirty || description.touched || companyInfoForm.submitted">
+                        <span *ngIf="description.errors?.required">Required</span>
+                      </cv-field-error>
+                    </cv-input-field>
+                  </div>
+
+                  <div class="col-xs-12 col-sm-12 group-wrapper">
+                    <div class="hint">You can specify additional (or backup) email and phone of you Company. This
+                      contact information is for support purposes only and not shared with customers.
+                    </div>
+                  </div>
+
+                  <div class="col-xs-12 col-sm-6 group-wrapper">
+                    <cv-input-field>
+                      <cv-field-label>Additional email</cv-field-label>
+                      <input cv-input type="text"
+                             placeholder="Email"
+                             #email="ngModel"
+                             name="email"
+                             trim
+                             [(ngModel)]="companyInfo.email"
+                             companyEmailUniqueValidator
+                             [previousEmail]="previousAdditionalEmail"
+                             pattern="{{constants.patterns.email}}">
+                      <cv-field-error *ngIf="email.dirty || email.touched || companyInfoForm.submitted">
+                      <span *ngIf="email.errors?.required">
+                        {{messages.errors.email.required}}
+                      </span>
+                        <span *ngIf="email.errors?.pattern">
+                        {{messages.errors.email.pattern}}
+                      </span>
+                        <span *ngIf="email.errors?.emailUnique">
+                        {{messages.errors.email.companyEmailUnique}}
+                      </span>
+                      </cv-field-error>
+                    </cv-input-field>
+                  </div>
+
+                  <div class="col-xs-12 col-sm-6 group-wrapper">
+                    <cv-input-field>
+                      <cv-field-label>Additional phone number</cv-field-label>
+                      <input cv-input type="text"
+                             placeholder="Phone number"
+                             #phone="ngModel"
+                             name="phone"
+                             [(ngModel)]="companyInfo.phone"
+                             phoneMask
+                             [pattern]="constants.patterns.phone"
+                             maxlength="15">
+                      <cv-field-error *ngIf="phone.dirty || phone.touched || companyInfoForm.submitted">
+                        <span *ngIf="phone.errors?.required">Required</span>
+                        <span *ngIf="phone.errors?.pattern">
+                        {{messages.errors.phone.pattern}}
+                      </span>
+                      </cv-field-error>
+                    </cv-input-field>
+                  </div>
+
+                </div>
+
+                <div class="buttons-wrapper">
+                  <button cv-button type="submit">Save</button>
+                </div>
+
+
+              </form>
+
+            </div>
+
+
+            <div class="account-nav-wrapper" *ngIf="companyLocation && activeTab == Tabs.LOCATION">
+
+              <form class="company-location-form"
+                    name="company-location-form"
+                    #companyLocationForm="ngForm"
+                    (ngSubmit)="companyLocationForm.valid && verifyLocation(companyLocationForm)"
+                    [cvSpinner]="processingAddressValidation"
+                    [cvSpinnerSize]="50"
+                    [cvSpinnerBackground]="true"
+                    novalidate>
+
+                <div class="row group-wrapper">
+
+                  <div class="col-xs-12">
+                    <cv-input-field>
+                      <cv-field-label>Address</cv-field-label>
+                      <input cv-input type="text"
+                             placeholder="Address"
+                             #address="ngModel"
+                             name="streetAddress"
+                             [(ngModel)]="companyLocation.streetAddress"
+                             trim
+                             required>
+                      <cv-field-error *ngIf="address.dirty || address.touched || companyLocationForm.submitted">
+                        <span *ngIf="address.errors?.required">Required</span>
+                      </cv-field-error>
+                    </cv-input-field>
+                  </div>
+
+                </div>
+
+                <div class="row group-wrapper">
+
+                  <div class="col-xs-12 col-sm-4 col-md-5 -bottom-space">
+                    <cv-input-field>
+                      <cv-field-label>City</cv-field-label>
+                      <input type="text"
+                             cv-input
+                             required
+                             name="city"
+                             placeholder="City"
+                             [(ngModel)]="companyLocation.city"
+                             #city="ngModel">
+                      <cv-field-error *ngIf="city.dirty || city.touched || companyLocationForm.submitted">
+                        <span *ngIf="city.errors?.required">Required</span>
+                      </cv-field-error>
+                    </cv-input-field>
+                  </div>
+
+                  <div class="col-xs-12 col-sm-4 -bottom-space">
+                    <cv-input-field>
+                      <cv-field-label>State</cv-field-label>
+                      <cv-select [multiple]="false" [tags]="false" [autocomplete]="true"
+                                 (autocompleteSearch)="autocompleteSearch($event)" [items]="filteredStates"
+                                 valueKey="value"
+                                 labelKey="label"
+                                 name="state"
+                                 #state="ngModel"
+                                 [(ngModel)]="companyLocation.state"
+                                 required
+                                 label="Choose state">
+                      </cv-select>
+                      <cv-field-error *ngIf="state.dirty || state.touched || companyLocationForm.submitted">
+                        <span *ngIf="state.errors?.required">Required</span>
+                      </cv-field-error>
+                    </cv-input-field>
+                  </div>
+
+                  <div class="col-xs-12 col-sm-4 col-md-3 -bottom-space">
+                    <cv-input-field>
+                      <cv-field-label>Zip</cv-field-label>
+                      <input cv-input type="text"
+                             placeholder="Zip"
+                             #zip="ngModel"
+                             name="zip"
+                             [(ngModel)]="companyLocation.zip"
+                             maxlength="5"
+                             numericMask
+                             required>
+                      <cv-field-error *ngIf="zip.dirty || zip.touched || companyLocationForm.submitted">
+                        <span *ngIf="zip.errors?.required">Required</span>
+                      </cv-field-error>
+                    </cv-input-field>
+                  </div>
+
+                </div>
+
+                <div class="buttons-wrapper">
+                  <cv-field-error>{{locationValidation | lowercase}}</cv-field-error>
+                  <div class="spacer"></div>
+                  <button cv-button type="submit">Save</button>
+                </div>
+
+              </form>
+
+            </div>
+
+            <div class="account-nav-wrapper" *ngIf="licenses && activeTab == Tabs.LICENSES">
+
+              <div class="licenses-wrapper">
+                <div *ngIf="licenses.length == 0">
+                  <span>Include your professional license information here to generate up to three times more job leads.</span>
+                </div>
+
+                <div *ngFor="let license of licenses" class="company-license-item">
+                  <div class="company-license-content">
+                    <div class="company-license-info">
+                      <div class="company-license-title">License number:</div>
+                      <div class="company-license-value">{{license.number}}</div>
+                    </div>
+                    <div class="company-license-info">
+                      <div class="company-license-title">Expires in:</div>
+                      <div class="company-license-value">{{license.expired | date:'MM-dd-yyyy'}}</div>
+                    </div>
+                    <div class="company-license-info">
+                      <div class="company-license-title">Accreditation:</div>
+                      <div class="company-license-value">{{license.accreditation}}, {{license.state}}</div>
+                    </div>
+                  </div>
+
+                  <div class="company-license-actions">
+                    <mat-icon class="company-license-edit" (click)="openLicenseDialog(license.id)">edit</mat-icon>
+                    <mat-icon class="company-license-remove" (click)="openRemoveLicenseConfirm(license.id)">close
+                    </mat-icon>
+                  </div>
+                </div>
+              </div>
+              <div class="buttons-wrapper">
+                <button cv-button type="submit" (click)="openLicenseDialog()">+ Add license</button>
+              </div>
+            </div>
+          </div>
+          <div class="action">
+            <div class="spacer"></div>
+            <a class="delete-account" (click)="deleteCompany()">Delete company</a>
+          </div>
+        </ng-container>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<layout-footer></layout-footer>

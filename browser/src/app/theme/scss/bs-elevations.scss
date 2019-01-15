@@ -1,0 +1,8 @@
+@import "./elevation";
+@import "functions";
+
+@each $key, $val in $elevations {
+  .bs-elevations-#{$key} {
+    box-shadow: $val
+  }
+}

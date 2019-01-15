@@ -1,0 +1,12 @@
+@import "../../../../improver-mixins";
+.card{
+  border-radius: 2px;
+  background-color: #ffffff;
+  box-shadow: elevation(1);
+  margin-bottom: 24px;
+  //overflow: hidden;
+
+  &.map,&.money {
+      height: calc(100% - 24px);
+  }
+}

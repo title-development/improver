@@ -1,0 +1,48 @@
+:host {
+  .ui-grid-row {
+    align-items: center;
+    margin-bottom: 15px;
+  }
+
+  &::ng-deep .ui-dialog .ui-inputtext, .ui-dialog textarea {
+    margin-bottom: 0px;
+  }
+}
+
+.address-validation {
+  position: absolute;
+  display: none;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  background-color: #fff;
+  text-align: center;
+
+  &.-invalid {
+    display: block;
+  }
+
+  button {
+    margin: 15px auto;
+    display: block;
+  }
+}
+
+.address {
+  text-align: center;
+
+
+}
+
+.processing {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

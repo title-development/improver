@@ -1,0 +1,48 @@
+<div class="projects-wrapper">
+  <div class="tab-header">
+    <div class="tab-labels">
+      <div class="tab-label" *ngFor="let tab of tabs; let i = index;" [ngClass]="{'-active': tab.active}"
+           (click)="getProjects(tab)">
+        {{tab.label}} <span>{{tab.pageable.totalElements ? '(' + tab.pageable.totalElements + ')' : ''}}</span>
+      </div>
+    </div>
+    <div class="tab-search">
+      <input cv-input trim [(ngModel)]="search" (ngModelChange)="filter()" type="text" placeholder="Type to search">
+      <mat-icon class="mat-19">search</mat-icon>
+    </div>
+  </div>
+  <div class="tab-content">
+    <div class="tab-content-wrapper">
+      <table class="xs-none sm-none tab-content-titles" cellspacing="0" cellpadding="0">
+        <tr>
+          <th width="5%"></th>
+          <th width="20%">Client name</th>
+          <th width="35%">Service type</th>
+          <th width="20%">Created</th>
+          <th width="10%">Status</th>
+          <th width="10%">Actions</th>
+        </tr>
+      </table>
+      <div class="tab-content-list"
+           *ngFor="let tab of tabs; let i = index;"
+           [cvSpinner]="fetching"
+           [cvSpinnerSize]="26"
+           [cvSpinnerBackground]="true" [ngClass]="{'-active': tab.active}">
+        <div class="no-data-row" *ngIf="tab.pageable?.totalElements == 0">
+          <span *ngIf="tab.latest">Here will be listed projects you work on</span>
+          <span *ngIf="!tab.latest">Here will be listed your closed projects</span>
+          <a cv-button-flat class="no-data-button" [routerLink]="['/pro/leads-search']">Find new projects</a>
+        </div>
+        <ng-container *ngIf="tab.pageable?.totalElements > 0">
+          <projects-list [(list)]="tab.projects"></projects-list>
+          <button class="secondary-button"
+                  [cvSpinner]="showMoreFetching"
+                  [cvSpinnerSize]="24"
+                  [cvSpinnerBackground]="true"
+                  (click)="showMoreProjects(tab)"
+                  *ngIf="!tab.pageable.last">Show more</button>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

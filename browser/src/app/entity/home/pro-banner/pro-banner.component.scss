@@ -1,0 +1,143 @@
+@import "../../../../improver-mixins.scss";
+
+:host {
+  width: 100%;
+}
+
+.pro-banner-wrapper {
+  flex: 1 !important;
+  height: 190px;
+  width: 100%;
+  background: url(../../../../assets/img/pro-banner.jpg) no-repeat center center;
+  background-size: cover;
+
+  @include response-to(md) {
+    height: auto;
+  }
+}
+
+.pro-banner-container {
+  background-color: rgba(0, 0, 0, 0.4);
+  width: 100%;
+  height: 100%;
+
+  .pro-banner-content {
+    font-weight: 500;
+    padding: 0 15px;
+    width: 1200px;
+    margin-top: 36px;
+    color: $white;
+
+    @include response-to(md) {
+      width: 100%;
+      margin-top: 30px;
+      margin-bottom: 30px;
+      flex-direction: column;
+    }
+
+    .pro-banner-main-block {
+      flex: 1 !important;
+      width: 100%;
+      margin-bottom: 30px;
+      display: flex;
+      max-height: 100%;
+      justify-content: space-between;
+
+      @include response-to(sm) {
+        flex-direction: column !important;
+        align-items: center;
+      }
+
+
+      .text {
+        font-size: 24px;
+        text-align: left;
+        color: $white;
+
+        @include response-to(sm) {
+          font-size: 23px;
+          max-width: 100% !important;
+          margin-bottom: 30px;
+        }
+      }
+
+      .button {
+        @include response-to(sm) {
+             margin: 0 auto;
+        }
+
+        .become-a-pro-button {
+          cursor: pointer;
+          text-align: center;
+          border: solid 2px $white;
+          font-size: 16px;
+          color: $white;
+          padding: 15px 20px;
+
+          &:hover {
+            background-color: $white;
+            border: solid 2px $white;
+            color: #333333;
+          }
+        }
+
+        &:active {
+          background-color: #f1f1f1;
+          border: solid 2px #f1f1f1;
+          color: #333333;
+        }
+
+      }
+
+    }
+
+    .pro-banner-secondary-block {
+      width: 100%;
+      display: flex;
+      max-height: 100%;
+      justify-content: space-between;
+      ///* flex: 1 1 0%; */
+      box-sizing: border-box;
+
+
+      @include response-to(sm) {
+        flex-direction: column!important;
+        align-items: center;
+      }
+
+      .text {
+        width: 50%;
+        font-size: 16px;
+        text-align: left;
+        color: $white;
+
+        @include response-to(sm) {
+          max-width: 100%!important;
+        }
+
+        @include response(xs) {
+          font-size: 14px;
+        }
+      }
+
+      .who-are-pros-button {
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 500;
+        color: $white;
+
+        @include response-to(sm) {
+          margin-top: 30px;
+        }
+
+        &:hover {
+          text-decoration: underline;
+        }
+
+      }
+
+    }
+
+  }
+
+}

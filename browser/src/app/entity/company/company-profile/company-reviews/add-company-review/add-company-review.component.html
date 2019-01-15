@@ -1,0 +1,57 @@
+<div class="dialog-content-wrapper">
+  <div class="dialog-content-container">
+
+    <div class="header" fxLayoutAlign="flex-end center">
+
+      <mat-icon class="close-modal" color="accent" (click)="close()">clear</mat-icon>
+
+    </div>
+
+    <div class="content">
+      <form class="review-post-form" fxLayout="column"
+            name="review-post-form"
+            #reviewPostForm="ngForm"
+            (ngSubmit)="isRated && addReview(reviewPostForm);"
+            novalidate>
+
+        <div class="review-post-photo" fxLayoutAlign="center none" [ngStyle]="companyProfile.iconUrl && companyProfile.iconUrl != '' && {'background-image':'url(' + companyProfile.iconUrl + ')'} || {'background-image':'url(' + 'http://via.placeholder.com/96x96' + ')'}"></div>
+
+        <div class="review-post-name">
+          Review {{companyProfile.name}}
+        </div>
+
+        <div class="review-post-rating" fxLayoutAlign="center none">
+          <rating-component [starSize]="35" [readOnly]="false" (onRatingChange)="getReviewRating($event)"></rating-component>
+        </div>
+        <mat-hint *ngIf="reviewPostForm.submitted && !isRated" fxLayoutAlign="center center">
+              <span class="mat-error">
+                Please rate company
+              </span>
+        </mat-hint>
+        <div class="review-post-message-container">
+          <textarea class="review-post-message" rows="5" placeholder="Tell something about your experience with North America Development Group, LLC" name="review" maxlength="500" [(ngModel)]="newReview.description" trim required></textarea>
+        </div>
+        <div *ngIf="reviewPostForm.submitted && (newReview.description == '' || newReview.description == undefined)" class="mat-error">
+          Please tell us about your experience with {{companyProfile.name}}
+        </div>
+
+        <div class="review-post-button-container">
+          <button class="review-button mat-raised-button mat-primary" type="submit" fxLayoutAlign="center center">
+            Post review
+          </button>
+        </div>
+
+
+      </form>
+      <div class="unauthorized" *ngIf="!securityService.isAuthenticated()">
+        <div class="holder">
+          <h3>{{companyProfile.name}}</h3>
+          <p>Verify your review with email confirmation to show yout support for {{companyProfile.name}}</p>
+          <button cv-button (click)="login()">Login</button>
+          <br>
+          or, <a (click)="signUp()">SignUp</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,23 @@
+<div class="rating-component" fxLayout="row" fxLayoutAlign="start center">
+  <div class="star" [style.paddingRight.px]="spaceSize" [style.paddingLeft.px]="spaceSize"
+       fxLayout="row" *ngFor="let element of allStarsArray; let i = index"
+       (mouseenter)="!readOnly && starMouseEnter($event, i)" (mouseleave)="!readOnly && starMouseLeave($event)"
+       (click)="!readOnly && starClick($event, i)">
+    <div class="star-inner" fxLayout="row" [matTooltip]="getHint(i)" [matTooltipPosition]="'above'">
+      <div class="left-part">
+        <i class="imp-icon-star-half-left"
+           [ngClass]="{ 'active': (i + 0.25 < rating) || (selectedStarIndex > i), 'hover': hoveredStarIndex >= i }"
+           [style.font-size.px]="starSize"
+           [ngStyle]="!readOnly && {'cursor': 'pointer'}"></i>
+      </div>
+      <div class="right-part">
+        <i class="imp-icon-star-half-right"
+           [ngClass]="{ 'active': (i + 0.75 <= rating) || (selectedStarIndex > i)  , 'hover': hoveredStarIndex >= i }"
+           [style.font-size.px]="starSize"
+           [ngStyle]="!readOnly && {'cursor': 'pointer'}"></i>
+
+      </div>
+    </div>
+  </div>
+  <div class="numeric-rating" *ngIf="!readOnly" fxLayoutAlign=" center">{{selectedStarIndex}}&nbsp;/&nbsp;{{MAX_STARS}}</div>
+</div>

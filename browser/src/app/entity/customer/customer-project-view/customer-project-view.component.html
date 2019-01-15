@@ -1,0 +1,254 @@
+<div class="container -top-space">
+
+  <div class="row">
+    <div class="top-page-navigation">
+      <a class="back-link noselect" routerLink="/my/projects">
+        <mat-icon>keyboard_arrow_left</mat-icon>
+        <div fxFlexOffset="5px">Back to Projects</div>
+      </a>
+      <div class="more-button-wrapper"
+           *ngIf="project && (project.status != Project.Status.CANCELED && project.status != Project.Status.COMPLETED)">
+        <button class="project-menu-button" mat-icon-button [matMenuTriggerFor]="projectMenu"
+                (click)="$event.stopPropagation()">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu class="project-menu" #projectMenu="matMenu" yPosition="below" xPosition="before">
+          <button mat-menu-item (click)="projectActionService.completeProjectConfirm(project)"
+                  *ngIf="project.status != Project.Status.CANCELED && project.status != Project.Status.COMPLETED">
+            Complete
+          </button>
+          <button mat-menu-item (click)="projectActionService.cancelProjectConfirm(project)"
+                  *ngIf="project.status != Project.Status.CANCELED && project.status != Project.Status.COMPLETED"
+                  class="cancel-button">Cancel
+          </button>
+        </mat-menu>
+      </div>
+    </div>
+  </div>
+
+  <div [cvSpinner]="!project" [cvSpinnerSize]="24">
+    <div class="row">
+      <div class="customer-project-view" *ngIf="project">
+        <div class="main-content-wrapper">
+          <div class="header">
+            <div class="left-part">
+              <div class="top-line">
+                <div class="title">{{project.serviceType}}</div>
+                <div class="status" [ngClass]="[project.status | toclassname]">{{project.status | statustostring}}</div>
+              </div>
+              <div class="bottom-line">
+                {{project.created | date: 'mediumDate'}}, {{project.created | date: 'shortTime'}}
+              </div>
+            </div>
+            <div class="right-part">
+              <div>
+                <mat-icon>location_on</mat-icon>
+              </div>
+              <div>
+                <div class="location">{{project.location.streetAddress}} {{project.location.city}} ,
+                  {{project.location.state}} {{project.location.zip}}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="projectRequests" *ngIf="project.projectRequests.length > 0">
+            <div class="content">
+
+              <div class="active-pros-info" *ngIf="!project.isArchived() && !isActiveProsExist()">
+                <div class="title">Below listed all Pros matched to your project</div>
+                <div class="hint">There are no active Pros in your project.</div>
+              </div>
+
+              <div class="active-pros-info" *ngIf="!project.isArchived() && isActiveProsExist();">
+                <div class="title">These Pros are ready to discuss your project</div>
+                <div class="hint">Expect them to call or message you shortly. You can also contact them using the tools
+                  below.
+                </div>
+              </div>
+
+              <ng-template ngFor let-projectRequest [ngForOf]="project.projectRequests" let-i="index">
+                <div class="projectRequest"
+                     (click)="openProjectRequest(projectRequest)"
+                     *ngIf="isProjectRequestActive(projectRequest)">
+                  <div class="projectRequest-left">
+                      <i class="notifications" *ngIf="projectRequest.unreadMessages > 0" title="{{unreadMessagesTittle(projectRequest.unreadMessages)}}">{{projectRequest.unreadMessages}}</i>
+                    <div class="projectRequest-icon {{projectRequest.status | toclassname}}"
+                         [ngClass]="{'no-icon' : projectRequest.company.iconUrl != ''}"
+                         [ngStyle]="projectRequest.company.iconUrl && projectRequest.company.iconUrl != '' && {'background-image':'url(' + projectRequest.company.iconUrl + ')'} || {'background-image':'url(assets/img/company-logo-placeholder.png)'}">
+                    </div>
+                    <div class="info-block">
+                      <div class="company-name">
+                        <div>{{projectRequest.company.name}}</div>
+                        <div class="approve-mark" *ngIf="projectRequest.company.approved">
+                          <img class="approve-icon" src="assets/icons/approve.svg" alt="" title="Approved by Home Improve">
+                        </div>
+                      </div>
+                      <div class="additional-info hired"
+                           *ngIf="projectRequest.status == ProjectRequest.Status.HIRED || projectRequest.status == ProjectRequest.Status.COMPLETED">
+                        You hired this Pro
+                      </div>
+                      <div class="additional-info" *ngIf="projectRequest.status == ProjectRequest.Status.ACTIVE">This
+                        Pro sent you project request
+                      </div>
+                    </div>
+                  </div>
+                  <div class="projectRequest-right">
+                    <div class="rating-block">
+                      <rating-component [rating]="projectRequest.company.rating" [starSize]="26"></rating-component>
+                      <div class="reviews-count">({{projectRequest.company.reviewCount}})</div>
+                    </div>
+                  </div>
+                  <div class="more-button">
+                    <button class="projectRequest-menu-button" mat-icon-button [matMenuTriggerFor]="projectRequestMenu"
+                            (click)="$event.stopPropagation()">
+                      <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu class="projectRequest-menu" #projectRequestMenu="matMenu" yPosition="below"
+                              xPosition="before">
+                      <a mat-menu-item (click)="openProjectRequest(projectRequest)">Details
+                      </a>
+                      <a mat-menu-item [routerLink]="['/companies', projectRequest.company.id]">View company</a>
+                      <!--TODO: Remove action buttons after archiving-->
+                      <button mat-menu-item
+                              *ngIf="(projectRequest.status == ProjectRequest.Status.HIRED) && !Project.isArchived(project.status)"
+                              class="cancel-button">Dismiss
+                      </button>
+                      <!--<button mat-menu-item *ngIf="(projectRequest.status == ProjectRequest.Status.DECLINED) && !Project.isArchived(project.status)">Activate</button>-->
+                      <button mat-menu-item
+                              *ngIf="(projectRequest.status == ProjectRequest.Status.ACTIVE) && !Project.isArchived(project.status)"
+                              (click)="projectActionService.hireCompanyConfirm(projectRequest)">Hire
+                      </button>
+                      <button mat-menu-item class="cancel-button"
+                              *ngIf="(projectRequest.status == ProjectRequest.Status.ACTIVE) && !Project.isArchived(project.status)"
+                              (click)="projectActionService.declineCompanyConfirm(projectRequest)">Decline
+                      </button>
+                    </mat-menu>
+                  </div>
+                </div>
+              </ng-template>
+
+              <div class="decline-line" *ngIf="!project.isArchived() && isInactiveProsExist() && isActiveProsExist()">
+                <span>Declined and inactive Pros</span>
+              </div>
+
+              <ng-template ngFor let-projectRequest [ngForOf]="project.projectRequests" let-i="index">
+                <div class="projectRequest"
+                     (click)="openProjectRequest(projectRequest)"
+                     *ngIf="!isProjectRequestActive(projectRequest)">
+                  <div class="projectRequest-left">
+                    <div class="projectRequest-icon {{projectRequest.status | toclassname}}"
+                         [ngClass]="{'no-icon' : projectRequest.company.iconUrl != ''}"
+                         [ngStyle]="projectRequest.company.iconUrl && projectRequest.company.iconUrl != '' && {'background-image':'url(' + projectRequest.company.iconUrl + ')'} || {'background-image':'url(assets/img/company-logo-placeholder.png)'}">
+                    </div>
+                    <div class="info-block">
+                      <div class="company-name">
+                        <div>{{projectRequest.company.name}}</div>
+                        <div class="approve-mark" *ngIf="projectRequest.company.approved">
+                          <img class="approve-icon" src="assets/icons/approve.svg" alt="" title="Approved by Home Improve">
+                        </div>
+                      </div>
+                      <div class="additional-info" *ngIf="projectRequest.status == ProjectRequest.Status.DECLINED">You
+                        declined this Pro
+                      </div>
+                      <div class="additional-info" *ngIf="projectRequest.status == ProjectRequest.Status.CLOSED
+                    || projectRequest.status == ProjectRequest.Status.REFUND || projectRequest.status == ProjectRequest.Status.REFUNDED">
+                        This Pro left the project
+                      </div>
+                    </div>
+                  </div>
+                  <div class="projectRequest-right">
+                    <div class="rating-block">
+                      <rating-component [rating]="projectRequest.company.rating" [starSize]="26"></rating-component>
+                      <div class="reviews-count">({{projectRequest.company.reviewCount}})</div>
+                    </div>
+
+                  </div>
+                  <div class="more-button">
+                    <button class="projectRequest-menu-button" mat-icon-button [matMenuTriggerFor]="projectRequestMenu"
+                            (click)="$event.stopPropagation()">
+                      <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu class="projectRequest-menu" #projectRequestMenu="matMenu" yPosition="below"
+                              xPosition="before">
+                      <button mat-menu-item (click)="openProjectRequest(projectRequest)">Details
+                      </button>
+                      <a mat-menu-item [routerLink]="['/companies', projectRequest.company.id]">View company</a>
+                      <!--TODO: Remove action buttons after archiving-->
+                      <button mat-menu-item
+                              *ngIf="(projectRequest.status == ProjectRequest.Status.HIRED) && !Project.isArchived(project.status)">
+                        Dismiss
+                      </button>
+                      <!--<button mat-menu-item *ngIf="(projectRequest.status == ProjectRequest.Status.DECLINED) && !Project.isArchived(project.status)">Activate</button>-->
+                      <button mat-menu-item
+                              *ngIf="(projectRequest.status == ProjectRequest.Status.ACTIVE) && !Project.isArchived(project.status)"
+                              (click)="projectActionService.hireCompanyConfirm(projectRequest)">Hire
+                      </button>
+                      <button mat-menu-item class="cancel-button"
+                              *ngIf="(projectRequest.status == ProjectRequest.Status.ACTIVE) && !Project.isArchived(project.status)"
+                              (click)="projectActionService.declineCompanyConfirm(projectRequest)">Decline
+                      </button>
+                    </mat-menu>
+                  </div>
+                </div>
+              </ng-template>
+
+            </div>
+          </div>
+          <div class="no-requests-block" *ngIf="project.projectRequests.length == 0">
+            <img class="no-requests-icon" src="assets/img/round-icons/no-requests-icon.png" alt="">
+            <div>We're looking for the best Pros to match your project</div>
+            <div>It usually takes a few minutes</div>
+          </div>
+        </div>
+
+        <div class="description-block">
+          <div class="header">
+            <div class="top-line">
+              Description
+            </div>
+          </div>
+          <div class="content">
+
+            <div class="question-block">
+              <div class="question">Start date</div>
+              <div class="answers">
+                <div class="answer">{{project.startDate}}</div>
+              </div>
+            </div>
+
+            <div class="question-block" *ngIf="project.notes">
+              <div class="question">Notes</div>
+              <div class="answers">
+                <div class="answer textarea-formatting">{{project.notes}}</div>
+              </div>
+            </div>
+
+            <ng-template ngFor let-detail [ngForOf]="project.details">
+              <div class="question-block">
+                <div class="question">{{detail.name}}</div>
+                <div class="answers">
+                  <ng-template ngFor let-result let-last="last" [ngForOf]="detail.results">
+                    <div class="answer">{{result}}</div>
+                    <div *ngIf="!last">,&nbsp;</div>
+                  </ng-template>
+                </div>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+        <div class="image-uploader"
+             *ngIf="project && (!project.isArchived() || project.images.length > 0 )">
+          <image-uploader title="Photos"
+                          [isArchived]="Project.isArchived(project.status)"
+                          [apiUrl]="'/api/projects/'+projectId+'/images'"
+                          [projectImages]="project.images"></image-uploader>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<layout-footer></layout-footer>
+
+
+

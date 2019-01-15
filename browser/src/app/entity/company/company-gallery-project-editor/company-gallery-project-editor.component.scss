@@ -1,0 +1,153 @@
+@import "../../../../improver-mixins.scss";
+
+.company-gallery-project-wrapper {
+  max-width: 655px;
+  margin: 0px auto 0;
+  padding: 0 12px;
+  @include response-to(sm) {
+    max-width: 100%;
+  }
+
+  @include response-to(xs) {
+    padding: 0px;
+  }
+
+}
+
+.company-gallery-project {
+  padding-top: 24px;
+
+  .gallery-project-card {
+    padding: 24px;
+
+    .title {
+      font-size: 20px;
+      font-weight: 600;
+      color: $black-primary;
+      margin-bottom: 16px;
+    }
+
+    .sub-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: $black;
+      margin-bottom: 12px;
+      margin-top: 8px;
+    }
+
+    .description-icon {
+      margin-top: 16px;
+    }
+
+    .mat-form-field-wrapper {
+
+    }
+
+    .radio-group-title-wrapper {
+      color: #9e9e9e;
+    }
+
+    .radio-group {
+      margin-top: 10px;
+      margin-left: 2px;
+      color: #9e9e9e;
+
+      .mat-radio-button {
+
+        margin-bottom: 6px;
+
+        &.mat-radio-checked {
+          color: rgba(0, 0, 0, 0.87);
+        }
+      }
+
+      .mat-radio-label-content {
+
+      }
+
+    }
+
+    .add-project-service-button {
+
+    }
+
+    .project-services-wrapper {
+      margin-top: 10px;
+
+      .service-badge {
+        display: inline-block;
+        background-color: #eeeeee;
+        padding: 5px 5px 5px 10px;
+        margin-right: 4px;
+        margin-bottom: 4px;
+        border-radius: 25px;
+
+        .remove-service-icon {
+          cursor: pointer;
+          margin-left: 2px;
+        }
+
+      }
+
+    }
+
+    .image-uploader-wrapper {
+      padding: 0 12px;
+    }
+
+  }
+
+}
+
+.card {
+  border-radius: 2px;
+  background-color: $white;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
+  margin-bottom: 24px;
+}
+
+.group-wrapper {
+  margin-bottom: 24px;
+}
+
+.buttons-wrapper {
+  display: flex;
+  justify-content: space-between;
+
+}
+image-uploader ::ng-deep {
+  .spacer {
+    @include response-from(md) {
+      height: calc(((100vw - (100vw - 665px)) / 4) - 14px);
+    }
+
+    @include response(sm) {
+      height: calc((100vw / 3) - 25px);
+    }
+
+    @include response-to(xs) {
+      height: calc((100vw / 2) - 40px);
+    }
+  }
+  .header h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: $black;
+    margin-bottom: 12px;
+    margin-top: 8px;
+  }
+}
+
+.project-price-wrapper {
+
+  cv-input-field cv-icon {
+    width: 32px;
+    font-size: 14px;
+    line-height: 16px;
+    color: #212121;
+  }
+
+  .project-price {
+    padding-left: 30px;
+  }
+}

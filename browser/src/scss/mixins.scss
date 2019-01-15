@@ -1,0 +1,153 @@
+@mixin print() {
+  @media print {
+    @content;
+  }
+}
+
+@mixin response($min, $max : null) {
+  @if ($max == null) {
+    @if (map-deep-get($rsp, $min, min) == 0) {
+      @media (max-width: #{map-deep-get($rsp, $min, max)}px) {
+        @content;
+      }
+    } @else if (map-deep-get($rsp, $min, max) == 9999) {
+      @media (min-width: #{map-deep-get($rsp, $min, min)}px) {
+        @content;
+      }
+    } @else {
+      @media (min-width: #{map-deep-get($rsp, $min, min)}px) and (max-width: #{map-deep-get($rsp, $min, max)}px) {
+        @content;
+      }
+    }
+  } @else {
+    @media (min-width: #{map-deep-get($rsp, $min, min)}px) and (max-width: #{map-deep-get($rsp, $max, max)}px) {
+      @content;
+    }
+  }
+}
+
+;
+
+@mixin response-from($rz) {
+  @media (min-width: #{map-deep-get($rsp, $rz, min)}px) {
+    @content;
+  }
+}
+
+@mixin response-to($rz) {
+  @media (max-width: #{map-deep-get($rsp, $rz, max)}px) {
+    @content;
+  }
+}
+
+@mixin make-lim-columns($columns : $grid-columns, $gutter: $grid-gutter-width) {
+  $list: "";
+  $i: 1;
+  @for $idx from 1 through $columns {
+    @each $key, $val in $rsp {
+      $ins: ", ";
+      @if $idx == 1 and $i == 1 {
+        $ins: "";
+      }
+      $list: "#{$list}#{$ins}.col-#{$key}-#{$idx}";
+      $i: $i + 1;
+    }
+  }
+  #{$list} {
+    position: relative;
+    padding-left: ($gutter / 2);
+    padding-right: ($gutter / 2);
+  }
+  @each $key, $val in $rsp {
+    @include response-from($key) {
+      @for $cdx from 1 through $columns {
+        .col-#{$key}-#{$cdx} {
+          width: percentage(($cdx / $columns));
+        }
+        .col-#{$key}-offset-#{$cdx} {
+          margin-left: percentage(($cdx / $columns));
+        }
+      }
+    }
+    @include response($key) {
+      .#{$key}-none {
+        display: none!important;
+      }
+      .col-#{$key}-stretch {
+        align-items: stretch!important;
+      }
+    }
+    @include response($key) {
+      .#{$key}-row-reverse {
+        flex-direction: row-reverse;
+      }
+      .#{$key}-column {
+        flex-direction: column;
+      }
+      .#{$key}-column-reverse {
+        flex-direction: column-reverse;
+      }
+    }
+  }
+  @each $key, $val in $rsp {
+
+  }
+}
+
+@mixin response-h($height) {
+  @media (max-height: #{$height}px) {
+    @content;
+  }
+}
+
+@mixin hover-active-link-mixin() {
+  -webkit-background-clip: text;
+  background-clip: text; //TODO: find out why it is highlighted
+  -webkit-text-fill-color: transparent;
+  background-image: linear-gradient(to bottom, $primary-500, $primary-600);
+}
+
+@mixin reset-hover-active-link-mixin() {
+  -webkit-background-clip: initial;
+  background-clip: initial;
+  -webkit-text-fill-color: initial;
+  background-image: none;
+}
+
+@mixin bordered-link-mixin-flat() {
+  border: 2px solid;
+  -webkit-border-image: -webkit-gradient(linear, 0 0, 0 100%, from($primary-500), to($primary-600)) 1 100%;
+  -webkit-border-image: -webkit-linear-gradient($primary-500, $primary-600) 1 100%;
+  -moz-border-image: -moz-linear-gradient($primary-500, $primary-600) 1 100%;
+  -o-border-image: -o-linear-gradient($primary-500, $primary-600) 1 100%;
+  border-image: linear-gradient(to bottom, $primary-500, $primary-600) 1 100%;
+  border-image-source: linear-gradient(to bottom, $primary-500, $primary-600);
+  border-image-slice: 1;
+}
+
+@mixin bordered-link-mixin() {
+  border: 2px solid;
+  -webkit-border-image: -webkit-gradient(linear, 0 0, 0 100%, from($primary-300), to($primary-500)) 1 100%;
+  -webkit-border-image: -webkit-linear-gradient($primary-300, $primary-500) 1 100%;
+  -moz-border-image: -moz-linear-gradient($primary-300, $primary-500) 1 100%;
+  -o-border-image: -o-linear-gradient($primary-300, $primary-500) 1 100%;
+  border-image: linear-gradient(to bottom, $primary-300, $primary-500) 1 100%;
+  border-image-source: linear-gradient(to bottom, $primary-300, $primary-500);
+  border-image-slice: 1;
+}
+
+@mixin background-image-gradient() {
+  background-image: linear-gradient(to bottom, $primary-300, $primary-600), linear-gradient($primary-500, $primary-500);
+}
+
+@mixin background-size-100-mixin() {
+  -moz-background-size: 100%;
+  -webkit-background-size: 100%;
+  -o-background-size: 100%;
+  background-size: 100%;
+}
+
+@mixin dropdown-opened-mixin() {
+  color: #ffffff;
+  background-color: $primary-500;
+}

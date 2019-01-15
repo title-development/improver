@@ -1,0 +1,51 @@
+<div class="dialog-content-wrapper">
+  <div class="dialog-content-container">
+
+    <div class="header" >
+
+      <mat-icon class="close-modal" color="accent" (click)="close()">clear</mat-icon>
+
+      <div class="header-content">
+
+        <div class="title">Why you want to decline <span class="company-name">{{projectRequest.company.name}}?</span></div>
+
+      </div>
+
+    </div>
+
+    <div class="content">
+
+      <form class="decline-contractor-form"
+            name="decline-contractor-form"
+            #declineContractorForm="ngForm"
+            (ngSubmit)="declineContractorForm.valid && onSubmit(declineContractorForm)"
+            novalidate>
+
+        <cv-radio-group  name="reason" [(ngModel)]="reason" required *ngIf="declineContractorVariants">
+
+          <cv-radio *ngFor="let variant of declineContractorVariants | forjson" [value]="variant.key" >
+            <div>{{variant.value}}</div>
+          </cv-radio>
+
+        </cv-radio-group>
+
+        <div class="comment-wrapper" [ngClass]="{'visible-input': declineContractorForm.controls['reason']?.value == 'OTHER'}">
+          <textarea rows="3" maxlength="200" cv-input placeholder="Type reasons of declining" name="comment" [(ngModel)]="comment" [required]="declineContractorForm.controls['reason']?.value == 'OTHER'"></textarea>
+        </div>
+
+        <div class="buttons-wrapper">
+
+          <button class="cancel-button" (click)="close()" type="button">Nevermind</button>
+            <div class="cv-error" *ngIf="declineContractorForm.submitted && !declineContractorForm.valid">Required</div>
+          <button cv-button type="submit">Submit</button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+</div>
+
+

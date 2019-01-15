@@ -1,0 +1,67 @@
+<div class="company-projects-gallery-wrapper" *ngIf="projects.length > 0 || editMode">
+  <div class="company-projects-gallery-container">
+
+    <div class="title">Projects</div>
+    <div class="content row">
+
+      <div class="col-xs-12 col-sm-6 col-md-6" *ngIf="editMode">
+        <div class="add-gallery-project-card-wrapper" >
+          <a class="main-block" (click)="preSaveGalleryProject()">
+            <div class="add-button-block">
+              <mat-icon>add_circle</mat-icon>
+              <div class="add-text">Add new project</div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <ng-template ngFor [ngForOf]="projects" let-project let-i="index" [ngForTrackBy]="trackById">
+
+        <div class="col-xs-12 col-sm-6 col-md-6" *ngIf="(project.name && !editMode) || editMode">
+          <div class="gallery-project-card-wrapper">
+            <div class="project-card">
+
+              <a class="main-block-wrapper" [ngClass]="{'no-image' : !project.coverUrl || project.coverUrl == ''}"
+                 [routerLink]="!editMode ? ['projects', project.id, 'view'] : ['projects', project.id, 'edit']">
+                <div class="main-block">
+
+                  <div class="upper-block" fxLayout="column" fxLayoutAlign="start start">
+                    <div class="project-title">{{project.name != '' ? project.name : 'Unpublished project'}}</div>
+                    <div class="project-date">{{project.date | date: 'MMMM d, y'}}</div>
+                  </div>
+                </div>
+
+                <div class="image-block"
+                     [ngStyle]="project.coverUrl && project.coverUrl != '' && {'background-image':'url(' + project.coverUrl + ')'}">
+                  <i class="imp-icon-tools" *ngIf="!project.coverUrl || project.coverUrl == ''"></i>
+                </div>
+              </a>
+
+              <div class="footer" fxLayout="row" fxLayoutAlign="space-between center">
+
+                <div class="price" fxLayout="row" fxLayoutAlign="start center">
+                  {{project.price | currency:'USD':'symbol'}}
+                </div>
+
+                <div class="more-button">
+
+                  <button class="project-card-menu-button" mat-icon-button [matMenuTriggerFor]="projectCardMenu">
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+
+                  <mat-menu class="project-card-menu" #projectCardMenu="matMenu" yPosition="below" xPosition="before">
+                    <button mat-menu-item [routerLink]="['projects', project.id, 'edit']" *ngIf="editMode">Edit</button>
+                    <button mat-menu-item [routerLink]="['projects', project.id, 'view']" >View</button>
+                    <!--<button mat-menu-item *ngIf="!editMode">Add review</button>-->
+                    <button mat-menu-item class="cancel-button"  *ngIf="editMode" (click)="deleteGalleryProjectConfirm(project)">Delete</button>
+                  </mat-menu>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </ng-template>
+    </div>
+  </div>
+</div>

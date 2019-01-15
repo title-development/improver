@@ -1,0 +1,350 @@
+@import "../../../improver-mixins.scss";
+
+.signup-pro-wrapper {
+  max-width: 891px;
+  margin: 48px auto;
+  width: 100%;
+  color: $black-primary;
+
+  .row.-avatar {
+    margin-top: 8px;
+    margin-bottom: 24px;
+  }
+
+  @include response-to(xs) {
+    margin: 0px auto;
+  }
+
+  .signup-pro-container {
+
+    .step.-five {
+      display: flex;
+      justify-content: center;
+    }
+
+    .success-card {
+      box-shadow: none;
+    }
+
+    ::ng-deep.services-selector-wrapper {
+      margin-top: -7px;
+    }
+
+    .map-wrapper {
+      .service-area-map {
+        width: 100%;
+        display: block;
+        height: 414px;
+        margin-bottom: 24px;
+        @include response-to(xs) {
+          height: 270px;
+        }
+      }
+    }
+
+    ::ng-deep cv-input-field {
+      margin-bottom: 16px;
+    }
+
+    //.company-info-form ::ng-deep cv-select {
+    //  margin-bottom: 16px;
+    //}
+
+    ::ng-deep .services-selector-wrapper .add-service-button {
+      font-size: 14px;
+    }
+
+    .card {
+      padding: 24px;
+      max-width: 891px;
+      border-radius: 2px;
+      background-color: #ffffff;
+      box-shadow: 0px 1px 4px 0 rgba(0, 0, 0, 0.16);
+
+      .account-form {
+
+        .agree {
+          display: flex;
+          margin-top: 16px;
+
+          ::ng-deep.checkbox-icon {
+            min-width: 19px;
+            min-height: 19px;
+          }
+
+          a {
+            color: $primary-500;
+
+            &:hover {
+              text-decoration: underline;
+            }
+
+          }
+
+        }
+
+      }
+
+      .radius-value {
+        color: $primary-600;
+        font-weight: 600;
+      }
+
+      .location-info {
+        margin-bottom: 16px;
+
+        .location-full {
+          color: $black-secondary;
+          font-size: 14px;
+        }
+
+
+      }
+
+      .block-title {
+        margin-bottom: 24px;
+        font-size: 16px;
+        font-weight: 600;
+        color: $black-primary;
+        margin-top: 16px;
+      }
+
+      .logo-title {
+        font-size: 12px;
+        line-height: 1.33;
+        color: #626262;
+      }
+
+      .lead-preference-title {
+        margin-bottom: 24px;
+        font-size: 20px;
+        font-weight: 600;
+        color: $black-primary;
+        margin-top: 16px;
+      }
+
+      .lead-preference-sub-title {
+        font-weight: 600;
+      }
+
+      .lead-preferences-hint {
+        margin-bottom: 16px;
+      }
+
+      .avatar-block-wrapper {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+      }
+
+      .avatar-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 90px;
+        height: 90px;
+        border-radius: 100px;
+        background-color: $white;
+        box-shadow: 0px 1px 5px 0 rgba(0, 0, 0, 0.24);
+        position: relative;
+        flex: none;
+        margin-right: 24px;
+        .avatar {
+          display: flex;
+          width: 80px;
+          height: 80px;
+          border-radius: 100px;
+          background-size: cover;
+          background-repeat: no-repeat;
+          background-position: center;
+
+        }
+
+        .actions {
+          position: absolute;
+          top: 8px;
+          right: -6px;
+          bottom: 8px;
+          display: flex;
+          flex-direction: column;
+          .icon {
+            cursor: pointer;
+            border-radius: 50%;
+            height: 24px;
+            width: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            &.-delete {
+              background-color: $red;
+            }
+            &.-edit {
+              margin-top: auto;
+              background-color: $primary-500;
+            }
+            .mat-icon {
+              color: $white;
+              font-size: 16px;
+            }
+          }
+        }
+      }
+
+      .step-wizard {
+        display: flex;
+        margin-bottom: 24px;
+
+        .step-icon {
+          display: flex;
+          height: 57px;
+          width: 141px;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          font-size: 14px;
+          font-weight: 600;
+          line-height: 1.14;
+          letter-spacing: normal;
+          color: $black-500;
+          background-image: url('/assets/img/pro-reg-step.png');
+          background-repeat: no-repeat;
+          background-size: contain;
+          margin-right: -4px;
+
+
+          &.-active {
+            color: black;
+            background-image: url('/assets/img/pro-reg-step-active.png');
+          }
+
+
+          @include response-to(xs) {
+            height: 24px;
+            width: 71px;
+            font-size: 9px;
+            background-size: 71px;
+
+            &.-active {
+              color: black;
+            }
+
+          }
+
+          div {
+            margin-top: -8px;
+            @include response-to(xs) {
+              margin-top: 1px;
+            }
+          }
+
+
+        }
+
+      }
+
+      .buttons-wrapper {
+        margin-top: 24px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+        button {
+          display: flex;
+        }
+
+        .button-next {
+          margin-left: auto;
+        }
+
+      }
+
+      .description-block {
+        font-size: 14px;
+        line-height: 1.43;
+        color: #8c8c8c;
+        padding-left: 8px;
+        margin-bottom: 16px;
+        margin-top: -8px;
+        border-left: 2px solid $black-500;
+      }
+
+      .hint {
+        position: relative;
+        padding: 16px;
+        background-color: $black-150;
+        box-shadow: 0px 2px 4px 0 rgba(0, 0, 0, 0.16);
+        font-size: 14px;
+        line-height: 1.43;
+        color: #8c8c8c;
+
+        &.-arrow:before {
+          display: none;
+          content: '';
+          position: absolute;
+          width: 0;
+          height: 0;
+          border-style: solid;
+          border-color: transparent transparent $black-150 transparent;
+          border-width: 0 10px 10px 10px;
+          top: -10px;
+          left: calc(50% - 10px);
+
+          @include response-from(md) {
+            display: block;
+            border-color: transparent $black-150 transparent transparent;
+            border-width: 10px 10px 10px 0;
+            left: -10px;
+            top: initial;
+          }
+
+        }
+
+        &.-inline {
+          margin-bottom: 16px;
+        }
+
+        .important {
+          font-weight: 600;
+          color: #191919;
+        }
+
+        a {
+          color: $primary-500;
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+
+        &.account-hint {
+          @include response-from(md) {
+            margin-bottom: -36px;
+          }
+        }
+
+        &.company-info-hint {
+          margin-bottom: 16px;
+          @include response-from(md) {
+            margin-top: 20px;
+            margin-bottom: -60px;
+          }
+        }
+
+      }
+
+    }
+
+  }
+
+  .address-validation-error {
+    color: $red;
+    font-size: 12px;
+  }
+
+  .row-with-hint {
+    @include response-to(sm) {
+      flex-direction: column-reverse;
+    }
+  }
+
+}
+

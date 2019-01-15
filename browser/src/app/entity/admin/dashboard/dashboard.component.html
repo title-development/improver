@@ -1,0 +1,144 @@
+<div class="dashboard-wrapper">
+
+  <div class="row-title">Users statistic</div>
+
+  <div class="row">
+
+    <div class="ui-g-12 ui-md-6">
+      <div class="ui-grid-row">
+        <p-card title="Registered users in system">
+          <p-chart *ngIf="users.datasets.length > 0" type="pie" [data]="users"></p-chart>
+        </p-card>
+      </div>
+    </div>
+
+    <div class="ui-g-12 ui-md-6">
+      <div class="ui-grid-row">
+        <p-card title="Users registration" class="statistic-chart">
+          <p-dropdown [options]="statisticPeriods" placeholder="Choose a type" [(ngModel)]="userRegistrationPeriod"
+                      (ngModelChange)="getUserRegistrationStatistic($event)"></p-dropdown>
+          <p-chart *ngIf="usersRegistration.labels.length > 0" type="line" [data]="usersRegistration"
+                   (onDataSelect)="selectData($event)"></p-chart>
+        </p-card>
+      </div>
+    </div>
+
+  </div>
+
+  <ng-container *ngIf="securityService.hasRole(Role.STAKEHOLDER)">
+    <div class="row-title" >Leads and finances</div>
+
+    <div class="row">
+
+      <div class="ui-g-12 ui-md-6">
+        <div class="ui-grid-row">
+          <p-card title="Leads credit statistic" class="statistic-chart">
+            <p-dropdown [options]="statisticPeriods" placeholder="Choose a type" [(ngModel)]="moneyPeriod"
+                        (ngModelChange)="getMoneyStatistic($event)"></p-dropdown>
+            <p-chart *ngIf="money.datasets.length > 0" type="line" [options]="moneyChartOptions" [data]="money"
+                     (onDataSelect)="selectData($event)"></p-chart>
+          </p-card>
+        </div>
+      </div>
+
+      <div class="ui-g-12 ui-md-6">
+        <div class="ui-grid-row">
+          <p-card title="Leads status" class="statistic-chart">
+            <p-dropdown [options]="statisticPeriods" placeholder="Choose a type" [(ngModel)]="leadsPeriod"
+                        (ngModelChange)="getLeadsStatistics($event)"></p-dropdown>
+            <p-chart type="line" *ngIf="leads.datasets.length > 0" [data]="leads"
+                     (onDataSelect)="selectData($event)"></p-chart>
+          </p-card>
+        </div>
+      </div>
+
+      <div class="ui-g-12 ui-md-6">
+        <div class="ui-grid-row">
+          <p-card title="General finances statistic" subtitle="Warning: Refunds made directly from Stripe are not subtracted from Income" class="statistic-chart">
+            <p-dropdown [options]="statisticPeriods" placeholder="Choose a type" [(ngModel)]="financesPeriod"
+                        (ngModelChange)="getFinancesStatistic($event)"></p-dropdown>
+            <p-chart type="line" *ngIf="finances.datasets.length > 0" [data]="finances" [options]="moneyChartOptions"
+                     (onDataSelect)="selectData($event)"></p-chart>
+          </p-card>
+        </div>
+      </div>
+
+    </div>
+  </ng-container>
+
+
+  <div class="row-title">Client service</div>
+
+  <div class="row">
+
+    <div class="ui-g-12 ui-md-6">
+      <div class="ui-grid-row">
+        <p-card title="Client tickets" class="statistic-chart">
+          <p-dropdown [options]="statisticPeriods" placeholder="Choose a type" [(ngModel)]="ticketsPeriod"
+                      (ngModelChange)="getTicketsStatistic($event)"></p-dropdown>
+          <p-chart type="line" [options]="ticketsOptions" *ngIf="tickets.datasets.length > 0" [data]="tickets"
+                   (onDataSelect)="selectData($event)"></p-chart>
+        </p-card>
+      </div>
+    </div>
+
+    <div class="ui-g-12 ui-md-6">
+
+    </div>
+
+  </div>
+
+  <ng-container *ngIf="securityService.hasRole(Role.STAKEHOLDER)">
+    <div class="row-title" >Popular Trades and Services</div>
+    <div class="row">
+      <div class="ui-g-12 ui-md-6">
+        <div class="ui-grid-row">
+          <p-card title="Top popular services requested by customers" class="statistic-chart">
+            <p-dropdown [options]="statisticPeriods" placeholder="Choose a type" [(ngModel)]="topServicePeriod"
+                        (ngModelChange)="getTopServicesStatistic($event)"></p-dropdown>
+            <p-chart #topServiceChart *ngIf="popularServices.datasets.length > 0" type="pie" [data]="popularServices"></p-chart>
+          </p-card>
+        </div>
+      </div>
+
+      <div class="ui-g-12 ui-md-6">
+        <div class="ui-grid-row">
+          <p-card title="Top popular services bought by companies"  class="statistic-chart">
+            <p-dropdown [options]="statisticPeriods" placeholder="Choose a type" [(ngModel)]="topServiceByProjectSoldPeriod"
+                        (ngModelChange)="getTopServicesByProjectSoldStatistic($event)"></p-dropdown>
+            <p-chart #topSoldServiceChart *ngIf="popularServicesByProjectSold.datasets.length > 0" type="pie" [data]="popularServicesByProjectSold"></p-chart>
+          </p-card>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="securityService.hasRole(Role.STAKEHOLDER)">
+    <div class="row-title" >Contractors</div>
+    <div class="row">
+      <div class="ui-g-12 ui-md-6">
+        <div class="ui-grid-row">
+          <p-card title="Top profitable Contractors" class="statistic-chart">
+            <p-dropdown [options]="statisticPeriods" placeholder="Choose a type" [(ngModel)]="topProfitableContractorsPeriod"
+                        (ngModelChange)="getContractorsProfitStatistics($event)"></p-dropdown>
+            <p-chart *ngIf="topProfitableContractors.datasets.length > 0" type="bar" [options]="topCompanyChartOptions" [data]="topProfitableContractors"></p-chart>
+          </p-card>
+        </div>
+      </div>
+
+      <div class="ui-g-12 ui-md-6">
+        <div class="ui-grid-row">
+          <p-card title="Top rated Contractors" class="statistic-chart">
+            <p-dropdown [options]="statisticPeriods" placeholder="Choose a type" [(ngModel)]="topRatedContractorsPeriod"
+                        (ngModelChange)="getContractorsRatingStatistics($event)"></p-dropdown>
+            <p-chart *ngIf="topRatedContractors.datasets.length > 0" type="bar" [options]="chartBarOptions" [data]="topRatedContractors"></p-chart>
+          </p-card>
+        </div>
+      </div>
+
+    </div>
+  </ng-container>
+
+
+</div>
+

@@ -1,0 +1,251 @@
+@import "../../scss/variables";
+@import "../../../../improver-mixins";
+
+:host {
+  display: block;
+  position: relative;
+  &.-show-errors {
+    &.ng-invalid:not(.ng-untouched), &.ng-invalid.-submitted, &.ng-invalid.ng-dirty {
+      .select-open, input, .select-label {
+        border-color: $red;
+      }
+    }
+  }
+}
+
+.select-open {
+  color: $black-400;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 16px;
+  border: 1px solid $black-300;
+  border-radius: 2px;
+  padding: 11px 16px;
+  padding-right: 35px;
+  margin: 0;
+  outline: none;
+  vertical-align: bottom;
+  max-width: 100%;
+  width: 100%;
+  transition: border-color .3s ease, color .3s ease;
+  .select-label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    &.-has-items {
+      color: $black-primary;
+    }
+  }
+  &.-tags {
+    padding: 0;
+    .select-label {
+      padding: 11px 16px;
+    }
+  }
+  &.-opened {
+    border-color: $primary-500;
+    .dropdown-icon {
+      &:after {
+        transform: rotate(180deg);
+      }
+    }
+  }
+  &.-default-autocomplete {
+    padding: 0;
+    bottom: 0;
+    border: none;
+  }
+}
+
+
+.tags-labels {
+  display: flex;
+  flex-direction: row;
+  padding: 9px 35px 0px 8px;
+  flex-wrap: wrap;
+  .tag {
+    background-color: $black-200;
+    padding:  4px 15px 4px 4px;
+    font-size: 13px;
+    color: $black-primary;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    border-radius: 1px;
+    margin-bottom: 9px;
+    span {
+      line-height: 12px;
+    }
+    i {
+      width: 15px;
+      height: 100%;
+      position: absolute;
+      display: block;
+      top: 0;
+      right: 0;
+      cursor: pointer;
+      background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAN1wAADdcBQiibeAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAADSSURBVEiJ7ZRdCoJAFIU/cgNKCqYtNmp1ZRT1YNlWKuyhMzCY6ZgWPfiBMD/3nANy78DIP+IBCyDsoAml8VyKV0AJHBxDItWW0rbiA5kEZyBpqE2AQrWZtE7YIQWQ1tSkn5obAmArg0slJNVZqZqgq3lTyHwoc0MM5DLMK+u4r7khAo4yLrWOXIQTx4A7cLP2V50NwhTY8/qLdrrrRcJzFkwrBvpMC5+A2VDmdp/bIW3D2Gq+oX6IfN11DrEndP3GvC6kcA3p89gtXQK+/lyP/JYHNI9Lhbv+Wx8AAAAASUVORK5CYII=');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 9px;
+      transition: opacity .3s ease;
+      &:hover {
+        opacity: .6;
+      }
+    }
+    &:not(:last-child) {
+      margin-right: 12px;
+    }
+  }
+}
+.dropdown-icon {
+  pointer-events: none;
+  height: 100%;
+  background-size: cover;
+  width: 32px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  &:after, &:before {
+    content: '';
+    display: inline-block;
+    vertical-align: middle;
+  }
+  &:before {
+    height: 100%;
+  }
+  &:after {
+    width: 16px;
+    height: 16px;
+    background-size: cover;
+    transition: transform .3s ease;
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAQAAAAAYLlVAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QAAKqNIzIAAAAJcEhZcwAADdcAAA3XAUIom3gAAAAHdElNRQfhCxcPDi170gp2AAAC5klEQVRo3u2W2VbaUBSG/51LtdOr2MGOy0USRKH3Poe1zigIiFPpc3hfsSInQW2tHWxfxdnLnF4o5ySamAGha3Xlv2Jz9tnfx0lYCRAnTpw4ceLEAdDoYcOdZrLhRg8AKECt26rSmjnSSbw5QmtWtdYN0Keurg30AwAf1T926Ne/owoAYOciTWydMs2FzigIPABeVVDBRbOkChttO35U4nGBCgEsQevoEl+OaR/ahzfeY1Xi+Vu9oQB6w8rIU8CqOdYuvDlmx1sZvQEoAJDctjI4b67wFTbeDjwb5yuiOLcyyW0AIGHXz6voFhIT+kqY4UHwtCzxlFF3Lj+SbHEqYFJbDjrcP8YEltzwV5fgMuoO0vJCYMmYvDP8pB2PtMQ7BABt16GwaE7dBd6cwqIdr+3aVxVns7bLh3DWrHiZTbeKZ9O8LIozPuTEO+4BseUNbaBHlFltITremEHJhk/rX653kNu2+mvl810oOPHWUPLrzR5y32q+4ps2hVmthNAxsihKPA2qe25divtmdY8GcSrKojkbFm/O2vCnXnhPAUDdg02BF9hcGDyb4wWJhyfe8xJcHeJLbOKeKPPafDC8kUPejte+effS7aPYC6rZFOa1PHxj5JGTeJ7S92/rVm4fpu/zFE5EmTN8BRz4Ez+87wkAQOO5VcN9saGg5rx7zXku75UTJZX47jc9gMB1BV7UPW5IViD5bwmEDygAmH18SyqgpLn8LY0ishJPA+qPIJMDCgBmH6/hgSgXtKxz3ShhRhTHlAqGDyEAGM+wJRWorEogzAUuH1vHGNB+Bp0aQsBbITo+pADAnlJdKvBFfRpgZZLvDcc8qf8KMzGkAMCe0hYeinIJgHxzOuID4fARBG4oyETARxIAGk+s+g2FIyWZOAg/K5KAi0JEvO+zwCuJA9JxKMpD0qPhI58AAJiPeR2PABxSUv0ddUoLAoDRCwZA1/60MqWlGL1G7z+Dx4kTJ06cOP9J/gJ5eg6U4uNL7wAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAxNy0xMS0yM1QxNToxNDo0NSswMTowMHZalUMAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMTctMTEtMjNUMTU6MTQ6NDUrMDE6MDAHBy3/AAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAAABJRU5ErkJggg==');
+    cursor: pointer;
+  }
+}
+
+.host {
+  display: block;
+  margin-top: -1px;
+  transform: scale(1, 0) translateZ(0);
+  transform-origin: 0 0;
+  background-color: $white;
+  &.-items-showed {
+    .items {
+      opacity: 1;
+    }
+  }
+  &.-closing {
+    transform: scale(1, 0) translateZ(0);
+    transition: transform 150ms ease;
+    .items {
+      opacity: 0;
+    }
+  }
+  &.-up {
+    transform-origin: 0 100%;
+    margin-top: 0;
+    .holder {
+      border-bottom: none;
+      &.-border {
+        border-top: 1px solid $primary-500;
+      }
+
+    }
+  }
+  &.-border {
+    .holder {
+      border: 1px solid $primary-500;
+    }
+  }
+  .cv-input {
+    border-right: 0;
+    border-left: 0;
+    border-radius: 0;
+  }
+}
+
+
+.holder {
+  max-height: 200px;
+  overflow-y: auto;
+  box-sizing: border-box;
+  width: 100%;
+  box-shadow: elevation(2);
+  border-top: none;
+  @include response(xs) {
+    max-height: 120px;
+  }
+}
+
+.items {
+  opacity: 0;
+  transition: opacity 150ms;
+  transition-delay: 30ms;
+}
+
+.item {
+  padding: 13px 16px;
+  color: $black-primary;
+  transition: background-color .3s ease, color .3s ease;
+  cursor: pointer;
+  &.-group-label {
+    background-color: $primary-100;
+    color: $black-secondary;
+    cursor: auto;
+  }
+  &.-group {
+    padding-left: 25px;
+    @include response(xs) {
+      padding-left: 16px;
+    }
+  }
+
+  @include response(xs) {
+    padding: 12px 16px;
+    font-size: 12px;
+  }
+
+  @include response(sm) {
+    font-size: 13px;
+  }
+
+  &.multiple {
+    padding: 0;
+  }
+  &:not(:first-child) {
+    border-top: 1px solid $black-100;
+  }
+  &.-choose {
+    background-color: $black-200;
+  }
+  &:not(.-group-label):hover, .selected {
+    background-color: $black-100;
+  }
+}
+
+cv-checkbox {
+  width: 100%;
+  padding: 13px 16px;
+  display: flex;
+  @include response(xs) {
+    padding: 12px 16px;
+  }
+}
+
+.no-results, .hint {
+  font-size: 14px;
+  padding: 13px 16px;
+  color: $black-primary;
+  display: block;
+  @include response(xs) {
+    padding: 12px 16px;
+    font-size: 12px;
+  }
+}
+
+.results-holder {
+  position: relative;
+  overflow: auto;
+  max-height: 146px;
+}

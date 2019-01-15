@@ -1,0 +1,48 @@
+<table class="list-wrapper" cellpadding="0" cellspacing="0">
+  <ng-template let-project let-last="last" ngFor [ngForOf]="list">
+    <tr class="item">
+      <td width="5%" class="item-icon" [routerLink]="['/pro/projects', project.id]">
+        <img cv-hint="Manual lead" *ngIf="project.manual" src="assets/img/dashboard-project-purchase.svg" alt="Purchase">
+        <img cv-hint="Subscription lead" *ngIf="!project.manual" src="assets/img/dashboard-project-subscription.svg" alt="Subscription">
+        <i class="notifications" *ngIf="project.unreadMessages > 0" title="{{unreadMessagesTittle(project.unreadMessages)}}">{{project.unreadMessages}}</i>
+      </td>
+      <td width="20%" class="item-name" [routerLink]="['/pro/projects', project.id]">
+        <span>{{project.customer.name}}</span>
+        <span class="xs-none md-none lg-none xlg-none">{{project.serviceType}}</span>
+      </td>
+      <td width="35%" class="item-service" [routerLink]="['/pro/projects', project.id]">
+        <span class="sm-none">{{project.serviceType}}</span>
+        <span class="xs-none md-none lg-none xlg-none">{{project.created | date}}</span>
+      </td>
+
+      <td width="20%" class="item-date" [routerLink]="['/pro/projects', project.id]">
+        <span class="sm-none">{{project.created | date}}</span>
+      </td>
+
+      <td width="10%" class="item-status" [routerLink]="['/pro/projects', project.id]">
+        <div class="status {{project.status | toclassname }}">{{project.status |
+          statustostring }}
+        </div>
+      </td>
+      <td width="10%" class="item-actions">
+        <mat-icon [matMenuTriggerFor]="menu">more_vert</mat-icon>
+        <mat-menu #menu="matMenu" class="dashboard-menu">
+          <button mat-menu-item [routerLink]="['/pro/projects', project.id]">View Lead</button>
+          <button mat-menu-item [routerLink]="['/pro/receipt/conn', project.id]">View Receipt</button>
+          <button mat-menu-item (click)="openRequestRefundDialog(project)" *ngIf="project.refundable">Request Refund
+          </button>
+          <button mat-menu-item (click)="openRefundStatusDialog(project)" *ngIf="project.refundRequested">Refund
+            Status
+          </button>
+          <button mat-menu-item (click)="projectActionService.leaveProject(project)" *ngIf="project.status == ProjectRequestStatus.ACTIVE
+           || project.status == ProjectRequestStatus.HIRED">Leave
+          </button>
+          <button mat-menu-item (click)="projectActionService.closeProject(project)" *ngIf="project.status == ProjectRequestStatus.DECLINED
+           || project.status == ProjectRequestStatus.INACTIVE">Close
+          </button>
+
+        </mat-menu>
+      </td>
+    </tr>
+  </ng-template>
+</table>

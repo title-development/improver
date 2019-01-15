@@ -1,0 +1,122 @@
+<div class="container -top-space">
+  <div class="page-navigation" *ngIf="project">
+    <a *ngIf="mediaQuery.xs || mediaQuery.sm" href="" routerLink="/pro/dashboard"><i class="imp-icon-arrow-left"></i></a>
+    <a *ngIf="mediaQuery.md || mediaQuery.lg || mediaQuery.xlg" href="" routerLink="/pro/dashboard"><i class="imp-icon-angle-left"></i>Back to the dashboard</a>
+    <h3 [title]="project?.serviceType">{{project?.serviceType}}</h3>
+    <div class="more-button-wrapper" *ngIf="project">
+      <mat-icon class="project-menu-button" [matMenuTriggerFor]="projectMenu">more_vert</mat-icon>
+      <mat-menu class="project-menu" tabindex="-1"  #projectMenu="matMenu" yPosition="below" xPosition="before">
+        <button mat-menu-item [routerLink]="['/pro/receipt/conn', project?.id]">View Receipt</button>
+        <button mat-menu-item (click)="openRequestRefundDialog(project)" *ngIf="project?.refundable">Request Refund</button>
+        <button mat-menu-item (click)="openRefundStatusDialog(project)" *ngIf="project?.refundRequested">Refund Status</button>
+        <button mat-menu-item (click)="projectActionService.leaveProject(project)" *ngIf="project.status == ProjectRequestStatus.ACTIVE
+           || project.status == ProjectRequestStatus.HIRED">Leave</button>
+        <button mat-menu-item (click)="projectActionService.closeProject(project)" *ngIf="project.status == ProjectRequestStatus.DECLINED
+           || project.status == ProjectRequestStatus.INACTIVE">Close</button>
+        <button mat-menu-item *ngIf="mediaQuery.xs || mediaQuery.sm"
+                (click)="toggleContractorInformation()">
+          <ng-container *ngIf="showContractorInformation == 'hide'">
+            Show Details
+          </ng-container>
+          <ng-container *ngIf="showContractorInformation == 'showed'">
+            Show Chat
+          </ng-container>
+        </button>
+      </mat-menu>
+    </div>
+  </div>
+  <div class="row" *ngIf="project">
+    <div class="col-xs-12 col-md-8">
+      <div class="conversation-wrapper">
+        <messenger class="bs-elevations-1"
+                   [projectStatus]="project.status"
+                   [projectRequestId]="project.id"
+                   [projectRequestStatus]="project.status"
+                   [customerName]="project.customer.name"
+                   [targetUserId]="project.customer.id" [targetUserIcon]="project.customer.iconUrl"
+                   (onProjectUpdate)="getProject()"
+                   contentClass="contractor-messenger-content ">
+        </messenger>
+      </div>
+    </div>
+    <div class="col-xs-12 col-md-4">
+      <div class="general-info card" [@slide]="showContractorInformation">
+        <div [cvSpinner]="!project" [cvSpinnerSize]="24">
+          <ng-container *ngIf="project">
+            <div class="customer-info-block">
+              <h3 class="xs-none sm-none">{{project.serviceType}}</h3>
+              <div class="person">
+                <div class="icon-wrapper"
+                     [ngStyle]="project.customer.iconUrl && project.customer.iconUrl != '' && {'background-image':'url(' + project.customer.iconUrl + ')'} || {'background-image':'url(/assets/img/customer-logo-placeholder.png)'}">
+                </div>
+                <div class="customer-name">{{project.customer.name}}</div>
+                <hr>
+              </div>
+              <div class="group">
+                <h4>Location:</h4>
+                <p>{{project.location.streetAddress}} <br>
+                  {{project.location.city}}, {{project.location.state}} {{project.location.zip}}</p>
+              </div>
+              <div class="group" *ngIf="project.customer.phone && project.customer.pin">
+                <h4>Phone:</h4>
+                <p>{{project.customer.phone}}</p>
+              </div>
+              <div class="group">
+                <h4>Created:</h4>
+                <p>{{project.created | date: 'MMM d, y, h:mm a'}}</p>
+              </div>
+              <hr>
+            </div>
+            <div class="customer-info-block" *ngIf="project?.images.length > 0">
+              <div class="row project-images">
+                <div class="swiper-container gallery">
+                  <div class="swiper-wrapper">
+                    <ng-container *ngFor="let image of project.images; let i = index">
+                      <ng-container *ngIf="maxPreviewImageCount < 0 || i < maxPreviewImageCount">
+                        <div class="swiper-slide">
+                          <div class="thumb" (click)="openGallery(i, project.images)" [ngStyle]="{'background-image': 'url('+image+')'}"></div>
+                        </div>
+                      </ng-container>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+              <a  *ngIf="!(mediaQuery.xs || mediaQuery.sm)" (click)="openGallery(0, project.images)">See all</a>
+              <hr>
+            </div>
+            <div class="customer-info-block">
+              <div class="group">
+                <h4>Start date:</h4>
+                <p>{{project.startDate}}</p>
+              </div>
+              <div class="group notes">
+                <h4>Notes:</h4>
+                <p #notes [ngClass]="{'left': isLeftAligned()}">{{project.notes| truncate:truncateNotes:'...'}}
+                  <span class="show-more-button" (click)="truncateNotes = 10000;"
+                        *ngIf="project.notes.length > 300 && truncateNotes == 300">Show more <i class="imp-icon-down-open"></i>
+              </span>
+                  <span class="show-more-button" (click)="truncateNotes = 300;"
+                        *ngIf="truncateNotes == 10000">Show less <i class="imp-icon-up-open"></i>
+              </span>
+                </p>
+              </div>
+              <ng-template ngFor let-detail [ngForOf]="project.details">
+                <div class="group">
+                  <h4>{{detail.name}}</h4>
+                  <p>
+                    <ng-template ngFor let-result let-last="last" [ngForOf]="detail.results">
+                      <span>{{result}}</span>
+                    </ng-template>
+                  </p>
+                </div>
+              </ng-template>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+

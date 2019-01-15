@@ -1,0 +1,29 @@
+.page-title {
+  margin-bottom: 24px;
+}
+
+.image {
+  width: 120px;
+  display: block;
+}
+
+.trade-edit, .trades-list {
+  .ui-grid-row {
+    &:not(:last-child) {
+      margin-bottom: 16px;
+    }
+  }
+}
+
+.footer {
+  border-top: 1px solid #d6d6d6;
+  margin-top: 16px;
+  padding-top: 16px;
+  display: flex;
+}
+
+p-message::ng-deep {
+  .ui-message {
+    margin-top: 5px;
+  }
+}

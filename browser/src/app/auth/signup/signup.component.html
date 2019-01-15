@@ -1,0 +1,227 @@
+<div class="auth-wrapper" [ngClass]="{'-sign' : (step == 1)}">
+  <div class="auth-container">
+    <div class="left-bar">
+      <div class="left-bar-container">
+        <div class="copyright-line">© 2018 Home Improve, Inc</div>
+      </div>
+    </div>
+
+    <div class="main-block">
+      <div class="header"></div>
+      <div *ngIf="step == 1" class="container">
+        <form class="auth-form"
+              name="signup-form"
+              #signupForm="ngForm"
+              (ngSubmit)="signupForm.valid && onSubmit(signupForm)"
+              novalidate
+              [cvSpinner]="registrationProcessing"
+              [cvSpinnerSize]="30"
+              [cvSpinnerBackground]="true"
+              cvSpinnerBackgroundColor="#fafafa">
+
+          <div class="auth-form-title">Sign up to hire Professionals</div>
+
+          <cv-input-field>
+            <input cv-input type="text"
+                   placeholder="Email"
+                   #email="ngModel"
+                   name="email"
+                   [(ngModel)]="model.email"
+                   required
+                   trim
+                   pattern="{{constants.patterns.email}}"
+                   emailUniqueValidator>
+            <cv-field-error *ngIf="email.dirty || email.touched || signupForm.submitted">
+               <span *ngIf="email.errors?.required">
+                {{messages.errors.email.required}}
+              </span>
+
+              <span *ngIf="email.errors?.pattern">
+                {{messages.errors.email.pattern}}
+              </span>
+
+              <span *ngIf="email.errors?.emailUnique">
+                {{messages.errors.email.emailUnique}}
+              </span>
+            </cv-field-error>
+          </cv-input-field>
+
+          <cv-input-field>
+            <!--TODO: add custom maxlength validator with error message?-->
+            <input cv-input placeholder="Password (at least 8 symbols)"
+                   #password="ngModel"
+                   name="password"
+                   type="password"
+                   [(ngModel)]="model.password"
+                   validateEqual="confirmPassword"
+                   validationEqualReverse="true"
+                   required
+                   minlength="8"
+                   maxlength="32"
+                   pattern="{{constants.patterns.password}}">
+            <cv-field-error *ngIf="password.dirty || password.touched || signupForm.submitted">
+               <span *ngIf="password.errors?.required">
+               {{messages.errors.password.required}}
+              </span>
+              <span *ngIf="password.errors?.minlength">
+                {{messages.errors.password.minlength}}
+              </span>
+              <span *ngIf="password.errors?.pattern && !password.errors?.minlength">
+                {{messages.errors.password.pattern}}
+              </span>
+            </cv-field-error>
+          </cv-input-field>
+
+          <cv-input-field>
+            <input cv-input placeholder="Confirm password"
+                   #confirmPassword="ngModel"
+                   name="confirmPassword"
+                   type="password"
+                   [(ngModel)]="model.confirmPassword"
+                   validateEqual="password"
+                   validationEqualReverse="false"
+                   required>
+            <cv-field-error *ngIf="confirmPassword.dirty || confirmPassword.touched || signupForm.submitted">
+               <span *ngIf="confirmPassword.errors?.required">
+                {{messages.errors.passwordConfirm.required}}
+              </span>
+              <span
+                *ngIf="confirmPassword.errors?.validateEqual && !confirmPassword.errors?.required">
+                {{messages.errors.passwordConfirm.validateEqual}}
+              </span>
+            </cv-field-error>
+          </cv-input-field>
+
+          <cv-input-field>
+            <input cv-input placeholder="First name"
+                   #firstName="ngModel"
+                   name="firstName"
+                   type="text"
+                   trim
+                   [(ngModel)]="model.firstName"
+                   minlength="2"
+                   required>
+            <cv-field-error *ngIf="firstName.dirty || firstName.touched || signupForm.submitted">
+               <span *ngIf="firstName.errors?.required">
+                {{messages.errors.firstName.required}}
+              </span>
+              <span *ngIf="firstName.errors?.minlength">
+                At least 2 letters required
+              </span>
+            </cv-field-error>
+          </cv-input-field>
+
+          <cv-input-field>
+            <input cv-input placeholder="Last name"
+                   #lastName="ngModel"
+                   name="lastName"
+                   type="text"
+                   [(ngModel)]="model.lastName"
+                   minlength="2"
+                   trim
+                   required>
+            <cv-field-error *ngIf="lastName.dirty || lastName.touched || signupForm.submitted">
+               <span *ngIf="lastName.errors?.required">
+                {{messages.errors.lastName.required}}
+              </span>
+              <span *ngIf="lastName.errors?.minlength">
+                At least 2 letters required
+              </span>
+            </cv-field-error>
+          </cv-input-field>
+
+          <response-message *ngIf="showMessage" [type]="messageType" [message]="messageText"
+                            [paddingV]="12" [paddingH]="16"
+                            [showIcon]="false" (onHide)="onMessageHide($event)"></response-message>
+
+          <button cv-button class="full-width auth-form-submit-button" type="submit">
+            Sign up
+          </button>
+
+          <div class="auth-social-hint">
+            <span>or</span>
+          </div>
+
+          <div class="social-buttons">
+            <button type="button" cv-button class="facebook-auth" (click)="!googleFetching && socialLogin('facebook')">
+              <cv-icon [icon]="'imp-icon-social-facebook'"></cv-icon>
+              Facebook
+            </button>
+
+            <button type="button" cv-button class="google-auth" (click)="!facebookFetching && socialLogin('google')">
+              <cv-icon [icon]="'imp-icon-social-google'"></cv-icon>
+              Google
+            </button>
+          </div>
+
+          <div class="have-account-line">
+            <div class="question">Already have an account?</div>
+            <a class="no-account-button" routerLink="/login">Log in</a>
+          </div>
+
+        </form>
+      </div>
+
+      <div *ngIf="step == 2" class="content">
+        <div class="success-card">
+
+          <div class="top-block">
+
+            <img class="image-wrapper" src="/assets/img/round-icons/confirmation-envelope.png">
+            <div class="title">You’ve been successfully registered!</div>
+            <div class="explanation">A confirmation link has been sent to your email <span class="registered-email">{{model.email}}</span>
+              Open it and follow instructions to finish registration.
+            </div>
+            <div class="resend-confirm-block">Didn't receive a confirmation email?
+              <button class="resend-confirm-button" (click)="resendConfirmation()">Resend</button>
+            </div>
+
+          </div>
+
+          <div class="bottom-block">
+            <div class="change-email-explanation">Entered the wrong email address? Change it here</div>
+            <div class="change-email-input-wrapper">
+              <cv-input-field>
+                <cv-icon icon="imp-icon-at"></cv-icon>
+                <input cv-input type="email" placeholder="Correct email"
+                       #correctEmail="ngModel"
+                       name="correctEmail"
+                       [(ngModel)]="correctEmailModel.correctEmail"
+                       required
+                       pattern="{{constants.patterns.email}}"
+                       emailUniqueValidator>
+                <cv-field-error *ngIf="correctEmail.dirty || correctEmail.touched">
+                  <span *ngIf="correctEmail.errors?.required">
+                    {{messages.errors.email.required}}
+                  </span>
+                  <span *ngIf="correctEmail.errors?.pattern">
+                  {{messages.errors.email.pattern}}
+                  </span>
+                  <span *ngIf="correctEmail.errors?.emailUnique">
+                    {{messages.errors.email.emailUnique}}
+                  </span>
+                </cv-field-error>>
+                <button cv-button (click)="correctEmail.valid && changeConfirmationEmail()">Send</button>
+              </cv-input-field>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="footer">
+        <div class="footer-content">
+          <a class="footer-link" href="/privacy-policy" target="_blank">Privacy Policy</a>
+          <a class="footer-link" href="/terms-of-use" target="_blank">Terms of Use</a>
+        </div>
+
+
+        <div class="copyright md-none lg-none xlg-none">
+          <div class="copyright-line">© 2018 Home Improve, Inc</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+

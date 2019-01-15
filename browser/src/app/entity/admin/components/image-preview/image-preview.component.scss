@@ -1,0 +1,26 @@
+input[type=file] {
+  display: none;
+}
+.preview {
+  background-size: cover;
+  position: relative;
+  &:hover {
+
+  }
+}
+.actions {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  .ui-button {
+    width: 25px;
+    font-size: 12px;
+    min-height: 25px;
+    margin: 0;
+  }
+}
+
+.ui-button {
+  width: 115px;
+}

@@ -1,0 +1,76 @@
+:host {
+  overflow: hidden;
+}
+
+.response-message {
+  border-radius: 3px;
+  overflow: hidden;
+  //font-size: 14px;
+  text-align: left;
+  background-color: #d0ecfd;
+  color: #23a2f5;
+  margin-top: 10px;
+
+  .text {
+  }
+
+  .icon {
+    position: absolute;
+    left: 24px;
+    flex-direction: row;
+    box-sizing: border-box;
+    display: flex;
+    max-height: 100%;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+  }
+
+  &.success {
+    background-color: #e5f4dc;
+    color: #7ecc54;
+  }
+
+  &.info {
+    background-color: #d0ecfd;
+    color: #23a2f5;
+  }
+
+  &.warn {
+    background-color: #fff1db;
+    color: #fdba50;
+  }
+
+  &.error {
+    background-color: #fae1e2;
+    color: #e13c3b;
+  }
+
+  .wrapper {
+    flex-direction: row;
+    box-sizing: border-box;
+    display: flex;
+    max-height: 100%;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    padding-right: 24px;
+  }
+
+  .close-button-wrapper {
+    cursor: pointer;
+    position: absolute;
+    flex-direction: row;
+    box-sizing: border-box;
+    display: flex;
+    max-height: 100%;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    right: 0px;
+  }
+
+
+
+}

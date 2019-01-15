@@ -1,0 +1,162 @@
+<div class="panel-header">
+  <div class="panel-title">Invitations</div>
+  <div class="table-header-buttons">
+    <button pButton (click)="displayInviteDialog = true" icon="fa fa-plus" label="Invite" class="ui-button-success"
+            *ngIf="securityService.hasRole(Role.ADMIN)"></button>
+    <button pButton (click)="refresh(dt)" icon="pi pi-refresh" label="&nbsp;&nbsp;Refresh"></button>
+  </div>
+
+</div>
+
+<p-dataTable #dt [value]="invitationsPage?.content"
+             sortMode="single"
+             selectionMode="single"
+             [lazy]="true"
+             [loading]="fetching"
+             sortField="created" sortOrder="1"
+             [rows]="rowsPerPage[0]" [totalRecords]="invitationsPage.totalElements"
+             [rowsPerPageOptions]="rowsPerPage"
+             (onLazyLoad)="loadLazy($event, getInvitations)"
+             [paginator]="true"
+             (onContextMenuSelect)="selectInvitation($event)"
+             [contextMenu]="securityService.getRole() == Role.ADMIN && cm"
+             [filters]="filters"
+             [responsive]="true">
+  <p-header>
+    <div style="text-align:left">
+      <p-multiSelect [panelStyle]="{minWidth:'270px'}" [options]="tableColumns"
+                     [(ngModel)]="selectedTableCols"></p-multiSelect>
+    </div>
+  </p-header>
+  <p-column field="id" header="ID" [sortable]="true" [filter]="true" *ngIf="selectedTableCols.includes('id')">
+    <ng-template pTemplate="filter" let-col>
+      <input pInputText type="text" pKeyFilter="pint" [ngModel]="filters?.id?.value" [style]="{'width':'100%'}"
+             (input)="dt.filter($event.target.value,col.field,col.filterMatchMode)">
+    </ng-template>
+    <ng-template let-col let-data="rowData" pTemplate="body">
+      <span class="word-break">{{data[col.field]}}</span>
+    </ng-template>
+  </p-column>
+  <p-column field="email" header="Email" [sortable]="true" *ngIf="selectedTableCols.includes('email')">
+    <ng-template pTemplate="filter" let-col>
+      <input pInputText type="text" pKeyFilter="email" [ngModel]="filters?.email?.value" [style]="{'width':'100%'}"
+             (input)="dt.filter($event.target.value,col.field,col.filterMatchMode)">
+    </ng-template>
+    <ng-template let-col let-data="rowData" pTemplate="body">
+      <span class="word-break">{{data[col.field]}}</span>
+    </ng-template>
+  </p-column>
+  <p-column field="bonus" header="Bonus ({{bonusFilter[0]}} - {{bonusFilter[1]}}), cents" [sortable]="true" [filter]="true">
+    <ng-template pTemplate="filter" let-col>
+      <i class="pi pi-close" (click)="clearBonusFilter(col, dt)"></i>
+      <p-slider [style]="{'width':'100%','margin-top':'8px'}" [(ngModel)]="bonusFilter" [min]="minBonusValue"
+                [max]="maxBonusValue" [step]="1" [range]="true"
+                (onChange)="onBonusFilterChange($event, dt, col)"></p-slider>
+    </ng-template>
+  </p-column>
+  <p-column field="description" header="Description" [sortable]="true"
+            *ngIf="selectedTableCols.includes('description')">
+    <ng-template let-col let-data="rowData" pTemplate="body">
+      <span class="word-break">{{data[col.field]}}</span>
+    </ng-template>
+  </p-column>
+  <p-column field="created" header="Created" [sortable]="true" *ngIf="selectedTableCols.includes('created')">
+    <ng-template let-col let-data="rowData" pTemplate="body">
+      {{data[col.field] | date: 'MMM d, y, h:mm a'}}
+    </ng-template>
+  </p-column>
+  <p-column field="activated" header="Activated" [sortable]="true" *ngIf="selectedTableCols.includes('created')">
+    <ng-template let-col let-data="rowData" pTemplate="body">
+      {{data[col.field] | date: 'MMM d, y, h:mm a'}}
+    </ng-template>
+  </p-column>
+</p-dataTable>
+
+<p-dialog header="Invite Contractor" [(visible)]="displayInviteDialog" [responsive]="true" showEffect="fade"
+          [width]="700" [modal]="true" [contentStyle]="{'overflow':'visible'}" (onHide)="closeDialog(form)">
+  <form #form="ngForm" (ngSubmit)="form.valid && postInvitation(form)" class="add-invitation-from">
+    <div class="ui-grid ui-grid-responsive ui-fluid">
+
+      <div class="ui-grid-row ui-grid-field">
+        <div class="ui-grid-col-4"><label>Email of Contractor</label></div>
+        <div class="ui-grid-col-8">
+          <div class="ui-inputgroup">
+            <input required
+                   type="text"
+                   placeholder="Email"
+                   [(ngModel)]="invitation.email"
+                   pInputText
+                   emailUniqueValidator
+                   name="email"
+                   #email="ngModel"
+                   pattern="{{constants.patterns.email}}">
+          </div>
+        </div>
+      </div>
+
+      <div class="ui-grid-row ui-grid-field">
+        <div class="ui-grid-col-4"></div>
+        <div class="ui-grid-col-8">
+          <div class="ui-message ui-messages-error ui-corner-all"
+               *ngIf="(email.dirty || email.touched || form.submitted) && !email.valid && email.errors">
+            <span *ngIf="email.errors?.required">Required</span>
+            <span *ngIf="email.errors?.pattern">Not valid</span>
+            <span *ngIf="email.errors?.emailUnique">User is already exist</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="ui-grid-row ui-grid-field">
+        <div class="ui-grid-col-4"><label for="bonus">Initial bonus</label></div>
+        <div class="ui-grid-col-8">
+          <div class="ui-inputgroup">
+            <span class="ui-inputgroup-addon">$</span>
+            <input pInputText type="number" id="bonus" name="bonus" #bonus="ngModel" [(ngModel)]="invitation.bonus"
+                   maxlength="3" pKeyFilter="pnum" [min]="minBonusValue / 100" [max]="maxBonusValue / 100" required/>
+            <span class="ui-inputgroup-addon">.00</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="ui-grid-row ui-grid-field">
+        <div class="ui-grid-col-4"></div>
+        <div class="ui-grid-col-8">
+          <div class="ui-message ui-messages-error ui-corner-all"
+               *ngIf="(bonus.dirty || bonus.touched || form.submitted) && !bonus.valid && bonus.errors">
+            <span *ngIf="bonus.errors?.required">Required</span>
+            <span *ngIf="bonus.errors?.min || bonus.errors?.max">{{minBonusValue / 100}} - {{maxBonusValue / 100}}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="ui-grid-row ui-grid-field">
+        <div class="ui-grid-col-4"><label>Description</label></div>
+        <div class="ui-grid-col-8">
+          <div class="ui-inputgroup">
+          <textarea id="description"
+                    type="text"
+                    placeholder="Description"
+                    [(ngModel)]="invitation.description"
+                    pInputTextarea
+                    name="description"
+                    #description="ngModel"
+                    maxlength="500"
+                    rows="4">
+          </textarea>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button type="submit" pButton icon="pi pi-check" label="Submit"
+                class="ui-button-success"></button>
+      </div>
+    </p-footer>
+
+  </form>
+</p-dialog>
+
+<p-contextMenu #cm [model]="contextMenuItems"></p-contextMenu>

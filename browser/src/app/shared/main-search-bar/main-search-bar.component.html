@@ -1,0 +1,39 @@
+<form class="main-search-form" [formGroup]="mainSearchFormGroup" (ngSubmit)="searchServiceType(mainSearchFormGroup)">
+  <div class="service-type-form-group">
+    <cv-select class="main-search-service-input"
+               [highlightErrors]="false"
+               label="Pipe, carpet, paint, etc."
+               [formControl]="serviceTypeCtrl"
+               [items]="filteredServiceTypes"
+               [disableItemsMatch]="true"
+               [autocomplete]="true"
+               [propagateEnterEvent]="true"
+               labelKey="name"
+               valueKey="name"
+               [dropdownBorder]="false"
+               [trackBy]="selectTrackBy"
+               (autocompleteSearch)="autocompleteSearch($event)"></cv-select>
+    <div class="error-holder" *ngIf="mainSearchFormGroup.get('serviceTypeCtrl').dirty || mainSearchFormGroup.get('serviceTypeCtrl').touched">
+      <div *ngIf="mainSearchFormGroup.get('serviceTypeCtrl').errors?.required">
+        Please tell us what do you need.
+      </div>
+    </div>
+
+  </div>
+  <div class="zip-code-form-group">
+    <input [formControlName]="'zipCodeCtrl'" numericMask class="main-search-zip-input" type="text" placeholder="Zip code" maxlength="5">
+    <div class="error-holder" *ngIf="mainSearchFormGroup.get('zipCodeCtrl').dirty || mainSearchFormGroup.get('zipCodeCtrl').touched">
+      <div *ngIf="mainSearchFormGroup.get('zipCodeCtrl').errors?.required">
+        Zip code is required
+      </div>
+      <div *ngIf="mainSearchFormGroup.get('zipCodeCtrl').errors?.pattern">
+        Please enter a valid ZIP code
+      </div>
+    </div>
+
+  </div>
+  <div class="submit-button-form-group">
+    <button type="submit">GET STARTED</button>
+  </div>
+
+</form>

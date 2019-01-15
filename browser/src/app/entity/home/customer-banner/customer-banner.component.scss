@@ -1,0 +1,145 @@
+@import "../../../../improver-mixins.scss";
+
+:host {
+  width: 100%;
+}
+
+.customer-banner-wrapper {
+  height: 437px;
+  width: 100%;
+  background: url(../../../../assets/img/customer-banner.jpg) no-repeat center center;
+  background-size: cover;
+
+  @include response-to(sm) {
+    height: auto;
+  }
+}
+
+.customer-banner-container {
+  background-color: rgba(0, 0, 0, 0.4);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .customer-banner-content {
+    font-weight: 500;
+    padding: 0 15px;
+    color: $white;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 1200px;
+
+
+    @include response-to(sm) {
+      width: 100%;
+      margin-top: 40px;
+      margin-bottom: 40px;
+    }
+
+    .main-header {
+      font-size: 36px;
+      line-height: 1.33;
+      width: 700px;
+      margin-bottom: 24px;
+
+      @include response-to(md) {
+        font-size: 30px;
+      }
+
+      @include response-to(sm) {
+        width: 100%;
+        font-size: 23px;
+      }
+
+      @include response(xs){
+        font-size: 18px;
+      }
+    }
+
+    .secondary-header {
+      font-size: 16px;
+      line-height: 1.5;
+      width: 535px;
+
+      @include response-to(sm) {
+        width: 100%;
+        font-size: 14px;
+      }
+    }
+
+    .buttons-block {
+      margin-top: 24px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+
+      @include response(xs) {
+        flex-direction: column;
+        align-items: center;
+      }
+
+
+      .learn-more-button {
+        width: 128px;
+        height: 49px;
+        cursor: pointer;
+        border: solid 2px $white;
+        font-size: 14px;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        @include response(xs) {
+          margin-bottom: 30px;
+        }
+
+        &:hover {
+          background-color: $white;
+          border: solid 2px $white;
+          color: #333333;
+        }
+
+        &:active {
+          background-color: #f1f1f1;
+          border: solid 2px #f1f1f1;
+          color: #333333;
+        }
+
+      }
+
+      .buttons-separator {
+        margin-left: 24px;
+
+        @include response(xs) {
+          margin-bottom: 30px;
+          margin-left: 0;
+        }
+      }
+
+      .connect-with-us-button {
+        color: $white;
+        cursor: pointer;
+        font-size: 14px;
+        margin-left: 24px;
+
+        @include response(xs) {
+          margin-left: 0;
+        }
+
+
+        &:hover {
+          text-decoration: underline;
+        }
+
+      }
+
+    }
+
+  }
+
+}

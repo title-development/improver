@@ -1,0 +1,17 @@
+<h3>{{reviewsTitle}}</h3>
+<div class="reviews-wrapper" *ngIf="!reviewsLoading && reviews.length > 0">
+
+  <ng-template ngFor [ngForOf]="reviews" let-review let-i="index" [ngForTrackBy]="trackById">
+    <company-review-item [review]="review" *ngIf="review.published || editMode || review.customer.id === securityService.getLoginModel().id"></company-review-item>
+  </ng-template>
+  <div class="review-more" *ngIf="!reviewsLoading && !reviewsPage.last">
+    <button class="show-more-button" size="small" (click)="showMoreReviews()" >Show more</button>
+  </div>
+
+  <div class="review-spinner">
+    <i class="imp-icon-loading-spinner animate-spin" *ngIf="reviewsLoading"></i>
+  </div>
+
+</div>
+
+<div class="no-data" *ngIf="!reviewsLoading && reviews.length == 0">Not reviewed yet</div>

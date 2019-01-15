@@ -1,0 +1,63 @@
+@import "../../scss/variables";
+
+:host {
+  display: flex;
+  cursor: pointer;
+  &:not(:last-child) {
+    margin-right: 8px;
+  }
+  &.-checked {
+    .radio-circle {
+      border-color: $primary-500;
+      &:after {
+        background-color: $primary-500;
+      }
+    }
+  }
+  &.-disabled {
+    cursor: not-allowed;
+    .radio-circle {
+      border-color: $black-400;
+      &:after {
+        background-color: $black-100;
+      }
+    }
+  }
+  &:not(.-disabled):hover {
+    .radio-circle {
+      border-color: $primary-500;
+    }
+  }
+}
+
+input[type=radio] {
+  display: none;
+}
+
+.radio-circle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid $black-400;
+  background-color: $white;
+  display: inline-flex;
+  transition: border-color .3s ease;
+  &:after {
+    content: '';
+    display: block;
+    width: 12px;
+    height: 12px;
+    background-color: transparent;
+    transition: background-color .3s ease;
+    border-radius: 50%;
+    margin-top: 3px;
+    margin-left: 3px;
+  }
+}
+
+.radio-label {
+  font-weight: 500;
+  color: $black-primary;
+  font-size: 15px;
+  flex:1;
+}

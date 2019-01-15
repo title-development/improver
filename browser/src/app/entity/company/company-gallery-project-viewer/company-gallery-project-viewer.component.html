@@ -1,0 +1,94 @@
+<div class="company-gallery-project-viewer-wrapper">
+
+  <div class="container" *ngIf="galleryProject">
+
+    <div class="top-line">{{galleryProject.name}}</div>
+
+    <div class="card header-card" *ngIf="companyProfile" [routerLink]="['/companies', companyId]">
+      <div class="container">
+        <div class="row">
+          <div class="logo"
+           [ngStyle]="companyProfile.iconUrl && companyProfile.iconUrl != ''
+                      && {'background-image':'url(' + companyProfile.iconUrl + ')'}
+                      || {'background-image':'url(https://via.placeholder.com/64x64'}">
+          </div>
+          <div class="main-block">
+            <div class="company-name">{{companyProfile.name}}</div>
+            <div class="company-rating">
+              <rating-component starSize="24" [rating]="companyProfile.rating"></rating-component>
+              <div class="reviews-count">({{companyProfile.reviewCount}})</div>
+            </div>
+          </div>
+          <!--TODO: Temporary hide before MVP-->
+          <div class="request-button-wrapper">
+          <!--<button cv-button (click)="requestQuote()">Request quote</button>-->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card photos-card" *ngIf="galleryProject.coverUrl">
+      <div class="container">
+        <div class="row">
+          <div *ngIf="galleryProject.coverUrl && galleryProject.coverUrl != ''" class="project-main-photo col-xs-12" [ngStyle]="galleryProject.coverUrl != '' && {'background-image':'url(' + galleryProject.coverUrl + ')'}" (click)="openGallery(0)"></div>
+          <div class="project-photos-wrapper container">
+            <div class="row">
+              <ng-template ngFor [ngForOf]="projectImages | tail" let-image let-index="index">
+                <div class="col-xs-2 project-image-wrapper">
+                  <div class="project-image"  [ngStyle]="{'background-image':'url(' + image + ')'}" (click)="openGallery(index + 1)"></div>
+                </div>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card about-card">
+        <div class="about-header">
+            <div class="title">About the project</div>
+            <div class="about-header-content">
+              <div class="info-group">
+                <div class="label">Location:</div>
+                <div class="value">
+                  <span *ngIf="galleryProject.location.city != ''">{{galleryProject.location.city}}, </span>
+                  <span *ngIf="galleryProject.location.state != ''">{{galleryProject.location.state}} </span>
+                  <span *ngIf="galleryProject.location.zip != ''">{{galleryProject.location.zip}}</span>
+                  <span *ngIf="galleryProject.location.city == '' && galleryProject.location.state == '' && galleryProject.location.zip == ''" class="unknown" >none</span>
+                </div>
+              </div>
+              <div class="info-group">
+                <div class="label">Date:</div>
+                <div class="value">{{galleryProject.date | date:'MMM y'}}</div>
+              </div>
+              <div class="info-group">
+                <div class="label">Cost:</div>
+                <div class="value">
+                  <span *ngIf="galleryProject.price > 0">{{galleryProject.price | currency:'USD':'symbol'}}</span>
+                  <span *ngIf="galleryProject.price == 0" class="unknown">none</span>
+                </div>
+              </div>
+            </div>
+        </div>
+        <div class="about-body">
+          <div class="sub-title">About</div>
+          <div class="project-description">
+            {{galleryProject.description}}
+          </div>
+          <div class="services-list" *ngIf="galleryProject.serviceTypes.length > 0">
+            <div class="sub-title">Services</div>
+            <ng-template ngFor let-service [ngForOf]="galleryProject.serviceTypes">
+              <div class="project-service-type">{{service}}</div>
+            </ng-template>
+          </div>
+        </div>
+    </div>
+
+    <div class="reviews-wrapper" *ngIf="companyProfile">
+      <company-reviews [companyProfile]="companyProfile"></company-reviews>
+    </div>
+
+  </div>
+
+</div>
+

@@ -1,0 +1,230 @@
+@import "../../../../../improver-mixins.scss";
+
+:host {
+  display: flex;
+  height: 100%;
+  position: relative;
+  min-height: 110px;
+
+  @include response(sm){
+    min-height: 117px;
+  }
+}
+
+.not-subscribed {
+  background-image: linear-gradient(111deg, $primary-400, $primary-500 21%, $primary-500);
+  padding: 16px;
+  width: 100%;
+  height: 100%;
+
+  @include response(sm){
+    height: auto;
+  }
+
+  h3 {
+    font-size: 16px;
+    color: $white;
+    font-weight: 600;
+    margin: 0;
+  }
+  p {
+    font-size: 12px;
+    line-height: 16px;
+    color: $black-150;
+    margin-top: 3px;
+    margin-bottom: 11px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  button {
+    color: $primary-500;
+    background-color: $white;
+    font-weight: 400;
+    font-size: 14px;
+    text-align: center;
+  }
+  .gradient {
+    height: 100%;
+    width: 0;
+    padding-left: 49%;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .circle {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 246px;
+    height: 246px;
+    &:after {
+      content: '';
+      opacity: 0.06;
+      background-color: $white;
+      box-shadow: 0 2px 4px 0 rgba(255, 132, 0, 0.17);
+      border-radius: 50%;
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+    &.-offset {
+      left: 32px;
+      top: 32px;
+      width: calc(100% - 64px);
+      height: calc(100% - 64px);
+    }
+    &.-second {
+      &:after {
+        opacity: .12;
+      }
+    }
+    &.-third {
+      &:after {
+        opacity: .2;
+      }
+    }
+    &.-four {
+      &:after {
+        opacity: .32;
+      }
+    }
+  }
+}
+
+.subscribed {
+  width: 100%;
+  .labels {
+    display: flex;
+    padding: 16px 16px 0 16px;
+    align-items: flex-end;
+    justify-content: space-between;
+    .label {
+      color: #757575;
+      transition: color .3s ease, transform .3s ease;
+      font-size: 16px;
+      &:last-child {
+        font-size: 12px;
+        color: $black-500;
+      }
+    }
+  }
+
+  .progress-holder {
+    padding: 0 16px;
+    margin-top: 12px;
+    margin-bottom: 22px;
+  }
+  .progress-background {
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.08);
+    background-color: $black-150;
+    border-radius: 4px;
+    height: 8px;
+    position: relative;
+  }
+
+  .progress {
+    height: 100%;
+    background-image: linear-gradient(to left, $primary-500, $primary-600);
+    border-radius: 4px;
+    max-width: 100%;
+  }
+
+  .amount-holder {
+    display: flex;
+    align-items: baseline;
+    padding: 0 16px;
+    margin-top: 7px;
+    .amount {
+      span {
+        color: $black-primary;
+        vertical-align: baseline;
+        &:first-child {
+          font-weight: 500;
+          font-size: 24px;
+        }
+        &:last-child {
+          font-size: 12px;
+        }
+      }
+    }
+    .deals {
+      color: $black-secondary;
+      font-size: 12px;
+      margin-left: 12px;
+    }
+  }
+
+}
+
+cv-field-hint {
+  top: 8px;
+  right: 8px;
+  padding: 2px 0px 0 1px;
+  text-align: center;
+  display: block;
+}
+
+.tooltip {
+  color: $black-primary;
+  font-size: 12px;
+  line-height: 16px;
+  border-radius: 2px;
+  background-color: $white;
+  box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.23);
+  padding: 7px 12px;
+  position: absolute;
+  bottom: 13px;
+  display: none;
+  transform: translateX(-50%);
+  &.show {
+    display: block;
+  }
+  &:after {
+    width: 0;
+    bottom: -3px;
+    position: absolute;
+    content: '';
+    left: 50%;
+    margin-left: -3px;
+    height: 0;
+    border-style: solid;
+    border-width: 3px 3px 0 3px;
+    border-color: $white transparent transparent transparent;
+  }
+}
+
+.subscribing {
+  padding:  16px;
+  form {
+    width: 100%;
+    display: flex;
+  }
+  cv-input-field {
+    cv-icon {
+      width: 32px;
+      font-size: 14px;
+      line-height: 16px;
+      color: $black-primary;
+    }
+  }
+  p {
+    font-size: 14px;
+    margin: 0;
+    margin-bottom: 8px;
+  }
+  .cv-input {
+    max-width: 100px;
+    padding-left: 30px;
+  }
+  cv-field-error {
+    span {
+      display: block;
+    }
+  }
+}

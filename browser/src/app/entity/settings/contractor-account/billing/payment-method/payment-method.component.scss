@@ -1,0 +1,175 @@
+@import "../../../../../../improver-mixins.scss";
+
+.payment-method-wrapper {
+}
+
+.payment-method-container {
+  .balance-part {
+    padding: 24px 24px;
+    border-bottom: 1px solid $black-200;
+    @include response(xs) {
+      padding: 24px 9px;
+    }
+
+    .content {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      @include response(xs) {
+        align-items: center;
+        justify-content: space-between;
+
+      }
+      .balance-value {
+        font-size: 16px;
+        color: $black-primary;
+        font-weight: 500;
+        @include response(xs) {
+          margin-bottom: 8px;
+          width: 110px;
+        }
+        span {
+          font-size: 24px;
+          margin-left: 15px;
+          @include response(xs) {
+            font-size: 20px;
+            margin-left: 0;
+          }
+        }
+      }
+
+      .add-money-button {
+        background-image: linear-gradient(to top, #0092ff, #52b4fe);
+        padding: 9px 20px;
+        cursor: pointer;
+        font-size: 14px;
+        color: $white;
+        border-radius: 2px;
+      }
+
+    }
+
+  }
+
+  .payment-method-part {
+    padding: 24px 24px;
+
+    @include response(xs) {
+      padding: 24px 9px;
+    }
+
+    @include response-to(xs) {
+      min-height: inherit;
+    }
+
+    .header {
+      font-size: 18px;
+      color: rgba(33, 33, 33, 0.87);
+      margin-bottom: 8px;
+
+      .no-cards-row {
+        color: $black-secondary;
+      }
+
+    }
+
+    .content {
+
+      .card-line {
+        border-bottom: 1px solid $black-200;
+
+        &:not(.default) {
+          color: $black-500;
+          .card-image {
+            opacity: .5;
+          }
+
+        }
+
+        .card-wrapper {
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+
+          @include response-to(xs) {
+            font-size: 13px;
+          }
+
+          .left-side {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+
+            .card-image {
+              width: 27px;
+              height: 19px;
+              margin-right: 16px;
+              background-position: center center;
+              background-size: contain;
+              background-repeat: no-repeat;
+            }
+            .card-line-title {
+              padding: 8px 0px;
+              .card-name {
+                white-space: nowrap;
+                font-size: 14px;
+              }
+            }
+
+          }
+
+          .right-side {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+
+            .default-card {
+              font-size: 14px;
+              color: $green-500;
+              background-color: transparent;
+              padding: 4px 16px 2px;
+              margin-right: 16px;
+
+              @include response(xs) {
+                display: none;
+              }
+
+            }
+            .card-button {
+              height: 100%;
+              border: 1px solid transparent;
+              color: $primary-500;
+              border-radius: 2px;
+              background-color: transparent;
+              padding: 8px 16px;
+
+              &.remove {
+                color: $red-500;
+                padding: 0;
+                transition: color .3s ease;
+                &:hover {
+                  color: $black-600;
+                }
+              }
+
+            }
+
+          }
+
+        }
+
+      }
+
+      .buttons-wrapper {
+        margin-top: 24px;
+        display: flex;
+      }
+      .spacer {
+        flex-grow: 1;
+      }
+
+    }
+
+  }
+}

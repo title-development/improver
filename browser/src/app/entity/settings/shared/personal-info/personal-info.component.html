@@ -1,0 +1,331 @@
+<div class="container">
+  <div class="row">
+
+    <div class="col-md-3 sm-none xs-none">
+      <div class="account-top-line"></div>
+      <account-nav></account-nav>
+    </div>
+
+    <div class="col-md-9 col-sm-12">
+      <div class="account-top-line">
+        <div class="account-nav-title">Account</div>
+      </div>
+      <div [cvSpinner]="!account" [cvSpinnerSize]="24">
+        <ng-container *ngIf="account">
+          <div class="personal-info-card card">
+            <h3>User information</h3>
+            <div class="row">
+
+              <div class="col-md-3 col-sm-3 col-xs-12">
+                <div class="avatar-wrapper" fxLayout="row" fxLayoutAlign="center center">
+                  <div class="avatar" *ngIf="securityService.isAuthenticated()"
+                       [ngStyle]="account.iconUrl && account.iconUrl != '' && {'background-image':'url(' + account.iconUrl + ')'} || securityService.getLoginModel().company && {'background-image':'url(/assets/img/pro-logo-placeholder.png)'} || {'background-image':'url(/assets/img/customer-logo-placeholder.png)'}"></div>
+                  <div class="actions">
+                    <div class="icon -delete" title="Delete icon" *ngIf="account.iconUrl"
+                         (click)="deleteAccountImage()">
+                      <mat-icon class="delete">delete</mat-icon>
+                    </div>
+                    <div class="icon -edit" title="Edit icon" (click)="openDialogPhoto()">
+                      <mat-icon class="edit">edit</mat-icon>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-9 col-sm-9 col-xs-12">
+
+                <form class="personal-info-form"
+                      name="personal-info-form"
+                      #personalInfoForm="ngForm"
+                      (ngSubmit)="personalInfoForm.valid && updateUserInfo(personalInfoForm)"
+                      novalidate>
+
+                  <div class="personal-info-form-content">
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <cv-input-field>
+                          <cv-editable-input #email="ngModel"
+                                             name="email"
+                                             [(ngModel)]="account.email"
+                                             [emailUniqueValidator]="currentEmail"
+                                             required
+                                             trim
+                                             pattern="{{constants.patterns.email}}"
+                                             (onSave)="changeEmailConfirm()">
+                            <input cv-input type="text" placeholder="Email">
+                          </cv-editable-input>
+                          <cv-field-error *ngIf="email.dirty || email.touched || personalInfoForm.submitted">
+                      <span *ngIf="email.errors?.required">
+                      {{messages.errors.email.required}}
+                      </span>
+                            <span *ngIf="email.errors?.pattern">
+                      {{messages.errors.email.pattern}}
+                      </span>
+                            <span *ngIf="email.errors?.emailUnique">
+                      {{messages.errors.email.emailUnique}}
+                      </span>
+                          </cv-field-error>
+                        </cv-input-field>
+                      </div>
+                    </div>
+                    <div class="row">
+
+                      <div class="col-xs-12 col-sm-6">
+
+                        <cv-input-field>
+                          <input cv-input type="text"
+                                 trim
+                                 placeholder="First name"
+                                 #firstName="ngModel"
+                                 name="firstName"
+                                 [(ngModel)]="account.firstName"
+                                 required>
+                          <cv-field-error *ngIf="firstName.dirty || firstName.touched || personalInfoForm.submitted">
+                              <span *ngIf="firstName.errors?.required">
+                                {{messages.errors.firstName.required}}
+                              </span>
+                          </cv-field-error>
+                        </cv-input-field>
+
+                      </div>
+
+                      <div class="col-xs-12 col-sm-6">
+                        <cv-input-field>
+                          <input cv-input type="text"
+                                 trim
+                                 placeholder="Last name"
+                                 #lastName="ngModel"
+                                 name="lastName"
+                                 [(ngModel)]="account.lastName"
+                                 required>
+                          <cv-field-error *ngIf="lastName.dirty || lastName.touched || personalInfoForm.submitted">
+                              <span *ngIf="lastName.errors?.required">
+                                {{messages.errors.lastName.required}}
+                              </span>
+                          </cv-field-error>
+                        </cv-input-field>
+
+                      </div>
+
+                    </div>
+
+                    <div class="row">
+
+                      <div class="col-xs-12">
+
+                        <cv-input-field>
+                          <input cv-input type="text"
+                                 placeholder="Phone number"
+                                 #phone="ngModel"
+                                 name="phone"
+                                 [(ngModel)]="account.phone"
+                                 phoneMask
+                                 maxlength="14"
+                                 [pattern]="constants.patterns.phone"
+                                 [required]="securityService.hasRole(Role.CONTRACTOR)">
+                          <cv-field-error *ngIf="phone.dirty || phone.touched || personalInfoForm.submitted">
+                            <span *ngIf="phone.errors?.required">
+                                    {{messages.errors.phone.required}}
+                                  </span>
+                            <span *ngIf="phone.errors?.pattern">
+                                    {{messages.errors.phone.pattern}}
+                            </span>
+                          </cv-field-error>
+                        </cv-input-field>
+
+                      </div>
+
+                    </div>
+
+                    <div class="row" *ngIf="showEmailChangeMessage">
+
+                      <div class="col-xs-12">
+                        <response-message [type]="SystemMessageType.SUCCESS"
+                                          message="A confirmation link has been sent to your new email address and you must click on the link to complete address change. A notice has also been sent to your old email address"
+                                          [paddingV]="12" [paddingH]="16"
+                                          [showIcon]="false"
+                                          (onHide)="onEmailChangeMessageHide($event)"></response-message>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <button cv-button [size]="'small'" class="save-personal-info" type="submit">Save</button>
+
+                </form>
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="change-password-card card" *ngIf="account && account.nativeUser">
+            <form class="change-password-form"
+                  name="change-password-form"
+                  #changePasswordForm="ngForm"
+                  (ngSubmit)="changePasswordForm.valid && changePassword(changePasswordForm)"
+                  novalidate
+                  autocomplete="off">
+              <h3>Change password</h3>
+              <div class="row">
+                <div class="col-sm-6 col-xs-12">
+                  <div class="change-password-hints-block">
+                    <div class="hints-title">Your password must contain the following:</div>
+                    <div class="hint-block" fxLayout="row">
+                      <div class="square"></div>
+                      <div class="hint-text">At least 8 characters in length (a strong password has at least 14
+                        characters)
+                      </div>
+                    </div>
+                    <div class="hint-block" fxLayout="row">
+                      <div class="square"></div>
+                      <div class="hint-text">At least 1 letter and at least 1 number</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6 col-xs-12">
+
+                  <input type="password" style="display: none;">
+                  <div class="change-password-form-content" fxLayout="column">
+
+                    <div class="change-password-form-group" fxLayout="column">
+
+                      <div class="row">
+
+                        <div class="col-xs-12">
+
+                          <cv-input-field>
+                            <input cv-input
+                                   placeholder="Old password"
+                                   #password="ngModel"
+                                   name="oldPassword"
+                                   type="password"
+                                   [(ngModel)]="oldNewPassword.password"
+                                   required>
+                            <cv-field-error *ngIf="password.dirty || password.touched || changePasswordForm.submitted">
+                          <span *ngIf="password.errors?.required">
+                            {{messages.errors.password.required}}
+                          </span>
+                            </cv-field-error>
+                          </cv-input-field>
+
+                        </div>
+
+                      </div>
+
+                      <div class="row">
+
+                        <div class="col-xs-12">
+
+                          <cv-input-field>
+                            <input cv-input
+                                   placeholder="New password"
+                                   #newPassword="ngModel"
+                                   name="newPassword"
+                                   type="password"
+                                   [(ngModel)]="oldNewPassword.newPassword"
+                                   validateEqual="confirmNewPassword"
+                                   validationEqualReverse="true"
+                                   required
+                                   minlength="8"
+                                   maxlength="32"
+                                   pattern="{{constants.patterns.password}}">
+                            <cv-field-error
+                              *ngIf="newPassword.dirty || newPassword.touched || changePasswordForm.submitted">
+                          <span *ngIf="newPassword.errors?.required">
+                            {{messages.errors.password.required}}
+                          </span>
+                              <span *ngIf="newPassword.errors?.minlength">
+                                  {{messages.errors.password.minlength}}
+                          </span>
+                              <span *ngIf="newPassword.errors?.pattern && !newPassword.errors?.minlength">
+                                  {{messages.errors.password.pattern}}
+                          </span>
+                            </cv-field-error>
+                          </cv-input-field>
+
+                        </div>
+
+                      </div>
+
+                      <div class="row">
+
+                        <div class="col-xs-12">
+
+                          <cv-input-field>
+                            <input cv-input
+                                   placeholder="Confirm password"
+                                   #confirmNewPassword="ngModel"
+                                   name="confirmNewPassword"
+                                   type="password"
+                                   [(ngModel)]="oldNewPassword.confirmNewPassword"
+                                   validateEqual="newPassword"
+                                   validationEqualReverse="false"
+                                   required>
+                            <cv-field-error
+                              *ngIf="confirmNewPassword.dirty || confirmNewPassword.touched || changePasswordForm.submitted">
+                            <span *ngIf="confirmNewPassword.errors?.required">
+                              {{messages.errors.passwordConfirm.required}}
+                            </span>
+                              <span
+                                *ngIf="confirmNewPassword.errors?.validateEqual && !confirmNewPassword.errors?.required">
+                                    {{messages.errors.passwordConfirm.validateEqual}}
+                            </span>
+                            </cv-field-error>
+                          </cv-input-field>
+
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="buttons-wrapper" [cvSpinner]="passwordUpdateProcessing"
+                   [cvSpinnerSize]="20"
+                   [cvSpinnerBackground]="true">
+                <button cv-button size="small" type="submit">Save</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="social-connection card">
+            <h3>Social connections</h3>
+            <ng-container *ngIf="socialConnections">
+              <div class="social" *ngFor="let provider of socialProviders">
+                <div class="meta"
+                     [title]="socialConnected(provider) ? 'This social account is already connected' : 'Link your social account to your profile'">
+                  <cv-icon [icon]="'imp-icon-social-'+provider.toString().toLowerCase()"></cv-icon>
+                  <div>
+                    <span>{{provider | capitalize}}</span>
+                    <p *ngIf="!socialConnected(provider)">Link your social account to your profile</p>
+                    <p *ngIf="socialConnected(provider)">This social account is already connected</p>
+                  </div>
+                </div>
+                <ng-container *ngIf="socialConnected(provider); else connect">
+                  <button cv-button type="button" size="small" class="-danger"
+                          (click)="disconnectSocial(provider)">Disconnect
+                  </button>
+                </ng-container>
+                <ng-template #connect>
+                  <button cv-button type="button" size="small" (click)="connectSocial(provider)">Connect</button>
+                </ng-template>
+              </div>
+            </ng-container>
+          </div>
+
+          <div class="action">
+            <div class="spacer"></div>
+            <a class="delete-account" (click)="deleteAccount($event)">Delete account</a>
+          </div>
+
+        </ng-container>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<layout-footer></layout-footer>

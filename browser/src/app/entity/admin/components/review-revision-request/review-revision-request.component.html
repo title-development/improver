@@ -1,0 +1,39 @@
+<p-dialog header="Review Revision Request" [contentStyle]="{'overflow':'visible'}" [(visible)]="toggle" [responsive]="true" showEffect="fade"
+          [width]="700"
+          (onHide)="onHide($event)"
+          [modal]="true">
+  <form #form="ngForm">
+  <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="reviewRevisionRequest">
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-4"><label for="comment">Comment</label></div>
+      <div class="ui-grid-col-8"><textarea rows="4" pInputTextarea id="comment" #comment="ngModel" name="comment"
+                                        [(ngModel)]="reviewRevisionRequest.comment" disabled></textarea>
+      </div>
+    </div>
+
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-4"><label for="created">Created</label></div>
+      <div class="ui-grid-col-8"><input pInputText id="created" #created="ngModel" name="created"
+                                        [(ngModel)]="reviewRevisionRequest.created" disabled/>
+      </div>
+    </div>
+
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-4"><label for="declined">Is Declined</label></div>
+      <div class="ui-grid-col-8"><input pInputText id="declined" #comment="ngModel" name="declined"
+                                        [(ngModel)]="reviewRevisionRequest.declined" disabled/>
+      </div>
+    </div>
+
+  </div>
+  </form>
+
+  <div class="processing" *ngIf="processing">
+    <p-progressSpinner></p-progressSpinner>
+  </div>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix" align="right">
+      <button type="button" pButton icon="pi pi-check" (click)="toggle = false" label="Ok"></button>
+    </div>
+  </p-footer>
+</p-dialog>

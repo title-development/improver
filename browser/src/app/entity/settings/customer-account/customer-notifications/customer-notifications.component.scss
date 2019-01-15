@@ -1,0 +1,124 @@
+@import "../../../../../improver-mixins";
+@import "../../account.component";
+
+.account-top-line {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  height: 72px;
+}
+
+.account-nav-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: $black-primary;
+}
+
+.card {
+  background-color: $white;
+  border-radius: 2px;
+  padding: 24px;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
+  h3 {
+    font-size: 20px;
+    text-align: left;
+    font-weight: 500;
+    margin: 0;
+    padding: 0;
+    color: $black-primary;
+    margin-bottom: 21px;
+  }
+}
+
+.notification-settings-card {
+  padding: 24px;
+  margin-bottom: 24px;
+
+  cv-checkbox {
+    display: flex;
+    margin-bottom: 16px;
+    &::ng-deep .checkbox-icon {
+      flex: none;
+      vertical-align: top;
+    }
+
+    .notification-label {
+
+      .label {
+        color: $black-primary;
+        margin: 2px 0px;
+        font-weight: 600;
+
+      }
+
+      .hint {
+        color: $black-500;
+      }
+
+    }
+
+  }
+
+  .notification-settings-title {
+    font-size: 18px;
+    color: $black-primary;
+    margin-bottom: 27px;
+    font-weight: 600;
+  }
+
+  .notification-methods-wrapper {
+
+    .notification-settings-form-content {
+      width: 100%;
+
+      .notification-methods-form-group {
+        margin-bottom: 18px;
+
+        .notification-type-name {
+          font-size: 16px;
+          color: rgba(0, 0, 0, 0.54);
+        }
+
+        .notification-group-content {
+          font-size: 16px;
+          color: rgba(0, 0, 0, 0.54);
+
+          .notification-method {
+            padding: 6px 8px;
+            font-size: 12px;
+            text-align: right;
+            cursor: pointer;
+            border-left: 1px solid #e8e8e8;
+
+            &:hover {
+              color: rgba(0, 0, 0, 0.38);
+            }
+
+            &:nth-of-type(1) {
+              border-left: 1px solid transparent;
+            }
+
+            &.active {
+              color: $primary-500;
+            }
+
+          }
+
+
+        }
+
+
+      }
+
+
+    }
+
+    .notification-settings-submit-button {
+      margin-top: 10px;
+    }
+
+  }
+
+}
+
+

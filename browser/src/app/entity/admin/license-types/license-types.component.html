@@ -1,0 +1,83 @@
+<div class="panel-header">
+  <h1>License Types</h1>
+  <div class="table-header-buttons">
+    <button type="button" pButton icon="fa fa-plus" label="Add" class="ui-button-success" *ngIf="securityService.hasRole(Role.ADMIN)" (click)="displayAddLicenseTypeDialog=true"></button>
+    <button type="button" pButton icon="pi pi-fw pi-refresh" label="&nbsp;&nbsp;Refresh" (click)="refresh()"></button>
+  </div>
+</div>
+
+<p-dataTable class="license-types-table" [lazy]="true" [loading]="processing" #dt
+             [value]="licenseTypes.content"
+             selectionMode="single" sortMode="single"
+             [responsive]="true" [contextMenu]="cm" [paginator]="true"
+             [rows]="rowsPerPage[0]" [totalRecords]="licenseTypes.totalElements" [rowsPerPageOptions]="rowsPerPage"
+             sortField="id" [sortOrder]="1"
+             (onContextMenuSelect)="selectItem($event)"
+             (onLazyLoad)="loadLazy($event)">
+  <p-header>
+    <div style="text-align:left">
+      <p-multiSelect [options]="tableColumns" [panelStyle]="{minWidth:'270px'}" [(ngModel)]="selectedTableCols"></p-multiSelect>
+    </div>
+  </p-header>
+  <p-column field="id" header="ID" [sortable]="true" *ngIf="selectedTableCols.includes('id')" [filter]="true" [style]="{'width':'80px'}"></p-column>
+  <p-column field="state" header="State" [sortable]="true" *ngIf="selectedTableCols.includes('state')" [filter]="true" [style]="{'width':'120px'}"></p-column>
+  <p-column field="accreditation" header="Accreditation" [sortable]="true" *ngIf="selectedTableCols.includes('accreditation')" [filter]="true"></p-column>
+
+</p-dataTable>
+
+<p-contextMenu #cm [model]="contextMenuItems" [ngStyle]="{'display': securityService.hasRole(Role.ADMIN) ? 'initial' : 'none' }"> </p-contextMenu>
+
+<p-dialog header="Add License Type" [(visible)]="displayAddLicenseTypeDialog" [responsive]="true" showEffect="fade"
+          [width]="700" [modal]="true" [contentStyle]="{'overflow':'visible'}" (visibleChange)="onDialogClose(form)">
+
+  <form #form="ngForm" (ngSubmit)="form.valid && create(form)" class="license-type-from">
+    <div class="ui-grid ui-grid-responsive ui-fluid">
+
+      <div class="ui-grid-row ui-grid-field">
+        <div class="ui-grid-col-4"><label>State</label></div>
+        <div class="ui-grid-col-8">
+          <div class="ui-inputgroup">
+            <p-dropdown name="state" #state="ngModel" [options]="constants.states" [(ngModel)]="licenseType.state" required autoWidth="false"></p-dropdown>
+          </div>
+        </div>
+      </div>
+
+      <div class="ui-grid-row ui-grid-field">
+        <div class="ui-grid-col-4"></div>
+        <div class="ui-grid-col-8">
+          <div class="ui-message ui-messages-error ui-corner-all"
+               *ngIf="(state.dirty || state.touched || form.submitted) && !state.valid && state.errors">
+            <span *ngIf="state.errors?.required">Required</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="ui-grid-row ui-grid-field">
+        <div class="ui-grid-col-4"><label>Accreditation</label></div>
+        <div class="ui-grid-col-8">
+          <div class="ui-inputgroup">
+            <input pInputText name="accreditation" #accreditation="ngModel" [(ngModel)]="licenseType.accreditation" required/>
+          </div>
+        </div>
+      </div>
+
+      <div class="ui-grid-row ui-grid-field">
+        <div class="ui-grid-col-4"></div>
+        <div class="ui-grid-col-8">
+          <div class="ui-message ui-messages-error ui-corner-all"
+               *ngIf="(accreditation.dirty || accreditation.touched || form.submitted) && !accreditation.valid && accreditation.errors">
+            <span *ngIf="accreditation.errors?.required">Required</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix" align="right">
+        <button type="submit" class="ui-button-success" pButton icon="pi pi-check" label="Submit"></button>
+      </div>
+    </p-footer>
+
+  </form>
+</p-dialog>
+

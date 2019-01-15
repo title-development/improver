@@ -1,0 +1,618 @@
+@import "../../../../improver-mixins.scss";
+
+:host {
+  display: block;
+}
+
+h1, h4, h5, p {
+  margin: 0;
+}
+
+h1 {
+  font-weight: 600;
+  color: $white;
+  font-size: 24px;
+}
+
+h4 {
+  font-size: 16px;
+  color: $black-primary;
+  font-weight: 600;
+  margin-bottom: 16px;
+  @include response(xs) {
+    text-align: center;
+  }
+}
+
+h5 {
+  font-size: 12px;
+  color: $black-600;
+}
+
+p {
+  font-size: 14px;
+  font-weight: 500;
+  color: $black-600;
+}
+
+.container {
+  max-width: 826px;
+  @include response(sm, md) {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+
+.header {
+  position: relative;
+}
+
+.cover {
+  height: 204px;
+  background-size: cover;
+  background-position: 50%;
+  background-repeat: no-repeat;
+  position: relative;
+  background-image:url(/assets/img/cover.png);
+
+  @include response-to(sm) {
+    background-image:url(/assets/img/cover-sm.png);
+    height: 230px;
+  }
+  .container {
+    height: 100%;
+  }
+  &:before {
+    position: absolute;
+    content: '';
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+  .icon {
+    &.-edit-background {
+      display: block;
+      cursor: pointer;
+      width: 24px;
+      height: 24px;
+      position: absolute;
+      right: 12px;
+      bottom: 15px;
+      font-size: 11px;
+      z-index: 1;
+      @include response(sm, md) {
+        right: 24px;
+      }
+      .imp-icon-pencil {
+        color: #ffffff;
+        background-color: $primary-500;
+        border-radius: 50%;
+        height: 100%;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+      }
+      label {
+        cursor: pointer;
+        display: block;
+        height: 100%;
+      }
+      input {
+        display: none;
+      }
+    }
+  }
+}
+
+.company-details {
+  height: 50px;
+  background-color: $white;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
+  position: relative;
+  .container {
+    height: 100%;
+  }
+  @include response-to(sm) {
+    height: auto;
+  }
+  .wrapper {
+    position: absolute;
+    bottom: 0;
+    left: 12px;
+    @include response-to(sm) {
+      left: 0;
+      right: 0;
+      text-align: center;
+      bottom: -45px;
+    }
+    @include response(md) {
+      left: 24px;
+    }
+  }
+  h1 {
+    max-width: 300px;
+    margin: 18px auto;
+    @include response-to(sm) {
+      max-width: 100%;
+      padding: 0 15px;
+    }
+    @include response-from(md) {
+      padding-left: 133px;
+      box-sizing: content-box;
+      margin: 18px 0;
+    }
+  }
+  .logo {
+    display: inline-block;
+    width: 107px;
+    height: 107px;
+    background-size: cover;
+    background-position: center;
+    border: 3px solid $white;
+    box-shadow: elevation(1);
+    border-radius: 50%;
+    position: relative;
+    @include response-from(md) {
+      display: block;
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+  }
+  .company-info {
+    display: none;
+    @include response-from(md) {
+      display: block;
+      padding-bottom: 5px;
+      padding-left: 133px;
+    }
+  }
+}
+
+.actions {
+  position: absolute;
+  top: 8px;
+  right: -6px;
+  bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  .icon {
+    cursor: pointer;
+    border-radius: 50%;
+    height: 24px;
+    width: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &.-delete {
+      background-color: $red;
+    }
+    &.-edit {
+      margin-top: auto;
+      background-color: $primary-500;
+    }
+    .mat-icon {
+      color: $white;
+      font-size: 16px;
+    }
+  }
+}
+
+.mobile-details {
+  display: none;
+  padding-top: 72px;
+  padding-bottom: 28px;
+  background-color: #fff;
+  @include response-to(sm) {
+    display: block;
+  }
+  .container {
+    max-width: 500px;
+  }
+  .company-info {
+    text-align: center;
+    margin-bottom: 15px;
+  }
+  .contacts {
+    display: flex;
+    justify-content: center;
+    margin: 0 -12px;
+    @include response(xs) {
+      flex-direction: column;
+    }
+    .info-block {
+      padding: 0 12px;
+    }
+  }
+  button {
+    margin: 16px auto 0;
+    display: block;
+  }
+}
+
+.company-info {
+  p {
+    color: $black-primary;
+  }
+  span {
+    font-size: 14px;
+    color: #a6a6a6;
+    &:not(:last-child) {
+      &:after {
+        content: ',';
+      }
+    }
+  }
+  .services {
+    height: 19px;
+    @include response-to(sm) {
+      height: auto;
+    }
+  }
+}
+
+.company-profile-page {
+  margin: 33px auto 0;
+  @include response-to(md) {
+    margin-top: 24px;
+  }
+  @include response(xs) {
+    margin-top: 0;
+    padding-left: 0;
+    padding-right: 0;
+    overflow: hidden;
+    border-top: 1px solid $black-250;
+  }
+}
+
+.company-location-map {
+  height: 184px;
+  width: 100%;
+  position: relative;
+  display: block;
+  ::ng-deep .agm-map-content {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    display: block;
+    .update-service-areas-button {
+      font-size: 12px;
+      color: $white;
+      border-radius: 2px;
+      background-color: #424242;
+      padding: 6px 10px;
+      font-weight: 300;
+      transition: opacity .3s ease;
+      opacity: 0.9;
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+.request-quote, .rating-block {
+  button {
+    width: 100%;
+  }
+}
+
+.rating-block {
+  @include response-to(sm) {
+    padding: 25px 12px;
+    text-align: center;
+    button {
+      width: auto;
+    }
+  }
+  .rating-wrapper {
+    display: flex;
+    margin-bottom: 18px;
+    @include response-to(sm) {
+      justify-content: center;
+    }
+    .rating {
+      width: 28px;
+      height: 28px;
+      margin-left: 10px;
+      padding-top: 2px;
+      background-color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+      color: $primary-rating;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
+    }
+  }
+}
+
+.approved-mark-block {
+  .approve-mark {
+    display: flex;
+    align-items: center;
+    .approve-icon {
+      margin-right: 8px;
+    }
+    .approve-text {
+      font-weight: 500;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: $green-450;
+    }
+  }
+  &.mobile {
+    justify-content: center;
+    margin-bottom: 36px;
+    margin-top: 8px;
+    .approve-mark {
+      justify-content: center;
+    }
+  }
+}
+
+company-projects-gallery {
+  margin-top: 45px;
+  @include response(xs) {
+    margin-top: 24px;
+  }
+}
+
+company-reviews {
+  margin-top: 21px;
+  @include response(xs) {
+    margin-top: 0;
+  }
+}
+
+.main-info {
+  margin-top: 45px;
+}
+
+.card {
+  border-radius: 2px;
+  background-color: $white;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
+  margin-bottom: 24px;
+  &.-space {
+    padding: 20px 22px;
+  }
+}
+
+.contacts {
+  .info-block {
+    padding: 0;
+  }
+  p {
+    color: $black-primary;
+  }
+}
+
+.info-block {
+  display: flex;
+  @include response(xs) {
+    max-width: 240px;
+    margin: 0 auto;
+  }
+  &:not(:last-child) {
+    margin-bottom: 15px;
+  }
+  h5 {
+    margin-bottom: 5px;
+  }
+  a {
+    font-size: 14px;
+    color: $link-dark;
+    word-break: break-all;
+    &[href^="tel:"] {
+      color: $link-dark;
+      @include response-from(sm) {
+        color: $black-primary;
+        pointer-events: none;
+
+      }
+    }
+  }
+  span {
+    color: $black-primary;
+  }
+  i {
+    color: $black-600;
+  }
+  .group {
+    margin-left: 12px;
+  }
+}
+
+.details-list {
+  .row {
+    margin: 0 -19px;
+    @include response(xs) {
+      margin: 0 -12px;
+      flex-wrap: wrap;
+    }
+    > div {
+      padding: 0 19px;
+      @include response(xs) {
+        padding: 0 12px;
+      }
+      &:first-child {
+        position: relative;
+        @include response(xs) {
+          margin-bottom: 20px;
+          padding-bottom: 24px;
+        }
+        &:after {
+          content: '';
+          display: block;
+          width: 1px;
+          top: -21px;
+          right: 0;
+          padding: 21px 0;
+          position: absolute;
+          box-sizing: content-box;
+          height: 100%;
+          background-color: $black-250;
+          @include response(xs) {
+            top: auto;
+            bottom: 0;
+            left: -12px;
+            right: 0;
+            height: 1px;
+            width: 100%;
+            padding: 0 12px;
+          }
+        }
+      }
+    }
+  }
+  .info-group {
+    padding: 21px 19px;
+    @include response(xs) {
+      padding: 20px 12px;
+    }
+    &:not(:last-child) {
+      border-bottom: 1px solid $black-250;
+      color: $black-250;
+    }
+  }
+  .licenses {
+    @include response(xs) {
+      max-width: 220px;
+      margin: 0 auto;
+    }
+    p {
+      &:not(:last-of-type) {
+        margin-bottom: 10px;
+      }
+    }
+    .show-more-button {
+      margin-top: 10px;
+    }
+  }
+  .services {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    p {
+      width: 50%;
+      margin-bottom: 10px;
+      //cursor: pointer;
+      @include response(xs) {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  }
+  button {
+    margin: 10px auto 0;
+    display: block;
+  }
+}
+
+.show-more-button {
+  font-size: 14px;
+  color: $primary-500;
+  cursor: pointer;
+  white-space: nowrap;
+  i {
+    font-size: 10px;
+  }
+}
+
+.pencil {
+  color: $black-300;
+  cursor: pointer;
+  font-size: 14px;
+  transition: color .3s ease;
+  &:hover {
+    color: $black-primary;
+  }
+}
+
+.holder {
+  position: relative;
+  height: 100%;
+}
+
+.glue-holder {
+  &.-disabled {
+    position: static !important;
+    width: 100% !important;
+  }
+}
+
+.switch-mode {
+  position: fixed;
+  top: 50%;
+  right: 30px;
+  cursor: pointer;
+  z-index: 1;
+  @include response-to(sm) {
+    right: 15px;
+    top: auto;
+    bottom: 15px;
+  }
+  &:hover {
+    span {
+      color: $white;
+      transform: scale(1, 1);
+    }
+  }
+  i {
+    width: 48px;
+    height: 48px;
+    position: relative;
+    border: 3px solid $white;
+    border-radius: 50%;
+    background-color: $green-400;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $white;
+    z-index: 1;
+  }
+  span {
+    top: 3px;
+    right: 50%;
+    bottom: 3px;
+    position: absolute;
+    background-color: rgba(#b5b5b5, .6);
+    padding: 8px 33px 8px 11px;
+    font-size: 12px;
+    color: transparent;
+    white-space: nowrap;
+    text-align: center;
+    font-weight: 600;
+    transform-origin: right center;
+    transform: scale(0, 1);
+    transition: transform .3s ease, color .3s ease .3s;
+  }
+}
+
+.show-more-btn {
+  cursor: pointer;
+  background-color: transparent !important;
+  color: $primary-500 !important;
+  border: none !important;
+  padding: 8px 18px;
+  border-radius: 2px;
+  font-size: 14px;
+
+  &:hover {
+  }
+
+  &:active {
+    background-color: $primary-500;
+  }
+
+}

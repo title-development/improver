@@ -1,0 +1,98 @@
+<div class="auth-wrapper -login">
+  <div class="auth-container">
+
+    <div class="left-bar">
+      <div class="left-bar-container">
+        <div class="copyright-line">© 2018 Home Improve, Inc</div>
+      </div>
+
+    </div>
+
+    <div class="main-block">
+      <div class="header"></div>
+      <div class="container">
+        <form class="auth-form"
+              name="login-form"
+              #loginForm="ngForm"
+              (ngSubmit)="loginForm.valid && onSubmit(loginForm)"
+              novalidate>
+
+          <div class="auth-form-title">Log in to Home Improve</div>
+          <cv-input-field>
+            <input cv-input type="text" placeholder="Email"
+                   name="email"
+                   #email="ngModel"
+                   [(ngModel)]="credentials.email"
+                   (ngModelChange)="showMessage = false"
+                   required
+                   trim
+                   pattern="{{constants.patterns.email}}">
+            <cv-field-error *ngIf="email.dirty || email.touched || loginForm.submitted">
+              <span *ngIf="email.errors?.required">
+                {{messages.errors.email.required}}
+              </span>
+              <span *ngIf="email.errors?.pattern">
+                {{messages.errors.email.pattern}}
+              </span>
+            </cv-field-error>
+          </cv-input-field>
+
+          <cv-input-field>
+            <input cv-input placeholder="Password"
+                   #password="ngModel"
+                   name="password"
+                   type="password"
+                   [(ngModel)]="credentials.password"
+                   (ngModelChange)="showMessage = false"
+                   required>
+            <cv-field-error *ngIf="password.dirty || password.touched || loginForm.submitted">
+               <span *ngIf="password.errors?.required">
+                 {{messages.errors.password.required}}
+                 </span>
+            </cv-field-error>
+          </cv-input-field>
+            <response-message *ngIf="showMessage" [type]="messageType" [message]="messageText"
+                              [paddingV]="12" [paddingH]="24"
+                              [showIcon]="false" (onHide)="onMessageHide($event)"></response-message>
+            <button cv-button class="full-width auth-form-submit-button" type="submit" [loading]="processing">
+              Log in
+            </button>
+
+            <div class="auth-social-hint">
+              <span>or</span>
+            </div>
+
+            <div class="social-buttons" >
+              <button type="button" cv-button class="facebook-auth" (click)="!processing && !googleFetching && socialLogin('facebook')" [cvSpinner]="facebookFetching" [cvSpinnerSize]="24" [cvSpinnerBackground]="true">
+                <cv-icon [icon]="'imp-icon-social-facebook'"></cv-icon>
+                Facebook
+              </button>
+
+              <button type="button" cv-button class="google-auth" (click)="!processing && !facebookFetching && socialLogin('google')" [cvSpinner]="googleFetching" [cvSpinnerSize]="24" [cvSpinnerBackground]="true">
+                <cv-icon [icon]="'imp-icon-social-google'"></cv-icon>
+                Google
+              </button>
+            </div>
+
+          <div class="forgot-password-button" routerLink="/restore-password">Forgot password?</div>
+          <div class="no-account-line">
+            <div class="question">Don’t have an account?</div>
+            <a class="no-account-button" routerLink="/signup">Sign up</a>
+          </div>
+        </form>
+
+      </div>
+
+      <div class="footer">
+        <div class="footer-content">
+          <a class="footer-link" href="/privacy-policy" target="_blank">Privacy Policy</a>
+          <a class="footer-link" href="/terms-of-use" target="_blank">Terms of Use</a>
+        </div>
+
+        <div class="copyright md-none lg-none xlg-none">
+          <div class="copyright-line">© 2018 Home Improve, Inc</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

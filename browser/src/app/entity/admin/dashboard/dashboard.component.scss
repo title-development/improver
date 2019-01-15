@@ -1,0 +1,31 @@
+.dashboard-wrapper {
+  .row-title {
+    font-size: 26px;
+    font-weight: 600;
+  }
+
+  .row {
+    margin-bottom: 24px;
+  }
+
+  p-card ::ng-deep {
+    .ui-card-title {
+      font-size: 20px;
+      font-weight: 500;
+    }
+  }
+
+}
+
+.statistic-chart {
+  &::ng-deep {
+    .ui-card {
+      position: relative;
+      p-dropdown {
+        position: absolute;
+        right: 1em;
+        top: 1em;
+      }
+    }
+  }
+}

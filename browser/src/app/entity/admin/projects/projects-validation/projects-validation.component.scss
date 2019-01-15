@@ -1,0 +1,63 @@
+@import "../../../../../improver-mixins";
+
+.projects-table {
+  margin-bottom: 50px;
+  display: flex;
+  flex-direction: column;
+}
+
+.address-validation {
+  position: absolute;
+  display: none;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #fff;
+
+  button {
+    margin-top: 16px;
+  }
+
+  &.-invalid {
+    display: block;
+  }
+}
+
+.project-questionary {
+  .details-item {
+    padding: 10px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-top: 1px solid #ccc;
+
+    .name {
+      display: inline-block;
+      font-weight: 500;
+      padding-right: 15px;
+    }
+
+    .results {
+      color: #9e9e9e;
+      font-size: 14px;
+    }
+  }
+}
+
+.projectRequests {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.project-information {
+  margin-bottom: 40px;
+}
+
+
+::ng-deep p-card {
+  .ui-card {
+    margin-top: 15px;
+  }
+}

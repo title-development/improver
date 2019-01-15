@@ -1,0 +1,52 @@
+:host {
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 400;
+  border: none;
+  border-radius: 2px;
+  padding: 8px 16px;
+  margin: 0;
+  outline: none;
+  transition: box-shadow .3s ease, background-color .3s ease;
+  display: inline-block;
+  .button-inner {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: nowrap;
+    justify-content: center;
+    width: 100%;
+  }
+  &.-small {
+    padding: 8px 16px;
+  }
+  &.-medium {
+    padding: 10px 16px;
+  }
+  &.-large {
+    padding: 16px;
+    text-transform: uppercase;
+  }
+  &.icon-left {
+    justify-content: normal;
+    ::ng-deep cv-icon {
+      margin-right: 6px;
+    }
+  }
+  &.icon-right {
+    flex-direction: row-reverse;
+    justify-content: normal;
+    ::ng-deep cv-icon {
+      margin-left: 6px;
+    }
+  }
+  &.-loading {
+    pointer-events: none;
+  }
+  i {
+    width: 11px;
+    height: 11px;
+    display: inline-block;
+    margin-left: 5px;
+  }
+}

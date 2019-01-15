@@ -1,0 +1,54 @@
+import { Injectable } from '@angular/core';
+import { Constants } from '../../util/constants';
+import { Observable } from 'rxjs';
+
+
+import { HttpClient, HttpResponse, HttpParams } from '@angular/common/http';
+import { Lead, Pagination } from '../../model/data-model';
+import { RestPage } from '../models/RestPage';
+import { toHttpParams } from '../../util/functions';
+import { map } from "rxjs/internal/operators";
+
+@Injectable()
+export class LeadService {
+  private leadsUrl = 'api/pro/leads';
+
+  constructor(private httpClient: HttpClient, private constants: Constants) {
+    this.constants = constants;
+  }
+
+
+  getAll(includeCoverage: boolean, pagination: Pagination, zipCodes: Array<string> = []): Observable<RestPage<Lead>> {
+    const params = toHttpParams(pagination)
+      .set('includeCoverage', includeCoverage.toString())
+      .set('zipCodes', zipCodes.join());
+
+    return this.httpClient
+      .get<RestPage<Lead>>(`${this.leadsUrl}`, {params}).pipe(
+        map((leads: RestPage<Lead>) => {
+          leads.content = leads.content.map((lead: Lead) => {
+            lead.inCoverage = includeCoverage;
+            return lead;
+          });
+          return leads;
+        })
+      )
+
+  }
+
+  get(id): Observable<Lead> {
+    return this.httpClient
+      .get<Lead>(`${this.leadsUrl}/${id}`);
+  }
+
+  purchase(id, fromCard): Observable<number> {
+    const params = new HttpParams().set('fromCard', fromCard);
+    return this.httpClient
+      .post<number>(`${this.leadsUrl}/${id}/purchase`, params);
+  }
+
+  getSimilarLeads(leadId: number): Observable<Array<Lead>> {
+
+    return this.httpClient.get<Array<Lead>>(`${this.leadsUrl}/${leadId}/similar`);
+  }
+}

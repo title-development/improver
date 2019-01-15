@@ -1,0 +1,40 @@
+<div class="container">
+  <div class="row">
+
+    <div class="col-md-3 sm-none xs-none">
+      <div class="account-top-line"></div>
+      <account-nav></account-nav>
+    </div>
+
+    <div class="col-md-9 col-sm-12">
+
+      <div class="account-top-line">
+        <div class="account-nav-title">Services</div>
+      </div>
+
+      <div [cvSpinner]="!tradesAndServiceTypes" [cvSpinnerSize]="24">
+        <div class="trades-and-services-card card" *ngIf="tradesAndServiceTypes">
+
+          <div class="card-content">
+
+            <services-selector *ngIf="tradesAndServiceTypes" [initialData]="tradesAndServiceTypes" (onUpdate)="onTradesAndServicesChange($event)">
+
+            </services-selector>
+
+
+          </div>
+
+          <div class="buttons-block">
+            <!--<button cv-button-flat flatStyle="dark" >CANCEL</button>-->
+            <button class="save-button" cv-button (click)="updateCompanyTradesAndServiceTypes()">SAVE</button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<layout-footer></layout-footer>

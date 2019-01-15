@@ -1,0 +1,137 @@
+@import "../../../../improver-mixins.scss";
+
+:host {
+  display: block;
+}
+
+.wrapper {
+
+  &.new-message {
+    background-color: $black-150;
+
+  }
+
+}
+
+.icon-wrapper {
+  display: inline-block;
+  vertical-align: top;
+  height: 32px;
+  width: 32px;
+  margin-top: 8px;
+
+  .icon {
+    display: inline-block;
+    vertical-align: top;
+    height: 32px;
+    width: 32px;
+    border: solid 1px #e8e8e8;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+  }
+
+}
+
+.message-wrapper {
+  display: inline-block;
+  padding-bottom: 5px;
+  width: calc(100% - 40px);
+
+  &.owner {
+    width: 100%;
+  }
+
+  .message-container {
+    text-align: left;
+    margin-right: 20%;
+    margin-left: 8px;
+    word-break: keep-all;
+    padding-top: 8px;
+    &.image {
+      .message {
+        span {
+          display: block;
+          width: 100px;
+          height: 100px;
+          background-size: cover;
+          background-position: center;
+        }
+      }
+    }
+    .message {
+      display: inline-flex;
+      font-size: 14px;
+      padding: 8px 16px;
+      background-color: #f1f0f0;
+      color: #191919;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.16);
+      border-radius: 0px 8px 8px 8px;
+
+      .name {
+        font-weight: 600;
+      }
+
+      .message-content {
+        display: inline-table;
+        text-align: left;
+        white-space: pre-line;
+        word-break: keep-all;
+        word-break: break-word;
+
+        a {
+          color: $primary-500;
+          display: flex;
+
+          mat-icon {
+            display: block;
+            margin-right: 10px;
+            transform: rotate(20deg);
+            font-size: 18px;
+          }
+        }
+
+        span {
+        }
+
+      }
+
+    }
+
+    &.owner {
+      text-align: right;
+      margin-left: 20%;
+      margin-right: 16px;
+      .message {
+        background-color: #e3f3fe;
+        color: #181818;
+        border-radius: 8px 8px 0px 8px;
+      }
+    }
+
+    &.system {
+      .message {
+        color: $white;
+        background-color: #999999;
+        .message-content {
+          white-space: initial;
+        }
+      }
+    }
+
+    &.decline {
+      .message {
+        background-color: #f83144;
+      }
+    }
+
+    .date {
+      font-size: 10px;
+      color: rgba(0, 0, 0, 0.36);
+      margin-top: 5px;
+    }
+
+  }
+
+}
+

@@ -1,0 +1,56 @@
+<h1 class="page-title" [innerHtml]="pageTitle"></h1>
+<form action="" *ngIf="trade" #tradeEditFrom="ngForm" (submit)="tradeEditFrom.valid && addUpdateTrade()">
+  <div class="ui-grid ui-grid-responsive ui-fluid trades-list">
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-3"><label for="name">Name</label></div>
+      <div class="ui-grid-col-9"><input #name="ngModel" pInputText id="name" name="name" tradeNameUniqueValidator [previousName]="previousName" required [(ngModel)]="trade.name" minlength="4" maxlength="255" [disabled]="mode == 'view'"/>
+        <ng-container *ngIf="name.dirty || name.touched || tradeEditFrom.submitted">
+          <p-message *ngIf="name.errors?.required" severity="error" text="Field is required"></p-message>
+          <p-message *ngIf="name.errors?.minlength" severity="error" text="Trade name should have at least 4 symbols"></p-message>
+          <p-message *ngIf="name.errors?.maxlength" severity="error" text="Trade name is to long"></p-message>
+          <p-message *ngIf="name.errors?.unique" severity="error" text="Trade name is already taken"></p-message>
+        </ng-container>
+      </div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-3"><label for="description">Description</label></div>
+      <div class="ui-grid-col-9"><textarea rows="3" #description="ngModel" maxlength="255" minlength="4" id="description"
+                                           name="description" type="text" pInputText
+                                           required
+                                           [(ngModel)]="trade.description" [disabled]="mode == 'view'"></textarea>
+        <ng-container *ngIf="description.dirty || description.touched || tradeEditFrom.submitted">
+          <p-message *ngIf="description.errors?.required" severity="error" text="Field is required"></p-message>
+          <p-message *ngIf="description.errors?.minlength" severity="error" text="Description should have at least 4 symbols"></p-message>
+          <p-message *ngIf="description.errors?.maxlength" severity="error" text="Description is to long"></p-message>
+        </ng-container></div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-3"><label for="rating">Rating</label></div>
+      <div class="ui-grid-col-9"><input id="rating" name="rating" type="number" pInputText
+                                        [(ngModel)]="trade.rating" [disabled]="mode == 'view'"></div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-3"><label for="image">Image</label></div>
+      <div class="ui-grid-col-9">
+        <image-preview [previewSize]="80" (fileChange)="addImage($event)" class="image" [image]="trade.imageUrl" [disabled]="mode == 'view'"></image-preview>
+      </div>
+    </div>
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-3"><label for="service-types">Service Types</label></div>
+      <div class="ui-grid-col-9">
+        <p-multiSelect id="service-types" [options]="serviceTypes" name="serviceTypes"
+                       [(ngModel)]="trade.serviceTypes" [disabled]="mode == 'view'">
+          <ng-template let-item let-i="index" pTemplate="item">
+            <label>{{item.label}}</label>
+          </ng-template>
+        </p-multiSelect>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <button type="button" pButton icon="fa fa-arrow-left" label="Back" [routerLink]="['/','admin','trades']"></button>
+    <div class="spacer"></div>
+    <button type="submit" pButton icon="fa fa-check" label="{{trade.id ? 'Update' : 'Save'}}"
+            class="ui-button-success" *ngIf="mode !== 'view'"></button>
+  </div>
+</form>

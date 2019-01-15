@@ -1,0 +1,92 @@
+<p-dialog header="Update location" [contentStyle]="{'overflow':'visible'}" [(visible)]="toggle" [responsive]="true" showEffect="fade"
+          [width]="700"
+          (onHide)="onHide($event)"
+          [modal]="true">
+  <form #form="ngForm">
+  <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="location">
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-4"><label for="streetAddress">Street address</label></div>
+      <div class="ui-grid-col-8"><input required pInputText id="streetAddress" #streetAddress="ngModel" name="streetAddress"
+                                        [(ngModel)]="location.streetAddress" maxlength="255"/>
+        <div class="ui-message ui-messages-error ui-corner-all ui-error-space" *ngIf="!streetAddress.valid && streetAddress.dirty">
+          Please enter a Street address
+        </div>
+      </div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-4"><label for="city">City</label></div>
+      <div class="ui-grid-col-8"><input required pInputText id="city" #city="ngModel" name="city" [(ngModel)]="location.city" maxlength="255"/>
+        <div class="ui-message ui-messages-error ui-corner-all ui-error-space" *ngIf="!city.valid && city.dirty">
+          Please enter a City
+        </div>
+      </div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-4"><label for="state">State</label></div>
+      <div class="ui-grid-col-8"><p-dropdown [filter]="true" #state="ngModel" required id="state" [options]="states" name="state" [(ngModel)]="location.state"></p-dropdown>
+        <div class="ui-message ui-messages-error ui-corner-all ui-error-space" *ngIf="!state.valid && state.dirty">
+          Please choose a State
+        </div>
+      </div>
+    </div>
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-4"><label for="zip">Zip</label></div>
+      <div class="ui-grid-col-8"><input required pInputText pKeyFilter="pint" #zip="ngModel" id="zip" name="zip" maxlength="5" minlength="5" [(ngModel)]="location.zip"/>
+        <div class="ui-message ui-messages-error ui-corner-all ui-error-space" *ngIf="!zip.valid && zip.dirty">
+          Please enter a valid zip
+        </div>
+      </div>
+    </div>
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-12">
+        <div class="ui-message ui-messages-error ui-corner-all ui-error-space" *ngIf="validatedLocation && !validatedLocation.valid">
+          {{validatedLocation?.error}}
+        </div>
+      </div>
+    </div>
+  </div>
+  </form>
+
+  <div class="address-validation" [ngClass]="{'-invalid': suggested}">
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-6">
+        <div class="address">
+          <h4>Original address</h4>
+          {{location?.streetAddress}}<br>
+          {{location?.city}},
+          {{location?.state}}
+          {{location?.zip}}
+
+        </div>
+        <button pButton type="button" (click)="resetLocation()" class="ui-button-success"
+                label="Use another address"></button>
+      </div>
+
+      <div class="ui-grid-col-6">
+        <div class="address">
+          <h4>Suggested address</h4>
+          {{validatedLocation?.suggested?.streetAddress}}<br>
+          {{validatedLocation?.suggested?.city}},
+          {{validatedLocation?.suggested?.state}}
+          {{validatedLocation?.suggested?.zip}}
+        </div>
+        <button pButton type="button" (click)="save(validatedLocation.suggested)" label="Use suggested" class="ui-button-success"></button>
+      </div>
+    </div>
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-12">
+        <div class="ui-message ui-messages-info ui-corner-all" *ngIf="validatedLocation && !validatedLocation.valid">
+          {{validatedLocation?.validationMsg}}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="processing" *ngIf="processing">
+    <p-progressSpinner></p-progressSpinner>
+  </div>
+  <p-footer *ngIf="!suggested">
+    <div class="ui-dialog-buttonpane ui-helper-clearfix" align="right">
+      <button type="button" pButton icon="pi pi-check" (click)="form.valid && validateLocation(location)" label="Change location"></button>
+    </div>
+  </p-footer>
+</p-dialog>

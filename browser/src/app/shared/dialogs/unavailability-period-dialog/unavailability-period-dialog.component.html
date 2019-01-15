@@ -1,0 +1,36 @@
+<div class="dialog-content-wrapper">
+  <div class="dialog-content-container">
+    <div class="header">
+      <mat-icon class="close-modal" color="accent" (click)="close()">clear</mat-icon>
+      <div class="header-content" fxLayout="row" fxLayoutAlign="start end">
+        Add/edit period
+      </div>
+    </div>
+    <form action="" #form="ngForm" (ngSubmit)="form.valid && save()">
+      <div class="content">
+        <div class="row">
+          <div class="col-md-6 col-xs-12">
+            <cv-input-field>
+              <cv-field-label>Choose reason</cv-field-label>
+              <cv-select [items]="reasons" labelKey="label" valueKey="value" [(ngModel)]="reason" name="reason" required
+                         (onSelect)="selectedReason($event)"
+                         label="Reason for unavailability"></cv-select>
+            </cv-input-field>
+          </div>
+        </div>
+        <cv-input-field class="range-picker">
+          <cv-field-label>Set period of unavailability</cv-field-label>
+          <cv-date-range-picker required
+                                name="range"
+                                [minDate]="minDate"
+                                [maxDate]="maxDate"
+                                [(ngModel)]="range"></cv-date-range-picker>
+        </cv-input-field>
+      </div>
+      <div class="actions">
+        <button type="button" cv-button-flat flatStyle="dark" (click)="close()">Cancel</button>
+        <button type="submit" cv-button>{{buttonTitle}}</button>
+      </div>
+    </form>
+  </div>
+</div>

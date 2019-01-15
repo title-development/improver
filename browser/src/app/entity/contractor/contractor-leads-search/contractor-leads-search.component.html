@@ -1,0 +1,158 @@
+<mat-sidenav-container>
+  <mat-sidenav #sidenav [opened]="isSidebarOpen" [disableClose]="true" [mode]="'over'">
+    <ng-container *ngIf="mediaQuery == 'xs'">
+      <mat-icon class="toggle-sidenav" color="primary" (click)="sidenav.close()" *ngIf="sidenav.opened">
+        keyboard_arrow_left
+      </mat-icon>
+      <mat-icon class="toggle-sidenav" color="primary" (click)="sidenav.open()" *ngIf="!sidenav.opened">
+        keyboard_arrow_right
+      </mat-icon>
+    </ng-container>
+    <div class="loading-backdrop" [ngClass]="{'loading': mapContentIsLoading}"></div>
+
+    <div class="leads-panel" #leadsPanel>
+      <div class="search-field-holder">
+        <div class="field">
+          <mat-icon color="primary">search</mat-icon>
+          <input type="text" placeholder="Type to search" [(ngModel)]="search"/>
+        </div>
+      </div>
+      <perfect-scrollbar class="leads-list" *ngIf="sortedLeads">
+        <h4 *ngIf="!mapContentIsLoading && sortedLeads.length == 0">There are no new leads in selected area. You can discover new leads in neighbor areas using map tools.</h4>
+        <div class="lead"
+             *ngFor="let lead of sortedLeads | filterBy: {serviceType: search} let index = index"
+             (click)="getLead(lead, index)"
+             [ngClass]="{'-selected': (selectedLeadId == lead.id) && selectedLead, 'in-coverage' : areas.includes(lead.location.zip)}">
+          <div class="description">
+            <div class="top-line">
+              <div class="service-type">{{lead.serviceType}}</div>
+              <div class="price">{{lead.price/100 | currency:'USD':'symbol'}}</div>
+            </div>
+            <div class="location">
+              <span>
+              {{lead.location.city}},
+                {{lead.location.state}}
+                {{lead.location.zip}}
+              </span>
+              <div class="timestamp" *ngIf="!areas.includes(lead.location.zip)">{{lead.created | timeAgo}}</div>
+            </div>
+            <div class="bottom-line" *ngIf="areas.includes(lead.location.zip)">
+              <div class="in-area">In your area</div>
+              <div class="timestamp">{{lead.created | timeAgo}}</div>
+            </div>
+          </div>
+        </div>
+      </perfect-scrollbar>
+    </div>
+
+    <div class="lead-panel" [ngClass]="{'-opened': selectedLead}">
+      <ng-container *ngIf="selectedLead">
+        <div class="lead-header -border -spacing">
+          <mat-icon class="close-panel" (click)="selectedLead = null">close</mat-icon>
+          <h2>{{selectedLead.serviceType}}</h2>
+          <button cv-button
+                  [routerLink]="'/pro/leads-purchase/' + selectedLead.id">
+            Purchase project for {{selectedLead.price/100 | currency:'USD':'symbol'}}
+          </button>
+        </div>
+        <div class="scroll-wrapper">
+          <div class="lead-location -border -spacing">
+            <div class="location-detail">
+              <ul>
+                <li>
+                  <mat-icon class="icon">person</mat-icon>
+                  <span>{{selectedLead.clientName}}</span>
+                </li>
+                <li>
+                  <mat-icon class="icon">place</mat-icon>
+                  <span>
+                      {{selectedLead.location.city}},
+                    {{selectedLead.location.state}}
+                      {{selectedLead.location.zip}}
+                </span>
+                  <span class="see-on-map" (click)="moveMapToLead(selectedLead)">See on map</span>
+                </li>
+                <li>
+                  <i class="imp-icon-property-time"></i>
+                  <span>{{selectedLead.created | date:'medium' }}</span>
+                </li>
+                <li>
+                  <mat-icon class="mat-18">insert_invitation</mat-icon>
+                  <span>{{selectedLead.startDate}}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="lead-detail -spacing -descr" *ngIf="selectedLead.notes && selectedLead.notes != ''">
+            <h4>Notes</h4>
+            <p class="-coments">{{selectedLead.notes}}</p>
+            <ng-container *ngIf="selectedLead.details">
+              <ng-container *ngFor="let detail of selectedLead.details">
+                <h4>{{detail.name}}</h4>
+                <p *ngIf="detail.results"><span *ngFor="let res of detail.results">{{res}}</span></p>
+              </ng-container>
+            </ng-container>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </mat-sidenav>
+
+  <agm-map class="sidenav-content map-wrapper"
+           [zoom]="mapOptions.zoom"
+           [maxZoom]="mapOptions.maxZoom"
+           [minZoom]="mapOptions.minZoom"
+           [styles]="mapStyles"
+           (mapReady)="onMapReady($event)">
+    <leads-search-map (showInfoWindow)="onShowInfoWindow($event)"
+                      (updateLeads)="onLeadsUpdate($event)"
+                      [(mapIsLoading)]="mapContentIsLoading"
+                      [(areas)]="areas">
+    </leads-search-map>
+    <agm-snazzy-info-window [isOpen]="infoWindowOpenTrig"
+                            [latitude]="infoWindowData.latLng ? infoWindowData.latLng.lat : 40.730610"
+                            [longitude]="infoWindowData.latLng ? infoWindowData.latLng.lng : -73.935242"
+                            [maxWidth]="174"
+                            [maxHeight]="133"
+                            [wrapperClass]="'-snazzy-animate'"
+                            [backgroundColor]="'transparent'"
+                            [panOnOpen]="false"
+                            (afterClose)="onCloseInfoWindow()">
+      <ng-template>
+        <div class="si-animation-holder" (mouseleave)="onCloseInfoWindow()"
+             [ngClass]="{'-content-animate': infoWindowContentAnim }">
+          <div class="list" *ngIf="infoWindowData.leads" [style.height.px]="(infoWindowData.leads.length * 20) + 16">
+            <perfect-scrollbar>
+              <div>
+                <div class="item" *ngFor="let lead of infoWindowData.leads" [title]="lead.serviceType">
+                  <a href="" (click)="onShowLeadData($event, lead)">
+                    {{lead.serviceType}}
+                  </a>
+                </div>
+              </div>
+            </perfect-scrollbar>
+          </div>
+          <div class="si-footer">
+            <i></i><span [ngPlural]="infoWindowData.leadsAmount">
+            available
+            <ng-template ngPluralCase="=1">lead</ng-template>
+            <ng-template ngPluralCase="other">leads</ng-template>
+            in {{infoWindowData.zip}}
+          </span>
+          </div>
+        </div>
+      </ng-template>
+    </agm-snazzy-info-window>
+  </agm-map>
+
+</mat-sidenav-container>
+
+<div [cvSpinner]="mapContentIsLoading" [cvSpinnerSize]="32" ></div>
+
+
+
+
+
+
+
+

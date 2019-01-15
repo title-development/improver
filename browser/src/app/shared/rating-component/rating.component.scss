@@ -1,0 +1,35 @@
+@import "../../../improver-mixins.scss";
+
+.rating-component {
+  display: inline-block;
+  //vertical-align: sub;
+  color: #9e9e9e;
+
+  .numeric-rating {
+    margin-left: 15px;
+    margin-top: 3px;
+  }
+
+  .star {
+    //padding: 0 5px;
+  }
+
+  i {
+    //cursor: pointer;
+    color: $black-300;
+
+    &:before {
+      width: 0.39em;
+      margin: 0;
+    }
+
+    &.hover {
+      color: $secondary-rating;
+    }
+
+    &.active {
+      color: $primary-rating;
+    }
+  }
+
+}

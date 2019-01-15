@@ -1,0 +1,294 @@
+@import "../../../improver-mixins";
+
+.find-professionals {
+
+}
+
+.find-professionals-container {
+  .find-professionals-button {
+    padding: 0 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: $black-500;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    z-index: 3;
+    position: relative;
+
+    span {
+      padding-top: 2px;
+    }
+
+    @include response-to(sm) {
+      padding: 0;
+      width: 50px;
+    }
+
+    &.opened {
+      background: $primary-600;
+      color: $white !important;
+      cursor: pointer;
+
+      .mobile-menu-button {
+        color: $white;
+      }
+
+      &:hover {
+        //@include reset-hover-active-link-mixin();
+      }
+    }
+
+    .mobile-menu-button {
+
+      i {
+        font-size: 21px;
+      }
+
+      @include response-to(sm) {
+        min-width: inherit;
+        height: 55px;
+        width: 55px;
+        span {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 100%;
+          height: 100%;
+          padding: 0;
+        }
+      }
+    }
+  }
+
+  .dropdown-content-wrapper {
+    position: fixed;
+    left: 0;
+    right: 0;
+    z-index: 3;
+    text-align: initial;
+    color: #ffffff;
+    background-color: $primary-600;
+
+    @include response-to(sm) {
+      top: 50px;
+      bottom: 0;
+    }
+
+    .dropdown-content {
+      display: flex;
+      flex-direction: column;
+      width: 1170px;
+      margin: 0 auto;
+      padding: 15px 0 15px 0;
+
+      @include response-to(lg) {
+        width: 100%;
+        padding: 15px;
+      }
+
+      .search-form {
+        display: flex;
+
+        .service-type-form-group {
+          position: relative;
+          width: 60%;
+
+          @include response-to(xs) {
+            width: 71%;
+          }
+        }
+
+        .zip-code-form-group {
+          width: 40%;
+
+          @include response-to(xs) {
+            width: 26%;
+          }
+        }
+
+        cv-select ::ng-deep {
+          .cv-input {
+            border: none;
+            height: 50px;
+            font-size: 16px;
+            border-radius: 0;
+            text-overflow: ellipsis;
+            font-weight: 400;
+            padding: 13px 16px 10px;
+
+            @include response-to(sm) {
+              font-size: 13px;
+              height: 45px;
+            }
+
+            @include response-to(xs) {
+              padding: 13px 8px 10px;
+            }
+          }
+        }
+        .messages-block {
+          font-size: 10px;
+          background-color: $white;
+          position: absolute;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          transform: translateY(100%);
+
+          > div {
+            box-shadow: inset 0px 2px 3px rgba(50, 50, 50, 0.14);
+            padding: 5px;
+          }
+        }
+
+        .zip-code-form-group {
+          position: relative;
+          .messages-block {
+            margin: 0 1px;
+            border-left: 1px solid $black-400;
+            left: -1px;
+          }
+
+          .main-search-zip-input {
+            border: none;
+            border-right: 1px solid $black-300;
+            border-left: 1px solid $black-300;
+            height: 50px;
+            max-height: 50px !important;
+            padding: 2px 16px 0;
+            font-size: 16px;
+            width: 100%;
+            border-radius: 0;
+
+            @include response-to(sm) {
+              font-size: 13px;
+              height: 45px;
+            }
+
+            @include response-to(xs) {
+              padding: 2px 8px 0;
+            }
+          }
+        }
+
+        .search-button {
+          border: none;
+          min-width: 50px;
+          width: 50px;
+          background-color: $white;
+          color: $primary-600;
+          max-height: 50px;
+          margin: 0;
+          padding: 0;
+          font-size: 0;
+          border-radius: 0;
+          cursor: pointer;
+          span {
+            display: inline-block;
+            width: 100%;
+            height: 100%;
+            vertical-align: middle;
+            mat-icon {
+              vertical-align: middle;
+            }
+            &:after {
+              content: '';
+              display: inline-block;
+              vertical-align: middle;
+              height: 100%;
+              width: 0;
+            }
+          }
+          @include response-to(sm) {
+            height: 45px;
+            width: 45px;
+            min-width: 45px;
+          }
+
+          &:hover {
+          }
+        }
+      }
+
+      .categories-wrapper {
+        padding-top: 15px;
+
+        .category-wrapper {
+          padding: 10px 0;
+          display: flex;
+          flex-direction: column;
+
+          .header {
+            padding-bottom: 10px;
+
+            .name {
+              font-size: 18px;
+              font-weight: 800;
+            }
+
+            .action {
+              font-size: 13px;
+              padding-left: 15px;
+              color: #ffffff;
+
+              &:hover {
+                cursor: pointer;
+              }
+            }
+          }
+
+          .items {
+            @media (max-width: 576px) and (orientation: landscape) {
+              .col-xs-12 {
+                width: 50%;
+              }
+            }
+
+            .item {
+              font-size: 13px;
+              padding: 5px 0;
+              max-width: 87%;
+              height: 100%;
+              display: flex;
+              align-items: center;
+
+              a {
+                color: white;
+              }
+
+              @include response-to(sm) {
+                max-width: 100% !important;
+                margin: 5px 25px 5px 0;
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+              }
+
+              @include response-to(xs) {
+                margin: 3px 25px 3px 0;
+              }
+
+              &:hover {
+                text-decoration: underline;
+                cursor: pointer;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .dropdown-overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+  }
+}

@@ -1,0 +1,250 @@
+@import "../../../improver-mixins.scss";
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.drop-zone-actions {
+  position: absolute;
+  right: 0;
+  top: 0;
+  .submit-button {
+    &:disabled {
+      background: #dddddd !important;
+      pointer-events: none;
+    }
+  }
+}
+
+.header {
+  position: relative;
+  margin-bottom: 24px;
+  .title {
+    font-size: 20px;
+    font-weight: 600;
+    text-align: left;
+    color: $black-primary;
+  }
+  .subtitle {
+    font-size: 10px;
+    color: rgba(0, 0, 0, 0.24);
+    margin-bottom: 24px;
+  }
+}
+
+input[type=file] {
+  display: none;
+}
+
+.content {
+  color: rgba(0, 0, 0, 0.16);
+
+  @include response-to(sm) {
+    margin: 0 -6px;
+  }
+}
+
+.image-spacer {
+  width: 0;
+  height: calc(((100vw - (100vw - 1020px)) / 4) - 6px);
+  @include response(md) {
+    height: calc((100vw / 4) - 10px);
+  }
+
+  @include response(sm) {
+    height: calc((100vw / 3) - 12px);
+  }
+
+  @include response-to(xs) {
+    height: calc((100vw / 2) - 16px);
+  }
+  &.project-view {
+    height: calc(((100vw - (100vw - 655px)) / 4) - 12px);
+    @include response-to(xs) {
+      height: calc((100vw / 2) - 27px);
+    }
+  }
+}
+
+.drop-zone-holder {
+  text-align: center;
+  align-items: center;
+  flex-direction: row;
+  justify-content: center;
+  border-radius: 2px;
+  background-color: $white;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.16);
+  display: flex;
+  cursor: pointer;
+  transition: min-height .6s ease;
+  @include response-to(sm) {
+    flex-direction: column;
+  }
+  label {
+    margin-bottom: 16px;
+    @include response-from(md) {
+      display: none;
+    }
+  }
+  h3 {
+    color: transparent;
+    font-size: 20px;
+    margin: 0;
+    font-weight: 400;
+  }
+}
+
+.toggle-drop-zone {
+  cursor: pointer;
+  transition: width .6s ease;
+  position: relative;
+  margin-bottom: 24px;
+  display: flex;
+
+  @include response-to(sm) {
+    margin-bottom: 12px;
+    padding: 0 6px;
+  }
+
+  &.-opened {
+    width: 100%;
+    .drop-zone-holder {
+      width: 100%;
+
+      @include response-to(sm) {
+        padding: 0 15px;
+      }
+
+      h3 {
+        transition: color .3s ease .7s;
+        color: $black-400;
+
+        @include response(sm) {
+          font-size: 16px;
+        }
+
+        @include response(xs) {
+          font-size: 14px;
+        }
+      }
+    }
+    .add-image-button {
+      pointer-events: none;
+      .inner {
+        opacity: 0;
+        transition: opacity 0s ease 0s;
+      }
+    }
+  }
+  .add-image-button {
+    cursor: pointer;
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    .mat-icon {
+      color: rgba(0, 0, 0, 0.09);
+      font-size: 32px;
+    }
+  }
+  .inner {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    opacity: 1;
+    transition: opacity .3s ease .5s;
+  }
+  .add-photo-button-text {
+    font-size: 14px;
+    margin-top: 5px;
+    color: $black-400;
+  }
+}
+
+.photo {
+  margin-bottom: 24px;
+
+  //&:nth-child(2n-1) {
+  //  padding-left: 6px;
+  //}
+  //
+  //&:nth-child(2n) {
+  //  padding-right: 6px;
+  //}
+
+  @include response-to(sm) {
+    margin-bottom: 12px;
+    padding: 0 6px;
+  }
+
+  &:hover {
+    .photo-inner {
+      &:after {
+        background-color: rgba(0, 0, 0, 0.54);
+      }
+      .remove {
+        opacity: 1;
+      }
+      .hover-text {
+        color: $white;
+      }
+    }
+  }
+  .photo-inner {
+    height: 0;
+    padding-bottom: 100%;
+    width: 100%;
+    cursor: pointer;
+    position: relative;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 2px;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
+    .remove {
+      position: absolute;
+      right: 8px;
+      top: 8px;
+      z-index: 3;
+      opacity: 0;
+      transition: opacity .3s ease;
+      &:hover {
+
+      }
+      mat-icon {
+        color: $white;
+        font-size: 20px;
+        display: block;
+      }
+    }
+    &:after {
+      transition: background-color .3s ease;
+      content: '';
+      display: block;
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      background-color: transparent;
+      z-index: 1;
+    }
+    .hover-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      font-size: 16px;
+      transition: color .3s ease;
+      color: transparent;
+      user-select: none;
+    }
+  }
+}
+

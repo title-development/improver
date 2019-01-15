@@ -1,0 +1,54 @@
+<div class="dialog-content-wrapper">
+  <div class="dialog-content-container">
+
+    <div class="header" >
+
+      <mat-icon class="close-modal" color="accent" (click)="close()">clear</mat-icon>
+
+      <div class="header-content" fxLayout="row" fxLayoutAlign="center end">
+
+        <div class="title">Cancel my project</div>
+
+      </div>
+
+    </div>
+
+    <div class="content">
+
+      <form class="cancel-project-form"
+            name="cancel-project-form"
+            #cancelProjectForm="ngForm"
+            (ngSubmit)="cancelProjectForm.valid && onSubmit(cancelProjectForm)"
+            novalidate>
+
+        <cv-radio-group  name="reason" *ngIf="closeProjectVariants" [(ngModel)]="reason" required  >
+
+          <cv-radio *ngFor="let variant of closeProjectVariants.cancelVariants | forjson" [value]="variant.key" >
+            <div>{{variant.value}}</div>
+          </cv-radio>
+
+        </cv-radio-group>
+
+        <div class="comment-wrapper" [ngClass]="{'visible-input': cancelProjectForm.controls['reason']?.value == 'OTHER'}">
+          <textarea rows="3" trim cv-input placeholder="Type reasons of declining" name="comment" [(ngModel)]="comment" [required]="cancelProjectForm.controls['reason']?.value == 'OTHER'"></textarea>
+        </div>
+
+
+
+
+        <div class="buttons-wrapper" fxLayout="row" fxLayoutAlign="space-between center">
+
+          <button class="cancel-button" (click)="close()" type="button">Nevermind</button>
+            <div class="cv-error" *ngIf="cancelProjectForm.submitted && !cancelProjectForm.valid">Required</div>
+          <button cv-button type="submit">Submit</button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+</div>
+
+

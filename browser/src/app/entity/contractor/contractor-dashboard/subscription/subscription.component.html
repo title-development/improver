@@ -1,0 +1,44 @@
+<ng-container *ngIf="state == subscriptionState.NOT_SUBSCRIBED">
+  <div class="not-subscribed">
+    <h3>Subscribe on discounted leads</h3>
+    <p title="Set a monthly budget to receive automatic leads">Set a monthly budget to receive automatic leads</p>
+    <button class="secondary-button" (click)="subscribeNow()">
+      Find out more
+    </button>
+    <div class="gradient">
+      <div class="circle">
+        <div class="circle -second -offset"><div class="circle -third -offset"><div class="circle -four -offset"></div></div></div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+<ng-container *ngIf="state == subscriptionState.SUBSCRIBED">
+  <div class="subscribed">
+    <div class="labels">
+      <div class="label">Subscription</div>
+      <div class="label">{{leadsReport?.current.month}}</div>
+    </div>
+
+    <div class="amount-holder">
+      <div class="amount">
+        <span>{{leadsReport.current.subscriptionSpend / 100 | currency:'USD':'symbol'}}</span>
+        <span>/{{leadsReport.current.subscriptionAmount / 100 | currency:'USD':'symbol'}}</span>
+      </div>
+      <div class="deals">Made {{leadsReport.current.subscriptionDeals}}
+        <ng-container [ngPlural]="leadsReport.current.subscriptionDeals">
+          <ng-template ngPluralCase="=0">deals</ng-template>
+          <ng-template ngPluralCase="=1">deal</ng-template>
+          <ng-template ngPluralCase="few">deals</ng-template>
+          <ng-template ngPluralCase="other">deals</ng-template>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="progress-holder">
+      <div class="progress-background">
+        <div class="progress" [ngStyle]="{'width' : subscriptionValue+'%'}" (mouseover)="showTooltip($event)" (mouseleave)="hideTooltip($event)"></div>
+        <div class="tooltip" [ngClass]="{'show': tooltipShow}" [ngStyle]="{'left': tooltipPositionLeft}">{{leadsReport.current.subscriptionSpend / 100 | currency:'USD':'symbol'}}</div>
+      </div>
+    </div>
+  </div>
+</ng-container>

@@ -1,0 +1,8 @@
+@import "../../scss/variables";
+:host {
+  color: $red;
+  font-size: 12px;
+  line-height: 19px;
+  display: block;
+  text-align: left;
+}

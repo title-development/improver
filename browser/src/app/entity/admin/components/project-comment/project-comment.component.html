@@ -1,0 +1,41 @@
+<p-dialog
+  header="Add project comment"
+  [contentStyle]="{'overflow':'visible'}" [(visible)]="toggle" [responsive]="true" showEffect="fade"
+  [width]="700"
+  [modal]="true">
+  <form #form="ngForm" (ngSubmit)="form.valid && addComment()">
+    <div class="ui-grid ui-grid-responsive ui-fluid">
+
+      <div class="ui-g">
+        <div class="ui-grid-col-4">
+          <label for="comment">Comment</label>
+        </div>
+        <div class="ui-grid-col-8">
+        <textarea [rows]="5" [cols]="30" pInputTextarea
+                  id="comment"
+                  name="comment"
+                  #comment="ngModel"
+                  [(ngModel)]="model.comment"
+                  required>
+        </textarea>
+        </div>
+        <div class="ui-grid-col-4"></div>
+        <div class="ui-grid-col-8">
+          <div class="ui-message ui-messages-error ui-corner-all"
+               *ngIf="(comment.dirty || comment.touched || form.submitted) && !comment.valid">
+            <span *ngIf="comment.errors?.required">Required</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix" align="right">
+        <button type="submit" pButton label="Submit" [disabled]="form.invalid"></button>
+      </div>
+    </p-footer>
+
+  </form>
+
+</p-dialog>

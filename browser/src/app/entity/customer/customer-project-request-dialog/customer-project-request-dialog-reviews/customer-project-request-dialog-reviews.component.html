@@ -1,0 +1,39 @@
+<perfect-scrollbar [disabled]="mediaQuery.sm || mediaQuery.xs">
+<!--<div class="header" *ngIf="newReviewStatus && projectRequest.reviewed">-->
+  <!--<div class="reviews-not-hired-message">-->
+    <!--You've already left review on {{projectRequest.company.name}} regarding this project-->
+  <!--</div>-->
+<!--</div>-->
+
+<div class="content">
+  <ng-template ngFor let-review let-first="first" [ngForOf]="reviews" let-i="index">
+    <div class="review-wrapper">
+      <div class="review-header">
+        <div class="logo"
+             [ngStyle]="review.customer.iconUrl ? {'background-image': 'url('+review.customer.iconUrl+')'} : {'background-image':'url(assets/img/customer-logo-placeholder.png)'}">
+        </div>
+        <div class="info-block">
+          <div class="top-line">
+            <div class="reviewer-name">{{review.customer.name}}</div>
+          </div>
+          <div class="bottom-line">
+            <div class="rating-wrapper">
+              <rating-component [rating]="review.score" [starSize]="16"></rating-component>
+            </div>
+            <div class="review-numeric-rating">{{review.score}} / 5</div>
+          </div>
+          <div class="date" *ngIf="review.published"><i class="material-icons">schedule</i> {{review.created | date:'longDate'}}</div>
+          <div class="date" *ngIf="!review.published" [title]="'Will be published on ' + (review.publishDate | date:'longDate')"><i class="material-icons">schedule</i> Unpublished</div>
+        </div>
+      </div>
+      <div class="review-content textarea-formatting">
+        {{review.description}}
+      </div>
+    </div>
+  </ng-template>
+  <div class="show-more" *ngIf="reviewsPage && !reviewsPage.last">
+    <button (click)="showMoreReviews()" class="btn-show-more-reviews">Show more</button>
+  </div>
+  <div class="no-reviews" *ngIf="reviews && reviews.length < 1">This professional has not been reviewed yet.</div>
+</div>
+</perfect-scrollbar>

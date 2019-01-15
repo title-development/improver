@@ -1,0 +1,149 @@
+$color1: #40505C;
+$color2: #B20E3F;
+$color3: #1B9DDB;
+$color4: #679750;
+$shadow: 0 0 10px #A4F9FC;
+
+$size: 36px;
+$jump: 36px;
+$padding: 18px;
+$wrapper-width: ($size*4+$padding*4);
+$wrapper-height: ($size+$jump);
+
+.improve-spinner {
+  position: absolute;
+  width: $wrapper-width;
+  height: $size;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+  .block {
+    position: absolute;
+    width: $size;
+    height: $size;
+    border-radius: 5px;
+    box-shadow: $shadow;
+    &:nth-child(1) {
+      left: 0;
+      background-color: $color1;
+    }
+    &:nth-child(2) {
+      left: ($padding + $size);
+      background-color: $color2;
+    }
+    &:nth-child(3) {
+      left: ($padding + $size)*2;
+      background-color: $color3;
+    }
+    &:nth-child(4) {
+      left: ($padding + $size)*3;
+      background-color: $color4;
+    }
+  }
+  .mover {
+    animation: slide 1.3s infinite alternate cubic-bezier(0.645, 0.045, 0.355, 1);
+  }
+  .jumper {
+    //transform-origin : -$padding * 1.3;
+    &:nth-child(2) {
+      animation: jump1 2.6s .2s infinite linear;
+    }
+    &:nth-child(3) {
+      animation: jump2 2.6s .35s infinite linear;
+    }
+    &:nth-child(4) {
+      animation: jump3 2.6s .5s infinite linear;
+    }
+    &:nth-child(5) {
+      animation: jump4 2.6s .65s infinite linear;
+    }
+  }
+}
+@keyframes slide {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(($padding+$size)*3) rotate(0);
+  }
+}
+
+@mixin jump(){
+  transform: rotateZ(90deg);
+}
+
+@mixin step0(){
+  transform: rotate(0) ;
+}
+@mixin step1(){
+  transform: rotateZ(90deg);
+}
+@mixin step2(){
+  transform: rotateZ(180deg);
+}
+@mixin step3(){
+  transform: rotateZ(180deg);
+}
+@mixin step4(){
+  transform: rotateZ(180deg);
+}
+@mixin step5(){
+  transform: rotateZ(90deg);
+}
+@mixin step6(){
+  transform: rotateZ(0);
+}
+@mixin step7(){
+  transform: rotateZ(-0);
+}
+@mixin step8(){
+  transform: rotateZ(0);
+}
+
+@keyframes jump1 {
+  0%          { @include step0 }
+  7.5%        { @include step1 }
+  15%         { @include step2 }
+  19%         { @include step3 }
+  23%, 70%    { @include step4 }
+  77.5%       { @include step5 }
+  85%         { @include step6 }
+  89%         { @include step7 }
+  94%, 100%   { @include step8 }
+}
+
+@keyframes jump2 {
+  0%          { @include step0 }
+  7.5%        { @include step1 }
+  15%         { @include step2 }
+  19%         { @include step3 }
+  23%, 57.5%  { @include step4 }
+  65%         { @include step5 }
+  72.5%       { @include step6 }
+  76.5%       { @include step7 }
+  80.5%, 100% { @include step8 }
+}
+
+@keyframes jump3 {
+  0%          { @include step0 }
+  7.5%        { @include step1 }
+  15%         { @include step2 }
+  19%         { @include step3 }
+  23%, 45%    { @include step4 }
+  52.5%       { @include step5 }
+  60%         { @include step6 }
+  64%         { @include step7 }
+  68%, 100%   { @include step8 }
+}
+
+@keyframes jump4 {
+  0%          { @include step0 }
+  7.5%        { @include step1 }
+  15%         { @include step2 }
+  19%         { @include step3 }
+  23%, 32.5%  { @include step4 }
+  40%         { @include step5 }
+  47.5%       { @include step6 }
+  51.5%       { @include step7 }
+  55.5%, 100% { @include step8 }
+}

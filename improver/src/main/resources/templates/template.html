@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html charset=UTF-8"/>
+  <title>Email from Home Improve</title>
+</head>
+
+<body>
+
+<center style="width:100%; table-layout:fixed">
+
+  <div layout:fragment="header" style="font-family: 'Trebuchet MS', sans-serif;">
+    <table border="0"
+           cellpadding="0"
+           cellspacing="0"
+           width="100%">
+      <tr>
+        <td align="center" width="100%">
+          <a th:href="${siteUrl}">
+            <img style="width: 117px; margin: 24px"
+                 th:src="|${logoUrl}|"/>
+          </a>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div layout:fragment="content"></div>
+
+  <div layout:fragment="footer"
+       style="background-color: #fafafa; color: #a4a4a4; font-family: 'Trebuchet MS', sans-serif;">
+    <table border="0"
+           cellpadding="0"
+           cellspacing="0"
+           width="100%" style="font-size: 14px;">
+      <tr>
+        <td align="center" width="100%" style="font-family: 'Trebuchet MS', sans-serif">
+          <div th:text="${homeImproveFullName}" style="margin-bottom: 8px;">.</div>
+          <div th:text="${homeImproveStreetAddress}" style="margin-bottom: 8px;"></div>
+          <div th:text="${homeImproveAddress}" style="margin-bottom: 16px;"></div>
+        </td>
+      </tr>
+      <tr class="separator">
+        <td align="center" width="100%" style="font-family: 'Trebuchet MS', sans-serif">
+          <div style="border-bottom: 1px solid #e7e7e7; width: 180px"></div>
+        </td>
+      </tr>
+      <tr>
+        <td align="center" width="100%" style="padding: 16px 0px; font-family: 'Trebuchet MS', sans-serif">
+          <span th:text="${supportText}"></span>
+          <a th:text="${supportEmail}" th:href="'mailto:' + ${supportEmail}"></a>
+        </td>
+      </tr>
+      <tr class="separator">
+        <td align="center" width="100%" style="font-family: 'Trebuchet MS', sans-serif">
+          <div style="border-bottom: 1px solid #e7e7e7; width: 180px"></div>
+        </td>
+      </tr>
+      <tr>
+        <td align="center" width="100%" style="padding: 16px 0px; font-family: 'Trebuchet MS', sans-serif">
+          <div style="margin-bottom: 8px">
+            <a th:href="${siteUrl + '/my/settings/notifications'}"
+               style="text-decoration: underline; margin: 0px 24px; cursor: pointer">update
+              subscription preferences</a>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+</center>
+
+</body>
+
+</html>

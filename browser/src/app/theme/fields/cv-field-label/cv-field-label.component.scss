@@ -1,0 +1,9 @@
+@import "../../scss/variables";
+:host {
+  font-size: 12px;
+  line-height: 1.33;
+  text-align: left;
+  color: $black-secondary;
+  display: block;
+  margin-bottom: 5px;
+}

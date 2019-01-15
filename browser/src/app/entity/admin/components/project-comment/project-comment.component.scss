@@ -1,0 +1,15 @@
+:host {
+  .ui-g {
+    align-items: center;
+    margin-bottom: 15px;
+  }
+
+  &::ng-deep .ui-dialog .ui-inputtext, &::ng-deep.ui-dialog textarea {
+    margin-bottom: 0px;
+  }
+
+  .ui-messages-error {
+    margin-top: 6px;
+  }
+
+}

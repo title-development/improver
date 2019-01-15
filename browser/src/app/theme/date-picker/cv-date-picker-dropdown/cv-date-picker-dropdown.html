@@ -1,0 +1,30 @@
+<div class="date-picker">
+  <div class="navigation">
+  <div class="year">
+    <div class="nav prev" [ngClass]="{'-disabled': prevYearDisabled}" (click)="onPrevYear(1)">
+      <i class="imp-icon-left-open"></i>
+    </div>
+    <div class="current"><span>{{month.year}}</span></div>
+    <div class="nav next" [ngClass]="{'-disabled': nextYearDisabled}" (click)="onNextYear(1)">
+      <i class="imp-icon-right-open"></i>
+    </div>
+  </div>
+  <div class="month">
+    <div class="nav prev" [ngClass]="{'-disabled': prevMonthDisabled}" (click)="onPrevMonth($event)">
+      <i class="imp-icon-left-open"></i>
+    </div>
+    <div class="current"><span>{{month.month}}</span></div>
+    <div class="nav next" [ngClass]="{'-disabled': nextMonthDisabled}" (click)="onNextMonth($event)">
+      <i class="imp-icon-right-open"></i>
+    </div>
+  </div>
+  </div>
+  <div class="weeks">
+    <div *ngFor="let week of weekLabels">{{week}}</div>
+  </div>
+  <div class="days">
+    <div class="other" *ngFor="let day of month.previousMonth">{{day}}</div>
+    <div [ngClass]="{'-current': month.current == day, '-disabled': (maxDate ? day >= month.disabledToDay : false) || (minDate ? day <= month.disabledFromDay : false)}" *ngFor="let day of month.days let i = index" (click)="select(day)">{{day}}</div>
+    <div class="other" *ngFor="let day of month.nextMonth">{{day}}</div>
+  </div>
+</div>

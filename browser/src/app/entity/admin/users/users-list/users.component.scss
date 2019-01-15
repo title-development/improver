@@ -1,0 +1,15 @@
+:host {
+  display: block;
+}
+p-dataTable::ng-deep {
+  .ui-cell-data {
+    font-size: 14px;
+  }
+  .ui-column-title {
+    font-size: 14px;
+    //text-transform: capitalize;
+  }
+}
+label {
+  text-transform: capitalize;
+}

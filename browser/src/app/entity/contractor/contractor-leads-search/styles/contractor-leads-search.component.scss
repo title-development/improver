@@ -1,0 +1,94 @@
+@import "../../../../../improver-mixins.scss";
+
+:host {
+  height: 100%;
+  display: block;
+}
+
+agm-map::ng-deep {
+  .agm-map-container-inner {
+    height: 100%;
+  }
+}
+
+.mat-sidenav-container {
+  height: 100%;
+  flex-grow: 1;
+  font-weight: normal;
+
+  @include response-to(xs) {}
+  @include response(sm) {}
+
+
+  ::ng-deep .mat-drawer-backdrop {
+    visibility: hidden;
+  }
+
+  .mat-sidenav {
+    padding: 0px 0px 2px 0px;
+    width: 320px;
+    overflow-y: visible;
+    visibility: visible !important;
+
+    .toggle-sidenav {
+      position: absolute;
+      left: 320px;
+      top: 0;
+      background-color: $white;
+      border: 1px solid whitesmoke;
+      padding: 15px 0;
+      cursor: pointer
+    }
+
+    .loading-backdrop {
+      pointer-events: none;
+      background-color: rgba(0, 0, 0, 0);
+      height: 100%;
+      position: absolute;
+      z-index: 1;
+      width: 100%;
+      transition: all 0.3s ease-in 0s;
+
+      &.loading {
+        pointer-events: all;
+        background-color: rgba(0, 0, 0, 0.15);
+        display: block;
+        transition: all 0.2s ease-out 0s;
+      }
+
+    }
+  }
+
+  ::ng-deep mat-sidenav-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+  .map-wrapper {
+    position: absolute;
+    left: 320px;
+    bottom: 0;
+    top: 0px;
+    right: 0;
+    z-index: 1;
+  }
+
+}
+
+
+
+
+.spinner-wrapper {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 8px;
+  z-index: 9999;
+  height: 32px;
+}
+
+::ng-deep .si-wrapper-top {
+  pointer-events: all;
+}

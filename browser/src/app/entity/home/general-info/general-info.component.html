@@ -1,0 +1,66 @@
+<div class="container-wide">
+  <div class="row">
+    <div class="col-xs-12 col-md-6">
+      <div class="general-info-part-header find-us">All over US soon</div>
+      <div class="general-info-part-content map">
+        <img src="/assets/img/dotted-us-map.jpg" alt="Map">
+      </div>
+    </div>
+
+    <div class="col-xs-12 col-md-6">
+      <div class="general-info-part-header">Testimonials</div>
+      <div class="general-info-part-content carousel">
+
+        <div class="dots-wrapper noselect">
+          <div class="wrapper">
+            <ng-template ngFor [ngForOf]="testimonials" let-i="index">
+              <div class="dot-wrapper" [ngClass]="{'active': i == currentIndex}" (click)="setCurrentIndex(i)"></div>
+            </ng-template>
+          </div>
+        </div>
+
+        <ng-template ngFor [ngForOf]="testimonials" let-item let-i="index">
+
+          <div>
+
+            <div class="testimonial-card" [@carouselAnimation]="positions[i]">
+
+              <div class="testimonial-card-header">
+
+                <mat-icon fxFlexOffset="16px">account_circle</mat-icon>
+                <div class="header-text">
+                  <div class="name">{{item.full_name}}</div>
+                  <div class="description">{{item.description}}, {{item.state}}</div>
+                </div>
+
+              </div>
+
+              <div class="testimonial-card-content">
+                <div class="testimonial-card-body">
+                  {{item.text}}
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </ng-template>
+
+
+      </div>
+
+      <div class="arrow-backward-wrapper noselect">
+        <div class="arrow-backward" (click)="moveBackward()"></div>
+      </div>
+
+      <div class="arrow-forward-wrapper noselect">
+        <div class="arrow-forward" (click)="moveForward()"></div>
+      </div>
+
+    </div>
+  </div>
+
+
+</div>
+

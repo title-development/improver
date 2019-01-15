@@ -1,0 +1,59 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-3 sm-none xs-none">
+      <div class="account-top-line"></div>
+      <account-nav></account-nav>
+    </div>
+    <div class="col-md-9 col-sm-12">
+
+      <div class="account-nav-wrapper">
+
+        <div class="account-top-line">
+          <div class="account-nav-title">Notifications</div>
+        </div>
+        <div [cvSpinner]="!notificationSettings" [cvSpinnerSize]="24">
+          <div class="notification-settings-card card" *ngIf="notificationSettings">
+            <div class="notification-settings-title">Choose the emails you want to receive from Home Improve:</div>
+
+            <div class="notification-methods-wrapper" fxLayout="column" fxLayoutAlign="start end">
+
+              <div class="notification-settings-form-content">
+
+                <cv-checkbox name="projectLifecycle" [(ngModel)]="notificationSettings.projectLifecycle">
+                  <div class="notification-label">
+                    <div class="label">Project Life-cycle</div>
+                    <div class="hint">Email notification on order submit, close, cancel, etc</div>
+                  </div>
+                </cv-checkbox>
+
+                <cv-checkbox name="proRequests" [(ngModel)]="notificationSettings.proRequests">
+                  <div class="notification-label">
+                    <div class="label">PRO Requests</div>
+                    <div class="hint">Receive emails when PRO sent you project request</div>
+                  </div>
+                </cv-checkbox>
+
+                <cv-checkbox name="marketing" [(ngModel)]="notificationSettings.marketing">
+                  <div class="notification-label">
+                    <div class="label">Marketing</div>
+                    <div class="hint">Receive emails regarding product and special offers from Home Improve</div>
+                  </div>
+                </cv-checkbox>
+
+              </div>
+
+              <button type="button"
+                      class="notification-settings-submit-button submit-button"
+                      (click)="updateNotificationSettings()">
+                Save
+              </button>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<layout-footer></layout-footer>

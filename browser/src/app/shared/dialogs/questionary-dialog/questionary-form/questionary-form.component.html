@@ -1,0 +1,25 @@
+<form class="questionary-form" [formGroup]="mainForm" [ngClass]="changeBg ? 'bg-white' : 'bg-image'">
+  <div class="start-screen" *ngIf="!questionaryControlService.showQuestionary && !questionaryControlService.questionaryIsLoading">
+
+    <div class="logo-text">HOME IMPROVE</div>
+
+    <div class="start-screen-hint">We'll ask you few questions to find the right pro for you.</div>
+
+    <button type="button" class="start-screen-continue-button"
+            (click)="questionaryControlService.showQuestionary = true; changeBg = true;">
+      Continue
+    </button>
+  </div>
+  <div *ngIf="questionaryControlService.showQuestionary" class="start-white-screen" fxFlexFill>
+    <ng-container>
+      <!--TODO: check if <div class="form-row"> container is necessary-->
+      <div class="form-row" *ngFor="let question of questionary; let i=index">
+        <questionary-form-question [question]="question" [mainForm]="mainForm" [index]="i"></questionary-form-question>
+      </div>
+
+      <default-questionary-block [mainForm]="mainForm" [serviceType]="serviceType" [questionary]="questionary" [companyId]="companyId">
+      </default-questionary-block>
+    </ng-container>
+  </div>
+
+</form>

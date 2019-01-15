@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="31.969" height="24" viewBox="0 0 31.969 24">
+<defs>
+    <style>
+      .cls-1 {
+        fill: #63be8d;
+        fill-rule: evenodd;
+      }
+    </style>
+  </defs>
+  <path id="mark_icon" data-name="mark icon" class="cls-1" d="M836.515,286.479a1.573,1.573,0,0,0-2.261,0l-19.16,19.582-7.364-7.527a1.575,1.575,0,0,0-2.262,0,1.66,1.66,0,0,0,0,2.311l8.5,8.683a1.575,1.575,0,0,0,2.261,0l20.29-20.738A1.659,1.659,0,0,0,836.515,286.479Z" transform="translate(-805 -286)"/>
+</svg>

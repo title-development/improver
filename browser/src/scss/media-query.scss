@@ -1,0 +1,30 @@
+$rzs: xs,  sm,  md,   lg,   xlg;
+$zmn: 0,   577, 768,  1024, 1200;
+$zmx: 576, 767, 1023, 1199, 9999;
+
+$rsp: (
+  //Mobile
+  xs : (
+    min : 0,
+    max : 576
+  ),
+  sm : (
+    min : 577,
+    max : 767
+  ),
+  //Tablet
+  md : (
+    min : 768,
+    max : 1023
+  ),
+  //Desktop
+  lg : (
+    min : 1024,
+    max : 1199
+  ),
+  // Big desktop
+  xlg : (
+    min : 1200,
+    max : 9999
+  )
+);

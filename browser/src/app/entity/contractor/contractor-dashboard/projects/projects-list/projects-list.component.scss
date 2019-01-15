@@ -1,0 +1,239 @@
+@import "../../../../../../improver-mixins.scss";
+
+.list-wrapper {
+  width: 100%;
+  position: relative;
+
+  tr {
+    width: 100%;
+    padding: 11px 0 11px 16px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    border-top: 1px solid #eee;
+    cursor: pointer;
+    &:last-child {
+      border-bottom: 1px solid #eee;
+    }
+
+    @include response(xs){
+      flex-direction: column;
+      padding-left: 0;
+    }
+
+    &:nth-child(even) {
+      background-color: rgba(245, 245, 245, 0.58);
+    }
+    td {
+      font-size: 14px;
+      text-align: left;
+      color: $black;
+
+      &.item-icon {
+        @include response(sm){
+          width: 10%;
+        }
+
+        .mat-icon {
+          color: $white;
+          background: $black-secondary;
+          border-radius: 50px;
+          padding: 4px;
+          font-size: 14px;
+        }
+        .notifications {
+          position: absolute;
+          top: 4px;
+          left: 4px;
+          background-color: $red;
+          width: 22px;
+          height: 22px;
+          border-radius: 50%;
+          color: $white;
+          font-size: 12px;
+          line-height: 22px;
+          text-align: center;
+          font-style: normal;
+        }
+      }
+
+      &.item-actions {
+        color: rgba(0, 0, 0, 0.54);
+        text-align: center;
+
+        @include response(sm) {
+          border-left: 1px solid $black-300;
+          width: 70px;
+          display: flex;
+          justify-content: center;
+        }
+      }
+
+      &.item-name, &.item-service {
+        span {
+          display: block;
+        }
+      }
+
+      &.item-service {
+        span {
+          padding-right: 5px;
+          @include response(sm) {
+            padding: 0;
+          }
+        }
+
+      }
+
+      &.item-name {
+        @include response(sm) {
+          width: 65%;
+
+          span {
+            &:first-child {
+              font-weight: bolder;
+              font-size: 16px;
+            }
+          }
+        }
+      }
+
+      &.item-status {
+        @include response(sm) {
+          text-align: right;
+          margin-right: 15px;
+          width: 25%;
+        }
+        .status {
+          //color: #fff;
+          //padding: 5px;
+          //border-radius: 2px;
+          //margin: 0 10px;
+          //min-width: 90px;
+          //text-align: center;
+          //font-size: 12px;
+
+          &.declined {
+            color: $red;
+          }
+
+        }
+      }
+
+      @include response(xs) {
+        display: block;
+        width: 100%;
+        text-align: center;
+
+        .icon {
+          margin: 0 auto 16px;
+        }
+
+        &:before {
+          /*
+          * aria-label has no advantage, it won't be read inside a table
+          content: attr(aria-label);
+          */
+          content: attr(data-label);
+          float: left;
+          font-weight: bold;
+          text-transform: uppercase;
+        }
+        &:last-child {
+          border-bottom: 0;
+        }
+
+        &.item-actions {
+          position: absolute;
+          right: 10px;
+          top: 15px;
+          width: auto;
+        }
+
+        &.item-name {
+          font-size: 16px;
+          font-weight: 600;
+          padding-bottom: 5px;
+          padding-top: 5px;
+        }
+
+        //&.item-service {
+        //  color: $orange-primary;
+        //}
+
+
+        &.item-date {
+          padding-top: 15px;
+          font-size: 12px;
+          color: $black-secondary;
+        }
+      }
+    }
+  }
+
+  @include response(xs) {
+    border: 0;
+  }
+
+  .icon {
+    background-size: cover;
+    background-position: center;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+  }
+  mat-list {
+    padding-top: 0;
+    mat-icon {
+      color: rgba(#212121, .54);
+    }
+  }
+  ::ng-deep .item .mat-list-item-content {
+    padding: 0px;
+    color: $black-primary;
+    font-size: 14px;
+    cursor: pointer;
+
+    &:hover, &:active, &:focus {
+      background-color: $black-150;
+    }
+  }
+}
+
+::ng-deep .mat-menu-panel.dashboard-menu {
+  position: relative;
+  overflow: visible !important;
+  box-shadow: none;
+  //margin-top: 60px;
+
+  .mat-menu-content {
+    padding: 0px;
+    border-radius: 2px;
+    box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.23);
+
+    .mat-menu-item {
+      color: #aaaaaa;
+      line-height: initial;
+      height: auto;
+      font-size: 14px;
+      padding: 10px 16px;
+
+      &:hover {
+        color: #777777;
+      }
+    }
+
+    //&:after {
+    //  top: -18px;
+    //  left: 80%;
+    //  content: " ";
+    //  height: 0;
+    //  width: 0;
+    //  position: absolute;
+    //  pointer-events: none;
+    //  border: 9px solid rgba(194, 225, 245, 0);
+    //  border-bottom-color: $white; //TODO: fix color
+    //  margin-left: -9px;
+    //}
+  }
+}

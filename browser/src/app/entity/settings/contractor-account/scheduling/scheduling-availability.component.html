@@ -1,0 +1,40 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-3 sm-none xs-none">
+      <div class="account-top-line"></div>
+      <account-nav></account-nav>
+    </div>
+    <div class="col-md-9 col-sm-12">
+      <div class="account-top-line">
+        <div class="account-nav-title">Scheduling</div>
+      </div>
+      <div [cvSpinner]="fetching" [cvSpinnerSize]="24">
+        <div class="card" *ngIf="!fetching">
+          <p>Setup vacation, day-offs, or other periods when you don't want Home Improve to send you leads.</p>
+          <div class="periods">
+            <div class="period" *ngFor="let period of periods" (click)="addEdit(period)">
+            <span class="range">
+              {{period.fromDate | date:'MMM d, y'}} - {{period.tillDate | date:'MMM d, y'}}
+            </span>
+              <span class="days">{{unavailableDays(period)}}
+              <ng-container [ngPlural]="unavailableDays(period)">
+                <ng-template ngPluralCase="=0">Days</ng-template>
+                <ng-template ngPluralCase="=1">Day</ng-template>
+                <ng-template ngPluralCase="few">Days</ng-template>
+                <ng-template ngPluralCase="other">Days</ng-template>
+              </ng-container>
+            </span>
+              <span class="reason" [title]="period.reason">{{Reason[period.reason]}}</span>
+              <span class="actions">
+              <i class="imp-icon-pencil-2"></i>
+              <i class="imp-icon-bin" (click)="delete($event, period)"></i>
+            </span>
+            </div>
+          </div>
+          <button cv-button-empty (click)="addEdit()">Schedule new period</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<layout-footer></layout-footer>

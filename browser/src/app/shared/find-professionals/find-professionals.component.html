@@ -1,0 +1,117 @@
+<div class="find-professionals">
+  <div class="find-professionals-container">
+    <div class="find-professionals-button"
+         [class.opened]="findProfessionalService.showDropdown"
+         (click)="findProfessionalService.toggle();">
+      <span class="xs-none sm-none">Find Professionals</span>
+      <button class="mobile-menu-button mat-button mat-primary md-none lg-none xlg-none">
+        <span>
+          <i class="material-icons" *ngIf="!findProfessionalService.showDropdown">search</i>
+          <i class="material-icons" *ngIf="findProfessionalService.showDropdown">close</i>
+        </span>
+      </button>
+    </div>
+
+    <div class="dropdown-content-wrapper" *ngIf="findProfessionalService.showDropdown">
+      <div class="dropdown-content">
+        <!--TODO: move to shared search component-->
+        <form class="search-form"
+              #form="ngForm"
+              [formGroup]="mainSearchFormGroup"
+              (ngSubmit)="searchServiceType(mainSearchFormGroup)">
+          <div class="service-type-form-group">
+            <cv-select class="main-search-service-input"
+                       label="Find service or professionals"
+                       [formControl]="serviceTypeCtrl"
+                       [items]="filteredServiceTypes"
+                       [disableItemsMatch]="true"
+                       [autocomplete]="true"
+                       labelKey="name"
+                       valueKey="name"
+                       [trackBy]="selectTrackBy"
+                       [propagateEnterEvent]="true"
+                       [dropdownBorder]="false"
+                       (autocompleteSearch)="autocompleteSearch($event)"
+            ></cv-select>
+
+            <div class="messages-block"
+                 *ngIf="mainSearchFormGroup.get('serviceTypeCtrl').dirty || mainSearchFormGroup.get('serviceTypeCtrl').touched">
+              <div class="main-input-message mat-error"
+                   *ngIf="mainSearchFormGroup.get('serviceTypeCtrl').errors?.required">
+                Please tell us what do you need
+              </div>
+            </div>
+          </div>
+
+          <div class="zip-code-form-group">
+            <input type="text"
+                   class="main-search-zip-input"
+                   placeholder="Zip code"
+                   numericMask
+                   [formControlName]="'zipCodeCtrl'"
+                   maxlength="5"/>
+
+            <div class="messages-block"
+                 *ngIf="mainSearchFormGroup.get('zipCodeCtrl').dirty || mainSearchFormGroup.get('zipCodeCtrl').touched">
+              <div class="zip-input-message mat-error" *ngIf="mainSearchFormGroup.get('zipCodeCtrl').errors?.required">
+                Zip code is required
+              </div>
+
+              <div class="zip-input-message mat-error" *ngIf="mainSearchFormGroup.get('zipCodeCtrl').errors?.pattern">
+                Please enter a valid ZIP code
+              </div>
+            </div>
+          </div>
+
+          <button class="search-button" type="submit">
+            <span>
+              <mat-icon>search</mat-icon>
+            </span>
+          </button>
+        </form>
+
+        <div class="categories-wrapper noselect">
+          <div class="category-wrapper">
+            <div class="header">
+              <span class="name">Find by Service</span>
+              <a class="action" routerLink="/services" (click)="findProfessionalService.toggle()">more</a>
+            </div>
+
+            <div class="items row">
+              <div class="col-xs-12 col-sm-6 col-md-3"
+                   *ngFor="let serviceType of popularServiceTypes | cutarraylength:popularServiceSize">
+                <div class="item"
+                     (click)="findProfessionalService.showDropdown = false; projectActionService.openQuestionary(serviceType)">
+                  {{serviceType.name}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="categories-wrapper noselect xs-none sm-none">
+          <div class="category-wrapper">
+            <div class="header">
+              <span class="name">Find by Category</span>
+              <a class="action" routerLink="/services" (click)="findProfessionalService.toggle()">more</a>
+            </div>
+
+            <div class="items row">
+              <div class="col-xs-12 col-sm-6 col-md-3" *ngFor="let trade of popularTrades">
+                <div class="item">
+                  <a [routerLink]="['/', 'category', trade.id]" (click)="findProfessionalService.showDropdown = false">{{trade.name}}</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="dropdown-overlay"
+         *ngIf="findProfessionalService.showDropdown"
+         (click)="findProfessionalService.showDropdown = false;">
+    </div>
+  </div>
+</div>

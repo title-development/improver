@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template.html}">
+
+<div layout:fragment="content"
+     style="background-color: #fafafa; font-family: 'Trebuchet MS', sans-serif;">
+  <table border="0"
+         cellpadding="0"
+         cellspacing="0"
+         width="100%"
+         style="max-width: 600px;">
+    <tr>
+      <td align="center" width="100%" style="font-family: 'Trebuchet MS', sans-serif">
+        <div
+          style="background-color: #ffffff; width: 100%; color: #3d3d3d; box-shadow: 2px 4px 21px -8px rgba(0,0,0,0.8);
+           font-size: 14px; margin-top: 36px; margin-bottom: 36px;">
+          <div style="padding: 24px; border: 1px solid #dedede;">
+            <div style="font-size: 20px; margin-bottom: 24px">
+              <span th:if="${userName != null}">Hi</span>
+              <b th:if="${userName != null}" th:text="${userName + '.'}"></b>
+              <span th:utext="${title}"></span>
+            </div>
+            <div th:utext="${bodyBeforeArea}" th:style="${'font-size: 14px; margin-bottom: 24px; text-align: ' + contentAlign}"></div>
+            <div th:utext="${textAreaTitle}" th:style="${'font-size: 14px; text-align: ' + contentAlign}"></div>
+            <div th:utext="${textAreaContent}" th:style="${'border: 1px solid #d8d8d8; padding: 8px; border-radius: 2px; font-size: 14px; margin-bottom: 24px; text-align: ' + contentAlign}"></div>
+            <div th:utext="${bodyAfterArea}" th:style="${'font-size: 14px; margin-bottom: 24px; text-align: ' + contentAlign}"></div>
+
+            <!--<div th:text="${signature}" style="font-size: 14px; margin-bottom: 24px"></div>-->
+            <a
+              style="display: block; background: #009ede; padding: 12px; text-align: center; border-radius: 2px;
+            color: white; font-size: 14px; font-weight: 500; width: 126px; text-decoration: none; margin: 0 auto;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1); cursor: pointer;"
+              th:href="${confirmUrl}"
+              th:text="${confirmBtnText}"></a>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+</html>

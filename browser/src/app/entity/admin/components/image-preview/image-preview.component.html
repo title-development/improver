@@ -1,0 +1,15 @@
+<div class="preview" *ngIf="image" [ngStyle]="{'background-image': 'url('+image+')', 'width': previewSize + 'px', 'height': previewSize + 'px'}">
+  <div class="actions" *ngIf="!disabled">
+    <label for="file{{index}}" pButton type="button" icon="fa fa-pencil" class="ui-button-info"></label>
+    <button pButton type="button" icon="fa fa-trash" class="ui-button-danger" (click)="removeImage($event)"></button>
+  </div>
+</div>
+<div *ngIf="!disabled">
+  <label pButton for="file{{index}}" label="Add Image" *ngIf="!image"></label>
+  <input type="file" id="file{{index}}" #file (change)="onFileChange($event)" [disabled]="disabled">
+</div>
+
+<div *ngIf="disabled && !image">
+  No image
+</div>
+<p-confirmDialog [header]="confirmTitle" icon="pi pi-question-circle" [key]="'delete-image'+hash+index" width="425"></p-confirmDialog>

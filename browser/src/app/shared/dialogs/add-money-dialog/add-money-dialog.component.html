@@ -1,0 +1,126 @@
+<div class="dialog-content-wrapper">
+  <div class="dialog-content-container">
+
+    <div class="header">
+
+      <mat-icon class="close-modal" color="accent" (click)="close()">clear</mat-icon>
+
+      <div class="header-content" fxLayout="row" fxLayoutAlign="start end" >
+        Add money to balance
+      </div>
+
+    </div>
+
+    <div class="content">
+
+      <form class="add-money-form"
+            name="add-money-form"
+            #addMoneyForm="ngForm"
+            (ngSubmit)="addMoneyForm.valid && onSubmit(addMoneyForm)"
+            novalidate>
+
+        <div class="row" *ngIf="step == 1">
+
+          <div class="col-sm-12 col-md-6">
+
+            <cv-input-field>
+              <cv-field-label>Set an amount to add</cv-field-label>
+              <cv-icon icon="imp-icon-dollar"></cv-icon>
+              <input cv-input class="monthly-budget" minlength="2" maxlength="5"
+                     #amount="ngModel"
+                     name="amount"
+                     [(ngModel)]="payment.amount"
+                     (input)="onInputAmount()"
+                     placeholder="100"
+                     positiveNumeric
+                     required/>
+              <cv-field-error *ngIf="amount.dirty || amount.touched || addMoneyForm.submitted">
+                <span *ngIf="amount.errors?.required">{{messages.errors.amount.required}}</span>
+                <span *ngIf="amount.errors?.minlength">{{messages.errors.amount.minlength}}</span>
+              </cv-field-error>
+            </cv-input-field>
+          </div>
+
+          <div class="col-sm-12 col-md-6">
+            <div class="hint input-hint">
+              <span>Please set an amount of money you want to replenish your balance.
+                <br/>This is a one time charge.
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="row"  *ngIf="step == 2">
+
+          <div class="col-md-6">
+
+            <div class="balance-block">
+
+              <div class="charge-info block">
+                <div class="group" fxLayout="row" fxLayoutAlign="start start">
+                  <div class="label">Charge from card:</div>
+                  <div class="value" fxFlexOffset="8px">{{chargeValue | currency:'USD':'symbol'}}</div>
+                </div>
+              </div>
+
+              <div class="current-balance block" fxLayout="column">
+                <div class="group" fxLayout="row" fxLayoutAlign="start start">
+                  <div class="label">Current balance:</div>
+                  <div class="value" fxFlexOffset="8px">{{billingService.billing.balance /100 |
+                    currency:'USD':'symbol'}}
+                  </div>
+                </div>
+                <div class="group" fxLayout="row" fxLayoutAlign="start start" fxFlexOffset="12px">
+                  <div class="label">New balance:</div>
+                  <div class="value" fxFlexOffset="8px">{{newBalance/100 | currency:'USD':'symbol'}}</div>
+                </div>
+              </div>
+
+              <div class="payment-method-info block">
+                <div class="group" fxLayout="column" fxLayoutAlign="start start">
+                  <div class="label">Payment method</div>
+                  <div class="value" fxFlexOffset="12px">
+                    <div class="card-wrapper" fxLayout="row" *ngIf="card">
+                      <div class="card-image"
+                           [ngStyle]="{'background-image':'url(' + 'assets/img/credit-cards-types/' + tricksService.replaceSpases(card.brand) + '.png)'}"></div>
+                      <div class="card-type">{{card.brand}}&nbsp;</div>
+                      <div class="card-name">ending in &nbsp;{{card.last4}}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="col-md-6">
+            <div class="hint">
+              <span>{{chargeValue | currency:'USD':'symbol'}} will be charged to your payment method and added to your Home Improve balance.
+                <br/>This is a one time charge.
+              </span>
+            </div>
+          </div>
+
+
+        </div>
+
+        <div class="buttons-wrapper" [cvSpinner]="charging" [cvSpinnerSize]="20">
+          <button cv-button-flat flatStyle="dark" (click)="close()" type="button" *ngIf="step == 1">Cancel</button>
+          <button cv-button-flat flatStyle="dark" (click)="step = 1" type="button" *ngIf="step == 2" >Back</button>
+          <button cv-button type="button" [disabled]="charging" *ngIf="step == 1" (click)="addMoneyForm.valid && (step = 2) || addMoneyForm.controls.amount.markAsTouched()">Continue</button>
+          <button cv-button type="submit" [disabled]="charging" *ngIf="step == 2" (click)="addMoneyForm.valid && onSubmit(addMoneyForm)">Complete Purchase</button>
+        </div>
+
+      </form>
+
+
+    </div>
+
+  </div>
+</div>
+
+
+
+

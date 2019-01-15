@@ -1,0 +1,11 @@
+@import "../../scss/variables";
+
+:host {
+  display: inline-block;
+  align-items: center;
+  justify-content: center;
+  &:before, &:after {
+    margin: 0;
+    display: block;
+  }
+}

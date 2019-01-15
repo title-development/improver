@@ -1,0 +1,75 @@
+<div class="container -top-space">
+  <div class="row xs-column">
+    <div [ngClass]="leads && leads.totalElements > 0 ? 'xs-none col-xs-12 lg-none xlg-none' : 'xs-none sm-none md-none lg-none xlg-none'">
+      <div class="card">
+        <dashboard-find-more-leads [leads]="leads"></dashboard-find-more-leads>
+      </div>
+    </div>
+    <div class="col-xs-12 col-md-12 col-lg-8">
+      <div class="row xs-column-reverse">
+        <div [ngClass]="leads && leads.totalElements > 0 ? 'col-xs-12 col-sm-6' : 'col-xs-12 col-lg-6'">
+          <div class="row">
+            <div [ngClass]="leads && leads.totalElements > 0 ? 'col-xs-12' : 'col-xs-12 col-sm-6 col-lg-12'">
+              <div class="card money">
+                <contractor-money-charts [cvSpinner]="!leadsReport" [leadsReport]="leadsReport" [cvSpinnerSize]="32" [cvSpinnerBackground]="true"></contractor-money-charts>
+              </div>
+            </div>
+            <div [ngClass]="leads && leads.totalElements > 0 ? 'xs-none sm-none md-none lg-none xlg-none' : 'col-sm-6 xs-none lg-none xlg-none'">
+              <div class="card">
+                <dashboard-find-more-leads [leads]="leads"></dashboard-find-more-leads>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div [ngClass]="leads && leads.totalElements > 0 ? 'col-xs-12 col-sm-6' : 'col-xs-12 col-lg-6'">
+          <div class="row xs-column-reverse">
+            <div [ngClass]="leads && leads.totalElements > 0 ? 'col-xs-12' : 'col-xs-12 col-sm-6 col-lg-12'">
+              <div class="card">
+                <dashboard-pay-and-go
+                    [cvSpinner]="!leadsReport" [leadsReport]="leadsReport"
+                    [cvSpinnerSize]="32" [cvSpinnerBackground]="true"></dashboard-pay-and-go>
+              </div>
+            </div>
+            <div [ngClass]="leads && leads.totalElements > 0 ? 'col-xs-12' : 'col-xs-12 col-sm-6 col-lg-12'">
+              <div class="card">
+                <dashboard-subscription
+                    [cvSpinner]="!leadsReport" [leadsReport]="leadsReport"
+                    [cvSpinnerSize]="32" [cvSpinnerBackground]="true"></dashboard-subscription>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xs-12">
+          <div class="projects-card card">
+            <projects></projects>
+          </div>
+        </div>
+        <div class="col-xs-12 sm-none md-none lg-none xlg-none">
+          <div class="card">
+            <dashboard-find-more-leads [leads]="leads"></dashboard-find-more-leads>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-12 col-lg-4">
+      <div class="row">
+        <div class="col-xs-12 col-sm-7 col-md-7 col-lg-12 sm-none xs-none md-none">
+          <div class="card map">
+            <dashboard-find-more-leads [leads]="leads"></dashboard-find-more-leads>
+          </div>
+        </div>
+        <div class="col-xs-12">
+          <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+              <div class="card">
+                <dashboard-contact-us></dashboard-contact-us>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<layout-footer></layout-footer>

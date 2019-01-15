@@ -1,0 +1,288 @@
+<div class="container">
+  <div class="top-page-header step-one" *ngIf="step == 1 && !leadError">
+    <div class="lead-title">{{lead?.serviceType}}</div>
+  </div>
+
+  <div class="contractor-lead-purchase-content row" *ngIf="step == 1 && !leadError">
+
+    <div class="col-md-8 col-xs-12">
+      <div class="lead-details-card card">
+        <div class="lead-details-content">
+
+          <div class="lead-map-wrapper">
+            <agm-map class="lead-map"
+                     [streetViewControl]="false"
+                     [disableDefaultUI]="true"
+                     [zoomControl]="false"
+                     [mapDraggable]="true"
+                     [fullscreenControl]="true"
+                     [scrollwheel]="true"
+                     [zoom]="10"
+                     (mapReady)="onMapReady($event)"
+            ></agm-map>
+          </div>
+
+          <div class="lead-info-block" *ngIf="lead">
+
+            <div class="main-info">
+
+              <div class="left-part">
+                <div class="group">
+                  <div class="client-name">{{lead.clientName}}</div>
+                  <div class="address">{{lead.location.state}}, {{lead.location.city | lowercase}},
+                    {{lead.location.zip}}
+                  </div>
+                </div>
+              </div>
+
+              <div class="right-part">
+                <div class="date">{{lead.created | date:'mediumDate'}}</div>
+              </div>
+
+            </div>
+
+            <div class="secondary-info">
+
+              <div class="group">
+                <div class="label">Start date</div>
+                <div class="value">{{lead.startDate}}</div>
+              </div>
+
+              <div class="group">
+                <div class="label">Notes</div>
+                <div class="value textarea-formatting" *ngIf="lead.notes != ''">{{lead.notes}}</div>
+                <div class="value" *ngIf="lead.notes == ''">None</div>
+              </div>
+
+            </div>
+
+            <div class="questionary-answers" *ngIf="lead?.details?.length > 0">
+
+              <ng-template ngFor [ngForOf]="lead.details" let-question let-i="index">
+                <div class="group">
+                  <div class="label">{{question.name}}</div>
+
+                  <div class="results-wrapper">
+                    <ng-template ngFor [ngForOf]="question.results" let-result let-j="index">
+                      <div class="value">{{result}}</div>
+                    </ng-template>
+                  </div>
+
+                </div>
+              </ng-template>
+
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4 col-xs-12">
+
+      <div class="lead-actions-card card" [cvSpinner]="leadProcessing || cardProcessing" [cvSpinnerSize]="30"
+           *ngIf="!leadError">
+
+        <div class="lead-actions-content-wrapper" *ngIf="lead && !leadProcessing && !cardProcessing">
+          <div class="lead-actions-card card" [cvSpinner]="!lead" [cvSpinnerSize]="32">
+
+            <div class="lead-actions-header">
+              Purchase this lead
+            </div>
+
+            <div class="lead-actions-content">
+
+              <div class="lead-pricing-payment">
+
+                <div class="lead-price-group">
+                  <div class="label">Lead price</div>
+                  <div class="value">{{lead.price / 100 | currency:'USD':'symbol' }}</div>
+                </div>
+
+                <div class="charge-to-balance-group">
+                  <div class="label">Charge to balance</div>
+                  <div class="value">{{(!billingService.billing.subscriptionOn && lead.price <=
+                    billingService.billing.balance || billingService.billing.subscriptionOn && lead.price <=
+                    (billingService.billing.balance - billingService.billing.reserve) ? lead.price : 0) / 100 |
+                    currency:'USD':'symbol' }}
+                  </div>
+                </div>
+
+                <div class="charge-to-card-group">
+                  <div class="label">Charge to card</div>
+                  <div class="value">{{(!billingService.billing.subscriptionOn && lead.price >
+                    billingService.billing.balance || billingService.billing.subscriptionOn && lead.price >
+                    (billingService.billing.balance - billingService.billing.reserve) ? lead.price : 0) / 100 |
+                    currency:'USD':'symbol' }}
+                  </div>
+                </div>
+
+                <div class="payment-hint-block"
+                     *ngIf="!billingService.billing.subscriptionOn && lead.price > billingService.billing.balance || billingService.billing.subscriptionOn && lead.price > (billingService.billing.balance - billingService.billing.reserve)">
+                  <span>You don’t have enough money on balance to purchase this lead.</span>
+                  <span
+                    *ngIf="billingService.billing.subscriptionOn && lead.price > billingService.billing.balance - billingService.billing.reserve"><span
+                    class="highlight"> {{billingService.billing.reserve / 100 | currency:'USD':'symbol' }}</span> on your balance are reserved for subscription leads.</span>
+                  <span> Lead cost will be charged to your payment method</span>
+                </div>
+
+                <div class="payment-method-block"
+                     *ngIf="paymentCards?.length >= 1 && (!billingService.billing.subscriptionOn && lead.price > billingService.billing.balance || billingService.billing.subscriptionOn && lead.price > (billingService.billing.balance - billingService.billing.reserve))">
+                  <div class="title">Payment method</div>
+                  <div class="card-info-wrapper">
+                    <div class="card-info">
+                      <div class="icon"
+                           [ngStyle]="{'background-image':'url(' + 'assets/img/credit-cards-types/' + tricksService.replaceSpases(paymentCards[0].brand) + '.png)'}"></div>
+                      <div class="ends">ending in {{paymentCards[0].last4}}</div>
+                    </div>
+                    <div class="change-button" (click)="openChangeDefaultPaymentCard()"
+                         [hidden]="paymentCards?.length <= 1">Change
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="purchase-buttons-wrapper" *ngIf="lead && paymentCards?.length >= 1">
+                <button cv-button (click)="purchaseLead()">Complete Purchase</button>
+                <button class="cancel-button-pad" routerLink="/pro/leads-search">Not interested</button>
+              </div>
+
+            </div>
+
+            <div class="lead-actions-content" *ngIf="paymentCards?.length == 0">
+
+              <div class="connect-card-message">Please add a credit/debit card to finish purchase</div>
+
+              <div class="add-card-button-wrapper">
+                <button cv-button (click)="openAddPaymentCard()">Add card</button>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <div class="purchase-terms-block">
+        By making purchase you agree to our
+        <a routerLink="/terms-of-use">Terms of Use</a> and <a routerLink="/privacy-policy">Privacy Policy</a>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="contractor-lead-thanks-purchase-content" *ngIf="lead && step == 2 && !leadError"
+       [cvSpinner]="leadProcessing" [cvSpinnerSize]="30" [cvSpinnerBackground]="true">
+
+    <div class="card step-two">
+
+      <div class="top-page-header step-two">
+        <div class="lead-title">Thank you for purchase!</div>
+      </div>
+      <div class="contractor-lead-purchase-success" *ngIf="lead && step == 2">
+
+        <div class="success-purchase">
+          <img src="../../assets/img/round-icons/success-purchase.png" alt="Success Purchase">
+        </div>
+        <div class="header-message">You've purchased lead of</div>
+        <div class="lead-name">
+          <span class="highlight">{{lead.serviceType}}</span>
+          <span class="light-text"> service for</span>
+          <span class="highlight">{{lead.clientName}}</span>
+        </div>
+
+        <div class="purchase-info">
+          <div class="purchase-info-row">
+            <div class="label">Price:</div>
+            <div>{{ lead.price / 100 | currency:'USD':'symbol' }}</div>
+          </div>
+          <div class="purchase-info-row">
+            <div class="label">Charged to:</div>
+            <div class="card-info" *ngIf="chargeFromCard">
+              <div class="icon" *ngIf="chargeFromCard"
+                   [ngStyle]="{'background-image':'url(' + 'assets/img/credit-cards-types/' + tricksService.replaceSpases(paymentCards[0].brand) + '.png)'}"></div>
+              <div class="ends">ending in {{paymentCards[0].last4}}</div>
+            </div>
+            <div *ngIf="!chargeFromCard">Balance</div>
+          </div>
+        </div>
+
+        <!--<button cv-button-flat class="view-invoice-button" (click)="viewInvoice()">View invoice</button>-->
+
+        <div class="next-step-advice">
+          We notified {{lead.clientName}} about your request. Now is a best time to discuss project details with client.
+        </div>
+
+        <div class="after-bought-lead-actions">
+          <button cv-button routerLink="/pro/leads-search">Find more leads</button>
+          <button cv-button [routerLink]="['/pro/projects', projectRequestId]">Discuss project</button>
+        </div>
+
+      </div>
+
+    </div>
+
+
+  </div>
+
+  <div class="lead-error" *ngIf="leadError">
+
+    <div class="card">
+
+      <div class="lead-error-header">
+        <div class="lead-error-title">{{leadErrorHeader}}</div>
+      </div>
+
+      <div class="contractor-lead-error">
+
+        <!-- for 404 and 409 erors -->
+        <div class="next-step-advice">
+          {{leadErrorMessage}}
+        </div>
+
+        <div class="buttons-wrapper">
+          <ng-container *ngIf="leadTryAgainAvailable">
+            <button cv-button (click)="getLead()">Try again</button>
+            <button cv-button routerLink="/pro/settings/billing">Update billing info</button>
+          </ng-container>
+          <button *ngIf="!leadTryAgainAvailable" cv-button routerLink="/pro/leads-search">Find more leads</button>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="another-projects-card-wrapper" *ngIf="step == 2 || leadError">
+
+    <div class="another-projects-card" *ngIf="similarLeads.length > 0">
+      <div class="title">You may also be interested in:</div>
+      <div class="row">
+        <ng-template ngFor [ngForOf]="similarLeads" let-similar let-i="index" [ngForTrackBy]="id">
+          <div class="col-md-4 col-sm-6 col-xs-12">
+            <div class="card" (click)="redirectToLeadBuy()" [routerLink]="['/pro', 'leads-purchase', similar.id]">
+              <div class="top-line">
+                <div class="name">{{similar.serviceType}}</div>
+                <div class="price">{{similar.price/100 | currency:'USD':'symbol'}}</div>
+              </div>
+              <div class="bottom-line">
+                <div class="address">{{similar.location.city}}, {{similar.location.state}} {{similar.location.zip}}
+                </div>
+                <div class="time-ago">{{similar.created | timeAgo}}</div>
+              </div>
+            </div>
+          </div>
+
+        </ng-template>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<layout-footer></layout-footer>

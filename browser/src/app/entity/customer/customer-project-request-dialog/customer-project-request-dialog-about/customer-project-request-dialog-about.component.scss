@@ -1,0 +1,194 @@
+@import "../../../../../improver-mixins.scss";
+
+perfect-scrollbar {
+  @include response-to(sm) {
+    overflow: auto ;
+    &::ng-deep .ps {
+      overflow: auto !important;
+    }
+  }
+}
+
+h3, h4, p {
+  margin: 0;
+}
+
+h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: $black-primary;
+  margin-bottom: 18px;
+  @include response(xs) {
+    text-align: center;
+  }
+}
+
+h4 {
+  font-size: 12px;
+  font-weight: 400;
+  color: $black-600;
+  margin-bottom: 5px;
+}
+
+p {
+  color: $black-600;
+  font-size: 14px;
+}
+
+a {
+  font-size: 14px;
+  color: $link-dark;
+  word-break: break-all;
+  &[href^="tel:"] {
+    color: $link-dark;
+    @include response-from(sm) {
+      color: $black-primary;
+      pointer-events: none;
+
+    }
+  }
+}
+
+.info-block {
+  padding: 22px 25px;
+  @include response(xs) {
+    padding: 28px 15px;
+  }
+  &:not(:last-child) {
+    border-bottom: 1px solid $black-300;
+  }
+}
+
+.details {
+  .row {
+    margin: 0 -25px;
+    @include response(xs) {
+      margin: 0 -15px;
+    }
+    > div {
+      padding: 0 25px;
+      @include response(xs) {
+        padding: 0 15px;
+      }
+    }
+  }
+  .prof-info {
+    @include response(xs) {
+      display: flex;
+      flex-wrap: wrap;
+      .block {
+        width: 100%;
+      }
+    }
+    &.no-licenses {
+      display: flex;
+      flex-wrap: wrap;
+      max-width: 480px;
+      margin: 0 -12px;
+      @include response(xs) {
+        max-width: none;
+        margin: 0;
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .block {
+        padding: 0 12px;
+        width: 50%;
+        @include response(xs) {
+          padding: 0;
+          width: 100%;
+        }
+      }
+    }
+  }
+}
+
+.about {
+  p {
+    @include response(xs) {
+      text-align: justify;
+    }
+  }
+}
+
+.services {
+  p {
+    margin-bottom: 7px;
+    @include response(xs) {
+      text-align: center;
+    }
+  }
+  button {
+    @include response(xs) {
+      margin: 7px auto 0;
+      display: block;
+    }
+  }
+}
+
+.licenses {
+  height: 100%;
+  @include response(xs) {
+    max-width: 220px;
+    text-align: center;
+    padding-top: 28px;
+    margin: 28px auto 0;
+  }
+  &:before {
+    content: '';
+    display: block;
+    position: absolute;
+    height: 100%;
+    box-sizing: content-box;
+    top: -22px;
+    padding: 22px 0;
+    left: 0;
+    width: 1px;
+    background-color: $black-300;
+    @include response(xs) {
+      height: 1px;
+      width: 100%;
+      padding: 0;
+      top: 28px;
+      left: 0;
+    }
+  }
+  p {
+    color: $black-primary;
+    margin-bottom: 8px;
+  }
+}
+
+.block {
+  display: flex;
+  align-items: flex-start;
+  @include response(xs) {
+    max-width: 220px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  &:not(:last-child) {
+    margin-bottom: 12px;
+  }
+  i {
+    color: $black-400;
+    margin-top: 2px;
+  }
+  .group {
+    margin-left: 13px;
+  }
+  p {
+    color: $black-primary;
+  }
+}
+
+.show-more-button {
+  font-size: 14px;
+  color: $primary-500;
+  cursor: pointer;
+  white-space: nowrap;
+  i {
+    font-size: 10px;
+  }
+}
+

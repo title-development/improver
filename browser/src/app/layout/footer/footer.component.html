@@ -1,0 +1,132 @@
+<div class="footer">
+  <div class="row">
+    <div class="footer-top">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-7">
+        <div class="links-block">
+          <div class="footer-social">
+            <div class="logo" routerLink="/"></div>
+            <!--TODO: Temporary hide before MVP-->
+            <!--<div class="social-links">-->
+            <!--<a target="_blank" rel="noopener" href="https://www.facebook.com">-->
+            <!--<i class="imp-icon-facebook-1"></i>-->
+            <!--</a>-->
+            <!--<a target="_blank" rel="noopener" href="https://twitter.com">-->
+            <!--<i class="imp-icon-twitter-1"></i>-->
+            <!--</a>-->
+            <!--<a target="_blank" rel="noopener" href="https://houzz.com">-->
+            <!--<i class="imp-icon-houzz"></i>-->
+            <!--</a>-->
+            <!--<a target="_blank" rel="noopener" href="https://www.linkedin.com">-->
+            <!--<i class="imp-icon-linkedin-1"></i>-->
+            <!--</a>-->
+            <!--<a target="_blank" rel="noopener" href="https://www.instagram.com">-->
+            <!--<i class="imp-icon-instagram-1"></i>-->
+            <!--</a>-->
+            <!--<a target="_blank" rel="noopener" href="https://www.pinterest.com">-->
+            <!--<i class="imp-icon-pinterest-1"></i>-->
+            <!--</a>-->
+            <!--</div>-->
+          </div>
+          <div class="footer-links">
+            <div class="links company-links">
+              <div class="links-content">
+                <a class="header">Company</a>
+                <a class="link">About us</a>
+                <a class="link">Trust & Safety</a>
+                <a class="link" routerLink="/ticket">Contacts us</a>
+              </div>
+            </div>
+            <div class="links customer-links" *ngIf="!securityService.hasRole(Role.CONTRACTOR)">
+              <div class="links-content">
+                <a class="header">Customers</a>
+                <a class="link" (click)="window.scrollTo(0,0);">Find Professionals</a>
+                <a class="link" (click)="scrollService.navigateAndScrollToTag('/', 'hiw-wizard');">How it works</a>
+                <a class="link" (click)="phoneHelpService.showFull()">Phone help</a>
+                <a class="link" routerLink="/signup" *ngIf="!securityService.isAuthenticated()">Sign up</a>
+              </div>
+            </div>
+            <div class="links pro-links" *ngIf="!securityService.hasRole(Role.CUSTOMER)">
+              <div class="links-content">
+                <a class="header">Pro</a>
+                <a class="link" routerLink="/services">Services</a>
+                <a class="link" routerLink="/become-pro" *ngIf="!securityService.isAuthenticated()">How it works</a>
+                <a class="link" routerLink="/become-pro" *ngIf="!securityService.isAuthenticated()">Sign up Pro</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-5 col-xlg-6">
+        <div class="contact-us-block">
+          <div class="header">Have questions? Please let us know!</div>
+          <div class="description">Leave your name and phone number and one of our managers will call you within 24h
+          </div>
+          <form class="phone-help-form"
+                name="phone-help-form"
+                #phoneHelpForm="ngForm"
+                (ngSubmit)="phoneHelpForm.valid && submitPhoneHelpRequest(phoneHelpForm)"
+                novalidate>
+            <div class="inputs-wrapper">
+
+              <cv-input-field>
+                <input cv-input placeholder="Your name"
+                       #name="ngModel"
+                       name="name"
+                       type="text"
+                       [(ngModel)]="callRequest.name"
+                       required>
+
+                <cv-field-error *ngIf="name.touched || phoneHelpForm.submitted">
+                  <span *ngIf="name.errors?.required">
+                    {{messages.errors.name.required}}
+                  </span>
+                </cv-field-error>
+              </cv-input-field>
+
+              <cv-input-field>
+                <input cv-input placeholder="Phone number"
+                       #phone="ngModel"
+                       name="phone"
+                       type="text"
+                       [(ngModel)]="callRequest.phone"
+                       phoneMask
+                       required
+                       maxlength="14"
+                       [pattern]="constants.patterns.phone">
+
+                <cv-field-error *ngIf="phone.touched || phoneHelpForm.submitted">
+                  <span *ngIf="phone.errors?.required">
+                    {{messages.errors.phone.required}}
+                  </span>
+                  <span *ngIf="phone.errors?.pattern">
+                    {{messages.errors.phone.pattern}}
+                  </span>
+                </cv-field-error>
+              </cv-input-field>
+              <button type="submit">
+                <div class="submit-contact-us-button">
+                  <div class="submit-contact-us-button-text">Submit</div>
+                </div>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="col-xs-12">
+  <div class="row">
+    <div class="footer-bottom">
+      <div class="footer-bottom-line-container">
+        <div class="footer-company-copyright">© 2018 Home Improve, Inc</div>
+        <div class="footer-bottom-links">
+          <a class="footer-nav" href="/privacy-policy" target="_blank">Privacy Policy</a>
+          <a class="footer-nav" href="/terms-of-use" target="_blank">Terms of Use</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

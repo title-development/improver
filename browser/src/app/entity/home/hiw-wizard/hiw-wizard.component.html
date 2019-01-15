@@ -1,0 +1,92 @@
+<div class="hiw-wizard-wrapper">
+  <div class="container">
+    <div class="hiw-wizard-title">How it works</div>
+    <div class="hiw-wizard-subtitle">Four easy steps to get your job done</div>
+
+    <div class="hiw-wizard-content">
+
+      <div class="wizard-step step-1" [ngClass]="{'animate': step >= 1}" (mouseleave)="step = 1"
+           (mouseenter)="step = 1">
+        <div class="wizard-step-content" fxLayoutAlign="center center" fxLayout="column">
+          <div class="wizard-step-image-block" fxLayoutAlign="center center">
+            <img src="assets/img/hiw-wizard/hiw-wizard-step-1-filled.svg" alt="">
+          </div>
+          <div class="wizard-step-text-block" fxLayoutAlign="center center" fxLayout="column">
+            <div class="wizard-step-title">Tell us what you need</div>
+            <div class="wizard-step-text">First, answer a few quick questions about what type of pro you’re looking
+              for
+            </div>
+          </div>
+        </div>
+        <div class="wizard-step-border-bottom"></div>
+        <div class="wizard-step-border-bottom-fill"></div>
+      </div>
+
+      <div class="arrow-wrapper" [ngClass]="{'animate': step == 2, 'hover': step > 1}" (mouseenter)="step = 1"
+           (mouseleave)="step = 1">
+        <div class="line -top"></div>
+        <div class="line -bottom"></div>
+      </div>
+
+      <div class="wizard-step step-2" [ngClass]="{'animate': step == 2, 'hover': step >= 2}" (mouseleave)="step = 1"
+           (mouseenter)="step = 2">
+        <div class="wizard-step-content" fxLayoutAlign="center center" fxLayout="column">
+          <div class="wizard-step-image-block" fxLayoutAlign="center center">
+            <img [src]="step >= 2 ? 'assets/img/hiw-wizard/hiw-wizard-step-2-filled.svg' : 'assets/img/hiw-wizard/hiw-wizard-step-2-empty.svg'" alt="">
+          </div>
+          <div class="wizard-step-text-block" fxLayoutAlign="center center" fxLayout="column">
+            <div class="wizard-step-title">Review free quotes</div>
+            <div class="wizard-step-text">Within hours, you’ll receive up to five custom quotes based on your specific
+              needs
+            </div>
+          </div>
+        </div>
+        <div class="wizard-step-border-bottom"></div>
+        <div class="wizard-step-border-bottom-fill"></div>
+      </div>
+
+      <div class="arrow-wrapper" [ngClass]="{'animate': step >= 3, 'hover': step > 2}" (mouseenter)="step = 2"
+           (mouseleave)="step = 1">
+        <div class="line -top"></div>
+        <div class="line -bottom"></div>
+      </div>
+
+      <div class="wizard-step step-3" [ngClass]="{'animate': step == 3, 'hover': step >= 3}" (mouseleave)="step = 1"
+           (mouseenter)="step = 3">
+        <div class="wizard-step-content" fxLayoutAlign="center center" fxLayout="column">
+          <div class="wizard-step-image-block" fxLayoutAlign="center center">
+            <img [src]="step >= 3 ? 'assets/img/hiw-wizard/hiw-wizard-step-3-filled.svg' : 'assets/img/hiw-wizard/hiw-wizard-step-3-empty.svg'" alt="">
+          </div>
+          <div class="wizard-step-text-block" fxLayoutAlign="center center" fxLayout="column">
+            <div class="wizard-step-title">Hire the right Pro</div>
+            <div class="wizard-step-text">Compare quotes, profiles and reviews, then hire the pro that's right for you
+            </div>
+          </div>
+        </div>
+        <div class="wizard-step-border-bottom"></div>
+        <div class="wizard-step-border-bottom-fill"></div>
+      </div>
+
+      <div class="arrow-wrapper" [ngClass]="{'animate': step >= 4, 'hover': step > 3}" (mouseenter)="step = 3"
+           (mouseleave)="step = 1">
+        <div class="line -top"></div>
+        <div class="line -bottom"></div>
+      </div>
+
+      <div class="wizard-step step-4" [ngClass]="{'animate': step == 4, 'hover': step >= 4}" (mouseleave)="step = 1"
+           (mouseenter)="step = 4">
+        <div class="wizard-step-content" fxLayoutAlign="center center" fxLayout="column">
+          <div class="wizard-step-image-block" fxLayoutAlign="center center">
+            <img [src]="step >= 4 ? 'assets/img/hiw-wizard/hiw-wizard-step-4-filled.svg' : 'assets/img/hiw-wizard/hiw-wizard-step-4-empty.svg'" alt="">
+          </div>
+          <div class="wizard-step-text-block" fxLayoutAlign="center center" fxLayout="column">
+            <div class="wizard-step-title">Enjoy done work</div>
+            <div class="wizard-step-text">Enjoy th result and leave a review. See you with your next project</div>
+          </div>
+        </div>
+        <div class="wizard-step-border-bottom"></div>
+        <div class="wizard-step-border-bottom-fill"></div>
+      </div>
+    </div>
+  </div>
+</div>

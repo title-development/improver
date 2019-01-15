@@ -1,0 +1,23 @@
+<div *ngIf="data.visible != false">
+  <div class="label" *ngIf="data && data?.items" (click)="toggleAccordion(data.items)"
+       title="{{data.name}}"
+       [ngClass]="{'opened': opened}">
+    <span [ngClass]="data.icon"></span>
+    <ng-container *ngIf="!small">
+      {{data.label}}
+    </ng-container>
+    <i *ngIf="data && data?.items && data.items.length > 0" class="pi pi-angle-down"></i>
+  </div>
+  <a class="label" title="{{data.label}}" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+     *ngIf="!data.items" [routerLink]="data.url" href="#"><span
+    [ngClass]="data.icon" class="fa"></span>
+    <ng-container *ngIf="!small">
+      {{data.label}}
+    </ng-container>
+    <i *ngIf="data && data.items && data.items.length > 0" class="pi pi-angle-down"></i>
+  </a>
+  <div class="sub" [style.height]="maxHeight" (transitionend)="transitionEnd($event)"
+       *ngIf="data && data.items && data.items.length > 0">
+    <admin-accordeon *ngFor="let sub of data.items" [small]="small" [data]="sub"></admin-accordeon>
+  </div>
+</div>

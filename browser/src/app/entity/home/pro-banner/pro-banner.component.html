@@ -1,0 +1,38 @@
+<div class="pro-banner-wrapper" fxFlex="100">
+
+  <div class="pro-banner-container" fxLayoutAlign="center start">
+
+    <div class="pro-banner-content" fxLayoutAlign="start start" fxLayout="column">
+
+      <div class="pro-banner-main-block">
+        <div class="text" fxFlex="50">
+          Find new customers and grow your business
+          with Home Improve
+        </div>
+
+        <a class="button" routerLink="/become-pro" *ngIf="!securityService.hasRole(Role.CONTRACTOR)">
+          <div class="become-a-pro-button">Become a PRO</div>
+        </a>
+
+      </div>
+
+      <div class="pro-banner-secondary-block">
+        <div class="text" >
+          Whether you’re scaling your business, filling the gaps in your schedule, or just starting out, Home Improve will help you find the right customers.
+        </div>
+        <!--<div class="button" >-->
+          <!--<div class="who-are-pros-button">-->
+            <!--Who are PROs?-->
+          <!--</div>-->
+        <!--</div>-->
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+

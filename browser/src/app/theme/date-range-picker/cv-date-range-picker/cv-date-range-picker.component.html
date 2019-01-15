@@ -1,0 +1,49 @@
+<div class="range-date-picker">
+  <div class="month">
+    <div class="header">
+      <div class="nav prev" [ngClass]="{'-disabled': isDisabledPrevNavigation(dateRangePicker.firstMoth)}" (click)="onPrevMonth(isDisabledPrevNavigation(dateRangePicker.firstMoth))">
+        <i class="imp-icon-left-open"></i>
+      </div>
+      <div class="nav next -mobile" [ngClass]="{'-disabled': isDisabledNextNavigation(dateRangePicker.nextMonth)}" (click)="onNextMonth(isDisabledNextNavigation(dateRangePicker.nextMonth))">
+        <i class="imp-icon-right-open"></i>
+      </div>
+      <h4>{{dateRangePicker.firstMoth.month}} {{dateRangePicker.firstMoth.year}}</h4>
+      <div class="weeks">
+        <div *ngFor="let week of weekLabels">{{week}}</div>
+      </div>
+    </div>
+    <div class="days">
+      <div class="other" *ngFor="let day of dateRangePicker.firstMoth.previousMonthDays">{{day}}</div>
+      <div [ngClass]="{'-current' : dateRangePicker.currentDay == day && dateRangePicker.currentMonth == dateRangePicker.firstMoth.monthNumber,
+                       '-selected': isSelected(day, dateRangePicker.firstMoth),
+                       '-range'   : inRange(day, dateRangePicker.firstMoth),
+                       '-disabled': isDisabled(day, dateRangePicker.firstMoth)}"
+           *ngFor="let day of dateRangePicker.firstMoth.days let i = index"
+           (click)="select(day, dateRangePicker.firstMoth.monthNumber, dateRangePicker.firstMoth.year)">{{day}}
+      </div>
+      <div class="other" *ngFor="let day of dateRangePicker.firstMoth.nextMonthDays">{{day}}</div>
+    </div>
+  </div>
+  <div class="month">
+    <div class="header">
+      <div class="nav next" [ngClass]="{'-disabled': isDisabledNextNavigation(dateRangePicker.nextMonth)}" (click)="onNextMonth(isDisabledNextNavigation(dateRangePicker.nextMonth))">
+        <i class="imp-icon-right-open"></i>
+      </div>
+      <h4>{{dateRangePicker.nextMonth.month}} {{dateRangePicker.nextMonth.year}}</h4>
+      <div class="weeks">
+        <div *ngFor="let week of weekLabels">{{week}}</div>
+      </div>
+    </div>
+    <div class="days">
+      <div class="other" *ngFor="let day of dateRangePicker.nextMonth.previousMonthDays">{{day}}</div>
+      <div [ngClass]="{'-current' : dateRangePicker.currentDay == day && dateRangePicker.currentMonth == dateRangePicker.nextMonth.monthNumber,
+                       '-selected': isSelected(day, dateRangePicker.nextMonth),
+                       '-range'   : inRange(day, dateRangePicker.nextMonth),
+                       '-disabled': isDisabled(day, dateRangePicker.nextMonth)}"
+           *ngFor="let day of dateRangePicker.nextMonth.days let i = index"
+           (click)="select(day, dateRangePicker.nextMonth.monthNumber, dateRangePicker.nextMonth.year)">{{day}}
+      </div>
+      <div class="other" *ngFor="let day of dateRangePicker.nextMonth.nextMonthDays">{{day}}</div>
+    </div>
+  </div>
+</div>

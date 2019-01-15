@@ -1,0 +1,40 @@
+<div class="dialog-content-wrapper" [cvSpinner]="sliderContentIsLoading" cvSpinnerSize="90" cvSpinnerBackground="true">
+  <div class="dialog-content-container">
+    <div ></div>
+    <div class="close-modal" color="accent" (click)="close()">X</div>
+
+    <div class="swiper-container gallery-top">
+      <div class="swiper-wrapper">
+        <ng-template ngFor [ngForOf]="gallery" let-image let-i="index">
+          <div class="swiper-slide"
+               [ngStyle]="image != '' && {'background-image':'url(' + image + ')'} || {'background-image':'url(' + 'http://via.placeholder.com/1920x1080' + ')'}"></div>
+        </ng-template>
+      </div>
+      <!-- Add Arrows -->
+      <div class="swiper-button-next swiper-button-white"></div>
+      <div class="swiper-button-prev swiper-button-white"></div>
+    </div>
+    <div class="swiper-container gallery-thumbs">
+      <div class="swiper-wrapper">
+        <ng-template ngFor [ngForOf]="gallery" let-image let-i="index">
+          <div class="swiper-slide"
+               [ngStyle]="image != '' && {'background-image':'url(' + image + ')'} || {'background-image':'url(' + 'http://via.placeholder.com/1920x1080' + ')'}"></div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

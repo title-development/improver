@@ -1,0 +1,119 @@
+@import "../../../improver-mixins.scss";
+
+:host {
+  margin-top: 65px;
+  @include response-to(sm) {
+    margin-top: 0px;
+  }
+}
+
+.confirmation-page {
+  @include background-size-100-mixin();
+  height: 100%;
+  width: 100%;
+  max-width: 959px;
+  margin: 24px auto 0;
+  //background: url(../../../assets/img/black-and-white-interior-macbook-drawing-default.jpg) no-repeat top center fixed;
+  text-align: center;
+
+  .confirmation-result-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .confirmation-form {
+    max-width: 290px;
+    margin: auto;
+
+    .title {
+      margin-bottom: 24px;
+    }
+
+    cv-input-field {
+      margin-bottom: 24px;
+    }
+
+  }
+
+  .confirmation-error-card, .confirmation-success-card {
+    width: 420px;
+  }
+
+}
+
+.card {
+  background-color: $white;
+  border-radius: 2px;
+  padding: 36px 24px;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
+  margin-bottom: 24px;
+
+
+  .buttons-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 400px;
+    justify-self: center;
+    margin: 24px auto auto;
+
+    @include response-to(xs) {
+      flex-direction: column;
+    }
+
+    button {
+      width: 180px;
+      margin: 0px auto;
+
+      &:nth-child(1) {
+        @include response-to(xs) {
+          margin-bottom: 16px;
+        }
+      }
+
+    }
+
+  }
+
+  .confirmation-success-image {
+    width: 82px;
+    height: 82px;
+    margin-bottom: 24px;
+  }
+
+  .confirmation-success-title {
+    color: $black-primary;
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .confirmation-success-message {
+    color: $black-primary;
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .confirmation-error-image {
+    width: 82px;
+    height: 82px;
+    margin-bottom: 24px;
+  }
+
+  .confirmation-error-title {
+    color: $black-primary;
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .confirmation-error-message {
+    color: $black-primary;
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .home-button {
+    margin-top: 24px;
+  }
+
+}

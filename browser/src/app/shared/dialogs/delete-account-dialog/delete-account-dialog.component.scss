@@ -1,0 +1,78 @@
+@import "../../../../improver-mixins.scss";
+
+.dialog-content-wrapper {
+  @include response-to(sm) {
+    background: #fff;
+    display: flex;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    overflow-y: auto;
+  }
+  .header {
+
+    .header-content {
+      padding: 16px 48px 16px 24px;
+      background-color: $black-100;
+      font-size: 20px;
+      font-weight: 600;
+      text-align: left;
+      color: $black-secondary;
+    }
+
+  }
+
+  .content {
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.92);
+    padding: 0px 24px;
+
+    .message {
+      min-height: 36px;
+      margin-top: 16px;
+    }
+    a {
+      color: $link
+    }
+    ul {
+      margin: 0;
+      padding: 16px 0 0 16px;
+    }
+  }
+
+  .actions {
+    padding: 0px 24px 16px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    button.confirm {
+      margin-left: auto;
+    }
+
+    button[type=submit] {
+      color: $white;
+      background-color: $red-500;
+      &:hover {
+        background-color: $red-400;
+      }
+    }
+
+  }
+
+}
+
+::ng-deep .mat-dialog-container {
+  padding: 0px;
+}
+
+.close-modal {
+  position: relative;
+  right: 32px;
+  top: 32px;
+}
+
+

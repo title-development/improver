@@ -1,0 +1,26 @@
+<div class="dialog-content-wrapper">
+  <div class="dialog-content-container">
+
+    <div class="header">
+
+      <mat-icon class="close-modal" color="accent" (click)="close()">clear</mat-icon>
+
+      <div class="header-content" [innerHtml]="properties.title"></div>
+
+    </div>
+
+    <div class="content">
+
+      <div class="message" [ngStyle]="properties.messageStyle" *ngIf="properties.message && properties.message != ''" [innerHtml]="properties.message"></div>
+
+    </div>
+
+    <div class="actions" >
+      <button cv-button-flat flatStyle="dark" (click)="close()" *ngIf="!properties.confirmOnly">{{properties.CANCEL}}</button>
+      <button cv-button (click)="confirm()" class="confirm">{{properties.OK}}</button>
+    </div>
+
+  </div>
+</div>
+
+

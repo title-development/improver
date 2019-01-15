@@ -1,0 +1,15 @@
+<div class="pop-up-message-container-wrapper">
+  <ng-template ngFor let-message [ngForOf]="messages" let-i="index">
+    <app-pop-up-message [message]="message" (onMessageDestroy)="messages.splice(i,1); messageDestroy(message.id)"></app-pop-up-message>
+  </ng-template>
+</div>
+
+
+
+
+
+
+
+
+
+

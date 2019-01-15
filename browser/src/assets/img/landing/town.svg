@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1440" height="302" viewBox="0 0 1440 302">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+        fill-rule: evenodd;
+        filter: url(#filter);
+      }
+    </style>
+    <filter id="filter" x="155" y="2865" width="1472" height="302" filterUnits="userSpaceOnUse">
+      <feOffset result="offset" dx="14.417" dy="-9.009" in="SourceAlpha"/>
+      <feGaussianBlur result="blur" stdDeviation="4"/>
+      <feFlood result="flood" flood-color="#c1c1c1" flood-opacity="0.17"/>
+      <feComposite result="composite" operator="in" in2="blur"/>
+      <feBlend result="blend" in="SourceGraphic"/>
+    </filter>
+  </defs>
+  <path id="_-e-Shape_5" data-name="-e-Shape 5" class="cls-1" d="M157,3160H1597V2969h-59v95h-14v34l-37.06.17v-19.13h-43.82v-11.55h51.16v-6.35h-51.16v-15.22h-6.34v15.22h-10.05v3.18h-11.75v-17.67h-24.97v17.67h-41.12v17.66h-45.52v-27.97h-7.34V3033.4h-7.12v-32.15h64.39v-6.35h-64.39v-4.19h-6.33v4.19h-23.27v6.35h23.27v32.15h-30.61v41.22h-88.12v-30.91h-8.58v-10.08h36.48v-6.35h-36.48v-2.79h-6.34v2.79h-5.64v6.35h5.64v10.08h-26.2v33.85h-19.6v-10.07h19.6v-6.35H1077.2v6.35h19.6v10.07h-28.41v14.72h-13.21v-7.36h-13.22V2968.63h-8.81v-17.66h-27.91v136.9H952.373v-136.9h-22.03v11.77H918.6v92.74H899.5v25.03h-8.81v-25.03H853.977v-16.19H837.823v-19.14H823.137v-42.69h-23.5v16.19H740.893v61.83H710.052v-20.61H673.339v-41.22H582.285v48.58H568.118v13.25h-9.33v-83.91H548.509v-20.6H530.885v17.66H511.792v70.66h-8.81v16.19H492.7v-50.05H420.741v41.22h-23.5v17.67H384.025v10.3H370.808v-11.78l-8.077-8.09v-18.4H326.749v42.69H313.532v-10.31H298.846V2950.97H287.1v-32.39H273.881v-16.19H256.257v-13.4H229.823v23.7H215.137v25.03h-8.813v86.77H190.169v-16.11H156.61L157,3160m1279.78-80.96h-10.05v-11.55h10.05v11.55Z" transform="translate(-157 -2865)"/>
+</svg>

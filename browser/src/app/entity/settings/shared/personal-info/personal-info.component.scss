@@ -1,0 +1,284 @@
+@import "../../account.component.scss";
+@import "../../../../../improver-mixins";
+
+.account-top-line {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  height: 72px;
+}
+
+.account-nav-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: $black-primary;
+}
+
+.card {
+  background-color: $white;
+  border-radius: 2px;
+  padding: 24px;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
+  margin-bottom: 24px;
+
+  h3 {
+    font-size: 20px;
+    text-align: left;
+    font-weight: 500;
+    margin: 0;
+    padding: 0;
+    color: $black-primary;
+    margin-bottom: 21px;
+  }
+}
+
+.personal-info-card {
+  .avatar-wrapper {
+    width: 90px;
+    height: 90px;
+    border-radius: 100px;
+    background-color: $white;
+    box-shadow: 0px 1px 5px 0 rgba(0, 0, 0, 0.24);
+    position: relative;
+    .avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 100px;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
+    .actions {
+      position: absolute;
+      top: 8px;
+      right: -6px;
+      bottom: 8px;
+      display: flex;
+      flex-direction: column;
+      .icon {
+        cursor: pointer;
+        border-radius: 50%;
+        height: 24px;
+        width: 24px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        &.-delete {
+          background-color: $red;
+        }
+        &.-edit {
+          margin-top: auto;
+          background-color: $primary-500;
+        }
+        .mat-icon {
+          color: $white;
+          font-size: 16px;
+        }
+      }
+    }
+  }
+
+  .save-personal-info {
+    float: right;
+  }
+
+  .personal-info-form-content {
+
+    @include response-to(xs) {
+      margin-top: 24px;
+    }
+
+    //::ng-deep.input-holder {
+    //  margin-bottom: 24px;
+    //}
+
+    ::ng-deep .row > div[class^='col-'] {
+      margin-bottom: 24px;
+    }
+
+    .edit-buttons {
+      display: block;
+      //margin-top: 7px;
+
+      button.cv-button {
+        //padding: 4px 16px;
+        margin-left: -12px;
+        width: 60px;
+
+        @include response-from(sm) {
+          margin-right: 24px;
+        }
+
+      }
+
+    }
+
+  }
+
+  .email-edit-button {
+    color: #aaaaaa;
+    cursor: pointer;
+    font-size: 18px;
+  }
+
+  .personal-info-form-submit-button {
+
+  }
+
+}
+
+.change-password-card {
+  padding: 24px;
+
+  .change-password-hints-block {
+    padding: 16px;
+    background-color: rgba(190, 190, 190, 0.17);
+    margin-bottom: 32px;
+
+    @include response-from(sm) {
+      min-height: 168px;
+    }
+
+    .hints-title {
+      font-size: 14px;
+      color: rgba(0, 0, 0, 0.54);
+      margin-bottom: 24px;
+    }
+
+    .hint-block {
+      margin-bottom: 16px;
+      .square {
+        width: 8px;
+        min-width: 8px;
+        height: 8px;
+        background-color: $primary-500;
+        margin-top: 3px;
+        margin-right: 6px;
+      }
+      .hint-text {
+        font-size: 12px;
+        color: rgba(0, 0, 0, 0.54);
+      }
+    }
+
+  }
+
+  .change-password-form {
+    flex-direction: column;
+    display: flex;
+    max-width: 100%;
+
+    .change-password-form-content {
+
+      ::ng-deep .row > div[class^='col-'] {
+        margin-bottom: 24px;
+      }
+
+    }
+
+    .buttons-wrapper {
+      display: flex;
+
+      button {
+        display: flex;
+        margin-left: auto;
+      }
+
+    }
+  }
+}
+
+.spacer {
+  flex-grow: 1;
+}
+
+.action {
+  display: flex;
+  .delete-account {
+    display: inline-block;
+    font-size: 14px;
+    margin-bottom: 24px;
+    color: $black-500;
+    transition: color .3s ease;
+    cursor: pointer;
+    &:hover {
+      color: $black-primary;
+    }
+  }
+}
+
+.social-connection {
+  .social {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    &:not(:last-child) {
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+      position: relative;
+      &:after {
+        content: '';
+        display: block;
+        height: 1px;
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: $black-300;
+        margin-left: -24px;
+        margin-right: -24px;
+      }
+    }
+    &:first-of-type {
+      cv-icon {
+        background-color: #3b5998;
+      }
+      span {
+        color: #3b5998;
+      }
+    }
+    span {
+      max-width: 100px;
+      width: 100%;
+      display: inline-block;
+      font-size: 15px;
+    }
+    cv-icon {
+      color: #ec3c1e;
+    }
+  }
+  .meta {
+    display: flex;
+    align-items: center;
+    @include response(xs) {
+      margin-bottom: 8px;
+    }
+    cv-icon {
+      display: flex;
+      width: 38px;
+      height: 38px;
+      border-radius: 2px;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: #fff;
+      background-color: #ec3c1e;
+      margin-right: 8px;
+      flex: none;
+    }
+    span {
+      color: #ec3c1e;
+      font-weight: 700;
+    }
+  }
+  p {
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+    color: $black-secondary;
+    @include response(xs) {
+      display: none;
+    }
+  }
+}

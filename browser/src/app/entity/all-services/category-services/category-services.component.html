@@ -1,0 +1,54 @@
+<div class="category-services-wrapper">
+  <div class="category-services">
+
+    <div class="main-block" >
+
+      <div class="category-services-card card" *ngIf="trade">
+
+        <div class="trade-header">
+
+          <img class="trade-icon" [src]="'assets/trades/icons/' + trade.name + '.svg'" onerror="this.src='assets/trades/icons/default.svg';">
+
+          <div class="description">
+            <div class="title">{{trade.name}}</div>
+            <div class="hint">Tell us what you need and we’ll help you</div>
+          </div>
+
+
+        </div>
+
+
+
+        <input cv-input trim placeholder="Pipe, carpet, paint etc." class="services-filter" (input)="onFilter($event.target.value)">
+
+        <div class="main-wrapper">
+
+            <div class="trade-wrapper">
+
+              <!--<div class="trade-name">{{trade.name}}</div>-->
+
+              <ng-template ngFor [ngForOf]="filteredServices" let-service [ngForTrackBy]="trackByFn">
+                <div class="service-type-wrapper">
+                  <div class="service-type-name" (click)="projectActionService.openQuestionary(service)">{{service.name}}</div>
+                </div>
+              </ng-template>
+
+            </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+
+
+
+
+
+
+
+

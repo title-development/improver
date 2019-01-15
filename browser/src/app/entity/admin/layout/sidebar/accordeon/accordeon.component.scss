@@ -1,0 +1,67 @@
+:host {
+  display: block;
+  position: relative;
+  &.-small {
+    .label {
+      padding-left: 16px !important;
+      text-align: center!important;
+
+      span {
+        margin: 0!important;
+      }
+    }
+  }
+}
+
+.label {
+  font-size: 15px;
+  padding: 10px 24px;
+  color: #e0e8eb;
+  text-decoration: none;
+  display: block;
+  cursor: pointer;
+  transition: background .3s ease, color .3s ease;
+  span {
+    margin-right: 8px;
+  }
+  &.active {
+    color: #e67700;
+    background-color: rgba(#000, .04);
+  }
+  &:hover {
+    background-color: rgba(#000, .04);
+  }
+  &.opened {
+    background-color: rgba(#000, .14);
+    +.sub {
+      background-color: rgba(#000, .14);
+      border-bottom: 1px dotted #e67700;
+    }
+    i {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+i {
+  position: absolute;
+  right: 16px;
+  top: 10px;
+  transition: transform .3s ease;
+}
+
+.sub {
+  display: block;
+  overflow: hidden;
+  transition: height .3s ease;
+  > admin-accordeon::ng-deep {
+    div > .label {
+      padding-left: 30px;
+    }
+    .sub > admin-accordeon::ng-deep {
+      div > .label {
+        padding-left: 60px;
+      }
+    }
+  }
+}

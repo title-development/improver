@@ -1,0 +1,190 @@
+@import '../../../../../improver-mixins';
+.project-information {
+  text-align: left;
+}
+.projectRequest {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-left: 3px solid transparent;
+  padding: 11px 12px;
+  cursor: pointer;
+  margin-top: 16px;
+  border-radius: 2px;
+  text-align: left;
+  background-color: $white;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.24);
+  opacity: 1;
+  transition: 0.3s;
+  padding-right: 115px;
+
+  @include response(sm) {
+    align-items: flex-end;
+  }
+
+  @include response-to(xs) {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .projectRequest-left {
+    display: flex;
+    flex: 1;
+
+    .status {
+      position: absolute;
+      right: 15px;
+      top: 0;
+      bottom: 0;
+      margin: auto;
+      height: 23px;
+      color: #e67700;
+    }
+
+    @include response-to(xs) {
+      flex-direction: column;
+      align-items: center;
+      margin: 16px 0;
+    }
+  }
+
+  .projectRequest-right {
+    display: flex;
+    justify-content: flex-end;
+    flex: 0;
+  }
+
+  .projectRequest-icon {
+    width: 64px;
+    height: 64px;
+    opacity: 1;
+    transition: 0.3s;
+    border-radius: 64px;
+    border: solid 2px transparent;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    position: relative;
+    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.24);
+
+    @include response-to(xs) {
+      width: 48px;
+      height: 48px;
+    }
+
+    &.active {
+      border-left: 3px solid transparent;
+    }
+
+    &.declined {
+      opacity: 0.6;
+      border-left: 3px solid transparent;
+    }
+
+    &.hired {
+      border: solid 2px $green;
+
+      .hired-foreground {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        border-radius: 24px;
+        background-color: $green;
+        position: absolute;
+        right: -5px;
+        bottom: -2px;
+
+        @include response-to(xs) {
+          width: 16px;
+          height: 16px;
+        }
+
+        i {
+          color: $white;
+          font-size: 12px;
+
+          @include response(xs) {
+            font-size: 10px;
+          }
+        }
+      }
+    }
+  }
+
+  &:hover {
+    opacity: 1;
+    transition: 0.3s;
+    border-radius: 2px;
+    background-color: $black-200;
+    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.24);
+
+    .projectRequest-icon {
+      box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.24);
+      opacity: 1;
+      transition: 0.3s;
+    }
+  }
+
+  .info-block {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+    padding-left: 24px;
+
+    @include response(sm) {
+      padding-left: 18px;
+      padding-right: 10px;
+    }
+
+    @include response(xs) {
+      align-items: center;
+      margin: 16px 0 0;
+      padding: 0;
+    }
+
+    .company-name {
+      font-size: 20px;
+      font-weight: 600;
+      text-align: left;
+      color: $black-primary;
+
+      @include response(md) {
+        font-size: 18px;
+      }
+
+      @include response(sm) {
+        font-size: 16px;
+      }
+
+      @include response(xs) {
+        text-align: center;
+        margin-bottom: 6px;
+        font-size: 16px;
+      }
+    }
+    .additional-info {
+      font-size: 12px;
+      line-height: 1.33;
+      text-align: left;
+      color: $black-secondary;
+    }
+  }
+}
+::ng-deep p-card {
+  .ui-card {
+    margin-top: 15px;
+  }
+}
+
+p-datatable::ng-deep {
+  th .ui-column-title {
+    display: inline !important;
+  }
+}
+

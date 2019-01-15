@@ -1,0 +1,112 @@
+@import "../../../../improver-mixins.scss";
+
+.dialog-content-wrapper {
+  .header {
+
+    .header-content {
+      padding: 16px 36px 16px 16px;
+      background-color: $black-150;
+      font-size: 20px;
+      font-weight: 500;
+      color: $black-secondary;
+    }
+  }
+
+}
+
+.content {
+  padding: 24px;
+
+  .complete-project-form {
+
+    .variants-wrapper {
+      margin-bottom: 24px;
+
+      .variant-wrapper {
+        cursor: pointer;
+        border-radius: 2px;
+        padding: 10px;
+        background-color: $white;
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.18);
+        margin-bottom: 12px;
+        border: 1px solid transparent;
+
+        &:hover {
+          background-color: $black-150;
+          box-shadow: 0 4px 7px 0 rgba(0, 0, 0, 0.24);
+        }
+
+        &.selected {
+          border: 1px solid $primary-500;
+
+          .status {
+            display: block !important;
+          }
+
+        }
+
+        .icon {
+          height: 36px;
+          width: 36px;
+          background-size: cover;
+          background-repeat: no-repeat;
+          margin-right: 12px;
+
+          i {
+            font-size: 24px;
+            opacity: 0.6;
+          }
+
+        }
+
+        .value-wrapper {
+          width: calc(100% - 48px);
+
+          .value {
+
+          }
+
+          .status {
+            display: none;
+
+            .mat-icon {
+              color: $primary-500;
+            }
+
+          }
+
+        }
+
+
+      }
+
+
+    }
+
+  }
+
+}
+
+::ng-deep .mat-dialog-container {
+  padding: 0px;
+}
+
+.close-modal {
+  position: relative;
+  right: 32px;
+  top: 32px;
+}
+
+::ng-deep cv-radio-group .input-holder {
+  display: block !important;
+
+  cv-radio {
+    margin-bottom: 16px;
+    .radio-label {
+      margin-left: 4px;
+      margin-top: auto;
+    }
+  }
+}
+
+

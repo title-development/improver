@@ -1,0 +1,36 @@
+@import "../../scss/variables";
+
+:host {
+  display: block;
+  cursor: pointer;
+  &.ng-invalid:not(.ng-untouched), &.ng-invalid.-submitted, &.ng-invalid.ng-dirty {
+    .label {
+      border-color: $red;
+    }
+  }
+}
+
+.label {
+  color: $placeholder;
+  font-size: 15px;
+  line-height: 16px;
+  font-weight: 500;
+  border: 1px solid $black-300;
+  border-radius: 2px;
+  padding: 11px 16px;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  &.-selected {
+    color: $black-primary;
+  }
+  &:focus {
+    border-color: $primary-500;
+  }
+  &.-disabled {
+    background-color: $black-100;
+    border-color: $black-300;
+    cursor: not-allowed;
+  }
+}

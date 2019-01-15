@@ -1,0 +1,52 @@
+<div class="dialog-content-wrapper">
+  <div class="dialog-content-container">
+    <div class="header">
+      <mat-icon class="close-modal" color="accent" (click)="close()">clear</mat-icon>
+      <div class="header-content">Delete account</div>
+    </div>
+    <form #form="ngForm"
+          (ngSubmit)="deleteAccount(form)"
+          [cvSpinner]="processing"
+          [cvSpinnerSize]="20"
+          [cvSpinnerBackground]="true"
+    >
+      <div class="content">
+        <ul>
+          <li>If you want to change your email address, name or phone number, simply do so right here from your "<a
+            href="" routerLink="/my/settings/account" (click)="close()">User information</a>".
+          </li>
+          <li>If you receive too many emails, you can also unsubscribe in your "<a href=""
+                                                                                   routerLink="/my/settings/notifications"
+                                                                                   (click)="close()">Notification
+            settings</a>".
+          </li>
+        </ul>
+        <p>Are you sure you want to delete your account? This action cannot be reversed, so make sure you want to do
+          this.</p>
+        <cv-input-field *ngIf="account.nativeUser">
+          <cv-field-label>Confirm the deletion with your password</cv-field-label>
+          <input cv-input placeholder="Your current password"
+                 #pass="ngModel"
+                 name="password"
+                 type="password"
+                 [(ngModel)]="password"
+                 maxlength="32"
+                 minlength="1"
+                 required>
+          <cv-field-error *ngIf="pass.dirty || pass.touched || form.submitted">
+               <span *ngIf="pass.errors?.required">
+               {{messages.errors.password.required}}
+              </span>
+          </cv-field-error>
+        </cv-input-field>
+
+      </div>
+      <div class="actions">
+        <button cv-button type="submit" size="small">Yes, delete</button>
+        <button cv-button type="button" size="small" (click)="close()" class="confirm">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+

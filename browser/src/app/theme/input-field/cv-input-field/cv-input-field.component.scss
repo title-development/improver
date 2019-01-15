@@ -1,0 +1,49 @@
+@import "../../scss/variables";
+
+:host {
+  display: block;
+  position: relative;
+  ::ng-deep .cv-input {
+    margin-bottom: 0;
+  }
+  ::ng-deep cv-icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 20px;
+    color: $black-300;
+    width: 48px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  &.-is-button {
+    .input-holder {
+      display: flex;
+      ::ng-deep .cv-input {
+        flex-grow: 1;
+        border-right-width: 0;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+      ::ng-deep {
+        .cv-button, .cv-button-empty {
+          border-top-left-radius: 0;
+          border-bottom-left-radius: 0;
+        }
+      }
+    }
+  }
+  &.required::ng-deep {
+    cv-field-label {
+      &:after {
+        content: '*';
+      }
+    }
+  }
+}
+
+.input-holder {
+  position: relative;
+}

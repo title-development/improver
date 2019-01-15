@@ -1,0 +1,31 @@
+@import "../../../improver-mixins.scss";
+
+:host {
+  display: block;
+}
+
+.container {
+  max-width: 794px;
+}
+
+.search-bar {
+  text-align: center;
+  margin-top: 54px;
+}
+
+.results {
+  margin-top: 24px;
+  a {
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 8px;
+    &:hover {
+      color: $link;
+    }
+  }
+}
+
+.load-more {
+  margin-bottom: 18px;
+}

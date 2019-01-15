@@ -1,0 +1,27 @@
+p-datatable::ng-deep {
+  .ui-cell-data {
+    a {
+      display: block;
+      margin-bottom: 2px;
+      &:hover {
+        color: #5a2bdb;
+      }
+    }
+  }
+}
+
+.image-preview {
+  width: 100px;
+  height: 60px;
+  background-size: cover;
+  display: inline-block;
+}
+
+p-overlaypanel::ng-deep {
+  img {
+    max-width: 400px;
+    max-height: 400px;
+    height:  auto;
+    width: auto;
+  }
+}

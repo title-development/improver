@@ -1,0 +1,5 @@
+<div class="button-inner">
+  <ng-content select="cv-icon"></ng-content>
+  <span><ng-content></ng-content>
+  <i *ngIf="loading" [cvSpinner]="true" [cvSpinnerSize]="11" [cvSpinnerColor]="spinnerColor"></i></span>
+</div>

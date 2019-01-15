@@ -1,0 +1,110 @@
+<div class="panel-header">
+  <h1>Customers</h1>
+  <p-button (onClick)="refresh()" icon="pi pi-fw pi-refresh" label="&nbsp;&nbsp;Refresh"></p-button>
+</div>
+
+<p-dataTable class="projectRequests-table" [lazy]="true" [loading]="processing" #dt
+             [value]="customers.content"
+             selectionMode="single" sortMode="single"
+             [responsive]="true" [contextMenu]="cm" [paginator]="true"
+             [rows]="rowsPerPage[0]" [totalRecords]="customers.totalElements" [rowsPerPageOptions]="rowsPerPage"
+             sortField="id" [sortOrder]="1"
+             [filters]="filters"
+             (onContextMenuSelect)="selectItem($event)"
+             (onLazyLoad)="loadLazy($event)">
+  <p-header>
+    <div style="text-align:left">
+      <p-multiSelect [options]="tableColumns" [panelStyle]="{minWidth:'270px'}" [(ngModel)]="selectedTableCols"></p-multiSelect>
+    </div>
+  </p-header>
+  <p-column field="id" header="ID" [sortable]="true" *ngIf="selectedTableCols.includes('id')" [filter]="true"></p-column>
+  <p-column field="iconUrl" header="Icon url" *ngIf="selectedTableCols.includes('iconUrl')">
+    <ng-template pTemplate="body" let-row="rowData">
+      <div class="user-logo" [ngStyle]="row.iconUrl && row.iconUrl != '' && {'background-image':'url(' + row.iconUrl + ')'} || {'background-image':'url(/assets/img/customer-logo-placeholder.png)'}"></div>
+    </ng-template>
+  </p-column>
+  <p-column field="firstName" header="First name" [sortable]="true" *ngIf="selectedTableCols.includes('firstName')" ></p-column>
+  <p-column field="lastName" header="Last name" [sortable]="true" *ngIf="selectedTableCols.includes('lastName')" ></p-column>
+  <p-column field="displayName" header="Display name" [sortable]="true" *ngIf="selectedTableCols.includes('displayName')" [filter]="true"></p-column>
+  <p-column field="email" header="Email" [sortable]="true" *ngIf="selectedTableCols.includes('email')" [filter]="true"></p-column>
+  <p-column field="lastLogin" header="Last login" [sortable]="true" *ngIf="selectedTableCols.includes('lastLogin')">
+    <ng-template let-col let-data="rowData" pTemplate="body">
+      {{data[col.field] | date: 'MMM d, y, h:mm a'}}
+    </ng-template>
+  </p-column>
+  <p-column field="internalPhone" header="Internal phone" [sortable]="true" *ngIf="selectedTableCols.includes('internalPhone')" ></p-column>
+  <p-column field="activated" header="Activated" sortField="isActivated" [sortable]="true" *ngIf="selectedTableCols.includes('activated')">
+    <ng-template let-row="rowData" pTemplate="body">
+      <i class="pi pi-check" *ngIf="row.activated"></i>
+      <i class="pi pi-ban" *ngIf="!row.activated"></i>
+    </ng-template>
+  </p-column>
+  <p-column field="blocked" header="Blocked" sortField="isBlocked" [sortable]="true" *ngIf="selectedTableCols.includes('blocked')">
+    <ng-template let-row="rowData" pTemplate="body">
+      <i class="pi pi-check" *ngIf="row.blocked"></i>
+      <i class="pi pi-ban" *ngIf="!row.blocked"></i>
+    </ng-template>
+  </p-column>
+  <p-column field="deleted" header="Deleted" sortField="isDeleted" [sortable]="true" *ngIf="selectedTableCols.includes('deleted')">
+    <ng-template let-row="rowData" pTemplate="body">
+      <i class="pi pi-check" *ngIf="row.deleted"></i>
+      <i class="pi pi-ban" *ngIf="!row.deleted"></i>
+    </ng-template>
+  </p-column>
+  <p-column field="created" header="Created" [sortable]="true" *ngIf="selectedTableCols.includes('created')">
+    <ng-template let-col let-data="rowData" pTemplate="body">
+      {{data[col.field] | date: 'MMM d, y, h:mm a'}}
+    </ng-template>
+  </p-column>
+  <p-column field="updated" header="Updated" [sortable]="true" *ngIf="selectedTableCols.includes('updated')">
+    <ng-template let-col let-data="rowData" pTemplate="body">
+      {{data[col.field] | date: 'MMM d, y, h:mm a'}}
+    </ng-template>
+  </p-column>
+</p-dataTable>
+
+<p-dialog header="Edit Customer" [(visible)]="displayEditDialog" [responsive]="true" showEffect="fade" [width]="500"
+          [modal]="true">
+  <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="selected">
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-4"><label for="email">Email</label></div>
+      <div class="ui-grid-col-8"><input pInputText id="email" [(ngModel)]="selected.email"/></div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-4"><label for="firstName">First name</label></div>
+      <div class="ui-grid-col-8"><input pInputText id="firstName" [(ngModel)]="selected.firstName"/></div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-4"><label for="lastName">Last name</label></div>
+      <div class="ui-grid-col-8"><input pInputText id="lastName" [(ngModel)]="selected.lastName"/></div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-4"><label for="displayName">Display name</label></div>
+      <div class="ui-grid-col-8"><input pInputText id="displayName" [(ngModel)]="selected.displayName"/></div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-4"><label for="internalPhone">Internal phone</label></div>
+      <div class="ui-grid-col-8"><input pInputText id="internalPhone" [(ngModel)]="selected.internalPhone"/></div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-4"><label for="blocked">Blocked</label></div>
+      <div class="ui-grid-col-8">
+        <p-inputSwitch [disabled]="true" id="blocked" onLabel="Yes" offLabel="No" [(ngModel)]="selected.blocked"></p-inputSwitch>
+      </div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-4"><label for="activated">Activated</label></div>
+      <div class="ui-grid-col-8">
+        <p-inputSwitch [disabled]="true" id="activated" onLabel="Yes" offLabel="No" [(ngModel)]="selected.activated"></p-inputSwitch>
+      </div>
+    </div>
+  </div>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button type="button" pButton icon="pi pi-check" (click)="updateCustomers(selected)" label="Save"></button>
+    </div>
+  </p-footer>
+</p-dialog>
+
+<p-contextMenu #cm [model]="contextMenuItems"></p-contextMenu>
+

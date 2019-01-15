@@ -1,0 +1,37 @@
+@import "../../scss/variables";
+
+:host {
+  display: flex;
+  &.ng-invalid:not(.ng-untouched), &.ng-invalid.-submitted, &.ng-invalid.ng-dirty  {
+    &::ng-deep .cv-input {
+      border-color: $red;
+      color: $black-primary;
+    }
+  }
+  &::ng-deep {
+    .cv-input {
+      flex-grow: 1;
+      width: 0;
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      border-right: 0;
+    }
+  }
+}
+
+
+button {
+  &.-save {
+    border-radius: 0;
+    border-right: 1px solid $black-250;
+  }
+  &.-cancel {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  &.-edit {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}

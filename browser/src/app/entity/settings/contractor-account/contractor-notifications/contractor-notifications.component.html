@@ -1,0 +1,76 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-3 sm-none xs-none">
+      <div class="account-top-line"></div>
+      <account-nav></account-nav>
+    </div>
+    <div class="col-md-9 col-sm-12">
+
+      <div class="account-nav-wrapper">
+
+        <div class="account-top-line">
+          <div class="account-nav-title">Notifications</div>
+        </div>
+        <div [cvSpinner]="!notificationSettings" [cvSpinnerSize]="24">
+          <div class="notification-settings-card card" *ngIf="notificationSettings">
+
+            <div class="notification-settings-title">Choose the emails you want to receive from Home Improve:</div>
+
+            <div class="notification-methods-wrapper" fxLayout="column" fxLayoutAlign="start end">
+
+              <div class="notification-settings-form-content">
+
+                <cv-checkbox name="newLeads" [(ngModel)]="notificationSettings.newLeads">
+                  <div class="notification-label">
+                    <div class="label">New Leads</div>
+                    <div class="hint">Email notifications of new leads available for purchase</div>
+                  </div>
+                </cv-checkbox>
+
+                <cv-checkbox name="leadReceipts" [(ngModel)]="notificationSettings.leadReceipts">
+                  <div class="notification-label">
+                    <div class="label">Lead Receipts</div>
+                    <div class="hint">Email receipts for leads you manually purchase</div>
+                  </div>
+                </cv-checkbox>
+
+                <cv-checkbox name="receiveReviews" [(ngModel)]="notificationSettings.receiveReviews">
+                  <div class="notification-label">
+                    <div class="label">Customer Reviews</div>
+                    <div class="hint">Notifications when customers leave you reviews</div>
+                  </div>
+                </cv-checkbox>
+
+                <cv-checkbox name="receiveSuggestions" [(ngModel)]="notificationSettings.receiveSuggestions">
+                  <div class="notification-label">
+                    <div class="label">Suggestions and tips</div>
+                    <div class="hint">Receive personalized tips and suggestion to success in a market</div>
+                  </div>
+                </cv-checkbox>
+
+                <cv-checkbox name="receiveMarketing" [(ngModel)]="notificationSettings.receiveMarketing">
+                  <div class="notification-label">
+                    <div class="label">Marketing</div>
+                    <div class="hint">Receive emails regarding product and special offers from Home Improve</div>
+                  </div>
+                </cv-checkbox>
+
+              </div>
+
+              <button type="button"
+                      class="notification-settings-submit-button submit-button"
+                      (click)="updateNotificationSettings()">
+                Save
+              </button>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<layout-footer></layout-footer>

@@ -1,0 +1,16 @@
+<div class="container">
+  <div class="search-bar">
+    <main-search-bar [service]="service" [zipCode]="zipCode" [resetAfterFind]="false" (notMatch)="deepSearch($event)"></main-search-bar>
+  </div>
+  <div class="results">
+    <ng-container *ngIf="searchResults.length > 0">
+      <ng-template ngFor let-service [ngForOf]="searchResults" let-i="index">
+        <div class="service">
+            <a (click)="projectActionService.openQuestionary(service, zipCode)">{{service.name}}</a>
+        </div>
+      </ng-template>
+      <cv-button-empty class="load-more" *ngIf="searchResults.length > size * page" (click)="loadMore()">Load More</cv-button-empty>
+    </ng-container>
+    <div class="not-found" *ngIf="searchResults.length == 0">We could not find any services from your request</div>
+  </div>
+</div>

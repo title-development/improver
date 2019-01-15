@@ -1,0 +1,36 @@
+@import "../scss/variables";
+
+:host {
+  position: absolute;
+  display: block;
+  bottom: 6px;
+  max-width: 300px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity .3s ease;
+  &.-left-glue {
+    left: 0;
+    transform: translateX(-16px);
+  }
+  &-right-glue {
+    right: 0;
+    transform: translateX(-16px);
+  }
+  &.-opened {
+    opacity: 1;
+  }
+}
+
+.holder {
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: elevation(1);
+  padding: 6px;
+  display: block;
+}
+
+span {
+  display: block;
+  font-size: 12px;
+}

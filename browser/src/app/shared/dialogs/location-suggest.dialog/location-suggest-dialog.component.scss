@@ -1,0 +1,162 @@
+@import "../../../../improver-mixins";
+
+.holder {
+  padding: 27px 12px 14px;
+  overflow: hidden;
+  @include response-to(sm) {
+    padding-top: 24px;
+  }
+}
+
+h3 {
+  margin: 0;
+  font-size: 18px;
+  color: $black-primary;
+  padding: 17px 24px;
+  font-weight: 400;
+  text-align: center;
+}
+
+h4 {
+  margin: 0;
+  padding: 0;
+  margin-bottom: 18px;
+  font-size: 16px;
+  text-align: center;
+  font-weight: 400;
+  color: $black-primary
+}
+
+.header {
+  background-color: #f7f7f7;
+  position: relative;
+}
+
+.row {
+  > div {
+    &:first-child {
+      position: relative;
+      @include response(xs) {
+        padding-bottom: 24px;
+        margin-bottom: 24px;
+        border-bottom: 1px solid $black-300;
+      }
+      &:before {
+        content: '';
+        display: block;
+        width: 1px;
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background-color: $black-300;
+        @include response(xs) {
+          display: none;
+        }
+      }
+    }
+  }
+}
+
+.close {
+  position: absolute;
+  right: 22px;
+  top: 16px;
+  cv-icon {
+    color: $black-400;
+    font-size: 21px;
+    cursor: pointer;
+    transition: color .3s ease;
+    &:hover {
+      color: $black-primary;
+    }
+  }
+}
+
+.address {
+  position: relative;
+  text-align: center;
+  max-width: 170px;
+  margin: auto;
+  p {
+    font-size: 14px;
+    color: $black-500;
+    margin: 0;
+  }
+}
+
+button {
+  display: block;
+  width: 100%;
+  max-width: 170px;
+  margin: 17px auto 0;
+}
+
+span {
+  margin-top: 26px;
+  display: block;
+  font-size: 12px;
+  text-align: center;
+  @include response(xs) {
+    margin-top: 24px;
+  }
+}
+
+.overlay {
+  cursor: pointer;
+  transition: background-color .3s ease;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  i {
+    display: block;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    background-image: url('../../../../assets/img/check.svg');
+    background-position: center;
+    background-size: 0;
+    background-repeat: no-repeat;
+  }
+  &:after, &:before {
+    content: '';
+    display: block;
+    width: 8px;
+    height: 8px;
+    position: absolute;
+  }
+  &:after {
+    border-top: 2px solid transparent;
+    border-right: 2px solid transparent;
+    right: 0;
+    top: 0;
+  }
+  &:before {
+    border-left: 2px solid transparent;
+    border-bottom: 2px solid transparent;;
+    bottom: 0;
+    left: 0;
+  }
+  &:hover {
+    background-color: rgba(#fff, .6);
+    &:after, &:before {
+      border-color: $primary-500;
+    }
+    i {
+      background-size: 45px;
+    }
+  }
+}
+
+.footer {
+  display: flex;
+  .spacer {
+    flex-grow: 1;
+  }
+}
+
+cv-input-field {
+  margin-bottom: 8px;
+}

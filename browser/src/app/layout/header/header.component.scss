@@ -1,0 +1,327 @@
+@import "../../../improver-mixins.scss";
+
+:host {
+  display: block;
+}
+.header {
+  position: fixed;
+  user-select: none;
+  z-index: 999;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 0;
+  height: 50px;
+  background-color: $white;
+  display: flex;
+  justify-content: center;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.15);
+
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 100%;
+    padding: 0 12px;
+
+    @include response-to(sm) {
+      padding: 0;
+    }
+
+    @include response(md,lg) {
+      padding: 0 24px;
+    }
+
+    @include response-from(xlg) {
+      max-width: 1170px;
+      padding: 0;
+    }
+
+    .header-left, .header-right {
+      display: flex;
+      flex-direction: row-reverse;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header-left {
+      @include response-to(sm) {
+        flex-direction: row;
+      }
+
+      .logo {
+        cursor: pointer;
+        font-weight: 600;
+        letter-spacing: 1.4px;
+        text-align: left;
+        color: #363636;
+        font-size: 21px;
+        background: url(../../../assets/img/logo.png) no-repeat center center;
+        background-size: contain;
+        width: 92px;
+        height: 32px;
+        margin-top: -4px;
+        margin-right: 20px;
+      }
+
+      .navbar-left {
+        display: flex;
+        align-items: center;
+      }
+
+    }
+
+    .header-right {
+      flex-direction: row;
+      @include response-to(sm) {
+        flex-direction: row;
+        position: static;
+        z-index: 1;
+      }
+
+      //Notifications
+      .notification-bar {
+        cursor: pointer;
+        color: $black-500;
+        font-size: 26px;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        max-height: 100%;
+        align-items: center;
+        justify-content: center;
+
+        .counter {
+          position: absolute;
+          top: 11px;
+          right: 13px;
+          font-size: 10px;
+          border-radius: 50%;
+          background-color: #14ABE3;
+          /* height: 11px; */
+          /* width: 11px; */
+          color: white;
+          line-height: 12px;
+          border: solid 2px white;
+          box-sizing: content-box;
+          padding: 0px 3px;
+        }
+
+        .mat-button {
+          width: 50px;
+          padding: 0px;
+          height: 50px;
+          min-width: unset;
+        }
+
+        .mat-icon {
+          font-size: 28px;
+        }
+      }
+
+      //Balance
+      .balance-bar {
+        margin-left: -8px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        text-align: left;
+        color: #191919;
+
+        .balance-header-label {
+          font-size: 12px;
+        }
+
+        .balance-header-value {
+          font-size: 14px;
+        }
+
+        &:hover {
+          color: $primary-500;
+        }
+      }
+
+      //Desktop links in menu
+      a {
+        padding: 8px 12px;
+        font-size: 14px;
+        font-weight: 500;
+        text-align: left;
+        color: $black-secondary;
+        cursor: pointer;
+
+        &:hover {
+          color: $primary-500;
+        }
+      }
+
+      .navbar-right {
+        display: flex;
+
+        a {
+          color: $black-500;
+        }
+      }
+
+      .app-menu-button {
+        color: $black-500;
+        font-weight: 500;
+        cursor: pointer;
+        padding: 0 5px;
+        max-height: 100%;
+        display: flex;
+        align-items: center;
+
+        @include response(md) {
+          padding: 0;
+        }
+
+        @include response-to(sm) {
+          margin-right: 15px;
+          padding: 0px;
+        }
+
+        .account-icon {
+          width: 36px;
+          height: 36px;
+          border-radius: 36px;
+          background-size: cover;
+          background-position: center;
+          //border: 1px solid $black-300;
+
+          @include response-to(sm) {
+            margin-right: 0;
+          }
+        }
+
+        .user-name {
+          font-size: 14px;
+          white-space: nowrap;
+          padding-left: 6px;
+          color: $black-500;
+          margin-right: 8px;
+        }
+
+        .imp-icon-angle-right {
+          color: #696969;
+
+          &.active {
+            transform: rotate(90deg);
+            color: #696969;
+          }
+        }
+      }
+    }
+
+    .logo-mobile-container {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      margin: auto;
+      width: 170px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .logo {
+        font-weight: 600;
+        letter-spacing: 1.4px;
+        color: #363636;
+        background: url(../../../assets/img/logo.png) no-repeat center center;
+        background-size: contain;
+        width: 130px;
+        height: 32px;
+
+        @include response-to(sm) {
+          padding: 0;
+          font-size: 19px;
+        }
+      }
+    }
+  }
+
+  .mobile-menu-button {
+    padding: 0;
+    min-width: 50px;
+    min-height: 50px;
+
+    .mobile-menu-icon {
+      display: inline-block;
+      cursor: pointer;
+      margin: 10px 0;
+      font-size: 24px;
+      color: $primary-500;
+    }
+  }
+
+  .navbar-nav {
+    ::ng-deep .mat-button {
+      height: 50px;
+      font-size: 18px;
+      border-radius: 0px;
+    }
+
+    .links-wrapper {
+      .link {
+        display: inline-block;
+        font-weight: 500;
+        cursor: pointer;
+        color: $black-500;
+        padding: 18px 12px;
+        font-size: 14px;
+        text-decoration: none;
+
+        &.active, &:hover {
+          -webkit-background-clip: text;
+          background-clip: text; //TODO: find out why it is highlighted
+          -webkit-text-fill-color: transparent;
+          background-image: linear-gradient(to bottom, $primary-500, $primary-600);
+        }
+      }
+    }
+  }
+}
+
+.join-as-pro-button {
+  margin-left: 8px;
+  @include bordered-link-mixin-flat();
+  width: 120px;
+  height: 33px;
+  background-color: $white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .join-as-pro-button-text {
+    font-size: 14px;
+    text-align: left;
+    color: $primary-500;
+  }
+
+  &:hover {
+    background-image: linear-gradient(to bottom, $primary-500, $primary-600);
+
+    .join-as-pro-button-text {
+      font-size: 14px;
+      color: $white;
+    }
+  }
+
+  &:active {
+    background-image: linear-gradient(to bottom, $primary-500, $primary-600);
+    opacity: 0.64;
+
+    .join-as-pro-button-text {
+      font-size: 14px;
+      color: $white;
+    }
+  }
+}
+
+.holder {
+  @include response-from(md) {
+    position: relative;
+  }
+}

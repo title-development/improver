@@ -1,0 +1,39 @@
+<div class="login-content">
+  <h1>Admin Panel</h1>
+  <form action="" #form="ngForm" (ngSubmit)="submit(form)">
+    <div class="input-field">
+      <input required
+             type="text"
+             placeholder="Email"
+             [(ngModel)]="credentials.email"
+             pInputText
+             name="email"
+             #email="ngModel"
+             pattern="{{constants.patterns.email}}"
+      />
+      <div class="error" *ngIf="email.dirty || email.touched || form.submitted">
+        <span *ngIf="email.errors?.required">{{messages.errors.email.required}}</span>
+        <span *ngIf="email.errors?.pattern">{{messages.errors.email.pattern}}</span>
+      </div>
+    </div>
+
+    <div class="input-field">
+      <input required
+             type="password"
+             placeholder="Password"
+             [(ngModel)]="credentials.password"
+             pInputText
+             #password="ngModel"
+             name="password"
+      />
+      <div class="error" *ngIf="password.dirty || password.touched || form.submitted">
+        <span *ngIf="password.errors?.required">{{messages.errors.password.required}}</span>
+      </div>
+    </div>
+
+    <div class="buttons">
+      <button routerLink="/" class="back-link">Back to site</button>
+      <button type="submit">Login</button>
+    </div>
+  </form>
+</div>

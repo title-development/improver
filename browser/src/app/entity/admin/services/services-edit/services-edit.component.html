@@ -1,0 +1,85 @@
+<h1 class="page-title" [innerHtml]="pageTitle"></h1>
+<form action="" *ngIf="serviceType" #serviceEditFrom="ngForm" (submit)="serviceEditFrom.valid && addUpdateServiceType()">
+  <div class="ui-grid ui-grid-responsive ui-fluid trades-list">
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-3"><label for="name">Active</label></div>
+      <div class="ui-grid-col-9">
+        <p-inputSwitch id="active" name="active" [(ngModel)]="serviceType.active" [disabled]="mode == 'view'"></p-inputSwitch>
+      </div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-3"><label for="name">Name</label></div>
+      <div class="ui-grid-col-9"><input pInputText id="name" name="name" #name="ngModel" serviceNameUniqueValidator [previousName]="previousName" required [(ngModel)]="serviceType.name" maxlength="255" minlength="4" [disabled]="mode == 'view'"/>
+        <ng-container *ngIf="name.dirty || name.touched || serviceEditFrom.submitted">
+          <p-message *ngIf="name.errors?.required" severity="error" text="Field is required"></p-message>
+          <p-message *ngIf="name.errors?.minlength" severity="error" text="Service name should have at least 4 symbols"></p-message>
+          <p-message *ngIf="name.errors?.maxlength" severity="error" text="Service name is to long"></p-message>
+          <p-message *ngIf="name.errors?.unique" severity="error" text="Service name is already taken"></p-message>
+        </ng-container>
+      </div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-3"><label for="description">Description</label></div>
+      <div class="ui-grid-col-9"><textarea #description="ngModel" maxlength="255" rows="3" id="description" name="description" type="text" pInputText
+                                           [(ngModel)]="serviceType.description" [disabled]="mode == 'view'" required></textarea>
+        <ng-container *ngIf="description.dirty || description.touched || serviceEditFrom.submitted">
+          <p-message *ngIf="description.errors?.required" severity="error" text="Field is required"></p-message>
+          <p-message *ngIf="description.errors?.minlength" severity="error" text="Description should have at least 4 symbols"></p-message>
+          <p-message *ngIf="description.errors?.maxlength" severity="error" text="Description is to long"></p-message>
+        </ng-container>
+      </div>
+
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-3"><label for="labels">Labels</label></div>
+      <div class="ui-grid-col-9">
+        <p-chips name="labels" id="labels" [(ngModel)]="serviceType.labels" [disabled]="mode == 'view'"></p-chips>
+      </div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-3"><label for="lead-price">Lead Price</label></div>
+      <div class="ui-grid-col-9">
+        <div class="ui-inputgroup">
+          <span class="ui-inputgroup-addon">$</span>
+          <p-spinner #leadPrice="ngModel" id="lead-price" name="lead-price" [(ngModel)]="serviceType.leadPrice"
+                     required [size]="30" [disabled]="mode == 'view'" [step]="0.1" [min]="0" [max]="9999"></p-spinner>
+        </div>
+        <ng-container *ngIf="leadPrice.dirty || leadPrice.touched || serviceEditFrom.submitted">
+          <p-message *ngIf="leadPrice.errors?.required" severity="error" text="Field is required"></p-message>
+        </ng-container>
+      </div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-3"><label for="rating">Rating</label></div>
+      <div class="ui-grid-col-9"><input id="rating" name="rating" type="number" pInputText
+                                        [(ngModel)]="serviceType.rating" [disabled]="mode == 'view'"></div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-3"><label for="image">Image</label></div>
+      <div class="ui-grid-col-9">
+        <image-preview [previewSize]="80" (fileChange)="addImage($event)" class="image"
+                       [image]="serviceType.imageUrl" [disabled]="mode == 'view'"></image-preview>
+      </div>
+    </div>
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-3"><label for="service-types">Trades</label></div>
+      <div class="ui-grid-col-9">
+        <p-multiSelect #trade="ngModel" id="service-types" [options]="trades" name="trades"
+                       [(ngModel)]="serviceType.trades" [disabled]="mode == 'view'">
+          <ng-template let-item let-i="index" pTemplate="item" required>
+            <label>{{item.label}}</label>
+          </ng-template>
+        </p-multiSelect>
+        <ng-container *ngIf="trade.dirty || trade.touched || serviceEditFrom.submitted">
+          <p-message *ngIf="serviceType.trades.length <= 0" severity="error" text="Field is required"></p-message>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <button type="button" pButton icon="fa fa-arrow-left" label="Back" [routerLink]="['/','admin','services']"></button>
+    <div class="spacer"></div>
+    <button type="submit" pButton icon="fa fa-check" label="{{serviceType.id ? 'Update' : 'Save'}}"
+            class="ui-button-success" *ngIf="mode !== 'view'"></button>
+  </div>
+</form>

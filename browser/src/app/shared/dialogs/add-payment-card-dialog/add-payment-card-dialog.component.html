@@ -1,0 +1,55 @@
+<div class="dialog-content-wrapper">
+  <div class="dialog-content-container">
+
+    <div class="header">
+
+      <mat-icon class="close-modal" color="accent" (click)="close()">clear</mat-icon>
+
+      <div class="header-content" fxLayout="row" fxLayoutAlign="start end" >
+        Connect your payment card
+      </div>
+
+    </div>
+
+    <div class="content">
+      <div class="warning">
+        <ng-container *ngIf="cards && cards.length >= 5">
+          <p>You cannot add more than 5 cards.</p>
+          <p>If you need add more than 5 card, please contact to the support.</p>
+        </ng-container>
+      </div>
+      <ng-container *ngIf="!cards || cards.length < 5">
+        <form class="payment-card-form"
+              name="payment-card-form"
+              #paymentCardForm="ngForm"
+              (ngSubmit)="paymentCardForm.valid && onSubmit(paymentCardForm)"
+              novalidate>
+
+          <div class="form-row">
+            <div id="card-info" #cardInfo>
+
+              <div id="card-number" #cardNumber class="field empty"></div>
+              <div id="card-expiry" #cardExpiry class="field empty third-width"></div>
+              <div id="card-cvc" #cardCvc class="field empty third-width"></div>
+              <!--<input id="zip" #zip data-tid="elements_examples.form.postal_code_placeholder" class="field empty third-width" placeholder="94107">-->
+
+            </div>
+
+            <cv-field-error id="card-errors" role="alert" *ngIf="error">{{ error }}</cv-field-error>
+          </div>
+
+          <div class="buttons-wrapper" [cvSpinner]="checkingCard" [cvSpinnerSize]="20">
+            <button cv-button-flat flatStyle="dark" (click)="close()" type="button">Cancel</button>
+            <button cv-button="" type="submit" [disabled]="checkingCard">Save</button>
+          </div>
+
+        </form>
+      </ng-container>
+
+
+    </div>
+
+  </div>
+</div>
+
+

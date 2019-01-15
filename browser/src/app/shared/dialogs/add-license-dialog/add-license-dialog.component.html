@@ -1,0 +1,118 @@
+<div class="dialog-content-wrapper">
+  <div class="dialog-content-container">
+
+    <div class="header">
+
+      <mat-icon class="close-modal" (click)="close()">clear</mat-icon>
+
+      <div class="header-content" fxLayout="row" fxLayoutAlign="start end">
+        <div *ngIf="licenseId" class="title">Update license</div>
+        <div *ngIf="!licenseId" class="title">Add license</div>
+
+      </div>
+
+    </div>
+
+    <div class="content">
+
+      <form class="add-license-form"
+            name="add-license-form"
+            #addLicenseForm="ngForm"
+            (ngSubmit)="addLicenseForm.valid && onSubmit(addLicenseForm)"
+            novalidate>
+
+        <div class="row">
+
+          <div class="col-xs-12 group-wrapper">
+            Include your professional license information here to generate up to three times job leads.
+          </div>
+
+          <div class="col-xs-12 group-wrapper">
+            <cv-input-field>
+              <cv-field-label>State</cv-field-label>
+              <cv-select [multiple]="false" [tags]="false" [autocomplete]="true"
+                         (autocompleteSearch)="onAutoCompleteSearch($event)" [items]="filteredStates"
+                         (onSelect)="onStateSelect($event)"
+                         valueKey="value"
+                         labelKey="label"
+                         name="state"
+                         #state="ngModel"
+                         [(ngModel)]="license.state"
+                         required
+                         label="Choose state">
+              </cv-select>
+              <cv-field-error *ngIf="state.dirty || state.touched || addLicenseForm.submitted">
+                <span *ngIf="state.errors?.required">Required</span>
+              </cv-field-error>
+            </cv-input-field>
+          </div>
+
+          <div class="col-xs-12 group-wrapper">
+            <cv-input-field>
+              <cv-field-label>Accreditation</cv-field-label>
+              <cv-select [multiple]="false" [tags]="false" [items]="licenseTypes" valueKey="accreditation"
+                         labelKey="accreditation"
+                         name="accreditation"
+                         #accreditation="ngModel"
+                         [(ngModel)]="license.accreditation"
+                         required
+                         label="Choose accreditation">
+              </cv-select>
+              <cv-field-error *ngIf="accreditation.dirty || accreditation.touched || addLicenseForm.submitted">
+                <span *ngIf="accreditation.errors?.required">Required</span>
+              </cv-field-error>
+            </cv-input-field>
+          </div>
+
+          <div class="col-sm-8 col-xs-12 group-wrapper">
+            <cv-input-field>
+              <cv-field-label>Accreditation number</cv-field-label>
+              <input cv-input type="text"
+                     placeholder="Accreditation number"
+                     #number="ngModel"
+                     name="number"
+                     [(ngModel)]="license.number"
+                     required>
+              <cv-field-error *ngIf="number.dirty || number.touched || addLicenseForm.submitted">
+                <span *ngIf="number.errors?.required">Required</span>
+              </cv-field-error>
+            </cv-input-field>
+
+          </div>
+
+          <div class="col-sm-4 col-xs-12 group-wrapper">
+            <cv-input-field>
+              <cv-field-label>Expiration date</cv-field-label>
+              <cv-date-picker label="Expired"
+                              name="expired"
+                              #expired="ngModel"
+                              [(ngModel)]="license.expired"
+                              format="YYYY-MM-DD"
+                              required>
+              </cv-date-picker>
+              <cv-field-error *ngIf="expired.dirty || expired.touched || addLicenseForm.submitted">
+                <span *ngIf="expired.errors?.required">Required</span>
+              </cv-field-error>
+            </cv-input-field>
+          </div>
+
+          <div class="col-xs-12 buttons-wrapper">
+
+            <button cv-button-flat flatStyle="dark" (click)="close()" type="button">Cancel</button>
+
+            <button cv-button type="submit" *ngIf="!licenseId">Save</button>
+            <button cv-button type="submit" *ngIf="licenseId">Update</button>
+
+          </div>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+</div>
+
+
+

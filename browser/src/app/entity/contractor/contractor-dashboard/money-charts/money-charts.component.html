@@ -1,0 +1,39 @@
+<div class="labels">
+  <div class="label">Purchase statistic</div>
+  <div class="label">Last 6 months</div>
+</div>
+<div class="money-spent-count" *ngIf="leadsReport">
+  <span>{{(chartData.total / 100) / 6 | currency:'USD':'symbol'}} <i>per month</i></span>
+  <div class="deals">{{chartData?.deals}}
+    <ng-container [ngPlural]="chartData?.deals">
+      <ng-template ngPluralCase="=0">deals</ng-template>
+      <ng-template ngPluralCase="=1">deal</ng-template>
+      <ng-template ngPluralCase="few">deals</ng-template>
+      <ng-template ngPluralCase="other">deals</ng-template>
+    </ng-container>
+    &nbsp;per month
+  </div>
+</div>
+<div class="chart-wrapper">
+  <div class="tooltip-holder" id="tooltip-holder">
+    <div class="hidden-holder">
+      <div class="chart-holder" *ngIf="leadsReport && leadsReport.past.length > 0">
+        <canvas baseChart #chart
+                [labels]="chartData.chartLabels"
+                [datasets]="datasets"
+                [colors]="chartJsColors"
+                [options]="chartJsOptions"
+                [chartType]="'line'"></canvas>
+      </div>
+    </div>
+    <div class="tooltip" #tooltip
+         [style.top.px]="tooltipData.top"
+         [style.left.px]="tooltipData.left"
+         [style.opacity]="tooltipData.opacity">
+       {{tooltipData.price | currency:'USD':'symbol'}}
+    </div>
+  </div>
+  <div *ngIf="!leadsReport">
+    No data
+  </div>
+</div>

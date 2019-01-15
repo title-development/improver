@@ -1,0 +1,48 @@
+@import "../../../../improver-mixins";
+
+.header {
+  position: relative;
+  background-color: $black-150;
+}
+
+h3 {
+  margin: 0;
+  font-size: 18px;
+  color: $black-primary;
+  padding: 17px 24px;
+  font-weight: 400;
+}
+p {
+  margin-top: 0;
+  font-size: 15px;
+}
+
+.close {
+  position: absolute;
+  right: 22px;
+  top: 16px;
+  cv-icon {
+    color: $black-400;
+    font-size: 14px;
+    cursor: pointer;
+    transition: color .3s ease;
+    &:hover {
+      color: $black-primary;
+    }
+  }
+}
+
+.content {
+  padding: 24px 24px 24px;
+}
+
+.actions {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+cv-input-field {
+  margin-bottom: 16px;
+}

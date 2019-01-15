@@ -1,0 +1,38 @@
+<div class="header">
+  <h3>Address validation</h3>
+  <div class="close" (click)="closeModal()">
+    <cv-icon icon="imp-icon-cancel"></cv-icon>
+  </div>
+</div>
+<div class="holder">
+  <div class="content">
+    <div class="row">
+      <div class="col-sm-6 col-xs-12">
+        <div class="address">
+          <h4>Original address:</h4>
+          <p>
+            {{typed.streetAddress}}<br>
+            {{typed.city}},
+            {{typed.state}}
+            {{typed.zip}}
+          </p>
+        </div>
+        <button cv-button-empty type="submit" (click)="closeModal()">Use different Address</button>
+      </div>
+      <div class="col-sm-6 col-xs-12">
+        <div class="address apply" (click)="save(suggested)">
+          <div class="overlay"><i></i></div>
+          <h4>Suggested address:</h4>
+          <p>
+            {{suggested.streetAddress}}<br>
+            {{suggested.city}},
+            {{suggested.state}}
+            {{suggested.zip}}
+          </p>
+        </div>
+        <button cv-button type="submit" (click)="save(suggested)">Use suggested</button>
+      </div>
+    </div>
+    <span *ngIf="validationMessage">*{{validationMessage}}</span>
+  </div>
+</div>

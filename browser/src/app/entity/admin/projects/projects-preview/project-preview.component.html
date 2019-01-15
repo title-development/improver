@@ -1,0 +1,174 @@
+<ng-container *ngIf="projectInfo">
+  <div class="ui-grid ui-grid-responsive project-information">
+    <div class="ui-grid-row">
+      <div class="ui-g-6 ui-md-6">
+        <p-card title="Details">
+          <div *ngIf="projectInfo">
+            <div class="ui-g">
+
+              <div class="ui-g-12 ui-md-12 ui-g-nopad">
+                <div class="ui-g-4 ui-md-4 ui-g-nopad">
+                  ID:
+                </div>
+                <div class="ui-g-8 ui-md-8 ui-g-nopad">
+                  {{projectInfo.id}}
+                </div>
+              </div>
+              <div class="ui-g-12 ui-md-12 ui-g-nopad">
+                <div class="ui-g-4 ui-md-4 ui-g-nopad">
+                  Service type:
+                </div>
+                <div class="ui-g-8 ui-md-8 ui-g-nopad">
+                  {{projectInfo.serviceType}}
+                </div>
+              </div>
+
+              <div class="ui-g-12 ui-md-12 ui-g-nopad">
+                <div class="ui-g-4 ui-md-4 ui-g-nopad">
+                  Lead price:
+                </div>
+                <div class="ui-g-8 ui-md-8 ui-g-nopad">
+                  {{projectInfo.leadPrice / 100}}
+                </div>
+              </div>
+
+              <div class="ui-g-12 ui-md-12 ui-g-nopad">
+                <div class="ui-g-4 ui-md-4 ui-g-nopad">
+                  Created:
+                </div>
+                <div class="ui-g-8 ui-md-8 ui-g-nopad">
+                  {{projectInfo.created | date: 'MMM d, y, h:mm a'}}
+                </div>
+              </div>
+
+              <div class="ui-g-12 ui-md-12 ui-g-nopad" *ngIf="projectInfo.updated">
+                <div class="ui-g-4 ui-md-4 ui-g-nopad">
+                  Updated:
+                </div>
+                <div class="ui-g-8 ui-md-8 ui-g-nopad">
+                  {{projectInfo.updated | date: 'MMM d, y, h:mm a'}}
+                </div>
+              </div>
+
+              <div class="ui-g-12 ui-md-12 ui-g-nopad">
+                <div class="ui-g-4 ui-md-4 ui-g-nopad">
+                  Customer email:
+                </div>
+                <div class="ui-g-8 ui-md-8 ui-g-nopad">
+                  {{projectInfo.customer.email}}
+                </div>
+              </div>
+
+              <div class="ui-g-12 ui-md-12 ui-g-nopad">
+                <div class="ui-g-4 ui-md-4 ui-g-nopad">
+                  Location:
+                </div>
+                <div class="ui-g-8 ui-md-8 ui-g-nopad" *ngIf="projectInfo.location">
+                  {{projectInfo.location.streetAddress}}, {{projectInfo.location.city}},
+                  {{projectInfo.location.state}} {{projectInfo.location.zip}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </p-card>
+        <p-card title="Contractors">
+          <div class="ui-g">
+            <div class="projectRequests">
+              <ng-template ngFor [ngForOf]="projectInfo.projectRequests" let-projectRequest let-i="index"
+                           *ngIf="projectInfo.projectRequests">
+                <div class="projectRequest" [routerLink]="['/', 'admin', 'project-requests']" [queryParams]='{id: projectRequest.id}'>
+                  <div class="projectRequest-left">
+                    <div class="projectRequest-icon {{projectRequest.status}}"
+                         [ngClass]="{'no-icon' : projectRequest.company.iconUrl != ''}"
+                         [ngStyle]="projectRequest.company.iconUrl != '' && {'background-image':'url(' + projectRequest.company.iconUrl + ')'} || {'background-image':'url(' + 'http://via.placeholder.com/36x36' + ')'}">
+                      <div class="hired-foreground" *ngIf="projectRequest.status == 'HIRED'">
+                        <i class="imp-icon-ok"></i>
+                      </div>
+                    </div>
+                    <div class="info-block">
+                      <div class="company-name">{{projectRequest.company.name}}</div>
+                      <div class="additional-info" *ngIf="projectRequest.status == 'HIRED'">You hired this PRO</div>
+                      <div class="additional-info" *ngIf="projectRequest.status == 'ACTIVE'">This PRO sent you project
+                        request
+                      </div>
+                    </div>
+                    <div class="status">
+                      {{projectRequest.status}}
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+              <div *ngIf="projectInfo.projectRequests && projectInfo.projectRequests.length == 0">
+                This project doesn't have Project Requests from Contractors
+              </div>
+            </div>
+          </div>
+        </p-card>
+      </div>
+      <div class="ui-g-6 ui-md-6">
+        <p-card title="Questionary">
+          <div *ngIf="projectInfo" class="project-questionary">
+            <div class="ui-g">
+              <div class="ui-g-12 ui-md-12 ui-g-nopad">
+                <div class="ui-g-4 ui-md-4 ui-g-nopad">
+                  Start date:
+                </div>
+                <div class="ui-g-8 ui-md-8 ui-g-nopad">
+                  {{projectInfo.startDate}}
+                </div>
+              </div>
+              <div class="ui-g-12 ui-md-12 ui-g-nopad">
+                <div class="ui-g-4 ui-md-4 ui-g-nopad">
+                  Notes:
+                </div>
+                <div class="ui-g-8 ui-md-8 ui-g-nopad">
+                  {{projectInfo.notes}}
+                </div>
+              </div>
+              <div class="ui-g-12 ui-md-12 ui-g-nopad" *ngIf="projectInfo.details && projectInfo.details.length > 0">
+                <h3>Questions and Answers</h3>
+              </div>
+              <div class="ui-g-12 ui-md-12 ui-g-nopad" *ngIf="projectInfo.details && projectInfo.details.length > 0">
+                <ng-template ngFor [ngForOf]="projectInfo.details" let-i="index" let-item>
+                  <div class="ui-grid-row details-item">
+                    <div class="ui-g-6 ui-md-6 ui-g-nopad">
+                      <div class="name">{{item.name}}</div>
+                    </div>
+                    <div class="ui-g-6 ui-md-6 ui-g-nopad">
+                      <div class="results">
+                        <ng-template ngFor [ngForOf]="item.results" let-i="index" let-result>
+                          {{result}}
+                        </ng-template>
+                      </div>
+                    </div>
+                  </div>
+                </ng-template>
+              </div>
+
+            </div>
+          </div>
+        </p-card>
+      </div>
+    </div>
+    <div class="ui-grid-row">
+      <div class="ui-g-12">
+        <p-accordion [multiple]="true">
+          <p-accordionTab header="Project actions log" [selected]="true">
+            <p-dataTable [value]="projectInfo?.projectActions"
+                         [responsive]="true">
+              <p-column field="author" header="Author"></p-column>
+              <p-column field="text" header="Text"></p-column>
+              <p-column field="created" header="Created">
+                <ng-template let-col let-action="rowData" pTemplate="body">
+                  {{action[col.field] | date: 'MMM d, y, h:mm a' }}
+                </ng-template>
+              </p-column>
+              <p-column field="action" header="Action"></p-column>
+            </p-dataTable>
+          </p-accordionTab>
+        </p-accordion>
+      </div>
+    </div>
+  </div>
+
+</ng-container>

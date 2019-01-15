@@ -1,0 +1,147 @@
+@import "../../../../improver-mixins.scss";
+
+.dialog-content-wrapper {
+
+  @include response-to(sm) {
+    background: #fff;
+    display: flex;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    overflow-y: auto;
+  }
+
+}
+
+.dialog-content-wrapper {
+
+  @include response-to(sm) {
+    width: 100%;
+  }
+
+
+  .dialog-content-container {
+    @include response-to(sm) {
+      width: 100%;
+    }
+  }
+
+  .header {
+
+    .header-content {
+      padding: 16px 48px 16px 24px;
+      background-color: $black-100;
+      font-size: 20px;
+      font-weight: 600;
+      text-align: left;
+      color: $black-secondary;
+    }
+
+  }
+
+  .content {
+    margin: 0 24px 24px;
+
+    @include response-to(sm) {
+      margin: 0 12px 24px;
+    }
+
+    .add-money-form {
+      display: flex;
+      flex-direction: column;
+      padding-top: 24px;
+
+      cv-input-field  {
+        input {
+          padding: 11px 30px 11px 30px
+        }
+        cv-icon {
+          width: 32px;
+          font-size: 14px;
+          line-height: 16px;
+          color: #212121;
+        }
+      }
+
+      .hint {
+        position: relative;
+        padding: 11px 16px;
+        background-color: $black-150;
+        /* box-shadow: 0px 2px 4px 0 rgba(0, 0, 0, 0.16); */
+        font-size: 14px;
+        line-height: 1.43;
+        color: #8c8c8c;
+
+        &.input-hint {
+          margin-top: 19px;
+        }
+
+      }
+
+      .balance-block {
+        border: solid 1px $black-200;
+
+        &:last-child {
+          border-bottom: solid 1px transparent;
+        }
+
+        .block {
+          font-size: 14px;
+          padding: 24px;
+          border-bottom: solid 1px $black-200;
+
+          .group {
+            .label {
+              color: #757575;
+            }
+            .value {
+              color: $black-primary;
+
+              .card-wrapper {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                .card-image {
+                  width: 27px;
+                  height: 19px;
+                  margin-right: 16px;
+                  background-position: center center;
+                  background-size: contain;
+                  background-repeat: no-repeat;
+                }
+                .card-line-title {
+                  font-size: 16px;
+                  color: rgba(117, 117, 117, 0.87);
+                }
+              }
+
+            }
+          }
+
+        }
+
+      }
+
+      .buttons-wrapper {
+        margin-top: 24px;
+        display: flex;
+        justify-content: space-between;
+      }
+
+    }
+
+  }
+
+}
+
+::ng-deep .mat-dialog-container {
+  padding: 0px;
+}
+
+.close-modal {
+  position: relative;
+  right: 32px;
+  top: 32px;
+}

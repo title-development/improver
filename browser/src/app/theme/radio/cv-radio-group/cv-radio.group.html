@@ -1,0 +1,17 @@
+<ng-content select="cv-field-label"></ng-content>
+<div class="input-holder">
+  <ng-content select="cv-radio"></ng-content>
+  <ng-container *ngIf="items && !itemTemplate">
+    <ng-template ngFor [ngForOf]="items" let-item>
+      <cv-radio (click)="select(item)" [disabled]="item?.disabled" [checked]="isSelected(item)" [readonly]="item?.readonly" [value]="item">{{labelKey ? item[labelKey] : item}}</cv-radio>
+    </ng-template>
+  </ng-container>
+  <ul *ngIf="itemTemplate && items">
+    <ng-template ngFor [ngForOf]="items" let-item>
+      <li (click)="select(item)" [ngClass]="{'-selected': isSelected(item), '-disabled': item?.disabled, '-readonly':item?.readonly}">
+        <ng-container *ngTemplateOutlet="itemTemplate; context: {$implicit: item}"></ng-container>
+      </li>
+    </ng-template>
+  </ul>
+</div>
+<ng-content select="cv-field-error"></ng-content>

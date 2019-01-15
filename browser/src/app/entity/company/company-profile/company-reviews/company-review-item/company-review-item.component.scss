@@ -1,0 +1,110 @@
+@import "../../../../../../improver-mixins.scss";
+
+:host {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  @include response(xs) {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+
+.content, .header {
+  padding-left: 70px;
+  @include response-to(md) {
+    padding-left: 0;
+  }
+}
+
+.show-more-button {
+  font-size: 14px;
+  color: $primary-500;
+  cursor: pointer;
+  white-space: nowrap;
+  i {
+    font-size: 10px;
+  }
+}
+
+.header {
+  @include response-to(md) {
+    display: flex;
+  }
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+
+  button.request-revision {
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+}
+
+.icon {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-size: cover;
+  background-position: center;
+  @include response-to(md) {
+    width: 52px;
+    height: 52px;
+    position: static;
+  }
+}
+
+rating-component {
+  margin-left: 15px;
+  margin-right: 5px;
+  @include response-to(md) {
+    margin-left:0;
+  }
+}
+
+.meta-info {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  color: $black-600;
+  @include response-to(md) {
+    margin-left: 13px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.rating {
+  display: flex;
+  @include response-to(md) {
+    margin: 3px 0;
+  }
+}
+
+.date {
+  cursor: default;
+  margin-left: auto;
+  font-size: 12px;
+  color: $black-450;
+  @include response-to(md) {
+    margin-left: unset;
+  }
+}
+
+.author {
+  font-size: 16px;
+  color: $black-primary;
+}
+
+p {
+  font-size: 14px;
+  color: $black-600;
+  margin: 0;
+  margin-top: 7px;
+  word-break: break-all;
+}

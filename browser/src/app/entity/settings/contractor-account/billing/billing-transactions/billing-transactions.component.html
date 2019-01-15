@@ -1,0 +1,62 @@
+<div class="billing-transactions-wrapper" *ngIf="transactions">
+  <div class="billing-transactions-container">
+
+    <div class="header">
+      Transactions History
+    </div>
+
+    <div class="content">
+      <div class="transactions-table">
+        <div class="table-header" fxLayout="row">
+          <div class="icon" fxFlex="10"></div>
+          <div class="action" fxFlex="16">Action</div>
+          <div class="date" fxFlex="14">Date</div>
+          <div class="description" fxFlex="">Description</div>
+          <div class="amount" fxFlex="15">Amount</div>
+          <div class="balance" fxFlex="15">Balance</div>
+        </div>
+        <div class="table-content">
+          <ng-template ngFor let-transaction [ngForOf]="transactions" let-i="index" let-isEven="even" [ngForTrackBy]="trackByFn">
+            <a class="transaction" fxLayout="row" fxLayoutAlign="center center"
+                 [ngClass]="[isEven ? 'even-row' : 'odd-row', transaction.type | toclassname]" [routerLink] = "transaction.type != TransactionType.BONUS ? ['/pro/receipt/trans', transaction.id] : []">
+              <div class="icon" fxFlex="10" fxLayoutAlign="center center">
+                <img title="Manual lead purchase" *ngIf="transaction.manualLead && transaction.type == TransactionType.PURCHASE" src="assets/img/dashboard-project-purchase.blue.svg" alt="Purchase">
+                <img title="Subscription lead" *ngIf="!transaction.manualLead && transaction.type == TransactionType.PURCHASE" src="assets/img/dashboard-project-subscription.blue.svg" alt="Subscription">
+                <img src="/assets/img/transaction-types/bonus.svg" *ngIf="transaction.type == TransactionType.BONUS">
+                <img src="/assets/img/transaction-types/refund.svg" *ngIf="transaction.type == TransactionType.REFUND">
+                <img src="/assets/img/transaction-types/replenishment.svg" *ngIf="transaction.type == TransactionType.REPLENISHMENT">
+                <img src="/assets/img/transaction-types/subscription.svg" *ngIf="transaction.type == TransactionType.SUBSCRIPTION">
+              </div>
+              <div class="action" fxFlex="16"  [ngClass]="transaction.type | toclassname">{{transaction.type}}</div>
+              <div class="date" fxFlex="14" [style.padding-right.px]="5">
+                <div>{{transaction.created | date:'mediumDate' }}</div>
+                <div>{{transaction.created | date:'shortTime' }}</div>
+              </div>
+
+              <div class="description" fxFlex="" fxLayout="column">
+                <div>{{transaction.description}}</div>
+                <div>{{transaction.details}}</div>
+              </div>
+              <div class="amount" fxFlex="15">
+                <span *ngIf="transaction.type == TransactionType.PURCHASE && transaction.amount > 0">-</span>
+                <span *ngIf="transaction.type != TransactionType.PURCHASE || transaction.amount <= 0">&nbsp;</span>
+                <span>{{transaction.amount / 100 | currency:'USD':'symbol'}}</span>
+              </div>
+              <div class="balance" fxFlex="15">{{transaction.balance / 100 | currency:'USD':'symbol'}}</div>
+            </a>
+          </ng-template>
+
+          <div class="no-data-row" *ngIf="!transactionsProcessing && transactions.length == 0">You have no transactions yet</div>
+
+        </div>
+        <div class="table-footer" *ngIf="!transactionsPage.last"
+             [cvSpinner]="transactionsProcessing"
+             [cvSpinnerSize]="20"
+             [cvSpinnerBackground]="true">
+          <div class="show-more-button" (click)="getTransactions()">Show more</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

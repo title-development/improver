@@ -1,0 +1,55 @@
+<div class="container">
+  <ng-container *ngIf="review">
+    <h2>Update review</h2>
+    <div class="card" [cvSpinner]="processing" [cvSpinnerSize]="24" [cvSpinnerBackground]="true">
+      <h3><b>{{review.company.name}}</b> would like you to revise your review on {{review.serviceName}} project.</h3>
+      <p>Message from Pro:</p>
+      <p class="textarea-formatting">{{review.revisionComment}}</p>
+      <hr>
+      <form action="" #form="ngForm" (ngSubmit)="form.valid && updateReview();">
+        <div class="company">
+          <img class="icon" [routerLink]="['/', 'companies', review.company.id]" [src]="review.company.iconUrl"
+               [alt]="review.company.name" [title]="review.company.name">
+          <div class="rating">
+            <h4 [routerLink]="['/', 'companies', review.company.id]">{{review.company.name}}</h4>
+            <rating-component [starSize]="24" [rating]="newScore" (onRatingChange)="ratingValidation($event)"
+                              [readOnly]="false"></rating-component>
+            <cv-field-error *ngIf="form.submitted && !isRatingPositive">
+              You cannot rate lower than original review
+            </cv-field-error>
+          </div>
+        </div>
+        <cv-input-field>
+          <textarea cv-input class="review-post-message" rows="5" trim
+                    #description="ngModel"
+                    [placeholder]="'Tell something about your experience with ' + review.company.name"
+                    name="review" [minlength]="constants.REVIEW_MESSAGE_MIN_LENGTH"
+                    [maxlength]="constants.REVIEW_MESSAGE_MAX_LENGTH"
+                    [(ngModel)]="review.description"
+                    required></textarea>
+          <cv-field-error
+            *ngIf="description.dirty || description.touched || form.submitted">
+            <span *ngIf="description.errors?.required">Please enter a review comment</span>
+            <span *ngIf="description.errors?.minlength">{{messages.errors.quickReplayMessage.minlength}}</span>
+            <span *ngIf="description.errors?.maxlength">{{messages.errors.quickReplayMessage.maxlength}}</span>
+          </cv-field-error>
+        </cv-input-field>
+
+        <div class="actions">
+          <button cv-button-flat flatStyle="dark" type="button" title="Decline review revision and publish old review"
+                  (click)="declineReviewRevision()">Decline
+          </button>
+          <div class="spacer"></div>
+          <button cv-button type="submit" title="Update review and publish">Update</button>
+        </div>
+      </form>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="isPublished">
+    <div class="warning card">
+      <h1>Sorry</h1>
+      <h2>Review revision request has been expired</h2>
+      <button cv-button routerLink="/" type="button">Go to Home page</button>
+    </div>
+  </ng-container>
+</div>

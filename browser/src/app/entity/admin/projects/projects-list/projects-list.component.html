@@ -1,0 +1,108 @@
+<div class="panel-header">
+  <div class="panel-title">Customer Projects</div>
+  <p-button (onClick)="refresh()" icon="pi pi-fw pi-refresh" label="&nbsp;&nbsp;Refresh"></p-button>
+</div>
+
+<p-dataTable class="projects-table" [lazy]="true" [loading]="projectsProcessing" #dt
+             [value]="projects.content"
+             selectionMode="single" sortMode="single"
+             [responsive]="true" [contextMenu]="cm" [paginator]="true"
+             [rows]="rowsPerPage[0]" [totalRecords]="projects.totalElements" [rowsPerPageOptions]="rowsPerPage"
+             sortField="created" [sortOrder]="-1"
+             [filters]="filters"
+             [expandableRows]="true" (onRowSelect)="expandRow($event)"
+             (onContextMenuSelect)="selectProject($event)"
+             (onLazyLoad)="loadProjectsLazy($event)">
+  <p-header>
+    <div style="text-align:left">
+      <p-multiSelect [options]="tableColumns" [panelStyle]="{minWidth:'270px'}" [(ngModel)]="selectedTableCols"></p-multiSelect>
+    </div>
+  </p-header>
+  <p-column field="id" header="ID" [sortable]="true" *ngIf="selectedTableCols.includes('id')" [filter]="true">
+    <ng-template pTemplate="filter" let-col>
+      <input pInputText type="text" pKeyFilter="pint" [ngModel]="filters?.id?.value" [style]="{'width':'100%'}"
+             (input)="dt.filter($event.target.value,col.field,col.filterMatchMode)">
+    </ng-template>
+  </p-column>
+  <p-column field="customer" header="Customer" [sortable]="true" [filter]="true" filterField="customerEmail"
+            *ngIf="selectedTableCols.includes('customer')">
+    <ng-template pTemplate="body" let-col let-data="rowData">
+      {{data[col.field].email}}
+    </ng-template>
+  </p-column>
+  <p-column field="serviceType" header="Service type" [sortable]="true" [filter]="true"
+            *ngIf="selectedTableCols.includes('serviceType')"></p-column>
+  <p-column field="freePositions" header="Free positions" [sortable]="true"
+            *ngIf="selectedTableCols.includes('freePositions')"></p-column>
+  <p-column field="status" header="Status" [sortable]="true" [filter]="true"
+            *ngIf="selectedTableCols.includes('status')">
+    <ng-template pTemplate="filter" let-col>
+      <p-dropdown [options]="projectStatusesFilter" [style]="{'width':'100%'}"
+                  (onChange)="dt.filter($event.value,col.field,col.filterMatchMode)"
+                  styleClass="ui-column-filter"></p-dropdown>
+    </ng-template>
+    <ng-template let-col let-row="rowData" pTemplate="body">
+      <div *ngIf="row.status">{{row.status}}</div>
+    </ng-template>
+  </p-column>
+  <p-column field="reason" header="Reason" [filter]="true" [sortable]="true"
+            *ngIf="selectedTableCols.includes('reason')">
+    <ng-template pTemplate="filter" let-col>
+      <p-dropdown [options]="projectReasons" [style]="{'width':'100%'}"
+                  (onChange)="dt.filter($event.value,col.field,col.filterMatchMode)"
+                  styleClass="ui-column-filter"></p-dropdown>
+    </ng-template>
+    <ng-template let-col let-row="rowData" pTemplate="body">
+      <div *ngIf="row.reason">{{row.reason}}</div>
+    </ng-template>
+  </p-column>
+  <p-column field="location" header="Location" filterField="location" [sortable]="true" [filter]="true"
+            *ngIf="selectedTableCols.includes('location')">
+    <ng-template let-col let-row="rowData" pTemplate="body">
+      <div *ngIf="row.location">{{row.location.streetAddress}}, {{row.location.city}}, {{row.location.state}}
+        {{row.location.zip}}
+      </div>
+    </ng-template>
+  </p-column>
+  <p-column field="leadPrice" header="Lead price" [sortable]="true" *ngIf="selectedTableCols.includes('leadPrice')">
+    <ng-template pTemplate="body" let-col let-data="rowData">
+      {{(data[col.field] / 100 ) | currency}}
+    </ng-template>
+  </p-column>
+  <p-column field="lead" header="Lead" [sortable]="true" sortField="isLead" *ngIf="selectedTableCols.includes('lead')">
+    <ng-template let-row="rowData" pTemplate="body">
+      <i class="pi pi-check" *ngIf="row.lead"></i>
+      <i class="pi pi-ban" *ngIf="!row.lead"></i>
+    </ng-template>
+  </p-column>
+  <p-column field="comments" header="Comments" [sortable]="true"
+            *ngIf="selectedTableCols.includes('comments')"></p-column>
+  <p-column field="notes" header="Notes" *ngIf="selectedTableCols.includes('notes')"></p-column>
+  <p-column field="startDate" header="Start date" *ngIf="selectedTableCols.includes('startDate')"></p-column>
+  <p-column field="created" header="Created" [sortable]="true" *ngIf="selectedTableCols.includes('created')">
+    <ng-template let-col let-data="rowData" pTemplate="body">
+      {{data[col.field] | date: 'MMM d, y, h:mm a'}}
+    </ng-template>
+  </p-column>
+  <p-column field="updated" header="Updated" [sortable]="true" *ngIf="selectedTableCols.includes('updated')">
+    <ng-template let-col let-data="rowData" pTemplate="body">
+      {{data[col.field] | date: 'MMM d, y, h:mm a'}}
+    </ng-template>
+  </p-column>
+  <ng-template let-data pTemplate="rowexpansion">
+    <project-preview [projectInfo]="data"></project-preview>
+  </ng-template>
+</p-dataTable>
+<div #target></div>
+
+
+<admin-location-validation [(toggle)]="displayLocationDialog" (onValidatedLocation)="updateLocation($event)"
+                           [location]="toLocationValidate"></admin-location-validation>
+
+<project-validation-request [(toggle)]="displayValidationDialog" (onDone)="refresh()" [project]="selectedProject"
+                            [validation]="projectValidation"></project-validation-request>
+
+<project-comment [(toggle)]="displayCommentDialog" (onDone)="refresh()" [project]="selectedProject"></project-comment>
+
+<p-contextMenu #cm [model]="contextMenuItems"></p-contextMenu>
+

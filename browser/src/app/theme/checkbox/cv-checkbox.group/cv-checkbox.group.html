@@ -1,0 +1,17 @@
+<ng-content select="cv-field-label"></ng-content>
+<div class="input-holder">
+  <ng-content select="cv-checkbox"></ng-content>
+  <ng-container *ngIf="items && !itemTemplate">
+    <ng-template ngFor [ngForOf]="items" let-item>
+      <cv-checkbox (click)="addOrRemoveSelection(item)" [disabled]="item?.disabled" [readonly]="item?.readonly" [value]="item" [checked]="isSelected(item)">{{labelKey ? item[labelKey] : item}}</cv-checkbox>
+    </ng-template>
+  </ng-container>
+  <ul *ngIf="itemTemplate && items">
+    <ng-template ngFor [ngForOf]="items" let-item>
+      <li (click)="addOrRemoveSelection(item)" [ngClass]="{'-selected': isSelected(item), '-disabled': item?.disabled, '-readonly':item?.readonly}">
+        <ng-container *ngTemplateOutlet="itemTemplate; context: {$implicit: item}"></ng-container>
+      </li>
+    </ng-template>
+  </ul>
+</div>
+<ng-content select="cv-field-error"></ng-content>

@@ -1,0 +1,90 @@
+<div class="panel-header">
+  <h1>Refunds in Review</h1>
+  <p-button (onClick)="refresh()" icon="pi pi-fw pi-refresh" label="&nbsp;&nbsp;Refresh"></p-button>
+</div>
+<p-dataTable class="reviews-table" [lazy]="true" [loading]="processing" #dt
+             [value]="refunds.content"
+             selectionMode="single" sortMode="single"
+             [responsive]="true" [contextMenu]="cm" [paginator]="true"
+             [rows]="rowsPerPage[0]" [totalRecords]="refunds.totalElements" [rowsPerPageOptions]="rowsPerPage"
+             sortField="id" [sortOrder]="1"
+             (onContextMenuSelect)="selectItem($event)"
+             (onLazyLoad)="loadLazy($event)" [expandableRows]="true" (onRowSelect)="expandRow($event)">
+  <p-header>
+    <div style="text-align:left">
+      <p-multiSelect [options]="tableColumns" [panelStyle]="{minWidth:'270px'}" [(ngModel)]="selectedTableCols"></p-multiSelect>
+    </div>
+  </p-header>
+  <p-column field="id" header="ID" [sortable]="true" *ngIf="selectedTableCols.includes('id')" [filter]="true" [style]="{'width':'80px'}"></p-column>
+  <p-column field="customer" header="Customer" sortField="proj.customer.email" filterField="customerEmail" [sortable]="true" *ngIf="selectedTableCols.includes('customer')" [filter]="true" ></p-column>
+  <p-column field="contractor" header="Contractor" sortField="con.contractor.email" filterField="contractorEmail" [sortable]="true" *ngIf="selectedTableCols.includes('contractor')" [filter]="true" ></p-column>
+  <p-column field="issue" header="Issue" [sortable]="true" *ngIf="selectedTableCols.includes('issue')" [filter]="true" >
+    <ng-template pTemplate="filter" let-col>
+      <p-dropdown [options]="refundIssues" [style]="{'width':'100%'}"
+                  (onChange)="dt.filter($event.value,col.field,col.filterMatchMode)"
+                  styleClass="ui-column-filter"></p-dropdown>
+    </ng-template>
+  </p-column>
+  <p-column field="option" header="Option" [sortable]="true" *ngIf="selectedTableCols.includes('option')" [filter]="true" >
+    <ng-template pTemplate="filter" let-col>
+      <p-dropdown [options]="refundOptions" [style]="{'width':'100%'}"
+                  (onChange)="dt.filter($event.value,col.field,col.filterMatchMode)"
+                  styleClass="ui-column-filter"></p-dropdown>
+    </ng-template>
+  </p-column>
+  <p-column field="status" header="Status"  *ngIf="selectedTableCols.includes('status')">
+  </p-column>
+  <p-column field="notes" header="Notes" [sortable]="true" *ngIf="selectedTableCols.includes('notes')" ></p-column>
+  <p-column field="comment" header="Comment" [sortable]="true" *ngIf="selectedTableCols.includes('comment')"  ></p-column>
+  <p-column field="created" header="Created" [sortable]="true" *ngIf="selectedTableCols.includes('created')">
+    <ng-template let-col let-data="rowData" pTemplate="body">
+      {{data[col.field] | date: 'MMM d, y, h:mm a'}}
+    </ng-template>
+  </p-column>
+  <p-column field="updated" header="updated" [sortable]="true" *ngIf="selectedTableCols.includes('updated')">
+    <ng-template let-col let-data="rowData" pTemplate="body">
+      {{data[col.field] | date: 'MMM d, y, h:mm a'}}
+    </ng-template>
+  </p-column>
+  <ng-template let-data pTemplate="rowexpansion">
+    <project-preview [projectInfo]="data.project"></project-preview>
+    <div class="ui-grid-row" style="text-align: left">
+      <div class="ui-g-12">
+        <p-accordion [multiple]="true">
+          <p-accordionTab header="Refund actions log" [selected]="true">
+            <p-dataTable [value]="data?.refundActions"
+                         [responsive]="true">
+              <p-column field="author" header="Author"></p-column>
+              <p-column field="text" header="Text"></p-column>
+              <p-column field="created" header="Created">
+                <ng-template let-col let-action="rowData" pTemplate="body">
+                  {{action[col.field] | date: 'MMM d, y, h:mm a' }}
+                </ng-template>
+              </p-column>
+              <p-column field="action" header="Action"></p-column>
+            </p-dataTable>
+          </p-accordionTab>
+        </p-accordion>
+      </div>
+    </div>
+  </ng-template>
+</p-dataTable>
+
+<p-contextMenu #cm [model]="contextMenuItems"></p-contextMenu>
+
+<p-dialog header="Refund action" [(visible)]="refundActionDialog" [responsive]="true" showEffect="fade" [width]="500"
+          [modal]="true">
+  <form action="" #form="ngForm">
+    <div class="ui-g" style="margin-bottom:10px">
+      <p-selectButton name="refundAction" [options]="refundActions" [(ngModel)]="refundAction"></p-selectButton>
+    </div>
+    <label for="actionComment">Comment*</label>
+    <textarea name="comment" id="actionComment" required [(ngModel)]="refundActionComment" pInputTextarea></textarea>
+
+  </form>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button type="button" pButton icon="pi pi-check" (click)="form.valid && submitRefundAction()" label="Save"></button>
+    </div>
+  </p-footer>
+</p-dialog>

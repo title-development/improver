@@ -1,0 +1,401 @@
+@import "../../../improver-mixins";
+
+.ui-datatable-header {
+  background: #33454d;
+}
+
+.ui-multiselect {
+  display: flex;
+  position: relative;
+  width: 180px;
+  height: 30px;
+  align-items: center;
+  cursor: pointer;
+  border: 0;
+  border-radius: 0;
+
+  .ui-multiselect-label-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    height: 100%;
+
+    .ui-multiselect-label {
+      font-size: 13px;
+      width: 100%;
+      padding: 0 15px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+    }
+  }
+}
+
+.ui-datatable {
+  .ui-datatable-thead {
+    tr {
+      border: 0;
+
+      th {
+        padding: 10px;
+        font-size: 14px;
+        text-align: center;
+        border: 1px solid #ccc;
+
+        &.ui-state-active {
+          color: #ffffff;
+          background-color: rgba(230, 119, 0, 0.8);
+          border: 1px solid rgba(230, 119, 0, 0.8);
+        }
+      }
+    }
+  }
+
+  .ui-datatable-data {
+    tr {
+      border: 0;
+
+      td {
+        padding: 10px 15px;
+        font-size: 14px;
+        text-align: center;
+        border: 1px solid #ccc;
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      &.ui-widget-content {
+        &.ui-state-highlight {
+          background-color: rgba(230, 119, 0, 0.8);
+          border: 0;
+          color: #FFFFFF;
+        }
+      }
+    }
+  }
+}
+
+.ui-contextmenu {
+  background: #33454d;
+
+  .ui-menuitem {
+    .ui-menuitem-link {
+      color: #ffffff;
+
+      &:hover {
+        background: rgba(230, 119, 0, 0.8) !important;
+        color: #ffffff;
+      }
+    }
+  }
+}
+
+.ui-dialog {
+  border: 0;
+
+  .ui-card-title {
+    font-size: 20px;
+    border-bottom: 1px solid #dddddd;
+    padding-bottom: 7px;
+    margin-bottom: 16px;
+    margin-top: 10px;
+    font-weight: bold;
+  }
+
+  .ui-dialog-titlebar {
+    background: #33454d;
+    color: #fff;
+  }
+
+  .ui-dialog-titlebar-icon {
+    color: #fff;
+    padding: 0;
+
+    &:hover {
+      background: transparent;
+      color: #fff;
+      border: 0;
+    }
+  }
+
+  .ui-dialog-titlebar-close {
+    float: none;
+    padding: .125em;
+    cursor: pointer;
+    border: 0;
+    height: 18px;
+    position: absolute;
+    right: 19px;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+  }
+
+  .ui-inputtext {
+    max-height: 35px;
+    min-height: 35px;
+  }
+
+  .ui-dropdown {
+    width: 100% !important;
+    label {
+      &.ui-dropdown-label {
+        border: 0;
+        margin: 0;
+      }
+    }
+  }
+
+  .ui-dropdown-item-empty, .ui-dropdown-label-empty {
+    text-indent: 0;
+  }
+
+  .ui-inputtext, textarea {
+    border-radius: 0;
+    width: 100%;
+    resize: vertical;
+    border: 1px solid #ccc;
+    padding: 10px;
+    font-size: 14px;
+
+    &:focus {
+      outline: none;
+      box-shadow: none;
+      border: 1px solid rgba(230, 119, 0, 0.8);
+    }
+  }
+}
+
+.ui-inputtext, textarea {
+  border-radius: 0;
+  width: 100%;
+  resize: vertical;
+  padding: 8px;
+  font-size: 14px;
+
+  &:focus {
+    outline: none;
+    box-shadow: none;
+    border: 1px solid rgba(230, 119, 0, 0.8);
+  }
+}
+
+.ui-form-group {
+  margin-bottom: 15px;
+}
+
+.ui-menuitem {
+  &.ui-menuitem-active {
+    .ui-menuitem-link {
+      background-color: transparent !important;
+    }
+  }
+}
+
+.ui-tieredmenu {
+  width: 12.5em;
+  padding: 5px 10px;
+  background: #5e666e;
+  border: 0;
+  border-radius: 0 0 2px 2px;
+
+  .ui-menuitem {
+    .ui-menuitem-link {
+      color: #fff;
+      font-size: 14px;
+    }
+  }
+
+}
+
+//.ui-button {
+//  border: 0;
+//  border-radius: 2px;
+//  font-size: 14px;
+//  min-height: 35px;
+//  display: flex;
+//  align-items: center;
+//}
+
+.ui-dialog-footer {
+  padding: 10px 20px;
+}
+
+.ui-paginator {
+  .ui-paginator-pages {
+    height: auto !important;
+  }
+  .ui-paginator-page {
+    cursor: pointer;
+    height: 35px;
+    width: 35px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    border-color: #405a65;
+    margin: 0 5px;
+    border: 0;
+
+    &.ui-state-active {
+      background: $primary-500 !important;
+
+      &:hover {
+        background: #f8a95f !important;
+      }
+    }
+
+    &:hover {
+      background: #647a84 !important;
+      color: #fff !important;
+    }
+  }
+}
+
+.ui-paginator .ui-paginator-next, .ui-paginator .ui-paginator-last, .ui-paginator .ui-paginator-first, .ui-paginator .ui-paginator-prev {
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  font-size: 14px;
+  border: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  //background: #405a65;
+  color: #ffffff;
+
+  &:hover {
+    background: #ccc !important;
+    color: #fff !important;
+  }
+}
+
+.ui-datatable {
+  .ui-paginator-bottom {
+    border: 0;
+    background: transparent;
+    margin-top: 20px;
+
+  }
+}
+
+.ui-multiselect {
+  border: 1px solid #d6d6d6;
+  height: auto;
+  .ui-multiselect-label-container {
+    .ui-multiselect-label {
+      padding: 8px;
+      font-size: 14px;
+    }
+  }
+  .ui-multiselect-panel .ui-multiselect-item {
+    .disabled {
+      color: #cccccc;
+    }
+  }
+}
+
+.ui-paginator a.ui-state-disabled {
+
+  cursor: not-allowed !important;
+  span {
+    cursor: not-allowed !important;
+  }
+}
+
+.ui-state-disabled {
+
+  &.ui-inputswitch {
+    opacity: 0.8 !important;
+  }
+
+  &.ui-multiselect {
+    opacity: 0.8 !important;
+    background: #e6e6e6 !important;
+    cursor: not-allowed !important;
+    .ui-multiselect-label {
+      background: #e6e6e6 !important;
+      cursor: not-allowed !important;
+      color: #222222;
+    }
+  }
+
+  &.ui-inputtext {
+    opacity: 0.8 !important;
+    background: #e6e6e6 !important;
+    cursor: not-allowed !important;
+  }
+  .ui-chips-input-token {
+    input {
+      cursor: not-allowed !important;
+    }
+  }
+
+  &.ui-dropdown {
+    opacity: 0.8 !important;
+    .ui-dropdown-label {
+      background: #e6e6e6 !important;
+      cursor: not-allowed !important;
+      color: #222222;
+    }
+  }
+
+}
+
+.ui-inputtext:disabled {
+  opacity: 0.8 !important;
+  background: #e6e6e6 !important;
+  cursor: not-allowed !important;
+}
+
+.ui-column-title {
+  font-weight: 600;
+}
+
+.ui-error-space {
+  margin-top: 5px;
+}
+
+.ui-grid-field {
+  margin-bottom: 15px;
+}
+
+.ui-grid-space {
+  margin-bottom: 8px;
+}
+
+.word-break {
+  word-wrap: break-word
+}
+
+.ui-inputgroup {
+  .ui-inputgroup-addon:first-child {
+    display: inline-flex;
+    align-items: center;
+    font-size: 14px;
+  }
+}
+
+.ui-message.ui-messages-error {
+  background-color: #f2dede;
+  border-color: #ebcccc;
+  color: #a94442;
+}
+
+admin-sidebar {
+  .fa, .fab, .fal, .far, .fas {
+    width: 18px;
+  }
+}
+
+body .ui-fluid .ui-inputgroup .ui-spinner-button {
+  width: 2em;
+}
+
+.ui-inputgroup {
+  p-spinner {
+    flex-grow: 1;
+  }
+}

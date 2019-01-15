@@ -1,0 +1,187 @@
+<div class="company-gallery-project-wrapper">
+  <div class="company-gallery-project">
+
+    <div class="main-block" *ngIf="galleryProject.id" [cvSpinner]="!galleryProject.id" [cvSpinnerSize]="32">
+
+      <div class="gallery-project-card card">
+
+        <form name="gallery-project-form" class="gallery-project-form"
+              #galleryProjectForm="ngForm"
+              (ngSubmit)="galleryProjectForm.valid && onUpdateGalleryProject()"
+              novalidate>
+
+          <div class="row">
+
+            <div class="col-xs-12 title" *ngIf="newMode">Adding new project</div>
+            <div class="col-xs-12 title" *ngIf="!newMode">Editing project</div>
+            <div class="col-xs-12 sub-title">Main information</div>
+
+            <div class="col-xs-12 group-wrapper">
+              <cv-input-field>
+                <cv-field-label>Project name</cv-field-label>
+                <input cv-input type="text"
+                       placeholder="Enter name of your project"
+                       trim
+                       name="name"
+                       #name="ngModel"
+                       [(ngModel)]="galleryProject.name"
+                       required>
+                <cv-field-error *ngIf="name.dirty || name.touched || galleryProjectForm.submitted">
+                  <span *ngIf="name.errors?.required">Required</span>
+                </cv-field-error>
+              </cv-input-field>
+            </div>
+
+            <div class="col-xs-12 col-md-6 group-wrapper project-price-wrapper">
+              <cv-input-field>
+                <cv-field-label>Project cost</cv-field-label>
+                <cv-icon icon="imp-icon-dollar"></cv-icon>
+                <input cv-input type="text" class="project-price"
+                       placeholder="e.g. 120000"
+                       name="price"
+                       #price="ngModel"
+                       [(ngModel)]="galleryProject.price"
+                       numericMask
+                       maxlength="9">
+                <!--<cv-field-error *ngIf="price.dirty || price.touched || galleryProjectForm.submitted">-->
+                <!--<span *ngIf="price.errors?.required">Required</span>-->
+                <!--</cv-field-error>-->
+              </cv-input-field>
+            </div>
+
+            <div class="col-xs-12 col-md-6 group-wrapper">
+              <cv-input-field>
+                <cv-field-label>Complete date</cv-field-label>
+                <cv-date-picker name="date"
+                                required
+                                #date="ngModel"
+                                [maxDate]="maxDate"
+                                [minDate]="minDate"
+                                format="YYYY-MM-DD"
+                                [(ngModel)]="galleryProject.date"
+                                label="Choose date"
+                                required>
+                </cv-date-picker>
+                <cv-field-error *ngIf="date.dirty || date.touched || galleryProjectForm.submitted">
+                  <span *ngIf="date.errors?.required">Required</span>
+                </cv-field-error>
+              </cv-input-field>
+            </div>
+
+            <div class="col-xs-12 group-wrapper">
+              <cv-input-field>
+                <cv-field-label>Description</cv-field-label>
+                <textarea cv-input
+                          placeholder="Tell your potential client a little about this project such as materials included in the cost, specific problems solved by your company, and the scope of the project"
+                          name="description"
+                          #description="ngModel"
+                          [(ngModel)]="galleryProject.description"
+                          rows="6"
+                          trim
+                          type="text"
+                          maxlength="1500"
+                          required>
+                  </textarea>
+                <cv-field-error *ngIf="description.dirty || description.touched || galleryProjectForm.submitted">
+                  <span *ngIf="description.errors?.required">Required</span>
+                </cv-field-error>
+              </cv-input-field>
+            </div>
+
+          </div>
+
+          <div class="row">
+
+            <div class="col-xs-12 sub-title">Project location</div>
+
+            <div class="col-xs-12 col-md-4 group-wrapper">
+              <cv-input-field>
+                <cv-field-label>City</cv-field-label>
+                <input cv-input trim type="text"
+                       placeholder="Project city"
+                       name="city"
+                       #city="ngModel"
+                       [(ngModel)]="galleryProject.location.city">
+              </cv-input-field>
+            </div>
+
+            <div class="col-xs-12 col-md-4 group-wrapper">
+              <cv-field-label>State</cv-field-label>
+              <cv-select [multiple]="false" [tags]="false" (autocompleteSearch)="autocompleteSearch($event)"
+                         [autocomplete]="true" [items]="filteredStates" valueKey="value" labelKey="label"
+                         name="state"
+                         #state="ngModel"
+                         [(ngModel)]="galleryProject.location.state"
+                         (autocompleteSearch)="autocompleteSearch($event)"
+                         label="Choose state">
+              </cv-select>
+            </div>
+
+            <div class="col-xs-12 col-md-4 group-wrapper">
+              <cv-input-field>
+                <cv-field-label>Zip code</cv-field-label>
+                <input cv-input type="text"
+                       placeholder="e.g. 10022"
+                       name="zip"
+                       #zip="ngModel"
+                       [(ngModel)]="galleryProject.location.zip"
+                       numericMask
+                       maxlength="5">
+              </cv-input-field>
+            </div>
+
+          </div>
+
+          <div class="row">
+
+            <div class="col-xs-12 group-wrapper">
+              <cv-field-label>Services</cv-field-label>
+              <cv-select [multiple]="true" [tags]="true" [autocomplete]="true" [items]="allServiceTypes"
+                         labelKey="name"
+                         valueKey="name"
+                         name="serviceType"
+                         #selectedServices="ngModel"
+                         [trackBy]="trackBy"
+                         [(ngModel)]="galleryProject.serviceTypes"
+                         label="Select service">
+              </cv-select>
+            </div>
+          </div>
+
+          <div class="row image-uploader-wrapper" *ngIf="projectImages">
+            <image-uploader [apiUrl]="'/api/companies/'+companyId+'/demoprojects/'+projectId+'/images'"
+                            [projectView]="true"
+                            [projectImages]="projectImages" title="Project photos"></image-uploader>
+          </div>
+
+          <div class="buttons-wrapper">
+            <div class="left-buttons">
+              <button cv-button-flat flatStyle="dark" [routerLink]="'/companies/' + securityService.getLoginModel().company"
+                      *ngIf="!newMode">Cancel
+              </button>
+              <button cv-button-flat flatStyle="dark" (click)="deleteGalleryProject(projectId)" *ngIf="newMode">Cancel
+              </button>
+            </div>
+            <div class="right-buttons">
+              <button cv-button type="submit" *ngIf="newMode">Save</button>
+              <button cv-button type="submit" *ngIf="!newMode">Save changes</button>
+            </div>
+          </div>
+
+        </form>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+
+
+
+
+
+
+
+

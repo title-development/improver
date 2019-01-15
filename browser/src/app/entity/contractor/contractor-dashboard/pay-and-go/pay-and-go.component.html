@@ -1,0 +1,15 @@
+<div class="labels">
+  <div class="label">Pay & go</div>
+  <div class="label">{{leadsReport?.current.month}}</div>
+</div>
+<div class="money-spent-count" *ngIf="leadsReport">
+  <span>{{leadsReport.current.payAndGoSpend / 100 | currency:'USD':'symbol'}}</span>
+  <div class="deals">Made {{leadsReport.current.payAndGoDeals}}
+    <ng-container [ngPlural]="leadsReport.current.payAndGoDeals">
+      <ng-template ngPluralCase="=0">deals</ng-template>
+      <ng-template ngPluralCase="=1">deal</ng-template>
+      <ng-template ngPluralCase="few">deal</ng-template>
+      <ng-template ngPluralCase="other">deals</ng-template>
+    </ng-container>
+  </div>
+</div>

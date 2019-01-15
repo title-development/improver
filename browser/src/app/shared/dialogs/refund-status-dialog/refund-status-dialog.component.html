@@ -1,0 +1,70 @@
+<div class="dialog-content-wrapper">
+  <div class="dialog-content-container">
+
+    <div class="header">
+
+      <mat-icon class="close-modal" color="accent" (click)="close()">clear</mat-icon>
+
+      <div class="header-content">
+
+        <div class="title">Refund status</div>
+
+      </div>
+
+    </div>
+
+    <div class="content" [cvSpinner]="refundResultProcessing" [cvSpinnerSize]="40"
+         [cvSpinnerBackground]="true"
+         cvSpinnerBackgroundColor="white">
+
+      <div class="info">
+
+        <div class="wrapper">
+          <div class="refund-status-wrapper">
+            <div *ngIf="refundResult.status == refundStatus.IN_REVIEW">
+              Your refund request is in review
+            </div>
+            <div
+              *ngIf="refundResult.status == refundStatus.APPROVED || refundResult.status == refundStatus.AUTO_APPROVED">
+              Your refund request is approved
+            </div>
+            <div
+              *ngIf="refundResult.status == refundStatus.REJECTED || refundResult.status == refundStatus.AUTO_REJECTED">
+              Your refund request is rejected
+            </div>
+          </div>
+          <div class="refund-comment-wrapper">
+
+            <div *ngIf="refundResult.status == refundStatus.IN_REVIEW">
+              <span>Refund request applies to manual check</span>
+              <span> on
+              <div>{{refundResult.created | date:'mediumDate'}}</div>
+              </span>
+            </div>
+
+            <div *ngIf="refundResult.status == refundStatus.REJECTED || refundResult.status == refundStatus.AUTO_REJECTED">
+              <span>Refund request is rejected according to Home Improve <a [routerLink]="['/terms-of-use']" (click)="close()">Lead Return Credit Policy</a></span>
+            </div>
+
+          </div>
+          <div class="contact-message" *ngIf="refundResult.status == refundStatus.IN_REVIEW">We will contact you as soon
+            as possible
+          </div>
+          <div class="time-hint" *ngIf="refundResult.status == refundStatus.IN_REVIEW">Maximum refund request processing
+            period is 14 working days
+          </div>
+        </div>
+
+        <div class="buttons-wrapper">
+          <button cv-button type="button" (click)="close()">Ok</button>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+
+

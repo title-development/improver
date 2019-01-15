@@ -1,0 +1,85 @@
+<div class="dialog-content-wrapper">
+  <div class="dialog-content-container">
+
+    <div class="header">
+
+      <mat-icon class="close-modal" color="accent" (click)="close()">clear</mat-icon>
+
+      <div class="header-content" fxLayout="row" fxLayoutAlign="center end">
+
+        <div class="title">Who completed project?</div>
+
+      </div>
+
+    </div>
+
+    <div class="content">
+
+      <form class="complete-project-form"
+            name="complete-project-form"
+            #completeProjectForm="ngForm"
+            (ngSubmit)="completeProjectForm.valid && onSubmit(completeProjectForm)"
+            novalidate>
+
+        <div class="variants-wrapper" *ngIf="closeProjectVariants">
+
+          <ng-template ngFor let-variant [ngForOf]="closeProjectVariants.completeVariants | forjson" let-i="index">
+
+            <ng-container *ngIf="variant.key == 'DONE'">
+
+              <ng-template ngFor let-projectRequest [ngForOf]="closeProjectVariants.projectRequests" let-j="index">
+                <div class="variant-wrapper" (click)="selectVariant(variant, projectRequest.id)" fxLayout="row"
+                     fxLayoutAlign="start center"
+                     [ngClass]="{'selected': projectRequest.id == selectedVariant?.contractorId}">
+                  <div class="icon"
+                       [ngStyle]="projectRequest.image != '' && {'background-image':'url(' + projectRequest.image + ')'} || {'background-image':'url(' + 'http://via.placeholder.com/36x36' + ')'}"></div>
+                  <div class="value-wrapper" fxLayout="row" fxLayoutAlign="space-between center" >
+                    <div class="value">{{projectRequest.name}}</div>
+                    <div class="status">
+                      <mat-icon>done</mat-icon>
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+
+            </ng-container>
+
+            <ng-container *ngIf="variant.key != 'DONE'">
+              <div class="variant-wrapper" (click)="selectVariant(variant)" fxLayout="row" fxLayoutAlign="start center"
+                   [ngClass]="{'selected': variant == selectedVariant?.variant}">
+                <div class="icon" fxLayout="row" fxLayoutAlign="center center">
+                  <i *ngIf="variant.key == 'DO_MYSELF'" class="imp-icon-checked-user"></i>
+                  <i *ngIf="variant.key == 'HIRE_OTHER'" class="imp-icon-group-foreground-selected"></i>
+                </div>
+                <div class="value-wrapper" fxLayout="row" fxLayoutAlign="space-between center">
+                  <div class="value">{{variant.value}}</div>
+                  <div class="status">
+                    <mat-icon>done</mat-icon>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+
+          </ng-template>
+
+        </div>
+
+        <div class="buttons-wrapper" fxLayout="row" fxLayoutAlign="space-between center">
+
+          <button class="cancel-button" (click)="close()" type="button">Nevermind</button>
+          <div class="cv-error"
+               *ngIf="(completeProjectForm.submitted && !selectedVariant)">Required
+          </div>
+          <button cv-button type="submit">Submit</button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+</div>
+
+
+

@@ -1,0 +1,98 @@
+@import "../../scss/variables";
+@import "../../../../improver-mixins";
+
+.collapse {
+  display: flex;
+  border-radius: 2px;
+  border: solid 1px $black-300;
+  margin-bottom: 16px;
+  flex-direction: column;
+
+  .header {
+    //border-bottom: solid 1px $black-300;
+    width: 100%;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    color: $black-primary;
+    font-size: 16px;
+    font-weight: 500;
+    //height: 42px;
+    align-items: center;
+    justify-content: center;
+    padding: 0px 16px;
+
+    @include response-to(xs) {
+      font-size: 13px;
+    }
+
+    .header-left {
+      display: flex;
+      margin-right: 16px;
+
+      @include response-to(sm) {
+        margin-right: 8px;
+      }
+
+      .title {
+        word-break: normal;
+        word-break: break-word;
+        padding: 10px 0px;
+      }
+
+    }
+
+    .header-content {
+      display: flex;
+      flex-grow: 1;
+      justify-content: flex-end;
+    }
+
+    .header-right {
+      display: flex;
+      margin-left: 8px;
+
+      @include response-to(xs) {
+        margin-left: 2px;
+      }
+
+      .imp-icon-angle-right {
+        display: flex;
+        font-size: 28px;
+        margin-right: -12px;
+        color: $primary-500;
+
+        @include response-to(xs) {
+          margin-right: -18px;
+        }
+      }
+    }
+
+  }
+
+  .content-wrapper {
+    display: flex;
+    transform-origin: top;
+    overflow: hidden;
+    position: relative;
+
+    &:before {
+      position: absolute;
+      display: block;
+      height: 1px;
+      background-color: $black-300;
+      content: '';
+      top: 0;
+      left: 0;
+      right: 0;
+    }
+
+    .content {
+      padding: 16px 16px 24px;
+      overflow: hidden;
+    }
+
+  }
+
+}
+

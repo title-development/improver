@@ -1,0 +1,130 @@
+<div class="subscription-actions-wrapper container">
+
+  <div class="subscription" *ngIf="mode == ModeEnum.NEW || mode == ModeEnum.UPDATE">
+
+    <div class="header" >
+      <div *ngIf="mode == ModeEnum.NEW">Confirm your subscription</div>
+      <div *ngIf="mode == ModeEnum.UPDATE">Update your subscription</div>
+    </div>
+
+    <div class="row">
+
+      <div class="col-sm-8 col-md-8 subscription-description-wrapper">
+        <div class="card">
+          <div class="subscription-description" [cvSpinner]="cardProcessing" [cvSpinnerSize]="30" [cvSpinnerBackground]="true">
+            <div class="title">Subscribe to faster purchase</div>
+            <div class="text">Subscription budget of <span
+              class="highlight">${{subscriptionActionsService.subscriptionAmount / 100}}</span> will be <span class="highlight">reserved</span> on your
+              balance for subscription leads. You will automatically receive leads from Home Improve up to your budget
+              amount.
+              <br/>Auto-billing will occur on the {{subscriptionActionsService.nextBillingDate | date:'d'}}th of every
+              month.
+            </div>
+          </div>
+        </div>
+
+
+
+        <div class="terms-block">
+          By making purchase you agree to our <a routerLink="/terms-of-use">Terms of Use</a> and <a
+          routerLink="/privacy-policy">Privacy Policy</a>
+        </div>
+      </div>
+
+      <div class="col-sm-8 col-md-4 charge-card-wrapper" >
+        <div class="card" >
+          <div class="charge-block" [cvSpinner]="cardProcessing" [cvSpinnerSize]="30" [cvSpinnerBackground]="true">
+            <div class="charge-to-card" *ngIf="mode == ModeEnum.NEW && subscriptionActionsService.subscriptionAmount > billingService.billing.balance">
+              <div class="label">Charge to card</div>
+              <div class="value">{{(subscriptionActionsService.subscriptionAmount - billingService.billing.balance) / 100 | currency:'USD':'symbol' }}</div>
+            </div>
+            <div class="monthly-budged">
+              <div class="label">Monthly budged</div>
+              <div class="value">{{subscriptionActionsService.subscriptionAmount / 100 | currency:'USD':'symbol' }}</div>
+            </div>
+
+            <div class="charge-hint">
+
+              <div class="with-card" *ngIf="paymentCards?.length > 0" >
+                <div class="enough-founds" *ngIf="mode == ModeEnum.NEW && subscriptionActionsService.subscriptionAmount <= billingService.billing.balance ">
+                  You have <span class="highlight">${{billingService.billing.balance / 100}}</span> on your balance and it won’t
+                  be changed until next month
+                </div>
+                <div class="not-enough-founds" *ngIf="mode == ModeEnum.NEW && subscriptionActionsService.subscriptionAmount > billingService.billing.balance ">
+                  You have <span class="highlight">${{billingService.billing.balance / 100}}</span> on your balance. In order to
+                  subscribe for monthly budget of <span class="highlight">${{subscriptionActionsService.subscriptionAmount / 100}}</span>
+                  your payment method will be charged for <span class="highlight">${{(subscriptionActionsService.subscriptionAmount - billingService.billing.balance) / 100}}</span>
+                </div>
+                <div class="update" *ngIf="mode == ModeEnum.UPDATE" >
+                  You are updating your subscription and will not be charged until your next billing date
+                </div>
+              </div>
+
+              <div class="without-card" *ngIf="paymentCards?.length == 0">
+                You need to add payment card to proceed
+              </div>
+
+            </div>
+            <div class="payment-method-block" *ngIf="paymentCards?.length > 0">
+              <div class="title">Payment method</div>
+              <div class="card-info" >
+                <div >
+                  <div class="icon"
+                       [ngStyle]="{'background-image':'url(' + 'assets/img/credit-cards-types/' + tricksService.replaceSpases(paymentCards[0]?.brand) + '.png)'}"></div>
+                  <div class="ends" fxFlexOffset="16px">ending in {{paymentCards[0].last4}}</div>
+                </div>
+                <div class="change-button" (click)="openChangeDefaultPaymentCard()"
+                     [hidden]="paymentCards?.length <= 1">Change
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button cv-button class="confirm-button" *ngIf="paymentCards?.length == 0" [disabled]="cardProcessing"
+                (click)="openAddPaymentCard()">Add card
+        </button>
+
+        <button cv-button class="confirm-button" *ngIf="paymentCards?.length > 0" [disabled]="cardProcessing"
+                (click)="confirmSubscription()"
+                [ngStyle]="subscriptionProcessing && {'background-color': 'transparent', 'color': 'transparent'}"
+                [cvSpinner]="subscriptionProcessing"
+                [cvSpinnerSize]="20"
+                [cvSpinnerBackground]="false"
+                cvSpinnerBackgroundColor="transparent">
+          <span *ngIf="mode == ModeEnum.NEW">Confirm subscription</span>
+          <span *ngIf="mode == ModeEnum.UPDATE">Update subscription</span>
+        </button>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div class="subscription-cancel" *ngIf="mode == ModeEnum.CANCEL">
+    <div class="card">
+
+      <div class="cancel-description">
+        <img src="/assets/img/round-icons/cancel-subscription.png" alt="">
+        <div class="title">Unsubscribe from automatic leads</div>
+        <div class="body">You will cancel you Subscription. Your current plan will expire on
+          <span class="highlight">{{subscriptionActionsService.nextBillingDate | date:'longDate'}}</span> and you will receive leads and benefits up until that date</div>
+        <div class="question">Proceed to unsubscribe?</div>
+        <div class="buttons-wrapper">
+          <button cv-button-empty routerLink="/pro/settings/billing">Cancel</button>
+          <button cv-button (click)="unsubscribe()">Continue</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+
+
+
+<layout-footer></layout-footer>
+
+
+

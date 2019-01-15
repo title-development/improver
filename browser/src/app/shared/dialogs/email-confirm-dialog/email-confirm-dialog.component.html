@@ -1,0 +1,62 @@
+<div class="dialog-content-wrapper" [cvSpinner]="fetching" [cvSpinnerSize]="32" [cvSpinnerBackground]="true">
+  <div class="dialog-content-container">
+
+    <div class="header">
+
+      <mat-icon class="close-modal" color="accent" (click)="close();">clear</mat-icon>
+
+      <div class="header-content" fxLayout="row" fxLayoutAlign="start end">
+        {{properties.title}}
+      </div>
+
+    </div>
+
+    <div class="message" *ngIf="properties.message && properties.message != ''">{{properties.message}}</div>
+
+    <form class="password-confirm-form"
+          name="password-confirm-form"
+          #emailConfirmForm="ngForm"
+          (ngSubmit)="emailConfirmForm.valid && changeEmail()"
+          novalidate>
+      <input type="password" style="display: none;">
+      <div class="content">
+        <p *ngIf="!account.nativeUser">A verification email will be sent to your new email address</p>
+        <cv-input-field *ngIf="!successful && account.nativeUser">
+          <input cv-input placeholder="Your current password"
+                 #currentPassword="ngModel"
+                 name="password"
+                 type="password"
+                 [(ngModel)]="password"
+                 required
+                 minlength="8"
+                 maxlength="32"
+                 pattern="{{constants.patterns.password}}">
+          <cv-field-error *ngIf="currentPassword.dirty || currentPassword.touched || emailConfirmForm.submitted">
+               <span *ngIf="currentPassword.errors?.required">
+               {{messages.errors.password.required}}
+              </span>
+            <span *ngIf="currentPassword.errors?.minlength">
+                {{messages.errors.password.minlength}}
+              </span>
+            <span *ngIf="currentPassword.errors?.pattern && !currentPassword.errors?.minlength">
+                {{messages.errors.password.pattern}}
+              </span>
+          </cv-field-error>
+        </cv-input-field>
+      </div>
+
+      <div class="actions" *ngIf="!successful">
+        <button type="button" cv-button-flat flatStyle="dark" (click)="close(); onCancel.emit()">{{properties.CANCEL}}</button>
+        <button cv-button type="submit">{{properties.OK}}</button>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+
+
+
+
+

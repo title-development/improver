@@ -1,0 +1,231 @@
+<h1 class="page-title" [innerHtml]="pageTitle"></h1>
+<form action="" *ngIf="questionary" #editQuestionary="ngForm"
+      (submit)="editQuestionary.valid && addUpdateQuestionary()">
+  <div class="ui-grid ui-grid-responsive ui-fluid questions-list">
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-3"><label for="name">Name</label></div>
+      <div class="ui-grid-col-9"><input pInputText #name="ngModel" id="name" name="name"
+                                        [(ngModel)]="questionary.name" required minlength="4" maxlength="255"
+                                        [disabled]="mode == 'view'"/>
+        <ng-container *ngIf="name.dirty || name.touched || editQuestionary.submitted">
+          <p-message *ngIf="name.errors?.required" severity="error" text="Field is required"></p-message>
+          <p-message *ngIf="name.errors?.minlength" severity="error"
+                     text="Trade name should have at least 4 symbols"></p-message>
+          <p-message *ngIf="name.errors?.maxlength" severity="error" text="Questionary name is to long"></p-message>
+          <p-message *ngIf="name.errors?.unique" severity="error" text="Questionary name is already taken"></p-message>
+        </ng-container>
+      </div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-3"><label for="description">Description</label></div>
+      <div class="ui-grid-col-9"><input #description="ngModel" id="description" name="description" minlength="4" maxlength="255" type="text" pInputText
+                                        [(ngModel)]="questionary.description" [disabled]="mode == 'view'" required>
+        <ng-container *ngIf="description.dirty || description.touched || editQuestionary.submitted">
+          <p-message *ngIf="description.errors?.required" severity="error" text="Field is required"></p-message>
+          <p-message *ngIf="description.errors?.minlength" severity="error"
+                     text="Questionary name should have at least 4 symbols"></p-message>
+          <p-message *ngIf="description.errors?.maxlength" severity="error" text="Questionary name is to long"></p-message>
+        </ng-container>
+      </div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-3"><label for="service-types">Service Types</label></div>
+      <div class="ui-grid-col-9">
+        <p-multiSelect required #serviceType="ngModel" id="service-types" [options]="serviceTypes" name="serviceTypes"
+                       [(ngModel)]="questionary.serviceTypes" [disabled]="mode == 'view'">
+          <ng-template let-item let-i="index" pTemplate="item">
+            <label [ngClass]="{'disabled': item.disabled}"
+                   [title]="item.disabled ? 'Service type has Questionary' : 'Service type has not Questionary'">{{item.label}}</label>
+          </ng-template>
+        </p-multiSelect>
+        <ng-container *ngIf="serviceType.dirty || serviceType.touched || editQuestionary.submitted">
+          <p-message *ngIf="questionary.serviceTypes.length <= 0" severity="error"
+                     text="Field is required"></p-message>
+        </ng-container>
+      </div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-3"><label>Questions</label></div>
+      <div class="ui-grid-col-9">
+        <ul dragula="questions-drag-group" [(dragulaModel)]="questionary.questions">
+          <ng-container *ngFor="let question of questionary.questions; let i = index">
+            <li *ngIf="question" (click)="editQuestion(question, i)">
+              <span class="fa fa-arrows drag-n-drop"></span>
+              <h5>{{question.title}}</h5>
+              <button type="button" pButton icon="fa fa-minus-circle" (click)="deleteQuestion($event, question, i)"
+                      class="ui-button-danger" *ngIf="mode !== 'view'"></button>
+            </li>
+          </ng-container>
+        </ul>
+        <div class="new-question">
+          <button type="button" pButton icon="fa fa-plus" label="Add" class="ui-button-success"
+                  (click)="addNewQuestion()" *ngIf="mode !== 'view'"></button>
+          <div class="spacer"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <button type="button" pButton icon="fa fa-arrow-left" label="Back" [routerLink]="['/','admin','questionaries']"></button>
+    <div class="spacer"></div>
+    <button type="submit" pButton icon="fa fa-check" [disabled]="!(editQuestionary.dirty || questionaryDeagged)" label="{{questionary.id ? 'Update' : 'Add Questionary'}}"
+            class="ui-button-success" *ngIf="mode !== 'view'"></button>
+  </div>
+</form>
+
+<p-dialog header="Add/Edit Question" [(visible)]="displayEditDialog" (onHide)="resetAddEditQuestionForm()" (visibleChange)="closeQuestionDialog()" [responsive]="true" showEffect="fade" [width]="700"
+          [modal]="true">
+  <question-preview [toggle]="preview" [question]="selectedQuestion"></question-preview>
+  <form action="" #addEditQuestionForm="ngForm"
+        (ngSubmit)="addEditQuestionForm.valid && addEditQuestionForm.dirty && addUpdateQuestion(selectedQuestion)" *ngIf="selectedQuestion">
+    <div class="ui-grid ui-grid-responsive ui-fluid question-edit" *ngIf="selectedQuestion && !preview">
+      <div class="ui-grid-row ui-grid-field">
+        <div class="ui-grid-col-3"><label for="question">Question</label></div>
+        <div class="ui-grid-col-9"><input required #title="ngModel" name="title" pInputText id="question" minlength="2"
+                                          maxlength="255" [(ngModel)]="selectedQuestion.title"
+                                          [disabled]="mode == 'view'"/>
+          <ng-container *ngIf="title.dirty || title.touched || addEditQuestionForm.submitted">
+            <p-message *ngIf="title.errors?.required" severity="error" text="Field is required"></p-message>
+            <p-message *ngIf="title.errors?.minlength" severity="error"
+                       text="Title should have at least 2 symbols"></p-message>
+            <p-message *ngIf="title.errors?.maxlength" severity="error" text="Title is to long"></p-message>
+          </ng-container>
+        </div>
+      </div>
+      <div class="ui-grid-row ui-grid-field">
+        <div class="ui-grid-col-3"><label for="type">Type</label></div>
+        <div class="ui-grid-col-9">
+          <p-dropdown id="type" name="type" [options]="constants.questionType"
+                      [(ngModel)]="selectedQuestion.type" [disabled]="editingQuestion || mode == 'view'"></p-dropdown>
+        </div>
+      </div>
+      <div class="ui-grid-row ui-grid-field"
+           *ngIf="selectedQuestion.type == QuestionType.TEXT_AREA || selectedQuestion.type == QuestionType.NUMERIC_INPUT || selectedQuestion.type == QuestionType.TEXT_INPUT">
+        <div class="ui-grid-col-3"><label for="label">Label</label></div>
+        <div class="ui-grid-col-9"><input #label="ngModel" pInputText type="text" id="label" name="label"
+                                          [(ngModel)]="selectedQuestion.label" [disabled]="mode == 'view'"
+                                          minlength="2"
+                                          maxlength="255"
+                                          required
+        >
+          <ng-container *ngIf="label.dirty || label.touched || addEditQuestionForm.submitted">
+            <p-message *ngIf="label.errors?.required" severity="error" text="Field is required"></p-message>
+            <p-message *ngIf="label.errors?.minlength" severity="error"
+                       text="Label should have at least 2 symbols"></p-message>
+            <p-message *ngIf="label.errors?.maxlength" severity="error" text="Label is to long"></p-message>
+          </ng-container>
+        </div>
+      </div>
+      <div class="ui-grid-row ui-grid-field"
+           *ngIf="selectedQuestion.type != QuestionType.TEXT_AREA
+         && selectedQuestion.type != QuestionType.NUMERIC_INPUT
+         && selectedQuestion.type != QuestionType.TEXT_INPUT
+         && selectedQuestion.type != QuestionType.IMG_RADIO_BUTTON
+         && selectedQuestion.type != QuestionType.IMG_CHECK_BOX">
+        <div class="ui-grid-col-3">
+          <label>Answers</label>
+        </div>
+        <div class="ui-grid-col-9">
+          <div class="question-answers" dragula="popup-drag-group" [dragulaModel]="selectedQuestion.answers">
+            <div class="field" *ngFor="let answer of selectedQuestion.answers">
+              <div>
+                <span class="fa fa-arrows drag-n-drop"></span>
+                <input type="text" name="{{answer.name}}" pInputText
+                       [(ngModel)]="answer.label" [disabled]="mode == 'view'" #answerLabel="ngModel" minlength="2"
+                       maxlength="255" required>
+                <button type="button" pButton icon="fa fa-minus-circle" (click)="deleteAnswer(answer, $event)"
+                        class="ui-button-danger" *ngIf="mode !== 'view'"></button>
+              </div>
+              <ng-container *ngIf="answerLabel.dirty || answerLabel.touched || addEditQuestionForm.submitted">
+                <p-message *ngIf="answerLabel.errors?.required" severity="error" text="Field is required"></p-message>
+                <p-message *ngIf="answerLabel.errors?.minlength" severity="error"
+                           text="Answer should have at least 2 symbols"></p-message>
+                <p-message *ngIf="answerLabel.errors?.maxlength" severity="error" text="Answer is to long"></p-message>
+              </ng-container>
+            </div>
+            <ng-container *ngIf="addEditQuestionForm.submitted">
+              <p-message *ngIf="selectedQuestion.answers.length <=0" severity="error"
+                         text="Please add an answer"></p-message>
+            </ng-container>
+          </div>
+          <div class="new-answer">
+            <div>
+              <input type="text" name="newAnswer" pInputText placeholder="Enter an answer"
+                     [(ngModel)]="newAnswer" *ngIf="mode !== 'view'" #newAnswerLabel="ngModel" minlength="2" maxlength="255" >
+              <button type="button" pButton icon="fa fa-plus" label="Add" class="ui-button-success"
+                      (click)="addNewAnswer()" *ngIf="mode !== 'view'"></button>
+            </div>
+            <ng-container *ngIf="newAnswerLabel">
+              <ng-container *ngIf="newAnswerLabel.dirty || newAnswerLabel.touched || addEditQuestionForm.submitted">
+                <p-message *ngIf="newAnswerLabel.errors?.minlength" severity="error"
+                           text="Answer should have at least 2 symbols"></p-message>
+                <p-message *ngIf="newAnswerLabel.errors?.maxlength" severity="error" text="Answer is to long"></p-message>
+              </ng-container>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+      <div class="ui-grid-row"
+           *ngIf="selectedQuestion.type == QuestionType.IMG_CHECK_BOX || selectedQuestion.type == QuestionType.IMG_RADIO_BUTTON">
+        <div class="ui-grid-col-3">
+          <label>Answers</label>
+        </div>
+        <div class="ui-grid-col-9">
+          <div class="question-answers" dragula="popup-drag-group" [dragulaModel]="selectedQuestion.answers">
+            <div class="field" *ngFor="let answer of selectedQuestion.answers">
+              <div>
+                <span class="fa fa-arrows drag-n-drop"></span>
+                <image-cropper name="{{answer.name}}-image" (delete)="deleteAnswerImage(answer)"
+                               [previewSize]="90" [minCropBoxHeight]="200" [minCropBoxWidth]="200"
+                               [(ngModel)]="answer.image" [disabled]="mode == 'view'"
+                               [circularPreview]="false"
+                ></image-cropper>
+                <input type="text" name="{{answer.name}}" pInputText
+                       placeholder="Enter an answer"
+                       [(ngModel)]="answer.label" [disabled]="mode == 'view'" #answerLabel="ngModel" minlength="2"
+                       maxlength="255" required>
+                <button type="button" pButton icon="fa fa-minus-circle" (click)="deleteAnswer(answer, $event)"
+                        class="ui-button-danger" *ngIf="mode !== 'view'"></button>
+              </div>
+              <ng-container *ngIf="answerLabel.dirty || answerLabel.touched || addEditQuestionForm.submitted">
+                <p-message *ngIf="answerLabel.errors?.required" severity="error" text="Field is required"></p-message>
+                <p-message *ngIf="answerLabel.errors?.minlength" severity="error"
+                           text="Answer should have at least 2 symbols"></p-message>
+                <p-message *ngIf="answerLabel.errors?.maxlength" severity="error" text="Answer is to long"></p-message>
+              </ng-container>
+            </div>
+            <ng-container *ngIf="addEditQuestionForm.submitted">
+              <p-message *ngIf="selectedQuestion.answers.length <=0" severity="error"
+                         text="Field is required"></p-message>
+            </ng-container>
+          </div>
+          <div class="new-answer">
+            <div>
+              <input type="text" name="newAnswer" pInputText [(ngModel)]="newAnswer" #newAnswerLabel="ngModel" minlength="2" maxlength="255">
+              <button type="button" pButton icon="fa fa-plus" label="Add" class="ui-button-success"
+                      (click)="addNewAnswer()" *ngIf="mode !== 'view'" ></button>
+            </div>
+            <ng-container *ngIf="newAnswerLabel">
+              <ng-container *ngIf="newAnswerLabel.dirty || newAnswerLabel.touched || addEditQuestionForm.submitted">
+                <p-message *ngIf="newAnswerLabel.errors?.minlength" severity="error"
+                           text="Answer should have at least 2 symbols"></p-message>
+                <p-message *ngIf="newAnswerLabel.errors?.maxlength" severity="error" text="Answer is to long"></p-message>
+              </ng-container>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <p-footer>
+    <div class="footer-actions">
+      <button type="button" pButton *ngIf="!preview" (click)="preview = true" label="Preview"
+              class="ui-button-info"></button>
+      <button type="button" pButton *ngIf="preview" (click)="preview = false" label="Close Preview"
+              class="ui-button-info"></button>
+      <div class="spacer"></div>
+      <button type="button" pButton icon="fa fa-check" (click)="addEditQuestionForm.onSubmit($event) "
+              label="Save" class="ui-button-success" *ngIf="mode !== 'view'"></button>
+    </div>
+  </p-footer>
+</p-dialog>

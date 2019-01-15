@@ -1,0 +1,189 @@
+@import "../../../improver-mixins.scss";
+.wizard-step {
+  width: 50%;
+  @include response(lg) {
+    width: 25%;
+    display: flex;
+    justify-content: center;
+  }
+
+  @include response(md) {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+  }
+  @include response-to(sm) {
+    width: 271px;
+  }
+
+  i {
+    color: rgba(0, 0, 0, 0.4);
+  }
+
+  &.animate {
+
+    i {
+      color: $primary-500;
+    }
+
+    .wizard-step-border-bottom-fill {
+      width: 100%;
+      height: 3px;
+      background-color: $primary-500;
+      box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.15);
+      transition: all 0.3s ease-in 0s;
+    }
+  }
+
+  &.hover {
+
+    i {
+      color: $primary-500;
+    }
+
+    .wizard-step-border-bottom-fill {
+      width: 100%;
+      height: 3px;
+      background-color: $primary-500;
+    }
+  }
+
+  &.step-1 {
+    .wizard-step-image-block {
+      background: url(../../../assets/img/landing/pro-hiw-1-blue.svg)  no-repeat;
+    }
+  }
+
+  &.step-2 {
+    .wizard-step-image-block {
+      background: url(../../../assets/img/landing/pro-hiw-2-grey.svg)  no-repeat;
+    }
+    &.hover {
+      .wizard-step-image-block {
+        background: url(../../../assets/img/landing/pro-hiw-2-blue.svg)  no-repeat;
+      }
+    }
+  }
+
+  &.step-3 {
+    .wizard-step-image-block {
+      background: url(../../../assets/img/landing/pro-hiw-3-grey.svg)  no-repeat;
+    }
+    &.hover {
+      .wizard-step-image-block {
+        background: url(../../../assets/img/landing/pro-hiw-3-blue.svg)  no-repeat;
+      }
+    }
+  }
+
+  &.step-4 {
+    .wizard-step-image-block {
+      background: url(../../../assets/img/landing/pro-hiw-4-grey.svg)  no-repeat;
+    }
+    &.hover {
+      .wizard-step-image-block {
+        background: url(../../../assets/img/landing/pro-hiw-4-blue.svg)  no-repeat;
+      }
+    }
+  }
+
+
+
+  .wizard-step-content {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    @include response-to(md) {
+      width: 260px;
+    }
+
+    @include response-to(xs) {
+      margin-bottom: 40px;
+    }
+
+    .wizard-step-image-block {
+      width: 58px;
+      height: 58px;
+      margin-bottom: 19px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      &.active {
+        i {
+          color: $primary-500;
+        }
+      }
+
+      i {
+        display: flex;
+        font-size: 50px;
+
+        &:before {
+          line-height: inherit;
+          margin: 0;
+          width: auto;
+        }
+      }
+
+    }
+
+    .wizard-step-text-block {
+
+      .wizard-step-title {
+        width: 100%;
+        margin-bottom: 16px;
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 1.25;
+        text-align: center;
+        color: $black-primary;
+      }
+
+      .wizard-step-text {
+        width: 100%;
+        //margin-bottom: 22px;
+        font-size: 14px;
+        line-height: 1.5;
+        letter-spacing: 0.3px;
+        text-align: center;
+        color: #808080;
+        min-height: 108px;
+
+        @include response-to(md) {
+          min-height: 80px;
+        }
+
+        @include response-to(xs) {
+          min-height: inherit;
+          margin-bottom: 0;
+        }
+      }
+
+    }
+
+  }
+
+  .wizard-step-border-bottom {
+    width: 100%;
+    height: 3px;
+    background-color: #e8e8e8;
+
+    @include response-to(lg) {
+      display: none;
+    }
+  }
+
+  .wizard-step-border-bottom-fill {
+    position: relative;
+    top: -3px;
+    width: 0;
+    height: 3px;
+    background-color: $primary-500;
+    box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.15);
+
+    @include response-to(lg) {
+      display: none;
+    }
+  }
+}

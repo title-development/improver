@@ -1,0 +1,8 @@
+<div class="admin-info">
+  <!--TODO: Rework this Hardcode-->
+  <div class="logo" [ngStyle]="securityService.getLoginModel().iconUrl != '' && {'background-image':'url(' + securityService.getLoginModel().iconUrl + ')'} || {'background-image':'url(' + 'http://i.pravatar.cc/36?img=20' + ')'}"></div>
+  <div class="info">
+    <div class="name">{{securityService.getLoginModel().name}}</div>
+    <div class="role">{{securityService.getLoginModel().role}}</div>
+  </div>
+</div>

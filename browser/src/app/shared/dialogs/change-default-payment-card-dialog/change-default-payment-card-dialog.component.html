@@ -1,0 +1,46 @@
+<div class="dialog-content-wrapper default-payment-card-dialog">
+  <div class="dialog-content-container" >
+
+    <div class="header">
+
+      <mat-icon class="close-modal" color="accent" (click)="close()">clear</mat-icon>
+
+      <div class="header-content" fxLayout="row" fxLayoutAlign="start end">
+        Set default payment card
+      </div>
+
+    </div>
+
+    <div class="content" [cvSpinner]="paymentCardsProcessing" [cvSpinnerSize]="30" [cvSpinnerBackground]="true">
+
+      <form class="default-payment-card-form"
+            name="default-payment-card-form"
+            #defaultPaymentCardForm="ngForm"
+            (ngSubmit)="defaultPaymentCardForm.valid && onSubmit(defaultPaymentCardForm)"
+            novalidate>
+
+        <div class="form-content" >
+
+          <cv-radio-group name="selectedCardId" [(ngModel)]="selectedCardId">
+            <cv-radio *ngFor="let card of cards" [value]="card.id">
+              <div class="card-image"
+                   [ngStyle]="{'background-image':'url(' + 'assets/img/credit-cards-types/' + tricksService.replaceSpases(card.brand) + '.png)'}"></div>
+              <div>{{card.brand}} ending in {{card.last4}}</div>
+            </cv-radio>
+          </cv-radio-group>
+
+        </div>
+
+        <div class="buttons-wrapper">
+          <button cv-button-flat flatStyle="dark" (click)="close()" type="button">Cancel</button>
+          <button cv-button="" type="submit">Save</button>
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+</div>
+
+

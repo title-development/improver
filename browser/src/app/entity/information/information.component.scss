@@ -1,0 +1,92 @@
+@import '../../../improver-mixins';
+
+.header-background {
+  background-image: url('/assets/img/terms.png');
+  background-size: cover;
+  background-position: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 397px;
+  position: relative;
+  margin-bottom: 73px;
+
+  h1 {
+    font-size: 36px;
+    font-weight: 600;
+    text-align: center;
+    color: #ffffff;
+    text-shadow: 2.8px 4.1px 12.9px rgba(0, 0, 0, 0.68);
+    z-index: 9;
+    margin: 0;
+  }
+
+  &:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.33);
+  }
+}
+
+h4 {
+  font-size: 15px;
+  line-height: 23px;
+  letter-spacing: 0.3px;
+  font-weight: 600;
+  margin: 0;
+}
+
+h3 {
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: #212121;
+  padding-bottom: 16px;
+  margin: 0;
+}
+
+p {
+  font-size: 15px;
+  line-height: 1.5;
+  margin-bottom: 34px;
+  letter-spacing: 0.3px;
+  text-align: left;
+  color: #808080;
+
+  span {
+    font-weight: 800;
+    color: #333;
+  }
+
+  a {
+    text-decoration: none;
+    color: #404aff;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  i {
+    color: $primary-500;
+  }
+
+  &:first-child {
+    &:first-letter {
+      float: left;
+      margin-right: 10px;
+      font-size: 42.4px;
+      font-weight: bold;
+      font-style: italic;
+      line-height: 44px;
+      letter-spacing: 0.8px;
+      text-align: left;
+      color: #212121;
+    }
+  }
+}

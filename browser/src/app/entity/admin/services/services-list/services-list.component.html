@@ -1,0 +1,82 @@
+<div class="panel-header">
+  <h1>Services</h1>
+  <div class="table-header-buttons">
+    <button type="button" pButton icon="fa fa-plus" label="Add" class="ui-button-success" routerLink="new" *ngIf="securityService.hasRole(Role.ADMIN)"></button>
+    <button type="button" pButton icon="pi pi-fw pi-refresh" label="&nbsp;&nbsp;Refresh" (click)="refresh()"></button>
+  </div>
+</div>
+
+<p-dataTable [value]="services.content"
+             selectionMode="single"
+             [lazy]="true"
+             [loading]="fetching"
+             [sortField]="'name'" [sortOrder]="1" sortMode="single"
+             [paginator]="true"
+             [filters]="filters"
+             [contextMenu]="cm" [responsive]="true"
+             [rows]="rowsPerPage[0]" [totalRecords]="services.totalElements"
+             [rowsPerPageOptions]="rowsPerPage"
+             (onLazyLoad)="loadServicesLazy($event)"
+             (onContextMenuSelect)="selectService($event)"
+             #dt>
+  <p-column field="id" header="ID" [sortable]="true" [filter]="true"></p-column>
+  <p-column field="imageUrl" header="Image" [sortable]="true">
+    <ng-template pTemplate="body" let-col let-service="rowData">
+      <div *ngIf="service[col.field]" class="image-preview"
+           (click)="showServiceImage($event,service,op3);"
+           [ngStyle]="{'background-image': 'url('+service[col.field]+')'}"></div>
+      <div *ngIf="!service[col.field]">No image</div>
+    </ng-template>
+  </p-column>
+  <p-column field="name" header="Name" [sortable]="true" [filter]="true"></p-column>
+  <p-column field="description" header="Description" [sortable]="true" [filter]="true"></p-column>
+  <p-column field="leadPrice" header="Lead Price (${{priceFilter[0]}} - ${{priceFilter[1]}})" [sortable]="true" [filter]="true">
+    <ng-template pTemplate="body" let-col let-data="rowData">
+      {{(data[col.field] / 100 ) | currency}}
+    </ng-template>
+    <ng-template pTemplate="filter" let-col>
+      <i class="pi pi-close" (click)="clearPriceFilter(col, dt)"></i>
+      <p-slider [style]="{'width':'100%','margin-top':'8px'}" [(ngModel)]="priceFilter" [min]="minPriceValue" [max]="maxPriceValue" [step]="1" [range]="true" (onChange)="onPriceFilterChange($event, dt, col)"></p-slider>
+    </ng-template>
+  </p-column>
+  <p-column field="labels" header="Labels" [filter]="true">
+    <ng-template pTemplate="body" let-col let-service="rowData">
+      <ng-container *ngFor="let label of service[col.field]">
+        <span>{{label}}</span>
+      </ng-container>
+    </ng-template>
+  </p-column>
+  <p-column field="trades" header="Trades" [filter]="true" filterField="tradeName">
+    <ng-template let-col let-service="rowData" pTemplate="body">
+      <ng-container *ngFor="let trades of service[col.field]">
+        <a href="" [routerLink]="['/', 'admin', 'trades', trades.id]">{{trades.name}}</a>
+      </ng-container>
+    </ng-template>
+  </p-column>
+  <p-column field="rating" header="Rating ({{ratingFilter[0]}} - {{ratingFilter[1]}})" [sortable]="true" [filter]="true">
+    <ng-template pTemplate="filter" let-col>
+      <i class="pi pi-close" (click)="clearRatingFilter(col, dt)"></i>
+      <p-slider [style]="{'width':'100%','margin-top':'8px'}" [(ngModel)]="ratingFilter" [min]="minRatingValue" [max]="maxRatingValue" [step]="1" [range]="true" (onChange)="onRatingFilterChange($event, dt, col)"></p-slider>
+    </ng-template>
+  </p-column>
+  <p-column field="questionaryId" sortField="questionary.id" header="Questionary" [sortable]="true">
+    <ng-template let-col let-service="rowData" pTemplate="body">
+      <ng-container *ngIf="service[col.field]">
+        <button type="button" pButton [routerLink]="['/', 'admin', 'questionaries', 'edit', service[col.field]]"
+                label="Edit" *ngIf="securityService.hasRole(Role.ADMIN)"></button>
+        <button type="button" pButton [routerLink]="['/', 'admin', 'questionaries', 'view', service[col.field]]"
+                label="View" *ngIf="securityService.hasRole(Role.SUPPORT)"></button>
+      </ng-container>
+      <ng-container *ngIf="!service[col.field]">
+        <button type="button" pButton [routerLink]="['/', 'admin', 'questionaries', 'add']"
+                [queryParams]='{serviceType: "{\"id\":\""+ service.id +"\", \"name\":\""+ service.name +"\"}"}' label="Add" *ngIf="securityService.hasRole(Role.ADMIN)"></button>
+        <div *ngIf="securityService.hasRole(Role.SUPPORT)">Not available</div>
+      </ng-container>
+    </ng-template>
+  </p-column>
+  <p-column field="active" header="Active" [sortable]="true"></p-column>
+</p-dataTable>
+<p-contextMenu #cm [model]="contextMenuItems"></p-contextMenu>
+<p-overlayPanel #op3>
+  <img [src]="selectedService.imageUrl" *ngIf="selectedService"/>
+</p-overlayPanel>

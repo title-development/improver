@@ -1,0 +1,630 @@
+@import "../../../../improver-mixins.scss";
+
+.customer-project-view {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  .main-content-wrapper {
+    border-radius: 2px;
+    background-color: $white;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
+    margin-bottom: 24px;
+
+    .header {
+      padding: 24px 24px;
+      border-bottom: 1px solid #e8e8e8;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      @include response-to(sm) {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 12px;
+      }
+
+      .left-part {
+
+        .top-line {
+          display: flex;
+          align-items: center;
+
+          .title {
+            font-size: 24px;
+            font-weight: 600;
+            text-align: left;
+            color: $black-primary;
+
+            @include response-to(sm) {
+              font-size: 21px;
+            }
+
+            @include response-to(xs) {
+              font-size: 18px;
+            }
+          }
+
+          .status {
+            font-size: 12px;
+            max-height: 23px;
+            padding: 4px 8px;
+            min-width: 75px;
+            border-radius: 2px;
+            background-color: #aaaaaa;
+            text-align: left;
+            color: $white;
+            margin-left: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            &:first-letter {
+              text-transform: uppercase;
+            }
+
+            &.validation {
+              background-color: #e3b10a;
+            }
+
+            &.active {
+              background-color: #309ae3;
+            }
+
+            &.in-progress {
+              background-color: #1eb237;
+            }
+
+            &.completed {
+              background-color: #946dfd;
+            }
+
+            &.canceled {
+              background-color: #ff5a6a;
+            }
+
+          }
+
+        }
+
+        .bottom-line {
+          font-size: 12px;
+          line-height: 1.33;
+          text-align: left;
+          color: $black-secondary;
+
+          @include response-to(sm) {
+            margin-top: 5px;
+          }
+        }
+
+      }
+
+      .right-part {
+        display: flex;
+
+        @include response-to(sm) {
+          margin-top: 16px;
+        }
+
+        .mat-icon {
+          font-size: 14px;
+          color: $primary-500;
+          margin-right: 5px;
+        }
+
+        .location {
+          font-size: 14px;
+          line-height: 1.29;
+          text-align: right;
+          color: $black-secondary;
+
+          @include response(xs) {
+            font-size: 12px;
+          }
+        }
+      }
+
+    }
+
+    .projectRequests {
+
+      .approve-mark {
+        display: flex;
+        align-items: center;
+        .approve-icon {
+          //margin-right: 8px;
+        }
+        .approve-text {
+          font-weight: 500;
+          font-size: 11px;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          color: $green-450;
+        }
+      }
+
+      .projectRequest-menu-button {
+        margin-right: 8px;
+      }
+
+
+      .content {
+        padding: 16px 24px;
+
+        @include response-to(sm) {
+          padding: 16px 12px;
+        }
+
+        .title {
+          font-size: 16px;
+          font-weight: 600;
+          text-align: left;
+          color: $black-primary;
+        }
+
+        .hint {
+          font-size: 12px;
+          line-height: 1.33;
+          text-align: left;
+          color: $black-secondary;
+        }
+
+        .decline-line {
+          position: relative;
+          overflow: hidden;
+          text-align: center;
+          margin-top: 24px;
+          padding-bottom: 11px;
+
+          span {
+            font-size: 14px;
+            line-height: 1.29;
+            text-align: center;
+            color: $black-secondary;
+
+            display: inline-block;
+            vertical-align: baseline;
+            zoom: 1;
+            *display: inline;
+            *vertical-align: auto;
+            position: relative;
+            padding: 0 54px;
+
+            &:before, &:after {
+              content: '';
+              display: block;
+              width: 1000px;
+              position: absolute;
+              top: 0.73em;
+              border-top: 1px solid $black-300;
+            }
+
+            &:before {
+              right: 100%;
+            }
+            &:after {
+              left: 100%;
+            }
+          }
+        }
+
+        .projectRequest {
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          border-left: 3px solid transparent;
+          padding: 11px 12px;
+          cursor: pointer;
+          margin-top: 16px;
+          border-radius: 2px;
+          background-color: $white;
+          box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.24);
+          opacity: 1;
+          transition: 0.3s;
+
+          @include response(sm) {
+            align-items: flex-end;
+          }
+
+          @include response-to(xs) {
+            flex-direction: column;
+            height: auto;
+          }
+
+          .projectRequest-left {
+            display: flex;
+            flex: 1;
+
+            @include response-to(xs) {
+              flex-direction: column;
+              align-items: center;
+              margin: 16px 0;
+            }
+          }
+
+          .notifications {
+            position: absolute;
+            right: 4px;
+            top: -8px;
+            background-color: $red;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            font-size: 12px;
+            line-height: 22px;
+            font-style: normal;
+            color: $white;
+            text-align: center;
+            @include response(xs) {
+              left: 4px;
+              top: 4px;
+            }
+          }
+
+
+          .projectRequest-right {
+            display: flex;
+            justify-content: flex-end;
+            flex: 0;
+          }
+
+          .projectRequest-icon {
+            width: 64px;
+            height: 64px;
+            opacity: 1;
+            transition: 0.3s;
+            border-radius: 64px;
+            border: solid 2px transparent;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            position: relative;
+            box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.24);
+
+            @include response-to(xs) {
+              width: 48px;
+              height: 48px;
+            }
+
+            &.active {
+              border-left: 3px solid transparent;
+            }
+
+            &.declined {
+              opacity: 0.6;
+              border-left: 3px solid transparent;
+            }
+
+            &.hired, &.completed {
+              //border: solid 2px $green;
+
+              .hired-foreground {
+                display: -webkit-box;
+                display: -ms-flexbox;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 24px;
+                height: 24px;
+                border-radius: 24px;
+                background-color: $green;
+                position: absolute;
+                right: -5px;
+                bottom: -2px;
+
+                @include response-to(xs) {
+                  width: 16px;
+                  height: 16px;
+                }
+
+                i {
+                  color: $white;
+                  font-size: 12px;
+
+                  @include response(xs) {
+                    font-size: 10px;
+                  }
+                }
+              }
+            }
+            .notifications {
+              position: absolute;
+              top: 0;
+              left: 0;
+              background-color: $green;
+              border: 2px solid $white;
+              box-shadow: elevation();
+              width: 12px;
+              height: 12px;
+              border-radius: 50%;
+            }
+          }
+
+          &:hover {
+            opacity: 1;
+            transition: 0.3s;
+            border-radius: 2px;
+            background-color: $black-200;
+            box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.24);
+
+            .projectRequest-icon {
+              box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.24);
+              opacity: 1;
+              position: relative;
+              transition: 0.3s;
+            }
+          }
+
+          .info-block {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            flex-direction: column;
+            padding-left: 24px;
+
+            @include response(sm) {
+              padding-left: 18px;
+              padding-right: 10px;
+            }
+
+            @include response(xs) {
+              align-items: center;
+              margin: 16px 0 0;
+              padding: 0;
+            }
+
+            .company-name {
+              display: flex;
+              font-size: 20px;
+              font-weight: 600;
+              text-align: left;
+              color: $black-primary;
+
+              .approve-mark {
+                margin-left: 8px;
+                img {
+                  width: 20px;
+                  height: 20px;
+                }
+              }
+
+              @include response(md) {
+                font-size: 18px;
+              }
+
+              @include response(sm) {
+                font-size: 16px;
+              }
+
+              @include response(xs) {
+                text-align: center;
+                margin-bottom: 6px;
+                font-size: 16px;
+              }
+            }
+            .additional-info {
+              font-size: 12px;
+              line-height: 1.33;
+              text-align: left;
+              color: $black-secondary;
+              &.hired {
+                color: $green-500;
+              }
+            }
+          }
+          .rating-block {
+            display: flex;
+            align-items: center;
+
+            @include response-to(xs) {
+              margin: 0 0 16px;
+            }
+
+            .reviews-count {
+              font-size: 14px;
+              color: rgba(0, 0, 0, 0.25);
+              min-width: 26px;
+              margin-left: 5px;
+            }
+
+            ::ng-deep .star i {
+              @include response-to(sm) {
+                font-size: 18px!important;
+              }
+            }
+          }
+
+          .more-button {
+            margin-right: -12px;
+            margin-left: 10px;
+
+            @include response-to(sm) {
+              position: absolute;
+              right: 15px;
+              top: 5px;
+            }
+
+            .mat-icon {
+              color: #aaaaaa;
+              font-size: 20px;
+              line-height: 20px;
+            }
+          }
+
+        }
+
+      }
+    }
+
+    .no-requests-block {
+      padding: 45px 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+
+      .no-requests-icon {
+        height: 80px;
+      }
+
+      div {
+        color: rgba(0, 0, 0, 0.36);
+        margin-top: 24px;
+      }
+    }
+
+  }
+
+  .description-block {
+    border-radius: 2px;
+    background-color: $white;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
+    padding: 24px 24px 18px;
+    margin-bottom: 24px;
+
+    @include response-to(sm) {
+      padding: 24px 12px 18px;
+    }
+
+    .header {
+      //margin: 24px 24px 0px;
+
+      .top-line {
+        font-size: 20px;
+        font-weight: 600;
+        text-align: left;
+        color: $black-primary;
+      }
+
+    }
+    .content {
+      .question-block {
+        margin: 13px 0px;
+
+        .question {
+          font-size: 12px;
+          line-height: 1.33;
+          text-align: left;
+          color: $black-secondary;
+        }
+        .answer, .answers {
+          display: flex;
+          font-size: 14px;
+          line-height: 1.14;
+          text-align: left;
+          color: $black-primary;
+        }
+      }
+    }
+  }
+
+}
+
+::ng-deep .mat-menu-panel.projectRequest-menu {
+  position: relative;
+  overflow: visible !important;
+  box-shadow: none;
+  //margin-top: 50px;
+  //margin-right: -9px;
+
+  .mat-menu-content {
+    padding: 0px;
+    border-radius: 2px;
+    box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.23);
+
+    .mat-menu-item {
+      color: #aaaaaa;
+      line-height: initial;
+      height: auto;
+      font-size: 14px;
+      padding: 10px 16px;
+
+      &:hover {
+        color: #777777;
+      }
+    }
+  }
+}
+
+::ng-deep .mat-menu-panel.project-menu {
+  position: relative;
+  overflow: visible !important;
+  box-shadow: none;
+
+
+
+  .mat-menu-content {
+    padding: 0px;
+    border-radius: 2px;
+    box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.23);
+
+    .mat-menu-item {
+      color: #aaaaaa;
+      line-height: initial;
+      height: auto;
+      font-size: 14px;
+      padding: 10px 16px;
+
+      &:hover {
+        color: #777777;
+      }
+    }
+
+    //&:after {
+    //  top: -18px;
+    //  left: 80%;
+    //  content: " ";
+    //  height: 0;
+    //  width: 0;
+    //  position: absolute;
+    //  pointer-events: none;
+    //  border: 9px solid rgba(194, 225, 245, 0);
+    //  border-bottom-color: $white; //TODO: fix color
+    //  margin-left: -8px;
+    //}
+  }
+}
+
+.image-uploader {
+  border-radius: 2px;
+  background-color: $white;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
+  margin-bottom: 24px;
+  padding: 24px 24px 0;
+
+  @include response-to(sm) {
+    padding: 24px 12px 0;
+  }
+}
+
+.top-page-navigation {
+  display: flex;
+  width: 100%;
+  height: 40px;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  color: $black-500 !important;
+
+  @include response-to(sm) {
+    margin-bottom: 12px;
+  }
+
+  .back-link {
+    color: $black-500 !important;
+    justify-content: flex-start;
+    align-items: center;
+
+    &:active {
+      color: $primary-500;
+    }
+
+  }
+
+}
+
+::ng-deep button.cancel-button.mat-menu-item {
+  color: $red !important;
+}
+

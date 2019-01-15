@@ -1,0 +1,20 @@
+<div [@showHide] [@fadeMessage] class="pop-up-message" [ngClass]="[message.type | toclassname]">
+  <div class="wrapper"  >
+    <div class="icon" [ngSwitch]="message.type">
+      <mat-icon *ngSwitchCase="SystemMessageType.SUCCESS">offline_pin</mat-icon>
+      <mat-icon *ngSwitchCase="SystemMessageType.INFO">info</mat-icon>
+      <mat-icon *ngSwitchCase="SystemMessageType.WARN">warning</mat-icon>
+      <mat-icon *ngSwitchCase="SystemMessageType.ERROR">cancel</mat-icon>
+    </div>
+    <div class="content">
+      <div class="text" [innerHTML]="message.text"></div>
+      <div class="close-button-wrapper">
+        <mat-icon (click)="destroy()">close</mat-icon>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+

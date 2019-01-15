@@ -1,0 +1,43 @@
+<div class="backdrop" (click)="close()" *ngIf="toggle"></div>
+<div [@toggleNotificationPopup]="animationState" class="notifications-popup"
+     [ngClass]="{'mobile': mediaQuery.xs || mediaQuery.sm,  'tablet': mediaQuery.md, 'large': mediaQuery.lg}">
+
+  <div class="popup-header">
+    <div class="title">
+      <span>Notifications</span>
+    </div>
+    <button class="mark-read" (click)="readAll()">Mark all as read</button>
+  </div>
+  <div class="popup-body">
+    <ng-container ></ng-container>
+    <perfect-scrollbar [config]="psConfig" *ngIf="notifications && notifications.length > 0 ">
+    <ng-template ngFor [ngForOf]="notifications" let-notification let-i="index" [ngForTrackBy]="trackBy">
+      <a class="item" [ngClass]="{'new': !notification.read}" (click)="navigate(notification.link); !notification.read && read(notification.id); close()">
+
+        <div class="logo-wrapper">
+          <div [ngStyle]="notification.icon && notification.icon != '' && {'background-image':'url(' + notification.icon + ')'}">
+          </div>
+        </div>
+
+        <div class="notification-body">
+          <div class="top-line" [innerHtml]="notification.payload"></div>
+          <div class="bottom-line">
+            <i class="imp-icon-clock-2"></i>
+            <span>{{notification.created | timeAgo}}</span>
+          </div>
+        </div>
+
+      </a>
+    </ng-template>
+    </perfect-scrollbar>
+    <div class="no-notifications" *ngIf="notifications && notifications.length == 0 ">
+      You don't have new notifications
+    </div>
+
+
+  </div>
+  <div class="popup-footer">
+    <a cv-button-flat (click)="getNotifications(pagination.nextPage())" *ngIf="showMore">Show more</a>
+  </div>
+
+</div>

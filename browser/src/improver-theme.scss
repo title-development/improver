@@ -1,0 +1,121 @@
+@import "scss/variables";
+@import "scss/media-query";
+@import "scss/functions";
+@import "scss/mixins";
+
+@import 'app/theme/scss/bs-elevations';
+
+.container {
+  width: 100%;
+  max-width: (996px + $grid-gutter-width);
+  padding-left: ($grid-gutter-width / 2);
+  padding-right: ($grid-gutter-width / 2);
+  position: relative;
+  margin: 0 auto 0;
+  box-sizing: border-box;
+
+  &.-top-space {
+    padding-top: 24px;
+    @include response-to(sm) {
+      padding-top: 12px;
+    }
+  }
+
+}
+
+.container-wide {
+  @extend .container;
+  max-width: (1170px + $grid-gutter-width);
+}
+
+div[class^='col-'] {
+  box-sizing: border-box;
+}
+
+.row {
+  margin-left: ($grid-gutter-width / -2);
+  margin-right: ($grid-gutter-width / -2);
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  box-sizing: border-box;
+  &.-column {
+    flex-direction: column;
+  }
+  &.-reverse {
+    flex-direction: row-reverse;
+  }
+  &.-no-mar {
+    margin: 0;
+  }
+  &.-align-center {
+    align-items: center;
+  }
+  &.-align-end {
+    align-items: flex-end;
+  }
+}
+
+//Grid
+@if($columns == true) {
+  @include make-lim-columns();
+}
+
+.cv-popup-overlay {
+  pointer-events: none;
+  &.-open {
+    display: block;
+  }
+  @for $i from 1 through 5 {
+    >div:nth-child(#{$i}) {
+      z-index: 100#{$i};
+    }
+  }
+  >div {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    pointer-events: auto;
+
+  }
+  .transparent {
+    display: block;
+  }
+}
+
+.cv-holder {
+  position: absolute;
+}
+
+
+.cv-popup-overlay {
+  @for $i from 0 through 5 {
+    >div:nth-child(#{$i}) {
+      z-index: 100#{$i};
+    }
+  }
+
+  .transparent {
+    display: block;
+  }
+  .cv-holder {
+    position: absolute;
+    transform: translateZ(0);
+
+  }
+}
+.cv-overlay {
+  position: absolute;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  @include response-to(sm) {
+    cursor: pointer;
+  }
+  &.cv-type-event-none {
+    pointer-events: none;
+  }
+}

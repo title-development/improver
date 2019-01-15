@@ -1,0 +1,59 @@
+@import "../../../../../improver-mixins.scss";
+
+.questionary-form {
+  flex: 1;
+  height: 100%;
+
+  &.bg-image {
+    background: transparent !important;
+    display: flex;
+    align-items: center;
+    padding-top: 0;
+  }
+
+  &.bg-white {
+    background: $white !important;
+  }
+
+  .start-screen {
+    text-align: center;
+    color: $white;
+
+    padding: 38px 38px 24px;
+
+    .logo-text {
+      font-size: 28px;
+      font-weight: 700;
+      text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+      margin-bottom: 99px;
+    }
+
+    .start-screen-hint {
+      font-size: 24px;
+      font-weight: 700;
+      text-align: center;
+      text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+      margin-bottom: 104px;
+    }
+
+    .start-screen-continue-button {
+      font-size: 14px;
+      max-width: 110px;
+      width: 100%;
+      background-image: linear-gradient(to bottom, $primary-500, $primary-600);
+      border: none;
+      padding: 9px 25px;
+      color: $white;
+      box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.15);
+
+      &:hover {
+        background-image: linear-gradient(to top, $primary-500, $primary-600);
+      }
+
+      &:active {
+        background: $primary-500 none;
+      }
+    }
+
+  }
+}

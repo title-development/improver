@@ -1,0 +1,340 @@
+@import "../../../../../improver-mixins.scss";
+@import "../../account.component.scss";
+
+:host {
+
+  .row.-avatar {
+    margin-top: 8px;
+    margin-bottom: 24px;
+  }
+
+  .avatar-block-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .avatar-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 90px;
+    height: 90px;
+    border-radius: 100px;
+    background-color: $white;
+    box-shadow: 0px 1px 5px 0 rgba(0, 0, 0, 0.24);
+    position: relative;
+    flex: none;
+    margin-right: 24px;
+    .avatar {
+      display: flex;
+      width: 80px;
+      height: 80px;
+      border-radius: 100px;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+
+    }
+
+    .actions {
+      position: absolute;
+      top: 8px;
+      right: -6px;
+      bottom: 8px;
+      display: flex;
+      flex-direction: column;
+      .icon {
+        cursor: pointer;
+        border-radius: 50%;
+        height: 24px;
+        width: 24px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        &.-delete {
+          background-color: $red;
+        }
+        &.-edit {
+          margin-top: auto;
+          background-color: $primary-500;
+        }
+        .mat-icon {
+          color: $white;
+          font-size: 16px;
+        }
+      }
+    }
+  }
+
+  .hint {
+    position: relative;
+    padding: 16px;
+    background-color: $black-150;
+    box-shadow: 0px 2px 4px 0 rgba(0, 0, 0, 0.16);
+    font-size: 14px;
+    line-height: 1.43;
+    color: #8c8c8c;
+
+    &.-arrow:before {
+      display: none;
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-color: transparent transparent $black-150 transparent;
+      border-width: 0 10px 10px 10px;
+      top: -10px;
+      left: calc(50% - 10px);
+
+      @include response-from(md) {
+        display: block;
+        border-color: transparent $black-150 transparent transparent;
+        border-width: 10px 10px 10px 0;
+        left: -10px;
+        top: initial;
+      }
+
+    }
+
+    &.-inline {
+      margin-bottom: 16px;
+    }
+
+    .important {
+      font-weight: 600;
+      color: #191919;
+    }
+
+    a {
+      color: $primary-500;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    &.account-hint {
+      @include response-from(md) {
+        margin-bottom: -36px;
+      }
+    }
+
+    &.company-info-hint {
+      margin-bottom: 16px;
+      @include response-from(md) {
+        margin-top: 20px;
+        margin-bottom: -60px;
+      }
+    }
+
+  }
+
+  .account-top-line {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    height: 72px;
+  }
+
+  .account-nav-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: $black-primary;
+  }
+
+  .company-license-item {
+    line-height: 140%;
+    padding: 11px 24px;
+    border-bottom: 1px solid $black-300;
+    color: $black-secondary;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    @include response-to(sm) {
+      padding: 11px 12px;
+    }
+
+    .company-license-info {
+      display: flex;
+
+      @include response-to(sm) {
+        flex-direction: column;
+        margin-bottom: 8px;
+      }
+
+      .company-license-title {
+        color: $black;
+        width: 135px;
+        font-weight: 600;
+      }
+      .company-license-value {
+
+      }
+    }
+
+    .company-license-actions {
+      display: flex;
+    }
+
+    &:hover {
+      background-color: $black-100;
+
+      .company-license-name {
+        color: $black;
+        font-weight: 600;
+      }
+
+      .company-license-edit, .company-license-remove {
+        display: block;
+        cursor: pointer;
+        width: initial;
+        margin-left: 8px;
+      }
+
+    }
+
+    .mat-icon {
+      font-size: 19px;
+    }
+
+    .company-license-status {
+      color: $primary-500;
+    }
+
+    .company-license-edit, .company-license-remove {
+      display: none;
+      cursor: pointer;
+      width: initial;
+      color: $black-400;
+
+      &:hover {
+        color: $black-500;
+      }
+
+    }
+
+  }
+
+  .card {
+    border-radius: 2px;
+    background-color: $white;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
+    margin-bottom: 24px;
+    padding: 24px;
+    position: relative;
+
+    @include response-to(xs) {
+      padding: 12px;
+    }
+
+    .title {
+      font-size: 20px;
+      font-weight: 600;
+      color: $black-primary;
+      margin-bottom: 16px;
+    }
+
+    .sub-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: $black-primary;
+      margin-bottom: 16px;
+    }
+
+    .group-wrapper {
+      margin-bottom: 24px;
+    }
+
+    .buttons-wrapper {
+      display: flex;
+      justify-content: flex-end;
+      cv-field-error {
+        &:first-letter {
+          text-transform: uppercase;
+        }
+      }
+    }
+
+  }
+
+  .tabs-menu {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    display: flex;
+    background-color: white;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 0 0 $black-300;
+    padding-left: 16px;
+
+    @include response-to(sm) {
+      margin: 0;
+      padding-left: 0;
+    }
+
+    .tab-menu-item {
+      display: flex;
+      padding: 16px 16px 13px;
+      border-bottom: 3px solid transparent;
+      margin-right: 8px;
+      cursor: pointer;
+      transition: all .3s ease;
+      font-size: 14px;
+      font-weight: 500;
+      text-align: left;
+      color: $black-secondary;
+
+      &:first-child {
+        margin-left: 8px;
+      }
+
+      &.active {
+        color: $primary-500;
+        border-bottom: 3px solid $primary-500;
+      }
+
+    }
+  }
+
+  .account-nav-wrapper {
+    margin-top: 49px;
+
+    .company-location-form {
+
+      .-bottom-space {
+        @include response(xs){
+          margin-bottom: 24px;
+        }
+      }
+    }
+  }
+
+  .licenses-wrapper {
+    margin-bottom: 24px;
+  }
+
+  .spacer {
+    flex-grow: 1;
+  }
+
+
+}
+
+.action {
+  display: flex;
+  .delete-account {
+    display: inline-block;
+    font-size: 14px;
+    margin-bottom: 24px;
+    color: $black-500;
+    transition: color .3s ease;
+    cursor: pointer;
+    &:hover {
+      color: $black-primary;
+    }
+  }
+}

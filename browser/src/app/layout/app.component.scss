@@ -1,0 +1,40 @@
+@import "../../improver-mixins.scss";
+
+:host {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  //Preload font avoiding blinking in find professionals
+  &:after {
+    content: '';
+    font-weight: 800;
+  }
+}
+
+::ng-deep .snack-bar {
+  &.success {
+    background-color: #ff7100;
+  }
+
+  &.error {
+    background-color: #f44336;
+  }
+}
+
+
+::ng-deep .show-more-button-wrapper {
+  display: flex;
+  margin: 24px 0;
+  justify-content: center;
+
+  .show-more-button {
+    cursor: pointer;
+    color: $primary-500;
+    font-weight: 500;
+    font-size: 14px;
+  }
+}

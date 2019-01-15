@@ -1,0 +1,425 @@
+@import "../../../improver-mixins.scss";
+
+:host {
+  background-color: $white;
+  width: 100%;
+  display: block;
+
+}
+
+.footer {
+  background-color: $white;
+  padding: 0 12px;
+
+  @include response(md,lg) {
+    padding: 0 24px;
+  }
+
+  .footer-top {
+    display: flex;
+    padding: 72px 0 64px;
+    max-width: 100%;
+    margin: 0 auto;
+    width: 100%;
+
+    @include response-from(xlg) {
+      max-width: 1170px;
+    }
+
+    @include response-to(md) {
+      flex-direction: column;
+      padding: 32px 0 32px;
+    }
+
+    @include response-to(sm) {
+      flex-direction: column;
+    }
+
+    .links-block {
+      display: flex;
+      justify-content: flex-start;
+
+      @include response(sm) {
+        flex-direction: column;
+        margin-bottom: 16px;
+      }
+
+
+
+      @include response-to(xs) {
+        flex-direction: column;
+      }
+
+      .footer-social {
+
+        @include response(md) {
+          width: 25%;
+        }
+
+
+        .logo {
+          cursor: pointer;
+          font-weight: 600;
+          letter-spacing: 1.4px;
+          text-align: left;
+          color: #363636;
+          font-size: 21px;
+          background: url(../../../assets/img/logo-cropped.png) no-repeat center center;
+          background-size: contain;
+          width: 130px;
+          height: 50px;
+          margin-top: -4px;
+          margin-bottom: 16px;
+
+          @include response-to(sm) {
+            text-align: center;
+            margin: -4px auto 16px;
+          }
+        }
+
+        .social-links {
+          margin-left: 5px;
+          display: flex;
+
+          @include response-to(sm) {
+            justify-content: center;
+            margin-bottom: 16px;
+          }
+
+          a {
+            display: flex;
+            cursor: pointer;
+            height: 24px;
+            width: 24px;
+
+            i {
+              color: $black-500;
+            }
+
+            &:hover {
+              i {
+                color: $primary-500;
+              }
+            }
+          }
+        }
+      }
+
+
+      .footer-links {
+        display: flex;
+
+        @include response(md) {
+          width: 75%;
+        }
+
+        @include response(sm) {
+          justify-content: center;
+        }
+
+        @include response(xs) {
+          flex-direction: column;
+        }
+      }
+
+      .links {
+        margin-left: 49px;
+
+        @include response(lg) {
+          margin-left: 30px;
+        }
+
+        @include response(md) {
+          margin: 0;
+          flex: 1;
+          display: flex;
+
+         .links-content {
+           margin: 0 auto;
+         }
+        }
+
+        @include response(sm) {
+          margin: 0 35px;
+        }
+
+        @include response-to(xs) {
+          margin: 20px 0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+
+          .links-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+          }
+        }
+
+        .header {
+          font-size: 16px;
+          text-align: left;
+          color: $black;
+          margin-bottom: 24px;
+
+          @include response(xs) {
+            text-align: center;
+            margin-bottom: 0;
+          }
+        }
+
+        .link {
+          display: flex;
+          margin-top: 14px;
+          cursor: pointer;
+          font-size: 14px;
+          text-align: left;
+          color: $black-500;
+
+          @include response(xs) {
+            text-align: center;
+          }
+
+          &:hover {
+            color: #333333;
+          }
+        }
+      }
+    }
+
+    .contact-us-block {
+      flex-direction: column;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-start;
+
+      @include response(md) {
+       align-items: flex-start;
+        margin-top: 32px;
+      }
+
+      @include response-to(sm) {
+        max-width: 100%;
+      }
+
+      .header {
+        font-size: 16px;
+        text-align: right;
+        color: $black;
+        margin-bottom: 8px;
+
+        @include response(md) {
+          text-align: left;
+          padding-left: 0;
+        }
+
+        @include response-to(sm) {
+          padding-left: 0;
+          margin-top: 16px;
+          text-align: center;
+          width: 100%;
+          height: auto;
+          justify-content: flex-start;
+        }
+      }
+
+      .description {
+        padding-left: 30%;
+        font-size: 14px;
+        text-align: right;
+        color: $black-500;
+        max-height: 100%;
+
+        @include response(md) {
+          text-align: left;
+          padding-left: 0;
+        }
+
+        @include response-to(sm) {
+          padding-left: 0;
+          width: 60%;
+          margin: 0 auto;
+          width: 100%;
+          height: auto;
+          text-align: center;
+        }
+      }
+
+      .inputs-wrapper {
+        margin-top: 28px;
+        font-size: 14px;
+        display: flex;
+        justify-content: flex-start;
+        align-items: start;
+
+        input {
+          height: 46px;
+          max-width: 170px;
+        }
+
+        @include response(lg) {
+          width: 100%;
+          justify-content: flex-end;
+        }
+
+        @include response-to(sm) {
+          margin: 28px auto 0;
+          align-self: center;
+        }
+        input {
+          -webkit-appearance: none;
+          border-radius: 0;
+        }
+
+        .name {
+          height: 46px;
+          border: solid 1px #dddddd;
+          padding: 0 16px;
+          width: 175px;
+
+          @include response-to(sm) {
+            width: 30%;
+          }
+        }
+
+        .phone {
+          height: 46px;
+          border: solid 1px #dddddd;
+          border-left: none;
+          padding: 0 16px;
+          width: 139px;
+
+          @include response-to(sm) {
+            width: 40%;
+          }
+        }
+
+        button {
+          width: 125px;
+          justify-content: initial;
+          flex-direction: row;
+          border: none;
+          padding: 0px;
+          background-color: transparent;
+          display: flex;
+        }
+
+        .submit-contact-us-button {
+          height: 46px;
+          flex: 1 1;
+          cursor: pointer;
+          width: 125px;
+          border-radius: 1px;
+          background-color: $white;
+          border: 1px solid;
+          font-size: 14px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          @include response-to(sm) {
+            width: 30%;
+          }
+
+          @include bordered-link-mixin();
+
+          .submit-contact-us-button-text {
+
+            font-size: 16px;
+            text-align: left;
+            color: $primary-500;
+
+          }
+
+          &:hover {
+            @include background-image-gradient();
+
+            .submit-contact-us-button-text {
+              color: $white;
+            }
+
+          }
+
+          &:active {
+            @include background-image-gradient();
+            opacity: 0.64;
+
+            .submit-contact-us-button-text {
+              -webkit-text-fill-color: $white;
+              color: $white;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.footer-bottom {
+  width: 100%;
+  height: 48px;
+  background-color: $black-100;
+  display: flex;
+  justify-content: center;
+  max-width: 100%;
+  margin: 0 auto;
+
+  @include response-to(xs) {
+    padding: 15px 0;
+    height: auto;
+  }
+
+  .footer-bottom-line-container {
+    padding: 0 12px;
+    width: 100%;
+    max-width: 100%;
+    font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    @include response-to(xlg) {
+      max-width: 1170px;
+    }
+
+    @include response(md,lg) {
+      padding: 0 24px;
+    }
+
+
+
+    @include response-to(xs) {
+      width: 100%;
+      height: auto;
+      flex-direction: column-reverse;
+    }
+
+    .footer-company-copyright {
+      font-size: 14px;
+      text-align: left;
+      color: $black-500;
+
+      @include response-to(xs) {
+        margin: 10px 0;
+      }
+    }
+
+    .footer-bottom-links {
+      display: flex;
+      justify-content: flex-end;
+
+      .footer-nav {
+        font-size: 14px;
+        text-align: left;
+        color: $black-500;
+        cursor: pointer;
+        margin-left: 24px;
+
+        &:hover {
+          color: #333333;
+        }
+      }
+    }
+  }
+}

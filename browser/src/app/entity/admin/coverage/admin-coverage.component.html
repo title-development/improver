@@ -1,0 +1,65 @@
+<div class="panel-header">
+  <div class="panel-title">Coverage</div>
+  <p-progressSpinner *ngIf="fetching" [style]="{width: '24px', height: '24px'}"></p-progressSpinner>
+  <button pButton class="ui-button-success" [disabled]="!hasChanges" (onClick)="updateCoverage()" icon="pi pi-fw pi-check"
+            label="&nbsp;&nbsp;Update"></button>
+</div>
+<div class="map-holder">
+  <agm-map class="sidenav-content map-wrapper"
+           [zoom]="mapOptions.zoom"
+           [styles]="mapStyles"
+           (mapReady)="onMapReady($event)">
+    <admin-map #adminMap
+               (zips)="updateZips($event)"
+               (fetching)="fetching = $event"
+               (onInfoWindow)="updateInfoWindowState($event)"
+               (hasChanges)="hasChanges = $event">
+    </admin-map>
+    <agm-snazzy-info-window [isOpen]="infoWindow?.trigger"
+                            [latitude]="infoWindow ? infoWindow.position.lat : 0"
+                            [longitude]="infoWindow ? infoWindow.position.lng : 0"
+                            [maxWidth]="40"
+                            [maxHeight]="30"
+                            [closeOnMapClick]="true"
+                            [panOnOpen]="false">
+      <ng-template>
+        <div class="si-zip-content">{{infoWindow?.content}}</div>
+      </ng-template>
+    </agm-snazzy-info-window>
+  </agm-map>
+  <form #zipSearchForm="ngForm" (ngSubmit)="searchZipCode(zipSearchForm)">
+    <input type="text" class="find-zip" pInputText placeholder="e.g. 10022" numericMask required
+           pattern=".{5,}" maxlength="5"
+           #zipValue="ngModel" name="search" autocomplete="off" [(ngModel)]="searchZip"
+           (ngModelChange)="validateZip(zipSearchForm)">
+    <button pButton class="ui-button-success" type="submit" label="Add"></button>
+    <ng-container *ngIf="zipFormErrors">
+      <span *ngIf="zipValue.errors?.required">Zip code is required</span>
+      <span *ngIf="zipValue.errors?.pattern">Please enter a valid ZIP code</span>
+    </ng-container>
+  </form>
+<div class="history-zips">
+  <div class="added-zip-codes-block">
+    <h5>Added zip codes ({{zipsHistory?.added.length}})</h5>
+    <div class="holder">
+      <ng-template ngFor [ngForOf]="zipsHistory?.added" let-zip let-i="index">
+        <div class="history-zip" fxLayout="row" fxLayoutAlign="space-between center">
+          <div class="value">{{zip}}</div>
+          <div class="undo-button" (click)="undo(zip)">(UNDO)</div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+  <div class="removed-zip-codes-block">
+    <h5>Removed zip codes ({{zipsHistory?.removed.length}})</h5>
+    <div class="holder">
+      <ng-template ngFor [ngForOf]="zipsHistory?.removed" let-zip let-i="index">
+        <div class="history-zip" fxLayout="row" fxLayoutAlign="space-between center">
+          <div class="value">{{zip}}</div>
+          <div class="undo-button" (click)="undo(zip)">(UNDO)</div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>
+</div>

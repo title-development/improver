@@ -1,0 +1,27 @@
+:host {
+  display: block;
+  text-align: left;
+}
+
+.icon {
+  width: 80px;
+  height: 80px;
+  background-size: cover;
+  background-position: center;
+  display: block;
+  &.-wide {
+    width: 200px;
+  }
+}
+table thead tr th span.ui-column-title {
+  display: block !important;
+}
+
+p-datatable::ng-deep {
+  th .ui-column-title {
+    display: inline !important;
+  }
+  .ui-datatable .ui-datatable-data>tr>td .ui-cell-data {
+    word-wrap: break-word;
+  }
+}

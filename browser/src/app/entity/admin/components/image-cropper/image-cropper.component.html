@@ -1,0 +1,45 @@
+<div class="preview" [ngClass]="{'-circular': circularPreview}" *ngIf="image" [ngStyle]="{'background-image': 'url('+image+')', 'width': previewSize + 'px', 'height': previewSize + 'px'}">
+  <div class="vactions" *ngIf="!disabled">
+    <label  pButton type="button" icon="fa fa-pencil" class="ui-button-info" (click)="openCropperDialog()"></label>
+    <button pButton type="button" icon="fa fa-trash" class="ui-button-danger" (click)="removeImage($event)"></button>
+  </div>
+</div>
+<div *ngIf="!disabled">
+  <label pButton label="Add Image" (click)="openCropperDialog()" *ngIf="!image"></label>
+</div>
+
+<div *ngIf="disabled && !image">
+  No image
+</div>
+
+<p-dialog header="Crop Image" appendTo="body" [(visible)]="visible" (onHide)="hideDialog()" [responsive]="true" showEffect="fade" [width]="700"
+          [modal]="true">
+  <div class="ui-grid ui-grid-responsive ui-fluid">
+    <div class="content" >
+      <div [hidden]="!cropperIsInit">
+        <div class="photo-preview">
+          <img #cropperjs (load)="imageEvent()" (error)="imageEvent()" alt="Failed to load image">
+        </div>
+      </div>
+      <ng-container *ngIf="!cropperIsInit">
+        <label class="choose-image-label" for="photo-input-label">
+          <div class="holder">
+            <h5>Click to upload image</h5>
+          </div>
+          <input id="photo-input-label" type="file" accept=".png, .jpg, .bmp" (change)="fileChangeListener($event)">
+        </label>
+      </ng-container>
+    </div>
+
+    <div class="footer" *ngIf="cropperIsInit">
+      <div class="change-button">
+        <label pButton label="Upload image" for="photo-input" class="ui-button-success"></label>
+        <input id="photo-input" type="file" accept=".png, .jpg, .bmp" (change)="fileChangeListener($event)">
+      </div>
+      <div class="buttons">
+        <button pButton (click)="close()" label="Cancel" class="ui-button-danger"></button>
+        <button pButton (click)="submitPhoto()" label="Save" class="ui-button-success"></button>
+      </div>
+    </div>
+  </div>
+</p-dialog>

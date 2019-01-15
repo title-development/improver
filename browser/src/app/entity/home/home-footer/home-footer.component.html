@@ -1,0 +1,60 @@
+<div class="footer-wrapper" fxLayout="column" fxLayoutAlign="center center" >
+
+  <div class="footer-container" fxLayoutAlign="space-between start" fxLayout="row">
+
+    <div class="links-block" fxFlex="53" fxLayoutAlign="space-between start" fxLayout="row">
+      <div class="social-links-wrapper">
+        <div class="header">HOME IMPROVE</div>
+        <div class="social-links" fxLayout="row">
+          <a (click)="openInNewTab('https://www.facebook.com')" class="facebook-icon"></a>
+          <a (click)="openInNewTab('https://twitter.com')" class="twitter-icon"></a>
+          <a (click)="openInNewTab('https://www.instagram.com')" class="instagram-icon"></a>
+          <a (click)="openInNewTab('https://www.linkedin.com')" class="linkedin-icon"></a>
+        </div>
+      </div >
+      <div class="links company-links">
+        <a class="header">Company</a>
+        <a class="link">About Us</a>
+        <a class="link">Trust & Safety</a>
+        <a class="link">Contacts & Support</a>
+        <a class="link">Our Blog</a>
+      </div>
+      <div class="links customer-links">
+        <a class="header">Customers</a>
+        <a class="link" (click)="window.scrollTo(0,0);">Find Professionals</a>
+        <a class="link" (click)="scrollService.scrollToElementByTag('hiw-wizard');">How it works</a>
+        <a class="link" (click)="phoneHelpService.showFull()">Phone help</a>
+        <a class="link" routerLink="/signup">Sign up</a>
+      </div>
+      <div class="links pro-links">
+        <a class="header">Pro</a>
+        <a class="link">Services</a>
+        <a class="link">How it works</a>
+        <a class="link" routerLink="/become-pro">Sign up</a>
+      </div>
+    </div>
+
+    <div class="contact-us-block" fxFlex="47" fxLayoutAlign="start end" fxLayout="column">
+      <div class="header" fxLayout="row" fxLayoutAlign="end end">Have some questions? Ask us!</div>
+      <div class="description" fxLayout="row" fxLayoutAlign="end end">Leave your name and phone number and one of our managers will call you within 24h</div>
+      <div class="inputs-wrapper" fxLayout="row" fxLayoutAlign="start center">
+        <input class="name" type="text" placeholder="Name">
+        <input class="phone" type="text" placeholder="Phone number">
+        <div class="submit-contact-us-button" fxLayout="row" fxLayoutAlign="center center">
+          <div class="submit-contact-us-button-text">Submit</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom-line" fxLayout="column" fxLayoutAlign="center center">
+    <div class="footer-bottom-line-container" fxLayout="row" fxLayoutAlign="center start">
+      <div class="footer-company-copyright">© 2018 Home Improve, Inc</div>
+      <div fxFlex></div>
+      <a class="footer-nav" href="/privacy-policy" target="_blank">Privacy Policy</a>
+      <a class="footer-nav" href="/terms-of-use" target="_blank">Terms of Use</a>
+    </div>
+  </div>
+
+</div>

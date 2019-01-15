@@ -1,0 +1,30 @@
+<div class="panel-header">
+  <h1>Questionaries</h1>
+  <div class="table-header-buttons">
+    <button type="button" pButton icon="fa fa-plus" label="Add" class="ui-button-success" routerLink="add" *ngIf="securityService.hasRole(Role.ADMIN)"></button>
+    <button type="button" pButton icon="pi pi-fw pi-refresh" label="&nbsp;&nbsp;Refresh" (click)="refresh()"></button>
+  </div>
+</div>
+
+<p-dataTable [value]="questionaries.content"
+             [lazy]="true" [loading]="processing"
+             (onLazyLoad)="loadLazy($event)"
+             sortField="id"
+             [sortOrder]="1"
+             selectionMode="single"
+             [responsive]="true" [contextMenu]="cm" [paginator]="true"
+             [rows]="rowsPerPage[0]" [totalRecords]="questionaries.totalElements" [rowsPerPageOptions]="rowsPerPage"
+             (onContextMenuSelect)="selectQuestionary($event)"
+              #dt>
+  <p-column field="id" header="ID" [sortable]="true" [filter]="true" [style]="{'width':'80px'}"></p-column>
+  <p-column field="serviceTypes" header="Service Types">
+    <ng-template let-col let-car="rowData" pTemplate="body">
+      <span *ngFor="let serviceType of car[col.field]">
+        {{serviceType.name}}
+      </span>
+    </ng-template>
+  </p-column>
+  <p-column field="name" header="Name" [filter]="true" filterPlaceholder="Search"  sortable="true"></p-column>
+  <p-column field="description" header="Description"></p-column>
+</p-dataTable>
+<p-contextMenu #cm [model]="contextMenuItems"></p-contextMenu>

@@ -1,0 +1,79 @@
+<div class="container">
+  <div class="row">
+
+    <div class="col-md-3 sm-none xs-none">
+      <div class="account-top-line"></div>
+      <account-nav></account-nav>
+    </div>
+
+    <div class="col-md-9 col-sm-12">
+
+      <div class="account-top-line">
+        <div class="account-nav-title">Quick reply</div>
+      </div>
+
+      <div [cvSpinner]="fetching" [cvSpinnerSize]="24">
+
+        <div class="quick-reply-card card" *ngIf="!fetching">
+
+          <form class="quick-reply-form"
+                name="quick-reply-form"
+                fxLayout="column"
+                #quickReplyForm="ngForm"
+                (ngSubmit)="quickReplyForm.valid && submitQuickReplayMessage(quickReplyForm)"
+                novalidate>
+
+            <!--<div class="title">Quick replay message</div>-->
+
+            <cv-input-field>
+              <cv-field-label>Message</cv-field-label>
+              <textarea cv-input placeholder="Text of message that will be sent to Customer after submitting a new project."
+                        #quickReplayMessage="ngModel"
+                        name="quickReplayMessage"
+                        type="text"
+                        trim
+                        [(ngModel)]="quickReply.text"
+                        required
+                        rows="4"
+                        minlength="20"
+                        maxlength="500">
+                     </textarea>
+              <cv-field-error
+                *ngIf="quickReplayMessage.dirty || quickReplayMessage.touched || quickReplyForm.submitted">
+                      <span *ngIf="quickReplayMessage.errors?.required">
+                        {{messages.errors.quickReplayMessage.required}}
+                      </span>
+                <span *ngIf="quickReplayMessage.errors?.minlength">
+                        {{messages.errors.quickReplayMessage.minlength}}
+                      </span>
+                <span *ngIf="quickReplayMessage.errors?.maxlength">
+                        {{messages.errors.quickReplayMessage.maxlength}}
+                      </span>
+              </cv-field-error>
+            </cv-input-field>
+
+            <cv-checkbox #enableAutoReply="ngModel" name="enable-auto-reply" [(ngModel)]="quickReply.enabled">
+              <div>Enable auto replay to the client after submitting new project</div>
+            </cv-checkbox>
+
+            <div class="buttons-wrapper">
+              <button type="button" cv-button-empty (click)="resetQuickReplayMessage()" [disabled]="quickReply.text == initialQuickReply.text">
+                Cancel
+              </button>
+              <button cv-button type="submit" [cvSpinner]="saveProcessing" [cvSpinnerSize]="16" [cvSpinnerBackground]="true">
+                Submit
+              </button>
+            </div>
+
+          </form>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<layout-footer></layout-footer>

@@ -1,0 +1,140 @@
+@import '../node_modules/@angular/material/_theming.scss';
+@include mat-core();
+
+$improver-primary-palette: (
+  50 : #e3f5fc,
+  100 : #b9e6f7,
+  200 : #8ad5f1,
+  300 : #5bc4eb,
+  400 : #37b8e7,
+  500 : #14abe3,
+  600 : #12a4e0,
+  700 : #0e9adc,
+  800 : #0b91d8,
+  900 : #0680d0,
+  A100 : #f9fcff,
+  A200 : #c6e6ff,
+  A400 : #93d0ff,
+  A700 : #7ac5ff,
+  contrast: (
+    50 : #000000,
+    100 : #000000,
+    200 : #000000,
+    300 : #000000,
+    400 : #000000,
+    500 : #000000,
+    600 : #ffffff,
+    700 : #ffffff,
+    800 : #ffffff,
+    900 : #ffffff,
+    A100 : #000000,
+    A200 : #000000,
+    A400 : #000000,
+    A700 : #000000,
+  )
+);
+
+$improver-accent-palette: (
+  50: #264c73,
+  100: #2d5986,
+  200: #336699,
+  300: #3973ac,
+  400: #407fbf,
+  500: #538cc6,
+  600: #79a6d2,
+  700: #8cb2d9,
+  800: #9fbfdf,
+  900: #b3cce6,
+  A100: #79a6d2,
+  A200: #6699CC,
+  A400: #538cc6,
+  A700: #c6d9ec,
+  contrast: (
+    50: #264c73,
+    100: #2d5986,
+    200: #336699,
+    300: #3973ac,
+    400: #407fbf,
+    500: #538cc6,
+    600: #79a6d2,
+    700: #8cb2d9,
+    800: #9fbfdf,
+    900: #b3cce6,
+    A100: #79a6d2,
+    A200: #6699CC,
+    A400: #538cc6,
+    A700: #c6d9ec
+  )
+);
+
+$improver-warn-palette: (
+  50: #ff7b82,
+  100: #ff626a,
+  200: #ff4852,
+  300: #ff2f3a,
+  400: #ff1522,
+  500: #ffffff,
+  600: #e1000c,
+  700: #c8000a,
+  800: #ae0009,
+  900: #950008,
+  A100: #ff959a,
+  A200: #ffaeb3,
+  A400: #ffc8cb,
+  A700: #7b0006,
+  contrast: (
+    50: #ff7b82,
+    100: #ff626a,
+    200: #ff4852,
+    300: #ff2f3a,
+    400: #ff1522,
+    500: #fb000d,
+    600: #e1000c,
+    700: #c8000a,
+    800: #ae0009,
+    900: #950008,
+    A100: #ff959a,
+    A200: #ffaeb3,
+    A400: #ffc8cb,
+    A700: #7b0006
+  )
+);
+
+
+$primary: mat-palette($improver-primary-palette);
+//$accent:  mat-palette($improver-accent-palette);
+//$warn:    mat-palette($improver-warn-palette);
+
+//$primary: mat-palette($mat-cyan);
+$accent:  mat-palette($mat-grey);
+$warn:    mat-palette($mat-red);
+
+$improver-main-theme: mat-light-theme($primary, $accent, $warn);
+
+@include angular-material-theme($improver-main-theme);
+
+.alternate-theme {
+  $alternate-primary: mat-palette($mat-light-blue);
+  $alternate-accent:  mat-palette($mat-yellow, 400);
+
+  $alternate-theme: mat-light-theme($alternate-primary, $alternate-accent);
+
+  @include angular-material-theme($alternate-theme);
+}
+
+$custom-typography: mat-typography-config(
+  $font-family: '"Lato", sans-serif',
+  $headline: mat-typography-level(32px, 48px, 700),
+  $body-1: mat-typography-level(16px, 24px, 500)
+);
+
+// Override typography CSS classes (e.g., mat-h1, mat-display-1, mat-typography, etc.).
+@include mat-base-typography($custom-typography);
+
+// Override typography for a specific Angular Material components.
+@include mat-checkbox-typography($custom-typography);
+
+// Override typography for all Angular Material, including mat-base-typography and all components.
+@include angular-material-typography($custom-typography);
+
+

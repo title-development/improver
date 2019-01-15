@@ -1,0 +1,48 @@
+@import "../../scss/variables";
+
+:host {
+  color: $primary-500;
+  border: solid 1px $primary-500;
+  background-color: $white;
+  &:hover {
+    box-shadow: elevation(3);
+    color: $primary-400;
+    border: solid 1px $primary-400;
+  }
+  &:active {
+    box-shadow: none;
+    color: $primary-600;
+    border: solid 1px $primary-600;
+  }
+  &.-dark {
+    color: $black-400;
+    border-color: $black-400;
+    &:active {
+      color: $black-500;
+      border-color: $black-500;
+    }
+  }
+
+  &.-danger {
+    color: $red-500;
+    border-color: $red-500;
+    &:hover {
+      color: $red-400;
+      border-color: $red-400;
+    }
+  }
+
+  &:disabled, &[disabled] {
+    color: $primary-200;
+    border: solid 1px $primary-200;
+    box-shadow: none;
+    cursor: not-allowed;
+    ::ng-deep cv-icon {
+      color: #ccc !important;
+    }
+    &:hover, &:focus, &:active {
+      color: $primary-200;
+      border: solid 1px $primary-200 !important;
+    }
+  }
+}

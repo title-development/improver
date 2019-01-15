@@ -1,0 +1,64 @@
+:host {
+  display: none;
+  background-color: #fff;
+  text-align: center;
+  font-size: 0;
+  &:after {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    width: 0;
+    vertical-align: middle;
+  }
+  &.-open {
+    display: block;
+  }
+}
+
+h3 {
+  font-size: 18px;
+}
+
+.holder {
+  display: inline-block;
+  vertical-align: middle;
+  text-align: left;
+}
+
+label, input, textarea {
+  font-size: 14px;
+}
+
+input[type=text], input[type=number], textarea {
+  width: 100%;
+  display: block;
+}
+
+label {
+  display: inline-block;
+  margin-bottom: 5px;
+}
+
+.image-selector {
+  width: 360px;
+  flex-direction: row;
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px -10px;
+  .image-wrapper {
+    margin: 0px 10px 10px;
+    position: relative;
+    img {
+      width: 100px;
+      height: 100px;
+    }
+    .image-label {
+      color: black;
+      left: 0px;
+      top: 0px;
+      font-size: 13px;
+      text-align: center;
+      text-shadow: 0px 0px 3px #ffffff;
+    }
+  }
+}

@@ -1,0 +1,77 @@
+.card {
+  background-color: #fff;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.15);
+  margin-bottom: 8px;
+}
+
+h1 {
+  font-size: 24px;
+  margin: 0;
+  font-weight: 500;
+}
+
+admin-panel {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.spacer {
+  flex-grow: 1;
+}
+
+@keyframes ui-progress-spinner-color {
+  100%,
+  0% {
+    stroke: #e67700;
+  }
+  40% {
+    stroke: #e67700;
+  }
+  66% {
+    stroke: #e67700;
+  }
+  80%,
+  90% {
+    stroke: #e67700;
+  }
+}
+
+.ui-datatable-thead>tr>th {
+  overflow: visible !important;
+}
+
+.ui-datatable-scrollable-header, .ui-datatable-scrollable-footer {
+  overflow: visible !important;
+}
+
+.user-logo {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  margin-bottom: 16px;
+  .panel-title {
+    font-weight: 600;
+    font-size: 24px;
+  }
+}
+
+.table-header-buttons {
+  button {
+    margin-left: 16px;
+  }
+}

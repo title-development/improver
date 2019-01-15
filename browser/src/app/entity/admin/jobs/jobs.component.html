@@ -1,0 +1,29 @@
+<h1>{{title}}</h1>
+
+<div class="content">
+
+  <p-panel>
+    <p-header>
+      <div class="ui-helper-clearfix">
+        <span class="ui-panel-title" style="font-size:16px;display:inline-block;margin-top:2px">Subscription Update Job</span>
+        <p-button label="Run" icon="fas fa-play" (onClick)="runUpdateSubscriptionJob()" *ngIf="!subscriptionUpdateJobProcessing"></p-button>
+        <p-progressSpinner [style]="{width: '20px', height: '20px'}" strokeWidth="8" fill="#EEEEEE" animationDuration="1s" *ngIf="subscriptionUpdateJobProcessing"></p-progressSpinner>
+      </div>
+    </p-header>
+    Updates subscription payment plans for Contractors
+  </p-panel>
+
+  <p-panel>
+    <p-header>
+      <div class="ui-helper-clearfix">
+        <span class="ui-panel-title" style="font-size:16px;display:inline-block;margin-top:2px">Review Publishing Job</span>
+        <p-button label="Run" icon="fas fa-play" (onClick)="runPublishReviewJob()" *ngIf="!reviewPublishingJobProcessing"></p-button>
+        <p-progressSpinner [style]="{width: '20px', height: '20px'}" strokeWidth="8" fill="#EEEEEE" animationDuration="1s" *ngIf="reviewPublishingJobProcessing"></p-progressSpinner>
+      </div>
+    </p-header>
+    Publishes unpublished review that have to be published already
+  </p-panel>
+
+</div>
+
+

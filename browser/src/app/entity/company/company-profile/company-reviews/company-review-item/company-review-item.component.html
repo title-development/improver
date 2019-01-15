@@ -1,0 +1,28 @@
+<div class="header">
+  <div class="icon" [ngStyle]="review.customer.iconUrl && review.customer.iconUrl != '' && {'background-image':'url(' + review.customer.iconUrl + ')'} ||
+                                          {'background-image':'url(https://via.placeholder.com/48x48)'}">
+  </div>
+  <div class="meta-info">
+    <div class="author">{{review.customer.name}}</div>
+    <div class="rating">
+      <rating-component [rating]="review.score" [readOnly]="true" [starSize]="14"
+                        [spaceSize]="2"></rating-component>
+      {{review.score}} / 5
+    </div>
+    <div class="date" *ngIf="review.published">{{review.created | date:'longDate'}}</div>
+    <div class="date" *ngIf="!review.published" [title]="'Will be published on ' + (review.publishDate | date:'longDate')">Unpublished</div>
+
+  </div>
+</div>
+<div class="content">
+  <p class="textarea-formatting">{{review.description | truncate:truncateRatio:'...'}}
+    <span class="show-more-button" (click)="truncateRatio = 10000"
+          *ngIf="review.description.length > 200 && truncateRatio == 200">Show more <i class="imp-icon-down-open"></i></span>
+    <span class="show-more-button" (click)="truncateRatio = 200"
+          *ngIf="truncateRatio == 10000">Show less <i class="imp-icon-up-open"></i></span>
+  </p>
+
+</div>
+<div class="footer">
+  <button *ngIf="!review.published && securityService.hasRole(Role.CONTRACTOR) && !review.revisionRequested" cv-button size="small" class="request-revision" (click)="openRequestReviseDialog()">Request revision</button>
+</div>

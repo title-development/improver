@@ -1,0 +1,121 @@
+<div class="panel-header">
+  <div class="panel-title">All Users</div>
+  <div class="table-header-buttons">
+  <button type="button" pButton icon="fa fa-plus" label="Add" class="ui-button-success" routerLink="new"></button>
+  <p-button (onClick)="refresh(dt)" icon="pi pi-fw pi-refresh" label="&nbsp;&nbsp;Refresh"></p-button>
+  </div>
+</div>
+
+<p-dataTable [value]="users.content" [lazy]="true" [loading]="usersProcessing" #dt
+             selectionMode="single" sortMode="single" scrollable="true"
+             [responsive]="true" [contextMenu]="cm" [paginator]="true"
+             [rows]="rowsPerPage[0]" [totalRecords]="users.totalElements" [rowsPerPageOptions]="rowsPerPage"
+             [sortField]="'email'" [sortOrder]="1"
+             [filters]="filters"
+             (onContextMenuSelect)="selectUser($event)"
+             (onLazyLoad)="loadUsersLazy($event)">
+
+  <p-header>
+    <div style="text-align:left">
+      <p-multiSelect [options]="tableColumns" [panelStyle]="{minWidth:'270px'}" [(ngModel)]="selectedTableCols" ></p-multiSelect>
+    </div>
+  </p-header>
+
+  <p-column field="iconUrl" header="Icon url" *ngIf="selectedTableCols.includes('iconUrl')">
+    <ng-template pTemplate="body" let-row="rowData">
+      <div class="user-logo" [ngStyle]="row.iconUrl && row.iconUrl != '' && {'background-image':'url(' + row.iconUrl + ')'} || {'background-image':'url(/assets/img/customer-logo-placeholder.png)'}"></div>
+    </ng-template>
+  </p-column>
+
+  <p-column field="id" header="ID" [sortable]="true" *ngIf="selectedTableCols.includes('id')" [filter]="true">
+    <ng-template pTemplate="filter" let-col>
+      <input pInputText type="text" pKeyFilter="pint" [ngModel]="filters?.id?.value" [style]="{'width':'100%'}" (input)="dt.filter($event.target.value,col.field,col.filterMatchMode)">
+    </ng-template>
+  </p-column>
+  <p-column field="name" header="Name" [sortable]="true" [filter]="true" *ngIf="selectedTableCols.includes('name')"></p-column>
+  <p-column field="email" header="Email" [sortable]="true" [filter]="true" *ngIf="selectedTableCols.includes('email')"></p-column>
+  <p-column field="newEmail" header="New email" [sortable]="true" *ngIf="selectedTableCols.includes('newEmail')"></p-column>
+  <p-column field="firstName" header="First name" [sortable]="true" *ngIf="selectedTableCols.includes('firstName')"></p-column>
+  <p-column field="lastName" header="Last name" [sortable]="true" *ngIf="selectedTableCols.includes('lastName')"></p-column>
+  <p-column field="displayName" header="Display name" [sortable]="true" [filter]="true" *ngIf="selectedTableCols.includes('displayName')"></p-column>
+  <p-column field="role" header="Role" [filter]="true" *ngIf="selectedTableCols.includes('role')">
+    <ng-template pTemplate="filter" let-col>
+      <p-dropdown [options]="roles" [style]="{'width':'100%'}" (onChange)="dt.filter($event.value,col.field,col.filterMatchMode)" styleClass="ui-column-filter"></p-dropdown>
+    </ng-template>
+  </p-column>
+  <p-column field="internalPhone" header="Internal phone" [sortable]="true" *ngIf="selectedTableCols.includes('internalPhone')"></p-column>
+  <p-column field="created" header="Created" [sortable]="true" *ngIf="selectedTableCols.includes('created')"></p-column>
+  <p-column field="updated" header="Updated" [sortable]="true" *ngIf="selectedTableCols.includes('updated')"></p-column>
+  <p-column field="lastLogin" header="Last Login" [sortable]="true" *ngIf="selectedTableCols.includes('lastLogin')"></p-column>
+  <p-column field="validationKey" header="Validation key" [sortable]="true" *ngIf="selectedTableCols.includes('validationKey')"></p-column>
+  <p-column field="deleted" header="Deleted" sortField="isDeleted" [sortable]="true" *ngIf="selectedTableCols.includes('deleted')">
+    <ng-template let-row="rowData" pTemplate="body">
+      <i class="pi pi-check" *ngIf="row.deleted"></i>
+      <i class="pi pi-ban" *ngIf="!row.deleted"></i>
+    </ng-template>
+  </p-column>
+  <p-column field="blocked" header="Blocked" sortField="isBlocked" [sortable]="true" *ngIf="selectedTableCols.includes('blocked')">
+    <ng-template let-row="rowData" pTemplate="body">
+      <i class="pi pi-check" *ngIf="row.blocked"></i>
+      <i class="pi pi-ban" *ngIf="!row.blocked"></i>
+    </ng-template>
+  </p-column>
+  <p-column field="activated" header="Activated" sortField="isActivated" [sortable]="true" *ngIf="selectedTableCols.includes('activated')">
+    <ng-template let-row="rowData" pTemplate="body">
+      <i class="pi pi-check" *ngIf="row.activated"></i>
+      <i class="pi pi-ban" *ngIf="!row.activated"></i>
+    </ng-template>
+  </p-column>
+
+</p-dataTable>
+
+<p-dialog header="Edit user" [(visible)]="displayEditDialog" [responsive]="true" showEffect="fade" [width]="500"
+          [modal]="true">
+  <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="editedUser">
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-4"><label for="role">Role</label></div>
+      <div class="ui-grid-col-8">
+        <p-dropdown id="role" disabled [options]="roles" placeholder="choose role"
+                    [(ngModel)]="editedUser.role"></p-dropdown>
+      </div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-4"><label for="email">Email</label></div>
+      <div class="ui-grid-col-8"><input pInputText id="email" [(ngModel)]="editedUser.email"/></div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-4"><label for="firstName">FirstName</label></div>
+      <div class="ui-grid-col-8"><input pInputText id="firstName" [(ngModel)]="editedUser.firstName"/></div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-4"><label for="lastName">LastName</label></div>
+      <div class="ui-grid-col-8"><input pInputText id="lastName" [(ngModel)]="editedUser.lastName"/></div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-4"><label for="displayName">displayName</label></div>
+      <div class="ui-grid-col-8"><input pInputText id="displayName" [(ngModel)]="editedUser.displayName"/></div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-4"><label for="internalPhone">InternalPhone</label></div>
+      <div class="ui-grid-col-8"><input pInputText id="internalPhone" [(ngModel)]="editedUser.internalPhone"/></div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-4"><label for="blocked">Blocked</label></div>
+      <div class="ui-grid-col-8">
+        <p-inputSwitch id="blocked" [disabled]="true" onLabel="Yes" offLabel="No" [(ngModel)]="editedUser.blocked"></p-inputSwitch>
+      </div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-4"><label for="activated">Activated</label></div>
+      <div class="ui-grid-col-8">
+        <p-inputSwitch id="activated" [disabled]="true" onLabel="Yes" offLabel="No" [(ngModel)]="editedUser.activated"></p-inputSwitch>
+      </div>
+    </div>
+  </div>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button type="button" pButton icon="pi pi-check" (click)="saveUser()" label="Save"></button>
+    </div>
+  </p-footer>
+</p-dialog>
+<p-contextMenu #cm [model]="contextMenuItems"></p-contextMenu>

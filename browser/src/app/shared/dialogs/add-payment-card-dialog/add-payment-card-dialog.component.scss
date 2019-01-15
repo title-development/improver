@@ -1,0 +1,128 @@
+@import "../../../../improver-mixins.scss";
+
+.dialog-content-wrapper {
+  @include response-to(sm) {
+    background: #fff;
+    display: flex;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    overflow-y: auto;
+  }
+}
+
+.dialog-content-container {
+  @include response-to(sm) {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: 0;
+  }
+
+  .header {
+    font-size: 18px;
+    font-weight: 600;
+
+    @include response-to(sm){
+      flex: 0;
+    }
+
+    .header-content {
+      padding: 24px 24px 28px;
+
+      @include response-to(xs){
+        padding: 24px 12px 28px;
+      }
+    }
+
+  }
+
+  .content {
+    margin: 0 24px 24px;
+
+    @include response-to(sm){
+      flex: 1;
+    }
+
+    @include response-to(xs){
+      margin: 0 12px 24px;
+    }
+
+    .payment-card-form {
+      display: flex;
+      flex-direction: column;
+      max-width: 100%;
+
+      @include response-to(sm){
+        justify-content: space-between;
+        height: 100%;
+      }
+
+      .card-number-input {
+        letter-spacing: 1px;
+        word-spacing: 4px;
+      }
+
+      .secret-input {
+        letter-spacing: 4px;
+        padding-left: 2px;
+      }
+
+    }
+
+    .buttons-wrapper {
+      margin-top: 24px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+  }
+
+}
+
+::ng-deep .mat-dialog-container {
+  padding: 0px;
+}
+
+.close-modal {
+  position: relative;
+  right: 32px;
+  top: 32px;
+}
+
+form.payment-card-form {
+
+}
+
+.StripeElement {
+  padding: 8px 12px;
+  border-radius: 2px;
+  background-color: $white;
+  border: solid 1px $black-300;
+}
+
+.StripeElement {
+}
+
+.StripeElement--focus {
+}
+
+.StripeElement--invalid {
+  border-color: $red;
+}
+
+.StripeElement--webkit-autofill {
+  background-color: #fefde5 !important;
+}
+
+.warning {
+  text-align: center;
+  p {
+    margin: 0;
+    &:first-child {
+      margin-bottom: 8px;
+    }
+  }
+}

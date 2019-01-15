@@ -1,0 +1,21 @@
+<div>
+  <div class="sidebar" [ngClass]="{'-opened': sidebar}">
+    <ng-container *ngIf="sidebar">
+      Improve Admin Panel
+    </ng-container>
+    <ng-container *ngIf="!sidebar">
+      IAP
+    </ng-container>
+  </div>
+  <button pButton class="btn-toggle" type="button" icon="pi pi-bars"
+          (click)="sidebar = !sidebar;toggleSidebar.emit()"></button>
+</div>
+
+<p-tieredMenu #menu [model]="userActions" [popup]="true"></p-tieredMenu>
+<div class="header-navigation">
+  <i class="pi pi-bell-o"></i>
+  <div class="user-dropdown" (click)="menu.toggle($event)">
+    <div class="logo" [ngStyle]="securityService.getLoginModel()?.iconUrl ? {'background-image':'url(' + securityService.getLoginModel().iconUrl + ')'} : {'background-image':'url(/assets/img/customer-logo-placeholder.png)'}"></div>
+    <div class="name">{{securityService.getLoginModel()?.name}}</div>
+  </div>
+</div>

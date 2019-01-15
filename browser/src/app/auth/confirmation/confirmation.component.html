@@ -1,0 +1,119 @@
+<div class="confirmation-page"
+     [cvSpinner]="confirmationProcessing"
+     [cvSpinnerSize]="30"
+     [cvSpinnerBackground]="true"
+     cvSpinnerBackgroundColor="#fafafa">
+
+  <ng-container *ngIf="step == 1" >
+
+    <form class="confirmation-form"
+          name="confirmation-form"
+          #confirmationForm="ngForm"
+          (ngSubmit)="confirmationForm.valid && onSubmit(confirmationForm)"
+          novalidate>
+
+      <div class="title">Enter password for your account please</div>
+
+      <cv-input-field>
+        <input cv-input type="password"
+               placeholder="Password (at least 8 symbols)"
+               #password="ngModel"
+               name="password"
+               [(ngModel)]="activationCustomerModel.password"
+               validateEqual="confirmPassword"
+               validationEqualReverse="true"
+               required
+               minlength="8"
+               maxlength="32"
+               pattern="{{constants.patterns.password}}">
+        <cv-field-error *ngIf="password.dirty || password.touched || confirmationForm.submitted">
+               <span *ngIf="password.errors?.required">
+               {{messages.errors.password.required}}
+              </span>
+          <span *ngIf="password.errors?.minlength">
+                {{messages.errors.password.minlength}}
+              </span>
+          <span *ngIf="password.errors?.pattern && !password.errors?.minlength">
+                {{messages.errors.password.pattern}}
+              </span>
+        </cv-field-error>
+      </cv-input-field>
+
+      <cv-input-field>
+        <input cv-input placeholder="Confirm password"
+               #confirmPassword="ngModel"
+               name="confirmPassword"
+               type="password"
+               [(ngModel)]="password.confirm"
+               validateEqual="password"
+               validationEqualReverse="false"
+               required>
+        <cv-field-error *ngIf="confirmPassword.dirty || confirmPassword.touched || confirmationForm.submitted">
+               <span *ngIf="confirmPassword.errors?.required">
+                {{messages.errors.passwordConfirm.required}}
+              </span>
+          <span
+            *ngIf="confirmPassword.errors?.validateEqual && !confirmPassword.errors?.required">
+                {{messages.errors.passwordConfirm.validateEqual}}
+              </span>
+        </cv-field-error>
+      </cv-input-field>
+
+      <button cv-button>
+        Submit
+      </button>
+
+    </form>
+
+  </ng-container>
+
+  <ng-container *ngIf="step == 2">
+
+    <div class="confirmation-result-wrapper"
+         [cvSpinner]="confirmationProcessing"
+         [cvSpinnerSize]="30"
+         [cvSpinnerBackground]="true"
+         cvSpinnerBackgroundColor="#fafafa">
+
+      <div class="confirmation-success-card card" *ngIf="activationSuccess == true">
+
+        <img src="assets/img/round-icons/confirmation-envelope.png" alt="SUCCESS" class="confirmation-success-image">
+        <div class="confirmation-success-title">Confirmation successful!</div>
+        <div class="confirmation-success-message">Thank you for choosing Home Improve!</div>
+
+        <div class="buttons-wrapper" *ngIf="securityService.hasRole(Role.CUSTOMER)">
+          <button cv-button-empty routerLink="/">Request service</button>
+          <button cv-button-empty routerLink="/">Learn how it works</button>
+        </div>
+
+        <div class="buttons-wrapper" *ngIf="securityService.hasRole(Role.CONTRACTOR)">
+          <button cv-button-empty routerLink="/pro/dashboard">Go to Dashboard</button>
+          <!--<button cv-button-empty routerLink="/">Learn how it works</button>-->
+        </div>
+
+      </div>
+
+      <div class="confirmation-success-card card" *ngIf="emailConfirmationSuccess == true">
+        <img src="assets/img/round-icons/confirmation-envelope.png" alt="SUCCESS" class="confirmation-success-image">
+        <div class="confirmation-success-title">Email confirmed</div>
+        <div class="confirmation-success-message"></div>
+        <button class="home-button" cv-button-empty routerLink="/" *ngIf="securityService.hasRole(Role.CUSTOMER)">Back to Home</button>
+        <button class="home-button" cv-button-empty routerLink="/pro/dashboard" *ngIf="securityService.hasRole(Role.CONTRACTOR)">Go to Dashboard</button>
+      </div>
+
+      <div class="confirmation-error-card card" *ngIf="(activationSuccess == false) && (emailConfirmationSuccess == false)">
+        <img src="assets/img/round-icons/email-error.svg" alt="ERROR" class="confirmation-error-image">
+        <div class="confirmation-error-title">Error!</div>
+        <div class="confirmation-error-message">Conformation link is invalid</div>
+        <button class="home-button" cv-button-empty routerLink="/">Back to Home</button>
+      </div>
+
+    </div>
+
+  </ng-container>
+
+</div>
+
+
+
+

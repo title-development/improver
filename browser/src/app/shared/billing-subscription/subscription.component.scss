@@ -1,0 +1,217 @@
+@import "../../../improver-mixins";
+
+:host {
+  background-color: $white;
+  border-radius: 2px;
+  box-shadow: elevation();
+}
+
+.subscription-wrapper {
+
+  .header {
+    color: $white;
+    padding: 16px 21px;
+    background-image: linear-gradient(to bottom, $primary-400, $primary-500);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    @include response(xs){
+      padding: 16px 9px;
+    }
+
+    h3 {
+      font-size: 18px;
+      margin: 0;
+      font-weight: 400;
+    }
+
+    p {
+      font-size: 12px;
+      margin: 0;
+    }
+
+    span {
+      display: block;
+      min-width: 150px;
+      text-align: right;
+      font-size: 16px;
+      color: $white;
+    }
+
+  }
+
+  .content {
+    padding: 24px;
+
+    @include response(xs){
+      padding: 16px 9px;
+    }
+
+    p {
+      margin: 0;
+      font-size: 12px;
+      color: $black-secondary;
+      margin-bottom: 16px;
+    }
+
+    .input-wrapper {
+      max-width: 140px;
+    }
+
+    .buttons-wrapper {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 24px;
+      .right-button {
+        margin-left: auto;
+      }
+    }
+
+    ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0px 0px 0px 24px;
+      @include response(xs){
+        padding: 0px;
+      }
+    }
+    li {
+      font-size: 12px;
+      color: $black-secondary;
+      margin-bottom: 12px;
+
+      .icon-wrapper {
+        border: 1px solid $primary-400;
+        border-radius: 50%;
+        color: $primary-400;
+        height: 13px;
+        width: 13px;
+        font-size: 10px;
+        display: inline-block;
+        padding-top: 1px;
+        margin-right: 2px;
+        i {
+          &:before {
+            vertical-align: top;
+            padding-top: 0px;
+            font-size: 8px;
+            margin-left: 2px;
+          }
+        }
+      }
+    }
+
+    .next-billing-date {
+      padding: 10px 9px 9px 9px;
+      background-color: $black-200;
+      border-radius: 2px;
+      font-size: 14px;
+      font-weight: 600;
+      color: $black-primary;
+    }
+
+    .subscription-details {
+      padding: 24px;
+      background-color: $black-200;
+      border-radius: 2px;
+      font-size: 14px;
+      font-weight: 600;
+      color: $black-primary;
+      .subscription-details-block {
+        flex-direction: column;
+        display: flex;
+        height: 100%;
+        align-items: stretch;
+        align-content: stretch;
+        justify-content: space-between;
+        .title {
+          font-size: 12px;
+          color: $black-500;
+          margin-bottom: 8px;
+          margin-top: 16px;
+        }
+      }
+    }
+
+  }
+
+  .next-budget-holder {
+
+    & > .row > div {
+      margin-bottom: 16px;
+    }
+
+    @include response-to(sm){
+      margin-bottom: 16px;
+    }
+
+    .field {
+      display: flex;
+      align-items: flex-start;
+      flex-direction: column;
+    }
+    cv-input-field {
+      cv-icon {
+        width: 32px;
+        font-size: 14px;
+        line-height: 16px;
+        color: $black-primary;
+      }
+    }
+    .monthly-budget {
+      max-width: 110px;
+      padding: 8px 16px 7px 30px;
+    }
+
+    .imp-icon-pencil {
+      margin: 0;
+      margin-bottom: 12px;
+      margin-left: 8px;
+      cursor: pointer;
+    }
+  }
+
+  cv-field-error {
+    ::ng-deep {
+      span {
+        display: block;
+      }
+    }
+  }
+
+  .footer {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    .spacer {
+      flex-grow: 1;
+    }
+  }
+
+  .hint-line {
+    background-color: $black-100;
+    margin-left: -24px;
+    margin-right: -24px;
+    padding: 16px 24px;
+    font-size: 14px;
+    margin-top: 24px;
+
+    @include response-to(xs) {
+      margin-left: -8px;
+      margin-right: -8px;
+      padding: 16px 16px;
+    }
+
+    .highlight {
+      font-weight: 600;
+    }
+
+  }
+
+}
+
+
+

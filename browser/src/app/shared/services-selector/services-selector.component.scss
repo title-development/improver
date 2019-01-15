@@ -1,0 +1,202 @@
+@import "../../../improver-mixins.scss";
+
+  .services-selector-wrapper {
+
+    form {
+      position: relative;
+
+      ::ng-deep cv-select {
+        margin-top: 8px;
+        margin-bottom: 16px;
+
+        input {
+          padding-right: 96px;
+
+          @include response-to(xs) {
+            padding-right: 66px;
+          }
+
+        }
+
+      }
+
+      .add-service-button {
+        position: absolute;
+        cursor: pointer;
+        top: 0px;
+        right: 0px;
+        font-size: 18px;
+        border: 0px;
+        color: #ffffff;
+        background-color: $primary-500;
+        padding: 9px 24px;
+        height: 40px;
+        border-bottom-right-radius: 2px;
+        border-top-right-radius: 2px;
+        margin: 0;
+
+        @include response-to(xs) {
+          font-size: 14px;
+          padding: 9px 14px;
+          height: 43px;
+        }
+
+      }
+
+    }
+
+    .selected-trades-list {
+
+      .trades-title {
+        margin-bottom: 16px;
+        font-size: 20px;
+        color: $black-primary;
+        font-weight: 600;
+        margin-left: 4px;
+        margin-top: 24px;
+      }
+
+      .empty-service-list-message {
+        margin-left: 16px;
+        color: $black-500;
+      }
+
+      cv-collapse {
+
+        .primary-trade{
+          color: $black-500;
+          line-height: 0.8;
+          letter-spacing: 0.2px;
+          font-size: 12px;
+          background-color: $black-200;
+          padding: 8px;
+
+          span:nth-child(2) {
+            @include response-to(xs) {
+              display: none;
+            }
+          }
+
+        }
+
+        ::ng-deep .content {
+          @include response-to(xs) {
+            font-size: 13px;
+          }
+
+          cv-checkbox-group {
+
+            ::ng-deep ul {
+
+              li {
+                display: inline-block;
+                cursor: pointer;
+                .service-type {
+                  display: flex;
+                  border-radius: 2px;
+                  background-color: #efefef;
+                  padding: 8px;
+                  margin-bottom: 8px;
+                  margin-right: 8px;
+
+                  &.-highlight {
+                    position: relative;
+                    z-index: 2;
+                    animation: pulse 2s ease 0s 2 normal;
+                  }
+
+                  .custom-check-box {
+                    display: flex;
+                    width: 16px;
+                    height: 16px;
+                    border-radius: 2px;
+                    background-color: #ffffff;
+                    margin-right: 8px;
+                  }
+
+                  .service-type-name {
+                    display: flex;
+                    font-size: 14px;
+                    font-weight: 400;
+                  }
+
+                }
+
+                &.-selected {
+                  .service-type {
+                    background-color: $green-200;
+                    .custom-check-box {
+                      &:after {
+                        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAQAAAC1QeVaAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QAAKqNIzIAAAAJcEhZcwAADdcAAA3XAUIom3gAAAAHdElNRQfiAg0IJh4oMHRrAAAA10lEQVQY043Qv07CYBiF8edtv9BBAx1IUMPANTBzAQRk4QJ0xBHi0CbYxaU0DlgTwPDnDrgNdxcugd3FlJqG14WYQMBwxvNbTg78Ezle+1DUSzlBZe3hWieoT5uVOSQPvaFPnaHMzD4IXOkTdYbWXBPjXZCRRoBPhl0ioMGrPdXNAIuQruR9QDAlCWgS5yZsQsAi4UEf1fXYXmugt7w5oyytAmAkVLhny5IOTWJnlPt53m0w+kUE3NGiQGyPv/8I7A9qCZ84VHiXhaYvh/d54FJkTRJxdn4B5CZA9v8YhGQAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTgtMDItMTNUMDg6Mzg6MzAtMDU6MDCm3uHbAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDE4LTAyLTEzVDA4OjM4OjMwLTA1OjAw14NZZwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAAASUVORK5CYII=');
+                        content: '';
+                        background-repeat: no-repeat;
+                        background-position: center center;
+                        width: 16px;
+                        height: 16px;
+                        transition: all .3s ease;
+                      }
+                    }
+                  }
+                }
+
+              }
+
+            }
+
+          }
+
+          .hint {
+            color: $black-400;
+            margin-bottom: 12px;
+          }
+
+        }
+
+      }
+
+    }
+
+  }
+
+    .buttons-block {
+      display: flex;
+      flex-direction: row;
+      margin-top: 20px;
+
+      .save-button {
+        margin-left: auto;
+      }
+
+    }
+
+
+::ng-deep .autocomplete-block-title {
+  font-weight: 200;
+  background-color:#bdbdbd;
+  color: $white;
+  padding-left: 16px;
+  line-height: 36px;
+  height: 36px;
+}
+
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(#739b82, 0);
+  }
+  40% {
+    box-shadow: 0 0 0 0 rgba(#739b82, 0);
+  }
+  55% {
+    box-shadow: 0 0 12px 3px rgba(#739b82, 1);
+  }
+  70% {
+    box-shadow: 0 0 0 0 rgba(#739b82, 0);
+  }
+  85% {
+    box-shadow: 0 0 12px 3px rgba(#739b82, 1);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(#739b82, 0);
+  }
+}

@@ -1,0 +1,96 @@
+@import "../../../../../improver-mixins.scss";
+
+:host {
+  display: block;
+  min-height: 251px;
+  position: relative;
+  @include response(sm) {
+    min-height: 258px;
+  }
+}
+
+:host(.space) {
+  background-color: #ffedd8;
+}
+.chart-holder {
+  height: 130px;
+  width: 122%;
+  position: relative;
+  left: -11%;
+}
+.chart-wrapper {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding-top: 15px;
+  padding-bottom: 5px;
+  span {
+    display: block;
+    text-align: right;
+    padding-right: 16px;
+    font-size: 12px;
+    color: $black-500;
+  }
+}
+
+.hidden-holder {
+  overflow: hidden;
+}
+.tooltip-holder {
+  position: relative;
+}
+
+.labels {
+  display: flex;
+  padding: 16px 16px 0 16px;
+  align-items: flex-end;
+  justify-content: space-between;
+  .label {
+    color: #757575;
+    transition: color .3s ease, transform .3s ease;
+    font-size: 16px;
+    &:last-child {
+      font-size: 12px;
+      color: $black-500;
+    }
+  }
+}
+
+.money-spent-count {
+  margin-top: 14px;
+  padding: 0 16px;
+  span {
+    color: $black-primary;
+    font-weight: 600;
+    font-size: 30px;
+  }
+  i {
+    font-size: 14px;
+    font-weight: normal;
+    font-style: normal;
+  }
+  .deals {
+    font-size: 12px;
+    line-height: 16px;
+    color: $black-secondary;
+  }
+}
+
+.tooltip {
+  opacity: 1;
+  position: absolute;
+  transform: translate(0%, 0);
+  background-color: #fff;
+  font-size: 12px;
+  padding: 8px;
+  border: 1px solid #000;
+  border-radius: 6px;
+  z-index: 10;
+  pointer-events: none;
+  box-shadow: elevation();
+  transition: left .2s ease, top .2s ease, opacity .2s ease;
+  @include response(xs) {
+    transform: translate(-50%, 0);
+  }
+}

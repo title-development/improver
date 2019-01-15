@@ -1,0 +1,171 @@
+@import "../../../../../improver-mixins.scss";
+
+:host {
+  padding: 0;
+  display: block;
+
+  @include response(sm) {
+    height: 100%;
+  }
+}
+
+.holder {
+  position: relative;
+  min-height: 200px;
+}
+
+h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: $black-primary;
+  margin: 0;
+  padding: 11px 16px;
+  background-color: $black-150;
+  i {
+    font-weight: 400;
+    font-style: normal;
+    color: $primary-600;
+  }
+}
+
+h4 {
+  font-size: 12px;
+  font-weight: 400;
+  margin: 0;
+  color: $black-primary;
+  min-height: 28px;
+  @include response(sm, md) {
+    min-height: auto;
+    width: 150px;
+    padding-right: 15px;
+  }
+}
+
+.meta {
+  @include response(sm, md) {
+    display: flex;
+    align-items: center;
+  }
+  span {
+    font-size: 12px;
+    color: $black-secondary;
+    white-space: nowrap;
+    &:last-child {
+      display: block;
+      @include response(sm, md) {
+        padding-left: 20px;
+      }
+    }
+    &:first-of-type {
+      @include response(sm) {
+        white-space: normal;
+        width: 120px;
+      }
+      @include response(md) {
+        white-space: normal;
+        width: 140px;
+      }
+    }
+  }
+}
+
+.action {
+  display: flex;
+  flex-direction: column;
+  flex: none;
+  @include response(sm, md) {
+    flex-direction: row;
+    align-items: center;
+  }
+  span {
+    text-align: right;
+    margin-bottom: 11px;
+    font-weight: 500;
+    font-size: 16px;
+    color: $black-primary;
+    @include response(sm, md) {
+      margin-bottom: 0;
+      margin-right: 21px;
+    }
+  }
+  button {
+    border: 0px;
+    padding: 6px 7px 6px 10px;
+    background-color: $green-400;
+    color: $white;
+    border-radius: 2px;
+    font-size: 12px;
+    font-weight: 500;
+    transition: background-color .3s ease;
+    &:active {
+      background-color: $green-600;
+    }
+    &:hover {
+      background-color: $green-300;
+    }
+    i {
+      border-left: 1px solid rgba($white, .37);
+      margin-left: 6px;
+      padding: 2px 0 2px 6px;
+      font-size: 12px;
+    }
+  }
+}
+
+ul {
+  padding: 0;
+  margin: 0;
+  background-color: $white;
+  li {
+    display: flex;
+    justify-content: space-between;
+    padding: 14px 16px;
+    &:nth-child(even) {
+      background-color: rgba(245, 245, 245, 0.58);
+    }
+  }
+}
+
+.footer {
+  padding: 17px;
+  background-color: rgba(245, 245, 245, 0.58);
+  &.-white {
+    background-color: $white;
+  }
+  .secondary-button {
+    width: 100%;
+    @include response-from(lg) {
+      display: none;
+    }
+  }
+  [cv-button] {
+    box-shadow: elevation(2);
+    font-size: 16px;
+    background-image: linear-gradient(to bottom, $primary-400, $primary-600 85%);
+    border: none;
+    color: $white;
+    width: 100%;
+    &:hover {
+      background-image: linear-gradient(to top, $primary-400, $primary-600 85%);
+    }
+    &:active {
+      background: $primary-500 none;
+    }
+  }
+}
+
+.img-holder {
+  background: url("/assets/img/map-image2.png") no-repeat;
+  background-size: cover;
+  background-position: top center;
+  height: 190px;
+  @include response(sm) {
+    height: 197px;
+  }
+}
+
+.no-available-leads {
+  .footer {
+    padding: 11px 15px;
+  }
+}

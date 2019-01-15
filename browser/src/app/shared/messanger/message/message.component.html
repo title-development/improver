@@ -1,0 +1,194 @@
+<div class="wrapper" [ngClass]="{'new-message': !message.read}" fxLayoutAlign="start start" *ngIf="!(securityService.hasRole(Role.CUSTOMER) && (message.event == ProjectRequest.MessageEvent.REFUND_APPROVED || message.event == ProjectRequest.MessageEvent.REFUND_REJECTED))">
+
+
+  <div class="icon-wrapper" fxFlexOffset="8px" *ngIf="message.sender != securityService.getLoginModel().id">
+
+    <div class="icon"
+         [ngStyle]="userIcon && userIcon != '' && {'background-image':'url(' + userIcon + ')'} || securityService.getLoginModel().company == null && {'background-image':'url(/assets/img/company-logo-placeholder.png)'} || {'background-image':'url(/assets/img/customer-logo-placeholder.png)'}"
+         *ngIf="message.sender != 'system'; else systemImage">
+    </div>
+
+    <ng-template #systemImage>
+      <div class="icon system-icon"
+           [ngStyle]="message.event == ProjectRequest.MessageEvent.CUSTOMER_CLOSE && {'background-image':'url(' + 'assets/img/round-icons/closed-project.svg' + ')'} ||
+                      message.event == ProjectRequest.MessageEvent.CANCEL && {'background-image':'url(' + 'assets/img/round-icons/closed-project.svg' + ')'} ||
+                      message.event == ProjectRequest.MessageEvent.REQUEST && {'background-image':'url(' + 'assets/img/round-icons/contractor-sent-request.svg' + ')'} ||
+                      message.event == ProjectRequest.MessageEvent.HIRE && {'background-image':'url(' + 'assets/img/round-icons/contractor-hired.svg' + ')'} ||
+                      message.event == ProjectRequest.MessageEvent.DECLINE && {'background-image':'url(' + 'assets/img/round-icons/contractor-declined.svg' + ')'} ||
+                      message.event == ProjectRequest.MessageEvent.HIRE_OTHER && {'background-image':'url(' + 'assets/img/round-icons/contractor-declined.svg' + ')'} ||
+                      message.event == ProjectRequest.MessageEvent.LEAVE && {'background-image':'url(' + 'assets/img/round-icons/contractor-leaved-project.svg' + ')'} ||
+                      message.event == ProjectRequest.MessageEvent.PRO_CLOSE && securityService.hasRole(Role.CUSTOMER) && {'background-image':'url(' + 'assets/img/round-icons/contractor-leaved-project.svg' + ')'} ||
+                      message.event == ProjectRequest.MessageEvent.PRO_CLOSE && securityService.hasRole(Role.CONTRACTOR) && {'background-image':'url(' + 'assets/img/round-icons/closed-project.svg' + ')'} ||
+                      message.event == ProjectRequest.MessageEvent.CALL && {'background-image':'url(' + 'assets/img/round-icons/call.png' + ')'} ||
+                      message.event == ProjectRequest.MessageEvent.REFUND_REQUEST && securityService.hasRole(Role.CUSTOMER) && {'background-image':'url(' + 'assets/img/round-icons/contractor-leaved-project.svg' + ')'} ||
+                      message.event == ProjectRequest.MessageEvent.REFUND_REQUEST && securityService.hasRole(Role.CONTRACTOR) && {'background-image':'url(' + 'assets/img/round-icons/refund-request.svg' + ')'} ||
+                      message.event == ProjectRequest.MessageEvent.REFUND_APPROVED && {'background-image':'url(' + 'assets/img/round-icons/refund-approved.svg' + ')'} ||
+                      message.event == ProjectRequest.MessageEvent.REFUND_REJECTED && {'background-image':'url(' + 'assets/img/round-icons/refund-rejected.svg' + ')'}"
+           *ngIf=" message.sender != securityService.getLoginModel().id">
+      </div>
+    </ng-template>
+
+  </div>
+
+  <div class="message-wrapper" [ngClass]="{'owner' : message.sender == securityService.getLoginModel().id}">
+    <div class="message-container {{message.type | toclassname}} {{message.event | toclassname}}"
+         [ngClass]="{'owner' : message.sender == securityService.getLoginModel().id , 'system' : message.sender == 'system'}">
+
+      <div class="message" [ngSwitch]="message.type"
+           [ngClass]="{ 'owner' : message.sender == securityService.getLoginModel().id }">
+
+        <!--Conversation-->
+        <div class="message-content" *ngSwitchCase="ProjectRequest.MessageType.TEXT">{{message.body}}</div>
+
+        <div class="message-content" *ngSwitchCase="ProjectRequest.MessageType.DOCUMENT"><a [href]="message.body.url">
+          <mat-icon class="mat-icon material-icons">attach_file</mat-icon>
+          {{message.body.name}}</a></div>
+
+        <div class="message-content" *ngSwitchCase="ProjectRequest.MessageType.IMAGE"><a [href]="message.body.url"><span
+          [ngStyle]="{'background-image': 'url('+ message.body.url +')'}" title="{{message.body.name}}"></span></a>
+        </div>
+
+        <div class="message-content" *ngSwitchCase="ProjectRequest.MessageType.EVENT">
+
+          <!--System messages-->
+
+          <ng-container [ngSwitch]="message.event">
+
+            <ng-container *ngSwitchCase="ProjectRequest.MessageEvent.REQUEST">
+              <ng-container *ngIf="securityService.hasRole(Role.CUSTOMER)">
+                <span class="name">{{companyName}}</span>
+                <span> send you a project request</span>
+              </ng-container>
+              <ng-container *ngIf="securityService.hasRole(Role.CONTRACTOR)">
+                <span>You send project request to </span>
+                <span class="name">{{customerName}}</span>
+              </ng-container>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="ProjectRequest.MessageEvent.HIRE_OTHER">
+              <ng-container *ngIf="securityService.hasRole(Role.CUSTOMER)">
+                <span>You closed this project request</span>
+              </ng-container>
+              <ng-container *ngIf="securityService.hasRole(Role.CONTRACTOR)">
+                <span class="name">{{customerName}}</span>
+                <span> hired other PRO</span>
+              </ng-container>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="ProjectRequest.MessageEvent.CANCEL">
+              <ng-container *ngIf="securityService.hasRole(Role.CUSTOMER)">
+                <span>You've canceled the project</span>
+              </ng-container>
+              <ng-container *ngIf="securityService.hasRole(Role.CONTRACTOR)">
+                <span class="name">{{customerName}}</span>
+                <span> closed this project</span>
+              </ng-container>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="ProjectRequest.MessageEvent.CUSTOMER_CLOSE">
+              <ng-container *ngIf="securityService.hasRole(Role.CUSTOMER)">
+                <span>You've closed the project</span>
+              </ng-container>
+              <ng-container *ngIf="securityService.hasRole(Role.CONTRACTOR)">
+                <span class="name">{{customerName}}</span>
+                <span> closed the project</span>
+              </ng-container>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="ProjectRequest.MessageEvent.PRO_CLOSE">
+              <ng-container *ngIf="securityService.hasRole(Role.CUSTOMER)">
+                <span class="name">{{companyName}}</span>
+                <span> left the project</span>
+              </ng-container>
+              <ng-container *ngIf="securityService.hasRole(Role.CONTRACTOR)">
+                <span>You've closed project request</span>
+              </ng-container>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="ProjectRequest.MessageEvent.AUTO_CLOSE">
+              <span>Project has been closed</span>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="ProjectRequest.MessageEvent.CALL">
+              <ng-container *ngIf="securityService.hasRole(Role.CUSTOMER)">
+                <span>You have phone call with </span>
+                <span class="name">{{companyName}}</span>
+              </ng-container>
+              <ng-container *ngIf="securityService.hasRole(Role.CONTRACTOR)">
+                <span>You have phone call with </span>
+                <span class="name">{{customerName}}</span>
+              </ng-container>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="ProjectRequest.MessageEvent.HIRE">
+              <ng-container *ngIf="securityService.hasRole(Role.CUSTOMER)">
+                <span>You hired </span>
+                <span class="name">{{companyName}}</span>
+              </ng-container>
+              <ng-container *ngIf="securityService.hasRole(Role.CONTRACTOR)">
+                <span class="name">{{customerName}}</span>
+                <span> hired you</span>
+              </ng-container>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="ProjectRequest.MessageEvent.DECLINE">
+              <ng-container *ngIf="securityService.hasRole(Role.CUSTOMER)">
+                <span>You declined </span>
+                <span class="name">{{companyName}}</span>
+              </ng-container>
+              <ng-container *ngIf="securityService.hasRole(Role.CONTRACTOR)">
+                <span class="name">{{customerName}}</span>
+                <span> declined your project request</span>
+              </ng-container>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="ProjectRequest.MessageEvent.LEAVE">
+              <ng-container *ngIf="securityService.hasRole(Role.CUSTOMER)">
+                <span class="name">{{companyName}}</span>
+                <span> left the project</span>
+              </ng-container>
+              <ng-container *ngIf="securityService.hasRole(Role.CONTRACTOR)">
+                <span>You left the project</span>
+              </ng-container>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="ProjectRequest.MessageEvent.REFUND_REQUEST">
+              <ng-container *ngIf="securityService.hasRole(Role.CUSTOMER)">
+                <span class="name">{{companyName}}</span>
+                <span> left the project</span>
+              </ng-container>
+              <ng-container *ngIf="securityService.hasRole(Role.CONTRACTOR)">
+                <span>You requested refund</span>
+              </ng-container>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="ProjectRequest.MessageEvent.REFUND_APPROVED">
+              <ng-container *ngIf="securityService.hasRole(Role.CONTRACTOR)">
+                <span>Refund approved</span>
+              </ng-container>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="ProjectRequest.MessageEvent.REFUND_REJECTED">
+              <ng-container *ngIf="securityService.hasRole(Role.CONTRACTOR)">
+                <span>Refund rejected</span>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+
+        </div>
+
+
+      </div>
+
+      <div class="date">{{message.created | date :'shortTime'}}</div>
+    </div>
+  </div>
+
+</div>
+
+
+
+
+
+
+

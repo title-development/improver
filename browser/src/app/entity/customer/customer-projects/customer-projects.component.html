@@ -1,0 +1,166 @@
+<div class="customer-dashboard-page">
+
+  <div class="customer-dashboard-page-content">
+
+    <div class="customer-projects">
+
+      <div class="customer-projects-header">
+
+        <div class="header-left">
+          <div class="customer-projects-title">My Projects</div>
+        </div>
+
+        <div class="header-right">
+          <div class="tabs">
+            <div class="tab-title" *ngFor="let tab of tabs" [ngClass]="{'active': tab.active}"
+                 (click)="getProjects(tab)">
+              {{tab.label}}
+            </div>
+          </div>
+          <a cv-button class="new-project-button " (click)="findProfessionalService.toggle()">
+            <span class="plus">+</span>
+            <span>New project</span>
+          </a>
+        </div>
+
+      </div>
+
+      <div class="customer-projects-content">
+
+        <div class="tab-content-wrapper" *ngFor="let tab of tabs" [ngClass]="{'active': tab.active}"
+             [cvSpinner]="projectsProcessing"
+             [cvSpinnerSize]="30"
+             [cvSpinnerBackground]="true"
+             cvSpinnerBackgroundColor="#fafafa">
+
+          <div class="projects-wrapper">
+
+            <div class="project-card-wrapper" *ngFor="let project of tab.projects">
+              <div class="project-card">
+                <a class="main-block-wrapper" [ngClass]="{'no-image' : !project.coverUrl || project.coverUrl == ''}"
+                   [routerLink]="['/my/projects', project.id]">
+                  <div class="main-block" fxLayout="column" fxLayoutAlign="space-between stretch" fxFlexFill>
+                    <div class="upper-block" fxLayout="column" fxLayoutAlign="start start">
+                      <div class="project-title">{{project.serviceType}}</div>
+                      <div class="project-date">{{project.date | date: 'MMMM d, y'}}</div>
+                    </div>
+                    <div class="bottom-block" fxLayout="column" fxLayoutAlign="start start">
+                      <div class="project-status" [ngClass]="project.status | toclassname">
+                        {{project.status | statustostring}}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="image-block" fxLayout="column" fxLayoutAlign="center center" fxFlexFill
+                       [ngStyle]="project.coverUrl && project.coverUrl != '' && {'background-image':'url(' + project.coverUrl + ')'}">
+                    <i class="imp-icon-tools" *ngIf="!project.coverUrl || project.coverUrl == ''"></i>
+                  </div>
+                </a>
+                <div class="footer" fxLayout="row" fxLayoutAlign="space-between center">
+                  <div class="project-requests" fxLayout="row" fxLayoutAlign="start center">
+                    <ng-template ngFor let-projectRequest [ngForOf]="project.projectRequests" let-i="index"
+                                 *ngIf="project.projectRequests.length > 0">
+                      <div class="project-request" [matTooltip]="projectRequest.company.name"
+                           [matTooltipClass]="'imp-tooltip'"
+                           (click)="projectActionService.project = project; openProjectRequest(projectRequest)"
+                      [ngClass]="{'hired': projectRequest.status == ProjectRequest.Status.HIRED || projectRequest.status == ProjectRequest.Status.COMPLETED}">
+                        <div class="project-request-icon  {{projectRequest.status | toclassname}}"
+                             [ngStyle]="projectRequest.company.iconUrl && projectRequest.company.iconUrl != '' && {'background-image':'url(' + projectRequest.company.iconUrl + ')'} || {'background-image':'url(assets/img/company-logo-placeholder.png)'}">
+                          <!--<div class="hired-foreground"-->
+                               <!--*ngIf="projectRequest.status == ProjectRequest.Status.HIRED || projectRequest.status == ProjectRequest.Status.COMPLETED">-->
+                            <!--<i class="imp-icon-ok"></i>-->
+                          <!--</div>-->
+                        </div>
+                      </div>
+                    </ng-template>
+                    <div class="no-requests-message"
+                         *ngIf="project.status == ProjectStatus.ACTIVE && project.projectRequests.length == 0">Searching
+                      for
+                      professionals...
+                    </div>
+                    <div class="no-requests-message"
+                         *ngIf="project.status == ProjectStatus.VALIDATION && project.projectRequests.length == 0">
+                      Project
+                      in review...
+                    </div>
+                  </div>
+                  <div class="more-button">
+                    <button class="project-card-menu-button" mat-icon-button [matMenuTriggerFor]="projectCardMenu">
+                      <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu class="project-card-menu" #projectCardMenu="matMenu" yPosition="below" xPosition="before">
+                      <a mat-menu-item [routerLink]="['/my/projects', project.id]">Details</a>
+                      <button mat-menu-item class="complete-button"
+                              (click)="projectActionService.completeProjectConfirm(project)">Complete
+                      </button>
+                      <button mat-menu-item class="cancel-button"
+                              (click)="projectActionService.cancelProjectConfirm(project)">Cancel
+                      </button>
+                    </mat-menu>
+                  </div>
+                </div>
+              </div>
+              <div class="project-card-main-img"
+                   [ngStyle]="project.coverUrl && {'background-image': 'url(' + project.coverUrl + ')'}"
+                   [routerLink]="['/my/projects', project.id]"></div>
+            </div>
+          </div>
+
+          <div (click)="showMoreProjects(tab)" *ngIf="!tab.pageable.last" class="show-more-button-wrapper">
+            <div class="show-more-button">
+              Show more
+            </div>
+          </div>
+          <div class="no-data-block" *ngIf="tab.projects?.length == 0 && !projectsProcessing">
+            <ng-container *ngIf="tab.latest">
+              <span class="no-data-text">Your projects will be here</span>
+            </ng-container>
+            <ng-container *ngIf="!tab.latest">
+              <span class="no-data-text">Your closed projects will be here</span>
+            </ng-container>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="recommended-services" fxLayout="column" fxLayoutAlign="start stretch">
+
+      <div class="recommended-services-header">
+        <div class="header-left">
+          <div class="recommended-services-title">Recommended for you</div>
+        </div>
+      </div>
+
+      <div [cvSpinner]="!(recommendedServiceTypes && recommendedServiceTypes.length > 0)" [cvSpinnerSize]="24">
+        <div class="recommended-services-content row">
+          <div class="recommended-services-card-wrapper col-xs-12 col-sm-6 col-md-4"
+               *ngFor="let serviceType of recommendedServiceTypes">
+
+            <div class="recommended-services-card noselect"
+                 (click)="projectActionService.openQuestionary(serviceType)">
+              <div class="recommended-services-card-content">
+
+                <div class="recommended-services-image-block">
+                  <img [src]="serviceType.image" alt="" class="recommended-works-img">
+                  <div class="shadow-box"></div>
+                </div>
+
+                <div class="recommended-services-text-block">
+                  <div class="text">{{serviceType.name}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<layout-footer></layout-footer>
+
+
+

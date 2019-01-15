@@ -1,0 +1,18 @@
+@import "../../../../improver-mixins.scss";
+
+:host {
+  position: relative;
+  display: block;
+}
+
+.close {
+  top: 12px;
+  right: 12px;
+  color: $white;
+  cursor: pointer;
+  position: absolute;
+  transition: color .3s ease;
+  &:hover {
+    color: black;
+  }
+}

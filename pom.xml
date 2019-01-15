@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.improve</groupId>
+    <artifactId>improver-parent</artifactId>
+    <version>0.1.9-SNAPSHOT</version>
+    <name>root-improver</name>
+    <description>Improve USA</description>
+    <packaging>pom</packaging>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.1.1.RELEASE</version>
+    </parent>
+
+    <scm>
+        <connection>scm:git:git@bitbucket.org:improveusa/improver.git</connection>
+        <url>scm:git:git@bitbucket.org:improveusa/improver.git</url>
+        <developerConnection>scm:git:git@bitbucket.org:improveusa/improver.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
+    <modules>
+        <module>browser</module>
+        <module>improver</module>
+        <module>provisioning</module>
+    </modules>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>11</java.version>
+        <apache.commons.version>1.3.2</apache.commons.version>
+        <jsr310.version>2.9.2</jsr310.version>
+        <springfox.version>2.8.0</springfox.version>
+        <jacoco.version>0.7.5.201505241946</jacoco.version>
+        <surefire.version>2.18.1</surefire.version>
+
+        <!-- UI -->
+        <frontend.plugin.version>1.6</frontend.plugin.version>
+        <node.version>v10.10.0</node.version>
+        <npm.version>6.4.1</npm.version>
+
+        <!-- Skip owasp dependency check by default, unless owasp-dependency-check profile is enabled -->
+        <owasp.check.skip>true</owasp.check.skip>
+        <aws.s3.bucket.name>improver</aws.s3.bucket.name>
+        <!-- Enable deploy to s3 under user/release subfolders -->
+        <skip.s3.deploy>false</skip.s3.deploy>
+        <aws.account.id>815041732288</aws.account.id>
+        <domainName>homeimprove.com</domainName>
+        <spring.profile>${environment}</spring.profile>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <environment>dev</environment>
+                <npm.arguments>install</npm.arguments>
+                <npm.build.cmd>run build</npm.build.cmd>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+
+        <profile>
+            <id>qa</id>
+            <activation>
+                <property>
+                    <name>environment</name>
+                    <value>qa</value>
+                </property>
+            </activation>
+            <properties>
+                <environment>qa</environment>
+                <npm.arguments>install --production</npm.arguments>
+                <npm.build.cmd>run build:qa</npm.build.cmd>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>stg</id>
+            <activation>
+                <property>
+                    <name>environment</name>
+                    <value>stg</value>
+                </property>
+            </activation>
+            <properties>
+                <environment>qa</environment>
+                <npm.arguments>install --production</npm.arguments>
+                <npm.build.cmd>run build:stg</npm.build.cmd>
+            </properties>
+        </profile>
+
+        <profile>
+            <!-- Check is bound to verify phase, so this should be run via
+                 mvn verify -P owasp-dependency-check in a separate bitbucket step -->
+            <id>owasp-dependency-check</id>
+            <properties>
+                <owasp.check.skip>false</owasp.check.skip>
+                <!-- No need to run tests during this build. It's only for checking dependencies. -->
+                <skipTests>true</skipTests>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>javadoc</id>
+            <build>
+                <plugins>
+                    <!-- Explicitly enable the maven-javadoc-plugin for this profile -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>coverage</id>
+            <!-- for generating code coverage reports on all modules -->
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${surefire.version}</version>
+                        <configuration>
+                            <argLine>${argLine}</argLine>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>${jacoco.version}</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>report</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <!-- Copy the ant tasks jar. Needed for ts.jacoco.report-ant . -->
+                            <execution>
+                                <id>jacoco-dependency-ant</id>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <phase>process-test-resources</phase>
+                                <inherited>false</inherited>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.jacoco</groupId>
+                                            <artifactId>org.jacoco.ant</artifactId>
+                                            <version>${jacoco.version}</version>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <stripVersion>true</stripVersion>
+                                    <outputDirectory>${basedir}/target/jacoco-jars</outputDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>default-cli</id>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <!-- Execute an ant task within maven -->
+                                        <echo message="Generating JaCoCo Reports" />
+                                        <taskdef name="report" classname="org.jacoco.ant.ReportTask">
+                                            <classpath path="${basedir}/target/jacoco-jars/org.jacoco.ant.jar" />
+                                        </taskdef>
+                                        <mkdir dir="${basedir}/target/coverage-report" />
+                                        <report>
+                                            <!-- execution data is a file created by Jacoco for code coverage -->
+                                            <executiondata>
+                                                <fileset dir="${user.dir}/improver/target">
+                                                    <include name="jacoco.exec" />
+                                                </fileset>
+                                            </executiondata>
+                                            <structure name="JaCoCo-Multi Project">
+                                                <group name="JaCoCo-Multi">
+                                                    <!-- class files in each target directory -->
+                                                    <classfiles>
+                                                        <fileset dir="${user.dir}/improver/target/classes" />
+                                                    </classfiles>
+                                                    <sourcefiles encoding="UTF-8">
+                                                        <!-- source classes -->
+                                                        <fileset dir="${user.dir}/improver/src/main/java" />
+                                                    </sourcefiles>
+                                                </group>
+                                            </structure>
+                                            <!-- coverage report location -->
+                                            <html destdir="${basedir}/target/coverage-report/html" />
+                                            <xml destfile="${basedir}/target/coverage-report/coverage-report.xml" />
+                                            <csv destfile="${basedir}/target/coverage-report/coverage-report.csv" />
+                                        </report>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.jacoco</groupId>
+                                <artifactId>org.jacoco.ant</artifactId>
+                                <version>${jacoco.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>com.bazaarvoice.maven.plugins</groupId>
+                    <artifactId>s3-upload-maven-plugin</artifactId>
+                    <version>1.4</version>
+                    <configuration>
+                        <bucketName>${aws.s3.bucket.name}</bucketName>
+                        <doNotUpload>${skip.s3.deploy}</doNotUpload>
+                    </configuration>
+                    <dependencies>
+                        <!-- Explicitly specify module deprecated in jdk 11 -->
+                        <dependency>
+                            <groupId>javax.xml.bind</groupId>
+                            <artifactId>jaxb-api</artifactId>
+                            <version>2.3.0</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <configuration>
+                        <!-- During release:perform, forces release Maven profile to become active -->
+                        <releaseProfiles>release</releaseProfiles>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
+                        <tagNameFormat>v@{project.version}</tagNameFormat>
+                        <pushChanges>false</pushChanges>
+                        <localCheckout>true</localCheckout>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <configuration>
+                        <skip>true</skip>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+</project>

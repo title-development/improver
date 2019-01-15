@@ -1,0 +1,32 @@
+<div class="popular-services">
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="title">Find the service you need</div>
+    </div>
+    <div class="col-xs-12">
+      <div class="row">
+
+        <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3" *ngFor="let serviceType of popularServiceTypes"
+             [orderService]="serviceType">
+          <div class="popular-services-card-content">
+
+            <div class="popular-services-image">
+              <div class="cover" [ngStyle]="serviceType.image && {'background-image':'url(' + serviceType.image + ')'} || {'background-image':'url(' + 'http://via.placeholder.com/267x323?text=NO+SERVICE+IMAGE' + ')'}"></div>
+
+              <div class="popular-services-text">
+                {{serviceType.name}}
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <div class="col-xs-12">
+      <a class="see-all-services-button" routerLink="/services">
+        <div class="see-all-services-button-text">See All Services</div>
+      </a>
+    </div>
+  </div>

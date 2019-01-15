@@ -1,0 +1,738 @@
+@import "../../../../improver-mixins.scss";
+
+::ng-deep .customer-project-request-dialog {
+  padding: 16px 0;
+  height: 100%;
+  @include response-to(sm) {
+    padding: 0;
+    width: 100% !important;
+    max-width: 100% !important;
+    bottom: 0 !important;
+  }
+
+  .mat-dialog-container {
+    margin: 0 auto 16px auto;
+    max-height: 800px;
+    min-height: 600px;
+    height: auto;
+    @include response-h(810) {
+      height: 100%;
+    }
+    @include response-to(sm) {
+      margin: auto;
+      max-width: 100%;
+      height: 100% !important;
+      max-height: none;
+      min-height: 400px;
+    }
+    @include response(md) {
+      height: 100%;
+    }
+  }
+}
+
+.dialog-content-wrapper {
+  height: 100%;
+  display: flex;
+  @include response-to(sm) {
+    max-height: none;
+    background: $white;
+    overflow-y: auto;
+  }
+  @include response-to(md) {
+    flex-direction: column;
+  }
+}
+
+.reviews-not-hired-message {
+  margin-bottom: 24px;
+  text-align: left;
+  padding-top: 24px;
+}
+
+.header {
+  position: relative;
+
+  .close-modal {
+    position: absolute;
+    right: 32px;
+    top: 65px;
+    font-size: 19px;
+    font-weight: 400;
+    z-index: 1;
+    color: $black-secondary;
+
+    @include response(xs, md) {
+      top: 32px;
+    }
+  }
+
+  .header-content {
+    display: flex;
+    max-height: 100%;
+    align-items: center;
+    padding: 24px 24px 16px;
+
+    @include response-to(xs) {
+      padding: 16px 12px;
+      flex-direction: column;
+    }
+
+    .logo {
+      width: 56px;
+      height: 56px;
+      border-radius: 56px;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.17);
+      &.-archived {
+        pointer-events: none;
+      }
+    }
+
+    .info-block {
+      flex-direction: column;
+      display: flex;
+      max-width: 100%;
+      justify-content: space-between;
+      align-items: stretch;
+      margin-left: 23px;
+
+      @include response-to(xs) {
+        margin-left: 0;
+        margin-top: 16px;
+        align-items: center;
+      }
+
+      .rating {
+        margin-top: 8px;
+        display: flex;
+        max-height: 100%;
+      }
+
+      .company-name {
+        margin-bottom: -8px;
+        font-size: 18px;
+        font-weight: 700;
+        text-align: left;
+        color: rgba(0, 0, 0, 0.87);
+
+        @include response-to(sm) {
+          padding: 0;
+          font-size: 16px;
+        }
+      }
+
+      .company-rating {
+        font-weight: 700;
+        color: rgba(0, 0, 0, 0.55);
+        padding-right: 3px;
+        display: flex;
+        align-items: center;
+        font-size: 12px;
+        line-height: 1.5;
+        text-align: left;
+        color: #626262;
+
+        ::ng-deep rating-component {
+          display: flex;
+        }
+      }
+
+      .company-reviews-count {
+        display: flex;
+        align-items: center;
+        font-size: 12px;
+        text-align: center;
+        color: #626262;
+        margin-left: 5px;
+      }
+
+      .phone-block {
+
+        .phone-group {
+
+          .label {
+            font-size: 10px;
+            color: rgba(0, 0, 0, 0.24);
+          }
+
+          .value {
+            font-size: 14px;
+            color: $black-primary;
+          }
+
+        }
+
+      }
+
+    }
+
+  }
+
+  .buttons-block {
+    display: flex;
+    position: relative;
+    max-height: 100%;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    margin-bottom: 16px;
+    z-index: 999;
+
+    @include response(md) {
+      position: absolute;
+      right: 24px;
+      top: 95px;
+    }
+
+    @include response(sm) {
+      position: absolute;
+      right: 24px;
+      top: 90px;
+    }
+
+    @include response(xs) {
+      padding: 6px 12px 0;
+    }
+
+    .info-icon {
+      width: 23px;
+      height: 23px;
+      opacity: 0.28;
+      color: #ffffff;
+      background-color: #000000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      position: absolute;
+      top: -30px;
+      font-weight: 600;
+      font-family: serif;
+
+      @include response(md) {
+        display: flex;
+        left: 0;
+      }
+
+      @include response(sm, md) {
+        position: static;
+        margin-right: 10px;
+        display: flex;
+      }
+
+      @include response(xs) {
+        display: flex;
+        right: 12px;
+        left: inherit;
+        position: absolute;
+        top: -30px;
+      }
+    }
+
+    button {
+      margin: 0;
+
+      @include response(xs) {
+        width: 50%;
+      }
+    }
+  }
+
+  .state-block {
+    font-size: 14px;
+    display: flex;
+    max-height: 100%;
+    align-items: center;
+    margin-bottom: 16px;
+
+    @include response(sm, md) {
+      position: absolute;
+      right: 30px;
+      top: 60px;
+    }
+  }
+}
+
+.content {
+  display: flex;
+  flex-grow: 1;
+
+  .content-tabs {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    position: relative;
+    width: 100%;
+  }
+
+  .tab-controls {
+    border-bottom: 1px solid $black-300;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0 15px;
+    height: 47px;
+    flex: none;
+
+    .tab-name {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      height: 47px;
+      padding: 3px 15px 0;
+      font-size: 14px;
+      font-weight: 500;
+      border-bottom: solid 3px transparent;
+      color: #626262;
+
+      @include response-to(xs) {
+        width: 33.333333%;
+        justify-content: center;
+      }
+
+      &.active {
+        line-height: 1.29;
+        color: $primary-500;
+        border-bottom: solid 3px $primary-500;
+        z-index: 9;
+        position: relative;
+      }
+    }
+  }
+
+  .tab-panels {
+    height: calc(100% - 48px);
+    position: relative;
+
+    .tab-panel {
+      display: none;
+      background: $white;
+      position: relative;
+      height: 100%;
+      &.-about {
+        position: static !important;
+        display: flex;
+      }
+
+      &.active {
+        display: flex;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        z-index: 1;
+      }
+
+      .messenger-wrapper {
+        position: relative;
+        height: 100%;
+        flex: 1;
+
+        @include response(md) {
+          min-height: 400px;
+        }
+
+      }
+
+      .company-reviews-wrapper {
+        flex: 1;
+        background: #fafafa;
+      }
+
+    }
+  }
+
+}
+
+.tab-controls {
+  border-bottom: 1px solid $black-300;
+
+  .tab-name {
+    cursor: pointer;
+    padding: 16px 7px 13px;
+    font-size: 14px;
+    color: $black-primary;
+    border-bottom: solid 3px transparent;
+    z-index: 1;
+
+    &.active {
+      color: $primary-500;
+      border-bottom: solid 3px $primary-500;
+    }
+
+  }
+
+}
+
+::ng-deep .mat-dialog-container {
+  padding: 0;
+}
+
+.close-modal {
+  position: absolute;
+  right: 22px;
+  top: 27px;
+  font-size: 19px;
+  font-weight: 400;
+  color: $black-secondary;
+  z-index: 1;
+}
+
+.back-to-project {
+  padding: 16px 0 0 12px;
+  text-transform: uppercase;
+  font-size: 12px;
+  line-height: 1.33;
+  text-align: left;
+  color: $black-secondary;
+}
+
+.sidebar {
+  position: relative;
+  width: 312px;
+  border-left: 1px solid $black-300;
+  display: flex;
+  flex-direction: column;
+
+  .sidebar-information {
+    flex-direction: column !important;
+    padding: 27px 23px 0 23px;
+    flex: 1;
+    position: relative;
+
+    .logo {
+      display: block;
+      margin: 0 auto;
+      width: 96px;
+      height: 96px;
+      border-radius: 96px;
+      background-position: 50%;
+      background-size: cover;
+      border: 1px solid $black-300;
+      &.-archived {
+        pointer-events: none;
+      }
+    }
+
+    .info-block {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+
+      .rating {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        ::ng-deep .star {
+          line-height: 1;
+        }
+
+        .company-rating {
+          margin-right: 10px;
+          text-align: left;
+          font-weight: 600;
+          font-size: 12px;
+          line-height: 1.5;
+          color: #626262;
+        }
+
+        .company-reviews-count {
+          font-size: 12px;
+          text-align: left;
+          margin-left: 10px;
+          line-height: 1.33;
+          color: #626262;
+        }
+      }
+
+      .phone-block {
+        display: flex;
+        justify-content: center;
+        padding: 22px 0;
+
+        .phone-group {
+          &:last-child {
+            margin-left: 35px;
+          }
+
+          .label {
+            font-size: 12px;
+            line-height: 1.33;
+            text-align: left;
+            color: $black-secondary;
+            margin-bottom: 3px;
+          }
+
+          .value {
+            font-size: 14px;
+            line-height: 1.29;
+            text-align: left;
+            color: $black-primary;
+          }
+        }
+      }
+    }
+
+    .buttons-block {
+      margin-top: 24px;
+    }
+  }
+}
+
+.buttons-block, .state-block {
+  display: flex;
+  flex-direction: column;
+
+  button {
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: center;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    &.hire-company-button {
+      background-color: #63be8d;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.15);
+
+      @include response-to(md) {
+        width: 107px;
+        height: 35px;
+        background-color: #63be8d;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.15);
+        margin-right: 12px !important;
+      }
+
+      &:hover {
+        background: $green-300;
+      }
+
+      &:active {
+        background: $green-600;
+      }
+    }
+
+    &.decline-company-button {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.43;
+      text-align: center;
+      color: #ff4a2c;
+      background-color: transparent;
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+      border: solid 1px #ff4a2c;
+      position: relative;
+
+      @include response-to(md) {
+        position: static;
+        width: 107px;
+        height: 35px;
+        padding: 0;
+      }
+
+
+
+      &:hover {
+        background: #ff4a2c;
+        color: #fff;
+      }
+    }
+  }
+}
+
+.message {
+  //position: absolute;
+  position: relative;
+  pointer-events: none;
+  left: 0;
+  right: 0;
+  background-color: $black-150;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.43;
+  text-align: center;
+  color: #717171;
+  z-index: 124;
+  padding: 23px 15px 14px 17px;
+  margin-bottom: 20px;
+
+  @include response-to(md) {
+    left: 0;
+    right: 0;
+    position: absolute;
+    top: 55px;
+  }
+
+  @include response-to(xs) {
+    left: 12px;
+    right: 12px;
+    top: 70px;
+  }
+
+  &:after {
+    content: '';
+    height: 0;
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: 0;
+    top: -10px;
+    margin: auto;
+    border-style: solid;
+    border-width: 0 10px 10px 10px;
+    border-color: transparent transparent $black-150 transparent;
+
+    @include response-to(md) {
+      left: 21%;
+      margin: inherit;
+    }
+
+    @include response-to(xs) {
+      left: 21%;
+      margin: inherit;
+    }
+  }
+}
+
+.company-name {
+  font-size: 20px;
+  font-weight: 600;
+  text-align: center;
+  text-align: center;
+  padding: 16px 0;
+  color: $black;
+  &.-archived {
+    pointer-events: none;
+  }
+
+  @include response(md) {
+    padding: 16px 0 3px;
+  }
+
+  .hired, .declined {
+    text-align: center;
+    color: $white;
+    text-transform: uppercase;
+    border-radius: 2px;
+    padding: 5px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    position: relative;
+    display: inline-block;
+    top: -5px;
+    left: 5px;
+  }
+
+  .hired {
+    background-color: #63be8d;
+  }
+
+  .declined {
+    background-color: $red;
+  }
+}
+
+@include response-to(xs) {
+  .hired, .declined {
+    text-align: center;
+    color: #ffffff;
+    text-transform: uppercase;
+    border-radius: 2px;
+    padding: 2px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    position: relative;
+    top: 1px;
+    left: 46px;
+    transform: rotate(-20deg);
+    display: inline-block;
+  }
+
+  .hired {
+    background-color: #63be8d;
+  }
+
+  .declined {
+    background-color: $red;
+  }
+}
+
+.back-drop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 123;
+  display: none;
+
+  &.active {
+    display: block;
+  }
+}
+
+.message-text {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.43;
+  text-align: center;
+  color: #717171;
+  z-index: 124;
+  margin-top: 23px;
+  padding: 14px 15px 14px 17px;
+  background-color: $black-150;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
+}
+
+.add-review-button-container {
+  padding: 14px 23px;
+  display: flex;
+  justify-content: center;
+
+  @include response(sm,md){
+    position: absolute;
+    right: 24px;
+    top: 90px;
+    padding: 0;
+    z-index: 129;
+  }
+
+  @include response-to(xs){
+    padding: 14px 23px 0;
+  }
+
+  button {
+    width: 100%;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+  }
+}
+
+.approve-mark {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+  align-items: center;
+
+  @include response(sm, md){
+    justify-content: start;
+  }
+
+  .approve-icon {
+    margin-right: 8px;
+  }
+  .approve-text {
+    font-weight: 500;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: $green-450;
+  }
+}

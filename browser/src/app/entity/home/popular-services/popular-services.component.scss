@@ -1,0 +1,142 @@
+@import "../../../../improver-mixins.scss";
+
+:host {
+  width: 100%;
+}
+
+.popular-services {
+  max-width: 1170px;
+  margin: 72px auto;
+  padding: 0 15px;
+
+  @include response-to(sm) {
+    width: 100%;
+    max-width: 100%;
+    margin-top: 0;
+  }
+
+  .title {
+    font-weight: 600;
+    font-size: 36px;
+    text-align: center;
+    color: #333333;
+    margin-bottom: 66px;
+
+    @include response-to(md) {
+      font-size: 30px;
+    }
+
+    @include response-to(sm) {
+      font-size: 25px;
+      margin-top: 40px;
+      margin-bottom: 40px;
+    }
+  }
+
+  .popular-services-card-content {
+    position: relative;
+    padding-bottom: 100%;
+    height: 0;
+
+    .popular-services-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-size: cover;
+      background-position: 50%;
+      margin-bottom: 35px;
+      cursor: pointer;
+
+      &:hover {
+        .cover {
+          filter: brightness(130%);
+        }
+      }
+
+      .cover {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-size: cover;
+        background-position: 50%;
+        &:after {
+          content: '';
+          display: block;
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.21), rgba(0, 0, 0, 0.6));
+        }
+      }
+    }
+
+    .popular-services-text {
+      font-size: 16px;
+      color: $white;
+      bottom: 20px;
+      left: 15px;
+      position: absolute;
+
+      @include response(xs) {
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+.see-all-services-button {
+  display: flex;
+  margin: 47px auto 0;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  width: 170px;
+  height: 49px;
+  border-radius: 2px;
+  background-color: $white;
+  border: 2px solid;
+  font-size: 14px;
+
+  @include bordered-link-mixin();
+
+  .see-all-services-button-text {
+
+    @include background-image-gradient();
+    font-size: 14px;
+    text-align: left;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+  }
+
+  &:hover {
+    @include background-image-gradient();
+
+    .see-all-services-button-text {
+      -webkit-text-fill-color: $white;
+      font-size: 14px;
+      color: $white;
+    }
+
+  }
+
+  &:active {
+    @include background-image-gradient();
+    opacity: 0.64;
+
+    .see-all-services-button-text {
+      -webkit-text-fill-color: $white;
+      font-size: 14px;
+      color: $white;
+    }
+
+  }
+
+}

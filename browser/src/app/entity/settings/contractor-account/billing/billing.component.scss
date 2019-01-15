@@ -1,0 +1,23 @@
+@import "../../../../../improver-mixins.scss";
+@import "../../account.component.scss";
+
+.account-top-line {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  height: 72px;
+}
+
+.account-nav-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: $black-primary;
+}
+
+.card {
+  border-radius: 2px;
+  background-color: $white;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
+  margin-bottom: 24px;
+}
+

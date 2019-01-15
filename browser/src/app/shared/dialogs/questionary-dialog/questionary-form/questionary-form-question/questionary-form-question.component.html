@@ -1,0 +1,144 @@
+<div [formGroup]="mainForm" *ngIf="index == questionaryControlService.currentQuestionIndex" class="question-wrapper">
+  <div [ngSwitch]="question.type" [formGroupName]="'questionaryGroup'">
+
+    <div *ngSwitchCase="QuestionType.TEXT_INPUT" class="form-element-wrapper text-input-wrapper">
+      <h2 class="question-title">{{question.title}}</h2>
+
+      <cv-input-field>
+        <cv-field-label>{{question.label}}</cv-field-label>
+        <input cv-input type="text"
+               [placeholder]="question.label"
+               [formControlName]="question.name"
+               required>
+        <cv-field-error *ngIf="questionaryForm.controls[question.name]?.dirty || questionaryForm.controls[question.name]?.touched">
+          <span *ngIf="questionaryForm.controls[question.name].errors?.required">Required</span>
+        </cv-field-error>
+      </cv-input-field>
+
+    </div>
+
+    <div *ngSwitchCase="QuestionType.NUMERIC_INPUT" class="form-element-wrapper text-area-wrapper">
+      <h2 class="question-title">{{question.title}}</h2>
+
+      <cv-input-field>
+        <cv-field-label>{{question.label}}</cv-field-label>
+        <input cv-input type="text"
+               [placeholder]="question.label"
+               [formControlName]="question.name"
+               positiveNumeric
+               required
+               [pattern]="constants.patterns.numeric">
+        <cv-field-error *ngIf="questionaryForm.controls[question.name]?.dirty || questionaryForm.controls[question.name]?.touched">
+          <span *ngIf="questionaryForm.controls[question.name].errors?.required">Required</span>
+          <span class="mat-error" *ngIf="questionaryForm.controls[question.name].errors?.pattern">Should be numeric</span>
+        </cv-field-error>
+      </cv-input-field>
+
+    </div>
+
+    <div *ngSwitchCase="QuestionType.TEXT_AREA" class="form-element-wrapper text-input-wrapper">
+      <h2 class="question-title">{{question.title}}</h2>
+
+      <cv-field-label>{{question.label}}</cv-field-label>
+      <textarea cv-input
+                [placeholder]="question.label"
+                [formControlName]="question.name"
+                rows="4"
+                trim
+                type="text"
+                maxlength="500"
+                required>
+      </textarea>
+      <cv-field-error *ngIf="questionaryForm.controls[question.name]?.dirty || questionaryForm.controls[question.name]?.touched">
+        <span *ngIf="questionaryForm.controls[question.name].errors?.required">Required</span>
+      </cv-field-error>
+
+    </div>
+
+    <div *ngSwitchCase="QuestionType.CHECK_BOX" class="form-element-wrapper check-box-wrapper">
+      <h2 class="question-title">{{question.title}}</h2>
+
+      <div class="check-box-group">
+
+        <cv-checkbox-group [formControlName]="question.name" [items]="question.answers" labelKey="label" valueKey="label"></cv-checkbox-group>
+
+        <div class="question-general-error"
+             *ngIf="questionaryForm.controls[question.name]?.dirty || questionaryForm.controls[question.name]?.touched">
+          <span class="mat-error"
+                *ngIf="questionaryForm.controls[question.name].errors?.required">Is required</span>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div *ngSwitchCase="QuestionType.IMG_CHECK_BOX" class="form-element-wrapper check-box-wrapper">
+      <h2 class="question-title">{{question.title}}</h2>
+      <div class="check-box-group">
+
+        <cv-checkbox-group class="img-group" [formControlName]="question.name" [items]="question.answers" labelKey="label" valueKey="label">
+          <ng-template let-item cvTemplate >
+            <span>{{item?.label}}</span>
+            <div>
+              <i [ngStyle]="{'background-image': 'url('+item.image+')'}" title="{{item?.label}}"></i>
+              <cv-icon icon="imp-icon-ok" size="40"></cv-icon>
+            </div>
+          </ng-template>
+        </cv-checkbox-group>
+
+        <div class="question-general-error"
+             *ngIf="questionaryForm.controls[question.name]?.dirty || questionaryForm.controls[question.name]?.touched">
+          <span class="mat-error"
+                *ngIf="questionaryForm.controls[question.name].errors?.required">Is required</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div *ngSwitchCase="QuestionType.RADIO_BUTTON" class="form-element-wrapper radio-button-wrapper">
+      <h2 class="question-title">{{question.title}}</h2>
+      <div class="radio-button-group">
+
+        <cv-radio-group [formControlName]="question.name" required [items]="question.answers" labelKey="label" valueKey="label"></cv-radio-group>
+
+        <div class="question-general-error"
+             *ngIf="questionaryForm.controls[question.name]?.dirty || questionaryForm.controls[question.name]?.touched">
+          <span class="mat-error"
+                *ngIf="questionaryForm.controls[question.name].errors?.required">Is required</span>
+        </div>
+
+      </div>
+    </div>
+
+
+    <div *ngSwitchCase="QuestionType.IMG_RADIO_BUTTON" class="form-element-wrapper radio-button-wrapper">
+      <h2 class="question-title">{{question.title}}</h2>
+      <div class="radio-button-group">
+        <cv-radio-group class="img-group" [formControlName]="question.name" required [items]="question.answers" labelKey="label" valueKey="label">
+          <ng-template let-item cvTemplate>
+            <span>{{item?.label}}</span>
+            <div>
+              <i  [ngStyle]="{'background-image': 'url('+item.image+')'}" title="{{item?.label}}"></i>
+              <cv-icon icon="imp-icon-ok" size="40"></cv-icon>
+            </div>
+          </ng-template>
+        </cv-radio-group>
+
+        <div class="question-general-error"
+             *ngIf="questionaryForm.controls[question.name]?.dirty || questionaryForm.controls[question.name]?.touched">
+          <span class="mat-error"
+                *ngIf="questionaryForm.controls[question.name].errors?.required">Is required</span>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div class="questionary-dialog-footer" fxLayoutAlign="end center">
+    <button class="questionary-previous-button" (click)="previousQuestion()" type="button" *ngIf="!questionaryControlService.withZip || index > 0">Back</button>
+    <div fxFlex=""></div>
+    <button class="questionary-next-button" (click)="nextQuestion()" type="button">Next</button>
+  </div>
+
+</div>

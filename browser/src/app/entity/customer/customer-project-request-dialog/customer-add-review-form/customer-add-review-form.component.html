@@ -1,0 +1,55 @@
+<div class="add-review-form-block">
+  <div class="add-review-wrapper">
+    <div class="add-review-container">
+      <form class="review-post-form" *ngIf="(projectRequest.status == ProjectRequest.Status.HIRED || projectRequest.status == ProjectRequest.Status.COMPLETED) && !projectRequest.reviewed"
+            name="review-post-form"
+            #reviewPostForm="ngForm"
+            (ngSubmit)="isRated && addReview(reviewPostForm);"
+            novalidate>
+
+        <div class="review-post-title">
+          Tell us about your experience with
+        </div>
+        <div class="review-post-name">
+          {{projectRequest.company.name}}
+        </div>
+
+        <div class="review-post-rating">
+          <rating-component [starSize]="34" [readOnly]="false"
+                            (onRatingChange)="getReviewRating($event)"></rating-component>
+        </div>
+        <mat-hint *ngIf="reviewPostForm.submitted && !isRated">
+              <span class="mat-error">
+                Please rate company
+              </span>
+        </mat-hint>
+        <div class="review-post-message-container">
+          <cv-input-field>
+              <textarea #message="ngModel" class="review-post-message" rows="5"
+                        cv-input
+                        trim
+                        [placeholder]="'Tell something about your experience with ' + projectRequest.company.name"
+                        name="review" [minlength]="constants.REVIEW_MESSAGE_MIN_LENGTH" [maxlength]="constants.REVIEW_MESSAGE_MAX_LENGTH" [(ngModel)]="newReview.description"
+                        required></textarea>
+            <cv-field-error *ngIf="message.dirty || message.touched || reviewPostForm.submitted">
+              <span *ngIf="message.errors?.required">Please tell us about your experience with {{projectRequest.company.name}}</span>
+              <span *ngIf="message.errors?.minlength">Please enter a message greater then 10 symbols</span>
+              <span *ngIf="message.errors?.maxlength">Message too long</span>
+            </cv-field-error>
+          </cv-input-field>
+        </div>
+
+        <div class="review-post-button-container">
+          <div class="buttons">
+            <button cv-button-flat flatStyle="dark" class="review-button" type="button" (click)="deactivateForm()">
+              Cancel
+            </button>
+            <button cv-button class="review-button" type="submit">
+              Submit
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

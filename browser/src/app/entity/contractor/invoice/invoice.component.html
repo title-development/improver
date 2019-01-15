@@ -1,0 +1,118 @@
+<div class="container">
+  <div class="top-page-header" *ngIf="transaction">
+    <div class="invoice-title">
+      <span *ngIf="transaction.invoice">Invoice </span>
+      <span *ngIf="!transaction.invoice">Receipt </span>
+      <span>{{transaction.id}}</span>
+    </div>
+  </div>
+
+  <div class="invoice-content row" *ngIf="transaction">
+
+    <div class="col-xs-12">
+      <div class="invoice-details-card card">
+
+        <div class="header-block">
+          <div class="general-info">
+
+            <div class="property">
+              <div class="label">Purchase date:</div>
+              <div class="value">{{transaction.detail.date | date: 'MMMM d, y'}}</div>
+            </div>
+
+            <div class="property">
+              <div class="label">Description:</div>
+              <div class="value">{{transaction.detail.description}}</div>
+            </div>
+
+          </div>
+          <div class="price-block">
+            <div class="property">
+              <div class="label" *ngIf="transaction.detail.type != TransactionType.REFUND">Price:</div>
+              <div class="label" *ngIf="transaction.detail.type == TransactionType.REPLENISHMENT || transaction.detail.type == TransactionType.BONUS">Amount:</div>
+              <div class="value">{{transaction.detail.price / 100 | currency}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="mid-block" *ngIf="transaction.customer || transaction.service">
+
+          <div class="additional-info" *ngIf="transaction.customer">
+            <div class="label">Customer</div>
+            <div class="value">
+              {{transaction.customer}}
+              <div>{{transaction.location.streetAddress}}</div>
+              <div>{{transaction.location.city}} ,
+                {{transaction.location.state}} {{transaction.location.zip}}
+              </div>
+            </div>
+          </div>
+
+          <div class="additional-info" *ngIf="transaction.service">
+            <div class="label">Requested service:</div>
+            <div class="value">{{transaction.service}}</div>
+          </div>
+
+        </div>
+        <div class="footer-block">
+
+          <div class="payment-info">
+            <div class="title" *ngIf="transaction.paymentMethod || transaction.code">Payment information:</div>
+            <div class="property" *ngIf="transaction.paymentMethod">
+              <div class="label">Method:</div>
+              <div class="value">{{transaction.paymentMethod}}</div>
+            </div>
+            <div class="property" *ngIf="transaction.code">
+              <div class="label">Authorization code:</div>
+              <div class="value">{{transaction.code}}</div>
+            </div>
+          </div>
+
+          <div class="comments" *ngIf="transaction.comments && transaction.comments != ''">
+            <div class="label">Comments:</div>
+            <div class="value">{{transaction.comments}}</div>
+          </div>
+
+        </div>
+
+        <button class="view-project-btn" cv-button-empty [routerLink]="['/pro/projects', transaction.projectRequestId]"
+                *ngIf="transaction.projectRequestId">View project
+        </button>
+
+      </div>
+
+      <div class="invoice-records-card card" *ngIf="transaction.records.length > 0">
+
+        <div class="invoice-records-table">
+          <div class="table-header">
+            <div class="table-row">
+              <div class="date">Date</div>
+              <div class="type">Type</div>
+              <div class="description">Description</div>
+              <div class="amount">Amount</div>
+            </div>
+          </div>
+          <div class="table-content">
+            <ng-template ngFor [ngForOf]="transaction.records" let-item let-even="even" let-odd="odd">
+              <div class="table-row" [ngClass]="{'odd': odd, 'even' : even}">
+                <div class="date">{{item.date | date:'MM/dd/yyyy'}}</div>
+                <div class="type">{{item.type}}</div>
+                <div class="description">{{item.description}}</div>
+                <div class="amount">{{item.price / 100 | currency}}</div>
+              </div>
+            </ng-template>
+          </div>
+          <div class="table-footer">
+            <div class="table-row" [ngClass]="{'odd': transaction.records.length % 2 != 0}">
+              <div class="total">Total spend: {{transaction.totalSpend / 100 | currency}}</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<layout-footer></layout-footer>

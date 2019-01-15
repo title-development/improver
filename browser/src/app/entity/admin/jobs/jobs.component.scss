@@ -1,0 +1,44 @@
+.main-title {
+  font-size: 24px;
+  margin-bottom: 17px;
+  margin-top: 10px;
+}
+
+.content {
+  margin-top: 16px;
+
+  p-panel {
+
+    p-header {
+
+      .ui-helper-clearfix {
+        height: 31px;
+      }
+
+      .ui-panel-title {
+        font-weight: bold;
+        font-size: 18px;
+      }
+
+      p-button {
+        float: right;
+      }
+
+      p-progressspinner {
+        float: right;
+        margin-top: 4px;
+        margin-right: 20px;
+      }
+
+    }
+
+    ::ng-deep .ui-panel {
+      margin-bottom: 16px;
+    }
+
+
+  }
+
+}
+
+

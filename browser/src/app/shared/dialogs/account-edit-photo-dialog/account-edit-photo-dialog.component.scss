@@ -1,0 +1,163 @@
+@import "../../../../improver-mixins";
+
+.dialog-holder {
+  padding: 24px 22px;
+  @include response(xs) {
+    padding: 16px;
+  }
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  @include response(xs) {
+    margin-bottom: 16px;
+  }
+  h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: rgba(0, 0, 0, 0.87);
+    margin: 0;
+  }
+  mat-icon {
+    &:hover {
+      color: $black;
+    }
+  }
+}
+
+.content {
+  min-height: 60px;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.92);
+  position: relative;
+  .photo-preview {
+    img {
+      height: auto;
+      width: auto;
+      max-width: 600px;
+      max-height: 500px;
+      @include response(xs) {
+        max-height: 300px;
+        max-width: 100%;
+      }
+    }
+  }
+}
+
+.choose-image-label {
+  display: block;
+  height: 0;
+  padding-bottom: 55.5%;
+  background-color: $black-100;
+  position: relative;
+  cursor: pointer;
+  input {
+    display: none;
+  }
+  .holder {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    img {
+      width: 48px;
+    }
+    h5 {
+      color: $black-500;
+      font-size: 14px;
+      font-weight: 400;
+      margin: 0;
+      margin-top: 16px;
+    }
+  }
+}
+
+.actions {
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  user-select: none;
+  .icons-holder {
+    background-color: rgba(0, 0, 0, 0.52);
+    border-radius: 2px;
+    display: inline-block;
+    opacity: .4;
+    transition: opacity .3s ease;
+    &:hover {
+      opacity: 1;
+    }
+  }
+  span {
+    height: 25px;
+    width: 1px;
+    background-color: rgba($white, .6);
+    display: inline-block;
+    vertical-align: middle;
+  }
+  cv-icon {
+    font-size: 20px;
+    color: rgba($white, .6);
+    transition: color .3s ease;
+    padding: 6px 8px;
+    cursor: pointer;
+    vertical-align: middle;
+    &:hover {
+      color: $white;
+    }
+  }
+}
+
+.footer {
+  margin-top: 22px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  @include response(xs) {
+    margin-top: 16px;
+    flex-direction: column;
+    align-items: center;
+  }
+  .change-button {
+    input {
+      display: none;
+    }
+
+    label {
+      cursor: pointer;
+    }
+
+  }
+
+  .buttons {
+    @include response(xs) {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      width: 100%;
+      margin-top: 8px;
+    }
+    button:last-child {
+      margin-left: 16px;
+    }
+  }
+}
+
+::ng-deep .mat-dialog-container {
+  padding: 0px;
+}
+
+.close-modal {
+  right: inherit;
+  top: inherit;
+  float: none;
+  margin: 0;
+  color: #757575;
+}
+

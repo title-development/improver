@@ -1,0 +1,101 @@
+<div class="dialog-content-wrapper">
+  <div class="dialog-content-container">
+
+    <div class="header">
+
+      <mat-icon class="close-modal" color="accent" (click)="close()">clear</mat-icon>
+
+      <div class="header-content">
+
+        <div class="title" *ngIf="step == 1">What's the issue?</div>
+        <div class="title" *ngIf="questionary && step == 2" [innerHtml]="refundIssue.question
+          | replace : zipRegExp: '<b>' + questionary.zip + '</b>'
+          | replace : serviceNameRegExp: '<b>' + questionary.serviceName + '</b>'">
+        </div>
+        <div class="title" *ngIf="step == 3">Refund request accepted</div>
+
+      </div>
+
+    </div>
+
+    <div class="content" [cvSpinner]="questionaryProcessing" [cvSpinnerSize]="40" [cvSpinnerBackground]="true"
+         cvSpinnerBackgroundColor="white">
+
+      <form class="request-refund-form"
+            name="request-refund-form"
+            #requestRefundForm="ngForm"
+            (ngSubmit)="requestRefundForm.valid && onSubmit(requestRefundForm)"
+            novalidate>
+
+        <div class="step-wrapper" *ngIf="step == 1">
+
+          <cv-radio-group name="issue" [(ngModel)]="refundRequest.issue" required *ngIf="questionary">
+            <!--TODO: Real project zip code changed to 'this zip area'-->
+            <cv-radio *ngFor="let refundIssue of questionary.issues" [value]="refundIssue.name">
+              <div [innerHtml]="refundIssue.text
+              | replace : zipRegExp: 'this <b>zip area</b>'
+              | replace : serviceNameRegExp: '<b>' + questionary.serviceName+ '</b>'">
+              </div>
+            </cv-radio>
+
+          </cv-radio-group>
+
+        </div>
+
+        <div class="step-wrapper" *ngIf="step == 2">
+
+          <cv-radio-group name="option" [(ngModel)]="refundRequest.option" required *ngIf="refundIssue.options">
+
+            <cv-radio *ngFor="let refundOption of refundIssue.options" [value]="refundOption.name">
+              <div [innerHtml]="refundOption.text
+              | replace : zipRegExp: '<b>' + questionary.zip + '</b>'
+              | replace : serviceNameRegExp: '<b>' + questionary.serviceName+ '</b>'">
+              </div>
+            </cv-radio>
+
+          </cv-radio-group>
+
+          <div class="comment-wrapper"
+               [ngClass]="{'visible-input': requestRefundForm.controls['option']?.value == 'OTHER'}">
+          <textarea rows="3" trim maxlength="200" cv-input placeholder="Please specify the reasons" name="comment"
+                    [(ngModel)]="refundRequest.note"
+                    [required]="requestRefundForm.controls['option']?.value == 'OTHER'"></textarea>
+          </div>
+
+        </div>
+
+          <div class="step-wrapper status-wrapper" *ngIf="step == 3">
+
+          <div class="refund-request-accepted">
+
+            <div class="refund-request-description">Your refund credit request of <b>{{questionary.serviceName}}</b> in <b>{{questionary.zip}}</b> sent for processing</div>
+            <div class="contact-message">We may contact you for details</div>
+            <div class="time-hint">Request processing may take up to 14 working days</div>
+
+          </div>
+
+        </div>
+
+        <div class="buttons-wrapper">
+
+          <button cv-button-flat flatStyle="dark" (click)="close()" type="button" *ngIf="step == 1">Nevermind</button>
+          <button cv-button-flat flatStyle="dark" (click)="step = 1" type="button" *ngIf="step == 2">Back</button>
+          <div class="cv-error"
+               *ngIf="(requestRefundForm.controls?.issue?.errors && requestRefundForm.controls?.issue?.dirty) || (requestRefundForm.controls?.option?.errors && requestRefundForm.controls?.option?.dirty) || !requestRefundForm.valid && requestRefundForm.submitted">
+            <span>Required</span>
+          </div>
+          <button cv-button type="button" *ngIf="step == 1" (click)="submitIssue(requestRefundForm)">Next</button>
+          <button cv-button type="submit" *ngIf="step == 2">Submit</button>
+          <button cv-button type="button" *ngIf="step == 3" (click)="close()">Ok</button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+</div>
+
+
+

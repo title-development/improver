@@ -1,0 +1,25 @@
+@function map-deep-get($map, $keys...) {
+  @each $key in $keys {
+    $map: map-get($map, $key);
+  }
+  @return $map;
+}
+
+@function vw($width, $target) {
+  $vw-context: ($width * 0.01) * 1px;
+  @return ($target / $vw-context) * 1vw;
+}
+
+@function rem($size) {
+  $remSize: $size /$body-font-size;
+  @return #{$remSize}rem;
+}
+
+@function cv-color($key: 'primary') {
+  @return map-get($theme-colors, $key);
+}
+
+@function elevation($key: 1) {
+  @return map-get($elevations, $key);
+}
+

@@ -1,0 +1,146 @@
+<div class="page-wrapper">
+  <div class="container -top-space">
+
+    <div class="card -space">
+
+      <form class="ticket-form"
+            name="ticket-form"
+            #ticketForm="ngForm"
+            (ngSubmit)="ticketForm.valid && onSubmit(ticketForm)"
+            *ngIf="!ticketSent"
+            novalidate>
+
+        <div class="title">Contact Home improve</div>
+
+        <div class="row">
+
+          <div class="col-xs-12 col-sm-6">
+
+            <cv-input-field>
+              <input cv-input type="text" placeholder="Contact name"
+                     name="name"
+                     #name="ngModel"
+                     [(ngModel)]="ticket.name"
+                     required>
+              <cv-field-error *ngIf="name.dirty || name.touched || ticketForm.submitted">
+              <span *ngIf="name.errors?.required">
+                {{messages.errors.name.required}}
+              </span>
+              </cv-field-error>
+            </cv-input-field>
+
+          </div>
+
+          <div class="col-xs-12 col-sm-6">
+
+            <cv-input-field>
+              <input cv-input type="text" placeholder="Email"
+                     name="email"
+                     #email="ngModel"
+                     [(ngModel)]="ticket.email"
+                     required
+                     pattern="{{constants.patterns.email}}">
+              <cv-field-error *ngIf="email.dirty || email.touched || ticketForm.submitted">
+              <span *ngIf="email.errors?.required">
+                {{messages.errors.email.required}}
+              </span>
+                <span *ngIf="email.errors?.pattern">
+                {{messages.errors.email.pattern}}
+              </span>
+              </cv-field-error>
+            </cv-input-field>
+
+          </div>
+
+          <div class="col-xs-12 col-sm-12" *ngIf="securityService.hasRole(Role.CONTRACTOR) || securityService.hasRole(Role.ANONYMOUS)">
+
+            <cv-input-field>
+              <input cv-input type="text" placeholder="Business name"
+                     name="businessName"
+                     #businessName="ngModel"
+                     [(ngModel)]="ticket.businessName">
+              <cv-field-error *ngIf="businessName.dirty || businessName.touched || ticketForm.submitted">
+              <span *ngIf="businessName.errors?.required">
+                {{messages.errors.businessName.required}}
+              </span>
+
+              </cv-field-error>
+            </cv-input-field>
+
+          </div>
+
+          <div class="col-xs-12 col-sm-12">
+            <cv-field-label>Select a reason</cv-field-label>
+            <cv-select [multiple]="false" [tags]="false" [items]="options"
+                       name="option"
+                       #option="ngModel"
+                       [(ngModel)]="ticket.option"
+                       required
+                       label="Select one">
+            </cv-select>
+            <cv-field-error *ngIf="option.dirty || option.touched || ticketForm.submitted">
+              <span *ngIf="option.errors?.required">{{messages.errors.default.required}}</span>
+            </cv-field-error>
+
+          </div>
+
+          <div class="col-xs-12 col-sm-12">
+
+            <cv-input-field>
+              <cv-field-label>Message</cv-field-label>
+              <textarea cv-input placeholder="Tell us more"
+                        #description="ngModel"
+                        name="description"
+                        type="text"
+                        [(ngModel)]="ticket.description"
+                        required
+                        trim
+                        rows="4"
+                        minlength="20"
+                        maxlength="2500">
+                     </textarea>
+              <cv-field-error
+                *ngIf="description.dirty || description.touched || ticketForm.submitted">
+                      <span *ngIf="description.errors?.required">
+                        {{messages.errors.default.required}}
+                      </span>
+                <span *ngIf="description.errors?.minlength">
+                        {{messages.errors.default.minlength}}
+                      </span>
+                <span *ngIf="description.errors?.maxlength">
+                        {{messages.errors.default.maxlength}}
+                      </span>
+              </cv-field-error>
+            </cv-input-field>
+
+          </div>
+
+          <div class="col-xs-12 col-sm-12 buttons-wrapper" [cvSpinner]="ticketProcessing"
+               [cvSpinnerSize]="20"
+               [cvSpinnerBackground]="true"
+               cvSpinnerBackgroundColor="white">
+            <button cv-button [disabled]="!ticketForm.valid || ticketProcessing">Send</button>
+          </div>
+
+        </div>
+
+        <response-message *ngIf="showMessage" [type]="messageType" [message]="messageText"
+                          [paddingV]="12" [paddingH]="24"
+                          [showIcon]="false" (onHide)="onMessageHide($event)"></response-message>
+
+      </form>
+
+      <div class="after-ticket" *ngIf="ticketSent">
+        <img src="assets/img/round-icons/confirmation-envelope.png" alt="done">
+        <div class="title">Thank you</div>
+        <div class="message">We will contact you as soon as possible</div>
+        <button class="home-button" cv-button routerLink="/">Back to
+          <span *ngIf="securityService.hasRole(Role.CONTRACTOR); else home">Dashboard</span>
+          <ng-template #home>Home</ng-template>
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+</div>

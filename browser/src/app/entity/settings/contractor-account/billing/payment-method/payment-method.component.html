@@ -1,0 +1,62 @@
+<div class="payment-method-wrapper">
+  <div class="payment-method-container">
+    <div class="balance-part">
+
+      <div class="content">
+        <div class="balance-value">Balance:
+          <span>{{billingService.billing.balance / 100 | currency:'USD':'symbol'}}</span></div>
+        <button cv-button (click)="!paymentCardsProcessing && openAddMoney()"
+                [hidden]="cards?.length < 1 || paymentCardsProcessing">Replenish balance
+        </button>
+
+      </div>
+    </div>
+    <div class="payment-method-part" *ngIf="cards" [cvSpinner]="paymentCardsProcessing" [cvSpinnerSize]="30"
+         [cvSpinnerBackground]="true">
+
+      <div class="header">
+        <span *ngIf="cards.length > 0 && !paymentCardsProcessing">Select your default payment method</span>
+        <span *ngIf="cards.length <= 0 && !paymentCardsProcessing" class="no-cards-row">Please add a credit/debit card to finish your account setup</span>
+      </div>
+
+      <div class="content">
+
+        <ng-template ngFor [ngForOf]="cards" let-card let-index="index">
+
+          <div class="card-line" [ngClass]="{'default': index == 0}">
+            <div class="card-wrapper">
+              <div class="left-side">
+                <div class="card-image"
+                     [ngStyle]="{'background-image':'url(' + 'assets/img/credit-cards-types/' + tricksService.replaceSpases(card.brand) + '.png)'}"></div>
+                <div class="card-line-title">
+                  <span class="card-type">{{card.brand}}&nbsp;</span>
+                  <span class="card-name">ending in &nbsp;{{card.last4}}</span>
+                </div>
+              </div>
+              <div class="right-side">
+                <div class="default-card" *ngIf="index == 0" title="Default card"
+                     [ngStyle]="{'cursor': cards.length > 1 ? 'pointer': 'auto'}"
+                     (click)="cards.length > 1 && openChangeDefaultPaymentCard()">Default
+                </div>
+                <button class="card-button remove imp-icon-bin" title="Remove card"
+                        (click)="!paymentCardsProcessing && openRemoveCardConfirm(card)"></button>
+              </div>
+            </div>
+          </div>
+
+        </ng-template>
+
+        <div class="buttons-wrapper">
+          <button *ngIf="cards.length > 1" cv-button-flat (click)="!paymentCardsProcessing && openChangeDefaultPaymentCard()"
+                  [hidden]="cards.length <= 1">
+            Change default card
+          </button>
+          <div class="spacer"></div>
+          <button cv-button-empty *ngIf="cards.length < 5" (click)="openAddPaymentCard()">
+            Add new card
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

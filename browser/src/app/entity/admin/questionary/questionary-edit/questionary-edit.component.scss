@@ -1,0 +1,117 @@
+.page-title {
+  margin-bottom: 24px;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  background-color: #fff;
+  border: 1px solid #cccccc;
+  display: flex;
+  h5 {
+    margin: 0;
+    padding: 8px;
+    flex-grow: 1;
+    cursor: pointer;
+  }
+  &.gu-transit {
+    opacity: .3;
+  }
+  button {
+    width: 40px;
+    margin: 0;
+  }
+  margin-bottom: 8px;
+}
+
+.drag-n-drop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  color: #cccccc;
+  cursor: grab;
+}
+
+p-dialog::ng-deep {
+  .ui-dialog-content {
+    min-height: 400px;
+    max-height: 600px;
+  }
+}
+
+.new-answer {
+  > div {
+    flex-direction: row;
+    display: flex;
+  }
+  input {
+    margin-bottom: 0;
+  }
+  button {
+    flex: 1;
+  }
+}
+
+.new-question {
+  display: flex;
+  button {
+    flex: 0;
+  }
+}
+
+.question-edit, .questions-list {
+  .ui-grid-row {
+    &:not(:last-child) {
+      margin-bottom: 16px;
+    }
+  }
+}
+
+.footer {
+  border-top: 1px solid #d6d6d6;
+  margin-top: 16px;
+  padding-top: 16px;
+  display: flex;
+}
+
+p-footer .footer-actions {
+  display: flex;
+}
+
+.question-answers {
+  .field {
+    margin-bottom: 8px;
+    > div {
+      display: flex;
+      position: relative;
+      align-items: flex-end;
+    }
+    input {
+      margin-bottom: 0;
+    }
+    &.gu-transit {
+      opacity: .3;
+    }
+    button {
+      width: 44px;
+      height: 37px;
+    }
+    .drag-n-drop {
+      align-self: center;
+    }
+  }
+  image-preview {
+    width: 120px;
+  }
+}
+
+p-message::ng-deep {
+  .ui-message {
+    margin-top: 5px;
+  }
+}
