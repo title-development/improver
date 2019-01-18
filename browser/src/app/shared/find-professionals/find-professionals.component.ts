@@ -10,7 +10,7 @@ import { ProjectActionService } from '../../util/project-action.service';
 import { MediaQueryService } from '../../util/media-query.service';
 import { markAsTouched } from '../../util/functions';
 import { Router } from '@angular/router';
-import { FindProfessionalService } from "../../util/find-professional.service";
+import { FindProfessionalService } from '../../util/find-professional.service';
 
 @Component({
   selector: 'find-professionals',
@@ -62,11 +62,13 @@ export class FindProfessionalsComponent implements OnInit {
   }
 
   autocompleteSearch(search): void {
-    if(search) {
+    if (search) {
       this.filteredServiceTypes = this.serviceTypes.filter(service => {
         const regExp: RegExp = new RegExp(`\\b${search}`, 'gmi');
         return regExp.test(service.name);
-      })
+      });
+    } else if (this.filteredServiceTypes.length > 0) {
+      this.filteredServiceTypes = this.serviceTypes;
     }
   }
 
@@ -126,7 +128,7 @@ export class FindProfessionalsComponent implements OnInit {
       this.projectActionService.openQuestionary(serviceType, formData.zipCodeCtrl);
     } else {
       console.warn('Service type is not fount. Redirecting to custom search.');
-      this.router.navigate(['search'], { queryParams: { service: formData.serviceTypeCtrl, zip: formData.zipCodeCtrl } });
+      this.router.navigate(['search'], {queryParams: {service: formData.serviceTypeCtrl, zip: formData.zipCodeCtrl}});
     }
   }
 

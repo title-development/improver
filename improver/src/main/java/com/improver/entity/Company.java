@@ -33,7 +33,7 @@ public class Company {
 
     private String backgroundUrl;
 
-    @Column(length = COMPANY_DESCRIPTION_SIZE)
+    @Column(length = COMPANY_DESCRIPTION_MAX_SIZE)
     private String description;
 
     @Embedded

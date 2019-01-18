@@ -41,17 +41,14 @@ public class User implements Principal {
     @JsonIgnore
     protected String password;
 
-    @Pattern(regexp = NAME_PATTERN_STRING)
     protected String firstName;
 
-    @Pattern(regexp = NAME_PATTERN_STRING)
     protected String lastName;
 
     protected String displayName;
 
     protected String iconUrl;
 
-    @Pattern(regexp = PHONE_PATTERN_STRING)
     protected String internalPhone;
 
     protected boolean isActivated = false;

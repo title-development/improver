@@ -20,7 +20,13 @@ public class SerializationUtil {
     private SerializationUtil() {
     }
 
-    public static final String PHONE_PATTERN_STRING = "^\\(\\d{3}\\) \\d{3}-\\d{4}";
+    /**
+     * Allow
+     * (123) 456-7890
+     * (100) 000-0000
+     *  and empty string
+     */
+    public static final String PHONE_PATTERN_STRING = "(^\\([1-9]\\d{2}\\)\\s[0-9]{3}-[0-9]{4}$)|^$";
     public static final String ZIP_PATTERN_STRING = "\\d{5}";
     public static final String CITY_PATTERN_STRING ="^([a-zA-Z\\u0080-\\u024F]+(?:. |-| |'))*[a-zA-Z\\u0080-\\u024F]*$";
 
@@ -46,7 +52,7 @@ public class SerializationUtil {
      * Test'test test-test
      * Demo https://regex101.com/r/ic0UPr/1
      */
-    public static final String NAME_PATTERN_STRING = "^(?=.{1,40}$)[a-zA-Z0-9\\u00A1-\\uFFFF]+(?:[-'\\s][a-zA-Z0-9\\u00A1-\\uFFFF]+)*$";
+    public static final String NAME_PATTERN_STRING = "^[a-zA-Z\\u00A1-\\uFFFF][a-zA-Z0-9\\u00A1-\\uFFFF]+(?:[-'\\s][a-zA-Z0-9\\u00A1-\\uFFFF]+)*$";
     public static final String DATE_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ssxxx";
     public static final String DATE_PATTERN = "yyyy-MM-dd";
     public static final Pattern NUMERIC_PATTERN = Pattern.compile("\\d+");

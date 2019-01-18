@@ -8,6 +8,8 @@ import { catchError, finalize, switchMap } from 'rxjs/operators';
 import * as jwt_decode from 'jwt-decode';
 import { JWT } from './Jwt.inteface';
 import { createConsoleLogger } from '@angular-devkit/core/node';
+import { MatDialog } from '@angular/material';
+import { OverlayRef } from '../theme/util/overlayRef';
 
 @Injectable()
 export class SecurityService {
@@ -30,6 +32,8 @@ export class SecurityService {
               private router: Router,
               private appRef: ApplicationRef,
               private route: ActivatedRoute,
+              private dialog: MatDialog,
+              private overlayRef: OverlayRef,
               @Inject('Window') private window: Window) {
     if(this.isAuthenticated()) {
       this.window.addEventListener('storage', this.localStorageHandler, false);
@@ -139,6 +143,8 @@ export class SecurityService {
     this.returnUrl = '';
     this.logoutBackend();
     this.systemLogout();
+    this.dialog.closeAll();
+    this.overlayRef.removeBackdrop();
     this.router.navigate(['/']);
   }
 

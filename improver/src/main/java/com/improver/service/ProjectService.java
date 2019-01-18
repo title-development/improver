@@ -231,12 +231,12 @@ public class ProjectService {
 
     }
 
-    public void toValidationProject(Project project, Project.Reason reason, String text, User support) {
+    public void toValidationProject(Project project, Project.Reason reason, String comment, User support) {
         projectRepository.save(project.setUpdated(ZonedDateTime.now())
             .setStatus(Project.Status.VALIDATION)
             .setLead(false)
         );
-        projectActionRepository.save(ProjectAction.toValidationProject(reason, text, support).setProject(project));
+        projectActionRepository.save(ProjectAction.toValidationProject(reason, comment, support).setProject(project));
         if(project.getCustomer().getMailSettings().isProjectLifecycle()) {
             mailService.sendProjectStatusChanged(project, reason);
         }

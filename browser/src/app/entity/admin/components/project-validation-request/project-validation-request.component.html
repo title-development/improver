@@ -20,7 +20,7 @@
         </div>
       </div>
 
-      <div class="ui-g" >
+      <div class="ui-g">
         <div class="ui-grid-col-4">
           <label for="status">Reason</label>
         </div>
@@ -44,16 +44,22 @@
                   name="comment"
                   #comment="ngModel"
                   [(ngModel)]="validation.comment"
+                  [minlength]="constants.ADMIN_PROJECT_VALIDATION_COMMENT_MIN_SIZE"
+                  [maxlength]="constants.ADMIN_PROJECT_VALIDATION_COMMENT_MAX_SIZE"
                   required>
 
         </textarea>
         </div>
         <div class="ui-grid-col-4"></div>
         <div class="ui-grid-col-8">
-          <div class="ui-message ui-messages-error ui-corner-all"
-               *ngIf="(comment.dirty || comment.touched || form.submitted) && !comment.valid">
-            <span *ngIf="comment.errors?.required">Required</span>
-          </div>
+          <ng-container *ngIf="comment.dirty || comment.touched || form.submitted">
+            <div class="ui-message ui-messages-error ui-corner-all" *ngIf="comment.errors?.required">
+              <span>Required</span>
+            </div>
+            <div class="ui-message ui-messages-error ui-corner-all" *ngIf="comment.errors?.minlength">
+              <span>At least {{constants.ADMIN_PROJECT_VALIDATION_COMMENT_MIN_SIZE}} letters required</span>
+            </div>
+          </ng-container>
         </div>
       </div>
 

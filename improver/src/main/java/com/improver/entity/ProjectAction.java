@@ -5,17 +5,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.ForeignKey;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.time.ZonedDateTime;
 
+import static com.improver.util.database.DataAccessUtil.ADMIN_PROJECT_VALIDATION_COMMENT_MAX_SIZE;
 import static com.improver.util.serializer.SerializationUtil.DATE_TIME_PATTERN;
 
 
@@ -32,6 +26,7 @@ public class ProjectAction {
 
     private String author;
 
+    @Column(columnDefinition = "varchar(" + ADMIN_PROJECT_VALIDATION_COMMENT_MAX_SIZE + ")")
     private String text;
 
     @Enumerated(value = EnumType.STRING)
@@ -42,7 +37,7 @@ public class ProjectAction {
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "project_id",  foreignKey = @ForeignKey(name = "actions_project_fkey"))
+    @JoinColumn(name = "project_id", foreignKey = @ForeignKey(name = "actions_project_fkey"))
     private Project project;
 
 
@@ -96,8 +91,8 @@ public class ProjectAction {
         COMMENT("COMMENT"),
         UPDATE_LOCATION("UPDATE_LOCATION"),
         CHANGE_OWNER("CHANGE_OWNER"),
-        VALIDATE ("VALIDATE"),
-        INVALIDATE ("INVALIDATE"),
+        VALIDATE("VALIDATE"),
+        INVALIDATE("INVALIDATE"),
         TO_VALIDATION("TO_VALIDATION");
 
         private final String value;

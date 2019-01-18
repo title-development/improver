@@ -79,10 +79,14 @@
                                  #firstName="ngModel"
                                  name="firstName"
                                  [(ngModel)]="account.firstName"
+                                 [pattern]="constants.patterns.name"
                                  required>
                           <cv-field-error *ngIf="firstName.dirty || firstName.touched || personalInfoForm.submitted">
                               <span *ngIf="firstName.errors?.required">
                                 {{messages.errors.firstName.required}}
+                              </span>
+                              <span *ngIf="firstName.errors?.pattern">
+                                Please enter a valid name
                               </span>
                           </cv-field-error>
                         </cv-input-field>
@@ -97,10 +101,14 @@
                                  #lastName="ngModel"
                                  name="lastName"
                                  [(ngModel)]="account.lastName"
+                                 [pattern]="constants.patterns.name"
                                  required>
                           <cv-field-error *ngIf="lastName.dirty || lastName.touched || personalInfoForm.submitted">
                               <span *ngIf="lastName.errors?.required">
                                 {{messages.errors.lastName.required}}
+                              </span>
+                            <span *ngIf="lastName.errors?.pattern">
+                                Please enter a valid name
                               </span>
                           </cv-field-error>
                         </cv-input-field>

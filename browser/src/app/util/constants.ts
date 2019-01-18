@@ -9,6 +9,8 @@ export class Constants {
   COMPANY_FOUNDATION_MIN_YEAR = 1900;
   REVIEW_MESSAGE_MAX_LENGTH: number = 1500;
   REVIEW_MESSAGE_MIN_LENGTH: number = 10;
+  ADMIN_PROJECT_VALIDATION_COMMENT_MIN_SIZE: number = 10;
+  ADMIN_PROJECT_VALIDATION_COMMENT_MAX_SIZE: number = 500;
   patterns: any;
   projectStatuses: Array<any>;
   months: string[];
@@ -24,6 +26,8 @@ export class Constants {
       // TODO: add full explanation https://goo.gl/M9VaId
       email: '^(([^<>()\\[\\]\\\\.,;:\\s@"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@"]+)*)|(".+"))@(([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3})|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$',
 
+      name: '^[a-zA-Z\u00A1-\uFFFF][a-zA-Z0-9\u00A1-\uFFFF]+(?:[-\'\\s][a-zA-Z0-9\u00A1-\uFFFF]+)*$',
+
       // at least 8 characters
       // at least 1 numeric character
       // at least 1 lowercase or uppercase letter
@@ -33,8 +37,9 @@ export class Constants {
         '|' + // or
         '(^\\d{5}-\\d{4}$)',  // XXXXX-XXXX (X is digit)
 
-      // TODO: add full explanation
-      phone: '^\\([0-9]{3}\\) [0-9]{3}-[0-9]{4}$',
+      // (123) 456-7890
+      // (100) 000-0000
+      phone: '^\\([0-9]{3}\\)\\s[0-9]{3}-[0-9]{4}$',
 
       numeric: '^\\d*$', //only digits
 

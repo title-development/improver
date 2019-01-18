@@ -95,8 +95,8 @@ export class PersonalInfoComponent implements OnInit {
   }
 
   updateUserInfo(form: NgForm): void {
-    const formHaveChanges = Object.values(form.controls).some(control => control.dirty && control.touched);
-    if(formHaveChanges) {
+    const formHasChanges = Object.values(form.controls).some(control => control.dirty || control.touched);
+    if(formHasChanges) {
       this.accountService
         .updateAccount(this.securityService.getLoginModel().id, this.account)
         .subscribe(

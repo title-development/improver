@@ -88,7 +88,7 @@ public class RegistrationController {
 
 
     @PostMapping(CUSTOMERS)
-    public ResponseEntity registerCustomer(@RequestBody UserRegistration customer) {
+    public ResponseEntity registerCustomer(@RequestBody @Valid UserRegistration customer) {
         log.info("Registration of customer = " + customer.getEmail());
         userService.registerCustomer(customer);
         return new ResponseEntity(HttpStatus.OK);

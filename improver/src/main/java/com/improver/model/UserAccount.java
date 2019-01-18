@@ -6,7 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Pattern;
 import java.util.Map;
+
+import static com.improver.util.serializer.SerializationUtil.NAME_PATTERN_STRING;
+import static com.improver.util.serializer.SerializationUtil.PHONE_PATTERN_STRING;
 
 @Data
 @Accessors(chain = true)
@@ -15,11 +20,21 @@ public class UserAccount {
 
     private long id;
     private String iconUrl;
+
+    @Email
     private String email;
+
+    @Pattern(regexp = NAME_PATTERN_STRING)
     private String firstName;
+
+    @Pattern(regexp = NAME_PATTERN_STRING)
     private String lastName;
+
     private String displayName;
+
+    @Pattern(regexp = PHONE_PATTERN_STRING)
     private String phone;
+
     private boolean isNativeUser;
 
     public UserAccount(long id, String iconUrl, String email, String firstName, String lastName, String displayName, String phone, String password) {

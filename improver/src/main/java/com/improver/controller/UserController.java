@@ -37,6 +37,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
+
 import static com.improver.application.properties.Path.*;
 
 @RestController
@@ -133,7 +135,7 @@ public class UserController {
     @SameUserOrAdminAccess
     @PutMapping(ID_PATH_VARIABLE + "/update")
     public ResponseEntity<Void> updateUserAccount(@PathVariable long id,
-                                                  @RequestBody UserAccount user) {
+                                                  @RequestBody @Valid UserAccount user) {
         userService.updateAccount(id, user);
         return new ResponseEntity<>(HttpStatus.OK);
     }

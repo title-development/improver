@@ -68,7 +68,7 @@ export class SignupProComponent implements OnDestroy {
     },
     company: {
       name: "",
-      founded: new Date().getFullYear().toString(),
+      founded: "",
       siteUrl: "",
       email: "",
       phone: "",

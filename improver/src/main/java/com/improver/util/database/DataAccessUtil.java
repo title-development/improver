@@ -23,7 +23,10 @@ public final class DataAccessUtil {
     public static final String CD_BOOLEAN = "boolean default false";
 
     public static final int TICKET_MESSAGE_SIZE = 2500;
-    public static final int COMPANY_DESCRIPTION_SIZE = 2500;
+    public static final int COMPANY_DESCRIPTION_MIN_SIZE = 20;
+    public static final int COMPANY_DESCRIPTION_MAX_SIZE = 2500;
+    public static final int COMPANY_NAME_MIN_SIZE = 2;
+    public static final int COMPANY_NAME_MAX_SIZE = 50;
     public static final int ORDER_DESCRIPTION_SIZE = 1500;
     public static final int REVIEW_REQUEST_SUBJECT_MIN_SIZE = 10;
     public static final int REVIEW_REQUEST_SUBJECT_MAX_SIZE = 50;
@@ -31,6 +34,9 @@ public final class DataAccessUtil {
     public static final int REVIEW_REQUEST_MESSAGE_MAX_SIZE = 255;
     public static final int REVIEW_MESSAGE_MIN_SIZE = 10;
     public static final int REVIEW_MESSAGE_MAX_SIZE = 1500;
+
+    public static final int ADMIN_PROJECT_VALIDATION_COMMENT_MIN_SIZE= 10;
+    public static final int ADMIN_PROJECT_VALIDATION_COMMENT_MAX_SIZE= 500;
 
 
 }

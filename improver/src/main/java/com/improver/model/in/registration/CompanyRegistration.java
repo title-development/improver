@@ -8,7 +8,7 @@ import org.hibernate.validator.constraints.Range;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 
-import static com.improver.util.database.DataAccessUtil.COMPANY_DESCRIPTION_SIZE;
+import static com.improver.util.database.DataAccessUtil.*;
 
 @Data
 @Accessors(chain = true)
@@ -18,10 +18,10 @@ public class CompanyRegistration {
 
     private String logo;
 
-    @Size(min = 2, max = 50, message = "Company name should be valid")
+    @Size(min = COMPANY_NAME_MIN_SIZE, max = COMPANY_NAME_MAX_SIZE, message = "Company name should be be between " + COMPANY_NAME_MIN_SIZE + " and" + COMPANY_NAME_MAX_SIZE + "characters")
     private String name;
 
-    @Size(min = 20, max = COMPANY_DESCRIPTION_SIZE, message = "Company description must be between 20 and 2500 characters")
+    @Size(min = COMPANY_DESCRIPTION_MIN_SIZE, max = COMPANY_DESCRIPTION_MAX_SIZE, message = "Company description must be between " + COMPANY_DESCRIPTION_MIN_SIZE + " and" + COMPANY_DESCRIPTION_MAX_SIZE + "characters")
     private String description;
 
     @Valid

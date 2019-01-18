@@ -2,27 +2,24 @@ import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ContractorGuard } from '../../auth/router-guards/contractor.guard';
 import { UserGuard } from '../../auth/router-guards/user.guard';
-import { PendingChangesGuard } from '../../auth/router-guards/pending-chanes.guard';
 import { NotificationGuard } from '../../auth/router-guards/notification.guard';
 import { AuthGuard } from '../../auth/router-guards/auth.guard';
-import { CustomerGuard } from '../../auth/router-guards/customer.guard';
 
 const routes: Routes = [
   {
     path: 'my',  children: [
       {path: '', redirectTo: 'settings', pathMatch: 'full'},
       {
-        path: 'settings', canActivateChild: [ AuthGuard, CustomerGuard ], children: [
+        path: 'settings', canActivateChild: [ AuthGuard, UserGuard ], children: [
           {path: '', redirectTo: 'account', pathMatch: 'full'},
           {
             path: 'account',
-            loadChildren: 'app/entity/settings/shared/personal-info/personal-info.module#PersonalInfoModule',
-            canActivate: [UserGuard]
+            loadChildren: 'app/entity/settings/shared/personal-info/personal-info.module#PersonalInfoModule'
           },
           {
             path: 'notifications',
             loadChildren: 'app/entity/settings/customer-account/customer-notifications/customer-notifications.module#CustomerNotificationsModule',
-            canActivate: [UserGuard, NotificationGuard]
+            canActivate: [NotificationGuard]
           }
         ]
       }

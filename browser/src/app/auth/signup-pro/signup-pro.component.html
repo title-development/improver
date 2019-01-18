@@ -45,6 +45,7 @@
                            name="firstName"
                            [(ngModel)]="contractorRegistration.contractor.firstName"
                            minlength="2"
+                           [pattern]="constants.patterns.name"
                            trim
                            required>
                     <cv-field-error *ngIf="firstName.dirty || firstName.touched || accountForm.submitted">
@@ -53,6 +54,9 @@
                       </span>
                       <span *ngIf="firstName.errors?.minlength">
                         {{messages.errors.firstName.minlength}}
+                      </span>
+                      <span *ngIf="firstName.errors?.pattern">
+                        Please enter a valid name
                       </span>
                     </cv-field-error>
                   </cv-input-field>
@@ -69,6 +73,7 @@
                            [(ngModel)]="contractorRegistration.contractor.lastName"
                            minlength="2"
                            trim
+                           [pattern]="constants.patterns.name"
                            required>
                     <cv-field-error *ngIf="lastName.dirty || lastName.touched || accountForm.submitted">
                       <span *ngIf="lastName.errors?.required">
@@ -76,6 +81,9 @@
                       </span>
                       <span *ngIf="lastName.errors?.minlength">
                         {{messages.errors.lastName.minlength}}
+                      </span>
+                      <span *ngIf="firstName.errors?.pattern">
+                        Please enter a valid name
                       </span>
                     </cv-field-error>
                   </cv-input-field>

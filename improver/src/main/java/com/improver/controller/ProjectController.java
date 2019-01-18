@@ -110,7 +110,7 @@ public class ProjectController {
 
     @SupportAccess
     @PutMapping(ID_PATH_VARIABLE + "/validation")
-    public ResponseEntity<Void> validateProject(@PathVariable long id, @RequestBody ValidationProjectRequest request ){
+    public ResponseEntity<Void> validateProject(@PathVariable long id, @RequestBody @Valid ValidationProjectRequest request ){
 
         Project project = projectRepository.findById(id)
             .orElseThrow(NotFoundException::new);
