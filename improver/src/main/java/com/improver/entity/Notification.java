@@ -116,21 +116,21 @@ public class Notification {
     public static Notification projectInvalidated(User receiver, String serviceType, long projectId){
         return new Notification().setUser(receiver)
             .setIcon(SYSTEM_NOTIFICATION_ICON)
-            .setPayload(String.format("Your <b>%s</b> project has been invalidated.", serviceType))
+            .setPayload(String.format("Your <b>%s</b> project has been invalidated", serviceType))
             .setLink(CUSTOMER_PROJECTS + projectId);
     }
 
     public static Notification projectToValidation(User receiver, String serviceType, long projectId){
         return new Notification().setUser(receiver)
             .setIcon(SYSTEM_NOTIFICATION_ICON)
-            .setPayload(String.format("Your <b>%s</b> project has been sent to manual validation.", serviceType))
+            .setPayload(String.format("Your <b>%s</b> project has been sent to manual validation", serviceType))
             .setLink(CUSTOMER_PROJECTS + projectId);
     }
 
     public static Notification projectValidated(User receiver, String serviceType, long projectId){
         return new Notification().setUser(receiver)
             .setIcon(SYSTEM_NOTIFICATION_ICON)
-            .setPayload(String.format("Your <b>%s</b> project has been validated.", serviceType))
+            .setPayload(String.format("Your <b>%s</b> project has been validated", serviceType))
             .setLink(CUSTOMER_PROJECTS + projectId);
     }
 

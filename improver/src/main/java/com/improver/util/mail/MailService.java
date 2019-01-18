@@ -281,10 +281,10 @@ public class MailService {
         StringBuilder body = new StringBuilder("Your ").append(highlight(project.getServiceType().getName())).append(" project has been");
         switch (project.getStatus()){
             case INVALID:
-                body.append(" invalidated");
+                body.append(" invalidated.");
                 break;
             case VALIDATION:
-                body.append(" sent to manual validation");
+                body.append(" sent to manual validation.");
                 break;
             case ACTIVE:
             case IN_PROGRESS:
@@ -300,6 +300,18 @@ public class MailService {
         context.setVariable(CONFIRM_URL, siteUrl + CUSTOMER_PROJECTS + project.getId());
         context.setVariable(CONFIRM_BTN_TEXT, "View project");
         mailClient.sendMail("Project status changed", CONFIRMATION_TEMPLATE, context, MailHolder.MessageType.NOREPLY, customer.getEmail());
+    }
+
+
+    public void sendTicketSubmitted(String email) {
+        Context context = contextTemplate();
+        context.setVariable(TITLE, "Ticket is submitted");
+        context.setVariable(BODY,"Your request has been received, and is being reviewed by our support staff.<br>" +
+            "Normal Home Improve support hours are Monday through Friday 10am to 5pm PST, and we're closed on major holidays. " +
+            "Our support staff is not able to respond to requests outside those hours, and we answer requests in the order received.<br>" +
+            "We do our best to respond to requests within 1-4 business days of receipt, but response times may be longer during periods of heavy request traffic." +
+            "We appreciate your patience and will be in touch as soon as possible.");
+        mailClient.sendMail("Ticket is submitted", NOTICE_TEMPLATE, context, MailHolder.MessageType.NOREPLY, email);
     }
 
 

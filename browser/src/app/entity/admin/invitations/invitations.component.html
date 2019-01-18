@@ -46,12 +46,15 @@
       <span class="word-break">{{data[col.field]}}</span>
     </ng-template>
   </p-column>
-  <p-column field="bonus" header="Bonus ({{bonusFilter[0]}} - {{bonusFilter[1]}}), cents" [sortable]="true" [filter]="true">
+  <p-column field="bonus" header="Bonus ({{bonusFilter[0]}} - {{bonusFilter[1]}}), $" [sortable]="true" [filter]="true">
     <ng-template pTemplate="filter" let-col>
       <i class="pi pi-close" (click)="clearBonusFilter(col, dt)"></i>
       <p-slider [style]="{'width':'100%','margin-top':'8px'}" [(ngModel)]="bonusFilter" [min]="minBonusValue"
                 [max]="maxBonusValue" [step]="1" [range]="true"
                 (onChange)="onBonusFilterChange($event, dt, col)"></p-slider>
+    </ng-template>
+    <ng-template let-col let-data="rowData" pTemplate="body">
+      <span>{{data[col.field] / 100}}</span>
     </ng-template>
   </p-column>
   <p-column field="description" header="Description" [sortable]="true"
@@ -159,4 +162,4 @@
   </form>
 </p-dialog>
 
-<p-contextMenu #cm [model]="contextMenuItems"></p-contextMenu>
+<p-contextMenu #cm [model]="contextMenuItems" [hidden]="contextMenuItems.length <= 0 || (contextMenuItems | where: ['visible', true]).length <= 0"></p-contextMenu>

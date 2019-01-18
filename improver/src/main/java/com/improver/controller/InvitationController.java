@@ -49,8 +49,7 @@ public class InvitationController {
     @AdminAccess
     @DeleteMapping(ID_PATH_VARIABLE)
     public ResponseEntity<Void> delete(@PathVariable long id) {
-        Invitation invitation = invitationRepository.findById(id).orElseThrow(NotFoundException::new);
-        invitationRepository.delete(invitation);
+        invitationService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

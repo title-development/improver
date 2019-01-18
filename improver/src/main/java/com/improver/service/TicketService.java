@@ -3,22 +3,24 @@ package com.improver.service;
 import com.improver.entity.Ticket;
 import com.improver.exception.NotFoundException;
 import com.improver.repository.TicketRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.improver.util.mail.MailService;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
 
+@Log
 @Service
 public class TicketService {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
-
-    @Autowired
-    private TicketRepository ticketRepository;
+    @Autowired private TicketRepository ticketRepository;
+    @Autowired private MailService mailService;
 
     public void add(Ticket ticket) {
+        if (!ticket.getOption().equals(Ticket.Option.FEEDBACK)) {
+            mailService.sendTicketSubmitted(ticket.getEmail());
+        }
         ticketRepository.save(ticket);
     }
 

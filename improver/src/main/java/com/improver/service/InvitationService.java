@@ -1,14 +1,17 @@
 package com.improver.service;
 
 import com.improver.entity.Invitation;
+import com.improver.exception.NotFoundException;
 import com.improver.exception.ValidationException;
 import com.improver.model.ContractorInvitation;
 import com.improver.repository.InvitationRepository;
 import com.improver.repository.UserRepository;
 import com.improver.util.mail.MailService;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+@Log
 @Service
 public class InvitationService {
 
@@ -35,5 +38,10 @@ public class InvitationService {
 
     public void resend(Invitation invitation) {
         mailService.sendInvitation(invitation.getEmail(), invitation.getBonus());
+    }
+
+    public void delete(long id) {
+        Invitation invitation = invitationRepository.findByIdAndActivatedIsNull(id).orElseThrow(NotFoundException::new);
+        invitationRepository.delete(invitation);
     }
 }

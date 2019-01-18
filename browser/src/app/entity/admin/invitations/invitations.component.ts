@@ -39,8 +39,8 @@ export class InvitationsComponent {
   displayInviteDialog: boolean = false;
 
   bonusTimeout;
-  maxBonusValue: number = 99900;
-  minBonusValue: number = 10000;
+  maxBonusValue: number = 999;
+  minBonusValue: number = 100;
   bonusFilter: Array<number> = [this.minBonusValue, this.maxBonusValue];
 
   contextMenuItems: Array<MenuItem>;
@@ -71,6 +71,8 @@ export class InvitationsComponent {
   loadLazy(event, callback: () => void): void {
     const pagination: Pagination = new Pagination().fromPrimeNg(event);
     const filters = filtersToParams(event.filters);
+    if (filters.bonusFrom) filters.bonusFrom *= 100;
+    if (filters.bonusTo) filters.bonusTo *= 100;
     if (typeof callback == 'function') {
       callback.call(this, filters, pagination);
     }
@@ -84,7 +86,7 @@ export class InvitationsComponent {
         command: () => {
           this.delete();
         },
-        visible: this.securityService.hasRole(Role.ADMIN)
+        visible: this.securityService.hasRole(Role.ADMIN) && this.selectedInvitation && this.selectedInvitation.activated == null
       },
       {
         label: 'Resend',

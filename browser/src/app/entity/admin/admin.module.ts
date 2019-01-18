@@ -101,6 +101,7 @@ import { AgmSnazzyInfoWindowModule } from '@agm/snazzy-info-window';
 import { AdminJobsComponent } from "./jobs/jobs.component";
 import { JobService } from "../../api/services/job.service";
 import { ReviewRevisionRequestComponent } from "./components/review-revision-request/review-revision-request.component";
+import { NgArrayPipesModule } from "angular-pipes";
 
 
 
@@ -135,6 +136,7 @@ import { ReviewRevisionRequestComponent } from "./components/review-revision-req
     SelectButtonModule,
     PaginatorModule,
     PipesModule,
+    NgArrayPipesModule,
     OverlayPanelModule,
     ChipsModule,
     AccordionModule,
