@@ -11,7 +11,7 @@ public final class SecurityProperties {
     private static final long MILLISECONDS_IN_HOUR = 60 * 60 * 1000L;
 
 
-    public static final long ACCESS_TOKEN_EXPIRATION = 10 * 60 * 1000L;
+    public static final long ACCESS_TOKEN_EXPIRATION = 2 * 60 * 1000L;
     public static final long REFRESH_TOKEN_EXPIRATION = 24 * 60 * 60 * 1000L;
     public static final long ACTIVATION_LINK_EXPIRATION = 2 * MILLISECONDS_IN_DAY;
 

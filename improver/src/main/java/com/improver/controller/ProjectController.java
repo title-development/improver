@@ -146,28 +146,6 @@ public class ProjectController {
     }
 
 
-
-    @PreAuthorize("hasAnyRole('CUSTOMER', 'ADMIN', 'SUPPORT')")
-    @GetMapping(ID_PATH_VARIABLE + "/close")
-    public ResponseEntity<CloseProjectQuestionary> getCloseVariants(@PathVariable long id) {
-        Project project = projectRepository.findById(id)
-            .orElseThrow(NotFoundException::new);
-
-        List<NameIdImageTuple> potentialExecutors = projectService.getPotentialExecutors(project);
-        return new ResponseEntity<>(new CloseProjectQuestionary(potentialExecutors), HttpStatus.OK);
-    }
-
-
-    @PreAuthorize("hasAnyRole('CUSTOMER', 'ADMIN', 'SUPPORT')")
-    @PostMapping(ID_PATH_VARIABLE + "/close")
-    public ResponseEntity<Void> closeProject(@PathVariable long id, @RequestBody @Valid CloseProjectRequest request) {
-        Project project = projectRepository.findById(id)
-            .orElseThrow(NotFoundException::new);
-        projectService.closeProject(project, request);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-
     @PreAuthorize("hasAnyRole('CUSTOMER', 'ADMIN', 'SUPPORT')")
     @GetMapping(ID_PATH_VARIABLE + IMAGES)
     public ResponseEntity<Collection<String>> getProjectPicturesUrls(@PathVariable long id) {
@@ -176,7 +154,8 @@ public class ProjectController {
     }
 
 
-    @PreAuthorize("hasAnyRole('CUSTOMER', 'ADMIN', 'SUPPORT')")
+    //TODO: remove to CustomerProject Controller
+    @PreAuthorize("hasRole('CUSTOMER')")
     @PostMapping(ID_PATH_VARIABLE + IMAGES)
     public ResponseEntity<Void> addProjectImage(@PathVariable long id, MultipartFile file) {
         Project project = projectService.getProject(id);
@@ -190,7 +169,7 @@ public class ProjectController {
     }
 
 
-    @PreAuthorize("hasAnyRole('CUSTOMER', 'ADMIN', 'SUPPORT')")
+    @PreAuthorize("hasRole('CUSTOMER')")
     @DeleteMapping(ID_PATH_VARIABLE + IMAGES)
     public ResponseEntity<String> deleteProjectImage(@PathVariable long id, @RequestParam String imageUrl) {
         Project project = projectService.getProject(id);
@@ -199,5 +178,27 @@ public class ProjectController {
         projectRepository.save(project.setUpdated(ZonedDateTime.now()));
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+
+    @PreAuthorize("hasRole('CUSTOMER')")
+    @GetMapping(ID_PATH_VARIABLE + "/close")
+    public ResponseEntity<CloseProjectQuestionary> getCloseVariants(@PathVariable long id) {
+        Project project = projectRepository.findById(id)
+            .orElseThrow(NotFoundException::new);
+
+        List<NameIdImageTuple> potentialExecutors = projectService.getPotentialExecutors(project);
+        return new ResponseEntity<>(new CloseProjectQuestionary(potentialExecutors), HttpStatus.OK);
+    }
+
+
+    @PreAuthorize("hasRole('CUSTOMER')")
+    @PostMapping(ID_PATH_VARIABLE + "/close")
+    public ResponseEntity<Void> closeProject(@PathVariable long id, @RequestBody @Valid CloseProjectRequest request) {
+        Project project = projectRepository.findById(id)
+            .orElseThrow(NotFoundException::new);
+        projectService.closeProject(project, request);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 
 }

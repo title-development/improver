@@ -77,7 +77,10 @@ public class TestDataInitializer {
 
     private static final String TILE_INSTALLATION = "Tile Installation";
     private static final String ARCHITECTURAL_SERVICES = "Architectural Services";
-    private static final String DEMO_PASS = "improver1";
+    private static final String DEMO_PASS = "2019bestHOMEimprove";
+    private static final String ADMIN_DEMO_PASS = "adDOmeafavor2019!";
+    private static final String SUPPORT_DEMO_PASS = "supDOmeafavor2019";
+
     private static final String DEMO_PHONE = "(123) 123-1234";
     private static final String REPLENISHMENT_DESCRIPTION_PART = "Payment card ending in ";
 
@@ -323,16 +326,16 @@ public class TestDataInitializer {
             .setCreated(ZonedDateTime.now().minusYears(2).plusMonths(2))
         );
 
-        contractorRepository.save(new Contractor("Example", "Pro", PRO_5, DEMO_PASS + "1", DEMO_PHONE)
+        contractorRepository.save(new Contractor("Example", "Pro", PRO_5, DEMO_PASS, DEMO_PHONE)
             .setActivated(true)
         );
 
-        adminRepository.save(new Admin("Bridget", "Jones", ADMIN_1, DEMO_PASS, DEMO_PHONE)
+        adminRepository.save(new Admin("Bridget", "Jones", ADMIN_1, ADMIN_DEMO_PASS, DEMO_PHONE)
             .setActivated(true)
             .setCreated(ZonedDateTime.now().minusYears(1).minusMonths(4))
         );
 
-        supportRepository.save(new Support("John", "Wick", SUPPORT_1, DEMO_PASS, DEMO_PHONE)
+        supportRepository.save(new Support("John", "Wick", SUPPORT_1, SUPPORT_DEMO_PASS, DEMO_PHONE)
             .setActivated(true)
         );
 

@@ -6,6 +6,7 @@ import com.improver.exception.ValidationException;
 import com.improver.model.out.*;
 import com.improver.repository.TransactionRepository;
 import com.improver.security.UserSecurityService;
+import com.improver.security.annotation.AdminAccess;
 import com.improver.security.annotation.CompanyMember;
 import com.improver.service.*;
 import com.improver.model.in.StripeToken;
@@ -53,7 +54,7 @@ public class BillingController {
     }
 
 
-    @CompanyMember
+    @AdminAccess
     @PostMapping("/bonus")
     public ResponseEntity<Void> addBonus(@PathVariable String companyId, @RequestBody int amount) {
         Company company = companyRepository.findById(companyId)

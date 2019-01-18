@@ -158,8 +158,10 @@ public class Project implements ImageContainable {
             return Arrays.asList(VALIDATION, ACTIVE, IN_PROGRESS);
         }
 
-        public static List<Status>  getArchived() {
-            return Arrays.asList(COMPLETED, CANCELED);
+        public static List<Status> getArchived() {
+            List<Status> archived = new ArrayList<>(Arrays.asList(Status.values()));
+            archived.removeAll(getActive());
+            return archived;
         }
 
         public static List<Status>  forPurchase() {
