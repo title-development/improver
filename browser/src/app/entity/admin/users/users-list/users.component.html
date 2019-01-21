@@ -100,15 +100,15 @@
       <div class="ui-grid-col-8"><input pInputText id="internalPhone" [(ngModel)]="editedUser.internalPhone"/></div>
     </div>
     <div class="ui-grid-row ui-grid-field">
-      <div class="ui-grid-col-4"><label for="blocked">Blocked</label></div>
+      <div class="ui-grid-col-4"><label>Blocked</label></div>
       <div class="ui-grid-col-8">
-        <p-inputSwitch id="blocked" [disabled]="true" onLabel="Yes" offLabel="No" [(ngModel)]="editedUser.blocked"></p-inputSwitch>
+        <span>{{editedUser.blocked ? 'Yes' : 'No'}}</span>
       </div>
     </div>
     <div class="ui-grid-row ui-grid-field">
-      <div class="ui-grid-col-4"><label for="activated">Activated</label></div>
+      <div class="ui-grid-col-4"><label>Activated</label></div>
       <div class="ui-grid-col-8">
-        <p-inputSwitch id="activated" [disabled]="true" onLabel="Yes" offLabel="No" [(ngModel)]="editedUser.activated"></p-inputSwitch>
+        <span>{{editedUser.activated ? 'Yes' : 'No'}}</span>
       </div>
     </div>
   </div>

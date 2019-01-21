@@ -1,6 +1,7 @@
 package com.improver.model.in.registration;
 
 import com.improver.entity.ExtendedLocation;
+import com.improver.util.validator.MaxYearCurrent;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Range;
@@ -32,7 +33,8 @@ public class CompanyRegistration {
     @Email
     private String email;
 
-    @Range(min = 1900, max = 2018, message = "Company foundation year should be valid")
+    @MaxYearCurrent(message = "Company foundation year should be valid")
+    @Range(min = 1900, message = "Company foundation year should be valid")
     private int founded;
 
     private String siteUrl;

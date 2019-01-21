@@ -19,7 +19,7 @@ public class TicketService {
 
     public void add(Ticket ticket) {
         if (!ticket.getOption().equals(Ticket.Option.FEEDBACK)) {
-            mailService.sendTicketSubmitted(ticket.getEmail());
+            mailService.sendTicketSubmitted(ticket);
         }
         ticketRepository.save(ticket);
     }

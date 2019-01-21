@@ -5,6 +5,7 @@ import com.improver.repository.TicketRepository;
 import com.improver.service.TicketService;
 import com.improver.util.annotation.PageableSwagger;
 import com.improver.security.annotation.SupportAccess;
+import lombok.extern.java.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,16 +18,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import static com.improver.application.properties.Path.*;
 
+@Log
 @RestController
 @RequestMapping(TICKETS_PATH)
 public class TicketsController {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
-
-    @Autowired
-    TicketRepository ticketRepository;
-    @Autowired
-    TicketService ticketService;
+    @Autowired TicketRepository ticketRepository;
+    @Autowired TicketService ticketService;
 
 
     @SupportAccess
@@ -45,7 +43,7 @@ public class TicketsController {
 
     @PostMapping
     public ResponseEntity<Void> add(@RequestBody Ticket ticket) {
-        ticketRepository.save(ticket);
+        ticketService.add(ticket);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

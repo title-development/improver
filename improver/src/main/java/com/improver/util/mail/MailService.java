@@ -303,15 +303,18 @@ public class MailService {
     }
 
 
-    public void sendTicketSubmitted(String email) {
+    public void sendTicketSubmitted(Ticket ticket) {
         Context context = contextTemplate();
+        context.setVariable(CONTENT_ALIGN, "left");
         context.setVariable(TITLE, "Ticket is submitted");
-        context.setVariable(BODY,"Your request has been received, and is being reviewed by our support staff.<br>" +
+        context.setVariable(BODY,"Reason: " + highlight(ticket.getOption().getValue()) + "<br/>" +
+            "Comment: " + highlight(ticket.getDescription()) + "<br/><br/>" +
+            "Your request has been received, and is being reviewed by our support staff.<br>" +
             "Normal Home Improve support hours are Monday through Friday 10am to 5pm PST, and we're closed on major holidays. " +
             "Our support staff is not able to respond to requests outside those hours, and we answer requests in the order received.<br>" +
             "We do our best to respond to requests within 1-4 business days of receipt, but response times may be longer during periods of heavy request traffic." +
             "We appreciate your patience and will be in touch as soon as possible.");
-        mailClient.sendMail("Ticket is submitted", NOTICE_TEMPLATE, context, MailHolder.MessageType.NOREPLY, email);
+        mailClient.sendMail("Ticket is submitted", NOTICE_TEMPLATE, context, MailHolder.MessageType.NOREPLY, ticket.getEmail());
     }
 
 
