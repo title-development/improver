@@ -115,6 +115,11 @@ public class ProjectMessage {
         return new ProjectMessage(projectRequest, SENDER_SYSTEM, time, Type.EVENT, Event.REFUND_REJECTED);
     }
 
+    @Deprecated
+    public static ProjectMessage invalidate(ProjectRequest projectRequest, ZonedDateTime time) {
+        return new ProjectMessage(projectRequest, SENDER_SYSTEM, time, Type.EVENT, Event.INVALIDATED);
+    }
+
     public static ProjectMessage autoClose(ProjectRequest projectRequest, ZonedDateTime time) {
         return new ProjectMessage(projectRequest, SENDER_SYSTEM, time, Type.EVENT, Event.AUTO_CLOSE);
     }
@@ -163,7 +168,8 @@ public class ProjectMessage {
         LEAVE ("LEAVE"),
         REFUND_REQUEST ("REFUND_REQUEST"),
         REFUND_APPROVED ("REFUND_APPROVED"),
-        REFUND_REJECTED ("REFUND_REJECTED");
+        REFUND_REJECTED("REFUND_REJECTED"),
+        INVALIDATED("INVALIDATED");
 
         private final String value;
 

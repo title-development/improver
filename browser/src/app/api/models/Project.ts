@@ -57,7 +57,7 @@ export namespace Project {
   }
 
   export function isArchived(status: Project.Status) {
-    return status === Status.COMPLETED || status === Status.CANCELED;
+    return status === Status.COMPLETED || status === Status.CANCELED || status === Status.INVALID;
   }
 
   export class ValidationRequest {

@@ -17,6 +17,10 @@ import org.springframework.stereotype.Service;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
+import static com.improver.entity.ProjectMessage.Event.IS_TYPING;
+import static com.improver.entity.ProjectMessage.Event.READ;
+import static com.improver.entity.ProjectMessage.Type.EVENT;
+
 @Slf4j
 @Service
 public class ChatService {
@@ -31,7 +35,8 @@ public class ChatService {
      */
     public ProjectMessage handleMessage(ProjectMessage message, long projectRequestId) {
         message.setCreated(ZonedDateTime.now());
-        boolean isReadEvent = ProjectMessage.Type.EVENT.equals(message.getType()) && (ProjectMessage.Event.READ.equals(message.getEvent()) || ProjectMessage.Event.IS_TYPING.equals(message.getEvent()));
+        boolean isReadEvent = EVENT.equals(message.getType())
+            && (READ.equals(message.getEvent()) || IS_TYPING.equals(message.getEvent()));
         if (!isReadEvent) {
             log.debug("Broadcast message from user " + message.getSender());
         }

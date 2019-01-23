@@ -55,6 +55,7 @@ export namespace ProjectRequest {
     REFUND_REQUEST = 'REFUND_REQUEST',
     REFUND_APPROVED = 'REFUND_APPROVED',
     REFUND_REJECTED = 'REFUND_REJECTED',
+    INVALIDATED = 'INVALIDATED'
   }
 
   export enum MessageType {

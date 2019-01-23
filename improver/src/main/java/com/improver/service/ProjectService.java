@@ -30,6 +30,8 @@ import java.util.stream.Collectors;
 import static com.improver.entity.Project.Status.CANCELED;
 import static com.improver.entity.Project.Status.COMPLETED;
 import static com.improver.entity.Project.Status.IN_PROGRESS;
+import static com.improver.model.in.CloseProjectRequest.Action.CANCEL;
+import static com.improver.model.in.CloseProjectRequest.Action.INVALIDATE;
 
 
 @Service
@@ -79,7 +81,7 @@ public class ProjectService {
     public void closeProject(Project project, CloseProjectRequest request) {
         ZonedDateTime time = ZonedDateTime.now();
         updateProjectToClose(project, request, time);
-        if (request.getAction().equals(CloseProjectRequest.Action.CANCEL)) {
+        if (request.getAction().equals(CANCEL)) {
             log.info("Canceling all projectRequests the project {}", project.getId());
         } else if (request.getReason().equals(Project.Reason.DONE)) {
             log.info("Completing the project {}", project.getId());
@@ -92,7 +94,7 @@ public class ProjectService {
     @Transactional
     public void updateProjectToClose(Project project, CloseProjectRequest request, ZonedDateTime time) {
         Project.Status newStatus;
-        if (request.getAction().equals(CloseProjectRequest.Action.CANCEL)) {
+        if (request.getAction().equals(CANCEL)) {
             newStatus = CANCELED;
             log.info("Canceling the project {}", project.getId());
         } else {
@@ -128,8 +130,10 @@ public class ProjectService {
         projectRequests.forEach(projectRequest -> {
             projectRequestRepository.save(projectRequest.setStatus(ProjectRequest.Status.INACTIVE).setUpdated(time));
             ProjectMessage message = null;
-            if (request.getAction().equals(CloseProjectRequest.Action.CANCEL)) {
+            if (request.getAction().equals(CANCEL)) {
                 message = ProjectMessage.cancel(projectRequest, time);
+            } else if (request.getAction().equals(INVALIDATE)) {
+                message = ProjectMessage.invalidate(projectRequest, time);
             } else {
                 if (hireOther) {
                     message = ProjectMessage.hireOther(projectRequest, time);
@@ -229,6 +233,7 @@ public class ProjectService {
         }
         notificationService.projectInvalidated(project.getCustomer(), project.getServiceType().getName(), project.getId());
 
+        closeActiveProjectRequests(project, ZonedDateTime.now(), new CloseProjectRequest(INVALIDATE, reason, text));
     }
 
     public void toValidationProject(Project project, Project.Reason reason, String comment, User support) {

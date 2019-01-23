@@ -23,7 +23,8 @@
                       message.event == ProjectRequest.MessageEvent.REFUND_REQUEST && securityService.hasRole(Role.CUSTOMER) && {'background-image':'url(' + 'assets/img/round-icons/contractor-leaved-project.svg' + ')'} ||
                       message.event == ProjectRequest.MessageEvent.REFUND_REQUEST && securityService.hasRole(Role.CONTRACTOR) && {'background-image':'url(' + 'assets/img/round-icons/refund-request.svg' + ')'} ||
                       message.event == ProjectRequest.MessageEvent.REFUND_APPROVED && {'background-image':'url(' + 'assets/img/round-icons/refund-approved.svg' + ')'} ||
-                      message.event == ProjectRequest.MessageEvent.REFUND_REJECTED && {'background-image':'url(' + 'assets/img/round-icons/refund-rejected.svg' + ')'}"
+                      message.event == ProjectRequest.MessageEvent.REFUND_REJECTED && {'background-image':'url(' + 'assets/img/round-icons/refund-rejected.svg' + ')'} ||
+                      message.event == ProjectRequest.MessageEvent.INVALIDATED && {'background-image':'url(' + 'assets/img/round-icons/closed-project.svg' + ')'}"
            *ngIf=" message.sender != securityService.getLoginModel().id">
       </div>
     </ng-template>
@@ -173,8 +174,18 @@
                 <span>Refund rejected</span>
               </ng-container>
             </ng-container>
-          </ng-container>
 
+            <ng-container *ngSwitchCase="ProjectRequest.MessageEvent.INVALIDATED">
+              <ng-container *ngIf="securityService.hasRole(Role.CUSTOMER)">
+                <span>Closed due to project invalidation</span>
+              </ng-container>
+              <ng-container *ngIf="securityService.hasRole(Role.CONTRACTOR)">
+                <span class="name">{{customerName}}</span>
+                <span> closed the project</span>
+              </ng-container>
+            </ng-container>
+
+          </ng-container>
         </div>
 
 
