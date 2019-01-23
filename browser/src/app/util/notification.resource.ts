@@ -1,12 +1,13 @@
 import { Inject, Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
 import { Notification } from '../api/models/Notification';
 import { NotificationService } from '../api/services/notification.service';
 import { SecurityService } from '../auth/security.service';
 import { BillingService } from '../api/services/billing.service';
 import { PopUpMessageService } from './pop-up-message.service';
 import { getErrorMessage } from './functions';
-import {MyStompService} from "./my-stomp.service";
+import { MyStompService } from "./my-stomp.service";
+
 
 @Injectable()
 export class NotificationResource {
@@ -16,6 +17,7 @@ export class NotificationResource {
   public newUnreadNotifications: BehaviorSubject<Notification[]> = new BehaviorSubject<Notification[]>([]);
   public unreadNotificationsCounter: number = 0;
   private notificationsObservable: Observable<any>;
+  private topicSubscription$: Subscription;
 
   constructor(private securityService: SecurityService,
               private notificationService: NotificationService,
@@ -26,16 +28,19 @@ export class NotificationResource {
     this.securityService.onUserInit.subscribe(this.init);
 
     this.securityService.onLogout.subscribe(() => {
-      // this.newUnreadNotifications.next([]);
-      this.unreadNotificationsCounter = 0;
+      this.notificationsObservable = null;
+      if (this.topicSubscription$) {
+        this.topicSubscription$.unsubscribe();
+        this.topicSubscription$ = null
+      }
       this.myStompService.shutDown();
-      this.notificationsObservable = undefined;
+      this.unreadNotificationsCounter = 0;
     });
 
   }
 
   public subscribeOnNotifications() {
-    this.getNotificationSubscription(this.securityService.getLoginModel().id).subscribe(
+    this.topicSubscription$ = this.getNotificationSubscription(this.securityService.getLoginModel().id).subscribe(
       notification => {
         notification = JSON.parse(notification.body);
         switch (notification.type) {
@@ -55,7 +60,7 @@ export class NotificationResource {
   }
 
   public getNotificationSubscription(userId: string): Observable<any> {
-    if (this.notificationsObservable == undefined) {
+    if (!this.notificationsObservable) {
       this.notificationsObservable = this.myStompService.subscribe(`/topic/users/${userId}/notifications`);
     }
     return this.notificationsObservable;
@@ -72,13 +77,9 @@ export class NotificationResource {
         error => {
           this.popUpService.showError(getErrorMessage(error));
         });
-
       this.subscribeOnNotifications();
-
     }
   };
-
-
 
 
 }

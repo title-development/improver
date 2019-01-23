@@ -21,7 +21,7 @@ import { ScrollService } from '../../../util/scroll.service';
 import { Pagination } from "../../../model/data-model";
 import { getErrorMessage } from "../../../util/functions";
 import { PopUpMessageService } from "../../../util/pop-up-message.service";
-import { skip } from "rxjs/operators";
+import { first, skip } from "rxjs/operators";
 
 @Component({
   selector: 'notifications-popup',
@@ -64,6 +64,7 @@ export class NotificationsPopupComponent implements OnChanges, OnDestroy {
   private pagination: Pagination = new Pagination(0, 5);
   notificationsProcessing = false;
   notificationsSubscription$;
+  onReadSubscription$;
 
   psConfig = {
     wheelPropagation: false
@@ -88,9 +89,9 @@ export class NotificationsPopupComponent implements OnChanges, OnDestroy {
     this.getNotifications(this.pagination);
     this.subscribeOnUnreadNotifications();
 
-    this.notificationService.onRead.subscribe(ids => this.markAsRead(ids));
+    this.onReadSubscription$ = this.notificationService.onRead.subscribe(ids => this.markAsRead(ids));
 
-    this.securityService.onLogout.subscribe(() => {
+    this.securityService.onLogout.pipe(first()).subscribe(() => {
       if (this.notificationsSubscription$) {
         this.notificationsSubscription$.unsubscribe();
         this.notifications = []
@@ -130,8 +131,7 @@ export class NotificationsPopupComponent implements OnChanges, OnDestroy {
   }
 
   subscribeOnUnreadNotifications() {
-    this.notificationResource.newUnreadNotifications.pipe(
-    ).subscribe((notifications => {
+    this.notificationsSubscription$ = this.notificationResource.newUnreadNotifications.subscribe(notifications => {
         let contentSize = this.pagination.size * (this.pagination.page + 1);
         this.notifications.unshift(...notifications);
         if (this.notifications.length > contentSize) {
@@ -139,7 +139,7 @@ export class NotificationsPopupComponent implements OnChanges, OnDestroy {
           this.notifications = this.notifications.slice(0, -notifications.length);
           this.showMore = true;
         }
-    }));
+    });
   }
 
   onResize(): void {
@@ -159,6 +159,9 @@ export class NotificationsPopupComponent implements OnChanges, OnDestroy {
     if (this.notificationsSubscription$) {
       this.notificationsSubscription$.unsubscribe();
       this.notifications = []
+    }
+    if (this.onReadSubscription$) {
+      this.onReadSubscription$.unsubscribe();
     }
   }
 

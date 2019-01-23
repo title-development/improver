@@ -107,7 +107,7 @@ export class CustomersListComponent {
       this.messageService.add({
         severity: 'success',
         summary: 'Success',
-        detail: `User: ${customer.displayName} has been updated`
+        detail: `<b>${customer.displayName}<b/> has been updated`
       });
       this.displayEditDialog = false;
       this.refresh();

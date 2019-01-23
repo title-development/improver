@@ -53,17 +53,13 @@ export class MyStompService extends StompRService {
   }
 
   async delay(ms: number) {
-    await new Promise(resolve => setTimeout(()=> resolve(), ms))
-      .then(()=>console.log("fired"));
+    await new Promise(resolve => setTimeout(()=> resolve(), ms)).then(() => {});
   }
-
 
   public shutDown(): void {
     this.disconnect();
     this.config = null;
     this.client = null;
-
-
   }
 
   restartBroker() {

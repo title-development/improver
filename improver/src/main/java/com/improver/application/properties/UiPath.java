@@ -14,7 +14,7 @@ public final class UiPath {
     public static final String DASHBOARD = "/dashboard";
     public static final String CUSTOMER_PROJECTS = UI_CUSTOMER_BASE_PATH + PROJECTS + SLASH;
     public static final String PRO_PROJECTS = PRO + PROJECTS + SLASH;
-    public static final String SYSTEM_NOTIFICATION_ICON = "assets/img/home-improve-notification-icon.png";
+    public static final String SYSTEM_NOTIFICATION_ICON = "/assets/img/home-improve-notification-icon.jpg";
 
     private UiPath() {
     }

@@ -124,7 +124,7 @@ export class ContractorsComponent {
       this.messageService.add({
         severity: 'success',
         summary: 'Success',
-        detail: `User: ${contractor.displayName} has been updated`
+        detail: `<b>${contractor.displayName}<b/> has been updated`
       });
       this.displayEditDialog = false;
       this.refresh();

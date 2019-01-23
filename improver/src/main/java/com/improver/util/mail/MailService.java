@@ -184,18 +184,25 @@ public class MailService {
 
 
     /**
-     * Send email to User that his account has been blocked
+     * Send email to User that his account has been blocked/unblocked
      *
-     * @param user user whose account has been blocked
+     * @param user user whose account has been blocked/unblocked
      */
     public void sendBlockAccount(User user) {
         Context context = contextTemplate();
         context.setVariable(USER_NAME, user.getFirstName());
-        context.setVariable(TITLE, "Your account has been blocked");
-        context.setVariable(BODY, "Your Home Improve account has been blocked. You can contact with a support team to appeal the decision.");
-        mailClient.sendMail("Account blocking", NOTICE_TEMPLATE, context, MailHolder.MessageType.NOREPLY, user.getEmail());
+        String newStatus = user.isBlocked() ? "blocked" : "unlocked";
+        String title = "Your account has been " + newStatus;
+        StringBuilder body = new StringBuilder("Your Home Improve account has been ");
+        body.append(newStatus);
+        body.append(".");
+        if (user.isBlocked()) {
+            body.append("You can contact with a support team to appeal the decision.");
+        }
+        context.setVariable(TITLE, title);
+        context.setVariable(BODY, body);
+        mailClient.sendMail("Account has been " + newStatus, NOTICE_TEMPLATE, context, MailHolder.MessageType.NOREPLY, user.getEmail());
     }
-
 
     /********************************************************************************************************
      *                                                  CUSTOMER
@@ -307,12 +314,12 @@ public class MailService {
         Context context = contextTemplate();
         context.setVariable(CONTENT_ALIGN, "left");
         context.setVariable(TITLE, "Ticket is submitted");
-        context.setVariable(BODY,"Reason: " + highlight(ticket.getOption().getValue()) + "<br/>" +
-            "Comment: " + highlight(ticket.getDescription()) + "<br/><br/>" +
+        context.setVariable(BODY,highlight("Subject: ") + ticket.getOption().getValue() + "<br/>" +
+            highlight("Comment: ") + ticket.getDescription() + "<br/><br/>" +
             "Your request has been received, and is being reviewed by our support staff.<br>" +
             "Normal Home Improve support hours are Monday through Friday 10am to 5pm PST, and we're closed on major holidays. " +
             "Our support staff is not able to respond to requests outside those hours, and we answer requests in the order received.<br>" +
-            "We do our best to respond to requests within 1-4 business days of receipt, but response times may be longer during periods of heavy request traffic." +
+            "We do our best to respond to requests within 1-4 business days of receipt, but response times may be longer during periods of heavy request traffic. " +
             "We appreciate your patience and will be in touch as soon as possible.");
         mailClient.sendMail("Ticket is submitted", NOTICE_TEMPLATE, context, MailHolder.MessageType.NOREPLY, ticket.getEmail());
     }

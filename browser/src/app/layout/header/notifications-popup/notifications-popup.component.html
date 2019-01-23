@@ -15,7 +15,7 @@
       <a class="item" [ngClass]="{'new': !notification.read}" (click)="navigate(notification.link); !notification.read && read(notification.id); close()">
 
         <div class="logo-wrapper">
-          <div [ngStyle]="notification.icon && notification.icon != '' && {'background-image':'url(' + notification.icon + ')'}">
+          <div [ngStyle]="notification.icon && notification.icon != '' && {'background-image':'url(' + notification.icon + '), url(/assets/img/home-improve-notification-icon.jpg)'}">
           </div>
         </div>
 

@@ -147,7 +147,7 @@ export class AdminUsersComponent {
       first()
     ).subscribe(
       res => {
-        this.popUpService.showSuccess(`User: ${this.editedUser.displayName} has been updated`);
+        this.popUpService.showSuccess(`<b> ${this.editedUser.displayName}<b/> has been updated`);
         this.displayEditDialog = false;
         //updating user
         this.users.content = this.users.content.map((item: User, index: number) => {
@@ -162,7 +162,7 @@ export class AdminUsersComponent {
         this.selectedUser = null;
       },
       error => {
-        this.popUpService.showError(`Cannot update ${this.editedUser.displayName}`);
+        this.popUpService.showError(`Cannot update <b>${this.editedUser.displayName}<b/>`);
         this.displayEditDialog = false;
         this.selectedUser = null;
       }
@@ -177,10 +177,10 @@ export class AdminUsersComponent {
         this.userService.deleteAccount(user.id).subscribe(
           res => {
             user.deleted = true;
-            this.popUpService.showSuccess(`User: ${user.displayName} has been deleted`);
+            this.popUpService.showSuccess(`<b>${user.displayName}<b/> has been deleted`);
           },
           error => {
-            this.popUpService.showError(`Can't delete user ${user.displayName}`);
+            this.popUpService.showError(`Can't delete <b>${user.displayName}<b/>`);
           });
       }
     });
@@ -190,15 +190,15 @@ export class AdminUsersComponent {
   restoreUser(user: User) {
     this.confirmationService.confirm({
       header: 'Restore user?',
-      message: `Do you want to restore ${user.displayName}?`,
+      message: `Do you want to restore <b>${user.displayName}<b/>?`,
       accept: () => {
         this.userService.restoreAccount(user.id).subscribe(
           res => {
             user.deleted = false;
-            this.popUpService.showSuccess(`User: ${user.displayName} has been restored`);
+            this.popUpService.showSuccess(`<b>${user.displayName}<b/> has been restored`);
           },
           error => {
-            this.popUpService.showError(`Can't restore user ${user.displayName}`);
+            this.popUpService.showError(`Can't restore <b>${user.displayName}<b/>`);
           });
       }
     });
@@ -207,12 +207,12 @@ export class AdminUsersComponent {
   blockUser(user: User) {
     this.confirmationService.confirm({
       header: 'Block user?',
-      message: `Do you want to block ${user.displayName}?`,
+      message: `Do you want to block <b>${user.displayName}<b/>?`,
       accept: () => {
         this.userService.blockUser(user.id, true).subscribe(
           res => {
             user.blocked = true;
-            this.popUpService.showSuccess(`User: ${user.displayName} has been blocked`);
+            this.popUpService.showSuccess(`<b>${user.displayName}</b> has been blocked`);
           },
           error => {
             this.popUpService.showError(`Can't block user ${user.displayName}`);
@@ -224,15 +224,15 @@ export class AdminUsersComponent {
   unblockUser(user: User) {
     this.confirmationService.confirm({
       header: 'Unblock user?',
-      message: `Do you want to unblock ${user.displayName}?`,
+      message: `Do you want to unblock <b>${user.displayName}<b/>?`,
       accept: () => {
         this.userService.blockUser(user.id, false).subscribe(
           res => {
             user.blocked = false;
-            this.popUpService.showSuccess(`User: ${user.displayName} has been unblocked`);
+            this.popUpService.showSuccess(`<b>${user.displayName}<b/> has been unblocked`);
           },
           error => {
-            this.popUpService.showError(`Can't unblock user ${user.displayName}`);
+            this.popUpService.showError(`Can't unblock <b>${user.displayName}<b/>`);
           });
       }
     });
