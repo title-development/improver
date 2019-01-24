@@ -2,7 +2,7 @@ import { browser, by, element, promise, protractor } from 'protractor';
 import { users } from "../../../test.data";
 import { FIVE_SECONDS, SECOND, THREE_SECONDS } from "../../utils/util";
 
-describe('Signup Pro Page', () => {
+describe('Sign up Pro', () => {
 
   browser.get('/');
 
@@ -54,9 +54,10 @@ describe('Signup Pro Page', () => {
     element(by.css(".add-service-button")).click();
     browser.sleep(SECOND);
     element(by.css(".button-next")).click();
-    browser.sleep(10000);
+    browser.sleep(FIVE_SECONDS);
     expect(element(by.css(".success-card .title")).getText()).toEqual("You’ve been successfully registered!");
     browser.waitForAngularEnabled(true);
+    browser.sleep(FIVE_SECONDS);
   });
 
 });

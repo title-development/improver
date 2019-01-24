@@ -2,10 +2,10 @@ import { $, $$, browser, by, element, promise, protractor } from 'protractor';
 import { users } from "../../../test.data";
 import { login, logout, sendKeysByOne } from "./../../utils/common.functions";
 import { BillingHelper } from "../../utils/billing.helper";
-import { SECOND, THREE_SECONDS } from "../../utils/util";
+import { FIVE_SECONDS, SECOND, THREE_SECONDS } from "../../utils/util";
 
 
-describe('Billing Page', () => {
+describe('Billing', () => {
 
   let billingHelper: BillingHelper = new BillingHelper();
   let contractor = users.contractor;
@@ -124,58 +124,55 @@ describe('Billing Page', () => {
     browser.sleep(SECOND);
   });
 
-  //TODO: Protractor starts next test before finish this
-  xit('should add and remove valid card', () => {
+  it('should add and remove valid card', () => {
+
+    let initialCardsCount;
+    let afterAddCardsCount;
+
     billingHelper.balanceLink();
     browser.sleep(SECOND);
 
-    let addNewCardButton = element(by.css('.cv-button-empty'));
-    addNewCardButton.click();
-    browser.sleep(THREE_SECONDS);
+    let cards = $$('.card-line');
+    cards.count().then(countBefore => {
 
-    browser.sleep(SECOND);
-    let driver = browser.driver;
-    let iframe = by.css('[name="payment-card-form"] iframe');
-    let iframeHtmlElement = driver.findElement(iframe);
-    browser.waitForAngularEnabled(false);
-    browser.switchTo().frame(iframeHtmlElement);
-    driver.findElement(by.tagName('[name="cardnumber"]')).sendKeys(4242424242424242);
-    driver.findElement(by.tagName('[name="exp-date"]')).sendKeys(1122);
-    driver.findElement(by.tagName('[name="cvc"]')).sendKeys(1111);
-    driver.findElement(by.tagName('[name="postal"]')).sendKeys(10022);
-    browser.sleep(SECOND);
-    browser.switchTo().defaultContent();
-    $$('.payment-card-form .cv-button').filter(item => item.isDisplayed()).first().click();
-    browser.sleep(THREE_SECONDS);
+      initialCardsCount = countBefore;
 
-    $$('.payment-method-part .card-button').filter(item => item.isDisplayed()).first().click();
-    //$$('[title="Remove card"]').filter(item => item.isDisplayed()).first().click();
-    $('.dialog-content-wrapper .confirm').click();
-    browser.waitForAngularEnabled(true);
-    browser.sleep(SECOND);
-  });
+      //Add new card
+      let addNewCardButton = element(by.css('.cv-button-empty'));
+      addNewCardButton.click();
 
-  it('should add valid card', () => {
-    browser.waitForAngularEnabled(false);
-    browser.sleep(SECOND);
-    element(by.css('.balance-bar')).click();
-    browser.sleep(THREE_SECONDS);
-    element(by.css('.payment-method-part .cv-button-empty')).click();
-    browser.sleep(SECOND);
-    let driver = browser.driver;
-    let iframe = by.css('[name="payment-card-form"] iframe');
-    let iframeHtmlElement = driver.findElement(iframe);
+      browser.sleep(SECOND);
+      let driver = browser.driver;
+      let iframe = by.css('[name="payment-card-form"] iframe');
+      let iframeHtmlElement = driver.findElement(iframe);
+      browser.waitForAngularEnabled(false);
+      browser.switchTo().frame(iframeHtmlElement);
+      sendKeysByOne(driver.findElement(by.tagName('[name="cardnumber"]')), 4242424242424242);
+      sendKeysByOne(driver.findElement(by.tagName('[name="exp-date"]')), 1122);
+      sendKeysByOne(driver.findElement(by.tagName('[name="cvc"]')), 1111);
+      sendKeysByOne(driver.findElement(by.tagName('[name="postal"]')), 10022);
+      browser.sleep(SECOND);
+      browser.switchTo().defaultContent();
+      $$('.payment-card-form .cv-button').filter(item => item.isDisplayed()).first().click();
+      browser.sleep(FIVE_SECONDS);
 
-    browser.switchTo().frame(iframeHtmlElement);
-    sendKeysByOne(driver.findElement(by.tagName('[name="cardnumber"]')), 4242424242424242);
-    driver.findElement(by.tagName('[name="exp-date"]')).sendKeys(1122);
-    driver.findElement(by.tagName('[name="cvc"]')).sendKeys(233);
-    driver.findElement(by.tagName('[name="postal"]')).sendKeys(70001);
-    browser.switchTo().defaultContent();
-    $('.payment-card-form .cv-button').click();
-    browser.sleep(5000);
-    expect(element(by.css('.payment-method-part .header span')).getText()).toBe('Select your default payment method');
-    // browser.waitForAngularEnabled(true);
+      let cardsAfterAdd = $$('.card-line');
+      cardsAfterAdd.count().then(countAfter => {
+        afterAddCardsCount = countAfter;
+        browser.sleep(THREE_SECONDS);
+
+        expect(afterAddCardsCount).toEqual(initialCardsCount + 1);
+
+        //Remove card
+        $$('.payment-method-part .card-button').filter(item => item.isDisplayed()).first().click();
+        $('.dialog-content-wrapper .confirm').click();
+
+        browser.sleep(SECOND);
+        // browser.waitForAngularEnabled(true);
+      });
+
+    });
+
   });
 
 });

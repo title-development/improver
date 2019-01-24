@@ -43,6 +43,4 @@ export function sendKeysByOne(element, value) {
   for (let i = 0; i < value.length; i++) {
     element.sendKeys(value.charAt(i));
   }
-
-
 }

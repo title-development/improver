@@ -3,7 +3,7 @@ import { users } from "../../../test.data";
 import { login, logout } from "../../utils/common.functions";
 import { WRONG_EMAIL_PASSWORD_MESSAGE } from "../../utils/util";
 
-describe('Login Page', () => {
+describe('Login', () => {
 
   let customer = users.customer;
 

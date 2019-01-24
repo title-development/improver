@@ -67,7 +67,7 @@ describe('Home Page', () => {
     questionaryHelper.textarea("I want to install tile in my new home. Tile is very expensive so I need real professionals");
     questionaryHelper.address("3 Avenue A", "New York", "New York", "10022");
     questionaryHelper.addressApplySuggested();
-    questionaryHelper.personalInfo("John", "Down", "user@gmail.com", "9999999999");
+    questionaryHelper.personalInfo("John", "Down", "user.improver@gmail.com", "9999999999");
 
     expect(element(by.css(".questionary-next-button")).getText()).toEqual("Ok");
   });

@@ -1,7 +1,7 @@
 export const users = {
   customer: {
-    email: 'user@gmail.com',
-    password: 'password',
+    email: 'user.improver@gmail.com',
+    password: '2019bestHOMEimprove',
     firstName: 'John',
     lastName: 'Down',
   },
@@ -24,8 +24,8 @@ export const users = {
     lastName: 'Hopkins',
   },
   contractor: {
-    email: 'contractor@gmail.com',
-    password: 'password',
+    email: 'contractor.improver@gmail.com',
+    password: '2019bestHOMEimprove',
   },
   newContractor: {
     email: 'newcontractor@gmail.com',

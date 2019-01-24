@@ -2,7 +2,7 @@ import { browser, by, element, promise, protractor } from 'protractor';
 import { users } from "../../../test.data";
 import { THREE_SECONDS } from "../../utils/util";
 
-describe('Signup Page', () => {
+describe('Sign up', () => {
 
   beforeEach(() => {
     browser.get('/signup');
