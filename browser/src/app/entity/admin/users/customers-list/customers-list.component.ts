@@ -13,6 +13,7 @@ import { UserService } from '../../../../api/services/user.service';
 import { User } from '../../../../api/models/User';
 import { dataTableFilter } from '../../util';
 import { FilterMetadata } from 'primeng/components/common/filtermetadata';
+import { getErrorMessage } from "../../../../util/functions";
 
 @Component({
   selector: 'customers',
@@ -47,11 +48,10 @@ export class CustomersListComponent {
   ];
 
   constructor(public securityService: SecurityService,
-              public popUpMessageService: PopUpMessageService,
+              public popUpService: PopUpMessageService,
               private userService: UserService,
               public camelCaseHumanPipe: CamelCaseHumanPipe,
               private router: Router,
-              private messageService: MessageService,
               private route: ActivatedRoute) {
     this.route.queryParams.subscribe(params => {
       Object.assign(this.filters, dataTableFilter('email', params['email']));
@@ -104,13 +104,11 @@ export class CustomersListComponent {
 
   updateCustomers(customer: User): void {
     this.userService.updateCustomers(customer.id, customer).subscribe(res => {
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Success',
-        detail: `<b>${customer.displayName}<b/> has been updated`
-      });
+      this.popUpService.showSuccess(`<b>${customer.displayName}</b> has been updated`);
       this.displayEditDialog = false;
       this.refresh();
+    }, err => {
+      this.popUpService.showError(`Could not updated user. ${getErrorMessage(err)}`);
     });
   }
 }

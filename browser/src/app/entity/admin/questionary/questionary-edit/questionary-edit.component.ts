@@ -45,7 +45,6 @@ export class QuestionaryEditComponent implements OnDestroy {
               private router: Router,
               private questionariesService: QuestionariesService,
               private serviceTypeService: ServiceTypeService,
-              private messageService: MessageService,
               public constants: Constants,
               private confirmationService: ConfirmationService,
               private popUpService: PopUpMessageService,

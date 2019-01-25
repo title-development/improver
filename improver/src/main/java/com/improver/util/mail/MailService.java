@@ -191,13 +191,13 @@ public class MailService {
     public void sendBlockAccount(User user) {
         Context context = contextTemplate();
         context.setVariable(USER_NAME, user.getFirstName());
-        String newStatus = user.isBlocked() ? "blocked" : "unlocked";
+        String newStatus = user.isBlocked() ? "blocked" : "unblocked";
         String title = "Your account has been " + newStatus;
         StringBuilder body = new StringBuilder("Your Home Improve account has been ");
         body.append(newStatus);
         body.append(".");
         if (user.isBlocked()) {
-            body.append("You can contact with a support team to appeal the decision.");
+            body.append(" You can contact with a support team to appeal the decision.");
         }
         context.setVariable(TITLE, title);
         context.setVariable(BODY, body);

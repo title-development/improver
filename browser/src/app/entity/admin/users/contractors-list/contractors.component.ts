@@ -12,6 +12,7 @@ import { MessageService } from 'primeng/components/common/messageservice';
 import { UserService } from '../../../../api/services/user.service';
 import { dataTableFilter } from '../../util';
 import { FilterMetadata } from 'primeng/components/common/filtermetadata';
+import { getErrorMessage } from "../../../../util/functions";
 
 @Component({
   selector: 'contractors',
@@ -57,11 +58,10 @@ export class ContractorsComponent {
   ];
 
   constructor(public securityService: SecurityService,
-              public popUpMessageService: PopUpMessageService,
+              public popUpService: PopUpMessageService,
               private userService: UserService,
               public camelCaseHumanPipe: CamelCaseHumanPipe,
               private router: Router,
-              private messageService: MessageService,
               private route: ActivatedRoute) {
     this.route.queryParams.subscribe(params => {
       this.filters = dataTableFilter('email', params['email']);
@@ -121,13 +121,11 @@ export class ContractorsComponent {
 
   updateContractor(contractor: AdminContractor): void {
     this.userService.updateContractor(contractor.id, contractor).subscribe(res => {
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Success',
-        detail: `<b>${contractor.displayName}<b/> has been updated`
-      });
+      this.popUpService.showSuccess(`<b>${contractor.displayName}</b> has been updated`);
       this.displayEditDialog = false;
       this.refresh();
+    }, err => {
+      this.popUpService.showError(getErrorMessage(err))
     });
   }
 }

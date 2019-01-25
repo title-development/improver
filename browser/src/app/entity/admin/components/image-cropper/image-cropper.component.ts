@@ -13,10 +13,10 @@ import { Role } from '../../../../model/security-model';
 
 import Cropper from 'cropperjs/dist/cropper.esm.js';
 import { FILE_MIME_TYPES, MAX_FILE_SIZE } from '../../../../util/file-parameters';
-import { MessageService } from 'primeng/components/common/messageservice';
 import { ConfirmationService } from 'primeng/api';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { addClass } from '../../../../util/dom';
+import { PopUpMessageService } from "../../../../util/pop-up-message.service";
 
 export const IMAGE_CROPPER_VALUE_ACCESSOR: Provider = {
   provide: NG_VALUE_ACCESSOR,
@@ -73,7 +73,7 @@ export class ImageCropperComponent implements ControlValueAccessor, OnInit {
 
   hash: number;
 
-  constructor(private messageService: MessageService,
+  constructor(private popUpMessageService: PopUpMessageService,
               private renderer: Renderer2,
               private confirmationService: ConfirmationService) {
     this.hash = Math.floor(1000 + Math.random() * 9000);

@@ -12,6 +12,8 @@ import {
 import { ALLOWED_FILE_EXTENTIONS, MAX_FILE_SIZE } from '../../../../util/file-parameters';
 import { MessageService } from 'primeng/components/common/messageservice';
 import { ConfirmationService } from '../../../../../../node_modules/primeng/primeng';
+import { PopUpMessage } from "../../../../model/data-model";
+import { PopUpMessageService } from "../../../../util/pop-up-message.service";
 
 let index: number = 0;
 
@@ -33,7 +35,7 @@ export class ImagePreviewComponent {
   index = index++;
   hash: number;
 
-  constructor(private messageService: MessageService,
+  constructor(private popUpService: PopUpMessageService,
               private renderer: Renderer2,
               private confirmationService: ConfirmationService,
               @Inject('Window') private window: Window,) {
@@ -99,21 +101,13 @@ export class ImagePreviewComponent {
   validateFile(file): boolean {
     const ext = file.name.split('.').pop().toLowerCase();
     if (!ALLOWED_FILE_EXTENTIONS.includes(ext)) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Not allowed file type',
-        detail: `The file type of ${file.name} is not allowed.`
-      });
+      this.popUpService.showError(`The file type of <b>${file.name}</b> is not allowed`);
       this.fileInput.nativeElement.value = '';
 
       return false;
     }
     if (file.size > MAX_FILE_SIZE.bytes) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Could not delete upload image',
-        detail: `The file ${file.name} has failed to upload. Maximum upload file size ${MAX_FILE_SIZE.megabytes} Mb.`
-      });
+      this.popUpService.showError(`The file <b>${file.name}</b> has failed to upload. Maximum upload file size <b>${MAX_FILE_SIZE.megabytes}</b> Mb`);
       this.fileInput.nativeElement.value = '';
 
       return false;

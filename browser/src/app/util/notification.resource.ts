@@ -34,6 +34,7 @@ export class NotificationResource {
         this.topicSubscription$ = null
       }
       this.myStompService.shutDown();
+      this.newUnreadNotifications.next([]);
       this.unreadNotificationsCounter = 0;
     });
 
