@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { markAsTouched } from '../../util/functions';
 import { ServiceType } from '../../model/data-model';
 import { FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
@@ -74,7 +74,6 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
   }
 
 
-
   getQuestianary(serviceType: ServiceType | string): void {
     const formData = this.mainSearchFormGroup.value;
     if (typeof serviceType != 'string') {
@@ -119,4 +118,12 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
     return item.id;
   }
 
+  mouseleave(event: KeyboardEvent): void {
+    Object.values(this.mainSearchFormGroup.controls).forEach(control => {
+      if (!control.value) {
+        control.reset();
+        control.markAsPristine();
+      }
+    });
+  }
 }

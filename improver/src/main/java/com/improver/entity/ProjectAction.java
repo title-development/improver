@@ -9,7 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.time.ZonedDateTime;
 
-import static com.improver.util.database.DataAccessUtil.ADMIN_PROJECT_VALIDATION_COMMENT_MAX_SIZE;
+import static com.improver.util.database.DataAccessUtil.PROJECT_ACTION_COMMENT_MAX_SIZE;
 import static com.improver.util.serializer.SerializationUtil.DATE_TIME_PATTERN;
 
 
@@ -26,7 +26,7 @@ public class ProjectAction {
 
     private String author;
 
-    @Column(columnDefinition = "varchar(" + ADMIN_PROJECT_VALIDATION_COMMENT_MAX_SIZE + ")")
+    @Column(columnDefinition = "varchar(" + PROJECT_ACTION_COMMENT_MAX_SIZE + ")")
     private String text;
 
     @Enumerated(value = EnumType.STRING)

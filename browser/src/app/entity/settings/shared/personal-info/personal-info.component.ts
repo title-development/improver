@@ -21,7 +21,6 @@ import { switchMap } from 'rxjs/operators';
 import { SocialConnectionsService } from '../../../../auth/social-connections.service';
 import { SocialConnection } from '../../../../api/models/SocialConnection';
 import { AuthService, FacebookLoginProvider, GoogleLoginProvider, SocialUser } from 'angular5-social-login';
-import { UserService } from '../../../../api/services/user.service';
 
 
 @Component({

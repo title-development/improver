@@ -22,11 +22,12 @@ public class SerializationUtil {
 
     /**
      * Allow
-     * (123) 456-7890
-     * (100) 000-0000
-     *  and empty string
+     * pattern: xxx-xxx-xxxx
+     * 223-456-7890
+     * all phone numbers start from 2
+     * and empty string
      */
-    public static final String PHONE_PATTERN_STRING = "(^\\([1-9]\\d{2}\\)\\s[0-9]{3}-[0-9]{4}$)|^$";
+    public static final String PHONE_PATTERN_STRING = "(^[2-9]\\d{2}-\\d{3}-\\d{4})|^$";
     public static final String ZIP_PATTERN_STRING = "\\d{5}";
     public static final String CITY_PATTERN_STRING ="^([a-zA-Z\\u0080-\\u024F]+(?:. |-| |'))*[a-zA-Z\\u0080-\\u024F]*$";
 

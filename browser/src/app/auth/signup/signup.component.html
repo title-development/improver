@@ -110,7 +110,7 @@
                 At least 2 letters required
               </span>
               <span *ngIf="firstName.errors?.pattern">
-                Please enter a valid name
+                {{messages.errors.name.notValid}}
               </span>
             </cv-field-error>
           </cv-input-field>
@@ -133,7 +133,7 @@
                 At least 2 letters required
               </span>
               <span *ngIf="firstName.errors?.pattern">
-                Please enter a valid name
+                {{messages.errors.name.notValid}}
               </span>
             </cv-field-error>
           </cv-input-field>

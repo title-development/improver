@@ -6,10 +6,8 @@ public final class DataAccessUtil {
     }
 
 
-
-    public static final String CREATED_PROPERTY =  "created";
-    public static final String UPDATED_PROPERTY =  "updated";
-
+    public static final String CREATED_PROPERTY = "created";
+    public static final String UPDATED_PROPERTY = "updated";
 
 
     public static final String UUID_GENERATOR_NAME = "system-uuid";
@@ -35,8 +33,9 @@ public final class DataAccessUtil {
     public static final int REVIEW_MESSAGE_MIN_SIZE = 10;
     public static final int REVIEW_MESSAGE_MAX_SIZE = 1500;
 
-    public static final int ADMIN_PROJECT_VALIDATION_COMMENT_MIN_SIZE= 10;
-    public static final int ADMIN_PROJECT_VALIDATION_COMMENT_MAX_SIZE= 500;
+    public static final int ADMIN_PROJECT_VALIDATION_COMMENT_MIN_SIZE = 10;
+    public static final int ADMIN_PROJECT_VALIDATION_COMMENT_MAX_SIZE = 500;
+    public static final int PROJECT_ACTION_COMMENT_MAX_SIZE = ADMIN_PROJECT_VALIDATION_COMMENT_MAX_SIZE + 100;
 
 
 }

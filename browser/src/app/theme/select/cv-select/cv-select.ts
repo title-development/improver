@@ -27,6 +27,7 @@ import { first } from 'rxjs/operators';
 import { animate, AnimationEvent, state, style, transition, trigger } from '@angular/animations';
 import { CvSelection } from '../../util/CvSelection';
 import { CdkVirtualForOf, CdkVirtualForOfContext } from '@angular/cdk/scrolling';
+import { createConsoleLogger } from '@angular-devkit/core/node';
 
 export const SELECT_VALUE_ACCESSOR: Provider = {
   provide: NG_VALUE_ACCESSOR,
@@ -82,6 +83,7 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
   @Input() propagateEnterEvent: boolean = false;
   @Output() autocompleteSearch: EventEmitter<string | number> = new EventEmitter<string | number>();
   @Output() onSelect: EventEmitter<any> = new EventEmitter<any>();
+  @Output() onClose: EventEmitter<any> = new EventEmitter<any>();
   @ViewChild('targetElement') targetElement: ElementRef;
   @ViewChild('itemsHolder') itemsHolder: ElementRef;
 
@@ -155,7 +157,7 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
   }
 
   autocompleteSearchHandler(value = undefined): void {
-    if (this.disableItemsMatch && value) {
+    if (this.disableItemsMatch) {
       this.onChange(value);
       this.search = value;
     }
@@ -359,6 +361,7 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
   }
 
   private closeDropdown(event): void {
+    this.onClose.emit(false);
     if (!this.disableItemsMatch) {
       if (this.items[this.highlightedItemIndex] && !this.tags) {
         if (this.grouped) {

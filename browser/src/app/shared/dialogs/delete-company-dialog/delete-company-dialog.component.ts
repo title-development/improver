@@ -8,6 +8,7 @@ import { SecurityService } from '../../../auth/security.service';
 import { CompanyService } from '../../../api/services/company.service';
 import { getErrorMessage } from '../../../util/functions';
 import { NgForm } from '@angular/forms';
+import { Role } from '../../../model/security-model';
 
 @Component({
   selector: 'delete-company-dialog',

@@ -21,7 +21,6 @@ import { CvInputModule } from "../../../../theme/input/cv-input.module";
 import { CvInputFieldModule } from "../../../../theme/input-field/form-field.module";
 import { CvEditableInputModule } from '../../../../theme/editable-input/editable-input.module';
 import { CvIconModule } from '../../../../theme/icon/cv-icon-module';
-import { SocialConnectionsService } from '../../../../auth/social-connections.service';
 
 const routing: ModuleWithProviders = RouterModule.forChild([
   { path: '', component: PersonalInfoComponent },
@@ -45,7 +44,7 @@ const routing: ModuleWithProviders = RouterModule.forChild([
     CvIconModule,
     CvInputFieldModule,
     CvFieldsModule,
-    CvEditableInputModule
+    CvEditableInputModule,
   ],
   declarations: [
     PersonalInfoComponent

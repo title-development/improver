@@ -1,5 +1,5 @@
-import { ElementRef, Inject, OnChanges, Renderer2, SimpleChanges } from "@angular/core";
-import { ControlValueAccessor } from "@angular/forms";
+import { ElementRef, Inject, OnChanges, Renderer2, SimpleChanges } from '@angular/core';
+import { ControlValueAccessor } from '@angular/forms';
 
 export class MaskDirective implements ControlValueAccessor, OnChanges {
 
@@ -13,18 +13,18 @@ export class MaskDirective implements ControlValueAccessor, OnChanges {
 
   writeValue(value: any): void {
     if (value) {
-      this.onInput(value);
+      this.onInput(null, value);
     } else {
-      this.onInput('');
+      this.onInput(null, '');
     }
   }
 
   registerOnChange(fn: (value: any) => any): void {
-    this.onChange = fn
+    this.onChange = fn;
   }
 
   registerOnTouched(fn: () => any): void {
-    this.onTouched = fn
+    this.onTouched = fn;
   }
 
   setDisabledState(isDisabled: boolean): void {
@@ -36,34 +36,14 @@ export class MaskDirective implements ControlValueAccessor, OnChanges {
   }
 
   /**
-   * Delete character if not a number
-   */
-  protected deleteString(value) {
-    if (isNaN(parseInt(value[value.length - 1]))) {
-      return value.substring(0, value.length - 1);
-    }
-  }
-
-  /**
-   * Backspace keyboard event listener
-   * @param (value) html input value
-   */
-  public onBackspacePressed(value) {
-    this.setupMask();
-    value = this.deleteString(value);
-    if(value) {
-      this.updateInput(value);
-    }
-  }
-
-  /**
    * Input event listener
    * @param (value) html input value
+   * @param (event) html input value
    */
-  onInput(value) {
+  onInput(event: KeyboardEvent, value) {
     this.setupMask();
     value = this.applyMask(value);
-    this.updateInput(value);
+    this.updateInput(event, value);
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -74,12 +54,18 @@ export class MaskDirective implements ControlValueAccessor, OnChanges {
   /**
    * Write value to input element
    * @param value
+   * @param event
    */
-  protected updateInput(value: any) {
+  protected updateInput(event: KeyboardEvent, value: any) {
+    let cursorPosition: number = this.inputElement.selectionStart;
     this.inputElement.value = value;
     if (this.lastValue !== value) {
       this.lastValue = value;
-      this.onChange(value)
+      this.onChange(value);
+    }
+    if (event && (event as any).inputType == 'deleteContentBackward') {
+      this.inputElement.focus();
+      this.inputElement.setSelectionRange(cursorPosition, cursorPosition);
     }
   }
 
@@ -89,9 +75,9 @@ export class MaskDirective implements ControlValueAccessor, OnChanges {
   protected setupMask() {
     if (!this.inputElement) {
       if (this.element.nativeElement.tagName === 'INPUT') {
-        this.inputElement = this.element.nativeElement
+        this.inputElement = this.element.nativeElement;
       } else {
-        this.inputElement = this.element.nativeElement.getElementsByTagName('INPUT')[0]
+        this.inputElement = this.element.nativeElement.getElementsByTagName('INPUT')[0];
       }
     }
   }

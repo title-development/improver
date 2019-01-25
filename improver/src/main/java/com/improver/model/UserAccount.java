@@ -1,14 +1,12 @@
 package com.improver.model;
 
 import com.improver.entity.User;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
-import java.util.Map;
 
 import static com.improver.util.serializer.SerializationUtil.NAME_PATTERN_STRING;
 import static com.improver.util.serializer.SerializationUtil.PHONE_PATTERN_STRING;

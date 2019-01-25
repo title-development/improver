@@ -38,7 +38,7 @@ import { TradeNameUniqueValidatorDirective } from '../validators/trade-name-uniq
     MultipleEmailValidatorDirective,
     TrimDirective,
     ServiceNameUniqueValidatorDirective,
-    TradeNameUniqueValidatorDirective
+    TradeNameUniqueValidatorDirective,
   ],
   exports: [
     EqualValidator,
@@ -57,7 +57,7 @@ import { TradeNameUniqueValidatorDirective } from '../validators/trade-name-uniq
     MultipleEmailValidatorDirective,
     TrimDirective,
     ServiceNameUniqueValidatorDirective,
-    TradeNameUniqueValidatorDirective
+    TradeNameUniqueValidatorDirective,
   ],
   providers: [
   ]

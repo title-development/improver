@@ -1,24 +1,26 @@
 <div class="find-professionals">
   <div class="find-professionals-container">
     <div class="find-professionals-button"
-         [class.opened]="findProfessionalService.showDropdown"
+         [class.opened]="findProfessionalService.visibilityState | async"
          (click)="findProfessionalService.toggle();">
       <span class="xs-none sm-none">Find Professionals</span>
       <button class="mobile-menu-button mat-button mat-primary md-none lg-none xlg-none">
         <span>
-          <i class="material-icons" *ngIf="!findProfessionalService.showDropdown">search</i>
-          <i class="material-icons" *ngIf="findProfessionalService.showDropdown">close</i>
+          <i class="material-icons" *ngIf="!(findProfessionalService.visibilityState | async)">search</i>
+          <i class="material-icons" *ngIf="findProfessionalService.visibilityState | async">close</i>
         </span>
       </button>
     </div>
 
-    <div class="dropdown-content-wrapper" *ngIf="findProfessionalService.showDropdown">
+    <div class="dropdown-content-wrapper" *ngIf="findProfessionalService.visibilityState | async">
       <div class="dropdown-content">
         <!--TODO: move to shared search component-->
         <form class="search-form"
               #form="ngForm"
               [formGroup]="mainSearchFormGroup"
-              (ngSubmit)="searchServiceType(mainSearchFormGroup)">
+              (ngSubmit)="searchServiceType(mainSearchFormGroup)"
+              (mouseleave)="mouseleave($event)"
+        >
           <div class="service-type-form-group">
             <cv-select class="main-search-service-input"
                        label="Find service or professionals"
@@ -32,6 +34,7 @@
                        [propagateEnterEvent]="true"
                        [dropdownBorder]="false"
                        (autocompleteSearch)="autocompleteSearch($event)"
+                       (onClose)="mouseleave($event)"
             ></cv-select>
 
             <div class="messages-block"
@@ -81,7 +84,7 @@
               <div class="col-xs-12 col-sm-6 col-md-3"
                    *ngFor="let serviceType of popularServiceTypes | cutarraylength:popularServiceSize">
                 <div class="item"
-                     (click)="findProfessionalService.showDropdown = false; projectActionService.openQuestionary(serviceType)">
+                     (click)="findProfessionalService.close(); projectActionService.openQuestionary(serviceType)">
                   {{serviceType.name}}
                 </div>
               </div>
@@ -99,7 +102,7 @@
             <div class="items row">
               <div class="col-xs-12 col-sm-6 col-md-3" *ngFor="let trade of popularTrades">
                 <div class="item">
-                  <a [routerLink]="['/', 'category', trade.id]" (click)="findProfessionalService.showDropdown = false">{{trade.name}}</a>
+                  <a [routerLink]="['/', 'category', trade.id]" (click)="findProfessionalService.close()">{{trade.name}}</a>
                 </div>
               </div>
             </div>
@@ -110,8 +113,8 @@
     </div>
 
     <div class="dropdown-overlay"
-         *ngIf="findProfessionalService.showDropdown"
-         (click)="findProfessionalService.showDropdown = false;">
+         *ngIf="findProfessionalService.visibilityState | async"
+         (click)="findProfessionalService.close();">
     </div>
   </div>
 </div>

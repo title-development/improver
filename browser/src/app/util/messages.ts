@@ -19,7 +19,8 @@ export class Messages {
     },
 
     name: {
-      required: "Name is required"
+      required: "Name is required",
+      notValid: "Name may contain only letters and characters: ',-"
     },
 
     firstName: {
@@ -41,7 +42,7 @@ export class Messages {
 
     phone: {
       required: "Phone number is required",
-      pattern: "Phone number format should be (xxx) xxx-xxxx"
+      pattern: "Phone number format should be xxx-xxx-xxxx"
     },
 
     email: {

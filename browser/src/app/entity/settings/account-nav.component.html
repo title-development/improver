@@ -1,15 +1,11 @@
 <div class="account-menu-wrapper" fxLayout="column">
 
-  <ng-container *ngIf="securityService.isAuthenticated()">
+  <ng-container *ngIf="securityService.hasRole(Role.CUSTOMER)">
 
     <button routerLink="/my/settings/account" routerLinkActive="active" fxLayout="row" fxLayoutAlign="start center">
       <mat-icon class="md-none">person</mat-icon>
       <div>Account</div>
     </button>
-
-  </ng-container>
-
-  <ng-container *ngIf="securityService.hasRole(Role.CUSTOMER)">
 
     <button routerLink="/my/settings/notifications" routerLinkActive="active" fxLayout="row" fxLayoutAlign="start center">
       <mat-icon class="md-none">notifications</mat-icon>
@@ -19,6 +15,11 @@
   </ng-container>
 
   <ng-container *ngIf="securityService.hasRole(Role.CONTRACTOR)">
+
+    <button routerLink="/pro/settings/account" routerLinkActive="active" fxLayout="row" fxLayoutAlign="start center">
+      <mat-icon class="md-none">person</mat-icon>
+      <div>Account</div>
+    </button>
 
     <button routerLink="/pro/settings/info" routerLinkActive="active" fxLayout="row" fxLayoutAlign="start center">
       <mat-icon class="md-none">business</mat-icon>

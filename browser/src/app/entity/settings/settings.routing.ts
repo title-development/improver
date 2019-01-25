@@ -4,6 +4,7 @@ import { ContractorGuard } from '../../auth/router-guards/contractor.guard';
 import { UserGuard } from '../../auth/router-guards/user.guard';
 import { NotificationGuard } from '../../auth/router-guards/notification.guard';
 import { AuthGuard } from '../../auth/router-guards/auth.guard';
+import { CustomerGuard } from '../../auth/router-guards/customer.guard';
 
 const routes: Routes = [
   {
@@ -14,7 +15,8 @@ const routes: Routes = [
           {path: '', redirectTo: 'account', pathMatch: 'full'},
           {
             path: 'account',
-            loadChildren: 'app/entity/settings/shared/personal-info/personal-info.module#PersonalInfoModule'
+            loadChildren: 'app/entity/settings/shared/personal-info/personal-info.module#PersonalInfoModule',
+            canActivate: [CustomerGuard]
           },
           {
             path: 'notifications',
@@ -32,6 +34,10 @@ const routes: Routes = [
         path: 'settings', canActivateChild: [ AuthGuard, ContractorGuard ], children: [
           {path: '', pathMatch: 'full', redirectTo: 'info'},
           {
+            path: 'account',
+            loadChildren: 'app/entity/settings/shared/personal-info/personal-info.module#PersonalInfoModule'
+          },
+          {
             path: 'info',
             loadChildren: 'app/entity/settings/contractor-account/company-info/company-info.module#CompanyInfoModule'
           },
@@ -44,7 +50,8 @@ const routes: Routes = [
             loadChildren: 'app/entity/settings/contractor-account/service-area/service-area.module#ServiceAreaModule'
           },
           {
-            path: 'billing', loadChildren: 'app/entity/settings/contractor-account/billing/billing.module#BillingModule'
+            path: 'billing',
+            loadChildren: 'app/entity/settings/contractor-account/billing/billing.module#BillingModule'
           },
           {
             path: 'notifications',

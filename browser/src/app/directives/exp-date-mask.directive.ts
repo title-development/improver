@@ -11,8 +11,7 @@ export const MASK_VALUE_ACCESSOR: Provider = {
 @Directive({
   selector: '[expDateMask]',
   host: {
-    '(input)': 'onInput($event.target.value)',
-    '(keydown.backspace)': 'onBackspacePressed($event.target.value)'
+    '(input)': 'onInput($event, $event.target.value)'
   },
   providers: [MASK_VALUE_ACCESSOR]
 })

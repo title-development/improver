@@ -186,5 +186,8 @@ p-datatable::ng-deep {
   th .ui-column-title {
     display: inline !important;
   }
+  td .ui-cell-data {
+    word-break: break-all;
+  }
 }
 

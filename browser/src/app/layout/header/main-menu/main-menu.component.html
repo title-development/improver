@@ -34,7 +34,7 @@
         <a [routerLink]="'/companies/' + securityService.getLoginModel().company" (click)="close()">Profile</a>
       </div>
       <h4 *ngIf="(mediaQuery.xs || mediaQuery.sm)">Settings</h4>
-      <a routerLink="/my/settings/account" (click)="close()">Account</a>
+      <a routerLink="/pro/settings/account" (click)="close()">Account</a>
       <a routerLink="/pro/settings/info" (click)="close()">Company</a>
       <a routerLink="/pro/settings/services" (click)="close()">Services</a>
       <a routerLink="/pro/settings/coverage" (click)="close()">Coverage</a>

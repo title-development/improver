@@ -13,8 +13,7 @@ export const MASK_VALUE_ACCESSOR: Provider = {
 @Directive({
   selector: '[phoneMask]',
   host: {
-    '(input)': 'onInput($event.target.value)',
-    '(keydown.backspace)': 'onBackspacePressed($event.target.value)'
+    '(input)': 'onInput($event, $event.target.value)'
   },
   providers: [MASK_VALUE_ACCESSOR]
 })
@@ -25,11 +24,11 @@ export class PhoneMask extends MaskDirective {
     if (value.length == 0) {
       return '';
     } else if (value.length <= 3) {
-      return value.replace(/^(\d{0,3})/, '($1)');
+      return value.replace(/^(\d{0,3})/, '$1');
     } else if (value.length <= 6) {
-      return value.replace(/^(\d{0,3})(\d{0,3})/, '($1) $2');
+      return value.replace(/^(\d{0,3})(\d{0,3})/, '$1-$2');
     } else if (value.length <= 10) {
-      return value.replace(/^(\d{0,3})(\d{0,3})(.*)/, '($1) $2-$3');
+      return value.replace(/^(\d{0,3})(\d{0,3})(.*)/, '$1-$2-$3');
     } else {
       return this.lastValue;
     }

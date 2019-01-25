@@ -11,7 +11,7 @@ export const MASK_VALUE_ACCESSOR: Provider = {
 @Directive({
   selector: 'dateMask, [dateMask]',
   host: {
-    '(input)': 'onInput($event.target.value)',
+    '(input)': 'onInput($event, $event.target.value)',
   },
   providers: [MASK_VALUE_ACCESSOR]
 })

@@ -12,11 +12,11 @@
             simply do so in your <br> "Company settings" anytime.
           </li>
           <li>If you receive too many emails, you can also unsubscribe in your "<a href=""
-                                                                                 routerLink="/my/settings/notifications"
+                                                                                   [routerLink]="['pro', 'settings', 'notifications']"
                                                                                  (click)="close()">Notification
             settings</a>".</li>
           <li>If you want to change your email address, name or phone number, you can do it in your "<a
-            href="" routerLink="/my/settings/account" (click)="close()">Account settings</a>".
+            href="" [routerLink]="['pro', 'settings','account']" (click)="close()">Account settings</a>".
           </li>
         </ul>
         <p>Are you sure want to delete your Company account? This action cannot be reversed, so make sure you want to do

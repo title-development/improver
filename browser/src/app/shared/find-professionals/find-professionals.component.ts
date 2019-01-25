@@ -100,7 +100,7 @@ export class FindProfessionalsComponent implements OnInit {
 
   searchServiceType(form: FormGroup) {
     if (this.mainSearchFormGroup.valid) {
-      this.findProfessionalService.showDropdown = false;
+      this.findProfessionalService.close();
       this.getQuestianary(this.serviceTypeCtrl.value);
       form.reset();
       Object.values(form.controls).forEach(control => control.markAsPristine());
@@ -145,6 +145,15 @@ export class FindProfessionalsComponent implements OnInit {
 
   selectTrackBy(index: number, item: ServiceType): number {
     return item.id;
+  }
+
+  mouseleave(event: KeyboardEvent): void {
+    Object.values(this.mainSearchFormGroup.controls).forEach(control => {
+      if (!control.value) {
+        control.reset();
+        control.markAsPristine();
+      }
+    });
   }
 
 }

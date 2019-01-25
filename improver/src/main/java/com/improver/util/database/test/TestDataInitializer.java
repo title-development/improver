@@ -81,7 +81,7 @@ public class TestDataInitializer {
     private static final String ADMIN_DEMO_PASS = "adDOmeafavor2019!";
     private static final String SUPPORT_DEMO_PASS = "supDOmeafavor2019";
 
-    private static final String DEMO_PHONE = "(123) 123-1234";
+    private static final String DEMO_PHONE = "923-123-1234";
     private static final String REPLENISHMENT_DESCRIPTION_PART = "Payment card ending in ";
 
 

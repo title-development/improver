@@ -1,4 +1,4 @@
-<form class="main-search-form" [formGroup]="mainSearchFormGroup" (ngSubmit)="searchServiceType(mainSearchFormGroup)">
+<form class="main-search-form" [formGroup]="mainSearchFormGroup" (ngSubmit)="searchServiceType(mainSearchFormGroup)" (mouseleave)="mouseleave($event)">
   <div class="service-type-form-group">
     <cv-select class="main-search-service-input"
                [highlightErrors]="false"
@@ -12,7 +12,9 @@
                valueKey="name"
                [dropdownBorder]="false"
                [trackBy]="selectTrackBy"
-               (autocompleteSearch)="autocompleteSearch($event)"></cv-select>
+               (autocompleteSearch)="autocompleteSearch($event)"
+               (onClose)="mouseleave($event)"
+    ></cv-select>
     <div class="error-holder" *ngIf="mainSearchFormGroup.get('serviceTypeCtrl').dirty || mainSearchFormGroup.get('serviceTypeCtrl').touched">
       <div *ngIf="mainSearchFormGroup.get('serviceTypeCtrl').errors?.required">
         Please tell us what do you need.

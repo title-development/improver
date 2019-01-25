@@ -192,7 +192,7 @@ export class SecurityService {
   private onLocalStorageChange(event) {
     if (event.storageArea == localStorage) {
       if (!this.isAuthenticated()) {
-        this.router.navigate(['/']);
+        this.logout();
       }
     }
   }

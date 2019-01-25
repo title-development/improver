@@ -86,7 +86,7 @@
                                 {{messages.errors.firstName.required}}
                               </span>
                               <span *ngIf="firstName.errors?.pattern">
-                                Please enter a valid name
+                                {{messages.errors.name.notValid}}
                               </span>
                           </cv-field-error>
                         </cv-input-field>
@@ -108,7 +108,7 @@
                                 {{messages.errors.lastName.required}}
                               </span>
                             <span *ngIf="lastName.errors?.pattern">
-                                Please enter a valid name
+                                {{messages.errors.name.notValid}}
                               </span>
                           </cv-field-error>
                         </cv-input-field>
@@ -127,8 +127,8 @@
                                  #phone="ngModel"
                                  name="phone"
                                  [(ngModel)]="account.phone"
-                                 phoneMask
                                  maxlength="14"
+                                 phoneMask
                                  [pattern]="constants.patterns.phone"
                                  [required]="securityService.hasRole(Role.CONTRACTOR)">
                           <cv-field-error *ngIf="phone.dirty || phone.touched || personalInfoForm.submitted">
@@ -136,6 +136,9 @@
                                     {{messages.errors.phone.required}}
                                   </span>
                             <span *ngIf="phone.errors?.pattern">
+                                    {{messages.errors.phone.pattern}}
+                            </span>
+                            <span *ngIf="phone.errors?.allZeros">
                                     {{messages.errors.phone.pattern}}
                             </span>
                           </cv-field-error>

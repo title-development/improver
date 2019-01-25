@@ -8,6 +8,7 @@ import { PopUpMessageService } from '../../../util/pop-up-message.service';
 import { getErrorMessage } from '../../../util/functions';
 import { NgForm } from '@angular/forms';
 import { Account } from '../../../model/data-model';
+import { Role } from '../../../model/security-model';
 
 @Component({
   selector: 'delete-account-dialog',
@@ -18,6 +19,7 @@ export class DeleteAccountDialogComponent {
   password: string;
   account: Account;
   processing: boolean = false;
+  basePath: string = 'my';
 
   constructor(public currentDialogRef: MatDialogRef<any>,
               public dialog: MatDialog,
@@ -26,6 +28,7 @@ export class DeleteAccountDialogComponent {
               public messages: Messages,
               private userService: UserService,
               private popupService: PopUpMessageService) {
+    this.basePath = this.securityService.hasRole(Role.CONTRACTOR) ? 'pro' : 'my'
   }
 
   close() {
