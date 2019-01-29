@@ -130,6 +130,7 @@ public class Company {
         return this;
     }
 
+
     public Company update(Company source) {
         return this.setName(source.getName())
             .setUri(source.getUri())

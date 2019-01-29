@@ -390,7 +390,9 @@ public class CompanyService {
     }
 
     public void deleteCompany(Company company) {
+        imageService.silentDelete(company.getIconUrl());
         company.setDeleted(true)
+            .setIconUrl(null)
             .setTrades(Collections.emptyList())
             .setServiceTypes(Collections.emptyList());
         companyRepository.save(company);

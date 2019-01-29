@@ -78,7 +78,9 @@ public class UserService {
     }
 
     private void deleteAccount(User user) {
+        imageService.silentDelete(user.getIconUrl());
         user.setDeleted(true)
+            .setIconUrl(null)
             .setUpdated(ZonedDateTime.now());
         userRepository.save(user);
         mailService.sendDeletedAccount(user);

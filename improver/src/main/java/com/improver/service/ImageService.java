@@ -177,7 +177,7 @@ public class ImageService {
     public void remove(String imageName) throws NotFoundException {
         long i = imageRepository.deleteByName(imageName);
         if (i >= 0) {
-            log.info("Image {} removed", imageName);
+            log.info("Image {} successfully removed", imageName);
         } else {
             throw new NotFoundException("Image already deleted or does not exist" + imageName);
         }
@@ -207,12 +207,19 @@ public class ImageService {
         return saveImage(file);
     }
 
-    public void silentDelete(String ImageUrl) {
-        String imageName = ImageUrl.substring(ImageUrl.lastIndexOf('/') + 1);
+    /**
+     * @param imageUrl /api/images/a7466cb2-63fc-433f-8911-6ef6c72d2eae.jpg
+     */
+    public void silentDelete(final String imageUrl) {
+        if (imageUrl == null || imageUrl.lastIndexOf('/') < 1) {
+            log.warn("Invalid image link={}", imageUrl);
+            return;
+        }
+        String imageName = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
         try {
             remove(imageName);
         } catch (NotFoundException e) {
-            log.error("Cannot delete image " + imageName + ". Image already deleted or does not exist");
+            log.error("Cannot delete image {}. Image already deleted or does not exist", imageName);
         }
     }
 
