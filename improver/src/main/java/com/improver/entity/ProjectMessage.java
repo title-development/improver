@@ -61,6 +61,8 @@ public class ProjectMessage {
         this.created = created;
         this.type = type;
         this.event = event;
+        //System messages should be always read
+        this.isRead = SENDER_SYSTEM.equalsIgnoreCase(sender);
     }
 
     public static ProjectMessage plain(long sender, String text, ProjectRequest projectRequest) {

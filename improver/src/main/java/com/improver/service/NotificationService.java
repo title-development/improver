@@ -29,7 +29,6 @@ public class NotificationService {
         stompTemplate.convertAndSend(PATH_WS_CONNECTIONS + projectRequestId, message);
     }
 
-
     public void newProjectRequest(User receiver, Company company, String serviceType, long projectId){
         sendNotification(receiver.getId(), Notification.newProjectRequest(receiver, company.getName(), company.getId(), serviceType, projectId));
     }
