@@ -6,30 +6,24 @@ import com.improver.model.UserAccount;
 import com.improver.model.admin.AdminContractor;
 import com.improver.model.in.registration.StaffRegistration;
 import com.improver.model.in.registration.UserRegistration;
-import com.improver.model.out.LoginModel;
 import com.improver.model.in.*;
 import com.improver.repository.*;
 import com.improver.security.UserSecurityService;
 import com.improver.util.mail.MailService;
-import javassist.tools.web.BadHttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
 import static com.improver.model.in.CloseProjectRequest.Action.CANCEL;
 import static com.improver.util.serializer.SerializationUtil.ERR_MSG_PASS_MINIMUM_REQUIREMENTS;
-import static com.improver.util.serializer.SerializationUtil.NUMERIC_PATTERN;
 import static com.improver.util.serializer.SerializationUtil.PASS_PATTERN;
 
 
@@ -44,7 +38,8 @@ public class UserService {
     @Autowired private CustomerRepository customerRepository;
     @Autowired private MailService mailService;
     @Autowired private ImageService imageService;
-    @Autowired private ProjectService projectService;
+    @Autowired
+    private CustomerProjectService customerProjectService;
     @Autowired private ProjectRequestService projectRequestService;
     @Autowired private CompanyRepository companyRepository;
 
@@ -91,7 +86,7 @@ public class UserService {
             if (project.getStatus().equals(Project.Status.IN_PROGRESS) ||
                 project.getStatus().equals(Project.Status.ACTIVE) ||
                 project.getStatus().equals(Project.Status.VALIDATION)) {
-                projectService.closeProject(project, new CloseProjectRequest(CANCEL, Project.Reason.OTHER, "Customer deleted account"));
+                customerProjectService.closeProject(project, new CloseProjectRequest(CANCEL, Project.Reason.OTHER, "Customer deleted account"));
             }
         });
         deleteAccount(customer);

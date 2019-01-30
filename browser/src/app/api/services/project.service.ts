@@ -25,6 +25,7 @@ export class ProjectService {
   readonly PROJECTS = '/projects';
   readonly PRO = this.API + '/pro';
   readonly CUSTOMERS = this.API + '/customers';
+  readonly CUSTOMER_PROJECTS_PATH = this.CUSTOMERS + this.PROJECTS;
   readonly PROJECTS_PATH = this.API + this.PROJECTS;
   readonly LOCATION = '/location';
   readonly RECEIPT = '/receipt';
@@ -126,12 +127,12 @@ export class ProjectService {
 
   getCloseProjectVariants(projectId): Observable<any> {
     return this.http
-      .get(`${this.PROJECTS_PATH}/${projectId}/close`);
+      .get(`${this.CUSTOMER_PROJECTS_PATH}/${projectId}/close`);
   }
 
   closeProject(projectId, body): Observable<any> {
     return this.http
-      .post(`${this.PROJECTS_PATH}/${projectId}/close`, body);
+      .post(`${this.CUSTOMER_PROJECTS_PATH}/${projectId}/close`, body);
   }
 
   uploadImage(projectId, formData: FormData) {
@@ -153,9 +154,6 @@ export class ProjectService {
     return this.http.put(`${this.PROJECTS_PATH}/${projectId}${this.LOCATION}`, location);
   }
 
-  changeOwner(projectId: number, email: string) {
-    return this.http.put(`${this.PROJECTS_PATH}/${projectId}/owner`, email);
-  }
 
   validation(projectId: number, validation: Project.ValidationRequest) {
     return this.http.put(`${this.PROJECTS_PATH}/${projectId}/validation`, validation);

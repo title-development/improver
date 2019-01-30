@@ -1,6 +1,7 @@
 package com.improver.repository;
 
 import com.improver.entity.Contractor;
+import com.improver.entity.Customer;
 import com.improver.entity.Project;
 import com.improver.entity.ProjectRequest;
 import com.improver.model.admin.out.AdminProjectRequest;
@@ -32,10 +33,15 @@ public interface ProjectRequestRepository extends JpaRepository<ProjectRequest, 
         " ORDER BY c.created ASC")
     List<CompanyProjectRequest> getShortProjectRequestsWithMsgCount(long projectId, String customerId);
 
-    @Query("SELECT new com.improver.model.out.project.CompanyProjectRequest(c, c.contractor.company, c.project.status, c.review.id) " +
-        " FROM com.improver.entity.ProjectRequest c WHERE c.project.id = ?1 " +
-        " ORDER BY c.created ASC")
+    @Query("SELECT new com.improver.model.out.project.CompanyProjectRequest(pr, pr.contractor.company, pr.project.status, pr.review.id) " +
+        " FROM com.improver.entity.ProjectRequest pr WHERE pr.project.id = ?1 " +
+        " ORDER BY pr.created ASC")
     List<CompanyProjectRequest> getShortProjectRequests(long projectId);
+
+    @Query("SELECT new com.improver.model.out.project.CompanyProjectRequest(pr, pr.contractor.company, pr.project.status, pr.review.id) " +
+        " FROM com.improver.entity.ProjectRequest pr WHERE pr.project.id = ?2 AND pr.project.customer = ?1" +
+        " ORDER BY pr.created ASC")
+    List<CompanyProjectRequest> getProjectRequestsForCustomer(Customer customer, long projectId);
 
     @Query("SELECT new com.improver.model.out.project.CompanyProjectRequest(c, c.contractor.company, c.contractor, c.project.status, c.review.id, (SELECT COUNT(m.id) FROM com.improver.entity.ProjectMessage m WHERE c.id = m.projectRequest.id AND m.isRead = false AND m.sender != ?2)) " +
         "FROM com.improver.entity.ProjectRequest c WHERE c.id =?1 ")

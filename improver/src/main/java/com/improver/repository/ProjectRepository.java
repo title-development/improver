@@ -125,4 +125,5 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     List<Project> findDuplicationCandidates(long originalId, ZonedDateTime dateFrom, ZonedDateTime dateTo, String serviceType, String streetAddress);
 
 
+    Optional<Project> findByIdAndCustomerId(Long id, Long customerId);
 }

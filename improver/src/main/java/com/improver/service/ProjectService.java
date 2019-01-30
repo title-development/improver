@@ -4,6 +4,7 @@ import com.improver.entity.*;
 import com.improver.exception.*;
 import com.improver.exception.InternalServerException;
 import com.improver.exception.NotFoundException;
+import com.improver.model.admin.in.ValidationProjectRequest;
 import com.improver.model.in.CloseProjectRequest;
 import com.improver.model.out.NameIdImageTuple;
 import com.improver.model.out.project.*;
@@ -46,134 +47,14 @@ public class ProjectService {
     @Autowired private ProjectActionRepository projectActionRepository;
     @Autowired private ProjectMessageRepository projectMessageRepository;
     @Autowired private NotificationService notificationService;
-    @Autowired private UserSecurityService userSecurityService;
+    @Autowired
+    private CustomerProjectService customerProjectService;
     @Autowired private MailService mailService;
-
-
-    public Page<CustomerProjectShort> getProjectsForCustomer(Customer customer, boolean current, Pageable pageable) {
-        List<Project.Status> statuses = (current) ? Project.Status.getActive() : Project.Status.getArchived();
-        Page<CustomerProjectShort> projectsPage = projectRepository.findByCustomerAndStatuses(customer.getId(), statuses, pageable);
-        projectsPage.forEach(project -> project.setProjectRequests(projectRequestRepository.getShortProjectRequestsWithMsgCount(project.getId(), Long.toString(customer.getId()))));
-        return projectsPage;
-    }
-
-
-    public CustomerProject getCustomerProject(long projectId, Long customerId) {
-        Project project = projectRepository.findById(projectId)
-            .orElseThrow(NotFoundException::new);
-        List<CompanyProjectRequest> pros = projectRequestRepository.getShortProjectRequestsWithMsgCount(projectId, Long.toString(customerId));
-        Collection<String> photos = imageService.getProjectImageUrls(projectId);
-        return new CustomerProject(project, pros, photos);
-    }
-
-
-    public List<CompanyProjectRequest> getProjectRequests(long projectId) {
-        return projectRequestRepository.getShortProjectRequests(projectId);
-    }
 
 
     public Project getProject(long id) {
         return projectRepository.findById(id)
             .orElseThrow(NotFoundException::new);
-    }
-
-
-    public void closeProject(Project project, CloseProjectRequest request) {
-        ZonedDateTime time = ZonedDateTime.now();
-        updateProjectToClose(project, request, time);
-        if (request.getAction().equals(CANCEL)) {
-            log.info("Canceling all projectRequests the project {}", project.getId());
-        } else if (request.getReason().equals(Project.Reason.DONE)) {
-            log.info("Completing the project {}", project.getId());
-            updateProjectRequestToCompleted(project, request, time);
-        }
-        log.debug("All Active projectRequests marked as INACTIVE for project={}", project.getId());
-        closeActiveProjectRequests(project, time, request);
-    }
-
-    @Transactional
-    public void updateProjectToClose(Project project, CloseProjectRequest request, ZonedDateTime time) {
-        Project.Status newStatus;
-        if (request.getAction().equals(CANCEL)) {
-            newStatus = CANCELED;
-            log.info("Canceling the project {}", project.getId());
-        } else {
-            log.info("Completing the project {}", project.getId());
-            newStatus = COMPLETED;
-            switch (project.getStatus()) {
-                case IN_PROGRESS:
-                    break;
-
-                case VALIDATION:
-                case ACTIVE:
-                    if (request.getProjectRequestId() > 0) {
-                        throw new ValidationException("Project status " + project.getStatus().toString() + " cannot have executors");
-                    }
-                    break;
-
-                case CANCELED:
-                case COMPLETED:
-                default:
-                    throw new ValidationException("Invalid operation for Project status " + project.getStatus().toString());
-            }
-        }
-
-        projectRepository.save(project.setStatus(newStatus)
-            .setReason(request.getReason())
-            .setUpdated(time)
-            .setLead(false));
-    }
-
-    private void closeActiveProjectRequests(Project project, ZonedDateTime time, CloseProjectRequest request) {
-        List<ProjectRequest> projectRequests = projectRequestRepository.findByStatusAndProjectId(ProjectRequest.Status.ACTIVE, project.getId());
-        boolean hireOther = request.getProjectRequestId() > 0;
-        projectRequests.forEach(projectRequest -> {
-            projectRequestRepository.save(projectRequest.setStatus(ProjectRequest.Status.INACTIVE).setUpdated(time));
-            ProjectMessage message = null;
-            if (request.getAction().equals(CANCEL)) {
-                message = ProjectMessage.cancel(projectRequest, time);
-            } else if (request.getAction().equals(INVALIDATE)) {
-                message = ProjectMessage.invalidate(projectRequest, time);
-            } else {
-                if (hireOther) {
-                    message = ProjectMessage.hireOther(projectRequest, time);
-                } else {
-                    message = ProjectMessage.close(projectRequest, time);
-                }
-            }
-            projectMessageRepository.save(message);
-            notificationService.sendChatMessage(message, projectRequest.getId());
-            notificationService.customerCloseProject(projectRequest.getContractor(), project.getCustomer(), project.getServiceType().getName(), projectRequest.getId());
-        });
-    }
-
-
-    /**
-     * Updates given projectRequest to {@link ProjectRequest.Status#COMPLETED}
-     */
-    private void updateProjectRequestToCompleted(Project project, CloseProjectRequest closeProjectRequest, ZonedDateTime time) {
-        long projectRequestId = closeProjectRequest.getProjectRequestId();
-        ProjectRequest projectRequest;
-
-        if (projectRequestId > 0) {
-            projectRequest = projectRequestRepository.findByIdAndProjectId(projectRequestId, project.getId())
-                .orElseThrow(ValidationException::new);
-        } else {
-            List<ProjectRequest> list = projectRequestRepository.findByStatusAndProjectId(ProjectRequest.Status.HIRED, project.getId());
-            projectRequest = list.size() == 1 ? list.get(0) : null;
-        }
-
-        if (projectRequest != null
-            && (projectRequest.getStatus().equals(ProjectRequest.Status.ACTIVE)
-            || projectRequest.getStatus().equals(ProjectRequest.Status.HIRED))) {
-            projectRequestRepository.save(projectRequest.setStatus(ProjectRequest.Status.COMPLETED).setUpdated(ZonedDateTime.now()));
-            ProjectMessage message = projectMessageRepository.save(ProjectMessage.close(projectRequest, time));
-            notificationService.sendChatMessage(message, projectRequest.getId());
-            notificationService.customerCloseProject(projectRequest.getContractor(), project.getCustomer(), project.getServiceType().getName(), projectRequest.getId());
-        } else {
-            throw new ValidationException("Invalid executor");
-        }
-
     }
 
 
@@ -213,30 +94,48 @@ public class ProjectService {
 
     }
 
-    public void changeOwner(Project project, Customer customer, User support) {
-        String comment = "Email changed from " + project.getCustomer().getEmail() + " to " + customer.getEmail();
-        projectRepository.save(project.setUpdated(ZonedDateTime.now())
-            .setCustomer(customer)
-        );
-        projectActionRepository.save(ProjectAction.changeOwner(comment, support).setProject(project));
+
+    public void addComment(Project project, String comment, User support) {
+        projectRepository.save(project.setUpdated(ZonedDateTime.now()));
+        projectActionRepository.save(ProjectAction.commentProject(comment, support).setProject(project));
     }
 
-    public void invalidateProject(Project project, Project.Reason reason, String text, User support) {
-        projectRepository.save(project.setUpdated(ZonedDateTime.now())
-            .setLead(false)
-            .setStatus(Project.Status.INVALID)
-            .setReason(reason)
-        );
-        projectActionRepository.save(ProjectAction.invalidateProject(reason, text, support).setProject(project));
-        if(project.getCustomer().getMailSettings().isProjectLifecycle()) {
-            mailService.sendProjectStatusChanged(project, reason);
+
+    /**
+     *
+     *
+     */
+    public void processValidation(Project project, User support, ValidationProjectRequest request) {
+        Project.Status newStatus = request.getResolution();
+        Project.Status oldStatus = project.getStatus();
+
+        if (oldStatus.equals(Project.Status.INVALID)) {
+            throw new ValidationException(oldStatus + " invalid status for update");
         }
-        notificationService.projectInvalidated(project.getCustomer(), project.getServiceType().getName(), project.getId());
 
-        closeActiveProjectRequests(project, ZonedDateTime.now(), new CloseProjectRequest(INVALIDATE, reason, text));
+        switch (newStatus) {
+            case VALIDATION:
+                log.info("Project {} to validation", project.getId());
+                toValidationProject(project, request.getReason(), request.getComment(), support);
+                break;
+
+            case ACTIVE:
+                log.info("Project {} validation", project.getId());
+                validateProject(project, request.getComment(), support);
+                break;
+
+            case INVALID:
+                log.info("Project {} invalidation", project.getId());
+                invalidateProject(project, request.getReason(), request.getComment(), support);
+                break;
+
+            default:
+                throw new IllegalStateException(newStatus + " invalid status for validation");
+        }
     }
 
-    public void toValidationProject(Project project, Project.Reason reason, String comment, User support) {
+
+    private void toValidationProject(Project project, Project.Reason reason, String comment, User support) {
         projectRepository.save(project.setUpdated(ZonedDateTime.now())
             .setStatus(Project.Status.VALIDATION)
             .setLead(false)
@@ -248,7 +147,7 @@ public class ProjectService {
         notificationService.projectToValidation(project.getCustomer(), project.getServiceType().getName(), project.getId());
     }
 
-    public void validateProject(Project project, String text, User support) {
+    private void validateProject(Project project, String text, User support) {
         projectRepository.save(project.setUpdated(ZonedDateTime.now())
             .setStatus(Project.Status.ACTIVE)
             .setLead(true)
@@ -260,24 +159,18 @@ public class ProjectService {
         notificationService.projectValidated(project.getCustomer(), project.getServiceType().getName(), project.getId());
     }
 
-    public void addComment(Project project, String comment, User support) {
-        projectRepository.save(project.setUpdated(ZonedDateTime.now()));
-        projectActionRepository.save(ProjectAction.commentProject(comment, support).setProject(project));
-    }
-
-    public List<NameIdImageTuple> getPotentialExecutors(Project project) {
-        List<NameIdImageTuple> potentialExecutors = Collections.emptyList();
-        if (IN_PROGRESS.equals(project.getStatus())) {
-            List<CompanyProjectRequest> projectRequests = getProjectRequests(project.getId());
-            boolean executorExist = projectRequests.stream()
-                .anyMatch(projectRequest -> projectRequest.getStatus().equals(ProjectRequest.Status.HIRED));
-            if (!executorExist) {
-                potentialExecutors = projectRequests.stream()
-                    .filter(projectRequest -> projectRequest.getStatus().equals(ProjectRequest.Status.ACTIVE))
-                    .map(projectRequest -> new NameIdImageTuple(projectRequest.getId(), projectRequest.getCompany().getName(), projectRequest.getCompany().getIconUrl()))
-                    .collect(Collectors.toList());
-            }
+    private void invalidateProject(Project project, Project.Reason reason, String text, User support) {
+        projectRepository.save(project.setUpdated(ZonedDateTime.now())
+            .setLead(false)
+            .setStatus(Project.Status.INVALID)
+            .setReason(reason)
+        );
+        projectActionRepository.save(ProjectAction.invalidateProject(reason, text, support).setProject(project));
+        if (project.getCustomer().getMailSettings().isProjectLifecycle()) {
+            mailService.sendProjectStatusChanged(project, reason);
         }
-        return potentialExecutors;
+        notificationService.projectInvalidated(project.getCustomer(), project.getServiceType().getName(), project.getId());
+
+        customerProjectService.closeActiveProjectRequests(project, ZonedDateTime.now(), new CloseProjectRequest(INVALIDATE, reason, text));
     }
 }

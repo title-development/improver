@@ -45,6 +45,8 @@ public class ProjectController {
     @Autowired private ProjectRepository projectRepository;
     @Autowired private ImageService imageService;
     @Autowired private UserSecurityService userSecurityService;
+    @Autowired
+    private ProjectRequestRepository projectRequestRepository;
 
     @PreAuthorize("hasAnyRole('ANONYMOUS', 'CUSTOMER', 'ADMIN', 'SUPPORT')")
     @PostMapping
@@ -77,12 +79,11 @@ public class ProjectController {
 
         Project project = projectRepository.findById(id)
             .orElseThrow(NotFoundException::new);
-        List<CompanyProjectRequest> pros = projectService.getProjectRequests(id);
-
+        List<CompanyProjectRequest> pros = projectRequestRepository.getShortProjectRequests(id);
         return new ResponseEntity<>(AdminProject.full(project, pros), HttpStatus.OK);
     }
 
-    //TODO: Check this
+
     @SupportAccess
     @PutMapping(ID_PATH_VARIABLE + "/location")
     public ResponseEntity<Void> updateLocation(@PathVariable long id, @RequestBody Location location ){
@@ -90,9 +91,7 @@ public class ProjectController {
         Project project = projectRepository.findById(id)
             .orElseThrow(NotFoundException::new);
         User support = userSecurityService.currentUser();
-
         projectService.updateLocation(project, location, support);
-
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -115,33 +114,7 @@ public class ProjectController {
         Project project = projectRepository.findById(id)
             .orElseThrow(NotFoundException::new);
         User support = userSecurityService.currentUser();
-
-        Project.Status newStatus = request.getResolution();
-        Project.Status oldStatus = project.getStatus();
-
-        if (oldStatus.equals(Project.Status.INVALID)) {
-            throw new ValidationException(oldStatus + " invalid status for update");
-        }
-
-        switch (newStatus) {
-            case VALIDATION:
-                log.info("Project {} to validation", id);
-                projectService.toValidationProject(project, request.getReason(), request.getComment(), support);
-                break;
-
-            case ACTIVE:
-                log.info("Project {} validation", id);
-                projectService.validateProject(project, request.getComment(), support);
-                break;
-
-            case INVALID:
-                log.info("Project {} invalidation", id);
-                projectService.invalidateProject(project, request.getReason(), request.getComment(), support);
-                break;
-
-            default:
-                throw new IllegalStateException(newStatus + " invalid status for validation");
-        }
+        projectService.processValidation(project, support, request);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -154,8 +127,8 @@ public class ProjectController {
     }
 
 
-    //TODO: remove to CustomerProject Controller
-    @PreAuthorize("hasRole('CUSTOMER')")
+    @Deprecated
+    //TODO: remove to CustomerProjectController
     @PostMapping(ID_PATH_VARIABLE + IMAGES)
     public ResponseEntity<Void> addProjectImage(@PathVariable long id, MultipartFile file) {
         Project project = projectService.getProject(id);
@@ -168,35 +141,14 @@ public class ProjectController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
-    @PreAuthorize("hasRole('CUSTOMER')")
+    @Deprecated
+    //TODO: remove to CustomerProjectController
     @DeleteMapping(ID_PATH_VARIABLE + IMAGES)
     public ResponseEntity<String> deleteProjectImage(@PathVariable long id, @RequestParam String imageUrl) {
         Project project = projectService.getProject(id);
         String newCoverUrl = imageService.deleteProjectImage(imageUrl, project);
         project.setCoverUrl(newCoverUrl);
         projectRepository.save(project.setUpdated(ZonedDateTime.now()));
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-
-    @PreAuthorize("hasRole('CUSTOMER')")
-    @GetMapping(ID_PATH_VARIABLE + "/close")
-    public ResponseEntity<CloseProjectQuestionary> getCloseVariants(@PathVariable long id) {
-        Project project = projectRepository.findById(id)
-            .orElseThrow(NotFoundException::new);
-
-        List<NameIdImageTuple> potentialExecutors = projectService.getPotentialExecutors(project);
-        return new ResponseEntity<>(new CloseProjectQuestionary(potentialExecutors), HttpStatus.OK);
-    }
-
-
-    @PreAuthorize("hasRole('CUSTOMER')")
-    @PostMapping(ID_PATH_VARIABLE + "/close")
-    public ResponseEntity<Void> closeProject(@PathVariable long id, @RequestBody @Valid CloseProjectRequest request) {
-        Project project = projectRepository.findById(id)
-            .orElseThrow(NotFoundException::new);
-        projectService.closeProject(project, request);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
