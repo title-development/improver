@@ -54,28 +54,40 @@ public class ProjectRequestController {
         return new ResponseEntity<>(projectRequests, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyRole('CUSTOMER', 'ADMIN', 'SUPPORT')")
+    //TODO: Add same customer security
+    @Deprecated
+    @PreAuthorize("hasAnyRole('CUSTOMER', 'CONTRACTOR', 'ADMIN', 'SUPPORT')")
+    @GetMapping(ID_PATH_VARIABLE + "/messages")
+    public ResponseEntity<List<ProjectMessage>> getChatMessages(@PathVariable long id) {
+        List<ProjectMessage> messages = projectMessageRepository.getByProjectRequestIdOrderByCreatedAsc(id);
+        return new ResponseEntity<>(messages, HttpStatus.OK);
+    }
+
+
+    //TODO: Refactor this: Add security
+    @Deprecated
+    @PreAuthorize("hasAnyRole('CUSTOMER', 'CONTRACTOR')")
+    @PostMapping("/documents")
+    public ResponseEntity<MessengerDocument> uploadFile(MultipartFile file) {
+        Document savedFile = fileService.saveFile(file);
+        String fileUrl = DOCUMENTS_PATH + SLASH + savedFile.getName();
+        MessengerDocument messengerFile = new MessengerDocument(savedFile.getOriginalName(), fileUrl);
+
+        return new ResponseEntity<>(messengerFile, HttpStatus.OK);
+    }
+
+
+    @PreAuthorize("hasAnyRole('CUSTOMER')")
     @GetMapping(ID_PATH_VARIABLE)
     public ResponseEntity<CompanyProjectRequest> getProjectRequest(@PathVariable long id) {
         Customer customer = userSecurityService.currentCustomer();
-        CompanyProjectRequest companyProjectRequest = projectRequestRepository.getProProjectRequest(id, Long.toString(customer.getId()))
+        CompanyProjectRequest companyProjectRequest = projectRequestRepository.getCompanyProjectRequest(id, customer.getId())
             .orElseThrow(NotFoundException::new);
         return new ResponseEntity<>(companyProjectRequest, HttpStatus.OK);
     }
 
 
     @PreAuthorize("hasRole('CUSTOMER')")
-    @PostMapping(ID_PATH_VARIABLE + "/hire")
-    public ResponseEntity<Void> hirePro(@PathVariable long id, @RequestParam(defaultValue = "true") boolean declineOthers) {
-        ProjectRequest toHire = projectRequestRepository.findById(id)
-            .orElseThrow(NotFoundException::new);
-        ZonedDateTime time = ZonedDateTime.now();
-        projectRequestService.hirePro(toHire, time);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-
-    @PreAuthorize("hasAnyRole('CUSTOMER', 'ADMIN', 'SUPPORT')")
     @GetMapping(ID_PATH_VARIABLE + "/decline")
     public ResponseEntity<Map<ProjectRequest.Reason, String>> getDeclineVariants(@PathVariable long id) {
         ProjectRequest projectRequest = projectRequestRepository.findById(id).
@@ -85,40 +97,38 @@ public class ProjectRequestController {
     }
 
 
-    @PreAuthorize("hasAnyRole('CUSTOMER', 'ADMIN', 'SUPPORT')")
-    @PostMapping(ID_PATH_VARIABLE + "/decline")
-    public ResponseEntity<Void> declinePro(@PathVariable long id, @RequestBody DeclineProAction action) {
-        ProjectRequest projectRequest = projectRequestRepository.findById(id).
-            orElseThrow(NotFoundException::new);
-        projectRequestService.declinePro(projectRequest, action.getReason(), action.getComment());
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
+    @PreAuthorize("hasRole('CUSTOMER')")
+    @PostMapping(ID_PATH_VARIABLE + "/hire")
+    public ResponseEntity<Void> hirePro(@PathVariable long id, @RequestParam(defaultValue = "true") boolean declineOthers) {
+        Customer customer = userSecurityService.currentCustomer();
+        ProjectRequest toHire = projectRequestRepository.findByIdAndCustomerId(id, customer.getId())
+            .orElseThrow(NotFoundException::new);
 
-    @PreAuthorize("hasAnyRole('CONTRACTOR', 'ADMIN', 'SUPPORT')")
-    @PostMapping(ID_PATH_VARIABLE + "/close")
-    public ResponseEntity<Void> leaveProject(@PathVariable long id, @RequestParam boolean leave) {
-        ProjectRequest projectRequest = projectRequestRepository.findById(id).
-            orElseThrow(NotFoundException::new);
-        projectRequestService.closeProject(projectRequest, ZonedDateTime.now(), leave);
+        projectRequestService.hirePro(toHire);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
-    @PreAuthorize("hasAnyRole('CUSTOMER', 'CONTRACTOR', 'ADMIN', 'SUPPORT')")
-    @GetMapping(ID_PATH_VARIABLE + "/messages")
-    public ResponseEntity<List<ProjectMessage>> getChatMessages(@PathVariable long id) {
-        List<ProjectMessage> messages = projectMessageRepository.getByProjectRequestIdOrderByCreatedAsc(id);
-        return new ResponseEntity<>(messages, HttpStatus.OK);
+    @PreAuthorize("hasRole('CUSTOMER')")
+    @PostMapping(ID_PATH_VARIABLE + "/decline")
+    public ResponseEntity<Void> declinePro(@PathVariable long id, @RequestBody DeclineProAction action) {
+        Customer customer = userSecurityService.currentCustomer();
+        ProjectRequest projectRequest = projectRequestRepository.findByIdAndCustomerId(id, customer.getId())
+            .orElseThrow(NotFoundException::new);
+
+        projectRequestService.declinePro(projectRequest, action.getReason(), action.getComment());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PreAuthorize("hasAnyRole('CUSTOMER', 'CONTRACTOR')")
-    @PostMapping("/documents")
-    public ResponseEntity<MessengerDocument> uploadFile(MultipartFile file) {
-        Document savedFile = fileService.saveFile(file);
-        String fileUrl = DOCUMENTS_PATH + SLASH + savedFile.getName();
-        MessengerDocument messengerFile = new MessengerDocument(savedFile.getOriginalName(), fileUrl);
 
-        return new ResponseEntity<>(messengerFile, HttpStatus.OK);
+    @PreAuthorize("hasRole('CONTRACTOR')")
+    @PostMapping(ID_PATH_VARIABLE + "/close")
+    public ResponseEntity<Void> leaveProject(@PathVariable long id, @RequestParam boolean leave) {
+        Contractor contractor = userSecurityService.currentPro();
+        ProjectRequest projectRequest = projectRequestRepository.findByIdAndContractorId(id, contractor.getId()).
+            orElseThrow(NotFoundException::new);
+        projectRequestService.closeProject(projectRequest, ZonedDateTime.now(), leave);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

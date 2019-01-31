@@ -64,7 +64,8 @@ public class ProjectRequestService {
     }
 
 
-    public void hirePro(ProjectRequest toHire, ZonedDateTime time) {
+    public void hirePro(ProjectRequest toHire) {
+        ZonedDateTime time = ZonedDateTime.now();
         Project project = toHire.getProject();
         checkProjectIsActive(project);
         boolean declineOthers = true;
