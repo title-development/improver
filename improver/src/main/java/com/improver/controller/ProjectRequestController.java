@@ -81,7 +81,7 @@ public class ProjectRequestController {
     @GetMapping(ID_PATH_VARIABLE)
     public ResponseEntity<CompanyProjectRequest> getProjectRequest(@PathVariable long id) {
         Customer customer = userSecurityService.currentCustomer();
-        CompanyProjectRequest companyProjectRequest = projectRequestRepository.getCompanyProjectRequest(id, customer.getId())
+        CompanyProjectRequest companyProjectRequest = projectRequestRepository.getCompanyProjectRequest(id, String.valueOf(customer.getId()))
             .orElseThrow(NotFoundException::new);
         return new ResponseEntity<>(companyProjectRequest, HttpStatus.OK);
     }

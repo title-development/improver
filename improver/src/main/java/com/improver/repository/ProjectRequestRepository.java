@@ -45,7 +45,7 @@ public interface ProjectRequestRepository extends JpaRepository<ProjectRequest, 
 
     @Query("SELECT new com.improver.model.out.project.CompanyProjectRequest(c, c.contractor.company, c.contractor, c.project.status, c.review.id, (SELECT COUNT(m.id) FROM com.improver.entity.ProjectMessage m WHERE c.id = m.projectRequest.id AND m.isRead = false AND m.sender != ?2)) " +
         "FROM com.improver.entity.ProjectRequest c WHERE c.id =?1 ")
-    Optional<CompanyProjectRequest> getCompanyProjectRequest(long projectRequestId, long customerId);
+    Optional<CompanyProjectRequest> getCompanyProjectRequest(long projectRequestId, String customerId);
 
     @Query("SELECT c FROM com.improver.entity.ProjectRequest c WHERE c.project.id IN (SELECT c.project.id FROM com.improver.entity.ProjectRequest c WHERE c.id = ?1)")
     List<ProjectRequest> findRelatedProjectRequests(long projectRequestId);
