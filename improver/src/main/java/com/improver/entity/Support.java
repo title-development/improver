@@ -1,5 +1,6 @@
 package com.improver.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.improver.model.in.registration.UserRegistration;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -8,7 +9,9 @@ import lombok.experimental.Accessors;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import java.time.ZonedDateTime;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -17,6 +20,10 @@ import java.time.ZonedDateTime;
 @Entity(name = "supports")
 @NoArgsConstructor
 public class Support extends User {
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "assignee")
+    protected List<Ticket> tickets;
 
 
     public Support(UserRegistration reg) {

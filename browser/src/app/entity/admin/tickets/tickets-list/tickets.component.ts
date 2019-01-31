@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { Pagination, Review } from '../../../../model/data-model';
+import { Component, ViewChild } from '@angular/core';
+import { Pagination } from '../../../../model/data-model';
 import { MenuItem, SelectItem } from 'primeng/primeng';
 import { enumToArrayList, filtersToParams } from '../../../../util/tricks.service';
 import { RestPage } from '../../../../api/models/RestPage';
@@ -9,7 +9,10 @@ import { Ticket } from "../../../../api/models/Ticket";
 import { TicketService } from "../../../../api/services/ticket.service";
 import { PopUpMessageService } from "../../../../util/pop-up-message.service";
 import { getErrorMessage, getKeyFromEnum } from "../../../../util/functions";
-import { Project } from "../../../../api/models/Project";
+import { Priority } from "../../../../api/models/Priority";
+import { UserService } from "../../../../api/services/user.service";
+import { Role } from "../../../../model/security-model";
+import { SecurityService } from "../../../../auth/security.service";
 
 
 @Component({
@@ -19,12 +22,14 @@ import { Project } from "../../../../api/models/Project";
 })
 export class TicketsListComponent {
   @ViewChild('dt') dataTable: any;
+  displayEditDialog = false;
   processing = true;
   tickets: RestPage<Ticket> = new RestPage<Ticket>();
   rowsPerPage: Array<number> = [10, 50, 100];
   tableColumns: Array<SelectItem> = [];
   ticketOptionFilter: Array<SelectItem> = [];
   ticketStatusFilter: Array<SelectItem> = [];
+  ticketPriorityFilter: Array<SelectItem> = [];
   selected: Ticket;
   selectedTableCols: Array<string> = [
     'id',
@@ -33,29 +38,16 @@ export class TicketsListComponent {
     'name',
     'businessName',
     'option',
-    'status'
-  ];
-  defaultContextMenuItems: Array<MenuItem> = [
-    {
-      label: 'View',
-      icon: 'fa fa-eye',
-      command: () => this.expandRow({originalEvent: null, data: this.selected })
-    },
-    {
-      label: 'Start progress',
-      icon: 'fa fa-play-circle',
-      command: () => this.start(this.selected)
-    },
-    {
-      label: 'Close',
-      icon: 'fa fa-minus-circle',
-      command: () => this.close(this.selected)
-    }
+    'status',
+    'priority',
+    'assignee'
   ];
   contextMenuItems: Array<MenuItem> = [];
   filters: any;
 
   constructor(private ticketService: TicketService,
+              private userService: UserService,
+              private securityService: SecurityService,
               private router: Router,
               public camelCaseHumanPipe: CamelCaseHumanPipe,
               public popUpService: PopUpMessageService) {
@@ -67,6 +59,41 @@ export class TicketsListComponent {
       return {label: item, value: item};
     });
     this.ticketStatusFilter.unshift({label: 'All', value: ''});
+    this.ticketPriorityFilter = enumToArrayList(Priority).map(item => {
+      return {label: item, value: item};
+    });
+    this.ticketPriorityFilter.unshift({label: 'All', value: ''});
+  }
+
+  initContextMenu() {
+    this.contextMenuItems = [
+      {
+        label: 'View/Edit',
+        icon: 'fa fa-edit',
+        command: () => { this.displayEditDialog = true }
+      },
+      {
+        label: 'Start progress',
+        icon: 'fa fa-play-circle',
+        command: () => this.start(this.selected),
+        visible: this.isEditable() && this.selected.status == Ticket.Status.NEW
+      },
+      {
+        label: 'Close',
+        icon: 'fa fa-minus-circle',
+        command: () => this.close(this.selected),
+        visible: this.isEditable() && this.selected.status == Ticket.Status.IN_PROGRESS
+      }
+    ]
+  }
+
+  isEditable() {
+    let name;
+    if (this.selected.assignee) {
+      name = this.selected.assignee;
+      name = name.substring(name.indexOf("<") + 1, name.indexOf(">"));
+    }
+    return this.securityService.hasRole(Role.ADMIN) || (this.selected.status != Ticket.Status.CLOSED && (!name || name === this.securityService.getLoginModel().name));
   }
 
   refresh(): void {
@@ -84,19 +111,10 @@ export class TicketsListComponent {
 
   selectItem(selection: { originalEvent: MouseEvent, data: Ticket }): void {
     this.selected = selection.data;
-    this.contextMenuItems = this.defaultContextMenuItems.filter(item => {
-      let pass = true;
-      if (this.selected.status == Ticket.Status.IN_PROGRESS) {
-        pass = item.label != 'Start progress';
-      } else if (this.selected.status == Ticket.Status.CLOSED) {
-        pass = (item.label != 'Start progress') &&
-          (item.label != 'Close')
-      }
-      return pass;
-    });
+    this.initContextMenu();
   }
 
-  expandRow(selection: { originalEvent: MouseEvent, data: Review }): void {
+  expandRow(selection: { originalEvent: MouseEvent, data: Ticket }): void {
     if (!this.dataTable.expandedRows) {
       this.dataTable.expandedRows = [];
     }
@@ -109,7 +127,6 @@ export class TicketsListComponent {
   }
 
   getTickets(filters = {}, pagination: Pagination = new Pagination(0, this.rowsPerPage[0])): void {
-    console.log(filters);
     if (filters['option']) {
       filters['option'] = getKeyFromEnum(Ticket.Option, filters['option']);
     }
@@ -121,7 +138,6 @@ export class TicketsListComponent {
         if (restPage.content.length > 0) {
           this.tableColumns = [...this.selectedTableCols, ...Object.keys(restPage.content[0])]
             .filter((elem, pos, arr) => arr.indexOf(elem) == pos) //remove duplicates
-            .filter((elem) => !(elem == 'updated' || elem == 'description'))
             .map(key => {
                 return {label: this.camelCaseHumanPipe.transform(key, true), value: key};
               }
@@ -135,18 +151,30 @@ export class TicketsListComponent {
   start(ticket) {
     this.ticketService.changeStatus(ticket.id, Ticket.Status.IN_PROGRESS).subscribe(
       responce => {
-        this.popUpService.showSuccess('Ticket has been moved to review');
+        this.popUpService.showSuccess('Work on Ticket has been started');
         this.refresh();
       },
-    err => {
-      this.popUpService.showError(getErrorMessage(err))
-    });
+      err => {
+        this.popUpService.showError(getErrorMessage(err))
+      });
   }
 
   close(ticket) {
     this.ticketService.changeStatus(ticket.id, Ticket.Status.CLOSED).subscribe(
       responce => {
         this.popUpService.showSuccess('Ticket has been closed');
+        this.refresh();
+      },
+      err => {
+        this.popUpService.showError(getErrorMessage(err))
+      });
+  }
+
+  updateTicket(ticket) {
+    this.ticketService.update(ticket).subscribe(
+      responce => {
+        this.popUpService.showSuccess('Ticket has been updated');
+        this.displayEditDialog = false;
         this.refresh();
       },
       err => {

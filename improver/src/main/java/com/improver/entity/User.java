@@ -70,9 +70,11 @@ public class User implements Principal {
 
     protected String refreshId;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     protected List<Notification> notifications;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     protected List<SocialConnection> socialConnections;
 

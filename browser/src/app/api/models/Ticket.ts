@@ -1,15 +1,19 @@
 import { Role } from "../../model/security-model";
+import { Priority } from "./Priority";
 
 export class Ticket {
+  id?: string;
   name?: string;
   email?: string;
   businessName?: string;
   option?: Ticket.Option | any;
   status?: Ticket.Status | any;
+  priority?: Priority | any;
   description?: string;
   replyMessage?: string;
   isReplied?: boolean;
   created?: string;
+  assignee?: string;
 
   constructor() {}
 

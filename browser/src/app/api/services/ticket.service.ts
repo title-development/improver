@@ -2,16 +2,16 @@ import { Injectable } from '@angular/core';
 import { License, Review } from '../../model/data-model';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Ticket } from "../models/Ticket";
 import { toHttpParams } from "../../util/functions";
 import { RestPage } from "../models/RestPage";
+import { Ticket } from "../models/Ticket";
 
 
 
 @Injectable()
 export class TicketService {
 
-  private feedbackUrl = 'api/tickets';
+  private ticketUrl = 'api/tickets';
   private statusUrl = '/status';
 
   constructor(private http: HttpClient) {
@@ -19,17 +19,27 @@ export class TicketService {
 
   getAll(filters, pagination): Observable<RestPage<Ticket>> {
     const params = toHttpParams({...filters, ...pagination});
-    return this.http.get<RestPage<Ticket>>(`${this.feedbackUrl}`, {params});
+    return this.http.get<RestPage<Ticket>>(`${this.ticketUrl}`, {params});
   }
 
-  post(feedback: Ticket) {
-    return this.http
-      .post(`${this.feedbackUrl}`, feedback, {responseType: 'text', observe: 'response'});
+  getMy(filters, pagination): Observable<RestPage<Ticket>> {
+    const params = toHttpParams({...filters, ...pagination});
+    return this.http.get<RestPage<Ticket>>(`${this.ticketUrl}/my`, {params});
   }
 
-  changeStatus(feedbackId: any, status: Ticket.Status): Observable<any> {
+  post(ticketId: any) {
     return this.http
-      .put(`${this.feedbackUrl}/${feedbackId}${this.statusUrl}`, status);
+      .post(`${this.ticketUrl}`, ticketId, {responseType: 'text', observe: 'response'});
+  }
+
+  changeStatus(ticketId: any, status: Ticket.Status): Observable<any> {
+    return this.http
+      .patch(`${this.ticketUrl}/${ticketId}${this.statusUrl}`, status);
+  }
+
+  update(ticket: Ticket): Observable<any> {
+    return this.http
+      .put(`${this.ticketUrl}/${ticket.id}`, ticket);
   }
 
 }

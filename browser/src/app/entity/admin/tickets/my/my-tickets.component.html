@@ -1,5 +1,5 @@
 <div class="panel-header">
-  <h1>Unassigned Tickets</h1>
+  <h1>My Tickets</h1>
   <p-button (onClick)="refresh()" icon="pi pi-fw pi-refresh" label="&nbsp;&nbsp;Refresh"></p-button>
 </div>
 
@@ -8,7 +8,6 @@
              selectionMode="single" sortMode="single"
              [responsive]="true" [contextMenu]="cm" [paginator]="true"
              [rows]="rowsPerPage[0]" [totalRecords]="tickets.totalElements" [rowsPerPageOptions]="rowsPerPage"
-             sortField="created" [sortOrder]="-1"
              (onContextMenuSelect)="selectItem($event)"
              (onLazyLoad)="loadLazy($event)" [expandableRows]="true" (onRowSelect)="expandRow($event)">
   <p-header>
@@ -42,7 +41,7 @@
       <div *ngIf="row.option">{{row.option}}</div>
     </ng-template>
   </p-column>
-  <p-column field="status" header="Status" *ngIf="selectedTableCols.includes('status')"></p-column>
+  <p-column field="status" header="Status" *ngIf="selectedTableCols.includes('status')" [sortable]="true" [filter]="true"></p-column>
   <ng-template let-data pTemplate="rowexpansion">
     <div class="ui-grid ui-grid-responsive ui-fluid">
       <div class="ui-grid-row">
@@ -65,7 +64,7 @@
       <div *ngIf="row.priority">{{row.priority}}</div>
     </ng-template>
   </p-column>
-  <p-column field="assignee" header="Assignee" filterField="assignee" sortField="assignee" *ngIf="selectedTableCols.includes('assignee')"></p-column>
+  <p-column field="assignee" header="Assignee" filterField="assignee" sortField="assignee" *ngIf="selectedTableCols.includes('assignee')" ></p-column>
 </p-dataTable>
 
 <ticket-edit-dialog [ticket]="selected" [(display)]="displayEditDialog" (onUpdate)="refresh()"></ticket-edit-dialog>

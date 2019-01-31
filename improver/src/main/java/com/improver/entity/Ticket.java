@@ -1,5 +1,6 @@
 package com.improver.entity;
 
+import com.improver.enums.Priority;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
@@ -28,6 +29,11 @@ public class Ticket {
     private Option option;
     @Enumerated(EnumType.STRING)
     private Status status = Status.NEW;
+    private Priority priority = Priority.LOWEST;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assignee")
+    private Support assignee;
 
     public enum Option {
         LOGIN_ISSUE ("Login issue"),

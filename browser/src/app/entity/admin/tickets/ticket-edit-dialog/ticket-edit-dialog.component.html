@@ -1,0 +1,47 @@
+
+<p-dialog header="Edit Ticket" [(visible)]="displayDialog" [responsive]="true" showEffect="fade" [width]="600"
+          [modal]="true">
+  <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="selected && !processing">
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-4"><label for="email">Email</label></div>
+      <div class="ui-grid-col-8"><input pInputText id="email" [(ngModel)]="selected.email" disabled/></div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-4"><label for="name">Name</label></div>
+      <div class="ui-grid-col-8"><input pInputText id="name" [(ngModel)]="selected.name" disabled/></div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-4"><label for="businessName">Business name</label></div>
+      <div class="ui-grid-col-8"><input pInputText id="businessName" [(ngModel)]="selected.businessName" disabled/></div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-4"><label for="status">Assignee</label></div>
+      <div class="ui-grid-col-8"><p-dropdown placeholder="Type name or Email" [disabled]="!isEditable()" [filter]="true" #assignee="ngModel" required id="assignee" [options]="supports" name="status" [(ngModel)]="selected.assignee" [showClear]="true"></p-dropdown>
+      </div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-4"><label for="priority">Priority</label></div>
+      <div class="ui-grid-col-8"><p-dropdown #priority="ngModel" required id="priority" [disabled]="!isEditable()" [options]="priorities" name="priority" [(ngModel)]="selected.priority"></p-dropdown>
+        <div class="ui-message ui-messages-error ui-corner-all ui-error-space" *ngIf="!priority.valid && priority.dirty && !priority.disabled">
+          Please choose a priority
+        </div>
+      </div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-4"><label for="status">Status</label></div>
+      <div class="ui-grid-col-8"><p-dropdown #status="ngModel" required id="status" [disabled]="true" [options]="statuses" name="status" [(ngModel)]="selected.status"></p-dropdown>
+      </div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-4"><label for="description">description</label></div>
+      <div class="ui-grid-col-8"><textarea pInputTextarea id="description" [(ngModel)]="selected.description" rows="4" disabled></textarea></div>
+    </div>
+  </div>
+  <p-footer *ngIf="isEditable()">
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button type="button" pButton icon="pi pi-check" (click)="updateTicket(selected)" label="Update"></button>
+    </div>
+  </p-footer>
+</p-dialog>
+
+

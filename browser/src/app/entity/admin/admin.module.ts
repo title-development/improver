@@ -102,6 +102,8 @@ import { AdminJobsComponent } from "./jobs/jobs.component";
 import { JobService } from "../../api/services/job.service";
 import { ReviewRevisionRequestComponent } from "./components/review-revision-request/review-revision-request.component";
 import { NgArrayPipesModule } from "angular-pipes";
+import { MyTicketsComponent } from "./tickets/my/my-tickets.component";
+import { TicketEditDialogComponent } from "./tickets/ticket-edit-dialog/ticket-edit-dialog.component";
 
 
 
@@ -190,6 +192,8 @@ import { NgArrayPipesModule } from "angular-pipes";
     RefundsInreviewComponent,
     TicketsListComponent,
     TicketsInreviewComponent,
+    MyTicketsComponent,
+    TicketEditDialogComponent,
     InvitationsComponent,
     AddUserComponent,
     AdminAccountComponent,

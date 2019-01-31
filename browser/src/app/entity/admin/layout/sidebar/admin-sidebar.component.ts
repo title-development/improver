@@ -143,8 +143,13 @@ export class AdminSidebarComponent {
         },
         {
           icon: 'fa fa-retweet',
-          label: 'New Tickets',
-          url: 'tickets/new'
+          label: 'Unassigned Tickets',
+          url: 'tickets/unassigned'
+        },
+        {
+          icon: 'fas fa-headset',
+          label: 'My Tickets',
+          url: 'tickets/my'
         }
       ]
     },

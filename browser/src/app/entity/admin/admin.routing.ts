@@ -34,6 +34,7 @@ import { LicenseTypesComponent } from "./license-types/license-types.component";
 import { AdminCoverageComponent } from './coverage/admin-coverage.component';
 import { AdminJobsComponent } from "./jobs/jobs.component";
 import { AuthGuard } from '../../auth/router-guards/auth.guard';
+import { MyTicketsComponent } from "./tickets/my/my-tickets.component";
 
 const routes: Routes = [
   {
@@ -67,7 +68,8 @@ const routes: Routes = [
           {path: 'refunds', component: RefundsListComponent},
           {path: 'refunds/inreview', component: RefundsInreviewComponent},
           {path: 'coverage', component: AdminCoverageComponent},
-          {path: 'tickets/new', component: TicketsInreviewComponent},
+          {path: 'tickets/my', component: MyTicketsComponent},
+          {path: 'tickets/unassigned', component: TicketsInreviewComponent},
           {path: 'tickets', component: TicketsListComponent},
           {path: 'license-types', component: LicenseTypesComponent},
           {path: 'jobs', component: AdminJobsComponent},

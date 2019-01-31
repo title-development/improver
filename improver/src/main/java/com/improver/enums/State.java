@@ -55,12 +55,12 @@ public enum State {
 
     private final String value;
 
-    State (String status) {
-        value = status;
+    State (String value) {
+        this.value = value;
     }
 
-    public boolean equalsValue(String state) {
-        return value.equals(state);
+    public boolean equalsValue(String value) {
+        return this.value.equals(value);
     }
 
     @Override

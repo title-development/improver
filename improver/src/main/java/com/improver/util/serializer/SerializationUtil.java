@@ -57,6 +57,11 @@ public class SerializationUtil {
     public static final String DATE_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ssxxx";
     public static final String DATE_PATTERN = "yyyy-MM-dd";
     public static final Pattern NUMERIC_PATTERN = Pattern.compile("\\d+");
+    /**
+     * Reqex used to extract email from assignee string like 'sup.improver@gmail.com <John Wick>'.
+     * Just replace this regex with empty string and you will get pure email 'sup.improver@gmail.com'"
+     */
+    public static final String ASSIGNEE_NAME_EXTRACT = "[\\s]<[a-zA-Z,\\s]*>";
 
 
     private static final ObjectMapper objectMapper = new ObjectMapper();

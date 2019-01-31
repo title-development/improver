@@ -172,7 +172,7 @@ export class AdminProjectsComponent {
     this.projectService.updateLocation(this.selectedProject.id, location).subscribe(
       res => {
         this.refresh();
-        this.popUpMessageService.showSuccess('`Project location has been updated');
+        this.popUpMessageService.showSuccess('Project location has been updated');
       },
       err => {
         this.popUpMessageService.showError(getErrorMessage(err));

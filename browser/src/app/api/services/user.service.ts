@@ -60,7 +60,6 @@ export class UserService {
 
   getAllCustomers(filters: any, pagination: Pagination): Observable<RestPage<User>> {
     const params = {...filters, ...pagination};
-
     return this.http.get<RestPage<User>>(`${this.url}/customers`, {params});
   }
 

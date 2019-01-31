@@ -16,11 +16,11 @@ import { Role } from "../../../../model/security-model";
 
 
 @Component({
-  selector: 'tickets-inreview',
-  templateUrl: './inreview.component.html',
-  styleUrls: ['./inreview.component.scss']
+  selector: 'my-tickets',
+  templateUrl: './my-tickets.component.html',
+  styleUrls: ['./my-tickets.component.scss']
 })
-export class TicketsInreviewComponent {
+export class MyTicketsComponent {
   @ViewChild('dt') dataTable: any;
   displayEditDialog = false;
   processing = true;
@@ -38,7 +38,8 @@ export class TicketsInreviewComponent {
     'name',
     'businessName',
     'option',
-    'priority'
+    'status',
+    'priority',
   ];
   contextMenuItems: Array<MenuItem> = [];
 
@@ -74,13 +75,13 @@ export class TicketsInreviewComponent {
         label: 'Start progress',
         icon: 'fa fa-play-circle',
         command: () => this.start(this.selected),
-        visible: this.isEditable() && (this.selected.status == Ticket.Status.NEW || !this.selected.assignee)
+        visible: this.isEditable() && this.selected.status == Ticket.Status.NEW
       },
       {
         label: 'Close',
         icon: 'fa fa-minus-circle',
         command: () => this.close(this.selected),
-        visible: this.isEditable() && this.selected.status == Ticket.Status.IN_PROGRESS && !!this.selected.assignee
+        visible: this.isEditable() && this.selected.status == Ticket.Status.IN_PROGRESS
       }
     ]
   }
@@ -126,11 +127,10 @@ export class TicketsInreviewComponent {
 
   getTickets(filters = {}, pagination: Pagination = new Pagination(0, this.rowsPerPage[0])): void {
     this.processing = true;
-    filters['unassignedOnly'] = true;
     if (filters['option']) {
       filters['option'] = getKeyFromEnum(Ticket.Option, filters['option']);
     }
-    this.ticketService.getAll(filters, pagination).subscribe(
+    this.ticketService.getMy(filters, pagination).subscribe(
       (restPage: RestPage<Ticket>) => {
         this.processing = false;
         this.tickets = restPage;

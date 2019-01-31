@@ -100,6 +100,7 @@ public class TestDataInitializer {
 
     private static final String ADMIN_1 = "ad.improver@gmail.com";
     private static final String SUPPORT_1 = "sup.improver@gmail.com";
+    private static final String SUPPORT_2 = "sup2.improver@gmail.com";
     private static final String STAKEHOLDER_1 = "sh.improver@gmail.com";
 
     private List<String> supportedServices;
@@ -336,6 +337,10 @@ public class TestDataInitializer {
         );
 
         supportRepository.save(new Support("John", "Wick", SUPPORT_1, SUPPORT_DEMO_PASS, DEMO_PHONE)
+            .setActivated(true)
+        );
+
+        supportRepository.save(new Support("Edvard", "Norton", SUPPORT_2, SUPPORT_DEMO_PASS, DEMO_PHONE)
             .setActivated(true)
         );
 

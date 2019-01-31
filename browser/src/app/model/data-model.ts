@@ -428,8 +428,9 @@ export class Pagination {
     this.page = primeEvent.first / primeEvent.rows;
     this.size = primeEvent.rows;
     const sortOrder = primeEvent.sortOrder > 0 ? 'ASC' : 'DESC';
-    this.sort = `${primeEvent.sortField},${sortOrder}`;
-
+    if (primeEvent.sortField) {
+      this.sort = `${primeEvent.sortField},${sortOrder}`;
+    }
     return this;
   }
 
