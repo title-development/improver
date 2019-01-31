@@ -62,11 +62,13 @@ public class CustomerProjectController {
     @GetMapping(ID_PATH_VARIABLE)
     public ResponseEntity<CustomerProject> getCustomerProject(@PathVariable long id) {
         Customer customer = userSecurityService.currentCustomer();
-        CustomerProject project = customerProjectService.getCustomerProject(id, customer.getId());
+        CustomerProject project = customerProjectService.getCustomerProject(id, customer);
         return new ResponseEntity<>(project, HttpStatus.OK);
     }
 
 
+    //TODO: move 403 check here
+    @Deprecated
     @GetMapping(ID_PATH_VARIABLE + PROJECT_REQUESTS)
     public ResponseEntity<List<CompanyProjectRequest>> getProjectRequests(@PathVariable long id) {
         Customer customer = userSecurityService.currentCustomer();

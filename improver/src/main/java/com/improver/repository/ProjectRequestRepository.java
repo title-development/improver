@@ -21,7 +21,7 @@ import java.util.Optional;
 
 public interface ProjectRequestRepository extends JpaRepository<ProjectRequest, Long> {
 
-    //todo refactor this: split in two methods
+    //TODO: For future, Misha refactor this - split in two methods
     @Query("SELECT new com.improver.model.out.project.CompanyProjectRequest(c, c.contractor.company, c.project.status, c.review.id, " +
             "(SELECT COUNT(m.id) FROM com.improver.entity.ProjectMessage m " +
                 " INNER JOIN com.improver.entity.ProjectRequest p ON p.id = m.projectRequest.id" +

@@ -4,6 +4,7 @@ import com.improver.entity.Customer;
 import com.improver.entity.Project;
 import com.improver.entity.ProjectMessage;
 import com.improver.entity.ProjectRequest;
+import com.improver.exception.AccessDeniedException;
 import com.improver.exception.NotFoundException;
 import com.improver.exception.ValidationException;
 import com.improver.model.in.CloseProjectRequest;
@@ -55,10 +56,19 @@ public class CustomerProjectService {
         return projectsPage;
     }
 
-    public CustomerProject getCustomerProject(long projectId, Long customerId) {
-        Project project = projectRepository.findById(projectId)
+
+    @Deprecated
+    // TODO: redundant findByIdAndCustomerId()
+    public List<CompanyProjectRequest> getProjectRequests(Customer customer, long projectId) {
+        Project project = projectRepository.findByIdAndCustomerId(projectId, customer.getId())
             .orElseThrow(NotFoundException::new);
-        List<CompanyProjectRequest> pros = projectRequestRepository.getShortProjectRequestsWithMsgCount(projectId, Long.toString(customerId));
+        return projectRequestRepository.getProjectRequestsForCustomer(customer, project.getId());
+    }
+
+    public CustomerProject getCustomerProject(long projectId, Customer customer) {
+        Project project = projectRepository.findByIdAndCustomerId(projectId, customer.getId())
+            .orElseThrow(NotFoundException::new);
+        List<CompanyProjectRequest> pros = projectRequestRepository.getShortProjectRequestsWithMsgCount(projectId, Long.toString(customer.getId()));
         Collection<String> photos = imageService.getProjectImageUrls(projectId);
         return new CustomerProject(project, pros, photos);
     }
@@ -176,10 +186,5 @@ public class CustomerProjectService {
             throw new ValidationException("Invalid executor");
         }
 
-    }
-
-
-    public List<CompanyProjectRequest> getProjectRequests(Customer customer, long projectId) {
-        return projectRequestRepository.getProjectRequestsForCustomer(customer, projectId);
     }
 }
