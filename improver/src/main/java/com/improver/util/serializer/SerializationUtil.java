@@ -53,7 +53,7 @@ public class SerializationUtil {
      * Test'test test-test
      * Demo https://regex101.com/r/ic0UPr/1
      */
-    public static final String NAME_PATTERN_STRING = "^[a-zA-Z\\u00A1-\\uFFFF][a-zA-Z0-9\\u00A1-\\uFFFF]+(?:[-'\\s][a-zA-Z0-9\\u00A1-\\uFFFF]+)*$";
+    public static final String NAME_PATTERN_STRING = "^[a-zA-Z\\u00A1-\\uFFFF]+(?:[a-zA-Z0-9\\u00A1-\\uFFFF]|[-'\\s][a-zA-Z0-9\\u00A1-\\uFFFF]+)*$";
     public static final String DATE_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ssxxx";
     public static final String DATE_PATTERN = "yyyy-MM-dd";
     public static final Pattern NUMERIC_PATTERN = Pattern.compile("\\d+");

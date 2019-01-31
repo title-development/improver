@@ -54,7 +54,7 @@
       <div class="notification-bar navbar-right" *ngIf="securityService.isAuthenticated()">
         <button class="menu-button" mat-button color="accent" (click)="isNotificationsPopupOpened = !isNotificationsPopupOpened">
           <mat-icon class="mobile-menu-icon">notifications</mat-icon>
-          <div class="counter" *ngIf="notificationResource.unreadNotificationsCounter > 0">{{notificationResource.unreadNotificationsCounter}}</div>
+          <div class="counter" *ngIf="notificationResource.unreadNotificationsCounter + (notificationResource.unreadMessagesCount$ | async ) > 0">{{notificationResource.unreadNotificationsCounter + (notificationResource.unreadMessagesCount$ | async )}}</div>
         </button>
         <div class="holder">
           <notifications-popup [(toggle)]="isNotificationsPopupOpened"></notifications-popup>

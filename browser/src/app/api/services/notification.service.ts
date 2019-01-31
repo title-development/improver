@@ -21,6 +21,10 @@ export class NotificationService {
     return this.http.get<RestPage<Notification>>(`${this.notificationUrl}`, {params: pagination});
   }
 
+  getUnreadMessages(): Observable<Array<Notification>> {
+    return this.http.get<Array<Notification>>(`${this.notificationUrl}/messages/unread`)
+  }
+
   countUnread(): Observable<number> {
     return this.http.get<number>(`${this.notificationUrl}${this.unreadCountUrl}`);
   }

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import {
   CloseProjectRequest, CustomerProject, Review
 } from '../../../model/data-model';
@@ -37,6 +37,7 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy {
               public projectRequestService: ProjectRequestService,
               public router: Router,
               public somePipe: SomePipe) {
+    this.disableRouteReuse();
     this.route.params.subscribe(params => {
         if (parseInt(params['id'])) {
           this.projectId = parseInt(params['id']);
@@ -137,6 +138,17 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy {
     } else {
       return `You have ${count} new message`;
     }
+  }
+
+  private disableRouteReuse(): void {
+    this.router.routeReuseStrategy.shouldReuseRoute = function(){
+      return false;
+    };
+    this.router.events.subscribe((evt) => {
+      if (evt instanceof NavigationEnd) {
+        this.router.navigated = false;
+      }
+    });
   }
 }
 

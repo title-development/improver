@@ -26,7 +26,7 @@ export class Constants {
       // TODO: add full explanation https://goo.gl/M9VaId
       email: '^(([^<>()\\[\\]\\\\.,;:\\s@"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@"]+)*)|(".+"))@(([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3})|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$',
 
-      name: '^[a-zA-Z\u00A1-\uFFFF][a-zA-Z0-9\u00A1-\uFFFF]+(?:[-\'\\s][a-zA-Z0-9\u00A1-\uFFFF]+)*$',
+      name: '^[a-zA-Z\\u00A1-\\uFFFF]+(?:[a-zA-Z0-9\\u00A1-\\uFFFF]|[-\'\\s][a-zA-Z0-9\\u00A1-\\uFFFF]+)*$',
 
       // at least 8 characters
       // at least 1 numeric character

@@ -55,7 +55,7 @@
                       <span *ngIf="firstName.errors?.minlength">
                         {{messages.errors.firstName.minlength}}
                       </span>
-                      <span *ngIf="firstName.errors?.pattern">
+                      <span *ngIf="!firstName.errors?.minlength && firstName.errors?.pattern">
                         {{messages.errors.name.notValid}}
                       </span>
                     </cv-field-error>
@@ -82,7 +82,7 @@
                       <span *ngIf="lastName.errors?.minlength">
                         {{messages.errors.lastName.minlength}}
                       </span>
-                      <span *ngIf="firstName.errors?.pattern">
+                      <span *ngIf="!lastName.errors?.minlength && lastName.errors?.pattern">
                         {{messages.errors.name.notValid}}
                       </span>
                     </cv-field-error>

@@ -1,12 +1,12 @@
-
-import {throwError as observableThrowError,  Observable } from 'rxjs';
+import { throwError as observableThrowError, Observable, throwError, of } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { ServiceType, OfferedServiceType, Pagination } from '../../model/data-model';
 import { QuestionaryBlock } from '../../model/questionary-model';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { RestPage } from '../models/RestPage';
 import { AdminServiceType } from '../models/AdminServiceType';
-import { first, publishReplay, refCount } from "rxjs/internal/operators";
+import { catchError, first, publishReplay, refCount, switchMap } from 'rxjs/internal/operators';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Injectable()
 export class ServiceTypeService {
@@ -23,7 +23,7 @@ export class ServiceTypeService {
   }
 
   get(id: number): Observable<ServiceType> {
-    return this.http.get<ServiceType>(`${this.serviceTypesUrl}/${id}`)
+    return this.http.get<ServiceType>(`${this.serviceTypesUrl}/${id}`);
   }
 
   getAllWithQuestionary() {
@@ -81,10 +81,10 @@ export class ServiceTypeService {
   }
 
   isNameFree(serviceName: string): Observable<any> {
-    const  params = new HttpParams()
-        .set('serviceName', serviceName);
+    const params = new HttpParams()
+      .set('serviceName', serviceName);
 
-    return this.http.get(`${this.serviceTypesUrl}/isNameFree`, { observe: 'response', responseType: 'text', params: params })
+    return this.http.get(`${this.serviceTypesUrl}/isNameFree`, {observe: 'response', responseType: 'text', params: params});
   }
 
   get serviceTypes$(): Observable<Array<ServiceType>> {

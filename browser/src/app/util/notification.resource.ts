@@ -6,18 +6,25 @@ import { SecurityService } from '../auth/security.service';
 import { BillingService } from '../api/services/billing.service';
 import { PopUpMessageService } from './pop-up-message.service';
 import { getErrorMessage } from './functions';
-import { MyStompService } from "./my-stomp.service";
+import { MyStompService } from './my-stomp.service';
+import { first } from 'rxjs/operators';
 
 
 @Injectable()
 export class NotificationResource {
 
-
-
+  unreadMessages$: BehaviorSubject<Array<Notification>> = new BehaviorSubject<Array<Notification>>([]);
+  unreadMessagesCount$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   public newUnreadNotifications: BehaviorSubject<Notification[]> = new BehaviorSubject<Notification[]>([]);
   public unreadNotificationsCounter: number = 0;
   private notificationsObservable: Observable<any>;
   private topicSubscription$: Subscription;
+  private unreadMessagesInterval;
+  private unreadMessagesCount: number = 0;
+  private unreadMessages: Array<Notification> = [];
+  private INTERVAL_DELAY: number = 20000;
+  private RAND_MIN_VALUE: number = 0;
+  private RAND_MAX_VALUE: number = 20000;
 
   constructor(private securityService: SecurityService,
               private notificationService: NotificationService,
@@ -31,11 +38,12 @@ export class NotificationResource {
       this.notificationsObservable = null;
       if (this.topicSubscription$) {
         this.topicSubscription$.unsubscribe();
-        this.topicSubscription$ = null
+        this.topicSubscription$ = null;
       }
       this.myStompService.shutDown();
       this.newUnreadNotifications.next([]);
       this.unreadNotificationsCounter = 0;
+      this.destroyUnreadMessagesFlow();
     });
 
   }
@@ -79,10 +87,40 @@ export class NotificationResource {
           this.popUpService.showError(getErrorMessage(error));
         });
       this.subscribeOnNotifications();
+      this.unreadNotificationEmitter();
     }
   };
 
+  public read(index: number): void {
+    this.unreadMessages.splice(index, 1);
+    this.unreadMessagesCount = this.unreadMessagesCount - 1;
+    console.log(this.unreadMessagesCount);
+    this.unreadMessages$.next(this.unreadMessages);
+    this.unreadMessagesCount$.next(this.unreadMessagesCount);
+  }
 
+  private unreadNotificationEmitter(): void {
+    const randDelay: number = Math.floor(Math.random() * (this.RAND_MAX_VALUE - this.RAND_MIN_VALUE) + this.RAND_MIN_VALUE);
+    this.getUnreadMessages();
+    this.unreadMessagesInterval = setInterval(() => this.getUnreadMessages(), this.INTERVAL_DELAY + randDelay);
+  }
+
+  private getUnreadMessages(): void {
+    this.notificationService.getUnreadMessages().pipe(first()).subscribe((notifications: Array<Notification>) => {
+      this.unreadMessagesCount = notifications.length;
+      this.unreadMessages = notifications;
+      this.unreadMessages$.next(this.unreadMessages);
+      this.unreadMessagesCount$.next(this.unreadMessagesCount);
+    });
+  }
+
+  private destroyUnreadMessagesFlow() {
+    clearInterval(this.unreadMessagesInterval);
+    this.unreadMessagesCount = 0;
+    this.unreadMessages = [];
+    this.unreadMessages$.next([]);
+    this.unreadMessagesCount$.next(0);
+  }
 }
 
 

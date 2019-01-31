@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { ContractorProject } from '../../../model/data-model';
 import { ProjectService } from '../../../api/services/project.service';
 import { animate, state, style, transition, trigger } from '@angular/animations';
@@ -57,9 +57,10 @@ export class ContractorProjectViewComponent implements OnDestroy, AfterViewInit 
   constructor(private route: ActivatedRoute,
               private projectService: ProjectService,
               public projectActionService: ProjectActionService,
-              public  router: Router,
+              public router: Router,
               public dialog: MatDialog,
               public mediaQueryService: MediaQueryService) {
+    this.disableRouteReuse();
     this.sub = this.route.params.subscribe(params => {
       params['projectRequestId'] ? this.projectRequestId = params['projectRequestId'].toString() : this.projectRequestId = '';
       this.getProject();
@@ -184,5 +185,16 @@ export class ContractorProjectViewComponent implements OnDestroy, AfterViewInit 
       this.swiper.destroy(true, true);
     }
     this.swiper = null;
+  }
+
+  private disableRouteReuse(): void {
+    this.router.routeReuseStrategy.shouldReuseRoute = function(){
+      return false;
+    };
+    this.router.events.subscribe((evt) => {
+      if (evt instanceof NavigationEnd) {
+        this.router.navigated = false;
+      }
+    });
   }
 }

@@ -3,13 +3,10 @@ package com.improver.controller;
 import com.improver.entity.Notification;
 import com.improver.entity.User;
 import com.improver.repository.NotificationRepository;
+import com.improver.repository.ProjectMessageRepository;
 import com.improver.security.UserSecurityService;
-import com.improver.security.annotation.SameUserAccess;
-import com.improver.service.NotificationService;
 import com.improver.util.annotation.PageableSwagger;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,16 +15,11 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import static com.improver.application.properties.Path.*;
 
@@ -40,6 +32,7 @@ public class NotificationController {
 
     @Autowired private NotificationRepository notificationRepository;
     @Autowired private UserSecurityService userSecurityService;
+    @Autowired private ProjectMessageRepository projectMessageRepository;
 
 
     @PageableSwagger
@@ -60,7 +53,17 @@ public class NotificationController {
         return new ResponseEntity<>(allByUser, HttpStatus.OK);
     }
 
-
+    @GetMapping(NOTIFICATIONS_PATH + "/messages/unread")
+    public ResponseEntity<List<Notification>> getAllUnreadMessages() {
+        User user = userSecurityService.currentUser();
+        List<Notification> messages = new ArrayList<>();
+        if(user.getRole() == User.Role.CUSTOMER) {
+            messages = projectMessageRepository.getAllUnreadMessagesForCustomers(user.getId());
+        } else if(user.getRole() == User.Role.CONTRACTOR) {
+            messages = projectMessageRepository.getAllUnreadMessagesForContractors(user.getId());
+        }
+        return new ResponseEntity<>(messages, HttpStatus.OK);
+    }
 
     @PutMapping(NOTIFICATIONS_PATH + "/read")
     public ResponseEntity<Void> markAsRead(@RequestParam List<Long> ids) {

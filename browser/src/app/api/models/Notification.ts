@@ -4,7 +4,8 @@ export class Notification {
   created: string;
   link: string;
   payload: string;
-  read: boolean
+  read: boolean;
+  newMessage: boolean;
 }
 
 export namespace Notification {

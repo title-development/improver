@@ -109,7 +109,7 @@
               <span *ngIf="firstName.errors?.minlength">
                 At least 2 letters required
               </span>
-              <span *ngIf="firstName.errors?.pattern">
+              <span *ngIf="!firstName.errors?.minlength && firstName.errors?.pattern">
                 {{messages.errors.name.notValid}}
               </span>
             </cv-field-error>
@@ -132,7 +132,7 @@
               <span *ngIf="lastName.errors?.minlength">
                 At least 2 letters required
               </span>
-              <span *ngIf="firstName.errors?.pattern">
+              <span *ngIf="!lastName.errors?.minlength && lastName.errors?.pattern">
                 {{messages.errors.name.notValid}}
               </span>
             </cv-field-error>

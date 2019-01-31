@@ -60,6 +60,8 @@ export class ProjectValidationRequestComponent {
         this.toggle = !this.toggle;
         setTimeout(() => {
           form.resetForm();
+          form.reset();
+          Object.values(this.form.controls).forEach(control => control.markAsPristine());
         }, 200)
       },
       err => {

@@ -20,7 +20,7 @@ export class Messages {
 
     name: {
       required: "Name is required",
-      notValid: "Name may contain only letters and characters: ',-"
+      notValid: "May contain only letters, numbers and characters: ' -"
     },
 
     firstName: {
