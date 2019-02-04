@@ -13,6 +13,7 @@ import com.improver.model.out.ReviewRating;
 import com.improver.model.out.project.ProjectRequestShort;
 import com.improver.repository.ReviewRepository;
 import com.improver.security.UserSecurityService;
+import com.improver.security.annotation.CompanyMember;
 import com.improver.service.*;
 import com.improver.repository.CompanyRepository;
 import com.improver.util.annotation.PageableSwagger;
@@ -89,6 +90,7 @@ public class CompanyController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    
     @PutMapping("/delete")
     public ResponseEntity<Void> delete(@RequestBody String password) {
         Contractor pro = userSecurityService.currentPro();

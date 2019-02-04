@@ -38,10 +38,10 @@ public class UserService {
     @Autowired private CustomerRepository customerRepository;
     @Autowired private MailService mailService;
     @Autowired private ImageService imageService;
-    @Autowired
-    private CustomerProjectService customerProjectService;
+    @Autowired private CustomerProjectService customerProjectService;
     @Autowired private ProjectRequestService projectRequestService;
     @Autowired private CompanyRepository companyRepository;
+    @Autowired private StaffRepository staffRepository;
 
 
     public User getByEmail(String email) {
@@ -370,4 +370,9 @@ public class UserService {
         mailService.sendRestoredAccount(user);
     }
 
+    public void expireCredentials(long id) {
+        Staff staff = staffRepository.findById(id)
+            .orElseThrow(NotFoundException::new);
+        staffRepository.save(staff.setCredentialExpired(true));
+    }
 }

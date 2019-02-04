@@ -28,12 +28,10 @@ import java.time.ZonedDateTime;
 @DiscriminatorValue("ADMIN")
 @Entity(name = "admins")
 @NoArgsConstructor
-public class Admin extends User {
+public class Admin extends Staff {
 
 
-    public Admin(UserRegistration reg) {
-        super(reg);
-    }
+
 
     public Admin(String firstName, String lastName, String email, String plainPassword, String internalPhone) {
         super(firstName, lastName, email, plainPassword, internalPhone);

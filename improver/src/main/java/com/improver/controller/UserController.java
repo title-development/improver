@@ -175,7 +175,7 @@ public class UserController {
 
     @SupportAccess
     @PutMapping(ID_PATH_VARIABLE + CONTRACTORS)
-    public ResponseEntity<Void> updateContractor(@PathVariable("id") long id, @RequestBody AdminContractor adminContractor) {
+    public ResponseEntity<Void> updateContractor(@PathVariable long id, @RequestBody AdminContractor adminContractor) {
         userService.updateAdminUser(id, adminContractor);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -193,7 +193,7 @@ public class UserController {
 
     @SupportAccess
     @PutMapping(ID_PATH_VARIABLE + CUSTOMERS)
-    public ResponseEntity<Void> updateCustomer(@PathVariable("id") long id, @RequestBody AdminContractor adminContractor) {
+    public ResponseEntity<Void> updateCustomer(@PathVariable long id, @RequestBody AdminContractor adminContractor) {
         userService.updateAdminUser(id, adminContractor);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -204,4 +204,13 @@ public class UserController {
         userService.createStaffUser(staffRegistration);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @AdminAccess
+    @PostMapping(ID_PATH_VARIABLE + "/password-expire")
+    public ResponseEntity<Void> passwordExpire(@PathVariable long id) {
+        userService.expireCredentials(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
 }

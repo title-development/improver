@@ -19,7 +19,7 @@ import java.util.List;
 @DiscriminatorValue("SUPPORT")
 @Entity(name = "supports")
 @NoArgsConstructor
-public class Support extends User {
+public class Support extends Staff {
 
     @JsonIgnore
     @OneToMany(mappedBy = "assignee")

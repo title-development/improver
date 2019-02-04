@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import java.security.Principal;
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
