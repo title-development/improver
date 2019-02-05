@@ -1,9 +1,6 @@
 package com.improver.repository;
 
-import com.improver.entity.Notification;
-import com.improver.entity.ProjectMessage;
-import com.improver.entity.ProjectRequest;
-import com.improver.entity.User;
+import com.improver.entity.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -17,6 +14,19 @@ public interface ProjectMessageRepository extends JpaRepository<ProjectMessage, 
 
     List<ProjectMessage> getByProjectRequestIdOrderByCreatedAsc(long projectRequestId);
 
+    @Query("SELECT m FROM com.improver.entity.ProjectMessage m " +
+        "INNER JOIN com.improver.entity.ProjectRequest pr ON pr.id = m.projectRequest.id " +
+        "WHERE pr.id = :projectRequestId " +
+        "AND pr.contractor = :contractor GROUP BY(m.id) ORDER BY max(m.created) ASC")
+    List<ProjectMessage> getForContractor(long projectRequestId, User contractor);
+
+    @Query("SELECT m FROM com.improver.entity.ProjectMessage m " +
+        "INNER JOIN com.improver.entity.ProjectRequest pr ON pr.id = m.projectRequest.id " +
+        "INNER JOIN com.improver.entity.Project p ON p.id = pr.project.id " +
+        "WHERE pr.id = :projectRequestId " +
+        "AND p.customer = :customer GROUP BY(m.id) ORDER BY max(m.created) ASC")
+    List<ProjectMessage> getForCustomer(long projectRequestId, User customer);
+
     @Modifying
     @Transactional
     @Query("UPDATE com.improver.entity.ProjectMessage m SET m.isRead = true" +
@@ -26,11 +36,11 @@ public interface ProjectMessageRepository extends JpaRepository<ProjectMessage, 
     Optional<ProjectMessage> findTop1ByProjectRequestOrderByCreatedDesc(ProjectRequest projectRequest);
 
     @Query("SELECT COUNT(m.id) FROM com.improver.entity.ProjectMessage m " +
-        "INNER JOIN com.improver.entity.ProjectRequest p ON p.id = m.projectRequest.id " +
+        "INNER JOIN com.improver.entity.ProjectRequest pr ON pr.id = m.projectRequest.id " +
         "WHERE m.projectRequest.id = :projectRequestId " +
-        "AND p.status IN ('HIRED', 'ACTIVE') " +
+        "AND pr.status IN ('HIRED', 'ACTIVE') " +
         "AND m.isRead = false " +
-        "AND m.sender != :senderId")
+        "AND m.sender <> :senderId")
     Long getUnreadMessagesCount(String senderId, Long projectRequestId);
 
     @Query("SELECT new com.improver.entity.Notification(pr.id, st.name, c.name, p.id, c.id, max(pm.created)) " +

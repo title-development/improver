@@ -57,13 +57,19 @@ public class CustomerProjectService {
     }
 
 
-    @Deprecated
-    // TODO: redundant findByIdAndCustomerId()
+    /**
+     * Get list of {@link ProjectRequest} for given project and customer
+     *
+     * @param customer  project owner
+     * @param projectId - Id of a project
+     * @return list of {@link ProjectRequest} of current project
+     */
     public List<CompanyProjectRequest> getProjectRequests(Customer customer, long projectId) {
         Project project = projectRepository.findByIdAndCustomerId(projectId, customer.getId())
-            .orElseThrow(NotFoundException::new);
+            .orElseThrow(AccessDeniedException::new);
         return projectRequestRepository.getProjectRequestsForCustomer(customer, project.getId());
     }
+
 
     public CustomerProject getCustomerProject(long projectId, Customer customer) {
         Project project = projectRepository.findByIdAndCustomerId(projectId, customer.getId())
@@ -72,6 +78,7 @@ public class CustomerProjectService {
         Collection<String> photos = imageService.getProjectImageUrls(projectId);
         return new CustomerProject(project, pros, photos);
     }
+
 
     public List<NameIdImageTuple> getPotentialExecutors(Project project) {
         List<NameIdImageTuple> potentialExecutors = Collections.emptyList();

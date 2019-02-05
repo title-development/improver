@@ -1,12 +1,12 @@
 package com.improver.controller;
 
 import com.improver.entity.*;
+import com.improver.exception.AccessDeniedException;
 import com.improver.exception.NotFoundException;
 import com.improver.model.admin.out.AdminProjectRequest;
 import com.improver.model.out.MessengerDocument;
 import com.improver.model.out.project.CompanyProjectRequest;
 import com.improver.model.in.DeclineProAction;
-import com.improver.repository.ProjectMessageRepository;
 import com.improver.repository.ProjectRequestRepository;
 import com.improver.security.UserSecurityService;
 import com.improver.service.ProjectRequestService;
@@ -37,7 +37,6 @@ public class ProjectRequestController {
     @Autowired private ProjectRequestRepository projectRequestRepository;
     @Autowired private ProjectRequestService projectRequestService;
     @Autowired private DocumentService fileService;
-    @Autowired private ProjectMessageRepository projectMessageRepository;
     @Autowired private UserSecurityService userSecurityService;
 
     @SupportAccess
@@ -54,12 +53,12 @@ public class ProjectRequestController {
         return new ResponseEntity<>(projectRequests, HttpStatus.OK);
     }
 
-    //TODO: Add same customer security
-    @Deprecated
+
     @PreAuthorize("hasAnyRole('CUSTOMER', 'CONTRACTOR', 'ADMIN', 'SUPPORT')")
     @GetMapping(ID_PATH_VARIABLE + "/messages")
     public ResponseEntity<List<ProjectMessage>> getChatMessages(@PathVariable long id) {
-        List<ProjectMessage> messages = projectMessageRepository.getByProjectRequestIdOrderByCreatedAsc(id);
+        User user = userSecurityService.currentUser();
+        List<ProjectMessage> messages = projectRequestService.getProjectMessages(id, user);
         return new ResponseEntity<>(messages, HttpStatus.OK);
     }
 
@@ -72,12 +71,11 @@ public class ProjectRequestController {
         Document savedFile = fileService.saveFile(file);
         String fileUrl = DOCUMENTS_PATH + SLASH + savedFile.getName();
         MessengerDocument messengerFile = new MessengerDocument(savedFile.getOriginalName(), fileUrl);
-
         return new ResponseEntity<>(messengerFile, HttpStatus.OK);
     }
 
 
-    @PreAuthorize("hasAnyRole('CUSTOMER')")
+    @PreAuthorize("hasRole('CUSTOMER')")
     @GetMapping(ID_PATH_VARIABLE)
     public ResponseEntity<CompanyProjectRequest> getProjectRequest(@PathVariable long id) {
         Customer customer = userSecurityService.currentCustomer();
@@ -90,8 +88,7 @@ public class ProjectRequestController {
     @PreAuthorize("hasRole('CUSTOMER')")
     @GetMapping(ID_PATH_VARIABLE + "/decline")
     public ResponseEntity<Map<ProjectRequest.Reason, String>> getDeclineVariants(@PathVariable long id) {
-        ProjectRequest projectRequest = projectRequestRepository.findById(id).
-            orElseThrow(NotFoundException::new);
+        ProjectRequest projectRequest = getForCurrentCustomer(id);
         Map<ProjectRequest.Reason, String> options = projectRequestService.getDeclineOptions(projectRequest);
         return new ResponseEntity<>(options, HttpStatus.OK);
     }
@@ -100,11 +97,8 @@ public class ProjectRequestController {
     @PreAuthorize("hasRole('CUSTOMER')")
     @PostMapping(ID_PATH_VARIABLE + "/hire")
     public ResponseEntity<Void> hirePro(@PathVariable long id, @RequestParam(defaultValue = "true") boolean declineOthers) {
-        Customer customer = userSecurityService.currentCustomer();
-        ProjectRequest toHire = projectRequestRepository.findByIdAndCustomerId(id, customer.getId())
-            .orElseThrow(NotFoundException::new);
-
-        projectRequestService.hirePro(toHire);
+        ProjectRequest projectRequest = getForCurrentCustomer(id);
+        projectRequestService.hirePro(projectRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -112,10 +106,7 @@ public class ProjectRequestController {
     @PreAuthorize("hasRole('CUSTOMER')")
     @PostMapping(ID_PATH_VARIABLE + "/decline")
     public ResponseEntity<Void> declinePro(@PathVariable long id, @RequestBody DeclineProAction action) {
-        Customer customer = userSecurityService.currentCustomer();
-        ProjectRequest projectRequest = projectRequestRepository.findByIdAndCustomerId(id, customer.getId())
-            .orElseThrow(NotFoundException::new);
-
+        ProjectRequest projectRequest = getForCurrentCustomer(id);
         projectRequestService.declinePro(projectRequest, action.getReason(), action.getComment());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -124,11 +115,22 @@ public class ProjectRequestController {
     @PreAuthorize("hasRole('CONTRACTOR')")
     @PostMapping(ID_PATH_VARIABLE + "/close")
     public ResponseEntity<Void> leaveProject(@PathVariable long id, @RequestParam boolean leave) {
-        Contractor contractor = userSecurityService.currentPro();
-        ProjectRequest projectRequest = projectRequestRepository.findByIdAndContractorId(id, contractor.getId()).
-            orElseThrow(NotFoundException::new);
+        ProjectRequest projectRequest = getForCurrentPro(id);
         projectRequestService.closeProject(projectRequest, ZonedDateTime.now(), leave);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+    private ProjectRequest getForCurrentCustomer(long projectRequestId) {
+        Customer customer = userSecurityService.currentCustomer();
+        return projectRequestRepository.findByIdAndCustomerId(projectRequestId, customer.getId())
+            .orElseThrow(AccessDeniedException::new);
+    }
+
+    private ProjectRequest getForCurrentPro(long projectRequestId) {
+        Contractor contractor = userSecurityService.currentPro();
+        return projectRequestRepository.findByIdAndContractorId(projectRequestId, contractor.getId()).
+            orElseThrow(AccessDeniedException::new);
     }
 
 }

@@ -1,9 +1,7 @@
 package com.improver.service;
 
-import com.improver.entity.ProjectRequest;
-import com.improver.entity.ProjectMessage;
-import com.improver.entity.Contractor;
-import com.improver.entity.Project;
+import com.improver.entity.*;
+import com.improver.exception.AccessDeniedException;
 import com.improver.exception.BadRequestException;
 import com.improver.exception.ValidationException;
 import com.improver.repository.ProjectMessageRepository;
@@ -33,7 +31,7 @@ public class ProjectRequestService {
 
     /**
      * Creates a {@link ProjectRequest} with {@link ProjectRequest.Status#ACTIVE}
-     * and {@link ProjectMessage} with {@link ProjectMessage.Type#REQUEST} type
+     * and {@link ProjectMessage} with {@link ProjectMessage.Event#REQUEST} type
      */
     public ProjectRequest createProjectRequest(Contractor contractor, Project lead, int leadPrice, boolean isManual) {
         ZonedDateTime now = ZonedDateTime.now();
@@ -206,4 +204,21 @@ public class ProjectRequestService {
     }
 
 
+    /**
+     * Returns list of {@link ProjectMessage} for given projectRequestId
+     *
+     * @param projectRequestId
+     * @param user
+     * @return
+     */
+    public List<ProjectMessage> getProjectMessages(long projectRequestId, User user) {
+        if (user instanceof Staff) {
+            return projectMessageRepository.getByProjectRequestIdOrderByCreatedAsc(projectRequestId);
+        } else if (User.Role.CONTRACTOR.equals(user.getRole())) {
+            return projectMessageRepository.getForContractor(projectRequestId, user);
+        } else if (User.Role.CUSTOMER.equals(user.getRole())) {
+            return projectMessageRepository.getForCustomer(projectRequestId, user);
+        }
+        throw new AccessDeniedException();
+    }
 }

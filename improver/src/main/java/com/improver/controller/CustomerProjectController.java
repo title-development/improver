@@ -44,8 +44,6 @@ public class CustomerProjectController {
     private CustomerProjectService customerProjectService;
     @Autowired
     private ProjectRepository projectRepository;
-    @Autowired
-    private ImageService imageService;
 
 
     @GetMapping
@@ -67,8 +65,6 @@ public class CustomerProjectController {
     }
 
 
-    //TODO: move 403 check here
-    @Deprecated
     @GetMapping(ID_PATH_VARIABLE + PROJECT_REQUESTS)
     public ResponseEntity<List<CompanyProjectRequest>> getProjectRequests(@PathVariable long id) {
         Customer customer = userSecurityService.currentCustomer();
