@@ -1,6 +1,5 @@
 <div class="header">
-  <div class="icon" [ngStyle]="review.customer.iconUrl && review.customer.iconUrl != '' && {'background-image':'url(' + review.customer.iconUrl + ')'} ||
-                                          {'background-image':'url(https://via.placeholder.com/48x48)'}">
+  <div class="icon" [ngStyle]="review.customer.iconUrl && review.customer.iconUrl != '' && {'background-image':'url(' + review.customer.iconUrl + ')'} || {'background-image':'url(/assets/img/customer-logo-placeholder.png)'}">
   </div>
   <div class="meta-info">
     <div class="author">{{review.customer.name}}</div>

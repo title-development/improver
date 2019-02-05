@@ -21,11 +21,6 @@ import java.util.List;
 @NoArgsConstructor
 public class Support extends Staff {
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "assignee")
-    protected List<Ticket> tickets;
-
-
     public Support(UserRegistration reg) {
         super(reg);
     }

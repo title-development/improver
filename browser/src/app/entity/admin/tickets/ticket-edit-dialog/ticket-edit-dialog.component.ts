@@ -90,7 +90,7 @@ export class TicketEditDialogComponent {
   }
 
   getSupports() {
-    this.userService.getAll({role: "SUPPORT"}, new Pagination(0, 100, "displayName,asc")).subscribe(
+    this.userService.getStaff(new Pagination(0, 100, "displayName,asc")).subscribe(
       supports => {
         this.supports = supports.content.map(item => {
           return {

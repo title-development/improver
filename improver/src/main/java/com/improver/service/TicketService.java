@@ -1,5 +1,6 @@
 package com.improver.service;
 
+import com.improver.entity.Staff;
 import com.improver.entity.Support;
 import com.improver.entity.Ticket;
 import com.improver.entity.User;
@@ -34,17 +35,20 @@ public class TicketService {
         ticketRepository.save(ticket);
     }
 
+
+
+
     public void changeStatus(Ticket ticket, Ticket.Status status) {
         User currentUser = userSecurityService.currentUserOrNull();
-        if (ticket.getStatus() == Ticket.Status.CLOSED ||
-            ticket.getStatus() == Ticket.Status.NEW && status == Ticket.Status.CLOSED ||
-            ticket.getAssignee() != null && !ticket.getAssignee().equals(currentUser)
-        ) {
+        boolean isClosed = ticket.getStatus().equals(Ticket.Status.CLOSED);
+        boolean isNew = ticket.getStatus().equals(Ticket.Status.NEW);
+        boolean isClosing =  status.equals(Ticket.Status.CLOSED);
+        boolean notMy = ticket.getAssignee() != null && !ticket.getAssignee().getEmail().equals(currentUser.getEmail());
+        if (isClosed || isNew && isClosing || notMy) {
             throw new ValidationException("Operation is not permitted");
         }
-        if (status == Ticket.Status.IN_PROGRESS
-            && currentUser.getRole() == User.Role.SUPPORT
-            && (ticket.getAssignee() == null)) {
+        boolean startingUnassigned = status == Ticket.Status.IN_PROGRESS && (ticket.getAssignee() == null);
+        if (startingUnassigned) {
             ticket.setAssignee((Support) currentUser);
         }
         ticket.setStatus(status);
@@ -59,12 +63,12 @@ public class TicketService {
         toUpdate.setPriority(supportTicket.getPriority());
         toUpdate.setUpdated(ZonedDateTime.now());
         String assignee = supportTicket.getAssignee();
-        if(toUpdate.getAssignee() == null ||
-            toUpdate.getAssignee().equals(currentUser)
-            || currentUser.getRole() == User.Role.ADMIN) {
+        boolean unassignedOrOwner = toUpdate.getAssignee() == null
+            || toUpdate.getAssignee().getEmail().equals(currentUser.getEmail());
+        if(unassignedOrOwner || currentUser.getRole() == User.Role.ADMIN) {
             if (assignee != null) {
                 assignee = supportTicket.getAssignee().replaceAll(ASSIGNEE_NAME_EXTRACT, "");
-                toUpdate.setAssignee((Support) userRepository.findByEmail(assignee)
+                toUpdate.setAssignee((Staff) userRepository.findByEmail(assignee)
                     .orElseThrow(ValidationException::new));
             } else {
                 toUpdate.setAssignee(null);

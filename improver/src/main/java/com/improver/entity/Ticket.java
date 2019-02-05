@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import javax.persistence.*;
 import java.time.ZonedDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 import static com.improver.util.database.DataAccessUtil.TICKET_MESSAGE_SIZE;
 
@@ -32,8 +34,8 @@ public class Ticket {
     private Priority priority = Priority.LOWEST;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "assignee")
-    private Support assignee;
+    @JoinColumn(name="staff_id", foreignKey = @ForeignKey(name = "tickets_staff_fkey"))
+    private Staff assignee;
 
     public enum Option {
         LOGIN_ISSUE ("Login issue"),
@@ -83,6 +85,10 @@ public class Ticket {
         @Override
         public String toString() {
             return this.value;
+        }
+
+        public static List<Ticket.Status> getActive() {
+            return Arrays.asList(NEW, IN_PROGRESS);
         }
     }
 

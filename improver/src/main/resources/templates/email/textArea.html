@@ -2,8 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{template.html}">
 
-<div layout:fragment="content"
-     style="background-color: #fafafa; font-family: 'Trebuchet MS', sans-serif;">
+<div layout:fragment="content" style="background-color: #fafafa; font-family: 'Trebuchet MS', sans-serif;">
   <table border="0"
          cellpadding="0"
          cellspacing="0"
@@ -20,10 +19,10 @@
               <b th:if="${userName != null}" th:text="${userName + '.'}"></b>
               <span th:utext="${title}"></span>
             </div>
-            <div th:utext="${bodyBeforeArea}" th:style="${'font-size: 14px; margin-bottom: 24px; text-align: ' + contentAlign}"></div>
+            <div th:utext="${bodyBeforeArea}" th:style="${'font-size: 14px; margin-bottom: 24px; white-space: pre-line; text-align: ' + contentAlign}"></div>
             <div th:utext="${textAreaTitle}" th:style="${'font-size: 14px; text-align: ' + contentAlign}"></div>
             <div th:utext="${textAreaContent}" th:style="${'border: 1px solid #d8d8d8; padding: 8px; border-radius: 2px; font-size: 14px; margin-bottom: 24px; text-align: ' + contentAlign}"></div>
-            <div th:utext="${bodyAfterArea}" th:style="${'font-size: 14px; margin-bottom: 24px; text-align: ' + contentAlign}"></div>
+            <div th:utext="${bodyAfterArea}" th:style="${'font-size: 14px; margin-bottom: 24px; white-space: pre-line; text-align: ' + contentAlign}"></div>
 
             <!--<div th:text="${signature}" style="font-size: 14px; margin-bottom: 24px"></div>-->
             <a

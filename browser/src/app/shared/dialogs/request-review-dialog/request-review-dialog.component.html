@@ -20,7 +20,7 @@
     </cv-input-field>
     <cv-input-field>
       <cv-field-label>Subject</cv-field-label>
-      <input minlength="10" maxlength="50" #subjectEl="ngModel" required cv-input type="text" name="subject" [(ngModel)]="subject">
+      <input minlength="10" maxlength="50" #subjectEl="ngModel" required cv-input type="text" name="subject" [(ngModel)]="subject" autocomplete="new-password">
       <cv-field-error *ngIf="subjectEl.dirty || subjectEl.touched || form.submitted">
         <span *ngIf="subjectEl.errors?.required">{{messages.errors.default.required}}</span>
         <span *ngIf="subjectEl.errors?.minlength">Subject is too short</span>

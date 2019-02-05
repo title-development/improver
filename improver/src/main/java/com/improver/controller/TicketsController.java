@@ -24,6 +24,10 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import static com.improver.application.properties.Path.*;
 
 @Log
@@ -49,7 +53,9 @@ public class TicketsController {
                                                @RequestParam(required = false) String assignee,
                                                @RequestParam(required = false) boolean unassignedOnly,
                                                @PageableDefault(sort = "created", direction = Sort.Direction.DESC) Pageable pageRequest) {
-        Page<SupportTicket> tickets = ticketRepository.getAll(id, email, name, businessName, option, status, priority, assignee, unassignedOnly, pageRequest);
+        List<Ticket.Status> statuses = status != null ? Collections.singletonList(status) : null;
+        Page<SupportTicket> tickets = ticketRepository.getAll(id, email, name, businessName, option,
+            statuses, priority, assignee, unassignedOnly, pageRequest);
         return new ResponseEntity<>(tickets, HttpStatus.OK);
     }
 
@@ -61,7 +67,6 @@ public class TicketsController {
                                                      @RequestParam(required = false) String name,
                                                      @RequestParam(required = false) String businessName,
                                                      @RequestParam(required = false) Ticket.Option option,
-                                                     @RequestParam(required = false) Ticket.Status status,
                                                      @RequestParam(required = false) Priority priority,
                                                      @PageableDefault(direction = Sort.Direction.DESC)
                                                      @SortDefault.SortDefaults({
@@ -69,7 +74,8 @@ public class TicketsController {
                                                          @SortDefault(sort = "priority", direction = Sort.Direction.ASC)
                                                      }) Pageable pageRequest) {
         Support support = (Support) userSecurityService.currentUserOrNull();
-        Page<SupportTicket> tickets = ticketRepository.getAll(id, email, name, businessName, option, status, priority, support.getEmail(), false, pageRequest);
+        Page<SupportTicket> tickets = ticketRepository.getAll(id, email, name, businessName, option,
+            Ticket.Status.getActive(), priority, support.getEmail(), false, pageRequest);
         return new ResponseEntity<>(tickets, HttpStatus.OK);
 
     }

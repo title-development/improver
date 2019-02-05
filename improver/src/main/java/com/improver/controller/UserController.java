@@ -39,6 +39,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
+import java.util.List;
+
 import static com.improver.application.properties.Path.*;
 
 @RestController
@@ -79,6 +81,14 @@ public class UserController {
                                                @RequestParam(required = false) User.Role role,
                                                @PageableDefault(sort = "email", direction = Sort.Direction.DESC) Pageable pageRequest) {
         Page<User> users = userRepository.findBy(id, email, displayName, role, pageRequest);
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @SupportAccess
+    @GetMapping("/staff")
+    @PageableSwagger
+    public ResponseEntity<Page<User>> getStaff(@PageableDefault(sort = "displayName", direction = Sort.Direction.ASC) Pageable pageRequest) {
+        Page<User> users = userRepository.findByRoleIn(List.of(User.Role.SUPPORT, User.Role.ADMIN), pageRequest);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 

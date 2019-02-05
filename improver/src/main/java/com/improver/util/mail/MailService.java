@@ -341,6 +341,7 @@ public class MailService {
      */
     public void sendRequestReviewForNewUser(Contractor pro, String subject, String message, String email, String token) {
         Context context = contextTemplate();
+        context.setVariable(CONTENT_ALIGN, "left");
         context.setVariable(TITLE, subject);
         context.setVariable(BODY, message);
         context.setVariable(CONFIRM_URL, siteUrl + COMPANIES + SLASH + pro.getCompany().getId() + "?review-token=" + token);

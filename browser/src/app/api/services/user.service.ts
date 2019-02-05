@@ -23,6 +23,10 @@ export class UserService {
     return this.http.get<RestPage<User>>(this.url, {params: params});
   }
 
+  getStaff(pagination): Observable<RestPage<User>> {
+    return this.http.get<RestPage<User>>(`${this.url}/staff`, {params: null});
+  }
+
   archiveUser(userId: number): Observable<void> {
     return this.http.delete<void>(`${this.url}/${userId}/archive`);
   }

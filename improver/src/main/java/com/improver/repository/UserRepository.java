@@ -24,6 +24,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByValidationKey(String validationKey);
 
+    Page<User> findByRoleIn(List<User.Role> role, Pageable pageable);
+
     @Query("SELECT u from com.improver.entity.User u WHERE " +
         "(:id IS null OR u.id = :id) AND " +
         "(:email IS null OR u.email LIKE %:email%) AND " +

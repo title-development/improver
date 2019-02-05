@@ -6,12 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorType;
-import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
+import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity(name = "staff")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -21,12 +18,14 @@ import java.time.LocalDate;
 public abstract class Staff extends User {
 
     @JsonIgnore
+    @OneToMany(mappedBy = "assignee")
+    protected List<Ticket> tickets;
+
+    @JsonIgnore
     protected LocalDate credentialChanged;
 
     @JsonIgnore
     protected boolean isCredentialExpired = false;
-
-
 
 
     protected Staff(String firstName, String lastName, String email, String plainPassword, String internalPhone) {

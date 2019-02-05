@@ -178,7 +178,7 @@ export class CompanyProfileComponent implements OnInit, OnDestroy {
 
   requestReview(): void {
     this.requestReviewDialogRef = this.dialog.open(dialogsMap['request-review-dialog'], unavailabilityPeriodDialogConfig);
-    this.requestReviewDialogRef.componentInstance.message += this.companyProfile.name;
+    this.requestReviewDialogRef.componentInstance.companyName = this.companyProfile.name;
   }
 
   openDialogAddReview(companyProfile): void {
