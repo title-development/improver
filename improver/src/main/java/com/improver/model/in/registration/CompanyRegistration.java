@@ -9,6 +9,7 @@ import org.hibernate.validator.constraints.Range;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 
+import static com.improver.util.ErrorMessages.*;
 import static com.improver.util.database.DataAccessUtil.*;
 
 @Data
@@ -19,10 +20,10 @@ public class CompanyRegistration {
 
     private String logo;
 
-    @Size(min = COMPANY_NAME_MIN_SIZE, max = COMPANY_NAME_MAX_SIZE, message = "Company name should be be between " + COMPANY_NAME_MIN_SIZE + " and" + COMPANY_NAME_MAX_SIZE + "characters")
+    @Size(min = COMPANY_NAME_MIN_SIZE, max = COMPANY_NAME_MAX_SIZE, message = COMPANY_NAME_SIZE_ERROR_MESSAGE)
     private String name;
 
-    @Size(min = COMPANY_DESCRIPTION_MIN_SIZE, max = COMPANY_DESCRIPTION_MAX_SIZE, message = "Company description must be between " + COMPANY_DESCRIPTION_MIN_SIZE + " and" + COMPANY_DESCRIPTION_MAX_SIZE + "characters")
+    @Size(min = COMPANY_DESCRIPTION_MIN_SIZE, max = COMPANY_DESCRIPTION_MAX_SIZE, message = COMPANY_DESCRIPTION_SIZE_ERROR_MESSAGE)
     private String description;
 
     @Valid
@@ -33,8 +34,8 @@ public class CompanyRegistration {
     @Email
     private String email;
 
-    @MaxYearCurrent(message = "Company foundation year should be valid")
-    @Range(min = 1900, message = "Company foundation year should be valid")
+    @MaxYearCurrent(message = COMPANY_FOUNDATION_ERROR_MESSAGE)
+    @Range(min = COMPANY_FOUNDATION_MIN_YEAR, message = COMPANY_FOUNDATION_ERROR_MESSAGE)
     private int founded;
 
     private String siteUrl;

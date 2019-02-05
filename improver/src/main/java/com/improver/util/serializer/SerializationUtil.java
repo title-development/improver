@@ -38,11 +38,10 @@ public class SerializationUtil {
      */
     public static final String PASS_PATTERN_STRING = "^(?=.*?[A-Za-z])(?=.*?[0-9]).{8,}$";
     public static final Pattern PASS_PATTERN = Pattern.compile(PASS_PATTERN_STRING);
-    public static final String ERR_MSG_PASS_MINIMUM_REQUIREMENTS = "Password doesn't match minimum security requirements";
 
     /**
      * Reqex allow cyrillic
-     * t
+     * t2
      * Test
      * Test2
      * Test'test
@@ -53,7 +52,7 @@ public class SerializationUtil {
      * Test'test test-test
      * Demo https://regex101.com/r/ic0UPr/1
      */
-    public static final String NAME_PATTERN_STRING = "^[a-zA-Z\\u00A1-\\uFFFF]+(?:[a-zA-Z0-9\\u00A1-\\uFFFF]|[-'\\s][a-zA-Z0-9\\u00A1-\\uFFFF]+)*$";
+    public static final String NAME_PATTERN_STRING = "^(?=.{2,}$)[a-zA-Z\\u00A1-\\uFFFF]+(?:[a-zA-Z0-9\\u00A1-\\uFFFF]|[-'\\s][a-zA-Z0-9\\u00A1-\\uFFFF]+)*$";
     public static final String DATE_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ssxxx";
     public static final String DATE_PATTERN = "yyyy-MM-dd";
     public static final Pattern NUMERIC_PATTERN = Pattern.compile("\\d+");

@@ -108,7 +108,7 @@ export class PersonalInfoComponent implements OnInit {
           },
           err => {
             console.log(err);
-            this.popupService.showMessage(this.popupService.UNKNOWN_ERROR);
+            this.popupService.showError(getErrorMessage(err));
           }
         );
       if (this.currentEmail != this.account.email) {
@@ -167,8 +167,7 @@ export class PersonalInfoComponent implements OnInit {
           this.passwordUpdateProcessing = false;
         },
         err => {
-          console.log(err);
-          this.popupService.showError(JSON.parse(err.error).message);
+          this.popupService.showError(getErrorMessage(err));
           this.passwordUpdateProcessing = false;
         }
       );

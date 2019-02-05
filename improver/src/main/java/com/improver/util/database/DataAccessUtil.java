@@ -25,6 +25,9 @@ public final class DataAccessUtil {
     public static final int COMPANY_DESCRIPTION_MAX_SIZE = 2500;
     public static final int COMPANY_NAME_MIN_SIZE = 2;
     public static final int COMPANY_NAME_MAX_SIZE = 50;
+    public static final int COMPANY_FOUNDATION_MIN_YEAR = 1900;
+    public static final int COMPANY_COVERAGE_MIN_RADIUS = 5;
+    public static final int COMPANY_COVERAGE_MAX_RADIUS = 50;
     public static final int ORDER_DESCRIPTION_SIZE = 1500;
     public static final int REVIEW_REQUEST_SUBJECT_MIN_SIZE = 10;
     public static final int REVIEW_REQUEST_SUBJECT_MAX_SIZE = 50;

@@ -28,6 +28,7 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy {
   ProjectRequest = ProjectRequest;
   Project = Project;
   private onProjectsUpdate$: Subscription;
+  private onProjectDialogClose$: Subscription;
 
   constructor(private route: ActivatedRoute,
               private projectService: ProjectService,
@@ -37,7 +38,6 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy {
               public projectRequestService: ProjectRequestService,
               public router: Router,
               public somePipe: SomePipe) {
-    this.disableRouteReuse();
     this.route.params.subscribe(params => {
         if (parseInt(params['id'])) {
           this.projectId = parseInt(params['id']);
@@ -52,6 +52,11 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy {
     this.onProjectsUpdate$ = this.projectActionService.onProjectsUpdate.subscribe(() => {
       this.getProject();
     });
+    this.onProjectDialogClose$ = this.projectActionService.onCloseProjectRequestDialog.subscribe(() => {
+      this.projectId = null;
+      this.router.navigate([]); //clear hash fragment from url (projects/22#21 => projects/22)
+      this.getProject();
+    })
   }
 
   ngOnInit() {
@@ -60,6 +65,9 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.onProjectsUpdate$) {
       this.onProjectsUpdate$.unsubscribe();
+    }
+    if(this.onProjectDialogClose$) {
+      this.onProjectDialogClose$.unsubscribe();
     }
   }
 
@@ -138,17 +146,6 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy {
     } else {
       return `You have ${count} new message`;
     }
-  }
-
-  private disableRouteReuse(): void {
-    this.router.routeReuseStrategy.shouldReuseRoute = function(){
-      return false;
-    };
-    this.router.events.subscribe((evt) => {
-      if (evt instanceof NavigationEnd) {
-        this.router.navigated = false;
-      }
-    });
   }
 }
 

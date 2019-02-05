@@ -31,6 +31,7 @@ export class ProjectActionService {
   project: CustomerProject;
   confirmDialogRef: MatDialogRef<any>;
   onProjectsUpdate: EventEmitter<any> = new EventEmitter<any>();
+  onCloseProjectRequestDialog: EventEmitter<any> = new EventEmitter<any>();
   private questionaryDialogRef: MatDialogRef<any>;
   zipIsChecking = false;
   zipIsSupported = true;
@@ -51,6 +52,7 @@ export class ProjectActionService {
     this.projectRequestDialogRef
       .afterClosed()
       .subscribe(result => {
+        this.onCloseProjectRequestDialog.emit();
         this.projectRequestDialogRef = null;
       });
 

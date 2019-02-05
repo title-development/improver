@@ -107,7 +107,7 @@
                 {{messages.errors.firstName.required}}
               </span>
               <span *ngIf="firstName.errors?.minlength">
-                At least 2 letters required
+                {{messages.errors.firstName.minlength}}
               </span>
               <span *ngIf="!firstName.errors?.minlength && firstName.errors?.pattern">
                 {{messages.errors.name.notValid}}
@@ -130,7 +130,7 @@
                 {{messages.errors.lastName.required}}
               </span>
               <span *ngIf="lastName.errors?.minlength">
-                At least 2 letters required
+                {{messages.errors.lastName.minlength}}
               </span>
               <span *ngIf="!lastName.errors?.minlength && lastName.errors?.pattern">
                 {{messages.errors.name.notValid}}

@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.improver.model.in.CloseProjectRequest.Action.CANCEL;
-import static com.improver.util.serializer.SerializationUtil.ERR_MSG_PASS_MINIMUM_REQUIREMENTS;
+import static com.improver.util.ErrorMessages.ERR_MSG_PASS_MINIMUM_REQUIREMENTS;
 import static com.improver.util.serializer.SerializationUtil.PASS_PATTERN;
 
 

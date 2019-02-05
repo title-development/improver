@@ -72,13 +72,13 @@ export class AdminUsersComponent {
         label: 'Block User',
         icon: 'fa fa-ban',
         command: () => this.blockUser(this.selectedUser),
-        visible: (this.selectedUser !== undefined) && !this.selectedUser.blocked && this.selectedUser.role != Role.ADMIN
+        visible: (this.selectedUser !== undefined) && !this.selectedUser.deleted && !this.selectedUser.blocked && this.selectedUser.role != Role.ADMIN
       },
       {
         label: 'Unblock User',
         icon: 'fa fa-undo',
         command: () => this.unblockUser(this.selectedUser),
-        visible: (this.selectedUser !== undefined) && this.selectedUser.blocked && this.selectedUser.role != Role.ADMIN
+        visible: (this.selectedUser !== undefined) && !this.selectedUser.deleted && this.selectedUser.blocked && this.selectedUser.role != Role.ADMIN
       },
       {
         label: 'Delete User',

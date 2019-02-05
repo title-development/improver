@@ -230,13 +230,13 @@ describe('Init', () => {
     it('model: Array<String>, items: Array<String>', () => {
       component.items = strings;
       component.init(['item1']);
-      expect(component.selectedItemsOld).toEqual(['item1']);
+      expect(component.getSelectedTags()).toEqual(['item1']);
     });
 
     it('model: Array<String>, items: Array<String>', () => {
       component.items = strings;
       component.init(['item1', 'item3']);
-      expect(component.selectedItemsOld).toEqual(['item1', 'item3']);
+      expect(component.getSelectedTags()).toEqual(['item1', 'item3']);
     });
 
     it('model: Array<String>, items: Array<String>', () => {
@@ -249,20 +249,20 @@ describe('Init', () => {
       component.items = objects;
       component.valueKey = 'id';
       component.init([7]);
-      expect(component.selectedItemsOld).toEqual([{id: 7, value: 'value 7', name: 'name 7'}]);
+      expect(component.getSelectedTags()).toEqual([{id: 7, value: 'value 7', name: 'name 7'}]);
     });
 
     it('model: Array<String>, items: Array<Object>', () => {
       component.items = objects;
       component.init([7]);
-      expect(component.selectedItemsOld).toEqual([]);
+      expect(component.getSelectedTags()).toEqual([]);
     });
 
     it('model: Array<Object>, items: Array<Object>', () => {
       component.items = objects;
       component.valueKey = 'id';
       component.init([{id: 7, value: 'value 7', name: 'name 7'}]);
-      expect(component.selectedItemsOld).toEqual([{id: 7, value: 'value 7', name: 'name 7'}]);
+      expect(component.getSelectedTags()).toEqual([{id: 7, value: 'value 7', name: 'name 7'}]);
     });
   });
 });

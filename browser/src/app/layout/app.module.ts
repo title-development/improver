@@ -1,10 +1,10 @@
 import { LOCALE_ID, ModuleWithProviders, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterModule } from '@angular/router';
+import { RouteReuseStrategy, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule, JsonpModule } from '@angular/http';
-import { ErrorHandler } from '../util/error-handler'
+import { ErrorHandler } from '../util/error-handler';
 import { AppComponent } from './app.component';
 import { requestOptionsProvider } from '../util/default-request-options.service';
 import { SecurityService } from '../auth/security.service';
@@ -76,18 +76,19 @@ import { InformationModule } from '../entity/information/information.module';
 import { environment } from '../../environments/environment';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { FindProfessionalService } from '../util/find-professional.service';
-import { SubscriptionActionsService } from "../entity/contractor/subscription-actions/subscription-actions.service";
+import { SubscriptionActionsService } from '../entity/contractor/subscription-actions/subscription-actions.service';
 import { PendingChangesGuard } from '../auth/router-guards/pending-chanes.guard';
 import { ScrollHolderService } from '../util/scroll-holder.service';
-import { NotificationService } from "../api/services/notification.service";
-import { TicketService } from "../api/services/ticket.service";
-import { ProjectRequestService } from "../api/services/project-request.service";
+import { NotificationService } from '../api/services/notification.service';
+import { TicketService } from '../api/services/ticket.service';
+import { ProjectRequestService } from '../api/services/project-request.service';
 import { AuthServiceConfig, FacebookLoginProvider, GoogleLoginProvider } from 'angular5-social-login';
 import { SocialConnectionsService } from '../auth/social-connections.service';
 import { AccessDeniedInterceptor } from '../util/interceptors/access-denied.interceptor';
 import { MyStompService } from 'app/util/my-stomp.service';
-import { LicenseTypeService } from "../api/services/license-type.service";
+import { LicenseTypeService } from '../api/services/license-type.service';
 import { InternalServerErrorComponent } from '../entity/internal-server-error/internal-server-error.component';
+import { CustomRouteReuseStrategy } from '../util/router-reuse.strategy';
 
 const rootRouting: ModuleWithProviders = RouterModule.forRoot([], {useHash: false});
 
@@ -107,6 +108,7 @@ export function getAuthServiceConfigs() {
   );
   return config;
 }
+
 @NgModule({
   imports: [
     ServiceWorkerModule.register('/ngsw-worker.js', {enabled: environment.production}),
@@ -221,6 +223,9 @@ export function getAuthServiceConfigs() {
       provide: HTTP_INTERCEPTORS,
       useClass: RestDeleteInterceptor,
       multi: true
+    }, {
+      provide: RouteReuseStrategy,
+      useClass: CustomRouteReuseStrategy
     },
     MyStompService,
   ],

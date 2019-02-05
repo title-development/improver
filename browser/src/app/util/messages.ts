@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 
 export const httpStatusCodeResponses = {
+  "0"  : "Unknown Error",
   "400": "Malformed request",
   "404": "Resources are not found",
   "405": "Method Not Allowed",

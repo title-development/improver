@@ -7,6 +7,7 @@ import lombok.experimental.Accessors;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import static com.improver.util.ErrorMessages.ORDER_DESCRIPTION_SIZE_ERROR_MESSAGE;
 import static com.improver.util.database.DataAccessUtil.ORDER_DESCRIPTION_SIZE;
 import static com.improver.util.StringUtil.capitalize;
 
@@ -17,7 +18,7 @@ public class OrderDetails {
     @NotNull(message = "Project start expectation should be defined")
     private String startExpectation;
 
-    @Size(max = ORDER_DESCRIPTION_SIZE, message = "Order description must be not more 1500 characters")
+    @Size(max = ORDER_DESCRIPTION_SIZE, message = ORDER_DESCRIPTION_SIZE_ERROR_MESSAGE)
     private String notes;
 
     private String firstName;

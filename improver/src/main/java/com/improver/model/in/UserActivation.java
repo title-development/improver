@@ -5,7 +5,7 @@ import lombok.experimental.Accessors;
 
 import javax.validation.constraints.Pattern;
 
-import static com.improver.util.serializer.SerializationUtil.ERR_MSG_PASS_MINIMUM_REQUIREMENTS;
+import static com.improver.util.ErrorMessages.ERR_MSG_PASS_MINIMUM_REQUIREMENTS;
 import static com.improver.util.serializer.SerializationUtil.PASS_PATTERN_STRING;
 
 @Data

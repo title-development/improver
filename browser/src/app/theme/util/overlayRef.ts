@@ -24,6 +24,7 @@ export class OverlayRef {
   private OVERLAY_SDK: string = 'cdk-overlay-container';
   private OVERLAY_SCROLL_BLOCK: string = 'cdk-global-scrollblock';
   private BACKDROP_ID_PREFIX: string = 'cv-backdrop-';
+  private MIN_ITEM_HEIGHT: number = 38;
   private uniqueId: number = 0;
   private componentRef;
   private targetElement: HTMLElement;
@@ -205,7 +206,7 @@ export class OverlayRef {
       element.style.left = `${elementBoundaries.left + pageScr.x}px`;
       element.style.right = 'auto';
     }
-    element.style.minHeight = `${elementBoundaries.height}px`;
+    element.style.minHeight = `${this.MIN_ITEM_HEIGHT}px`;
     if (this.backdropType != BackdropType.popup && this.backdropType != BackdropType.noEvent) {
       element.style.width = `${elementBoundaries.width}px`;
     }

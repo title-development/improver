@@ -5,7 +5,8 @@ const routes: Routes = [
   { path: 'dashboard', loadChildren: './contractor-dashboard/contractor-dashboard.module#ContractorDashboardModule' },
   {
     path: 'projects/:projectRequestId',
-    loadChildren: './contractor-project-view/contractor-project-view.module#ContractorProjectViewModule'
+    loadChildren: './contractor-project-view/contractor-project-view.module#ContractorProjectViewModule',
+    data: {reuse: false},
   },
   {
     path: 'leads-search',

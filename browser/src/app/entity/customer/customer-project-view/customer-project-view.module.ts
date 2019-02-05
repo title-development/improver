@@ -9,7 +9,7 @@ import {NgArrayPipesModule, SomePipe} from "angular-pipes";
 const customerProjectViewRouting: ModuleWithProviders = RouterModule.forChild([
   {
     path: '',
-    component: CustomerProjectViewComponent
+    component: CustomerProjectViewComponent,
   }
 ]);
 

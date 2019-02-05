@@ -60,7 +60,6 @@ export class ContractorProjectViewComponent implements OnDestroy, AfterViewInit 
               public router: Router,
               public dialog: MatDialog,
               public mediaQueryService: MediaQueryService) {
-    this.disableRouteReuse();
     this.sub = this.route.params.subscribe(params => {
       params['projectRequestId'] ? this.projectRequestId = params['projectRequestId'].toString() : this.projectRequestId = '';
       this.getProject();
@@ -185,16 +184,5 @@ export class ContractorProjectViewComponent implements OnDestroy, AfterViewInit 
       this.swiper.destroy(true, true);
     }
     this.swiper = null;
-  }
-
-  private disableRouteReuse(): void {
-    this.router.routeReuseStrategy.shouldReuseRoute = function(){
-      return false;
-    };
-    this.router.events.subscribe((evt) => {
-      if (evt instanceof NavigationEnd) {
-        this.router.navigated = false;
-      }
-    });
   }
 }

@@ -48,8 +48,8 @@
       <!--simple dropdown or with autocomplate-->
       <ng-container *ngIf="!multiple && !grouped">
         <div class="holder items" #itemsHolder>
-          <cdk-virtual-scroll-viewport itemSize="10" minBufferPx="46" maxBufferPx="60"
-                                       [ngStyle]="{'height.px': virtualScrollHeight(items)}">
+          <cdk-virtual-scroll-viewport itemSize="10" minBufferPx="38" maxBufferPx="60"
+                                       [ngStyle]="{'height.px': virtualScrollHeight(items, mediaQuery.xs ? 3 : 4)}">
             <ng-template cdkVirtualFor [cdkVirtualForOf]="items" let-item="$implicit" let-i="index" let-even="even"
                          let-last="last"
                          [cdkVirtualForTrackBy]="trackBy">
@@ -83,8 +83,8 @@
       <ng-container *ngIf="multiple && !autocomplete && !grouped">
         <div class="holder" #itemsHolder>
           <div class="items">
-            <cdk-virtual-scroll-viewport itemSize="10" minBufferPx="46" maxBufferPx="60"
-                                         [ngStyle]="{'height.px': virtualScrollHeight(items)}">
+            <cdk-virtual-scroll-viewport itemSize="10" minBufferPx="38" maxBufferPx="60"
+                                         [ngStyle]="{'height.px': virtualScrollHeight(items, mediaQuery.xs ? 3 : 4)}">
               <ng-template cdkVirtualFor [cdkVirtualForOf]="items" let-item="$implicit" let-i="index" let-even="even"
                            let-last="last"
                            [cdkVirtualForTrackBy]="trackBy">
@@ -108,8 +108,8 @@
                    (ngModelChange)="tagsSearchHandler($event)">
           </cv-input-field>
           <div class="results-holder items" #itemsHolder>
-            <cdk-virtual-scroll-viewport itemSize="6" minBufferPx="46" maxBufferPx="60"
-                                         [ngStyle]="{'height.px': virtualScrollHeight((items | filterBy : filterArgs), 3)}">
+            <cdk-virtual-scroll-viewport itemSize="6" minBufferPx="38" maxBufferPx="60"
+                                         [ngStyle]="{'height.px': virtualScrollHeight((items | filterBy : filterArgs), mediaQuery.xs ? 2 : 3)}">
               <ng-template cdkVirtualFor [cdkVirtualForOf]="items | filterBy : filterArgs" let-item="$implicit"
                            let-i="index" let-even="even" let-last="last" [cdkVirtualForTrackBy]="trackBy">
                 <div class="item multiple" [ngClass]="{'-choose': highlightedItemIndex == i}">

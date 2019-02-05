@@ -9,7 +9,7 @@ import {
   forwardRef, HostListener,
   Inject,
   Input,
-  OnChanges,
+  OnChanges, OnDestroy,
   OnInit,
   Optional,
   Output,
@@ -23,17 +23,24 @@ import { stringToCompare } from '../../../util/functions';
 import { BackdropType, OverlayRef } from '../../util/overlayRef';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NgForm } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { first } from 'rxjs/operators';
+import { distinctUntilChanged, first } from 'rxjs/operators';
 import { animate, AnimationEvent, state, style, transition, trigger } from '@angular/animations';
 import { CvSelection } from '../../util/CvSelection';
 import { CdkVirtualForOf, CdkVirtualForOfContext } from '@angular/cdk/scrolling';
 import { createConsoleLogger } from '@angular-devkit/core/node';
+import { MediaQuery, MediaQueryService } from '../../../util/media-query.service';
 
 export const SELECT_VALUE_ACCESSOR: Provider = {
   provide: NG_VALUE_ACCESSOR,
   useExisting: forwardRef(() => CvSelectComponent),
   multi: true
 };
+
+export const enum ItemMinHeight {
+  xs = 38,
+  sm = 43,
+  other = 46
+}
 
 @Component({
   selector: 'cv-select',
@@ -61,7 +68,7 @@ export const SELECT_VALUE_ACCESSOR: Provider = {
     SELECT_VALUE_ACCESSOR
   ]
 })
-export class CvSelectComponent extends CvSelection implements ControlValueAccessor, OnInit {
+export class CvSelectComponent extends CvSelection implements ControlValueAccessor, OnInit, OnDestroy {
   @Input() required;
   @Input() highlightErrors: boolean = true;
   @Input() items: Array<any>;
@@ -97,6 +104,7 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
 
   dropDownAnimationState: string | 'void' | 'closed' | 'opened' = 'closed';
   isItemsShowed: boolean = false;
+  itemMinHeight: number = ItemMinHeight.other;
 
   private onOverlayClick = (event: MouseEvent) => this.closeByOverlayHandler(event);
   // private onMouseLeave = (event: MouseEvent) => this.closeDropdown(event);
@@ -107,12 +115,26 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
   private itemHeight: number;
   private itemPerHost: number;
 
+  mediaQuery: MediaQuery;
+  private mediaWatcher$: Subscription;
+
   constructor(@Inject(DOCUMENT) private document: any,
               private renderer: Renderer2,
               public overlayRef: OverlayRef,
               @Optional() @SkipSelf() private form: NgForm,
-              private changeDetectorRef: ChangeDetectorRef) {
+              private changeDetectorRef: ChangeDetectorRef,
+              private query: MediaQueryService) {
     super();
+    this.mediaWatcher$ = this.query.screen.pipe(
+      distinctUntilChanged()
+    ).subscribe((res: MediaQuery) => {
+      if(res.xs) {
+        this.itemMinHeight = ItemMinHeight.xs;
+      } else if (res.sm) {
+        this.itemMinHeight = ItemMinHeight.sm;
+      }
+      this.mediaQuery = res;
+    });
   }
 
   writeValue(model: any | Array<any>): void {
@@ -138,6 +160,12 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
 
   ngOnInit(): void {
     this.lastLabel = this.selectedLabel;
+  }
+
+  ngOnDestroy(): void {
+    if(this.mediaWatcher$) {
+      this.mediaWatcher$.unsubscribe();
+    }
   }
 
   isSelected(model: any): boolean {
@@ -301,7 +329,7 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
         }
         break;
       case 9: //tab
-          this.onEnter();
+        this.onEnter();
         break;
       default:
         break;
@@ -314,14 +342,14 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
    * @maxItems: maxItems in view
    */
   virtualScrollHeight(items, maxItems: number = 4): number {
-    if(items && items.length > 0) {
-      if(items.length > maxItems) {
-        return maxItems *46
+    if (items && items.length > 0) {
+      if (items.length > maxItems) {
+        return maxItems * this.itemMinHeight;
       } else {
-        return items.length * 46;
+        return items.length * this.itemMinHeight;
       }
     } else {
-      return 0
+      return 0;
     }
   }
 
@@ -443,6 +471,7 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
 
 /**
  * Monkey patching it's no a good
+ * Fixing Virtual scroll items count
  * @private
  */
 CdkVirtualForOf.prototype['_updateContext'] = function (this: any) {

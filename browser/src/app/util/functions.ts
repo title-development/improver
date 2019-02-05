@@ -6,7 +6,7 @@ import { RestPage } from '../api/models/RestPage';
 /**
  Works only for new angular httpClient
  */
-export function getErrorMessage(err: HttpErrorResponse): string {
+export function getErrorMessage(err: HttpErrorResponse | any): string {
   try {
     return JSON.parse(err.error).message;
   } catch (e) {

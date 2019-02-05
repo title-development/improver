@@ -14,6 +14,7 @@ import { LeadService } from '../../../api/services/lead.service';
 import { MapMarkersStore } from '../../../util/google-map-markers-store.service';
 import { defaultMapOptions, infoWindowDefaults } from '../../../util/google-map-default-options';
 import { applyStyleToMapLayers } from '../../../util/google-map.utils';
+import { getErrorMessage } from '../../../util/functions';
 
 @Component({
   selector: 'contractor-leads-search',
@@ -92,7 +93,7 @@ export class ContractorLeadsSearchComponent implements OnDestroy {
         },
         err => {
           //Show info message if lead no available to buy
-          if (err.status == 409) {
+          if (err.status == 404) {
             this.sortedLeads.splice(index, 1);
             this.sortedLeads = this.sortedLeads.slice();
             this.popUpMessageService.showMessage({
@@ -100,6 +101,8 @@ export class ContractorLeadsSearchComponent implements OnDestroy {
               type: SystemMessageType.WARN,
               timeout: 5000
             });
+          } else {
+            this.popUpMessageService.showError(getErrorMessage(err))
           }
           this.mapContentIsLoading = false;
         });

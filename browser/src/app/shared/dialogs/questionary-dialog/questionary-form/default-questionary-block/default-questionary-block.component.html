@@ -246,12 +246,15 @@
                placeholder="First name"
                formControlName="firstName"
                name="firstName"
+               trim
                minlength="2"
+               [pattern]="constants.patterns.name"
                required>
         <cv-field-error
           *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.firstName').dirty || defaultQuestionaryForm.get('customerPersonalInfo.firstName').touched">
-          <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.firstName').errors?.required">Required</span>
-          <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.firstName').errors?.minlength">At least 2 letters required</span>
+          <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.firstName').errors?.required">{{messages.errors.firstName.required}}</span>
+          <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.firstName').errors?.minlength">{{messages.errors.firstName.minlength}}</span>
+          <span *ngIf="!defaultQuestionaryForm.get('customerPersonalInfo.firstName').errors?.minlength && defaultQuestionaryForm.get('customerPersonalInfo.firstName').errors?.pattern">{{messages.errors.name.notValid}}</span>
         </cv-field-error>
       </cv-input-field>
 
@@ -261,12 +264,15 @@
                placeholder="Last name"
                formControlName="lastName"
                name="lastName"
+               trim
                minlength="2"
+               [pattern]="constants.patterns.name"
                required>
         <cv-field-error
           *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.lastName').dirty || defaultQuestionaryForm.get('customerPersonalInfo.lastName').touched">
-          <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.lastName').errors?.required">Required</span>
-          <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.lastName').errors?.minlength">At least 2 letters required</span>
+          <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.lastName').errors?.required">{{messages.errors.lastName.required}}</span>
+          <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.lastName').errors?.minlength">{{messages.errors.lastName.minlength}}</span>
+          <span *ngIf="!defaultQuestionaryForm.get('customerPersonalInfo.lastName').errors?.minlength && defaultQuestionaryForm.get('customerPersonalInfo.lastName').errors?.pattern">{{messages.errors.name.notValid}}</span>
         </cv-field-error>
       </cv-input-field>
 
@@ -277,12 +283,16 @@
                formControlName="email"
                name="email"
                required
-               [pattern]="constants.patterns.email">
+               trim
+               [pattern]="constants.patterns.email"
+               emailUniqueValidator
+        >
         <cv-field-error
           *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.email').dirty || defaultQuestionaryForm.get('customerPersonalInfo.email').touched">
-          <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.email').errors?.required">Is required</span>
+          <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.email').errors?.required">{{messages.errors.email.required}}</span>
           <span
-            *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.email').errors?.pattern">Not valid email</span>
+            *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.email').errors?.pattern">{{messages.errors.email.pattern}}</span>
+          <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.email').errors?.emailUnique">{{messages.errors.email.emailUnique}}</span>
         </cv-field-error>
       </cv-input-field>
 
@@ -293,12 +303,14 @@
                formControlName="phone"
                name="phone"
                phoneMask
-               required
-               [pattern]="constants.patterns.phone">
+               maxlength="14"
+               [pattern]="constants.patterns.phone"
+               required>
         <cv-field-error
           *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.phone').dirty || defaultQuestionaryForm.get('customerPersonalInfo.phone').touched">
           <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.phone').errors?.required">{{messages.errors.phone.required}}</span>
           <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.phone').errors?.pattern">{{messages.errors.phone.pattern}}</span>
+          <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.phone').errors?.allZeros">{{messages.errors.phone.pattern}}</span>
         </cv-field-error>
       </cv-input-field>
 
