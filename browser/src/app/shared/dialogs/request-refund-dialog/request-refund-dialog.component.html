@@ -33,7 +33,7 @@
             <!--TODO: Real project zip code changed to 'this zip area'-->
             <cv-radio *ngFor="let refundIssue of questionary.issues" [value]="refundIssue.name">
               <div [innerHtml]="refundIssue.text
-              | replace : zipRegExp: 'this <b>zip area</b>'
+              | replace : zipRegExp: '<b>' + questionary.zip + '</b>'
               | replace : serviceNameRegExp: '<b>' + questionary.serviceName+ '</b>'">
               </div>
             </cv-radio>

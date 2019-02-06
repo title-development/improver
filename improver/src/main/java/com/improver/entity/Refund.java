@@ -79,11 +79,12 @@ public class Refund {
      * Refund Issue
      */
     public enum Issue {
-        WRONG_ZIP("I don’t work in {zip}"),
-        WRONG_SERVICE("I don’t do {serviceName}"),
-        WONT_DO("I don’t do this particular service"),
+        WRONG_ZIP("I don’t provide services in {zip}"),
+        WRONG_SERVICE("I don’t provide {serviceName}"),
+        WONT_DO("I won't do this particular job"),
         NOT_AGREED("I talked to client, but we aren't doing the job"),
-        INVALID_LEAD("I couldn't contact the customer. Invalid lead");
+        UNREACHABLE("Client could not be reached"),
+        INVALID_LEAD("Invalid lead");
 
         private final String value;
 
@@ -93,13 +94,11 @@ public class Refund {
         static {
             options.put(WRONG_ZIP, Arrays.asList(
                 NEVER_WORK_IN_ZIP,
-                SOMETIMES_WORK_IN_ZIP,
-                JOB_NOT_FOR_ZIP)
+                SOMETIMES_WORK_IN_ZIP)
             );
             options.put(WRONG_SERVICE, Arrays.asList(
                 NEVER_DO_SERVICE,
-                SOMETIMES_DO_SERVICE,
-                JOB_NOT_FOR_SERVICE)
+                SOMETIMES_DO_SERVICE)
             );
             options.put(WONT_DO, Arrays.asList(
                 JOB_TOO_SMALL,
@@ -115,18 +114,23 @@ public class Refund {
                 NOT_EQUIPPED,
                 JOB_TOO_SMALL,
                 NOTHING_TO_DO,
+                OTHER)
+            );
+            options.put(UNREACHABLE, Arrays.asList(
+                BAD_CONTACT_INFO,
+                NO_RESPOND,
+                DECLINED,
                 CLOSED,
                 OTHER)
             );
             options.put(INVALID_LEAD, Arrays.asList(
-                NO_RESPOND,
-                NOT_READY_TO_HIRE,
+                JOB_NOT_FOR_ZIP,
+                JOB_NOT_FOR_SERVICE,
                 DUPLICATE,
                 NOT_ENOUGH_INFO,
                 BAD_CONTACT_INFO,
                 NOTHING_TO_DO,
-                DECLINED,
-                CLOSED)
+                NOT_READY_TO_HIRE)
             );
         }
 
@@ -144,10 +148,11 @@ public class Refund {
 
         public String getQuestion() {
             switch (this) {
-                case WRONG_ZIP:  return "Do you want to remove {zip} from your coverage? By doing so, you will no longer receive leads for {zip}.";
-                case WRONG_SERVICE:  return "Do you want to remove {serviceName} from your service list? By doing so, you will no longer receive leads for {serviceName}.";
+                case WRONG_ZIP:  return "Do you wish to remove {zip} from your service area?";
+                case WRONG_SERVICE:  return "Do you wish to remove {serviceName} from your services?";
                 case WONT_DO:  return "Why not?";
                 case NOT_AGREED:  return "Why not?";
+                case UNREACHABLE:  return "What is the issue?";
                 case INVALID_LEAD:  return "Why is this lead invalid?";
                 default: throw new IllegalArgumentException();
             }
@@ -169,25 +174,25 @@ public class Refund {
 
 
     public enum Option {
-        NEVER_WORK_IN_ZIP("Yes, I never work there"),
-        SOMETIMES_WORK_IN_ZIP("No, I sometimes work there"),
-        JOB_NOT_FOR_ZIP("This Job isn’t for {zip}"),
-        NEVER_DO_SERVICE("Yes, I never do {serviceName}"),
+        NEVER_WORK_IN_ZIP("Yes, I never work in {zip} and dont want to receive leads from there"),
+        SOMETIMES_WORK_IN_ZIP("No, I sometimes provide services in {zip}"),
+        JOB_NOT_FOR_ZIP("Job isn’t for {zip}"),
+        NEVER_DO_SERVICE("Yes, I never do {serviceName} and dont want to receive leads for last"),
         SOMETIMES_DO_SERVICE("No, I sometimes do {serviceName}"),
-        JOB_NOT_FOR_SERVICE("This Job isn’t for {serviceName}"),
-        JOB_TOO_SMALL("Job is too small"),
-        NOT_EQUIPPED("I’m not equipped, licensed or able to do the job"),
-        NOT_READY_TO_HIRE("Customer not ready to hire"),
+        JOB_NOT_FOR_SERVICE("This job isn’t for {serviceName}"),
+        JOB_TOO_SMALL("Project is too small for me"),
+        NOT_EQUIPPED("I don't have the equipment, license(s) or capability"),
+        NOT_READY_TO_HIRE("Client not ready to hire"),
         //        HIRED_ELSE ("Customer hired someone else"),
-        DECLINED("Customer declined my request"),
-        NOT_SCHEDULED("We could't schedule"),
-        NOT_AGREED_PRICE("We could't agree on price"),
-        DUPLICATE("Duplicate request"),
-        NOTHING_TO_DO("No work requested or solicitation"),
-        NO_RESPOND("Customer didn't respond"),
-        NOT_ENOUGH_INFO("Not enough info provided"),
-        BAD_CONTACT_INFO("Bad contact info"),
-        CLOSED("Customer closed the project"),
+        DECLINED("Client declined my request"),
+        NOT_SCHEDULED("Dispute on schedule and/or timeframe for job"),
+        NOT_AGREED_PRICE("Dispute on price"),
+        DUPLICATE("Job request is a duplicate"),
+        NOTHING_TO_DO("No work was requested "),
+        NO_RESPOND("No response from the client"),
+        NOT_ENOUGH_INFO("Not enough project information"),
+        BAD_CONTACT_INFO("Invalid contact information"),
+        CLOSED("Client closed the project"),
         OTHER("Other");
 
         private final String value;

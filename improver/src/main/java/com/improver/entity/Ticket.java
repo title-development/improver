@@ -31,7 +31,7 @@ public class Ticket {
     private Option option;
     @Enumerated(EnumType.STRING)
     private Status status = Status.NEW;
-    private Priority priority = Priority.LOWEST;
+    private Priority priority = Priority.MEDIUM;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="staff_id", foreignKey = @ForeignKey(name = "tickets_staff_fkey"))
