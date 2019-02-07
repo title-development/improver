@@ -154,6 +154,7 @@ pipelines:
            # So we allocate additional resources for this step
           size: 2x
           script:
+            - export ENVIRONMENT=qa
             - *params
             - mvn clean deploy -B -Dmaven.wagon.http.pool=false -Denvironment=qa
           artifacts:
@@ -163,6 +164,7 @@ pipelines:
           name: Restart ECS cluster for QA  within existed VPC within specified subnets
           deployment: test
           script:
+            - export ENVIRONMENT=qa
             - *params
             - *update-ecs-env
 
