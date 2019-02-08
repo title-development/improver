@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.improver.security.SecurityProperties.*;
+import static com.improver.util.ErrorMessages.*;
 
 public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
@@ -29,7 +29,7 @@ public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
         } else if(exception instanceof AccountExpiredException) {
             message = ACCOUNT_DELETED_MSG;
         } else if(exception instanceof CredentialsExpiredException) {
-            message = SESSION_TIMED_OUT_MSG;
+            message = CREDENTIALS_EXPIRED_MSG;
         } else {
             message = BAD_CREDENTIALS_MSG;
         }

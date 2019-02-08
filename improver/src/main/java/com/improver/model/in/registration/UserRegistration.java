@@ -1,6 +1,8 @@
 package com.improver.model.in.registration;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.Email;
@@ -10,6 +12,8 @@ import static com.improver.util.ErrorMessages.*;
 import static com.improver.util.serializer.SerializationUtil.*;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Accessors(chain = true)
 public class UserRegistration {
 

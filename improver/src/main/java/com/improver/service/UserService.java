@@ -131,21 +131,12 @@ public class UserService {
     /**
      * Sends Registration Confirmation mail
      */
-    public Contractor registerContractor(UserRegistration registration, Company company) {
+    public Contractor registerContractor(UserRegistration registration) {
         String validationKey = UUID.randomUUID().toString();
-
-        String replyText = "Hi, we received your project request from Home Improve and would love to discuss this with you. " +
-            "Please let us know a convenient time for you. " +
-            "We look forward to connecting with you! Thanks, %s from %s!";
-        replyText = String.format(replyText, registration.getFirstName() + " " + registration.getLastName(), company.getName());
-
         Contractor contractor = contractorRepository.save(new Contractor(registration)
             .setValidationKey(validationKey)
-            .setCompany(company)
-            .setReplyText(replyText)
-            .setQuickReply(true)
         );
-        mailService.sendRegistrationConfirmEmail(contractor);
+        // mail will be sent during company registration
         return contractor;
     }
 

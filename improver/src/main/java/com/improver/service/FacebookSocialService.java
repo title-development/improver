@@ -24,7 +24,8 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-
+@Deprecated
+//TODO: Andriy, please remove duplications
 @Service
 public class FacebookSocialService {
 
@@ -42,6 +43,8 @@ public class FacebookSocialService {
             .build();
     }
 
+    @Deprecated
+    //TODO: Andriy, please remove duplications
     public User login(String accessToken) {
         FacebookUserProfile userProfile;
         try {
@@ -60,6 +63,8 @@ public class FacebookSocialService {
         return socialConnectionService.authorize(socialUser, SocialConnection.Provider.FACEBOOK);
     }
 
+    @Deprecated
+    //TODO: Andriy, please remove duplications
     public void connect(String accessToken) {
         FacebookUserProfile userProfile;
         try {
@@ -78,7 +83,7 @@ public class FacebookSocialService {
         socialConnectionService.connect(socialUser, SocialConnection.Provider.FACEBOOK);
     }
 
-    public FacebookUserProfile getFacebookUserProfile(String accessToken) throws ThirdPartyException {
+    private FacebookUserProfile getFacebookUserProfile(String accessToken) throws ThirdPartyException {
         FacebookUserProfile facebookUserProfile;
         try {
             URIBuilder uriBuilder = new URIBuilder("https://graph.facebook.com/" + FB_API_VERSION + "/me");

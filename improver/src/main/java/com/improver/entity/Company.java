@@ -1,6 +1,7 @@
 package com.improver.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.improver.model.in.registration.CompanyDetails;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.GenericGenerator;
@@ -128,6 +129,17 @@ public class Company {
     public Company setEmail(String email) {
         this.email = email.toLowerCase();
         return this;
+    }
+
+    public static Company of(CompanyDetails details, String iconUrl, ZonedDateTime created){
+        return new Company().setName(details.getName())
+            .setDescription(details.getDescription())
+            .setIconUrl(iconUrl)
+            .setFounded(details.getFounded())
+            .setSiteUrl(details.getSiteUrl())
+            .setLocation(details.getLocation())
+            .setCreated(created)
+            .setUpdated(created);
     }
 
 

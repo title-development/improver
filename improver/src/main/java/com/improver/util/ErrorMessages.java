@@ -1,7 +1,5 @@
 package com.improver.util;
 
-import lombok.NoArgsConstructor;
-
 import static com.improver.util.database.DataAccessUtil.*;
 import static com.improver.util.database.DataAccessUtil.COMPANY_DESCRIPTION_MAX_SIZE;
 
@@ -20,4 +18,13 @@ public final class ErrorMessages {
     public static final String REQUEST_REVIEW_SUBJECT_SIZE_ERROR_MESSAGE = "Subject should be " + REVIEW_REQUEST_SUBJECT_MIN_SIZE + " to " + REVIEW_REQUEST_SUBJECT_MAX_SIZE + " characters long.";
     public static final String REQUEST_REVIEW_MESSAGE_SIZE_ERROR_MESSAGE = "Message should be " + REVIEW_REQUEST_MESSAGE_MIN_SIZE + " to " + REVIEW_REQUEST_MESSAGE_MAX_SIZE + " characters long.";
     public static final String ORDER_DESCRIPTION_SIZE_ERROR_MESSAGE = "Order description must be not more " + ORDER_DESCRIPTION_SIZE + " characters";
+
+
+    public static final String BAD_CREDENTIALS_MSG = "Email or password is incorrect";
+    public static final String SESSION_TIMED_OUT_MSG = "Your session has timed out. Please log in again";
+    public static final String ACCOUNT_DELETED_MSG = "Account has been deleted";
+    public static final String ACCOUNT_NOT_ACTIVATED_MSG = "Account is not activated. Please proceed to confirm your email";
+    public static final String ACCOUNT_BLOCKED_MSG = "Account is blocked. Please contact support";
+    public static final String INVALID_ACTIVATION_LINK = "Invalid activation link";
+    public static final String CREDENTIALS_EXPIRED_MSG = "Password has been expired. Please change it";
 }

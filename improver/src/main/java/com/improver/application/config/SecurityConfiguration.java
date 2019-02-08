@@ -87,7 +87,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/").permitAll()
                 .antMatchers(HttpMethod.POST, LOGIN_PATH).anonymous()
-                .antMatchers(REGISTRATION_PATH + "/**").anonymous()
+                //.antMatchers(REGISTRATION_PATH + "/**").anonymous()
                 .antMatchers(HttpMethod.GET, PRINCIPAL_PATH).permitAll()
                 .antMatchers(LOGOUT_PATH).authenticated()
                 .antMatchers(WEB_SOCKET_ENDPOINT).authenticated()

@@ -1,6 +1,7 @@
 package com.improver.model.out;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.improver.entity.User;
 import lombok.Data;
 import lombok.Getter;
 
@@ -16,11 +17,11 @@ public class LoginModel {
     @JsonIgnore
     private final String refreshId;
 
-    public LoginModel(long id, String iconUrl, String name, String role, String company, String refreshId) {
+    public LoginModel(long id, String iconUrl, String name, User.Role role, String company, String refreshId) {
         this.id = id;
         this.iconUrl = iconUrl;
         this.name = name;
-        this.role = role;
+        this.role = role.toString();
         this.company = company;
         this.refreshId = refreshId;
     }

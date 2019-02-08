@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.improver.security.SecurityProperties.*;
+import static com.improver.util.ErrorMessages.BAD_CREDENTIALS_MSG;
+import static com.improver.util.ErrorMessages.SESSION_TIMED_OUT_MSG;
 
 @Slf4j
 public class JwtAuthenticationFilter extends GenericFilterBean {

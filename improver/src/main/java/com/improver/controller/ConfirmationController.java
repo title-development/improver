@@ -62,6 +62,7 @@ public class ConfirmationController {
         return new ResponseEntity<>(loginModel, HttpStatus.OK);
     }
 
+    //TODO: change to /validate
     @GetMapping("/check")
     public ResponseEntity<Void> checkConfirmLink(@RequestParam String token) {
         String validationKey = jwtUtil.parseActivationJWT(token, null);

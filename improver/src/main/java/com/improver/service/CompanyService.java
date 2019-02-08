@@ -9,6 +9,7 @@ import com.improver.model.ProNotificationSettings;
 import com.improver.model.TradesServicesCollection;
 import com.improver.model.NameIdParentTuple;
 import com.improver.model.NameIdTuple;
+import com.improver.model.in.registration.CompanyDetails;
 import com.improver.model.in.registration.CompanyRegistration;
 import com.improver.model.out.CompanyCoverageConfig;
 import com.improver.model.out.CompanyProfile;
@@ -16,6 +17,7 @@ import com.improver.model.out.ValidatedLocation;
 import com.improver.model.out.project.ProjectRequestShort;
 import com.improver.repository.*;
 import com.improver.security.UserSecurityService;
+import com.improver.util.mail.MailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.improver.util.TextMessages.REPLY_TEXT_TEMPLATE;
 
 @Service
 public class CompanyService {
@@ -49,6 +53,8 @@ public class CompanyService {
     @Autowired private ContractorRepository contractorRepository;
     @Autowired private BoundariesService boundariesService;
     @Autowired private ServedZipRepository servedZipRepository;
+    @Autowired private BillingService billingService;
+    @Autowired private MailService mailService;
 
     public CompanyProfile getCompanyProfile(String id) {
         Company company = companyRepository.findById(id)
@@ -239,35 +245,6 @@ public class CompanyService {
     }
 
 
-    public Company registerCompany(CompanyRegistration registration) {
-        ZonedDateTime now = ZonedDateTime.now();
-        String iconUrl = null;
-        if (registration.getLogo() != null && !registration.getLogo().isEmpty()) {
-            try {
-                iconUrl = imageService.saveBase64Image(registration.getLogo());
-            } catch (ValidationException | InternalServerException e) {
-                log.warn("Could not save company logo", e);
-            }
-        }
-
-        Company company = companyRepository.save(new Company().setName(registration.getName())
-            .setDescription(registration.getDescription())
-            .setIconUrl(iconUrl)
-            .setFounded(registration.getFounded())
-            .setSiteUrl(registration.getSiteUrl())
-            .setLocation(registration.getLocation())
-            .setCreated(now)
-            .setUpdated(now)
-        );
-        Billing billing = billRepository.save(Billing.forNewCompany(company));
-        CompanyConfig defaultSettings = CompanyConfig.defaultSettings(company);
-        company.setCompanyConfig(defaultSettings);
-        company.setBilling(billing);
-        companyConfigRepository.save(defaultSettings);
-        return company;
-    }
-
-
 
     public Page<Company> getCompanies(String id, Pageable pageable) {
         return companyRepository.getAllBy(id, pageable);
@@ -336,7 +313,7 @@ public class CompanyService {
         );
     }
 
-    public void updateCoverage(Company company, double lat, double lng, int radius) {
+    private void updateCoverage(Company company, double lat, double lng, int radius) {
         List<String> zipCodes;
         try {
             zipCodes = boundariesService.getZipCodesInRadius(lat, lng, radius);
@@ -402,6 +379,56 @@ public class CompanyService {
         billRepository.save(billing);
         List<Contractor> pros = company.getContractors();
         userService.deleteContractors(pros);
+    }
+
+    /**
+     * Performs registration of given company and links to given contractor
+     * @param registration registration data for company
+     * @param contractor company owner
+     *
+     */
+    public void registerCompany(CompanyRegistration registration, Contractor contractor){
+        // 1. Company
+        Company company = createCompany(registration.getCompany(), contractor);
+
+        // 2. Trades and Services
+        updateTradesServicesCollection(company, registration.getTradesAndServices());
+
+        // 3. Coverage
+        updateCoverage(company, registration.getCoverage().getCenter().lat,
+            registration.getCoverage().getCenter().lng, registration.getCoverage().getRadius());
+
+        // 4. Add initial bonus from Invitation
+        billingService.addInitialBonus(company, contractor.getEmail());
+
+        // 5. send email to contractor
+        mailService.sendRegistrationConfirmEmail(contractor);
+    }
+
+
+    private Company createCompany(CompanyDetails companyDetails, Contractor contractor) {
+        ZonedDateTime now = ZonedDateTime.now();
+        String iconUrl = null;
+        if (companyDetails.getLogo() != null && !companyDetails.getLogo().isEmpty()) {
+            try {
+                iconUrl = imageService.saveBase64Image(companyDetails.getLogo());
+            } catch (ValidationException | InternalServerException e) {
+                log.warn("Could not save company logo", e);
+            }
+        }
+
+        Company company = companyRepository.save(Company.of(companyDetails, iconUrl, now));
+        String replyText = String.format(REPLY_TEXT_TEMPLATE, contractor.getDisplayName(), company.getName());
+        contractorRepository.save(contractor.setCompany(company)
+            .setQuickReply(true)
+            .setReplyText(replyText));
+
+        Billing billing = billRepository.save(Billing.forNewCompany(company));
+        CompanyConfig defaultSettings = CompanyConfig.defaultSettings(company);
+        company.setCompanyConfig(defaultSettings);
+        company.setBilling(billing);
+        companyConfigRepository.save(defaultSettings);
+        return company;
     }
 
 }

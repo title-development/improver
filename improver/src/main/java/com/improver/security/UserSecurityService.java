@@ -1,22 +1,16 @@
 package com.improver.security;
 
-import com.improver.entity.Company;
-import com.improver.entity.Contractor;
-import com.improver.entity.Customer;
-import com.improver.entity.User;
+import com.improver.entity.*;
 import com.improver.exception.AuthenticationRequiredException;
 import com.improver.exception.NotFoundException;
 import com.improver.model.out.LoginModel;
 import com.improver.repository.ContractorRepository;
 import com.improver.repository.CustomerRepository;
+import com.improver.repository.StaffRepository;
 import com.improver.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -27,8 +21,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
-import static com.improver.security.SecurityProperties.*;
-import static com.improver.security.SecurityProperties.ACCOUNT_BLOCKED_MSG;
+import static com.improver.security.SecurityProperties.AUTHORIZATION_HEADER_NAME;
+import static com.improver.security.SecurityProperties.BEARER_TOKEN_PREFIX;
+import static com.improver.util.ErrorMessages.*;
 
 @Slf4j
 @Service
@@ -38,6 +33,8 @@ public class UserSecurityService implements UserDetailsService {
     @Autowired private ContractorRepository contractorRepository;
     @Autowired private CustomerRepository customerRepository;
     @Autowired private JwtUtil jwtUtil;
+    @Autowired
+    private StaffRepository staffRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -45,6 +42,43 @@ public class UserSecurityService implements UserDetailsService {
             .orElseThrow(() -> new UsernameNotFoundException(String.format("No user found with username '%s'.", username)));
         return new UserDetailsImpl(user);
     }
+
+    public User currentUser() throws AuthenticationRequiredException {
+        return userRepository.findByEmail(loggedUserEmail())
+            .orElseThrow(AuthenticationRequiredException::new);
+    }
+
+    public Contractor currentPro() throws AuthenticationRequiredException {
+        return contractorRepository.findByEmail(loggedUserEmail())
+            .orElseThrow(AuthenticationRequiredException::new);
+    }
+
+    public Customer currentCustomer() throws AuthenticationRequiredException {
+        return customerRepository.findByEmail(loggedUserEmail())
+            .orElseThrow(AuthenticationRequiredException::new);
+    }
+
+    public User currentUserOrNull() {
+        return userRepository.findByEmail(loggedUserEmail())
+            .orElse(null);
+    }
+
+    public Customer currentCustomerOrNull() {
+        return customerRepository.findByEmail(loggedUserEmail())
+            .orElse(null);
+    }
+
+    public Contractor currentProOrNull() {
+        return contractorRepository.findByEmail(loggedUserEmail())
+            .orElse(null);
+    }
+
+    public Staff currentStaffOrNull() {
+        return staffRepository.findByEmail(loggedUserEmail())
+            .orElse(null);
+    }
+
+
 
     public User findByRefreshId(String refreshToken) {
         return userRepository.findByRefreshId(refreshToken);
@@ -54,6 +88,10 @@ public class UserSecurityService implements UserDetailsService {
     public User getByEmail(String email) {
         return userRepository.findByEmail(email)
             .orElseThrow(NotFoundException::new);
+    }
+
+    public void performLogout(User user, HttpServletResponse res){
+        TokenProvider.eraseRefreshCookie(res);
     }
 
     public LoginModel performUserLogin(User user, HttpServletResponse res) {
@@ -77,7 +115,7 @@ public class UserSecurityService implements UserDetailsService {
     }
 
 
-    public LoginModel getCurrentPrincipal() {
+    LoginModel getCurrentPrincipal() {
         User currentUser = currentUser();
         if (!currentUser.isActivated()) {
             throw new AuthenticationRequiredException(ACCOUNT_NOT_ACTIVATED_MSG);
@@ -88,8 +126,12 @@ public class UserSecurityService implements UserDetailsService {
         if (currentUser.isBlocked()) {
             throw new AuthenticationRequiredException(ACCOUNT_BLOCKED_MSG);
         }
-        LoginModel loginModel = getLoginModel(currentUser);
-        return loginModel;
+        if (currentUser instanceof Staff) {
+            if (((Staff) currentUser).isCredentialExpired()) {
+                throw new AuthenticationRequiredException(CREDENTIALS_EXPIRED_MSG);
+            }
+        }
+        return getLoginModel(currentUser);
     }
 
 
@@ -97,52 +139,22 @@ public class UserSecurityService implements UserDetailsService {
         String displayName = user.getDisplayName();
         String iconUrl = user.getIconUrl();
         String companyId = null;
-        if (User.Role.CONTRACTOR.equals(user.getRole())) {
+        User.Role role = user.getRole();
+        if (User.Role.CONTRACTOR.equals(role)) {
             Company company = ((Contractor) user).getCompany();
             if (company == null) {
-                throw new IllegalStateException("Company is not defined for " + user.getEmail());
+                role = User.Role.INCOMPLETE_PRO;
+                log.debug("Not fully registered Pro={} login", user.getEmail());
             } else {
                 iconUrl = company.getIconUrl();
                 companyId = company.getId();
                 displayName = company.getName();
             }
         }
-        return new LoginModel(user.getId(), iconUrl, displayName, user.getRole().toString(), companyId, user.getRefreshId());
+        return new LoginModel(user.getId(), iconUrl, displayName, role, companyId, user.getRefreshId());
     }
 
-    public User currentUser() throws AuthenticationRequiredException {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return userRepository.findByEmail(auth.getName())
-            .orElseThrow(AuthenticationRequiredException::new);
-    }
-
-    public Contractor currentPro() throws AuthenticationRequiredException {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return contractorRepository.findByEmail(auth.getName())
-            .orElseThrow(AuthenticationRequiredException::new);
-    }
-
-    public Customer currentCustomer() throws AuthenticationRequiredException {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return customerRepository.findByEmail(auth.getName())
-            .orElseThrow(AuthenticationRequiredException::new);
-    }
-
-    public User currentUserOrNull() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return userRepository.findByEmail(auth.getName())
-            .orElse(null);
-    }
-
-    public Customer currentCustomerOrNull() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return customerRepository.findByEmail(auth.getName())
-            .orElse(null);
-    }
-
-    public Contractor currentProOrNull() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return contractorRepository.findByEmail(auth.getName())
-            .orElse(null);
+    private String loggedUserEmail() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 }

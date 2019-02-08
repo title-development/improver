@@ -147,7 +147,8 @@ public class User implements Principal {
         ADMIN("ADMIN"),
         SUPPORT("SUPPORT"),
         STAKEHOLDER("STAKEHOLDER"),
-        MANAGER("MANAGER");
+        MANAGER("MANAGER"),
+        INCOMPLETE_PRO("INCOMPLETE_PRO"); //Not fully registered PRO (without company)
 
         private final String value;
 

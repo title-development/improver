@@ -19,7 +19,8 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
-
+@Deprecated
+//TODO: Andriy, please remove duplications
 @Service
 public class GoogleSocialService {
 
@@ -35,6 +36,8 @@ public class GoogleSocialService {
             .build();
     }
 
+    @Deprecated
+    //TODO: Andriy, please remove duplications
     public User login(String idTokenString) {
         GoogleIdToken idToken = null;
         try {
@@ -60,6 +63,8 @@ public class GoogleSocialService {
         return socialConnectionService.authorize(socialUser, SocialConnection.Provider.GOOGLE);
     }
 
+    @Deprecated
+    //TODO: Andriy, please remove duplications
     public void connect(String idTokenString) {
         GoogleIdToken idToken = null;
         try {

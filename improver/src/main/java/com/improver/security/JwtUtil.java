@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 
 import static com.improver.security.SecurityProperties.*;
+import static com.improver.util.ErrorMessages.INVALID_ACTIVATION_LINK;
 
 @Slf4j
 @Component

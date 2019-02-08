@@ -1,23 +1,20 @@
 package com.improver.controller;
 
-import com.improver.entity.Company;
+
 import com.improver.entity.Contractor;
-import com.improver.entity.Customer;
 import com.improver.entity.User;
 import com.improver.exception.ConflictException;
 import com.improver.exception.ValidationException;
-import com.improver.model.in.registration.ContractorRegistration;
+import com.improver.model.in.registration.CompanyRegistration;
 import com.improver.model.in.OldNewValue;
-import com.improver.model.in.registration.StaffRegistration;
 import com.improver.model.in.registration.UserRegistration;
+import com.improver.model.out.LoginModel;
 import com.improver.repository.UserRepository;
-import com.improver.security.annotation.AdminAccess;
-import com.improver.service.BillingService;
+import com.improver.security.UserSecurityService;
 import com.improver.service.CompanyService;
 import com.improver.service.UserService;
 import com.improver.util.mail.MailService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,26 +25,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.UUID;
 
-import static com.improver.application.properties.Path.CONTRACTORS;
-import static com.improver.application.properties.Path.CUSTOMERS;
-import static com.improver.application.properties.Path.REGISTRATION_PATH;
+import static com.improver.application.properties.Path.*;
 
+@Slf4j
 @RestController
 @RequestMapping(REGISTRATION_PATH)
 public class RegistrationController {
-
-    private final Logger log = LoggerFactory.getLogger(getClass());
-
     @Autowired private UserService userService;
     @Autowired private UserRepository userRepository;
     @Autowired private MailService mailService;
     @Autowired private CompanyService companyService;
-    @Autowired private BillingService billingService;
+    @Autowired private UserSecurityService userSecurityService;
 
 
+    @PreAuthorize("isAnonymous()")
     @PostMapping("/change") //TODO: Fix the URL
     public ResponseEntity changeRegistrationEmail(@RequestBody OldNewValue oldNewEmail) {
         oldNewEmail.setNewValue(oldNewEmail.getNewValue().toLowerCase());
@@ -73,48 +68,52 @@ public class RegistrationController {
     }
 
 
+    @PreAuthorize("isAnonymous()")
     @PostMapping("/resend")
     public ResponseEntity resendConfirmationMail(@RequestBody String email) {
         User user = userService.getByEmail(email.toLowerCase());
         if(user.isActivated() || user.getValidationKey() == null) {
             throw new ConflictException("Cannot resend confirmation mail. Email already confirmed!");
         }
-
         mailService.sendRegistrationConfirmEmail(user);
-
         return new ResponseEntity(HttpStatus.OK);
     }
 
 
-
+    @PreAuthorize("isAnonymous()")
     @PostMapping(CUSTOMERS)
     public ResponseEntity registerCustomer(@RequestBody @Valid UserRegistration customer) {
-        log.info("Registration of customer = " + customer.getEmail());
+        log.info("Registration of customer = {}", customer.getEmail());
         userService.registerCustomer(customer);
         return new ResponseEntity(HttpStatus.OK);
     }
 
+
+    @PreAuthorize("isAnonymous()")
     @PostMapping(CONTRACTORS)
-    public ResponseEntity registerContractor(@RequestBody @Valid ContractorRegistration registration) {
-        log.info("Registration of PRO = " + registration.getContractor().getEmail());
+    public ResponseEntity<LoginModel> registerContractor(@RequestBody @Valid UserRegistration registration, HttpServletResponse res) {
+        log.info("Registration of PRO = {}", registration.getEmail());
+        Contractor contractor = userService.registerContractor(registration);
+        LoginModel loginModel = userSecurityService.performUserLogin(contractor, res);
+        return new ResponseEntity<>(loginModel, HttpStatus.OK);
+    }
 
-        // 1. Company
-        Company company = companyService.registerCompany(registration.getCompany());
 
-        // 2. Contractor
-        userService.registerContractor(registration.getContractor(), company);
-
-        // 3. Trades and Services
-        companyService.updateTradesServicesCollection(company, registration.getTradesAndServices());
-
-        // 4. Coverage
-        companyService.updateCoverage(company, registration.getCoverage().getCenter().lat,
-            registration.getCoverage().getCenter().lng, registration.getCoverage().getRadius());
-
-        // 5. Add initial bonus from Invitation
-        billingService.addInitialBonus(company, registration.getContractor().getEmail());
-
-        return new ResponseEntity(HttpStatus.OK);
+    @PreAuthorize("hasRole('INCOMPLETE_PRO')")
+    @PostMapping(COMPANIES)
+    public ResponseEntity<LoginModel> registerCompany(@RequestBody @Valid CompanyRegistration registration, HttpServletResponse res) {
+        log.info("Registration of Company = {}", registration.getCompany().getName());
+        Contractor contractor = userSecurityService.currentPro();
+        companyService.registerCompany(registration, contractor);
+        LoginModel loginModel = null;
+        if (contractor.isNativeUser()) {
+            // logout contractor -> contractor should confirm email and then login
+            userSecurityService.performLogout(contractor, res);
+        } else {
+            // login contractor if was registered via social connections
+            loginModel = userSecurityService.performUserLogin(contractor, res);
+        }
+        return new ResponseEntity<>(loginModel, HttpStatus.OK);
     }
 
 }

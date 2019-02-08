@@ -108,7 +108,7 @@ public class ProjectRequestController {
     public ResponseEntity<Void> declinePro(@PathVariable long id, @RequestBody DeclineProAction action) {
         ProjectRequest projectRequest = getForCurrentCustomer(id);
         projectRequestService.declinePro(projectRequest, action.getReason(), action.getComment());
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 

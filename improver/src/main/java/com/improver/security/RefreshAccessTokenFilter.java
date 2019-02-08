@@ -1,5 +1,6 @@
 package com.improver.security;
 
+import com.improver.entity.Staff;
 import com.improver.entity.User;
 import com.improver.exception.AuthenticationRequiredException;
 import com.improver.exception.handler.GenericExceptionHandler;
@@ -21,6 +22,7 @@ import java.io.IOException;
 import java.time.ZonedDateTime;
 
 import static com.improver.security.SecurityProperties.*;
+import static com.improver.util.ErrorMessages.*;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
@@ -73,6 +75,13 @@ public class RefreshAccessTokenFilter extends GenericFilterBean {
                 logger.error(user.getEmail() + " is blocked");
                 sendError(response, SC_FORBIDDEN, ACCOUNT_BLOCKED_MSG);
                 return;
+            }
+            if (user instanceof Staff) {
+                if (((Staff) user).isCredentialExpired()) {
+                    logger.error(user.getEmail() + " credentials expired");
+                    sendError(response, SC_FORBIDDEN, CREDENTIALS_EXPIRED_MSG);
+                    return;
+                }
             }
 
             String jwt = jwtUtil.generateAccessJWT(user.getEmail(), user.getRole().toString());
