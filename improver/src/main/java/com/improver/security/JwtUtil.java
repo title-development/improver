@@ -38,6 +38,14 @@ public class JwtUtil {
     }
 
 
+    /**
+     * @param token - access JWT
+     * @return JwtPrincipal
+     * @throws CredentialsExpiredException - when token has been expired
+     * @throws BadCredentialsException     - when token is malformed or not valid
+     */
+    @Deprecated
+    //TODO : Misha change CredentialsExpiredException -> ExpiredJwtException. throw checked exceptions
     public JwtPrincipal parseAccessToken(String token) throws CredentialsExpiredException, BadCredentialsException {
         if (token == null) {
             throw new BadCredentialsException("Token is NULL");

@@ -131,10 +131,12 @@ public class UserService {
     /**
      * Sends Registration Confirmation mail
      */
+    @Deprecated
     public Contractor registerContractor(UserRegistration registration) {
         String validationKey = UUID.randomUUID().toString();
         Contractor contractor = contractorRepository.save(new Contractor(registration)
             .setValidationKey(validationKey)
+            .setActivated(true) //TODO: this is temporary to give ability for login and register company
         );
         // mail will be sent during company registration
         return contractor;

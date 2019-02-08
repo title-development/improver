@@ -10,7 +10,8 @@ import com.improver.repository.StaffRepository;
 import com.improver.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.authentication.*;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
+import static com.improver.entity.User.Role.CONTRACTOR;
 import static com.improver.security.SecurityProperties.AUTHORIZATION_HEADER_NAME;
 import static com.improver.security.SecurityProperties.BEARER_TOKEN_PREFIX;
 import static com.improver.util.ErrorMessages.*;
@@ -36,6 +38,9 @@ public class UserSecurityService implements UserDetailsService {
     @Autowired
     private StaffRepository staffRepository;
 
+    /**
+     * Intended to be used by {@link LoginFilter}
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(username)
@@ -95,7 +100,7 @@ public class UserSecurityService implements UserDetailsService {
     }
 
     public LoginModel performUserLogin(User user, HttpServletResponse res) {
-        LoginModel loginModel = loginUser(user);
+        LoginModel loginModel = updateLoggedUser(user);
         String jwt = jwtUtil.generateAccessJWT(user.getEmail(), user.getRole().toString());
         res.setHeader(AUTHORIZATION_HEADER_NAME, BEARER_TOKEN_PREFIX + jwt);
         res.addCookie(TokenProvider.buildRefreshCookie(loginModel.getRefreshId()));
@@ -105,7 +110,7 @@ public class UserSecurityService implements UserDetailsService {
     /**
      * Updates lastLogin time and refreshId
      */
-    LoginModel loginUser(User user) {
+    LoginModel updateLoggedUser(User user) {
         //updateLastLogin
         String refreshId = UUID.randomUUID().toString();
         User saved = userRepository.save(user.setLastLogin(ZonedDateTime.now()).setRefreshId(refreshId));
@@ -117,22 +122,41 @@ public class UserSecurityService implements UserDetailsService {
 
     LoginModel getCurrentPrincipal() {
         User currentUser = currentUser();
-        if (!currentUser.isActivated()) {
-            throw new AuthenticationRequiredException(ACCOUNT_NOT_ACTIVATED_MSG);
-        }
-        if (currentUser.isDeleted()) {
-            throw new AuthenticationRequiredException(ACCOUNT_DELETED_MSG);
-        }
-        if (currentUser.isBlocked()) {
-            throw new AuthenticationRequiredException(ACCOUNT_BLOCKED_MSG);
-        }
-        if (currentUser instanceof Staff) {
-            if (((Staff) currentUser).isCredentialExpired()) {
-                throw new AuthenticationRequiredException(CREDENTIALS_EXPIRED_MSG);
-            }
+        try {
+            checkUser(currentUser);
+        } catch (AuthenticationException e) {
+            throw new AuthenticationRequiredException(e.getMessage());
         }
         return getLoginModel(currentUser);
     }
+
+    /**
+     * Performs account security check for given user
+     *
+     * @param user - user to check
+     * @throws DisabledException           - when account not activated
+     * @throws LockedException             - when account is blocked
+     * @throws CredentialsExpiredException - for {@link Staff} only,  when credentials expired
+     * @throws AccountExpiredException     - when account was deleted
+     */
+    public void checkUser(User user) throws DisabledException, LockedException, CredentialsExpiredException, AccountExpiredException {
+        if (!user.isActivated() && !CONTRACTOR.equals(user.getRole())) {
+            throw new DisabledException(ACCOUNT_NOT_ACTIVATED_MSG);
+        }
+        if (user.isBlocked()) {
+            throw new LockedException(ACCOUNT_BLOCKED_MSG);
+        }
+        if (user.isDeleted()) {
+            throw new AccountExpiredException(ACCOUNT_DELETED_MSG);
+        }
+        if (user instanceof Staff) {
+            // TODO: Add more logic here
+            if (((Staff) user).isCredentialExpired()) {
+                throw new CredentialsExpiredException(CREDENTIALS_EXPIRED_MSG);
+            }
+        }
+    }
+
 
 
     private LoginModel getLoginModel(User user) {
@@ -140,7 +164,7 @@ public class UserSecurityService implements UserDetailsService {
         String iconUrl = user.getIconUrl();
         String companyId = null;
         User.Role role = user.getRole();
-        if (User.Role.CONTRACTOR.equals(role)) {
+        if (CONTRACTOR.equals(role)) {
             Company company = ((Contractor) user).getCompany();
             if (company == null) {
                 role = User.Role.INCOMPLETE_PRO;

@@ -51,7 +51,7 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
         String jwt  = jwtUtil.generateAccessJWT(auth);
         res.addHeader(AUTHORIZATION_HEADER_NAME, BEARER_TOKEN_PREFIX + jwt);
         User user = userSecurityService.getByEmail(auth.getName());
-        LoginModel loginModel = userSecurityService.loginUser(user);
+        LoginModel loginModel = userSecurityService.updateLoggedUser(user);
         res.addCookie(TokenProvider.buildRefreshCookie(loginModel.getRefreshId()));
         SerializationUtil.mapper().writeValue(res.getOutputStream(), loginModel);
     }

@@ -92,7 +92,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     }
 
 
-    protected Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException {
+    protected Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         String jwt = getAccessToken(request);
         if (jwt == null) {
             return null;

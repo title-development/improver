@@ -406,6 +406,7 @@ public class CompanyService {
     }
 
 
+    @Deprecated
     private Company createCompany(CompanyDetails companyDetails, Contractor contractor) {
         ZonedDateTime now = ZonedDateTime.now();
         String iconUrl = null;
@@ -419,6 +420,9 @@ public class CompanyService {
 
         Company company = companyRepository.save(Company.of(companyDetails, iconUrl, now));
         String replyText = String.format(REPLY_TEXT_TEMPLATE, contractor.getDisplayName(), company.getName());
+        if (!contractor.isNativeUser()) {
+            contractor.setActivated(false); //TODO: this is temporary to give ability for login and register company
+        }
         contractorRepository.save(contractor.setCompany(company)
             .setQuickReply(true)
             .setReplyText(replyText));

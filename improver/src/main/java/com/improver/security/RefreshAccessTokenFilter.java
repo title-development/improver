@@ -7,11 +7,11 @@ import com.improver.exception.handler.GenericExceptionHandler;
 import com.improver.exception.handler.RestError;
 import com.improver.util.serializer.SerializationUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.filter.GenericFilterBean;
 
 
-import javax.security.sasl.AuthenticationException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -66,22 +66,12 @@ public class RefreshAccessTokenFilter extends GenericFilterBean {
             }
 
             // 3. Check user
-            if (user.isDeleted()) {
-                logger.error(user.getEmail() + " is deleted");
-                sendError(response, SC_FORBIDDEN, ACCOUNT_DELETED_MSG);
+            try {
+                userSecurityService.checkUser(user);
+            } catch (AuthenticationException e) {
+                logger.error(user.getEmail() + " " + e.getMessage());
+                sendError(response, SC_FORBIDDEN, e.getMessage());
                 return;
-            }
-            if (user.isBlocked()) {
-                logger.error(user.getEmail() + " is blocked");
-                sendError(response, SC_FORBIDDEN, ACCOUNT_BLOCKED_MSG);
-                return;
-            }
-            if (user instanceof Staff) {
-                if (((Staff) user).isCredentialExpired()) {
-                    logger.error(user.getEmail() + " credentials expired");
-                    sendError(response, SC_FORBIDDEN, CREDENTIALS_EXPIRED_MSG);
-                    return;
-                }
             }
 
             String jwt = jwtUtil.generateAccessJWT(user.getEmail(), user.getRole().toString());
