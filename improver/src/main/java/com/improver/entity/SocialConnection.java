@@ -33,6 +33,13 @@ public class SocialConnection {
     @JsonIgnore
     private ZonedDateTime created = ZonedDateTime.now();
 
+    public SocialConnection (String socialUserId, SocialConnection.Provider provider, User user) {
+        this.providerId = socialUserId;
+        this.provider = provider;
+        this.user = user;
+        this.created = ZonedDateTime.now();
+    }
+
     public enum Provider {
         FACEBOOK ("FACEBOOK"),
         GOOGLE ("GOOGLE");

@@ -2,6 +2,7 @@ package com.improver.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.improver.model.in.registration.UserRegistration;
+import com.improver.model.socials.SocialUser;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -21,7 +22,7 @@ import java.util.List;
 @DiscriminatorValue("CUSTOMER")
 @Data
 @EqualsAndHashCode(callSuper = true)
-@ToString(exclude = {"projects","reviews"})
+@ToString(exclude = {"projects", "reviews"})
 @Accessors(chain = true)
 @NoArgsConstructor
 public class Customer extends User {
@@ -39,7 +40,7 @@ public class Customer extends User {
 
     @Embeddable
     @Data
-    public static class MailSettings{
+    public static class MailSettings {
         //Order Lifecycle
         //Email notification on order request, close, cancel, etc
         private boolean isProjectLifecycle = true;
@@ -54,13 +55,22 @@ public class Customer extends User {
     }
 
 
-
     public Customer(UserRegistration reg) {
         super(reg);
     }
 
     public Customer(String firstName, String lastName, String email, String plainPassword, String internalPhone) {
         super(firstName, lastName, email, plainPassword, internalPhone);
+    }
+
+    public static Customer of(SocialUser socialUser) {
+        return new Customer()
+            .setEmail(socialUser.getEmail())
+            .setFirstName(socialUser.getFirstName())
+            .setLastName(socialUser.getLastName())
+            .setActivated(true)
+            .setCreated(ZonedDateTime.now())
+            .setIconUrl(socialUser.getPicture());
     }
 
     @Override

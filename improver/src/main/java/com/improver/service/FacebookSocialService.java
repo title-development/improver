@@ -24,8 +24,6 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-@Deprecated
-//TODO: Andriy, please remove duplications
 @Service
 public class FacebookSocialService {
 
@@ -43,44 +41,16 @@ public class FacebookSocialService {
             .build();
     }
 
-    @Deprecated
-    //TODO: Andriy, please remove duplications
-    public User login(String accessToken) {
-        FacebookUserProfile userProfile;
-        try {
-            userProfile = getFacebookUserProfile(accessToken);
-        } catch (ThirdPartyException e) {
-            throw new AuthenticationRequiredException("Could not connect to facebook api");
-        }
+    public User loginOrRegister(String accessToken) {
+        SocialUser socialUser = getSocialUser(accessToken);
 
-        SocialUser socialUser = new SocialUser()
-            .setEmail(userProfile.getEmail())
-            .setId(userProfile.getId())
-            .setFirstName(userProfile.getFirst_name())
-            .setLastName(userProfile.getLast_name())
-            .setPicture(userProfile.getPicture().getData().getUrl());
-
-        return socialConnectionService.authorize(socialUser, SocialConnection.Provider.FACEBOOK);
+        return socialConnectionService.findExistingOrRegister(socialUser, SocialConnection.Provider.FACEBOOK);
     }
 
-    @Deprecated
-    //TODO: Andriy, please remove duplications
-    public void connect(String accessToken) {
-        FacebookUserProfile userProfile;
-        try {
-            userProfile = getFacebookUserProfile(accessToken);
-        } catch (ThirdPartyException e) {
-            throw new AuthenticationRequiredException("Could not connect to facebook api");
-        }
+    public void connect(User user, String accessToken) {
+        SocialUser socialUser = getSocialUser(accessToken);
 
-        SocialUser socialUser = new SocialUser()
-            .setEmail(userProfile.getEmail())
-            .setId(userProfile.getId())
-            .setFirstName(userProfile.getFirst_name())
-            .setLastName(userProfile.getLast_name())
-            .setPicture(userProfile.getPicture().getData().getUrl());
-
-        socialConnectionService.connect(socialUser, SocialConnection.Provider.FACEBOOK);
+        socialConnectionService.connect(socialUser, user, SocialConnection.Provider.FACEBOOK);
     }
 
     private FacebookUserProfile getFacebookUserProfile(String accessToken) throws ThirdPartyException {
@@ -89,17 +59,18 @@ public class FacebookSocialService {
             URIBuilder uriBuilder = new URIBuilder("https://graph.facebook.com/" + FB_API_VERSION + "/me");
             uriBuilder.setParameter("access_token", accessToken);
             uriBuilder.setParameter("fields", "name,email,last_name,first_name,picture");
-            facebookUserProfile = handle(uriBuilder);
+            facebookUserProfile = getDataFromFacebookApi(uriBuilder);
         } catch (URISyntaxException | IOException e) {
             String message = e.getMessage();
             log.error(message, e);
             throw new ThirdPartyException(message);
         }
+
         return facebookUserProfile;
     }
 
 
-    private FacebookUserProfile handle(URIBuilder uriBuilder) throws ThirdPartyException, URISyntaxException, IOException {
+    private FacebookUserProfile getDataFromFacebookApi(URIBuilder uriBuilder) throws ThirdPartyException, URISyntaxException, IOException {
         HttpUriRequest request = RequestBuilder.get()
             .setUri(uriBuilder.build())
             .build();
@@ -127,5 +98,21 @@ public class FacebookSocialService {
         }
 
         return userProfile;
+    }
+
+    private SocialUser getSocialUser(String accessToken) throws AuthenticationRequiredException {
+        FacebookUserProfile userProfile;
+        try {
+            userProfile = getFacebookUserProfile(accessToken);
+        } catch (ThirdPartyException e) {
+            throw new AuthenticationRequiredException("Could not connect to facebook api");
+        }
+
+        return new SocialUser()
+            .setEmail(userProfile.getEmail())
+            .setId(userProfile.getId())
+            .setFirstName(userProfile.getFirst_name())
+            .setLastName(userProfile.getLast_name())
+            .setPicture(userProfile.getPicture().getData().getUrl());
     }
 }

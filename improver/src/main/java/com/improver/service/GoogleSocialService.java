@@ -11,7 +11,6 @@ import com.improver.exception.AuthenticationRequiredException;
 import com.improver.model.socials.SocialUser;
 import com.improver.util.ThirdPartyApis;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -19,8 +18,6 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
-@Deprecated
-//TODO: Andriy, please remove duplications
 @Service
 public class GoogleSocialService {
 
@@ -36,36 +33,19 @@ public class GoogleSocialService {
             .build();
     }
 
-    @Deprecated
-    //TODO: Andriy, please remove duplications
-    public User login(String idTokenString) {
-        GoogleIdToken idToken = null;
-        try {
-            idToken = verifier.verify(idTokenString);
-        } catch (GeneralSecurityException e) {
-            throw new AuthenticationRequiredException("Token id is invalid");
-        } catch (IOException e) {
-            throw new AuthenticationRequiredException("Could not connect to google api");
-        }
-        if (idToken == null) {
-            throw new AuthenticationRequiredException("Could not connect to google api");
-        }
+    public User loginOrRegister(String idTokenString) {
+        SocialUser socialUser = getSocialUser(idTokenString);
 
-        IdToken.Payload payload = idToken.getPayload();
-
-        SocialUser socialUser = new SocialUser()
-            .setId(payload.getSubject())
-            .setEmail((String) payload.get("email"))
-            .setFirstName(payload.get("given_name").toString())
-            .setLastName(payload.get("family_name").toString())
-            .setPicture((String) payload.get("picture"));
-
-        return socialConnectionService.authorize(socialUser, SocialConnection.Provider.GOOGLE);
+        return socialConnectionService.findExistingOrRegister(socialUser, SocialConnection.Provider.GOOGLE);
     }
 
-    @Deprecated
-    //TODO: Andriy, please remove duplications
-    public void connect(String idTokenString) {
+    public void connect(User user, String idTokenString) {
+        SocialUser socialUser = getSocialUser(idTokenString);
+
+        socialConnectionService.connect(socialUser, user, SocialConnection.Provider.GOOGLE);
+    }
+
+    private SocialUser getSocialUser(String idTokenString) {
         GoogleIdToken idToken = null;
         try {
             idToken = verifier.verify(idTokenString);
@@ -77,16 +57,8 @@ public class GoogleSocialService {
         if (idToken == null) {
             throw new AuthenticationRequiredException("Could not connect to google api");
         }
-
         IdToken.Payload payload = idToken.getPayload();
 
-        SocialUser socialUser = new SocialUser()
-            .setId(payload.getSubject())
-            .setEmail((String) payload.get("email"))
-            .setFirstName(payload.get("given_name").toString())
-            .setLastName(payload.get("family_name").toString())
-            .setPicture((String) payload.get("picture"));
-
-        socialConnectionService.connect(socialUser, SocialConnection.Provider.GOOGLE);
+        return SocialUser.of(payload);
     }
 }

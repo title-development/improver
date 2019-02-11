@@ -91,7 +91,7 @@ export class SocialButtonsComponent {
     if (socialPlatform == SocialPlatform.FACEBOOK) {
       observable = this.socialLoginService.facebookApiLogin(userData.authToken);
     } else {
-      observable = this.socialLoginService.googleApiLogin(userData.authToken);
+      observable = this.socialLoginService.googleApiLogin(userData.idToken);
     }
     observable.subscribe((response: HttpResponse<any>) => {
       this.googleFetching = false;
