@@ -1,0 +1,394 @@
+<div class="container">
+  <div class="card">
+    <div class="step-wizard" *ngIf="step != 4">
+      <div class="step-icon -one -done">
+        <span>Account <br>Creation</span>
+      </div>
+      <div class="step-icon -two -active">
+        <span>Company <br>Profile</span>
+      </div>
+      <div class="step-icon -tree" [ngClass]="{'-active': step >= 2}">
+        <span>Coverage</span>
+      </div>
+      <div class="step-icon -four" [ngClass]="{'-active': step >= 3}">
+        <span>Offered <br>Services</span>
+      </div>
+    </div>
+    <div class="step -two -company" *ngIf="step == 1">
+      <form class="company-info-form"
+            name="company-info-form"
+            #companyInfoForm="ngForm"
+            (ngSubmit)="companyInfoForm.valid && submitCompanyInfo(companyInfoForm)"
+            novalidate>
+        <h3>Company Profile</h3>
+
+        <div class="row -avatar">
+          <div class="col-md-8 col-sm-12 col-xs-12 avatar-block-wrapper">
+            <div class="avatar-wrapper">
+              <div class="avatar"
+                   [ngStyle]="companyRegistration.company.logo == '' && {'background-image':'url(/assets/img/company-logo-placeholder.png)'} || {'background-image':'url(' + companyRegistration.company.logo + ')'}"></div>
+              <div class="actions">
+                <div class="icon -edit" title="Edit icon" (click)="openDialogPhoto()">
+                  <mat-icon class="edit">edit</mat-icon>
+                </div>
+              </div>
+            </div>
+            <div class="avatar-hint-wrapper">
+              <div class="hint -arrow">Add company logo or picture. Profiles with a picture bring up to 300% more
+                customers.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-8 col-sm-12 col-xs-12">
+            <div class="row">
+              <div class="col-md-12 col-sm-12 col-xs-12">
+                <cv-input-field>
+                  <cv-field-label>Company name</cv-field-label>
+                  <input cv-input type="text"
+                         placeholder="Company name"
+                         #companyName="ngModel"
+                         name="companyName"
+                         [(ngModel)]="companyRegistration.company.name"
+                         minlength="2"
+                         maxlength="50"
+                         required
+                         trim
+                         companyNameUniqueValidator>
+                  <cv-field-error *ngIf="companyName.dirty || companyName.touched || companyInfoForm.submitted">
+                      <span *ngIf="companyName.errors?.required">
+                        {{messages.errors.companyName.required}}
+                      </span>
+                    <span *ngIf="companyName.errors?.minlength">
+                        {{messages.errors.companyName.minlength}}
+                      </span>
+                    <span *ngIf="companyName.errors?.maxlength">
+                        {{messages.errors.companyName.maxlength}}
+                      </span>
+                    <span *ngIf="companyName.errors?.nameUnique">
+                        {{messages.errors.companyName.nameUnique}}
+                      </span>
+                  </cv-field-error>
+                </cv-input-field>
+              </div>
+
+              <div class="col-md-3 col-sm-3 col-xs-12">
+                <cv-input-field>
+                  <cv-field-label>Founded in</cv-field-label>
+                  <cv-select [multiple]="false" [tags]="false" [items]="years"
+                             name="founded"
+                             #founded="ngModel"
+                             [(ngModel)]="companyRegistration.company.founded"
+                             required
+                             label="Choose year">
+                  </cv-select>
+                  <cv-field-error *ngIf="founded.dirty || founded.touched || companyInfoForm.submitted">
+                    <span *ngIf="founded.errors?.required">{{messages.errors.default.required}}</span>
+                  </cv-field-error>
+                </cv-input-field>
+              </div>
+
+              <div class="col-md-9 col-sm-9 col-xs-12">
+                <cv-input-field>
+                  <cv-field-label>Company website</cv-field-label>
+                  <input cv-input type="text"
+                         placeholder="Company website"
+                         name="companyWebsite"
+                         #companyWebsite="ngModel"
+                         trim
+                         [(ngModel)]="companyRegistration.company.siteUrl">
+                  <cv-field-error *ngIf="companyWebsite.dirty || companyWebsite.touched || companyInfoForm.submitted">
+                      <span *ngIf="companyWebsite.errors?.required">
+                        {{messages.errors.default.required}}
+                      </span>
+                  </cv-field-error>
+                </cv-input-field>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row row-with-hint">
+          <div class="col-md-8 col-sm-12 col-xs-12">
+            <div class="row">
+              <div class="col-md-12 col-sm-12 col-xs-12">
+                <cv-input-field>
+                  <cv-field-label>Company description</cv-field-label>
+                  <textarea cv-input
+                            placeholder="Add a few sentences describing your company, background, expertise, years in business, and anything else that helps you stand out."
+                            #companyDescription="ngModel"
+                            name="companyDescription"
+                            type="text"
+                            [(ngModel)]="companyRegistration.company.description"
+                            required
+                            trim
+                            rows="5"
+                            minlength="20"
+                            maxlength="2500">
+                     </textarea>
+                  <cv-field-error
+                    *ngIf="companyDescription.dirty || companyDescription.touched || companyInfoForm.submitted">
+                      <span *ngIf="companyDescription.errors?.required">
+                        {{messages.errors.companyDescription.required}}
+                      </span>
+                    <span *ngIf="companyDescription.errors?.minlength">
+                        {{messages.errors.companyDescription.minlength}}
+                      </span>
+                    <span *ngIf="companyDescription.errors?.maxlength">
+                        {{messages.errors.companyDescription.maxlength}}
+                      </span>
+                  </cv-field-error>
+                </cv-input-field>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h3>Company Location</h3>
+
+        <div class="row row-with-hint">
+          <div class="col-md-8 col-sm-12 col-xs-12">
+            <div class="row">
+              <div class="col-md-12 col-sm-12 col-xs-12">
+                <cv-input-field>
+                  <cv-field-label>Street address</cv-field-label>
+                  <input cv-input type="text"
+                         placeholder="Street address"
+                         #address="ngModel"
+                         name="address"
+                         trim
+                         [(ngModel)]="companyRegistration.company.location.streetAddress"
+                         (focus)="addressValidationErrorMessage = null"
+                         required>
+                  <cv-field-error *ngIf="address.dirty || address.touched || companyInfoForm.submitted">
+                      <span *ngIf="address.errors?.required">
+                        {{messages.errors.default.required}}
+                      </span>
+                  </cv-field-error>
+                </cv-input-field>
+              </div>
+
+              <div class="col-md-4 col-sm-4 col-xs-12">
+                <cv-input-field>
+                  <cv-field-label>City</cv-field-label>
+                  <input type="text"
+                         cv-input
+                         name="city"
+                         placeholder="City"
+                         #city="ngModel"
+                         trim
+                         [(ngModel)]="companyRegistration.company.location.city"
+                         (focus)="addressValidationErrorMessage = null"
+                         required>
+                  <cv-field-error
+                    *ngIf="city.dirty || city.touched || companyInfoForm.submitted">
+                    <span *ngIf="city.errors?.required">{{messages.errors.default.required}}</span>
+                  </cv-field-error>
+                </cv-input-field>
+              </div>
+
+              <div class="col-md-4 col-sm-4 col-xs-12">
+                <cv-input-field>
+                  <cv-field-label>State</cv-field-label>
+                  <cv-select [multiple]="false" [tags]="false" [autocomplete]="true"
+                             (autocompleteSearch)="autocompleteSearch($event)" [items]="filteredStates"
+                             valueKey="value"
+                             labelKey="label"
+                             #state="ngModel"
+                             [(ngModel)]="companyRegistration.company.location.state"
+                             (focus)="addressValidationErrorMessage = null"
+                             name="state"
+                             required
+                             label="Choose state">
+                  </cv-select>
+                  <cv-field-error
+                    *ngIf="state.dirty || state.touched || companyInfoForm.submitted">
+                    <span *ngIf="state.errors?.required">{{messages.errors.default.required}}</span>
+                  </cv-field-error>
+                </cv-input-field>
+              </div>
+
+              <div class="col-md-4 col-sm-4 col-xs-12">
+                <cv-input-field>
+                  <cv-field-label>Zip</cv-field-label>
+                  <input cv-input type="text"
+                         placeholder="Zip"
+                         name="zip"
+                         maxlength="5"
+                         #zip="ngModel"
+                         [(ngModel)]="companyRegistration.company.location.zip"
+                         (focus)="addressValidationErrorMessage = null"
+                         numericMask
+                         pattern="{{constants.patterns.zipcode}}"
+                         required>
+                  <cv-field-error
+                    *ngIf="zip.dirty || zip.touched || companyInfoForm.submitted">
+                    <span *ngIf="zip.errors?.required">{{messages.errors.default.required}}</span>
+                    <span *ngIf="zip.errors?.pattern">{{messages.errors.zip.pattern}}</span>
+                  </cv-field-error>
+                </cv-input-field>
+              </div>
+
+              <div class="col-xs-12">
+                <div class="address-validation-error" *ngIf="addressValidationErrorMessage">
+                  {{addressValidationErrorMessage}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer"
+             [cvSpinner]="addressValidationProcessing"
+             [cvSpinnerSize]="30"
+             [cvSpinnerBackground]="true"
+             cvSpinnerBackgroundColor="white">
+          <button cv-button class="button-next" type="submit"
+                  [disabled]="addressValidationProcessing">Next Step
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="step -three -coverage" *ngIf="step == 2">
+
+      <div class="lead-preference-title">Coverage</div>
+
+      <div class="row">
+
+        <div class="col-md-8 col-sm-12 col-xs-12">
+          <div class="description-block">
+            Coverage is a service area you work in and want to receive leads in.
+            Basic coverage has a circle shape with a center of your company address and radius of 10 miles. The zip
+            codes that intersect with that radius will be selected.
+          </div>
+        </div>
+
+        <div class="col-md-8 col-sm-12 col-xs-12">
+
+          <div class="map-wrapper">
+            <agm-map class="service-area-map"
+                     [disableDefaultUI]="true"
+                     [zoomControl]="true"
+                     [zoom]="10"
+                     [minZoom]="8"
+                     [maxZoom]="18"
+                     [streetViewControl]="false"
+                     [fullscreenControl]="true"
+                     [styles]="mapOptions.styles"
+                     (mapReady)="onMapReady($event)"></agm-map>
+          </div>
+
+        </div>
+
+        <div class="col-md-4 col-sm-12 col-xs-12">
+          <div class="radius-info">
+            <span class="lead-preference-sub-title">Radius: </span>
+            <span class="radius-value">{{companyRegistration.coverage.radius}} miles</span>
+          </div>
+          <input type="range" [min]="MIN_COVERAGE_RADIUS" [max]="MAX_SLIDER_COVERAGE_RADIUS" #radius="ngModel"
+                 [(ngModel)]="companyRegistration.coverage.radius"
+                 class="cv-slider" (change)="radiusChange($event)">
+
+          <div class="location-info" *ngIf="companyMarker">
+            <div class="lead-preference-sub-title">Company location:</div>
+            <div class="location-full">{{companyRegistration.company.location.streetAddress}}
+              {{companyRegistration.company.location.city}},
+              {{companyRegistration.company.location.state}} {{companyRegistration.company.location.zip}}
+            </div>
+          </div>
+
+          <div class="hint -arrow lead-preferences-hint">
+            You can adjust the center of coverage as well as a radius by simply drag it.
+          </div>
+
+        </div>
+
+      </div>
+
+      <form class="service-area-form"
+            name="lead-preferences-form"
+            #serviceAreaForm="ngForm"
+            (ngSubmit)="serviceAreaForm.valid && submitServiceArea(serviceAreaForm)"
+            novalidate>
+
+        <div class="footer">
+          <button cv-button-flat flatStyle="dark" class="button-back" (click)="step = step - 1" type="button">Back
+          </button>
+          <button cv-button class="button-next" type="submit">Next Step</button>
+        </div>
+
+      </form>
+
+    </div>
+
+    <div class="step -three -services" *ngIf="step == 3">
+
+      <div class="lead-preference-title">Offered services</div>
+
+      <form class="lead-preferences-form"
+            name="lead-preferences-form"
+            #leadPreferencesForm="ngForm"
+            (ngSubmit)="leadPreferencesForm.valid && submitLeadPreferences(leadPreferencesForm)"
+            novalidate>
+
+        <div class="row">
+          <div class="col-md-8 col-sm-12 col-xs-12">
+            <div class="description-block">
+              Select services you offer and want to receive leads for. You can always change offered services in your
+              account settings.
+            </div>
+          </div>
+        </div>
+
+        <div class="row row-with-hint">
+
+          <div class="col-md-8 col-sm-12 col-xs-12">
+            <services-selector (onUpdate)="onTradesAndServicesChange($event)"
+                               [initialData]="companyRegistration.tradesAndServices"></services-selector>
+          </div>
+
+          <div class="col-md-4 col-sm-12 col-xs-12">
+
+            <div class="hint -arrow lead-preferences-hint">
+              Services are grouped into Business Categories for easier configuration.
+              Add the entire Business Categories or particular Services.
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="footer"
+             [cvSpinner]="registrationProcessing"
+             [cvSpinnerSize]="30"
+             [cvSpinnerBackground]="true"
+             cvSpinnerBackgroundColor="white">
+          <button cv-button-flat flatStyle="dark" class="button-back" (click)="step = step - 1" type="button">Back
+          </button>
+          <button cv-button class="button-next" type="submit">Submit</button>
+        </div>
+
+      </form>
+
+    </div>
+
+    <div class="step -five -success" *ngIf="step == 4">
+      <div class="success-card">
+        <div class="top-block">
+          <img class="image-wrapper" src="/assets/img/round-icons/confirmation-envelope.png">
+          <div class="title">You’ve been successfully registered!</div>
+          <div class="explanation">A confirmation link has been sent to your email <span
+            class="registered-email">{{contractor.email}}</span>.
+            Open it and follow instructions to finish registration.
+          </div>
+          <div class="resend-confirm-block">Didn't receive a confirmation email?
+            <button class="resend-confirm-button" (click)="resendConfirmation()">Resend</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

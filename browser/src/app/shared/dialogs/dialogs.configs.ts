@@ -46,6 +46,21 @@ export const confirmDialogConfig: MatDialogConfig = {
   }
 };
 
+export const phoneRequestDialogConfig: MatDialogConfig = {
+  disableClose: true,
+  hasBackdrop: true,
+  autoFocus: false,
+  panelClass: 'dialog-fix-position',
+  width: '400px',
+  height: '',
+  position: {
+    top: '',
+    bottom: '',
+    left: '',
+    right: ''
+  }
+};
+
 export const addLicenseDialogConfig: MatDialogConfig = {
   disableClose: true,
   hasBackdrop: true,

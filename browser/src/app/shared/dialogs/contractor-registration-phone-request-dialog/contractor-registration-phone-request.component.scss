@@ -1,0 +1,39 @@
+@import "../../../../improver-mixins.scss";
+
+.header-content {
+  padding: 16px 24px 16px;
+  background-color: $black-100;
+  font-size: 20px;
+  font-weight: 600;
+  text-align: left;
+  color: $black-primary;
+}
+
+.content {
+  padding: 24px;
+
+}
+
+.mat-dialog-container {
+  padding: 0px;
+}
+
+.close-modal {
+  position: relative;
+  right: 32px;
+  top: 32px;
+  color: $black-secondary;;
+}
+
+.buttons-wrapper {
+  display: flex;
+  margin-top: 16px;
+}
+
+.spacer {
+  flex-grow: 1;
+}
+
+.group-wrapper {
+  margin-bottom: 24px;
+}

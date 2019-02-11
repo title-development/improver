@@ -24,6 +24,7 @@ import {CustomerProjectRequestDialogAboutComponent} from "../../entity/customer/
 import {CustomerProjectRequestDialogReviewsComponent} from "../../entity/customer/customer-project-request-dialog/customer-project-request-dialog-reviews/customer-project-request-dialog-reviews.component";
 import { EmailConfirmDialogComponent } from './email-confirm-dialog/email-confirm-dialog.component';
 import { RequestReviewRevisionDialogComponent } from "./request-review-revision-dialog/request-review-revision-dialog.component";
+import { ContractorRegistrationPhoneRequestComponent } from './contractor-registration-phone-request-dialog/contractor-registration-phone-request.component';
 
 export const dialogs = [
   QuestionaryDialogComponent,
@@ -51,7 +52,8 @@ export const dialogs = [
   RequestReviewDialogComponent,
   RequestReviewRevisionDialogComponent,
   DeleteAccountDialogComponent,
-  DeleteCompanyDialogComponent
+  DeleteCompanyDialogComponent,
+  ContractorRegistrationPhoneRequestComponent
 ];
 
 export const dialogsMap = {
@@ -77,5 +79,6 @@ export const dialogsMap = {
   'unavailability-period-dialog': UnavailabilityPeriodDialogComponent,
   'subscription-dialog': SubscriptionDialogComponent,
   'delete-account-dialog': DeleteAccountDialogComponent,
-  'delete-company-dialog': DeleteCompanyDialogComponent
+  'delete-company-dialog': DeleteCompanyDialogComponent,
+  'contractor-registration-phone-request': ContractorRegistrationPhoneRequestComponent
 };

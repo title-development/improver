@@ -12,6 +12,7 @@ import { HomeComponent } from '../entity/home/home.component';
 import { InformationComponent } from "../entity/information/information.component";
 import { ContractorHomeGuard } from "../auth/router-guards/contractor-home.guard";
 import { InternalServerErrorComponent } from '../entity/internal-server-error/internal-server-error.component';
+import { IncompleteProGuard } from '../auth/router-guards/incomplete-pro.guard';
 
 const routes: Routes = [
   { path: '',
@@ -21,6 +22,7 @@ const routes: Routes = [
       { path: 'login', loadChildren: '../auth/login/login.module#LoginModule', canActivate: [ NotAuthenticatedGuard ]},
       { path: 'signup', loadChildren: '../auth/signup/signup.module#SignupModule', canActivate: [ NotAuthenticatedGuard ]},
       { path: 'signup-pro', loadChildren: '../auth/signup-pro/signup-pro.module#SignupProModule', canActivate: [ NotAuthenticatedGuard ]},
+      { path: 'signup-pro/company', loadChildren: '../auth/signup-company/signup-company.module#SignupCompanyModule', canActivate: [ IncompleteProGuard ]},
       { path: 'become-pro', loadChildren: '../auth/become-pro/become-pro.module#BecomeProModule', canActivate: [ NotAuthenticatedGuard ]},
       { path: 'restore-password', loadChildren: '../auth/restore-password/restore-password.module#RestorePasswordModule', canActivate: [ NotAuthenticatedGuard ]},
       { path: 'confirm', loadChildren: '../auth/confirmation/confirmation.module#ConfirmationModule'},

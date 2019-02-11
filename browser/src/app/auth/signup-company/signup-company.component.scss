@@ -1,0 +1,156 @@
+@import "../../../improver-mixins.scss";
+
+.row.-avatar {
+  margin-top: 8px;
+  margin-bottom: 24px;
+}
+
+.step.-five {
+  display: flex;
+  justify-content: center;
+  .success-card {
+    box-shadow: none;
+  }
+}
+
+.map-wrapper {
+  .service-area-map {
+    width: 100%;
+    display: block;
+    height: 414px;
+    margin-bottom: 24px;
+    @include response-to(xs) {
+      height: 270px;
+    }
+  }
+}
+
+services-selector::ng-deep {
+  .services-selector-wrapper {
+    margin-top: -7px;
+
+    .add-service-button {
+      font-size: 14px;
+    }
+  }
+
+}
+
+.card {
+  .radius-value {
+    color: $primary-600;
+    font-weight: 600;
+  }
+
+  .location-info {
+    margin-bottom: 16px;
+
+    .location-full {
+      color: $black-secondary;
+      font-size: 14px;
+    }
+  }
+
+  .logo-title {
+    font-size: 12px;
+    line-height: 1.33;
+    color: #626262;
+  }
+
+  .lead-preference-title {
+    margin-bottom: 24px;
+    font-size: 20px;
+    font-weight: 600;
+    color: $black-primary;
+    margin-top: 16px;
+  }
+
+  .lead-preference-sub-title {
+    font-weight: 600;
+  }
+
+  .lead-preferences-hint {
+    margin-bottom: 16px;
+  }
+
+  .avatar-block-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .avatar-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 90px;
+    height: 90px;
+    border-radius: 100px;
+    background-color: $white;
+    box-shadow: 0px 1px 5px 0 rgba(0, 0, 0, 0.24);
+    position: relative;
+    flex: none;
+    margin-right: 24px;
+
+    .avatar {
+      display: flex;
+      width: 80px;
+      height: 80px;
+      border-radius: 100px;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+
+    }
+
+    .actions {
+      position: absolute;
+      top: 8px;
+      right: -6px;
+      bottom: 8px;
+      display: flex;
+      flex-direction: column;
+
+      .icon {
+        cursor: pointer;
+        border-radius: 50%;
+        height: 24px;
+        width: 24px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        &.-delete {
+          background-color: $red;
+        }
+
+        &.-edit {
+          margin-top: auto;
+          background-color: $primary-500;
+        }
+
+        .mat-icon {
+          color: $white;
+          font-size: 16px;
+        }
+      }
+    }
+  }
+
+  .description-block {
+    font-size: 14px;
+    line-height: 1.43;
+    color: #8c8c8c;
+    padding-left: 8px;
+    margin-bottom: 16px;
+    margin-top: -8px;
+    border-left: 2px solid $black-500;
+  }
+
+}
+
+.address-validation-error {
+  color: $red;
+  font-size: 12px;
+}
+

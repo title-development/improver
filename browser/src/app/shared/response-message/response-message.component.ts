@@ -21,18 +21,13 @@ import { SystemMessageType } from '../../model/data-model';
 })
 
 export class ResponseMessageComponent implements OnInit {
-  @Input()
-  type: SystemMessageType = SystemMessageType.INFO;
-  @Input()
-  message: string = "Unknown error!";
-  @Input()
-  showIcon: boolean = true;
-  @Input()
-  fontSize: string = "14";
-  @Input()
-  paddingV: string = "16";
-  @Input()
-  paddingH: string = "24";
+  @Input() type: SystemMessageType = SystemMessageType.INFO;
+  @Input() message: string = "Unknown error!";
+  @Input() showIcon: boolean = true;
+  @Input() fontSize: string = "14";
+  @Input() paddingV: string = "16";
+  @Input() paddingH: string = "24";
+  @Input() marginTop: number = 10;
   @Output() onHide = new EventEmitter<boolean>();
 
   public SystemMessageType = SystemMessageType;
@@ -46,10 +41,7 @@ export class ResponseMessageComponent implements OnInit {
   ngOnInit() {
     this.mainStyle = {
       'font-size.px': this.fontSize,
-      // 'padding-top.px': this.paddingV,
-      // 'padding-bottom.px': this.paddingV,
-      // 'padding-left.px': this.paddingH,
-      // 'padding-right.px': this.paddingH
+      'margin-top.px': this.marginTop,
     }
   }
 

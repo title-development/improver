@@ -35,7 +35,7 @@ export class SecurityService {
               private dialog: MatDialog,
               private overlayRef: OverlayRef,
               @Inject('Window') private window: Window) {
-    if(this.isAuthenticated()) {
+    if (this.isAuthenticated()) {
       this.window.addEventListener('storage', this.localStorageHandler, false);
     }
   }
@@ -56,9 +56,12 @@ export class SecurityService {
 
 
   public isAuthenticated(): boolean {
-    return this.getLoginModel() != null;
+    return this.isUserExistInLocalStorage() && this.getLoginModel().role != Role.INCOMPLETE_PRO;
   }
 
+  public isUserExistInLocalStorage(): boolean {
+    return this.getLoginModel() != null;
+  }
 
   public getLoginModel(): LoginModel {
     const user = localStorage.getItem(SecurityService.USER_STORAGE_KEY);
@@ -97,8 +100,10 @@ export class SecurityService {
       this.setTokenHeader(header);
     }
     this.setLoginModel(user);
-    this.window.addEventListener('storage', this.localStorageHandler, false);
-    this.onUserInit.next(null);
+    if (user.role != Role.INCOMPLETE_PRO) {
+      this.window.addEventListener('storage', this.localStorageHandler, false);
+      this.onUserInit.next(null);
+    }
     if (redirect) {
       switch (user.role) {
         case Role.CUSTOMER:
@@ -111,6 +116,9 @@ export class SecurityService {
           this.router.navigateByUrl(this._returnUrl || '/admin');
         case Role.SUPPORT:
           this.router.navigateByUrl(this._returnUrl || '/admin');
+          break;
+        case Role.INCOMPLETE_PRO:
+          this.router.navigateByUrl('/signup-pro/company');
           break;
         default:
           this.router.navigateByUrl(this._returnUrl || '/');

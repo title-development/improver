@@ -12,6 +12,7 @@ import { CvFieldsModule } from '../../theme/fields/cv-fields.module';
 import { CvCheckboxModule } from "../../theme/checkbox/checkbox.module";
 import { CvSelectModule } from "../../theme/select/cv-select-module";
 import { AgmSharedModule } from "../../shared/agmShared.module";
+import { SocialButtonsModule } from '../social-buttons/social-buttons.module';
 
 const signupProRouting: ModuleWithProviders = RouterModule.forChild([
   {
@@ -34,7 +35,8 @@ const signupProRouting: ModuleWithProviders = RouterModule.forChild([
     CvFieldsModule,
     CvCheckboxModule,
     CvSelectModule,
-    AgmSharedModule
+    AgmSharedModule,
+    SocialButtonsModule
   ],
   declarations: [
     SignupProComponent

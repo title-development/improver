@@ -82,7 +82,7 @@ import { ScrollHolderService } from '../util/scroll-holder.service';
 import { NotificationService } from '../api/services/notification.service';
 import { TicketService } from '../api/services/ticket.service';
 import { ProjectRequestService } from '../api/services/project-request.service';
-import { AuthServiceConfig, FacebookLoginProvider, GoogleLoginProvider } from 'angular5-social-login';
+import { AuthServiceConfig, FacebookLoginProvider, GoogleLoginProvider } from 'angularx-social-login';
 import { SocialConnectionsService } from '../auth/social-connections.service';
 import { AccessDeniedInterceptor } from '../util/interceptors/access-denied.interceptor';
 import { MyStompService } from 'app/util/my-stomp.service';

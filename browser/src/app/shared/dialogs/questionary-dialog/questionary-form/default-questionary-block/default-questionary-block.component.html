@@ -285,18 +285,16 @@
                required
                trim
                [pattern]="constants.patterns.email"
-               emailUniqueValidator
         >
         <cv-field-error
           *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.email').dirty || defaultQuestionaryForm.get('customerPersonalInfo.email').touched">
           <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.email').errors?.required">{{messages.errors.email.required}}</span>
           <span
             *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.email').errors?.pattern">{{messages.errors.email.pattern}}</span>
-          <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.email').errors?.emailUnique">{{messages.errors.email.emailUnique}}</span>
         </cv-field-error>
       </cv-input-field>
 
-      <cv-input-field>
+      <cv-input-field>p
         <cv-field-label>Phone number</cv-field-label>
         <input cv-input type="text"
                placeholder="Phone number"

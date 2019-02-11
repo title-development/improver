@@ -9,8 +9,9 @@ import { ContractorHomeGuard } from './router-guards/contractor-home.guard';
 import { SupportGuard } from './router-guards/support.guard';
 import {
   SocialLoginModule
-} from 'angular5-social-login';
+} from 'angularx-social-login';
 import { StakeholderGuard } from './router-guards/stakeholder.guard';
+import { IncompleteProGuard } from './router-guards/incomplete-pro.guard';
 
 
 @NgModule({
@@ -19,7 +20,7 @@ import { StakeholderGuard } from './router-guards/stakeholder.guard';
   ],
   declarations: [],
   exports: [],
-  providers: [AuthGuard, NotAuthenticatedGuard, ContractorGuard, CustomerGuard, UserGuard, AdminGuard, SupportGuard, ContractorHomeGuard, StakeholderGuard]
+  providers: [AuthGuard, NotAuthenticatedGuard, ContractorGuard, CustomerGuard, UserGuard, AdminGuard, SupportGuard, ContractorHomeGuard, StakeholderGuard, IncompleteProGuard]
 })
 export class AuthModule {
 

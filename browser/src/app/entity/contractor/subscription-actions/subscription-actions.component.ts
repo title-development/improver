@@ -39,8 +39,8 @@ export class SubscriptionActionsComponent implements OnInit {
               public popupService: PopUpMessageService,
               public route: ActivatedRoute) {
     this.sub = this.route.params.subscribe(params => {
-      params['mode'] ? this.mode = params['mode'].toString().toUpperCase() : this.mode = null;
-
+      this.mode = params['mode'] ? this.mode = params['mode'].toString().toUpperCase() : null;
+      // const isNot
       if (this.mode != ModeEnum.NEW && this.mode != ModeEnum.UPDATE && this.mode != ModeEnum.CANCEL ||
         subscriptionActionsService.subscriptionAmount <= 0 && this.mode != ModeEnum.CANCEL ||
         subscriptionActionsService.nextBillingDate == null && this.mode === ModeEnum.CANCEL) {

@@ -12,7 +12,7 @@
         <form class="auth-form"
               name="signup-form"
               #signupForm="ngForm"
-              (ngSubmit)="signupForm.valid && onSubmit(signupForm)"
+              (ngSubmit)="signupForm.valid && registerCustomer()"
               novalidate
               [cvSpinner]="registrationProcessing"
               [cvSpinnerSize]="30"
@@ -26,7 +26,7 @@
                    placeholder="Email"
                    #email="ngModel"
                    name="email"
-                   [(ngModel)]="model.email"
+                   [(ngModel)]="user.email"
                    required
                    trim
                    pattern="{{constants.patterns.email}}"
@@ -52,7 +52,7 @@
                    #password="ngModel"
                    name="password"
                    type="password"
-                   [(ngModel)]="model.password"
+                   [(ngModel)]="user.password"
                    validateEqual="confirmPassword"
                    validationEqualReverse="true"
                    required
@@ -77,7 +77,7 @@
                    #confirmPassword="ngModel"
                    name="confirmPassword"
                    type="password"
-                   [(ngModel)]="model.confirmPassword"
+                   [(ngModel)]="registerProps.confirmPassword"
                    validateEqual="password"
                    validationEqualReverse="false"
                    required>
@@ -98,7 +98,7 @@
                    name="firstName"
                    type="text"
                    trim
-                   [(ngModel)]="model.firstName"
+                   [(ngModel)]="user.firstName"
                    minlength="2"
                    [pattern]="constants.patterns.name"
                    required>
@@ -120,7 +120,7 @@
                    #lastName="ngModel"
                    name="lastName"
                    type="text"
-                   [(ngModel)]="model.lastName"
+                   [(ngModel)]="user.lastName"
                    minlength="2"
                    [pattern]="constants.patterns.name"
                    trim
@@ -150,22 +150,11 @@
             <span>or</span>
           </div>
 
-          <div class="social-buttons">
-            <button type="button" cv-button class="facebook-auth" (click)="!googleFetching && socialLogin('facebook')">
-              <cv-icon [icon]="'imp-icon-social-facebook'"></cv-icon>
-              Facebook
-            </button>
-
-            <button type="button" cv-button class="google-auth" (click)="!facebookFetching && socialLogin('google')">
-              <cv-icon [icon]="'imp-icon-social-google'"></cv-icon>
-              Google
-            </button>
-          </div>
-
-          <div class="have-account-line">
-            <div class="question">Already have an account?</div>
-            <a class="no-account-button" routerLink="/login">Log in</a>
-          </div>
+          <social-buttons [processing]="processing"
+                          (responseMessageType)="messageType = $event;"
+                          (responseMessage)="messageText = $event;"
+                          (showMessage)="showMessage = $event;"
+          ></social-buttons>
 
         </form>
       </div>

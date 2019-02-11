@@ -21,6 +21,10 @@ export class SocialConnectionsService {
     return this.http.post<any>(`${this.API_URL}/facebook`, accessToken, {observe: 'response'});
   }
 
+  proFacebookRegister(data): Observable<any> {
+    return this.http.post<any>(`${this.API_URL}/facebook/pro`, data, {observe: 'response'});
+  }
+
   disconnectFacebook(): Observable<any> {
     return this.http.delete<any>(`${this.API_URL}/facebook`);
   }
@@ -31,6 +35,10 @@ export class SocialConnectionsService {
 
   googleApiLogin(tokenId: string): Observable<any> {
     return this.http.post<any>(`${this.API_URL}/google`, tokenId, {observe: 'response'});
+  }
+
+  proGoogleApiRegister(data): Observable<any> {
+    return this.http.post<any>(`${this.API_URL}/google/pro`, data, {observe: 'response'});
   }
 
   disconnectGoogle(): Observable<any> {

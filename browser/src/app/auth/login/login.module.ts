@@ -9,6 +9,7 @@ import { CvButtonModule } from "../../theme/button/cv-button.module";
 import { CvIconModule } from "../../theme/icon/cv-icon-module";
 import { CvInputFieldModule } from '../../theme/input-field/form-field.module';
 import { CvFieldsModule } from '../../theme/fields/cv-fields.module';
+import { SocialButtonsModule } from '../social-buttons/social-buttons.module';
 
 const loginRouting: ModuleWithProviders = RouterModule.forChild([
   {
@@ -28,7 +29,8 @@ const loginRouting: ModuleWithProviders = RouterModule.forChild([
     CvInputFieldModule,
     CvButtonModule,
     CvIconModule,
-    CvFieldsModule
+    CvFieldsModule,
+    SocialButtonsModule
   ],
   declarations: [
     LoginComponent

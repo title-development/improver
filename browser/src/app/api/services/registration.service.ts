@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
-import { RegistrationContractorModel,
+import {
+  CompanyInfoRegistration, CompanyRegistration,
   RegistrationUserModel
 } from '../../model/security-model';
 import { Observable } from 'rxjs';
@@ -12,6 +13,7 @@ export class RegistrationService {
   private registrationUrl = 'api/register';
   private customerUrl: string = this.registrationUrl + '/customers';
   private contractorUrl: string = this.registrationUrl + '/contractors';
+  private companyUrl: string = this.registrationUrl + '/companies';
   private resendEmailUrl = this.registrationUrl  + "/resend";
   private changeEmailUrl = this.registrationUrl  + "/change";
 
@@ -22,9 +24,13 @@ export class RegistrationService {
     return this.http.post(`${this.customerUrl}`, registration , { observe: 'response', responseType: 'text' });
   }
 
-  registerContractor(registration :RegistrationContractorModel): Observable<any> {
+  registerContractor(registration: RegistrationUserModel): Observable<any> {
     return this.http
       .post(`${this.contractorUrl}`, registration, { observe: 'response', responseType: 'text' });
+  }
+
+  registerCompany(company: CompanyRegistration): Observable<any> {
+    return this.http.post(`${this.companyUrl}`, company);
   }
 
   resendActivationMail (email: string): Observable<any> {

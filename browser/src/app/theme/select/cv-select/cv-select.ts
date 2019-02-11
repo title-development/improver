@@ -51,7 +51,7 @@ export const enum ItemMinHeight {
     'class': 'cv-select',
     '[class.-submitted]': 'isSubmitted()',
     '[class.-show-errors]': 'highlightErrors',
-    '[class.-required]': 'required',
+    '[class.-required]': 'isRequired()',
     '[class.-disabled]': 'disabled',
     '[class.-readonly]': 'readonly',
   },

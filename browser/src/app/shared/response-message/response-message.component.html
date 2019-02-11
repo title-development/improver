@@ -4,8 +4,8 @@
     <div class="icon" *ngIf="showIcon">
       <mat-icon>info</mat-icon>
     </div>
-    <div class="text" [ngStyle]="{'margin-top.px': paddingV, 'margin-bottom.px': paddingV, 'margin-left.px': paddingH, 'margin-right.px': paddingH}">{{message}}</div>
-    <div class="close-button-wrapper" [ngStyle]="{'margin-right.px': paddingH}">
+    <div class="text" [ngStyle]="{'padding-top.px': paddingV, 'padding-bottom.px': paddingV, 'padding-left.px': paddingH, 'padding-right.px': paddingH}">{{message}}</div>
+    <div class="close-button-wrapper" [ngStyle]="{'margin-right.px': 12}">
       <mat-icon (click)="destroy()">close</mat-icon>
     </div>
   </div>

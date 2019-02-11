@@ -51,28 +51,22 @@
                  </span>
             </cv-field-error>
           </cv-input-field>
-            <response-message *ngIf="showMessage" [type]="messageType" [message]="messageText"
-                              [paddingV]="12" [paddingH]="24"
-                              [showIcon]="false" (onHide)="onMessageHide($event)"></response-message>
-            <button cv-button class="full-width auth-form-submit-button" type="submit" [loading]="processing">
-              Log in
-            </button>
+          <response-message *ngIf="showMessage" [type]="messageType" [message]="messageText"
+                            [paddingV]="12" [paddingH]="24"
+                            marginTop="0"
+                            [showIcon]="false" (onHide)="onMessageHide($event)"></response-message>
+          <button cv-button class="full-width auth-form-submit-button" type="submit" [loading]="processing">
+            Log in
+          </button>
 
-            <div class="auth-social-hint">
-              <span>or</span>
-            </div>
+          <div class="auth-social-hint">
+            <span>or</span>
+          </div>
 
-            <div class="social-buttons" >
-              <button type="button" cv-button class="facebook-auth" (click)="!processing && !googleFetching && socialLogin('facebook')" [cvSpinner]="facebookFetching" [cvSpinnerSize]="24" [cvSpinnerBackground]="true">
-                <cv-icon [icon]="'imp-icon-social-facebook'"></cv-icon>
-                Facebook
-              </button>
-
-              <button type="button" cv-button class="google-auth" (click)="!processing && !facebookFetching && socialLogin('google')" [cvSpinner]="googleFetching" [cvSpinnerSize]="24" [cvSpinnerBackground]="true">
-                <cv-icon [icon]="'imp-icon-social-google'"></cv-icon>
-                Google
-              </button>
-            </div>
+          <social-buttons [processing]="processing"
+                          (responseMessageType)="messageType = $event;"
+                          (responseMessage)="messageText = $event;"
+                          (showMessage)="showMessage = $event;"></social-buttons>
 
           <div class="forgot-password-button" routerLink="/restore-password">Forgot password?</div>
           <div class="no-account-line">

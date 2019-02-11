@@ -1,8 +1,8 @@
-import { OfferedServiceType, Trade, Location } from "./data-model";
+import { OfferedServiceType, Trade, Location } from './data-model';
 
 export class Credentials {
   email: string;
-  password: string
+  password: string;
 }
 
 export class LoginModel {
@@ -18,9 +18,10 @@ export enum Role {
   SUPPORT = 'SUPPORT',
   MANAGER = 'MANAGER',
   STAKEHOLDER = 'STAKEHOLDER',
-  CUSTOMER  = 'CUSTOMER',
-  CONTRACTOR  = 'CONTRACTOR',
+  CUSTOMER = 'CUSTOMER',
+  CONTRACTOR = 'CONTRACTOR',
   ANONYMOUS = 'ANONYMOUS',
+  INCOMPLETE_PRO = 'INCOMPLETE_PRO'
 }
 
 export class RegistrationUserModel {
@@ -33,7 +34,13 @@ export class RegistrationUserModel {
   role?: string;
 }
 
-export class RegistrationCompanyModel {
+export class RegistrationUserProps {
+  confirmPassword: string;
+  agree?: boolean;
+  reCaptcha?: boolean;
+}
+
+export class CompanyInfoRegistration {
   name: string;
   uriName?: string;
   founded: string;
@@ -45,9 +52,8 @@ export class RegistrationCompanyModel {
   logo: string;
 }
 
-export class RegistrationContractorModel {
-  contractor: RegistrationUserModel;
-  company: RegistrationCompanyModel;
+export class CompanyRegistration {
+  company: CompanyInfoRegistration;
   tradesAndServices: {
     trades: Trade[],
     services: OfferedServiceType[]
@@ -64,5 +70,5 @@ export class RegistrationContractorModel {
 
 export class ActivationCustomerModel {
   token: string;
-  password? : string;
+  password?: string;
 }

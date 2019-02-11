@@ -99,9 +99,10 @@ public class UserSecurityService implements UserDetailsService {
         TokenProvider.eraseRefreshCookie(res);
     }
 
+    @Deprecated
     public LoginModel performUserLogin(User user, HttpServletResponse res) {
         LoginModel loginModel = updateLoggedUser(user);
-        String jwt = jwtUtil.generateAccessJWT(user.getEmail(), user.getRole().toString());
+        String jwt = jwtUtil.generateAccessJWT(user.getEmail(), loginModel.getRole()); //TODO Misha
         res.setHeader(AUTHORIZATION_HEADER_NAME, BEARER_TOKEN_PREFIX + jwt);
         res.addCookie(TokenProvider.buildRefreshCookie(loginModel.getRefreshId()));
         return loginModel;

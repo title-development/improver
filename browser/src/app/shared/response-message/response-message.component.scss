@@ -1,15 +1,15 @@
 :host {
   overflow: hidden;
+  position: relative;
+  display: block;
 }
 
 .response-message {
   border-radius: 3px;
   overflow: hidden;
-  //font-size: 14px;
   text-align: left;
   background-color: #d0ecfd;
   color: #23a2f5;
-  margin-top: 10px;
 
   .text {
   }

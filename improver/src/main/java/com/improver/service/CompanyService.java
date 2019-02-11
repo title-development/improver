@@ -420,7 +420,7 @@ public class CompanyService {
 
         Company company = companyRepository.save(Company.of(companyDetails, iconUrl, now));
         String replyText = String.format(REPLY_TEXT_TEMPLATE, contractor.getDisplayName(), company.getName());
-        if (!contractor.isNativeUser()) {
+        if (contractor.isNativeUser()) {
             contractor.setActivated(false); //TODO: this is temporary to give ability for login and register company
         }
         contractorRepository.save(contractor.setCompany(company)

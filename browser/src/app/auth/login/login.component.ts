@@ -10,7 +10,7 @@ import { ProjectService } from '../../api/services/project.service';
 import { HttpResponse } from '@angular/common/http';
 import { getErrorMessage } from '../../util/functions';
 import { ErrorHandler } from '../../util/error-handler';
-import { FacebookLoginProvider, GoogleLoginProvider, AuthService, SocialUser } from 'angular5-social-login';
+import { FacebookLoginProvider, GoogleLoginProvider, AuthService, SocialUser } from 'angularx-social-login';
 import { SocialConnectionsService } from '../social-connections.service';
 
 @Component({
@@ -25,12 +25,10 @@ export class LoginComponent implements OnDestroy {
     password: ''
   };
 
-  showMessage: boolean;
+  showMessage: boolean = false;
   messageType: string;
   messageText: string;
 
-  facebookFetching: boolean = false;
-  googleFetching: boolean = false;
   processing: boolean =false;
 
   constructor(
@@ -38,9 +36,6 @@ export class LoginComponent implements OnDestroy {
     public projectService: ProjectService,
     public constants: Constants,
     public messages: Messages,
-    private errorHandler: ErrorHandler,
-    private socialLoginService: SocialConnectionsService,
-    private socialAuthService: AuthService
   ) {
 
   }
@@ -62,39 +57,6 @@ export class LoginComponent implements OnDestroy {
         this.messageType = SystemMessageType.ERROR;
         this.showMessage = true;
       });
-  }
-
-  socialLogin(socialPlatform: string) {
-    let socialPlatformProvider;
-    if (socialPlatform == 'facebook') {
-      socialPlatformProvider = FacebookLoginProvider.PROVIDER_ID;
-    } else if (socialPlatform == 'google') {
-      socialPlatformProvider = GoogleLoginProvider.PROVIDER_ID;
-    }
-    this.socialAuthService.signIn(socialPlatformProvider)
-      .then((userData: SocialUser) => {
-          let observable;
-          if (socialPlatform == 'facebook') {
-            observable = this.socialLoginService.facebookApiLogin(userData.token);
-          } else {
-            observable = this.socialLoginService.googleApiLogin(userData.idToken);
-          }
-          observable.subscribe((response: HttpResponse<any>) => {
-            this.googleFetching = false;
-            this.securityService.loginUser(response.body as LoginModel, response.headers.get('authorization'), true);
-          }, err => {
-            if (err.status == 401) {
-              this.securityService.systemLogout();
-              this.messageText = getErrorMessage(err);
-            } else {
-              this.messageText = getErrorMessage(err);
-            }
-            this.googleFetching = false;
-            this.messageType = SystemMessageType.ERROR;
-            this.showMessage = true;
-          });
-        }
-      );
   }
 
   onMessageHide(event) {

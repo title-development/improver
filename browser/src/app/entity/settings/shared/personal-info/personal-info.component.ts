@@ -20,7 +20,7 @@ import { capitalize, getErrorMessage } from '../../../../util/functions';
 import { switchMap } from 'rxjs/operators';
 import { SocialConnectionsService } from '../../../../auth/social-connections.service';
 import { SocialConnection } from '../../../../api/models/SocialConnection';
-import { AuthService, FacebookLoginProvider, GoogleLoginProvider, SocialUser } from 'angular5-social-login';
+import { AuthService, FacebookLoginProvider, GoogleLoginProvider, SocialUser } from 'angularx-social-login';
 
 
 @Component({
@@ -221,9 +221,9 @@ export class PersonalInfoComponent implements OnInit {
       .then((userData: SocialUser) => {
         let observable;
         if (socialPlatform == SocialConnection.Provider.FACEBOOK) {
-          observable = this.socialConnectionService.connectFacebook(userData.token);
+          observable = this.socialConnectionService.connectFacebook(userData.authToken);
         } else {
-          observable = this.socialConnectionService.connectGoogle(userData.idToken);
+          observable = this.socialConnectionService.connectGoogle(userData.authToken);
         }
         observable.subscribe(res => {
           this.popupService.showSuccess(`${capitalize(socialPlatform)} account has been connected`);

@@ -11,11 +11,24 @@ import {
   Output,
   Provider
 } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+  AbstractControl,
+  ControlValueAccessor,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
+  ValidationErrors,
+  Validator
+} from '@angular/forms';
 import { CvCheckboxGroup } from '../cv-checkbox.group/cv-checkbox-group';
 
 export const CHECKBOX_VALUE_ACCESSOR: Provider = {
   provide: NG_VALUE_ACCESSOR,
+  useExisting: forwardRef(() => CvCheckbox),
+  multi: true
+};
+
+export const CHECKBOX_VALUE_VALIDATOR: Provider = {
+  provide: NG_VALIDATORS,
   useExisting: forwardRef(() => CvCheckbox),
   multi: true
 };
@@ -27,17 +40,20 @@ export const CHECKBOX_VALUE_ACCESSOR: Provider = {
   host: {
     'class': 'cv-checkbox',
     '[class.-checked]': 'checked',
+    '[class.-required]': 'isRequired()',
     '[class.-disabled]': 'disabled',
     '[class.-readonly]': 'readonly'
   },
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
-    CHECKBOX_VALUE_ACCESSOR
+    CHECKBOX_VALUE_ACCESSOR,
+    CHECKBOX_VALUE_VALIDATOR
   ]
 })
-export class CvCheckbox implements ControlValueAccessor {
+export class CvCheckbox implements ControlValueAccessor, Validator {
 
   @Input() value: any;
+  @Input() required;
 
   @Input()
   set disabled(value) {
@@ -87,12 +103,15 @@ export class CvCheckbox implements ControlValueAccessor {
     this.onChange(this.checked);
     this.onSelect.emit({event: event});
     this.changeDetectorRef.markForCheck();
-
   }
 
   writeValue(model: any): void {
     this.checked = !!model;
     this.changeDetectorRef.markForCheck();
+  }
+
+  isRequired(): boolean {
+    return this.required != undefined;
   }
 
   registerOnChange(fn: any): void {
@@ -105,6 +124,12 @@ export class CvCheckbox implements ControlValueAccessor {
 
   setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled;
+  }
+
+  validate(control: AbstractControl): ValidationErrors | null {
+    return !this.isRequired() || this.checked ? null : {
+      required: true
+    };
   }
 
   private onTouched = () => {

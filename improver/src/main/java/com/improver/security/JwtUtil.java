@@ -1,6 +1,7 @@
 package com.improver.security;
 
 import com.improver.exception.ValidationException;
+import com.improver.model.out.LoginModel;
 import com.improver.util.StringUtil;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
@@ -23,11 +24,8 @@ public class JwtUtil {
     @Value("${jwt.secret}") private String secret;
 
 
-
-    String generateAccessJWT(Authentication authentication) {
-        return generateAccessJWT(authentication.getName(), authentication.getAuthorities().toArray()[0].toString());
-    }
-
+    //TODO Misha
+    @Deprecated
     String generateAccessJWT(String email, String role){
         return Jwts.builder()
             .claim(ROLE_CLAIM, role)

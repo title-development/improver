@@ -54,7 +54,7 @@ export class TokenInterceptor implements HttpInterceptor {
             if ((<HttpErrorResponse>err).status == 401 && request.url.indexOf('api/login') == -1) {
               if (!this.isRefreshingToken) {
                 this.isRefreshingToken = true;
-                if(this.securityService.isAuthenticated()) {
+                if(this.securityService.isUserExistInLocalStorage()) {
                   return this.securityService.refreshAccessToken().pipe(
                     switchMap((accessToken: string) => {
                       this.pendingQuery.next(accessToken);
@@ -63,7 +63,7 @@ export class TokenInterceptor implements HttpInterceptor {
                     }),
                     catchError(err => {
                       // for not secured pages
-                      if(!this.securedBasePath.some(url => this.router.url.indexOf(url) > -1) && !this.securityService.isAuthenticated()) {
+                      if(!this.securedBasePath.some(url => this.router.url.indexOf(url) > -1) && !this.securityService.isUserExistInLocalStorage()) {
 
                           return throwError(err);
                       }
