@@ -1,47 +1,70 @@
 
-<p-dialog header="Edit Ticket" [(visible)]="displayDialog" [responsive]="true" showEffect="fade" [width]="600"
+<p-dialog [header]="mode == 'new' ? 'Create Ticket' : 'Edit Ticket'" [(visible)]="displayDialog" [responsive]="true" showEffect="fade" [width]="600"
           [modal]="true">
+  <form id="ngForm" #form="ngForm" (ngSubmit)="form.valid && ((mode == 'edit' && updateTicket(selected)) || createTicket(selected))">
   <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="selected && !processing">
     <div class="ui-grid-row ui-grid-field">
       <div class="ui-grid-col-4"><label for="email">Email</label></div>
-      <div class="ui-grid-col-8"><input pInputText id="email" [(ngModel)]="selected.email" disabled/></div>
-    </div>
-    <div class="ui-grid-row ui-grid-field">
-      <div class="ui-grid-col-4"><label for="name">Name</label></div>
-      <div class="ui-grid-col-8"><input pInputText id="name" [(ngModel)]="selected.name" disabled/></div>
-    </div>
-    <div class="ui-grid-row ui-grid-field">
-      <div class="ui-grid-col-4"><label for="businessName">Business name</label></div>
-      <div class="ui-grid-col-8"><input pInputText id="businessName" [(ngModel)]="selected.businessName" disabled/></div>
-    </div>
-    <div class="ui-grid-row ui-grid-field">
-      <div class="ui-grid-col-4"><label for="status">Assignee</label></div>
-      <div class="ui-grid-col-8"><p-dropdown placeholder="Type name or Email" [disabled]="!isEditable()" [filter]="true" #assignee="ngModel" id="assignee" [options]="supports" name="status" [(ngModel)]="selected.assignee" [showClear]="true"></p-dropdown>
+      <div class="ui-grid-col-8">
+        <input pInputText id="email" name="email" #email="ngModel" email [(ngModel)]="selected.email" [disabled]="mode != 'new'"/>
+        <div class="ui-message ui-messages-error ui-corner-all ui-error-space" *ngIf="(email.dirty || email.touched || form.submitted) && email.invalid && !email.disabled">
+          Please enter a valid email
+        </div>
       </div>
     </div>
     <div class="ui-grid-row ui-grid-field">
-      <div class="ui-grid-col-4"><label for="priority">Priority</label></div>
-      <div class="ui-grid-col-8"><p-dropdown #priority="ngModel" required id="priority" [disabled]="!isEditable()" [options]="priorities" name="priority" [(ngModel)]="selected.priority"></p-dropdown>
+      <div class="ui-grid-col-4"><label for="name">Name</label></div>
+      <div class="ui-grid-col-8"><input pInputText id="name" name="name" #name="ngModel" [(ngModel)]="selected.name" [disabled]="mode != 'new'"/></div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-4"><label for="businessName">Business name</label></div>
+      <div class="ui-grid-col-8"><input pInputText id="businessName" name="businessName" #businessName="ngModel"  [(ngModel)]="selected.businessName" [disabled]="mode != 'new'"/></div>
+    </div>
+    <div class="ui-grid-row ui-grid-field" *ngIf="mode == 'edit'">
+      <div class="ui-grid-col-4"><label for="author">Author</label></div>
+      <div class="ui-grid-col-8"><input pInputText id="author" name="author" #author="ngModel" [(ngModel)]="selected.authorEmail" [disabled]="true"/></div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-4"><label for="status">Assignee</label></div>
+      <div class="ui-grid-col-8"><p-dropdown placeholder="Type name or Email" #assignee="ngModel" [disabled]="!isEditable()" [filter]="true" id="assignee" name="assignee" [options]="staff" [(ngModel)]="selected.assigneeEmail" [showClear]="true"></p-dropdown></div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-4"><label for="priority">Option*</label></div>
+      <div class="ui-grid-col-8">
+        <p-dropdown #option="ngModel" required id="option" name="option" [disabled]="mode != 'new'" [filter]="true" [options]="options"  [(ngModel)]="selected.subject"></p-dropdown>
+        <div class="ui-message ui-messages-error ui-corner-all ui-error-space" *ngIf="(option.dirty || option.touched || form.submitted) && option.invalid && !option.disabled">
+          Please choose an Option
+        </div>
+      </div>
+    </div>
+    <div class="ui-grid-row ui-grid-field">
+      <div class="ui-grid-col-4"><label for="priority">Priority*</label></div>
+      <div class="ui-grid-col-8">
+        <p-dropdown #priority="ngModel" required id="priority" name="priority" [disabled]="!isEditable()" [options]="priorities" [(ngModel)]="selected.priority"></p-dropdown>
         <div class="ui-message ui-messages-error ui-corner-all ui-error-space" *ngIf="!priority.valid && priority.dirty && !priority.disabled">
           Please choose a priority
         </div>
       </div>
     </div>
-    <div class="ui-grid-row ui-grid-field">
+    <div class="ui-grid-row ui-grid-field" *ngIf="mode == 'edit'">
       <div class="ui-grid-col-4"><label for="status">Status</label></div>
-      <div class="ui-grid-col-8"><p-dropdown #status="ngModel" required id="status" [disabled]="true" [options]="statuses" name="status" [(ngModel)]="selected.status"></p-dropdown>
+      <div class="ui-grid-col-8"><p-dropdown #status="ngModel" required id="status" name="status" [disabled]="true" [options]="statuses" [(ngModel)]="selected.status"></p-dropdown>
       </div>
     </div>
     <div class="ui-grid-row ui-grid-field">
       <div class="ui-grid-col-4"><label for="description">Description</label></div>
-      <div class="ui-grid-col-8"><textarea pInputTextarea id="description" [(ngModel)]="selected.description" rows="4" disabled></textarea></div>
+      <div class="ui-grid-col-8"><textarea pInputTextarea id="description"  name="description" #description="ngModel" [(ngModel)]="selected.description" rows="4" [disabled]="mode != 'new'"></textarea></div>
     </div>
   </div>
-  <p-footer *ngIf="isEditable()">
+
+  </form>
+
+  <p-footer *ngIf="mode == 'new' || isEditable()">
     <div class="ui-dialog-buttonpane ui-helper-clearfix">
-      <button type="button" pButton icon="pi pi-check" (click)="updateTicket(selected)" label="Update"></button>
+      <button form="ngForm" pButton icon="pi pi-check" [label]="mode == 'new' ? 'Save' : 'Update'" [disabled]="processing"></button>
     </div>
   </p-footer>
+
 </p-dialog>
 
 

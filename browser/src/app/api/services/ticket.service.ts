@@ -27,9 +27,9 @@ export class TicketService {
     return this.http.get<RestPage<Ticket>>(`${this.ticketUrl}/my`, {params});
   }
 
-  post(ticketId: any) {
+  post(ticket: any) {
     return this.http
-      .post(`${this.ticketUrl}`, ticketId, {responseType: 'text', observe: 'response'});
+      .post(`${this.ticketUrl}`, ticket, {responseType: 'text', observe: 'response'});
   }
 
   changeStatus(ticketId: any, status: Ticket.Status): Observable<any> {
@@ -40,6 +40,11 @@ export class TicketService {
   update(ticket: Ticket): Observable<any> {
     return this.http
       .put(`${this.ticketUrl}/${ticket.id}`, ticket);
+  }
+
+  createByStaff(ticket: Ticket): Observable<any> {
+    return this.http
+      .post(`${this.ticketUrl}/staff`, ticket);
   }
 
 }

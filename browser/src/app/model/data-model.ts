@@ -192,7 +192,7 @@ export class CustomerProject extends CustomerProjectShort {
   }
 
   isArchived(): boolean {
-    return this.status === Project.Status.CANCELED || this.status === Project.Status.COMPLETED;
+    return this.status === Project.Status.CANCELED || this.status === Project.Status.COMPLETED || this.status === Project.Status.INVALID;
   }
 }
 

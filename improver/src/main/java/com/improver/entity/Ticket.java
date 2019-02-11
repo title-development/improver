@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import javax.persistence.*;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class Ticket {
     @Column(length = TICKET_MESSAGE_SIZE)
     private String description;
     @Enumerated(EnumType.STRING)
-    private Option option;
+    private Subject subject;
     @Enumerated(EnumType.STRING)
     private Status status = Status.NEW;
     private Priority priority = Priority.MEDIUM;
@@ -37,9 +38,17 @@ public class Ticket {
     @JoinColumn(name="staff_id", foreignKey = @ForeignKey(name = "tickets_staff_fkey"))
     private Staff assignee;
 
-    public enum Option {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="user_id", foreignKey = @ForeignKey(name = "tickets_user_fkey"))
+    private User author;
+
+    public enum Subject {
+        // FOR STAFF ONLY
+        ACCOUNT_ISSUE ("ACCOUNT_ISSUE"),
+
+        // For ANONYMOUS ONLY
         LOGIN_ISSUE ("Login issue"),
-        // For CONTRACTOR
+        // For CONTRACTOR ONLY
         REQUESTING_CREDIT ("Request a credit"),
         PROVIDED_SERVICES ("Adjusting services"),
         COVERAGE_AREA ("Coverage configuration"),
@@ -53,7 +62,7 @@ public class Ticket {
 
         private final String value;
 
-        Option(String value) {
+        Subject(String value) {
             this.value = value;
         }
 
@@ -65,6 +74,13 @@ public class Ticket {
         public String toString() {
             return this.value;
         }
+
+        public static List<Subject> getForUsers() {
+            List<Subject> subjects = new ArrayList<>(Arrays.asList(Subject.values()));
+            subjects.remove(ACCOUNT_ISSUE);
+            return subjects;
+        }
+
     }
 
     public enum Status {

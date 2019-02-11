@@ -1,4 +1,13 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  ApplicationRef, ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+  ViewChild
+} from '@angular/core';
 import { Pagination } from '../../../../model/data-model';
 import { CamelCaseHumanPipe } from '../../../../pipes/camelcase-to-human.pipe';
 import { Router } from '@angular/router';
@@ -10,12 +19,16 @@ import { Priority } from "../../../../api/models/Priority";
 import { UserService } from "../../../../api/services/user.service";
 import { SecurityService } from "../../../../auth/security.service";
 import { Role } from "../../../../model/security-model";
+import { NgForm } from "@angular/forms";
 
 @Component({
   selector: 'ticket-edit-dialog',
   templateUrl: './ticket-edit-dialog.component.html'
 })
-export class TicketEditDialogComponent {
+export class TicketEditDialogComponent implements OnChanges {
+  @ViewChild('form') form: NgForm;
+
+  mode: 'new' | 'edit' = 'edit';
 
   Ticket = Ticket;
 
@@ -27,7 +40,11 @@ export class TicketEditDialogComponent {
   set ticket(val: Ticket) {
     this.selected = Object.assign({}, val);
     this.baseStatus = this.selected.status;
-    this.baseAssignee = this.selected.assignee;
+    this.baseAssignee = this.selected.assigneeEmail;
+    if (this.selected.assigneeEmail)
+      this.selected.assigneeEmail = `${this.selected.assigneeEmail} <${this.selected.assigneeName}>`;
+    if (this.selected.authorEmail)
+      this.selected.authorEmail = `${this.selected.authorEmail} <${this.selected.authorRole}>`;
   }
 
   private displayValue = false;
@@ -49,13 +66,17 @@ export class TicketEditDialogComponent {
   @Output() displayChange = new EventEmitter<boolean>();
 
   @Output()
-  onUpdate = new EventEmitter<any>();
+  onDone = new EventEmitter<any>();
 
   statuses = enumToJson(Ticket.Status);
   priorities = enumToJson(Priority);
-  supports = [];
+  options = enumToJson(Ticket.Subject);
+
+  staff = [];
 
   processing = true;
+
+
 
   constructor(private ticketService: TicketService,
               private userService: UserService,
@@ -63,48 +84,89 @@ export class TicketEditDialogComponent {
               private router: Router,
               public camelCaseHumanPipe: CamelCaseHumanPipe,
               public popUpService: PopUpMessageService) {
-
-
     this.getSupports();
+
+    this.options.unshift({
+      label: "None",
+      value: null
+    });
+
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.ticket) {
+      if (!changes.ticket.currentValue) {
+        this.selected = new Ticket();
+        this.mode = 'new'
+      } else {
+        this.mode = 'edit'
+      }
+    }
+  }
+
+  reset() {
+    this.selected = new Ticket();
+    this.baseStatus = undefined;
+    this.baseAssignee = undefined;
   }
 
   isEditable() {
-    let name;
-    if (this.baseAssignee) {
-      name = this.baseAssignee;
-      name = name.substring(name.indexOf("<") + 1, name.indexOf(">"));
-    }
-    return this.securityService.hasRole(Role.ADMIN) || (this.baseStatus != Ticket.Status.CLOSED && (!name || name === this.securityService.getLoginModel().name));
+    return this.securityService.hasRole(Role.ADMIN) || (this.baseStatus != Ticket.Status.CLOSED && (!this.baseAssignee || this.baseAssignee === this.securityService.getLoginModel().name));
   }
 
   updateTicket(ticket) {
-    this.ticketService.update(ticket).subscribe(
-      responce => {
+    this.ticketService.update(this.prepareTicketForSave(ticket)).subscribe(
+      response => {
         this.popUpService.showSuccess('Ticket has been updated');
         this.display = false;
-        this.onUpdate.emit();
+        this.form.resetForm(this.selected);
+        this.onDone.emit();
       },
       err => {
         this.popUpService.showError(getErrorMessage(err))
       });
+    return true;
+  }
+
+  createTicket(ticket) {
+    this.ticketService.createByStaff(this.prepareTicketForSave(ticket)).subscribe(
+      response => {
+        this.popUpService.showSuccess('Ticket has been created');
+        this.display = false;
+        this.form.resetForm(new Ticket());
+        this.onDone.emit();
+      },
+      err => {
+        this.popUpService.showError(getErrorMessage(err))
+      });
+    return true;
   }
 
   getSupports() {
     this.userService.getStaff(new Pagination(0, 100, "displayName,asc")).subscribe(
       supports => {
-        this.supports = supports.content.map(item => {
+        this.staff = supports.content.map(item => {
           return {
             label: `${item.email} <${item.displayName}>`,
             value: `${item.email} <${item.displayName}>`
           }
         });
-        this.supports.unshift({
+        this.staff.unshift({
           label: "None",
           value: null
         });
         this.processing = false;
       },
       err => this.popUpService.showError(getErrorMessage(err)))
+  }
+
+  prepareTicketForSave(ticket) {
+    let prepared = Object.assign({}, ticket);
+    if(prepared.assigneeEmail) {
+      let assigneeEmail = prepared.assigneeEmail;
+      prepared.assigneeEmail = assigneeEmail.replace(/\s{1}<{1}[a-zA-Z,\s]+>/, "");
+    }
+    return prepared;
   }
 
 }

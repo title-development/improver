@@ -22,12 +22,12 @@ import { SecurityService } from "../../../../auth/security.service";
 })
 export class TicketsListComponent {
   @ViewChild('dt') dataTable: any;
-  displayEditDialog = false;
+  displayTicketDialog = false;
   processing = true;
   tickets: RestPage<Ticket> = new RestPage<Ticket>();
   rowsPerPage: Array<number> = [10, 50, 100];
   tableColumns: Array<SelectItem> = [];
-  ticketOptionFilter: Array<SelectItem> = [];
+  ticketSubjectFilter: Array<SelectItem> = [];
   ticketStatusFilter: Array<SelectItem> = [];
   ticketPriorityFilter: Array<SelectItem> = [];
   selected: Ticket;
@@ -40,7 +40,8 @@ export class TicketsListComponent {
     'option',
     'status',
     'priority',
-    'assignee'
+    'assigneeEmail',
+    'authorEmail'
   ];
   contextMenuItems: Array<MenuItem> = [];
   filters: any;
@@ -51,10 +52,10 @@ export class TicketsListComponent {
               private router: Router,
               public camelCaseHumanPipe: CamelCaseHumanPipe,
               public popUpService: PopUpMessageService) {
-    this.ticketOptionFilter = enumToArrayList(Ticket.Option).map(item => {
+    this.ticketSubjectFilter = enumToArrayList(Ticket.Subject).map(item => {
       return {label: item, value: item};
     });
-    this.ticketOptionFilter.unshift({label: 'All', value: ''});
+    this.ticketSubjectFilter.unshift({label: 'All', value: ''});
     this.ticketStatusFilter = enumToArrayList(Ticket.Status).map(item => {
       return {label: item, value: item};
     });
@@ -70,7 +71,7 @@ export class TicketsListComponent {
       {
         label: 'View/Edit',
         icon: 'fa fa-edit',
-        command: () => { this.displayEditDialog = true }
+        command: () => { this.displayTicketDialog = true }
       },
       {
         label: 'Start progress',
@@ -88,12 +89,7 @@ export class TicketsListComponent {
   }
 
   isEditable() {
-    let name;
-    if (this.selected.assignee) {
-      name = this.selected.assignee;
-      name = name.substring(name.indexOf("<") + 1, name.indexOf(">"));
-    }
-    return this.securityService.hasRole(Role.ADMIN) || (this.selected.status != Ticket.Status.CLOSED && (!name || name === this.securityService.getLoginModel().name));
+    return this.securityService.hasRole(Role.ADMIN) || (this.selected.status != Ticket.Status.CLOSED && (!this.selected.assigneeEmail || this.selected.assigneeEmail === this.securityService.getLoginModel().name));
   }
 
   refresh(): void {
@@ -128,7 +124,7 @@ export class TicketsListComponent {
 
   getTickets(filters = {}, pagination: Pagination = new Pagination(0, this.rowsPerPage[0])): void {
     if (filters['option']) {
-      filters['option'] = getKeyFromEnum(Ticket.Option, filters['option']);
+      filters['option'] = getKeyFromEnum(Ticket.Subject, filters['option']);
     }
     this.processing = true;
     this.ticketService.getAll(filters, pagination).subscribe(
@@ -163,18 +159,6 @@ export class TicketsListComponent {
     this.ticketService.changeStatus(ticket.id, Ticket.Status.CLOSED).subscribe(
       responce => {
         this.popUpService.showSuccess('Ticket has been closed');
-        this.refresh();
-      },
-      err => {
-        this.popUpService.showError(getErrorMessage(err))
-      });
-  }
-
-  updateTicket(ticket) {
-    this.ticketService.update(ticket).subscribe(
-      responce => {
-        this.popUpService.showSuccess('Ticket has been updated');
-        this.displayEditDialog = false;
         this.refresh();
       },
       err => {

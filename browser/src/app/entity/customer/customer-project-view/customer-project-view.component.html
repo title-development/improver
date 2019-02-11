@@ -195,9 +195,17 @@
             </div>
           </div>
           <div class="no-requests-block" *ngIf="project.projectRequests.length == 0">
-            <img class="no-requests-icon" src="assets/img/round-icons/no-requests-icon.png" alt="">
-            <div>We're looking for the best Pros to match your project</div>
-            <div>It usually takes a few minutes</div>
+
+            <div *ngIf="project.status == Project.Status.INVALID; else noRequests">
+              Project was delete due to validation issues
+            </div>
+
+            <ng-template #noRequests>
+              <img class="no-requests-icon" src="assets/img/round-icons/no-requests-icon.png" alt="">
+              <div>We're looking for the best Pros to match your project</div>
+              <div>It usually takes a few minutes</div>
+            </ng-template>
+
           </div>
         </div>
 

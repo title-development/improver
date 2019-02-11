@@ -19,14 +19,14 @@ export class TicketComponent {
 
   Role = Role;
 
-  options: Ticket.Option [] = [];
+  options: Ticket.Subject [] = [];
 
   ticket: Ticket = {
     name: '',
     email: '',
     businessName: '',
     description: '',
-    option: null
+    subject: null
   };
 
   ticketSent = false;
@@ -47,7 +47,7 @@ export class TicketComponent {
   onSubmit(form: NgForm) {
     this.ticketProcessing = true;
     let ticket = { ...this.ticket };
-    ticket.option = getKeyFromEnum(Ticket.Option, this.ticket.option);
+    ticket.subject = getKeyFromEnum(Ticket.Subject, this.ticket.subject);
     this.ticketsService.post(ticket).subscribe(
       response => {
         this.ticketSent = true;
@@ -61,7 +61,7 @@ export class TicketComponent {
   }
 
   initForm = () => {
-    this.options = Ticket.getTicketOptions(this.securityService.getRole());
+    this.options = Ticket.getTicketSubjects(this.securityService.getRole());
     if (this.securityService.isAuthenticated()) {
 
       this.accountService

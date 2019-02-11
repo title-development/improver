@@ -22,12 +22,12 @@ import { Role } from "../../../../model/security-model";
 })
 export class TicketsInreviewComponent {
   @ViewChild('dt') dataTable: any;
-  displayEditDialog = false;
+  displayTicketDialog = false;
   processing = true;
   tickets: RestPage<Ticket> = new RestPage<Ticket>();
   rowsPerPage: Array<number> = [10, 50, 100];
   tableColumns: Array<SelectItem> = [];
-  ticketOptionFilter: Array<SelectItem> = [];
+  ticketSubjectFilter: Array<SelectItem> = [];
   ticketStatusFilter: Array<SelectItem> = [];
   ticketPriorityFilter: Array<SelectItem> = [];
   selected: Ticket;
@@ -38,7 +38,8 @@ export class TicketsInreviewComponent {
     'name',
     'businessName',
     'option',
-    'priority'
+    'priority',
+    'authorEmail'
   ];
   contextMenuItems: Array<MenuItem> = [];
 
@@ -49,10 +50,10 @@ export class TicketsInreviewComponent {
               public camelCaseHumanPipe: CamelCaseHumanPipe,
               public popUpService: PopUpMessageService,
               public securityService: SecurityService) {
-    this.ticketOptionFilter = enumToArrayList(Ticket.Option).map(item => {
+    this.ticketSubjectFilter = enumToArrayList(Ticket.Subject).map(item => {
       return {label: item, value: item};
     });
-    this.ticketOptionFilter.unshift({label: 'All', value: ''});
+    this.ticketSubjectFilter.unshift({label: 'All', value: ''});
     this.ticketStatusFilter = enumToArrayList(Ticket.Status).map(item => {
       return {label: item, value: item};
     });
@@ -68,30 +69,25 @@ export class TicketsInreviewComponent {
       {
         label: 'View/Edit',
         icon: 'fa fa-edit',
-        command: () => { this.displayEditDialog = true }
+        command: () => { this.displayTicketDialog = true }
       },
       {
         label: 'Start progress',
         icon: 'fa fa-play-circle',
         command: () => this.start(this.selected),
-        visible: this.isEditable() && (this.selected.status == Ticket.Status.NEW || !this.selected.assignee)
+        visible: this.isEditable() && (this.selected.status == Ticket.Status.NEW || !this.selected.assigneeEmail)
       },
       {
         label: 'Close',
         icon: 'fa fa-minus-circle',
         command: () => this.close(this.selected),
-        visible: this.isEditable() && this.selected.status == Ticket.Status.IN_PROGRESS && !!this.selected.assignee
+        visible: this.isEditable() && this.selected.status == Ticket.Status.IN_PROGRESS && !!this.selected.assigneeEmail
       }
     ]
   }
 
   isEditable() {
-    let name;
-    if (this.selected.assignee) {
-      name = this.selected.assignee;
-      name = name.substring(name.indexOf("<") + 1, name.indexOf(">"));
-    }
-    return this.securityService.hasRole(Role.ADMIN) || (this.selected.status != Ticket.Status.CLOSED && (!name || name === this.securityService.getLoginModel().name));
+    return this.securityService.hasRole(Role.ADMIN) || (this.selected.status != Ticket.Status.CLOSED && (!this.selected.assigneeEmail || this.selected.assigneeEmail === this.securityService.getLoginModel().name));
   }
 
   refresh(): void {
@@ -128,7 +124,7 @@ export class TicketsInreviewComponent {
     this.processing = true;
     filters['unassignedOnly'] = true;
     if (filters['option']) {
-      filters['option'] = getKeyFromEnum(Ticket.Option, filters['option']);
+      filters['option'] = getKeyFromEnum(Ticket.Subject, filters['option']);
     }
     this.ticketService.getAll(filters, pagination).subscribe(
       (restPage: RestPage<Ticket>) => {

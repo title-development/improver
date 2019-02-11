@@ -6,10 +6,10 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-public class SupportTicketUpdate {
+public class StaffTicketUpdate {
 
     private long id;
     private Priority priority;
-    private String assignee;
+    private String assigneeEmail;
 
 }

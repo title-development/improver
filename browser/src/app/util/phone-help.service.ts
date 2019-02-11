@@ -36,7 +36,7 @@ export class PhoneHelpService {
     let ticket: Ticket = {
       name: name,
       description: `User requested phone help for ${phone}`,
-      option: getKeyFromEnum(Ticket.Option, Ticket.Option.PHONE_HELP_REQUEST),
+      subject: getKeyFromEnum(Ticket.Subject, Ticket.Subject.PHONE_HELP_REQUEST),
       businessName: "",
       email: ""
     };

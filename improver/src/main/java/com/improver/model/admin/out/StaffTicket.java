@@ -1,16 +1,21 @@
 package com.improver.model.admin.out;
 import com.improver.entity.Ticket;
+import com.improver.entity.User;
 import com.improver.enums.Priority;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.ZonedDateTime;
 
 import static com.improver.util.database.DataAccessUtil.TICKET_MESSAGE_SIZE;
 
 @Data
+@NoArgsConstructor
 @Accessors(chain = true)
-public class SupportTicket {
+public class StaffTicket {
 
     private long id;
     private ZonedDateTime created;
@@ -20,12 +25,17 @@ public class SupportTicket {
     private String businessName;
     @Size(max = TICKET_MESSAGE_SIZE)
     private String description;
-    private Ticket.Option option;
+    @NotNull
+    private Ticket.Subject subject;
     private Ticket.Status status;
+    @NotNull
     private Priority priority;
-    private String assignee;
+    private String assigneeEmail;
+    private String assigneeName;
+    private String authorEmail;
+    private User.Role authorRole;
 
-    public SupportTicket(Ticket ticket, String assigneeEmail, String assigneeDisplayName) {
+    public StaffTicket(Ticket ticket, String assigneeEmail, String assigneeName, String authorEmail, User.Role authorRole) {
         this.id = ticket.getId();
         this.created = ticket.getCreated();
         this.updated = ticket.getUpdated();
@@ -33,11 +43,12 @@ public class SupportTicket {
         this.email = ticket.getEmail();
         this.businessName = ticket.getBusinessName();
         this.description = ticket.getDescription();
-        this.option = ticket.getOption();
+        this.subject = ticket.getSubject();
         this.status = ticket.getStatus();
         this.priority = ticket.getPriority();
-        if (assigneeEmail != null) {
-            this.assignee = assigneeEmail + " <" + assigneeDisplayName + ">";
-        }
+        this.assigneeEmail = assigneeEmail;
+        this.assigneeName = assigneeName;
+        this.authorEmail = authorEmail;
+        this.authorRole = authorRole;
     }
 }

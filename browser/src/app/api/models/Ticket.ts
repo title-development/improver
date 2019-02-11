@@ -6,14 +6,17 @@ export class Ticket {
   name?: string;
   email?: string;
   businessName?: string;
-  option?: Ticket.Option | any;
+  subject?: Ticket.Subject | any;
   status?: Ticket.Status | any;
-  priority?: Priority | any;
+  priority?: Priority | any = Priority.MEDIUM;
   description?: string;
   replyMessage?: string;
   isReplied?: boolean;
   created?: string;
-  assignee?: string;
+  assigneeEmail?: string;
+  assigneeName?: string;
+  authorEmail?: string;
+  authorRole?: string;
 
   constructor() {}
 
@@ -21,37 +24,41 @@ export class Ticket {
 
 export namespace Ticket {
 
-  export function getTicketOptions(role: Role): Ticket.Option[] {
-    let options: Ticket.Option[] = [];
+  export function getTicketSubjects(role: Role): Ticket.Subject[] {
+    let subjects: Ticket.Subject[] = [];
     switch (role) {
       case Role.CUSTOMER: {
-        options = [Ticket.Option.FEEDBACK, Ticket.Option.REMOVE_ACCOUNT, Ticket.Option.PHONE_HELP_REQUEST, Ticket.Option.OTHER];
+        subjects = [Ticket.Subject.FEEDBACK, Ticket.Subject.REMOVE_ACCOUNT, Ticket.Subject.PHONE_HELP_REQUEST, Ticket.Subject.OTHER];
         break;
       }
       case Role.CONTRACTOR: {
-        options = [Ticket.Option.REQUESTING_CREDIT, Ticket.Option.PROVIDED_SERVICES, Ticket.Option.COVERAGE_AREA,
-          Ticket.Option.COMPANY_PROFILE, Ticket.Option.BILLING, Ticket.Option.PHONE_HELP_REQUEST, Ticket.Option.OTHER];
+        subjects = [Ticket.Subject.REQUESTING_CREDIT, Ticket.Subject.PROVIDED_SERVICES, Ticket.Subject.COVERAGE_AREA,
+          Ticket.Subject.COMPANY_PROFILE, Ticket.Subject.BILLING, Ticket.Subject.PHONE_HELP_REQUEST, Ticket.Subject.OTHER];
         break;
       }
       default: {
-        options = [Ticket.Option.FEEDBACK, Ticket.Option.LOGIN_ISSUE, Ticket.Option.REMOVE_ACCOUNT, Ticket.Option.PHONE_HELP_REQUEST, Ticket.Option.OTHER];
+        subjects = [Ticket.Subject.FEEDBACK, Ticket.Subject.LOGIN_ISSUE, Ticket.Subject.REMOVE_ACCOUNT, Ticket.Subject.PHONE_HELP_REQUEST, Ticket.Subject.OTHER];
         break;
       }
     }
-    return options
+    return subjects
   }
 
-  export enum Option {
+  export enum Subject {
+    ACCOUNT_ISSUE = "Account issue",
     LOGIN_ISSUE = "Can't login",
-    FEEDBACK = "Leave feedback",
     REMOVE_ACCOUNT = "Remove account",
+    PHONE_HELP_REQUEST = "Phone help request",
     REQUESTING_CREDIT = "Request a credit",
     PROVIDED_SERVICES = "Adjusting services",
     COVERAGE_AREA = "Coverage configuration",
     BILLING = "Billing and Subscription",
     COMPANY_PROFILE = "Company profile",
-    PHONE_HELP_REQUEST = "Phone help request",
+    FEEDBACK = "Leave feedback",
     OTHER = "Other"
+  }
+
+  export namespace Subject {
   }
 
   export enum Status {

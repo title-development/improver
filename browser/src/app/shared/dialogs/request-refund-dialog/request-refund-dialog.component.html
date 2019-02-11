@@ -79,7 +79,7 @@
         <div class="buttons-wrapper">
 
           <button cv-button-flat flatStyle="dark" (click)="close()" type="button" *ngIf="step == 1">Nevermind</button>
-          <button cv-button-flat flatStyle="dark" (click)="step = 1" type="button" *ngIf="step == 2">Back</button>
+          <button cv-button-flat flatStyle="dark" (click)="step = 1; requestRefundForm.resetForm(); refundRequest.issue = null" type="button" *ngIf="step == 2">Back</button>
           <div class="cv-error"
                *ngIf="(requestRefundForm.controls?.issue?.errors && requestRefundForm.controls?.issue?.dirty) || (requestRefundForm.controls?.option?.errors && requestRefundForm.controls?.option?.dirty) || !requestRefundForm.valid && requestRefundForm.submitted">
             <span>Required</span>

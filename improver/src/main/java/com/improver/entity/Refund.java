@@ -174,10 +174,10 @@ public class Refund {
 
 
     public enum Option {
-        NEVER_WORK_IN_ZIP("Yes, I never work in {zip} and dont want to receive leads from there"),
+        NEVER_WORK_IN_ZIP("Yes, I never work in {zip} and don't want to receive leads from there"),
         SOMETIMES_WORK_IN_ZIP("No, I sometimes provide services in {zip}"),
         JOB_NOT_FOR_ZIP("Job isn’t for {zip}"),
-        NEVER_DO_SERVICE("Yes, I never do {serviceName} and dont want to receive leads for last"),
+        NEVER_DO_SERVICE("Yes, I never do {serviceName} and don't want to receive leads for last"),
         SOMETIMES_DO_SERVICE("No, I sometimes do {serviceName}"),
         JOB_NOT_FOR_SERVICE("This job isn’t for {serviceName}"),
         JOB_TOO_SMALL("Project is too small for me"),

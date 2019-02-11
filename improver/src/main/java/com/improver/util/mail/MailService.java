@@ -314,7 +314,7 @@ public class MailService {
         Context context = contextTemplate();
         context.setVariable(CONTENT_ALIGN, "left");
         context.setVariable(TITLE, "Ticket is submitted");
-        context.setVariable(BODY,highlight("Subject: ") + ticket.getOption().getValue() + "<br/>" +
+        context.setVariable(BODY,highlight("Subject: ") + ticket.getSubject().getValue() + "<br/>" +
             highlight("Comment: ") + ticket.getDescription() + "<br/><br/>" +
             "Your request has been received, and is being reviewed by our support staff.<br>" +
             "Normal Home Improve support hours are Monday through Friday 10am to 5pm PST, and we're closed on major holidays. " +

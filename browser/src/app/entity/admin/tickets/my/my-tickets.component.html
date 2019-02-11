@@ -30,10 +30,10 @@
   <p-column field="name" header="Name" filterField="name" sortField="name"  [sortable]="true" *ngIf="selectedTableCols.includes('name')" [filter]="true"></p-column>
   <p-column field="businessName" header="Business name" filterField="businessName" sortField="businessName"  [sortable]="true" *ngIf="selectedTableCols.includes('businessName')" [filter]="true"></p-column>
   <p-column field="description" header="Description" filterField="description" [sortable]="false" *ngIf="selectedTableCols.includes('description')"></p-column>
-  <p-column field="option" header="Option" [sortable]="true" [filter]="true"
-            *ngIf="selectedTableCols.includes('option')">
+  <p-column field="subject" header="Subject" [sortable]="true" [filter]="true"
+            *ngIf="selectedTableCols.includes('subject')">
     <ng-template pTemplate="filter" let-col>
-      <p-dropdown [options]="ticketOptionFilter" [style]="{'width':'100%'}"
+      <p-dropdown [options]="ticketSubjectFilter" [style]="{'width':'100%'}"
                   (onChange)="dt.filter($event.value,col.field,col.filterMatchMode)"
                   styleClass="ui-column-filter"></p-dropdown>
     </ng-template>
@@ -55,7 +55,11 @@
       <div *ngIf="row.priority">{{row.priority}}</div>
     </ng-template>
   </p-column>
-  <p-column field="assignee" header="Assignee" filterField="assignee" sortField="assignee" *ngIf="selectedTableCols.includes('assignee')" ></p-column>
+  <p-column field="authorName" header="Author" filterField="author" sortField="author" [sortable]="false" *ngIf="selectedTableCols.includes('authorEmail')" [filter]="true">
+    <ng-template let-col let-row="rowData" pTemplate="body">
+      <div *ngIf="row.authorEmail">{{row.authorEmail + ' <' + row.authorRole + '>'}}</div>
+    </ng-template>
+  </p-column>
 
   <ng-template let-data pTemplate="rowexpansion">
     <div class="ui-grid ui-grid-responsive ui-fluid">
@@ -68,8 +72,9 @@
       </div>
     </div>
   </ng-template>
+
 </p-dataTable>
 
-<ticket-edit-dialog [ticket]="selected" [(display)]="displayEditDialog" (onUpdate)="refresh()"></ticket-edit-dialog>
+<ticket-edit-dialog [ticket]="selected" [(display)]="displayTicketDialog" (onDone)="refresh()"></ticket-edit-dialog>
 
 <p-contextMenu #cm [model]="contextMenuItems"></p-contextMenu>
