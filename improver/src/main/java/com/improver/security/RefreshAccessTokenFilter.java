@@ -1,12 +1,8 @@
 package com.improver.security;
 
-import com.improver.entity.Staff;
 import com.improver.entity.User;
-import com.improver.exception.AuthenticationRequiredException;
-import com.improver.exception.handler.GenericExceptionHandler;
 import com.improver.exception.handler.RestError;
 import com.improver.util.serializer.SerializationUtil;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.filter.GenericFilterBean;
@@ -73,8 +69,7 @@ public class RefreshAccessTokenFilter extends GenericFilterBean {
                 sendError(response, SC_FORBIDDEN, e.getMessage());
                 return;
             }
-
-            String jwt = jwtUtil.generateAccessJWT(user.getEmail(), user.getRole().toString());
+            String jwt = userSecurityService.getAccessJWT(user);
             response.addHeader(AUTHORIZATION_HEADER_NAME, BEARER_TOKEN_PREFIX + jwt);
             return;
         }

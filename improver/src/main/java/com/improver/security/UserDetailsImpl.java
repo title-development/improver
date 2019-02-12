@@ -1,6 +1,7 @@
 package com.improver.security;
 
 import com.improver.entity.User;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -10,13 +11,13 @@ import java.util.List;
 
 public class UserDetailsImpl implements UserDetails {
 
-    private String username;
-    private String password;
-    private boolean isAccountNonExpired;
-    private boolean isAccountNonLocked;
-    private boolean isCredentialsNonExpired;
+    private final String username;
+    private final String password;
+    private final boolean isAccountNonExpired;
+    private final boolean isAccountNonLocked;
+    private final boolean isCredentialsNonExpired;
     private boolean isEnabled;
-    private List<SimpleGrantedAuthority> authorities;
+    private final List<SimpleGrantedAuthority> authorities;
 
     public UserDetailsImpl(User user) {
         this.username = user.getEmail();
@@ -26,6 +27,15 @@ public class UserDetailsImpl implements UserDetails {
         this.isAccountNonLocked = !user.isBlocked();
         this.isEnabled = user.isActivated();
         this.authorities = Collections.singletonList(new SimpleGrantedAuthority(user.getRole().toString()));
+    }
+
+    private UserDetailsImpl(User user, boolean activated) {
+        this(user);
+        this.isEnabled = activated;
+    }
+
+    public static UserDetailsImpl incompletePro(User user) {
+        return new UserDetailsImpl(user, true);
     }
 
     @Override

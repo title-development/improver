@@ -23,6 +23,7 @@ import java.time.ZonedDateTime;
 import java.util.UUID;
 
 import static com.improver.entity.User.Role.CONTRACTOR;
+import static com.improver.entity.User.Role.INCOMPLETE_PRO;
 import static com.improver.security.SecurityProperties.AUTHORIZATION_HEADER_NAME;
 import static com.improver.security.SecurityProperties.BEARER_TOKEN_PREFIX;
 import static com.improver.util.ErrorMessages.*;
@@ -35,8 +36,7 @@ public class UserSecurityService implements UserDetailsService {
     @Autowired private ContractorRepository contractorRepository;
     @Autowired private CustomerRepository customerRepository;
     @Autowired private JwtUtil jwtUtil;
-    @Autowired
-    private StaffRepository staffRepository;
+    @Autowired private StaffRepository staffRepository;
 
     /**
      * Intended to be used by {@link LoginFilter}
@@ -45,6 +45,9 @@ public class UserSecurityService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(username)
             .orElseThrow(() -> new UsernameNotFoundException(String.format("No user found with username '%s'.", username)));
+        if (user instanceof Contractor && !user.isActivated() && user.isNativeUser()) {
+            return UserDetailsImpl.incompletePro(user);
+        }
         return new UserDetailsImpl(user);
     }
 
@@ -99,23 +102,23 @@ public class UserSecurityService implements UserDetailsService {
         TokenProvider.eraseRefreshCookie(res);
     }
 
-    @Deprecated
+    /**
+     * Login user into system:
+     * - update lastLogin time,
+     * - sets "Authorization" header with JWT,
+     * - adds refresh cookie.
+     *
+     * @param user to login
+     * @param res  HttpServletResponse
+     * @return model of logged in user
+     */
     public LoginModel performUserLogin(User user, HttpServletResponse res) {
-        LoginModel loginModel = updateLoggedUser(user);
-        String jwt = jwtUtil.generateAccessJWT(user.getEmail(), loginModel.getRole()); //TODO Misha
+        //updateLastLogin
+        User updated = userRepository.save(user.setLastLogin(ZonedDateTime.now()).setRefreshId(UUID.randomUUID().toString()));
+        LoginModel loginModel = getLoginModel(updated);
+        String jwt = jwtUtil.generateAccessJWT(loginModel);
         res.setHeader(AUTHORIZATION_HEADER_NAME, BEARER_TOKEN_PREFIX + jwt);
         res.addCookie(TokenProvider.buildRefreshCookie(loginModel.getRefreshId()));
-        return loginModel;
-    }
-
-    /**
-     * Updates lastLogin time and refreshId
-     */
-    LoginModel updateLoggedUser(User user) {
-        //updateLastLogin
-        String refreshId = UUID.randomUUID().toString();
-        User saved = userRepository.save(user.setLastLogin(ZonedDateTime.now()).setRefreshId(refreshId));
-        LoginModel loginModel = getLoginModel(saved);
         log.info("User {} logged in", user.getEmail());
         return loginModel;
     }
@@ -176,10 +179,18 @@ public class UserSecurityService implements UserDetailsService {
                 displayName = company.getName();
             }
         }
-        return new LoginModel(user.getId(), iconUrl, displayName, role, companyId, user.getRefreshId());
+        return new LoginModel(user.getId(), iconUrl, displayName, role, companyId, user.getRefreshId(), user.getEmail());
     }
 
     private String loggedUserEmail() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+
+    public String getAccessJWT(User user) {
+        User.Role role = user.getRole();
+        if (user instanceof Contractor && !user.isActivated() && user.isNativeUser()) {
+            role = INCOMPLETE_PRO;
+        }
+        return jwtUtil.generateAccessJWT(user.getEmail(), role.toString());
     }
 }

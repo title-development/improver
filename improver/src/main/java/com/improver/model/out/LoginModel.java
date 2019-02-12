@@ -16,13 +16,16 @@ public class LoginModel {
     private final String company;
     @JsonIgnore
     private final String refreshId;
+    @JsonIgnore
+    private final String email;
 
-    public LoginModel(long id, String iconUrl, String name, User.Role role, String company, String refreshId) {
+    public LoginModel(long id, String iconUrl, String name, User.Role role, String company, String refreshId, String email) {
         this.id = id;
         this.iconUrl = iconUrl;
         this.name = name;
         this.role = role.toString();
         this.company = company;
         this.refreshId = refreshId;
+        this.email = email;
     }
 }

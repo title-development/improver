@@ -24,8 +24,11 @@ public class JwtUtil {
     @Value("${jwt.secret}") private String secret;
 
 
-    //TODO Misha
-    @Deprecated
+    public String generateAccessJWT(LoginModel loginModel) {
+        return generateAccessJWT(loginModel.getEmail(), loginModel.getRole());
+    }
+
+
     String generateAccessJWT(String email, String role){
         return Jwts.builder()
             .claim(ROLE_CLAIM, role)
