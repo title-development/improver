@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { SocialConnection } from '../api/models/SocialConnection';
+import { PhoneSocialCredentials } from '../model/security-model';
 
 @Injectable()
 export class SocialConnectionsService {
@@ -21,8 +22,8 @@ export class SocialConnectionsService {
     return this.http.post<any>(`${this.API_URL}/facebook`, accessToken, {observe: 'response'});
   }
 
-  proFacebookRegister(data): Observable<any> {
-    return this.http.post<any>(`${this.API_URL}/facebook/pro`, data, {observe: 'response'});
+  proFacebookRegister(proSocialCredential: PhoneSocialCredentials): Observable<any> {
+    return this.http.post<any>(`${this.API_URL}/facebook/pro`, proSocialCredential, {observe: 'response'});
   }
 
   disconnectFacebook(): Observable<any> {
@@ -37,8 +38,8 @@ export class SocialConnectionsService {
     return this.http.post<any>(`${this.API_URL}/google`, tokenId, {observe: 'response'});
   }
 
-  proGoogleApiRegister(data): Observable<any> {
-    return this.http.post<any>(`${this.API_URL}/google/pro`, data, {observe: 'response'});
+  proGoogleApiRegister(proSocialCredential: PhoneSocialCredentials): Observable<any> {
+    return this.http.post<any>(`${this.API_URL}/google/pro`, proSocialCredential, {observe: 'response'});
   }
 
   disconnectGoogle(): Observable<any> {

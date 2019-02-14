@@ -18,7 +18,7 @@
       <form class="account-form"
             name="account-form"
             #accountForm="ngForm"
-            (ngSubmit)="accountForm.valid && submitAccountInfo(accountForm)"
+            (ngSubmit)="accountForm.valid && registerConractor(accountForm)"
             novalidate>
 
         <h3>User Details</h3>
@@ -175,7 +175,6 @@
             <div class="hint account-hint">
               <span>Create a PRO account and continue company registration whenever suits you.</span>
             </div>
-            <!--todo fork angular5-social-plugin for return providers error-->
             <response-message *ngIf="showMessage" [type]="messageType" [message]="messageText"
                               [paddingV]="12" [paddingH]="24"
                               [marginTop]="16"

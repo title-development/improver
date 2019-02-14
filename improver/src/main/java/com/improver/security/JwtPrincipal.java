@@ -35,11 +35,7 @@ public class JwtPrincipal extends AbstractAuthenticationToken {
     private JwtPrincipal(String email, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.email = email;
-        if (User.Role.INCOMPLETE_PRO.equals(getRole())) {
-            super.setAuthenticated(false);
-        } else {
-            super.setAuthenticated(true);
-        }
+        super.setAuthenticated(true);
     }
 
 

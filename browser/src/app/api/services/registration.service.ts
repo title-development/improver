@@ -30,10 +30,10 @@ export class RegistrationService {
   }
 
   registerCompany(company: CompanyRegistration): Observable<any> {
-    return this.http.post(`${this.companyUrl}`, company);
+    return this.http.post(`${this.companyUrl}`, company, { observe: 'response', responseType: 'text' });
   }
 
-  resendActivationMail (email: string): Observable<any> {
+  resendActivationMail (email: string = ''): Observable<any> {
     return this.http.post(`${this.resendEmailUrl}`, email, {observe: 'response', responseType: 'text' })
   }
 

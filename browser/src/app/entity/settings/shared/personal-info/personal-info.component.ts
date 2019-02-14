@@ -47,11 +47,11 @@ export class PersonalInfoComponent implements OnInit {
 
   Role = Role;
 
-  showEmailChangeMessage = false;
   SystemMessageType = SystemMessageType;
   passwordUpdateProcessing = false;
   socialConnections: Array<SocialConnection> = [];
   socialProviders: Array<string> = [];
+  showEmailChangeMessage: boolean = false;
 
   constructor(public constants: Constants,
               public messages: Messages,
@@ -140,8 +140,7 @@ export class PersonalInfoComponent implements OnInit {
       this.confirmDialogRef.componentInstance.onSuccess.subscribe(
         email => {
           this.currentEmail = email;
-          this.popupService.showSuccess(`Your email is changed to <b>${email}</b> <br>
-          Please, proceed to yor email and confirm that we got your email right`);
+          this.showEmailChangeMessage = true;
         });
       this.confirmDialogRef.componentInstance.onCancel.subscribe(
         () => {

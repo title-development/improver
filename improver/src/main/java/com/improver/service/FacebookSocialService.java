@@ -6,6 +6,7 @@ import com.improver.entity.User;
 import com.improver.exception.AuthenticationRequiredException;
 import com.improver.exception.ThirdPartyException;
 import com.improver.model.socials.FacebookUserProfile;
+import com.improver.model.socials.PhoneSocialCredentials;
 import com.improver.model.socials.SocialUser;
 import com.improver.util.serializer.SerializationUtil;
 import org.apache.http.HttpResponse;
@@ -44,13 +45,19 @@ public class FacebookSocialService {
     public User loginOrRegister(String accessToken) {
         SocialUser socialUser = getSocialUser(accessToken);
 
-        return socialConnectionService.findExistingOrRegister(socialUser, SocialConnection.Provider.FACEBOOK);
+        return socialConnectionService.findExistingOrRegister(socialUser);
+    }
+
+    public User registerPro(PhoneSocialCredentials phoneSocialCredentials) {
+        SocialUser socialUser = getSocialUser(phoneSocialCredentials.getAccessToken());
+
+        return socialConnectionService.registerPro(socialUser, phoneSocialCredentials.getPhone());
     }
 
     public void connect(User user, String accessToken) {
         SocialUser socialUser = getSocialUser(accessToken);
 
-        socialConnectionService.connect(socialUser, user, SocialConnection.Provider.FACEBOOK);
+        socialConnectionService.connect(socialUser, user);
     }
 
     private FacebookUserProfile getFacebookUserProfile(String accessToken) throws ThirdPartyException {
@@ -108,11 +115,6 @@ public class FacebookSocialService {
             throw new AuthenticationRequiredException("Could not connect to facebook api");
         }
 
-        return new SocialUser()
-            .setEmail(userProfile.getEmail())
-            .setId(userProfile.getId())
-            .setFirstName(userProfile.getFirst_name())
-            .setLastName(userProfile.getLast_name())
-            .setPicture(userProfile.getPicture().getData().getUrl());
+        return new SocialUser(userProfile);
     }
 }

@@ -1,36 +1,38 @@
 package com.improver.model.socials;
 
 import com.google.api.client.auth.openidconnect.IdToken;
+import com.improver.entity.SocialConnection;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 
-@Data
-@Accessors(chain = true)
-@NoArgsConstructor
+@RequiredArgsConstructor
+@Getter
 public class SocialUser {
-    private String id;
-    private String email;
-    private String firstName;
-    private String lastName;
-    private String picture;
+    private final String id;
+    private final String email;
+    private final String firstName;
+    private final String lastName;
+    private final String picture;
+    private final SocialConnection.Provider provider;
 
-    public static SocialUser of(FacebookUserProfile userProfile) {
-        return new SocialUser()
-            .setEmail(userProfile.getEmail())
-            .setId(userProfile.getId())
-            .setFirstName(userProfile.getFirst_name())
-            .setLastName(userProfile.getLast_name())
-            .setPicture(userProfile.getPicture().getData().getUrl());
+    public SocialUser(FacebookUserProfile userProfile) {
+        this.id = userProfile.getId();
+        this.email = userProfile.getEmail();
+        this.firstName = userProfile.getFirst_name();
+        this.lastName = userProfile.getLast_name();
+        this.picture = userProfile.getPicture().getData().getUrl();
+        this.provider = SocialConnection.Provider.FACEBOOK;
     }
 
-    public static SocialUser of(IdToken.Payload payload) {
-        return new SocialUser()
-            .setId(payload.getSubject())
-            .setEmail((String) payload.get("email"))
-            .setFirstName(payload.get("given_name").toString())
-            .setLastName(payload.get("family_name").toString())
-            .setPicture((String) payload.get("picture"));
+    public SocialUser(IdToken.Payload payload) {
+        this.id = payload.getSubject();
+        this.email = (String) payload.get("email");
+        this.firstName = payload.get("given_name").toString();
+        this.lastName = payload.get("family_name").toString();
+        this.picture = (String) payload.get("picture");
+        this.provider = SocialConnection.Provider.GOOGLE;
     }
 }

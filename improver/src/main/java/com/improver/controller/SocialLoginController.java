@@ -3,6 +3,7 @@ package com.improver.controller;
 import com.improver.entity.SocialConnection;
 import com.improver.entity.User;
 import com.improver.model.out.LoginModel;
+import com.improver.model.socials.PhoneSocialCredentials;
 import com.improver.security.UserSecurityService;
 import com.improver.service.FacebookSocialService;
 import com.improver.service.GoogleSocialService;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.util.List;
 
 import static com.improver.application.properties.Path.SOCIAL_LOGIN_PATH;
@@ -34,6 +36,13 @@ public class SocialLoginController {
         return new ResponseEntity<>(loginModel, HttpStatus.OK);
     }
 
+    @PostMapping("/facebook/pro")
+    public ResponseEntity<LoginModel> registerProWithFacebook(@RequestBody @Valid PhoneSocialCredentials phoneSocialCredentials, HttpServletResponse res) {
+        User user = facebookSocialService.registerPro(phoneSocialCredentials);
+        LoginModel loginModel = userSecurityService.performUserLogin(user, res);
+        return new ResponseEntity<>(loginModel, HttpStatus.OK);
+    }
+
     @DeleteMapping("/facebook")
     public ResponseEntity<Void> disconnectFacebook() {
         User user = userSecurityService.currentUser();
@@ -51,6 +60,13 @@ public class SocialLoginController {
     @PostMapping("/google")
     public ResponseEntity<LoginModel> loginOrRegisterWithGoogle(@RequestBody String tokenId, HttpServletResponse res) {
         User user = googleSocialService.loginOrRegister(tokenId);
+        LoginModel loginModel = userSecurityService.performUserLogin(user, res);
+        return new ResponseEntity<>(loginModel, HttpStatus.OK);
+    }
+
+    @PostMapping("/google/pro")
+    public ResponseEntity<LoginModel> registerProWithGoogle(@RequestBody PhoneSocialCredentials phoneSocialCredentials, HttpServletResponse res) {
+        User user = googleSocialService.registerPro(phoneSocialCredentials);
         LoginModel loginModel = userSecurityService.performUserLogin(user, res);
         return new ResponseEntity<>(loginModel, HttpStatus.OK);
     }

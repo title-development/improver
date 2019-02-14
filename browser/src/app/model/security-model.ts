@@ -72,3 +72,14 @@ export class ActivationCustomerModel {
   token: string;
   password?: string;
 }
+
+export class PhoneSocialCredentials {
+  accessToken: string;
+  phone: string;
+
+
+  constructor(accessToken: string, phone: string) {
+    this.accessToken = accessToken;
+    this.phone = phone;
+  }
+}

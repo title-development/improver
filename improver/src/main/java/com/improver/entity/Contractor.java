@@ -3,6 +3,7 @@ package com.improver.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.improver.model.in.registration.UserRegistration;
+import com.improver.model.socials.SocialUser;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -49,6 +50,17 @@ public class Contractor extends User {
 
     public Contractor(String firstName, String lastName, String email, String plainPassword, String internalPhone, String iconUrl) {
         super(firstName, lastName, email, plainPassword, internalPhone, iconUrl);
+    }
+
+    public static Contractor of(SocialUser socialUser, String internalPhone) {
+        return new Contractor()
+            .setEmail(socialUser.getEmail())
+            .setFirstName(socialUser.getFirstName())
+            .setLastName(socialUser.getLastName())
+            .setActivated(true)
+            .setCreated(ZonedDateTime.now())
+            .setInternalPhone(internalPhone)
+            .setIconUrl(socialUser.getPicture());
     }
 
     @Override
@@ -126,6 +138,11 @@ public class Contractor extends User {
     @Override
     public Contractor setIconUrl(String iconUrl) {
         super.setIconUrl(iconUrl);
+        return this;
+    }
+
+    public Contractor setInternalPhone(String internalPhone) {
+        super.setInternalPhone(internalPhone);
         return this;
     }
 }

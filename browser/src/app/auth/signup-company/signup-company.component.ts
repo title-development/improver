@@ -22,6 +22,7 @@ import { ValidatedLocation } from '../../api/models/LocationsValidation';
 import { first } from 'rxjs/operators';
 import { getErrorMessage } from '../../util/functions';
 import { SystemMessageType } from '../../model/data-model';
+import { HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'signup-company',
@@ -52,10 +53,6 @@ export class SignupCompanyComponent {
   servedZipCodes: string [];
 
   processing: boolean = false;
-
-  contractor = {
-    email: 'no email'
-  }
 
   // tmp test data
   companyRegistration: CompanyRegistration = {
@@ -211,8 +208,12 @@ export class SignupCompanyComponent {
   }
 
   autocompleteSearch(search): void {
-    const regExp: RegExp = new RegExp(`^${search.trim()}`, 'i');
-    this.filteredStates = this.constants.states.filter(state => Object.values(state).some(str => regExp.test(str.toString())));
+    if (search && search.length > 0) {
+      const regExp: RegExp = new RegExp(`^${search.trim()}`, 'i');
+      this.filteredStates = this.constants.states.filter(state => Object.values(state).some(str => regExp.test(str.toString())));
+    } else {
+      this.filteredStates = this.constants.states;
+    }
   }
 
   ngOnDestroy(): void {
@@ -322,9 +323,13 @@ export class SignupCompanyComponent {
 
     this.registrationProcessing = true;
     this.registrationService.registerCompany(this.companyRegistration).subscribe(
-      () => {
+      (response: HttpResponse<any>) => {
+        if ((response.body)) {
+          this.securityService.loginUser(JSON.parse(response.body) as LoginModel, response.headers.get('authorization'), true);
+        } else {
+          this.step++;
+        }
         this.registrationProcessing = false;
-        this.step++;
       }, err => {
         this.registrationProcessing = false;
         this.popUpMessageService.showError(getErrorMessage(err));
@@ -334,7 +339,7 @@ export class SignupCompanyComponent {
   }
 
   resendConfirmation() {
-    this.registrationService.resendActivationMail(this.contractor.email).subscribe(
+    this.registrationService.resendActivationMail().subscribe(
       response => {
         this.popUpMessageService.showMessage({
           type: SystemMessageType.SUCCESS,

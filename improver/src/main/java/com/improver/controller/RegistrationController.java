@@ -4,7 +4,9 @@ package com.improver.controller;
 import com.improver.entity.Contractor;
 import com.improver.entity.User;
 import com.improver.exception.ConflictException;
+import com.improver.exception.NotFoundException;
 import com.improver.exception.ValidationException;
+import com.improver.model.UserAccount;
 import com.improver.model.in.registration.CompanyRegistration;
 import com.improver.model.in.OldNewValue;
 import com.improver.model.in.registration.UserRegistration;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.Optional;
 import java.util.UUID;
 
 import static com.improver.application.properties.Path.*;
@@ -48,7 +51,7 @@ public class RegistrationController {
         oldNewEmail.setNewValue(oldNewEmail.getNewValue().toLowerCase());
         oldNewEmail.setOldValue(oldNewEmail.getOldValue().toLowerCase());
 
-        if(oldNewEmail.getOldValue().equals(oldNewEmail.getNewValue())) {
+        if (oldNewEmail.getOldValue().equals(oldNewEmail.getNewValue())) {
             throw new ValidationException("Email must be different");
         }
 
@@ -67,12 +70,16 @@ public class RegistrationController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-
-    @PreAuthorize("isAnonymous()")
+    @PreAuthorize("isAnonymous() || hasRole('INCOMPLETE_PRO')")
     @PostMapping("/resend")
-    public ResponseEntity resendConfirmationMail(@RequestBody String email) {
-        User user = userService.getByEmail(email.toLowerCase());
-        if(user.isActivated() || user.getValidationKey() == null) {
+    public ResponseEntity resendConfirmationMail(@RequestBody(required = false) String email) {
+        User user;
+        if (email != null && !email.isEmpty()) {
+            user = userService.getByEmail(email.toLowerCase());
+        } else {
+            user = userSecurityService.currentUser();
+        }
+        if (user.isActivated() || user.getValidationKey() == null) {
             throw new ConflictException("Cannot resend confirmation mail. Email already confirmed!");
         }
         mailService.sendRegistrationConfirmEmail(user);
@@ -106,11 +113,7 @@ public class RegistrationController {
         Contractor contractor = userSecurityService.currentPro();
         companyService.registerCompany(registration, contractor);
         LoginModel loginModel = null;
-        if (contractor.isNativeUser()) {
-            // logout contractor -> contractor should confirm email and then login
-            userSecurityService.performLogout(contractor, res);
-        } else {
-            // login contractor if was registered via social connections
+        if (!contractor.isNativeUser()) {
             loginModel = userSecurityService.performUserLogin(contractor, res);
         }
         return new ResponseEntity<>(loginModel, HttpStatus.OK);

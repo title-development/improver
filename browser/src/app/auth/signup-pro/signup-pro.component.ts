@@ -50,19 +50,16 @@ export class SignupProComponent {
 
   }
 
-  submitAccountInfo(form) {
+  registerConractor(form) {
     this.registrationService.registerContractor(this.user).subscribe((response: HttpResponse<any>) => {
-      console.log(response);
       this.securityService.loginUser(JSON.parse(response.body) as LoginModel, response.headers.get('authorization'), true);
     }, err => {
       if (err.status == 401) {
         this.securityService.systemLogout();
-        this.messageText = getErrorMessage(err);
+        this.popUpMessageService.showError(getErrorMessage(err));
       } else {
-        this.messageText = getErrorMessage(err);
+        this.popUpMessageService.showError(getErrorMessage(err))
       }
-      this.messageType = SystemMessageType.ERROR;
-      this.showMessage = true;
     });
   }
 

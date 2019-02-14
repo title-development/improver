@@ -1,12 +1,15 @@
 package com.improver.service;
 
+import com.improver.entity.Contractor;
 import com.improver.entity.Customer;
 import com.improver.entity.SocialConnection;
 import com.improver.entity.User;
 import com.improver.exception.AuthenticationRequiredException;
+import com.improver.exception.BadRequestException;
 import com.improver.exception.ConflictException;
 import com.improver.exception.NotFoundException;
 import com.improver.model.socials.SocialUser;
+import com.improver.repository.ContractorRepository;
 import com.improver.repository.CustomerRepository;
 import com.improver.repository.SocialConnectionRepository;
 import com.improver.repository.UserRepository;
@@ -22,49 +25,61 @@ public class SocialConnectionService {
 
     @Autowired private UserRepository userRepository;
     @Autowired private CustomerRepository customerRepository;
+    @Autowired private ContractorRepository contractorRepository;
     @Autowired private SocialConnectionRepository socialConnectionRepository;
 
-    public User findExistingOrRegister(SocialUser socialUser, SocialConnection.Provider provider) throws AuthenticationRequiredException {
+    public User findExistingOrRegister(SocialUser socialUser) throws AuthenticationRequiredException {
         if (socialUser.getEmail() == null || socialUser.getEmail().isEmpty()) {
             throw new AuthenticationRequiredException("Email address is required");
         }
 
-        // Searching user in social connection by providerId
         SocialConnection connection = socialConnectionRepository.findByProviderId(socialUser.getId());
         if (connection != null) {
             if (connection.getUser().isDeleted() || connection.getUser().isBlocked()) {
                 throw new AuthenticationRequiredException("Account has been deleted");
             }
-
             return connection.getUser();
         }
 
-        // Searching user in users by provider email
         User user = userRepository.findByEmail(socialUser.getEmail()).orElse(null);
         if (user != null) {
-            if (user.isDeleted() || user.isBlocked()) {
-                throw new AuthenticationRequiredException("Account has been deleted");
-            }
-            SocialConnection socialConnection = new SocialConnection(socialUser.getId(), provider, user);
-            user.addSocialConnection(socialConnection);
-            socialConnectionRepository.save(socialConnection);
-
-            return user;
+            return addSocialConnection(user, socialUser);
         } else {
+            Customer customer = Customer.of(socialUser);
 
-            return registerCustomer(socialUser, provider);
+            return registerUser(customer, socialUser);
         }
     }
 
-    public void connect(SocialUser socialUser, User user, SocialConnection.Provider provider) throws ConflictException {
-        if (user.getSocialConnections().stream().anyMatch(connection -> connection.getProvider().equals(provider))) {
-            throw new ConflictException("You have already connected " + StringUtil.capitalize(provider.toString()));
+    public User registerPro(SocialUser socialUser, String phone) throws AuthenticationRequiredException {
+        if (socialUser.getEmail() == null || socialUser.getEmail().isEmpty()) {
+            throw new AuthenticationRequiredException("Email address is required");
+        }
+
+        SocialConnection connection = socialConnectionRepository.findByProviderId(socialUser.getId());
+        if (connection != null) {
+            throw new AuthenticationRequiredException(StringUtil.capitalize(socialUser.getProvider().toString()) + " account is already connected to another user");
+        }
+
+        User user = userRepository.findByEmail(socialUser.getEmail()).orElse(null);
+        if(user != null) {
+            throw new AuthenticationRequiredException("User with email "+socialUser.getEmail()+ " already registered");
+        }
+
+        Contractor contractor = Contractor.of(socialUser, phone);
+
+        return registerUser(contractor, socialUser);
+    }
+
+    public void connect(SocialUser socialUser, User user) throws ConflictException {
+        if (user.getSocialConnections().stream().anyMatch(connection -> connection.getProvider().equals(socialUser.getProvider()))) {
+            throw new ConflictException("You have already connected " + StringUtil.capitalize(socialUser.getProvider().toString()));
         }
         SocialConnection existedConnection = socialConnectionRepository.findByProviderId(socialUser.getId());
         if (existedConnection != null) {
-            throw new ConflictException(StringUtil.capitalize(provider.toString())+ " account is already connected to another user");
+            throw new ConflictException(StringUtil.capitalize(socialUser.getProvider().toString()) + " account is already connected to another user");
         }
-        SocialConnection socialConnection = new SocialConnection(socialUser.getId(), provider, user);
+        SocialConnection socialConnection = new SocialConnection(socialUser, user);
         socialConnectionRepository.save(socialConnection);
     }
 
@@ -78,13 +93,31 @@ public class SocialConnectionService {
         socialConnectionRepository.delete(socialConnection);
     }
 
-    private Customer registerCustomer(SocialUser socialUser, SocialConnection.Provider provider) {
-        Customer customer = Customer.of(socialUser);
-        SocialConnection socialConnection = new SocialConnection(socialUser.getId(), provider, customer);
-        customer.addSocialConnection(socialConnection);
-        customerRepository.save(customer);
+    //TODO Misha move to registration service
+    private User registerUser(User user, SocialUser socialUser) {
+        SocialConnection socialConnection = new SocialConnection(socialUser, user);
+        user.addSocialConnection(socialConnection);
+        if (user instanceof Contractor) {
+            contractorRepository.save((Contractor) user);
+        } else if (user instanceof Customer) {
+            customerRepository.save((Customer) user);
+        } else {
+            throw new BadRequestException("Does not support user " + user.getClass());
+        }
         socialConnectionRepository.save(socialConnection);
 
-        return customer;
+        return user;
+    }
+
+    private User addSocialConnection(User user, SocialUser socialUser) {
+        if (user.isDeleted() || user.isBlocked()) {
+            throw new AuthenticationRequiredException("Account has been deleted");
+        }
+        SocialConnection socialConnection = new SocialConnection(socialUser, user);
+        user.addSocialConnection(socialConnection);
+        socialConnectionRepository.save(socialConnection);
+
+        return user;
     }
 }
+

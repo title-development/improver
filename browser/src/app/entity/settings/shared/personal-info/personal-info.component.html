@@ -159,7 +159,7 @@
                     <div class="row" >
 
                       <div class="col-xs-12">
-                        <response-message [type]="SystemMessageType.SUCCESS"
+                        <response-message *ngIf="showEmailChangeMessage" [type]="SystemMessageType.SUCCESS"
                                           message="A confirmation link has been sent to your new email address and you must click on the link to complete address change. A notice has also been sent to your old email address"
                                           [paddingV]="12"
                                           [paddingH]="16"

@@ -8,6 +8,7 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.improver.entity.SocialConnection;
 import com.improver.entity.User;
 import com.improver.exception.AuthenticationRequiredException;
+import com.improver.model.socials.PhoneSocialCredentials;
 import com.improver.model.socials.SocialUser;
 import com.improver.util.ThirdPartyApis;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,13 +37,19 @@ public class GoogleSocialService {
     public User loginOrRegister(String idTokenString) {
         SocialUser socialUser = getSocialUser(idTokenString);
 
-        return socialConnectionService.findExistingOrRegister(socialUser, SocialConnection.Provider.GOOGLE);
+        return socialConnectionService.findExistingOrRegister(socialUser);
+    }
+
+    public User registerPro(PhoneSocialCredentials phoneSocialCredentials) {
+        SocialUser socialUser = getSocialUser(phoneSocialCredentials.getAccessToken());
+
+        return socialConnectionService.registerPro(socialUser, phoneSocialCredentials.getPhone());
     }
 
     public void connect(User user, String idTokenString) {
         SocialUser socialUser = getSocialUser(idTokenString);
 
-        socialConnectionService.connect(socialUser, user, SocialConnection.Provider.GOOGLE);
+        socialConnectionService.connect(socialUser, user);
     }
 
     private SocialUser getSocialUser(String idTokenString) {
@@ -59,6 +66,6 @@ public class GoogleSocialService {
         }
         IdToken.Payload payload = idToken.getPayload();
 
-        return SocialUser.of(payload);
+        return new SocialUser(payload);
     }
 }

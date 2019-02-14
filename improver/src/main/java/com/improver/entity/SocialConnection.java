@@ -1,6 +1,7 @@
 package com.improver.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.improver.model.socials.SocialUser;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
@@ -33,9 +34,9 @@ public class SocialConnection {
     @JsonIgnore
     private ZonedDateTime created = ZonedDateTime.now();
 
-    public SocialConnection (String socialUserId, SocialConnection.Provider provider, User user) {
-        this.providerId = socialUserId;
-        this.provider = provider;
+    public SocialConnection (SocialUser socialUser, User user) {
+        this.providerId = socialUser.getId();
+        this.provider = socialUser.getProvider();
         this.user = user;
         this.created = ZonedDateTime.now();
     }

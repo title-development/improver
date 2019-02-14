@@ -98,7 +98,6 @@ public class UserSecurityService implements UserDetailsService {
     }
 
 
-
     public User findByRefreshId(String refreshToken) {
         return userRepository.findByRefreshId(refreshToken);
     }
@@ -109,7 +108,7 @@ public class UserSecurityService implements UserDetailsService {
             .orElseThrow(NotFoundException::new);
     }
 
-    public void performLogout(User user, HttpServletResponse res){
+    public void performLogout(User user, HttpServletResponse res) {
         TokenProvider.eraseRefreshCookie(res);
     }
 
@@ -155,7 +154,9 @@ public class UserSecurityService implements UserDetailsService {
      * @throws AccountExpiredException     - when account was deleted
      */
     public void checkUser(User user) throws DisabledException, LockedException, CredentialsExpiredException, AccountExpiredException {
-        if (!user.isActivated() && !CONTRACTOR.equals(user.getRole())) {
+        if(!user.isActivated() && user.isNativeUser()
+            && (!(user instanceof Contractor)
+                || (((Contractor) user).getCompany() != null))) {
             throw new DisabledException(ACCOUNT_NOT_ACTIVATED_MSG);
         }
         if (user.isBlocked()) {
