@@ -9,16 +9,14 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import java.util.Collection;
 
 public class JwtPrincipal extends AbstractAuthenticationToken {
-
     private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
+    private static final String ROLE_PREFIX = "ROLE_";
 
-    private final Object principal;
-    private Object credentials;
+    private final String email;
 
 
-
-    public JwtPrincipal(Object principal, String role) {
-        this(principal, AuthorityUtils.createAuthorityList("ROLE_" + role));
+    public JwtPrincipal(String email, String role) {
+        this(email, AuthorityUtils.createAuthorityList(ROLE_PREFIX + role));
     }
 
 
@@ -29,26 +27,31 @@ public class JwtPrincipal extends AbstractAuthenticationToken {
      * producing a trusted (i.e. {@link #isAuthenticated()} = <code>true</code>)
      * authentication token.
      *
-     * @param principal
+     * Handles {@link User.Role#INCOMPLETE_PRO} activation scenario.
+     *
+     * @param email
      * @param authorities
      */
-    public JwtPrincipal(Object principal, Collection<? extends GrantedAuthority> authorities) {
+    private JwtPrincipal(String email, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
-        this.principal = principal;
-        this.credentials = null;
-        super.setAuthenticated(true); // must use super, as we override
+        this.email = email;
+        if (User.Role.INCOMPLETE_PRO.equals(getRole())) {
+            super.setAuthenticated(false);
+        } else {
+            super.setAuthenticated(true);
+        }
     }
-
 
 
     public Object getCredentials() {
-        return this.credentials;
+        return null;
     }
 
     public Object getPrincipal() {
-        return this.principal;
+        return this.email;
     }
 
+    @Override
     public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
         if (isAuthenticated) {
             throw new IllegalArgumentException(
@@ -58,17 +61,11 @@ public class JwtPrincipal extends AbstractAuthenticationToken {
         super.setAuthenticated(false);
     }
 
-    @Override
-    public void eraseCredentials() {
-        super.eraseCredentials();
-        credentials = null;
-    }
-
     public User.Role getRole(){
        return getAuthorities().stream()
-            .filter(authority -> authority.getAuthority().startsWith("ROLE_"))
+           .filter(authority -> authority.getAuthority().startsWith(ROLE_PREFIX))
             .findFirst()
-            .map(authority -> User.Role.valueOf(authority.getAuthority().replace("ROLE_", "")))
+           .map(authority -> User.Role.valueOf(authority.getAuthority().replace(ROLE_PREFIX, "")))
             .orElseThrow(IllegalArgumentException::new);
     }
 }

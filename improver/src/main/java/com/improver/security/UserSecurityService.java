@@ -45,10 +45,21 @@ public class UserSecurityService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(username)
             .orElseThrow(() -> new UsernameNotFoundException(String.format("No user found with username '%s'.", username)));
-        if (user instanceof Contractor && !user.isActivated() && user.isNativeUser()) {
+        return buildUserDetails(user);
+    }
+
+    /**
+     * Handles {@link User.Role#INCOMPLETE_PRO} activation scenario
+     */
+    private UserDetailsImpl buildUserDetails(User user) {
+        if (user instanceof Contractor
+            && user.isNativeUser()
+            && !user.isActivated()
+            && ((Contractor) user).getCompany() == null) {
             return UserDetailsImpl.incompletePro(user);
+        } else {
+            return new UserDetailsImpl(user);
         }
-        return new UserDetailsImpl(user);
     }
 
     public User currentUser() throws AuthenticationRequiredException {
@@ -162,7 +173,12 @@ public class UserSecurityService implements UserDetailsService {
     }
 
 
-
+    /**
+     * Handles {@link User.Role#INCOMPLETE_PRO} activation scenario.
+     *
+     * @param user
+     * @return
+     */
     private LoginModel getLoginModel(User user) {
         String displayName = user.getDisplayName();
         String iconUrl = user.getIconUrl();
@@ -186,6 +202,9 @@ public class UserSecurityService implements UserDetailsService {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
+    /**
+     * Handles {@link User.Role#INCOMPLETE_PRO} activation scenario.
+     */
     public String getAccessJWT(User user) {
         User.Role role = user.getRole();
         if (user instanceof Contractor && !user.isActivated() && user.isNativeUser()) {
