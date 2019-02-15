@@ -4,9 +4,7 @@ package com.improver.controller;
 import com.improver.entity.Contractor;
 import com.improver.entity.User;
 import com.improver.exception.ConflictException;
-import com.improver.exception.NotFoundException;
 import com.improver.exception.ValidationException;
-import com.improver.model.UserAccount;
 import com.improver.model.in.registration.CompanyRegistration;
 import com.improver.model.in.OldNewValue;
 import com.improver.model.in.registration.UserRegistration;
@@ -29,7 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.Optional;
 import java.util.UUID;
 
 import static com.improver.application.properties.Path.*;

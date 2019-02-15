@@ -73,12 +73,6 @@ public class Admin extends Staff {
     }
 
     @Override
-    public Admin setDisplayName(String displayName) {
-        super.setDisplayName(displayName);
-        return this;
-    }
-
-    @Override
     public Admin setActivated(boolean isActive) {
         super.setActivated(isActive);
         return this;

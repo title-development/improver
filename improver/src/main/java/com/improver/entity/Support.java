@@ -65,12 +65,6 @@ public class Support extends Staff {
     }
 
     @Override
-    public Support setDisplayName(String displayName) {
-        super.setDisplayName(displayName);
-        return this;
-    }
-
-    @Override
     public Support setActivated(boolean isActive) {
         super.setActivated(isActive);
         return this;

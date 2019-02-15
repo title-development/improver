@@ -68,12 +68,6 @@ public class Manager extends User {
         return this;
     }
 
-    @Override
-    public Manager setDisplayName(String displayName) {
-        super.setDisplayName(displayName);
-        return this;
-    }
-
 
     @Override
     public Manager setActivated(boolean isActive) {

@@ -123,7 +123,6 @@ public class UserService {
         existed
             .setFirstName(toUpdate.getFirstName())
             .setLastName(toUpdate.getLastName())
-            .setDisplayName(toUpdate.getDisplayName())
             .setEmail(toUpdate.getEmail())
             .setInternalPhone(toUpdate.getInternalPhone());
 
@@ -138,6 +137,7 @@ public class UserService {
         String validationKey = UUID.randomUUID().toString();
         Contractor contractor = contractorRepository.save(new Contractor(registration)
             .setValidationKey(validationKey)
+            .setIncomplete(true)
         );
         return contractor;
     }
@@ -283,7 +283,6 @@ public class UserService {
 
         existed.setFirstName(account.getFirstName())
             .setLastName(account.getLastName())
-            .setDisplayName(account.getFirstName() + " " + account.getLastName())
             .setInternalPhone(account.getPhone())
             .setUpdated(ZonedDateTime.now());
 
@@ -308,7 +307,6 @@ public class UserService {
 
         user.setFirstName(toUpdate.getFirstName());
         user.setLastName(toUpdate.getLastName());
-        user.setDisplayName(toUpdate.getDisplayName());
         user.setEmail(toUpdate.getEmail());
         user.setInternalPhone(toUpdate.getInternalPhone());
         user.setActivated(toUpdate.isActivated());

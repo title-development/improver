@@ -7,6 +7,8 @@ import com.improver.model.NameUuidTuple;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+//TODO Andriy: Model cannot extends entity!!!
+@Deprecated
 @Data
 @NoArgsConstructor
 public class AdminContractor extends User {
@@ -19,7 +21,6 @@ public class AdminContractor extends User {
         this.email = contractor.getEmail();
         this.firstName = contractor.getFirstName();
         this.lastName = contractor.getLastName();
-        this.displayName = contractor.getDisplayName();
         this.iconUrl = contractor.getIconUrl();
         this.internalPhone = contractor.getInternalPhone();
         this.isActivated = contractor.isActivated();

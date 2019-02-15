@@ -61,12 +61,6 @@ public class Stakeholder extends User {
     }
 
     @Override
-    public Stakeholder setDisplayName(String displayName) {
-        super.setDisplayName(displayName);
-        return this;
-    }
-
-    @Override
     public Stakeholder setActivated(boolean isActive) {
         super.setActivated(isActive);
         return this;

@@ -63,61 +63,24 @@ public class Customer extends User {
         super(firstName, lastName, email, plainPassword, internalPhone);
     }
 
+    public Customer(String firstName, String lastName, String email, String plainPassword, String internalPhone, String iconUrl) {
+        super(firstName, lastName, email, plainPassword, internalPhone, iconUrl);
+    }
+
+
     public static Customer of(SocialUser socialUser) {
-        return new Customer()
-            .setEmail(socialUser.getEmail())
-            .setFirstName(socialUser.getFirstName())
-            .setLastName(socialUser.getLastName())
-            .setActivated(true)
-            .setCreated(ZonedDateTime.now())
-            .setIconUrl(socialUser.getPicture());
+        return new Customer(socialUser.getFirstName(),
+            socialUser.getLastName(),
+            socialUser.getEmail(),
+            null,
+            null,
+            socialUser.getPicture())
+            .setActivated(true);
     }
 
     @Override
     public Role getRole() {
         return Role.CUSTOMER;
-    }
-
-    @Override
-    public Customer setId(long id) {
-        super.setId(id);
-        return this;
-    }
-
-    @Override
-    public Customer setEmail(String email) {
-        super.setEmail(email);
-        return this;
-    }
-
-    @Override
-    public Customer setPassword(String password) {
-        super.setPassword(password);
-        return this;
-    }
-
-    @Override
-    public Customer setFirstName(String firstName) {
-        super.setFirstName(firstName);
-        return this;
-    }
-
-    @Override
-    public Customer setLastName(String lastName) {
-        super.setLastName(lastName);
-        return this;
-    }
-
-    @Override
-    public Customer setDisplayName(String displayName) {
-        super.setDisplayName(displayName);
-        return this;
-    }
-
-    @Override
-    public Customer setInternalPhone(String phone) {
-        super.setInternalPhone(phone);
-        return this;
     }
 
     @Override
@@ -129,24 +92,6 @@ public class Customer extends User {
     @Override
     public Customer setActivated(boolean isActive) {
         super.setActivated(isActive);
-        return this;
-    }
-
-    @Override
-    public Customer setBlocked(boolean isEnabled) {
-        super.setBlocked(isEnabled);
-        return this;
-    }
-
-    @Override
-    public Customer setCreated(ZonedDateTime created) {
-        super.setCreated(created);
-        return this;
-    }
-
-    @Override
-    public Customer setLastLogin(ZonedDateTime lastLogin) {
-        super.setLastLogin(lastLogin);
         return this;
     }
 

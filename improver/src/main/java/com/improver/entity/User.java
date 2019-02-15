@@ -115,6 +115,7 @@ public class User implements Principal {
     }
 
 
+    @Deprecated
     @PrePersist
     public void updateDisplayName() {
         if (displayName == null) {
@@ -135,10 +136,7 @@ public class User implements Principal {
     }
 
     public String getDisplayName() {
-        if (this.displayName == null) {
-            return firstName + " " + lastName;
-        }
-        return this.displayName;
+        return firstName + " " + lastName;
     }
 
 

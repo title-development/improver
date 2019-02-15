@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collections;
 import java.util.List;
 
-
+@RequiredArgsConstructor
 public class UserDetailsImpl implements UserDetails {
 
     private final String username;
@@ -16,26 +16,18 @@ public class UserDetailsImpl implements UserDetails {
     private final boolean isAccountNonExpired;
     private final boolean isAccountNonLocked;
     private final boolean isCredentialsNonExpired;
-    private boolean isEnabled;
+    private final boolean isEnabled;
     private final List<SimpleGrantedAuthority> authorities;
+
 
     public UserDetailsImpl(User user) {
         this.username = user.getEmail();
         this.password = user.getPassword();
-        this.isCredentialsNonExpired = true;
         this.isAccountNonExpired = !user.isDeleted();
         this.isAccountNonLocked = !user.isBlocked();
+        this.isCredentialsNonExpired = true;
         this.isEnabled = user.isActivated();
         this.authorities = Collections.singletonList(new SimpleGrantedAuthority(user.getRole().toString()));
-    }
-
-    private UserDetailsImpl(User user, boolean activated) {
-        this(user);
-        this.isEnabled = activated;
-    }
-
-    public static UserDetailsImpl incompletePro(User user) {
-        return new UserDetailsImpl(user, true);
     }
 
     @Override

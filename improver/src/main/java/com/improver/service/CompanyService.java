@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 
+import javax.transaction.Transactional;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -146,7 +147,7 @@ public class CompanyService {
         toAdd.removeAll(existed);
 
         areaRepository.updateAreasForCompany(company, toAdd, toRemove);
-        log.info("Company={} Coverage: Added={} ; Removed={}", company.getId(), toAdd, toRemove);
+        log.debug("Company={} Coverage: Added={} ; Removed={}", company.getId(), toAdd, toRemove);
     }
 
 
@@ -159,7 +160,7 @@ public class CompanyService {
         List<String> allServedZips = servedZipRepository.getAllServedZips();
         toAdd.removeIf(zip -> !allServedZips.contains(zip));
         areaRepository.updateAreasForCompany(company, toAdd, toRemove);
-        log.info("Company={} Coverage: Added={} ; Removed={}", company.getId(), toAdd, toRemove);
+        log.debug("Company={} Coverage: Added={}; Removed={}", company.getId(), toAdd, toRemove);
     }
 
     public void addAreas(Company company, List<String> zipCodes) {
@@ -387,27 +388,25 @@ public class CompanyService {
      * @param contractor company owner
      *
      */
+    @Transactional
     public void registerCompany(CompanyRegistration registration, Contractor contractor){
-        // 1. Company
-        Company company = createCompany(registration.getCompany(), contractor);
+        if(contractor.getCompany() != null) {
+            throw new ConflictException(contractor.getCompany().getName() + " company already registered for "
+                + contractor.getEmail());
+        }
 
-        // 2. Trades and Services
+        Company company = createCompany(registration.getCompany());
+        linkCompanyAndContractor(company, contractor);
         updateTradesServicesCollection(company, registration.getTradesAndServices());
-
-        // 3. Coverage
         updateCoverage(company, registration.getCoverage().getCenter().lat,
             registration.getCoverage().getCenter().lng, registration.getCoverage().getRadius());
-
-        // 4. Add initial bonus from Invitation
+        // Add initial bonus from Invitation
         billingService.addInitialBonus(company, contractor.getEmail());
-
-        // 5. send email to contractor
         mailService.sendRegistrationConfirmEmail(contractor);
     }
 
 
-    @Deprecated
-    private Company createCompany(CompanyDetails companyDetails, Contractor contractor) {
+    private Company createCompany(CompanyDetails companyDetails) {
         ZonedDateTime now = ZonedDateTime.now();
         String iconUrl = null;
         if (companyDetails.getLogo() != null && !companyDetails.getLogo().isEmpty()) {
@@ -419,20 +418,21 @@ public class CompanyService {
         }
 
         Company company = companyRepository.save(Company.of(companyDetails, iconUrl, now));
-        String replyText = String.format(REPLY_TEXT_TEMPLATE, contractor.getDisplayName(), company.getName());
-        if (contractor.isNativeUser()) {
-            contractor.setActivated(false); //TODO: this is temporary to give ability for login and register company
-        }
-        contractorRepository.save(contractor.setCompany(company)
-            .setQuickReply(true)
-            .setReplyText(replyText));
-
         Billing billing = billRepository.save(Billing.forNewCompany(company));
         CompanyConfig defaultSettings = CompanyConfig.defaultSettings(company);
         company.setCompanyConfig(defaultSettings);
         company.setBilling(billing);
         companyConfigRepository.save(defaultSettings);
         return company;
+    }
+
+
+    private void linkCompanyAndContractor(Company company, Contractor contractor) {
+        String replyText = String.format(REPLY_TEXT_TEMPLATE, contractor.getDisplayName(), company.getName());
+        contractorRepository.save(contractor.setCompany(company)
+            .setIncomplete(false)
+            .setQuickReply(true)
+            .setReplyText(replyText));
     }
 
 }

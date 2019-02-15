@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.UUID;
 
 import static com.improver.entity.User.Role.CONTRACTOR;
@@ -39,27 +41,30 @@ public class UserSecurityService implements UserDetailsService {
     @Autowired private StaffRepository staffRepository;
 
     /**
-     * Intended to be used by {@link LoginFilter}
+     * Intended to be used by {@link LoginFilter}.
+     *
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(username)
             .orElseThrow(() -> new UsernameNotFoundException(String.format("No user found with username '%s'.", username)));
-        return buildUserDetails(user);
+        return user instanceof Contractor ? ofContractor((Contractor) user)
+            : new UserDetailsImpl(user);
     }
 
     /**
-     * Handles {@link User.Role#INCOMPLETE_PRO} activation scenario
+     * Handles {@link User.Role#INCOMPLETE_PRO} activation scenario.
+     *
      */
-    private UserDetailsImpl buildUserDetails(User user) {
-        if (user instanceof Contractor
-            && user.isNativeUser()
-            && !user.isActivated()
-            && ((Contractor) user).getCompany() == null) {
-            return UserDetailsImpl.incompletePro(user);
-        } else {
-            return new UserDetailsImpl(user);
-        }
+    private UserDetailsImpl ofContractor(Contractor contractor){
+        User.Role role = contractor.isIncomplete()? INCOMPLETE_PRO : contractor.getRole();
+        return new UserDetailsImpl(contractor.getEmail(),
+            contractor.getPassword(),
+            !contractor.isDeleted(),
+            !contractor.isBlocked(),
+            true,
+            contractor.isIncomplete() || contractor.isActivated(),
+            Collections.singletonList(new SimpleGrantedAuthority(role.toString())));
     }
 
     public User currentUser() throws AuthenticationRequiredException {
@@ -126,7 +131,7 @@ public class UserSecurityService implements UserDetailsService {
         //updateLastLogin
         User updated = userRepository.save(user.setLastLogin(ZonedDateTime.now()).setRefreshId(UUID.randomUUID().toString()));
         LoginModel loginModel = getLoginModel(updated);
-        String jwt = jwtUtil.generateAccessJWT(loginModel);
+        String jwt = getAccessJWT(updated);
         res.setHeader(AUTHORIZATION_HEADER_NAME, BEARER_TOKEN_PREFIX + jwt);
         res.addCookie(TokenProvider.buildRefreshCookie(loginModel.getRefreshId()));
         log.info("User {} logged in", user.getEmail());
@@ -145,7 +150,8 @@ public class UserSecurityService implements UserDetailsService {
     }
 
     /**
-     * Performs account security check for given user
+     * Performs account security check for given user.
+     * Handles {@link User.Role#INCOMPLETE_PRO} activation scenario.
      *
      * @param user - user to check
      * @throws DisabledException           - when account not activated
@@ -154,10 +160,11 @@ public class UserSecurityService implements UserDetailsService {
      * @throws AccountExpiredException     - when account was deleted
      */
     public void checkUser(User user) throws DisabledException, LockedException, CredentialsExpiredException, AccountExpiredException {
-        if(!user.isActivated() && user.isNativeUser()
-            && (!(user instanceof Contractor)
-                || (((Contractor) user).getCompany() != null))) {
-            throw new DisabledException(ACCOUNT_NOT_ACTIVATED_MSG);
+        if(!user.isActivated()) {
+            if (user instanceof Contractor && ((Contractor) user).isIncomplete()) {
+            } else {
+                throw new DisabledException(ACCOUNT_NOT_ACTIVATED_MSG);
+            }
         }
         if (user.isBlocked()) {
             throw new LockedException(ACCOUNT_BLOCKED_MSG);
@@ -166,7 +173,6 @@ public class UserSecurityService implements UserDetailsService {
             throw new AccountExpiredException(ACCOUNT_DELETED_MSG);
         }
         if (user instanceof Staff) {
-            // TODO: Add more logic here
             if (((Staff) user).isCredentialExpired()) {
                 throw new CredentialsExpiredException(CREDENTIALS_EXPIRED_MSG);
             }
@@ -208,7 +214,7 @@ public class UserSecurityService implements UserDetailsService {
      */
     public String getAccessJWT(User user) {
         User.Role role = user.getRole();
-        if (user instanceof Contractor && !user.isActivated() && user.isNativeUser()) {
+        if (user instanceof Contractor && ((Contractor) user).isIncomplete()) {
             role = INCOMPLETE_PRO;
         }
         return jwtUtil.generateAccessJWT(user.getEmail(), role.toString());

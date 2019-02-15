@@ -37,6 +37,9 @@ public class Contractor extends User {
     private boolean quickReply;
 
     @JsonIgnore
+    private boolean isIncomplete;
+
+    @JsonIgnore
     @Column(columnDefinition = "varchar(500)")
     private String replyText;
 
@@ -53,14 +56,13 @@ public class Contractor extends User {
     }
 
     public static Contractor of(SocialUser socialUser, String internalPhone) {
-        return new Contractor()
-            .setEmail(socialUser.getEmail())
-            .setFirstName(socialUser.getFirstName())
-            .setLastName(socialUser.getLastName())
-            .setActivated(true)
-            .setCreated(ZonedDateTime.now())
-            .setInternalPhone(internalPhone)
-            .setIconUrl(socialUser.getPicture());
+        return new Contractor(socialUser.getFirstName(),
+            socialUser.getLastName(),
+            socialUser.getEmail(),
+            null,
+            internalPhone,
+            socialUser.getPicture())
+            .setActivated(true);
     }
 
     @Override
@@ -76,52 +78,11 @@ public class Contractor extends User {
     }
 
     @Override
-    public Contractor setId(long id) {
-        super.setId(id);
-        return this;
-    }
-
-    @Override
-    public Contractor setEmail(String email) {
-        super.setEmail(email);
-        return this;
-    }
-
-    @Override
-    public Contractor setPassword(String password) {
-        super.setPassword(password);
-        return this;
-    }
-
-    @Override
-    public Contractor setFirstName(String firstName) {
-        super.setFirstName(firstName);
-        return this;
-    }
-
-    @Override
-    public Contractor setLastName(String lastName) {
-        super.setLastName(lastName);
-        return this;
-    }
-
-    @Override
-    public Contractor setDisplayName(String displayName) {
-        super.setDisplayName(displayName);
-        return this;
-    }
-
-    @Override
     public Contractor setActivated(boolean isActive) {
         super.setActivated(isActive);
         return this;
     }
 
-    @Override
-    public Contractor setBlocked(boolean isEnabled) {
-        super.setBlocked(isEnabled);
-        return this;
-    }
 
     @Override
     public Contractor setCreated(ZonedDateTime created) {
@@ -129,20 +90,4 @@ public class Contractor extends User {
         return this;
     }
 
-    @Override
-    public Contractor setLastLogin(ZonedDateTime lastLogin) {
-        super.setLastLogin(lastLogin);
-        return this;
-    }
-
-    @Override
-    public Contractor setIconUrl(String iconUrl) {
-        super.setIconUrl(iconUrl);
-        return this;
-    }
-
-    public Contractor setInternalPhone(String internalPhone) {
-        super.setInternalPhone(internalPhone);
-        return this;
-    }
 }

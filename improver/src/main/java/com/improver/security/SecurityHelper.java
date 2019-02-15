@@ -1,6 +1,7 @@
 package com.improver.security;
 
 import com.improver.entity.Company;
+import com.improver.entity.Contractor;
 import com.improver.entity.User;
 import com.improver.exception.AccessDeniedException;
 import com.improver.repository.CompanyRepository;
@@ -22,7 +23,7 @@ public class SecurityHelper {
     @Autowired private ContractorRepository contractorRepository;
 
     public boolean isSameUser(@NotNull Authentication auth, String email, long id) {
-        if (auth == null || (id == 0 && email == null))
+        if ( id == 0 && email == null)
             throw new IllegalArgumentException("Username/ID is missing. Incorrect annotation use.");
         String principalEmail = auth.getName().toLowerCase();
         User user = userRepository.findByEmail(principalEmail)
@@ -31,7 +32,7 @@ public class SecurityHelper {
     }
 
     public boolean isCompanyMember(@NotNull Authentication auth, String companyId, String companyUri) {
-        if (auth == null || (companyId == null && companyUri == null))
+        if (companyId == null && companyUri == null)
             throw new IllegalArgumentException("Company ID/URI is missing. Incorrect annotation use.");
         String principalEmail = auth.getName().toLowerCase();
         Company company = companyRepository.findByContractorEmail(principalEmail)
