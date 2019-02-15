@@ -1,21 +1,12 @@
 @import "../../scss/variables";
 
 :host {
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 16px;
-  height: 16px;
-  background-color: $white;
   display: flex;
   align-items: center;
   justify-content: center;
   color: $black-primary;
-  cursor: pointer;
-  border-radius: 50%;
-  transition: color .3s ease;
   font-size: 10px;
-  &:hover {
-    color: $primary-500;
-  }
+  position: absolute;
+  top: 2px;
+  right: 0;
 }

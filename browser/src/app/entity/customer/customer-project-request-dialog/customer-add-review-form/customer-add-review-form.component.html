@@ -31,6 +31,7 @@
                         [placeholder]="'Tell something about your experience with ' + projectRequest.company.name"
                         name="review" [minlength]="constants.REVIEW_MESSAGE_MIN_LENGTH" [maxlength]="constants.REVIEW_MESSAGE_MAX_LENGTH" [(ngModel)]="newReview.description"
                         required></textarea>
+            <cv-field-hint>{{message.value ? message.value.length : 0}}/{{constants.REVIEW_MESSAGE_MAX_LENGTH}}</cv-field-hint>
             <cv-field-error *ngIf="message.dirty || message.touched || reviewPostForm.submitted">
               <span *ngIf="message.errors?.required">Please tell us about your experience with {{projectRequest.company.name}}</span>
               <span *ngIf="message.errors?.minlength">Please enter a message greater then 10 symbols</span>

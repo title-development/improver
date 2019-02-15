@@ -47,3 +47,10 @@
 .input-holder {
   position: relative;
 }
+
+.hint-holder {
+  display: flex;
+  position: relative;
+  justify-content: space-between;
+  padding-right: 52px;
+}

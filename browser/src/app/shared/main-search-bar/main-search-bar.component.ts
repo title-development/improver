@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnChanges, OnDestroy, OnInit, Output } from '@angular/core';
 import { markAsTouched } from '../../util/functions';
 import { ServiceType } from '../../model/data-model';
 import { FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
@@ -15,7 +15,7 @@ import { Router } from '@angular/router';
   templateUrl: './main-search-bar.component.html',
   styleUrls: ['./main-search-bar.component.scss']
 })
-export class MainSearchBarComponent implements OnInit, OnChanges {
+export class MainSearchBarComponent implements OnInit {
   @Input() service: string;
   @Input() zipCode: number;
   @Input() resetAfterFind: boolean = true;
@@ -42,20 +42,17 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
     this.serviceTypeCtrl = group.serviceTypeCtrl;
   }
 
-  ngOnChanges(changes): void {
-  }
-
-
   autocompleteSearch(search): void {
-    if (search) {
-      this.filteredServiceTypes = this.serviceTypes.filter(service => {
-        const regExp: RegExp = new RegExp(`\\b${search}`, 'gmi');
-        return regExp.test(service.name);
-      });
-
-    } else if (this.filteredServiceTypes.length > 0) {
-      this.filteredServiceTypes = this.serviceTypes;
-    }
+    setTimeout(() => {
+      if (search) {
+        this.filteredServiceTypes = this.serviceTypes.filter(service => {
+          const regExp: RegExp = new RegExp(`\\b${search}`, 'gmi');
+          return regExp.test(service.name);
+        });
+      } else if (this.filteredServiceTypes.length > 0) {
+        this.filteredServiceTypes = this.serviceTypes;
+      }
+    }, 0);
   }
 
   searchServiceType(form: FormGroup): void {

@@ -3,7 +3,8 @@
   <div #defaultQuestion class="form-element-wrapper text-input-wrapper" [formGroupName]="'defaultQuestionaryGroup'"
        *ngIf="projectActionService.zipIsSupported && (questionaryControlService.currentQuestionIndex == -1)">
     <h2 class="question-title">Where do you need a {{questionaryControlService.serviceType.name}}?</h2>
-    <div class="text-input-group zip-check-group" [formGroupName]="'projectLocation'" [cvSpinner]="projectActionService.zipIsChecking"
+    <div class="text-input-group zip-check-group" [formGroupName]="'projectLocation'"
+         [cvSpinner]="projectActionService.zipIsChecking"
          [cvSpinnerSize]="50"
          [cvSpinnerBackground]="true">
       <cv-input-field>
@@ -37,7 +38,8 @@
 
   <div #defaultQuestion class="form-element-wrapper text-input-wrapper"
        *ngIf="!projectActionService.zipIsSupported">
-    <h2 class="question-title">Home Improve is not serving {{defaultQuestionaryForm.get('projectLocation.zip').value}}</h2>
+    <h2 class="question-title">Home Improve is not
+      serving {{defaultQuestionaryForm.get('projectLocation.zip').value}}</h2>
 
     <div class="unsupported-zip-message">
       We are coming to your area soon.
@@ -73,7 +75,10 @@
     </div>
 
     <div class="questionary-dialog-footer">
-      <button class="questionary-previous-button" (click)="previousQuestion()" *ngIf="!questionaryControlService.withZip || questionaryControlService.currentQuestionIndex >= 1" type="button">Back</button>
+      <button class="questionary-previous-button" (click)="previousQuestion()"
+              *ngIf="!questionaryControlService.withZip || questionaryControlService.currentQuestionIndex >= 1"
+              type="button">Back
+      </button>
       <button class="questionary-next-button" (click)="nextQuestion('startExpectation')" type="button">Next</button>
     </div>
 
@@ -87,15 +92,18 @@
       should know about your project</h2>
     <div class="text-input-group">
 
-      <cv-field-label>Project details</cv-field-label>
-      <textarea cv-input placeholder="Describe your project for professional"
-                formControlName="notes"
-                rows="4"
-                trim
-                type="text"
-                maxlength="1500"
-                [required]="questionaryControlService.questionaryLength == 0">
-      </textarea>
+      <cv-input-field>
+        <cv-field-label>Project details</cv-field-label>
+        <textarea cv-input
+                  placeholder="Describe your project for professional"
+                  formControlName="notes"
+                  rows="4"
+                  trim
+                  type="text"
+                  maxlength="1500"
+                  [required]="questionaryControlService.questionaryLength == 0"></textarea>
+        <cv-field-hint>{{projectDetails.value ? projectDetails.value.length : 0}}/1500</cv-field-hint>
+      </cv-input-field>
 
 
       <cv-field-error
@@ -252,9 +260,12 @@
                required>
         <cv-field-error
           *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.firstName').dirty || defaultQuestionaryForm.get('customerPersonalInfo.firstName').touched">
-          <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.firstName').errors?.required">{{messages.errors.firstName.required}}</span>
-          <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.firstName').errors?.minlength">{{messages.errors.firstName.minlength}}</span>
-          <span *ngIf="!defaultQuestionaryForm.get('customerPersonalInfo.firstName').errors?.minlength && defaultQuestionaryForm.get('customerPersonalInfo.firstName').errors?.pattern">{{messages.errors.name.notValid}}</span>
+          <span
+            *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.firstName').errors?.required">{{messages.errors.firstName.required}}</span>
+          <span
+            *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.firstName').errors?.minlength">{{messages.errors.firstName.minlength}}</span>
+          <span
+            *ngIf="!defaultQuestionaryForm.get('customerPersonalInfo.firstName').errors?.minlength && defaultQuestionaryForm.get('customerPersonalInfo.firstName').errors?.pattern">{{messages.errors.name.notValid}}</span>
         </cv-field-error>
       </cv-input-field>
 
@@ -270,9 +281,12 @@
                required>
         <cv-field-error
           *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.lastName').dirty || defaultQuestionaryForm.get('customerPersonalInfo.lastName').touched">
-          <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.lastName').errors?.required">{{messages.errors.lastName.required}}</span>
-          <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.lastName').errors?.minlength">{{messages.errors.lastName.minlength}}</span>
-          <span *ngIf="!defaultQuestionaryForm.get('customerPersonalInfo.lastName').errors?.minlength && defaultQuestionaryForm.get('customerPersonalInfo.lastName').errors?.pattern">{{messages.errors.name.notValid}}</span>
+          <span
+            *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.lastName').errors?.required">{{messages.errors.lastName.required}}</span>
+          <span
+            *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.lastName').errors?.minlength">{{messages.errors.lastName.minlength}}</span>
+          <span
+            *ngIf="!defaultQuestionaryForm.get('customerPersonalInfo.lastName').errors?.minlength && defaultQuestionaryForm.get('customerPersonalInfo.lastName').errors?.pattern">{{messages.errors.name.notValid}}</span>
         </cv-field-error>
       </cv-input-field>
 
@@ -288,7 +302,8 @@
         >
         <cv-field-error
           *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.email').dirty || defaultQuestionaryForm.get('customerPersonalInfo.email').touched">
-          <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.email').errors?.required">{{messages.errors.email.required}}</span>
+          <span
+            *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.email').errors?.required">{{messages.errors.email.required}}</span>
           <span
             *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.email').errors?.pattern">{{messages.errors.email.pattern}}</span>
         </cv-field-error>
@@ -306,9 +321,12 @@
                required>
         <cv-field-error
           *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.phone').dirty || defaultQuestionaryForm.get('customerPersonalInfo.phone').touched">
-          <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.phone').errors?.required">{{messages.errors.phone.required}}</span>
-          <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.phone').errors?.pattern">{{messages.errors.phone.pattern}}</span>
-          <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.phone').errors?.allZeros">{{messages.errors.phone.pattern}}</span>
+          <span
+            *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.phone').errors?.required">{{messages.errors.phone.required}}</span>
+          <span
+            *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.phone').errors?.pattern">{{messages.errors.phone.pattern}}</span>
+          <span
+            *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.phone').errors?.allZeros">{{messages.errors.phone.pattern}}</span>
         </cv-field-error>
       </cv-input-field>
 
@@ -340,7 +358,8 @@
       </div>
 
       <div class="existing-customer-explanation" *ngIf="!emailIsUnique && emailIsChecked">
-        <div>Account with email <span class="existing-customer-email">{{defaultQuestionaryForm.get('customerPersonalInfo.email').value}}</span>
+        <div>Account with email <span
+          class="existing-customer-email">{{defaultQuestionaryForm.get('customerPersonalInfo.email').value}}</span>
           already exist
         </div>
         <div>If you are the owner of this account just <a routerLink="/login" (click)="dialog.closeAll()">Log in</a>

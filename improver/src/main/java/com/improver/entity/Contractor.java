@@ -62,6 +62,7 @@ public class Contractor extends User {
             null,
             internalPhone,
             socialUser.getPicture())
+            .setIncomplete(true)
             .setActivated(true);
     }
 

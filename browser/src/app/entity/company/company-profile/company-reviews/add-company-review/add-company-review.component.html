@@ -29,7 +29,10 @@
               </span>
         </mat-hint>
         <div class="review-post-message-container">
-          <textarea class="review-post-message" rows="5" placeholder="Tell something about your experience with North America Development Group, LLC" name="review" maxlength="500" [(ngModel)]="newReview.description" trim required></textarea>
+          <cv-input-field>
+            <textarea class="review-post-message" #companyReview="ngModel" rows="5" placeholder="Tell something about your experience with North America Development Group, LLC" name="review" maxlength="500" [(ngModel)]="newReview.description" trim required></textarea>
+            <cv-field-hint>{{companyReview.value ? companyReview.value.length : 0}}/500</cv-field-hint>
+          </cv-input-field>
         </div>
         <div *ngIf="reviewPostForm.submitted && (newReview.description == '' || newReview.description == undefined)" class="mat-error">
           Please tell us about your experience with {{companyProfile.name}}

@@ -19,7 +19,7 @@ enum ModeEnum {NEW = 'NEW', UPDATE = 'UPDATE', CANCEL = 'CANCEL'}
   styleUrls: ['./subscription-actions.component.scss']
 })
 
-export class SubscriptionActionsComponent implements OnInit {
+export class SubscriptionActionsComponent {
 
   ModeEnum = ModeEnum;
   mode: ModeEnum;
@@ -40,20 +40,16 @@ export class SubscriptionActionsComponent implements OnInit {
               public route: ActivatedRoute) {
     this.sub = this.route.params.subscribe(params => {
       this.mode = params['mode'] ? this.mode = params['mode'].toString().toUpperCase() : null;
-      // const isNot
-      if (this.mode != ModeEnum.NEW && this.mode != ModeEnum.UPDATE && this.mode != ModeEnum.CANCEL ||
-        subscriptionActionsService.subscriptionAmount <= 0 && this.mode != ModeEnum.CANCEL ||
-        subscriptionActionsService.nextBillingDate == null && this.mode === ModeEnum.CANCEL) {
+      const isIncorrectMode = this.mode != ModeEnum.NEW && this.mode != ModeEnum.UPDATE && this.mode != ModeEnum.CANCEL;
+      const isAmountNotAvailableToChange = subscriptionActionsService.subscriptionAmount <= 0 && this.mode != ModeEnum.CANCEL;
+      const isNotAllowUnsubscribe = subscriptionActionsService.nextBillingDate == null && this.mode === ModeEnum.CANCEL;
+      if (isIncorrectMode || isAmountNotAvailableToChange || isNotAllowUnsubscribe) {
         this.router.navigate(['/pro/settings/billing'])
       }
-
       this.getPaymentCards();
 
     });
 
-  }
-
-  ngOnInit(): void {
   }
 
   openChangeDefaultPaymentCard() {
@@ -99,7 +95,6 @@ export class SubscriptionActionsComponent implements OnInit {
         this.router.navigate(['/pro/settings/billing'])
       },
       err => {
-        console.log(err);
         this.popupService.showError(getErrorMessage(err));
         this.subscriptionProcessing = false;
       }

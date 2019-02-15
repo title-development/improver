@@ -25,7 +25,9 @@
                        name="name"
                        #name="ngModel"
                        [(ngModel)]="galleryProject.name"
+                       maxlength="255"
                        required>
+                <cv-field-hint>{{name.value ? name.value.length : 0}}/255</cv-field-hint>
                 <cv-field-error *ngIf="name.dirty || name.touched || galleryProjectForm.submitted">
                   <span *ngIf="name.errors?.required">Required</span>
                 </cv-field-error>
@@ -82,6 +84,7 @@
                           maxlength="1500"
                           required>
                   </textarea>
+                <cv-field-hint>{{description.value ? description.value.length : 0}}/1500</cv-field-hint>
                 <cv-field-error *ngIf="description.dirty || description.touched || galleryProjectForm.submitted">
                   <span *ngIf="description.errors?.required">Required</span>
                 </cv-field-error>

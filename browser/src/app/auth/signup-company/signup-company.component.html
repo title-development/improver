@@ -53,10 +53,11 @@
                          name="companyName"
                          [(ngModel)]="companyRegistration.company.name"
                          minlength="2"
-                         maxlength="50"
+                         maxlength="70"
                          required
                          trim
                          companyNameUniqueValidator>
+                  <cv-field-hint>{{companyName.value ? companyName.value.length : 0}}/70</cv-field-hint>
                   <cv-field-error *ngIf="companyName.dirty || companyName.touched || companyInfoForm.submitted">
                       <span *ngIf="companyName.errors?.required">
                         {{messages.errors.companyName.required}}
@@ -97,6 +98,7 @@
                          placeholder="Company website"
                          name="companyWebsite"
                          #companyWebsite="ngModel"
+                         maxlength="255"
                          trim
                          [(ngModel)]="companyRegistration.company.siteUrl">
                   <cv-field-error *ngIf="companyWebsite.dirty || companyWebsite.touched || companyInfoForm.submitted">
@@ -128,6 +130,7 @@
                             minlength="20"
                             maxlength="2500">
                      </textarea>
+                  <cv-field-hint>{{companyDescription.value ? companyDescription.value.length : 0}}/2500</cv-field-hint>
                   <cv-field-error
                     *ngIf="companyDescription.dirty || companyDescription.touched || companyInfoForm.submitted">
                       <span *ngIf="companyDescription.errors?.required">

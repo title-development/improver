@@ -18,7 +18,8 @@ const routes: Routes = [
   },
   {
     path: 'subscription-actions/:mode',
-    loadChildren: './subscription-actions/subscription-actions.module#SubscriptionActionsModule'
+    data: {reuse: false},
+    loadChildren: './subscription-actions/subscription-actions.module#SubscriptionActionsModule',
   },
   {
     path: 'receipt/:mode/:receiptId',

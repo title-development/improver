@@ -27,6 +27,7 @@
                     [maxlength]="constants.REVIEW_MESSAGE_MAX_LENGTH"
                     [(ngModel)]="review.description"
                     required></textarea>
+          <cv-field-hint>{{description.value ? description.value.length : 0}}/{{constants.REVIEW_MESSAGE_MAX_LENGTH}}</cv-field-hint>
           <cv-field-error
             *ngIf="description.dirty || description.touched || form.submitted">
             <span *ngIf="description.errors?.required">Please enter a review comment</span>

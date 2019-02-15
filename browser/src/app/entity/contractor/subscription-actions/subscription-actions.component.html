@@ -105,14 +105,14 @@
     <div class="card">
 
       <div class="cancel-description">
-        <img src="/assets/img/round-icons/cancel-subscription.png" alt="">
+        <img src="/assets/img/round-icons/cancel-subscription.png" alt="Cancel subscription">
         <div class="title">Unsubscribe from automatic leads</div>
         <div class="body">You will cancel you Subscription. Your current plan will expire on
           <span class="highlight">{{subscriptionActionsService.nextBillingDate | date:'longDate'}}</span> and you will receive leads and benefits up until that date</div>
         <div class="question">Proceed to unsubscribe?</div>
         <div class="buttons-wrapper">
           <button cv-button-empty routerLink="/pro/settings/billing">Cancel</button>
-          <button cv-button (click)="unsubscribe()">Continue</button>
+          <button cv-button (click)="unsubscribe()" [loading]="subscriptionProcessing">Continue</button>
         </div>
       </div>
 

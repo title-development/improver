@@ -12,6 +12,7 @@
     <cv-input-field>
       <cv-field-label>Emails</cv-field-label>
       <textarea maxlength="500" multipleEmailsValidator #emailsEl="ngModel" placeholder="client1@mail.com, client2@mail.com, client3@mail.com" trim required cv-input name="emails" cols="30" rows="4" [(ngModel)]="emails"></textarea>
+      <cv-field-hint>{{emailsEl.value ? emailsEl.value.length : 0}}/500</cv-field-hint>
       <cv-field-error *ngIf="emailsEl.dirty || emailsEl.touched || form.submitted">
         <span *ngIf="emailsEl.errors?.required">{{messages.errors.default.required}}</span>
         <span *ngIf="emailsEl.errors?.multipleEmails">Please enter a valid email</span>
@@ -21,6 +22,7 @@
     <cv-input-field>
       <cv-field-label>Subject</cv-field-label>
       <input minlength="10" maxlength="50" #subjectEl="ngModel" required cv-input type="text" name="subject" [(ngModel)]="subject" autocomplete="new-password">
+      <cv-field-hint>{{subjectEl.value ? subjectEl.value.length : 0}}/50</cv-field-hint>
       <cv-field-error *ngIf="subjectEl.dirty || subjectEl.touched || form.submitted">
         <span *ngIf="subjectEl.errors?.required">{{messages.errors.default.required}}</span>
         <span *ngIf="subjectEl.errors?.minlength">Subject is too short</span>
@@ -30,6 +32,7 @@
     <cv-input-field>
       <cv-field-label>Message</cv-field-label>
       <textarea #messageEl="ngModel" minlength="10" maxlength="255" required trim cv-input name="message" id="" cols="30" rows="5" [(ngModel)]="message"></textarea>
+      <cv-field-hint>{{messageEl.value ? messageEl.value.length : 0}}/255</cv-field-hint>
       <cv-field-error *ngIf="messageEl.dirty || messageEl.touched || form.submitted">
         <span *ngIf="messageEl.errors?.required">Please enter a message</span>
         <span *ngIf="messageEl.errors?.minlength">Please more describe your request</span>

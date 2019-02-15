@@ -17,11 +17,12 @@ import { QuestionaryControlService } from './questionary-control.service';
 import { SecurityService } from '../auth/security.service';
 import { dialogsMap } from '../shared/dialogs/dialogs.state';
 import { QuestionaryBlock } from '../model/questionary-model';
-import { ServiceTypeService } from "../api/services/service-type.service";
-import { getErrorMessage } from "./functions";
+import { ServiceTypeService } from '../api/services/service-type.service';
+import { getErrorMessage } from './functions';
 import { ProjectRequest } from '../api/models/ProjectRequest';
-import { BoundariesService } from "../api/services/boundaries.service";
-import { Role } from "../model/security-model";
+import { BoundariesService } from '../api/services/boundaries.service';
+import { Role } from '../model/security-model';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class ProjectActionService {
@@ -43,7 +44,8 @@ export class ProjectActionService {
               public popUpService: PopUpMessageService,
               public projectRequestService: ProjectRequestService,
               public questionaryControlService: QuestionaryControlService,
-              public boundariesService: BoundariesService) {
+              public boundariesService: BoundariesService,
+              private router: Router) {
   }
 
   openProjectRequest(projectRequest) {
@@ -111,7 +113,7 @@ export class ProjectActionService {
         if (this.securityService.isAuthenticated()) {
           this.onProjectsUpdate.emit();
         }
-        this.popUpService.showSuccess(`You have hired <b>${projectRequest.company.name}</b> for your <b>${this.project.serviceType}</b> project`)
+        this.popUpService.showSuccess(`You have hired <b>${projectRequest.company.name}</b> for your <b>${this.project.serviceType}</b> project`);
       },
       err => {
         console.log(err);
@@ -164,11 +166,31 @@ export class ProjectActionService {
     });
 
     if (hiredProjectRequests.length > 0) {
-      let closeProjectRequest: CloseProjectRequest = {
-        action: 'COMPLETE',
-        reason: 'DONE'
+      let properties = {
+        title: 'Completing project',
+        message: `Do you want to complete project? <br/>Note. We assume, ${hiredProjectRequests[0].company.name} finished this project.`,
+        OK: 'Confirm',
+        CANCEL: 'Cancel'
       };
-      this.completeProject(project, closeProjectRequest);
+      this.confirmDialogRef = this.dialog.open(dialogsMap['confirm-dialog'], confirmDialogConfig);
+      this.confirmDialogRef
+        .afterClosed()
+        .subscribe(result => {
+          this.confirmDialogRef = null;
+        });
+      this.confirmDialogRef.componentInstance.properties = properties;
+      this.confirmDialogRef.componentInstance.onConfirm.subscribe(
+        () => {
+          let closeProjectRequest: CloseProjectRequest = {
+            action: 'COMPLETE',
+            reason: 'DONE'
+          };
+          this.completeProject(project, closeProjectRequest);
+        },
+        err => {
+          console.log(err);
+        }
+      );
       return;
     }
 
@@ -185,8 +207,7 @@ export class ProjectActionService {
         this.completeProject(project, body);
       },
       err => {
-        console.log(err);
-        this.popUpService.showError(JSON.parse(err.error).message);
+        this.popUpService.showError(getErrorMessage(err));
       }
     );
 
@@ -203,7 +224,7 @@ export class ProjectActionService {
           if (this.confirmDialogRef) {
             this.confirmDialogRef.close();
           }
-          this.popUpService.showSuccess(`Your <b>${project.serviceType}</b> project marked as completed`)
+          this.popUpService.showSuccess(`Your <b>${project.serviceType}</b> project marked as completed`);
         },
         err => {
           console.log(err);
@@ -250,35 +271,45 @@ export class ProjectActionService {
   }
 
   openQuestionary(serviceType: ServiceType, zip = undefined): void {
-    if (!this.securityService.hasRole(Role.ANONYMOUS) && !this.securityService.hasRole(Role.CUSTOMER)) return;
-    if (zip) {
-      this.questionaryControlService.zip = zip;
+    switch (this.securityService.getRole()) {
+      case Role.INCOMPLETE_PRO:
+        event.preventDefault();
+        event.stopPropagation();
+        this.router.navigate(['/', 'signup-pro', 'company']);
+        break;
+      case Role.CUSTOMER:
+      case Role.ANONYMOUS:
+        if (zip) {
+          this.questionaryControlService.zip = zip;
 
-      this.zipIsChecking = true;
-      this.boundariesService.isZipSupported(this.questionaryControlService.zip).subscribe(
-        supported => {
-          this.zipIsChecking = false;
-          this.zipIsSupported = supported;
+          this.zipIsChecking = true;
+          this.boundariesService.isZipSupported(this.questionaryControlService.zip).subscribe(
+            supported => {
+              this.zipIsChecking = false;
+              this.zipIsSupported = supported;
 
-          if (this.zipIsSupported) {
-            this.questionaryControlService.currentQuestionIndex++;
-            this.questionaryControlService.withZip = true;
-            this.getQuestianary(serviceType);
-          } else {
-            this.openZipNotSupportedModal(zip);
-            this.questionaryControlService.resetQuestionaryForm()
-          }
-
-        },
-        error => {
-          this.zipIsChecking = false;
-          this.popUpService.showError(getErrorMessage(error))
+              if (this.zipIsSupported) {
+                this.questionaryControlService.currentQuestionIndex++;
+                this.questionaryControlService.withZip = true;
+                this.getQuestianary(serviceType);
+              } else {
+                this.openZipNotSupportedModal(zip);
+                this.questionaryControlService.resetQuestionaryForm();
+              }
+            },
+            error => {
+              this.zipIsChecking = false;
+              this.popUpService.showError(getErrorMessage(error));
+            }
+          );
+        } else {
+          this.getQuestianary(serviceType);
         }
-      );
-    } else {
-      this.getQuestianary(serviceType);
-    }
+        break;
+      default:
 
+        break;
+    }
   }
 
   openQuestionaryForCompany(serviceType: ServiceType, companyId: string = ''): void {
@@ -320,7 +351,7 @@ export class ProjectActionService {
   closeProject(project: ContractorProjectShort) {
     this.projectRequestService.closeProject(project.id, false).subscribe(
       response => {
-        this.popUpService.showInfo("<b>" + project.serviceType + "</b>" + " closed");
+        this.popUpService.showInfo('<b>' + project.serviceType + '</b>' + ' closed');
         this.onProjectsUpdate.emit();
       },
       err => {
@@ -333,10 +364,10 @@ export class ProjectActionService {
   leaveProject(project: ContractorProjectShort) {
     // TODO: Check text
     let properties = {
-      title: "Are you sure want to leave <b>" + project.serviceType + "</b> project",
-      message: "By proceeding, a project will be closed for you, and no further guarantees regarding last would be provided.",
-      OK: "Leave",
-      CANCEL: "No"
+      title: 'Are you sure want to leave <b>' + project.serviceType + '</b> project',
+      message: 'By proceeding, a project will be closed for you, and no further guarantees regarding last would be provided.',
+      OK: 'Leave',
+      CANCEL: 'No'
     };
     this.confirmDialogRef = this.dialog.open(dialogsMap['confirm-dialog'], confirmDialogConfig);
     this.confirmDialogRef
@@ -350,7 +381,7 @@ export class ProjectActionService {
       () => {
         this.projectRequestService.closeProject(project.id, true).subscribe(
           response => {
-            this.popUpService.showInfo("You leaved <b>" + project.serviceType + "</b>" + " project");
+            this.popUpService.showInfo('You leaved <b>' + project.serviceType + '</b>' + ' project');
             this.onProjectsUpdate.emit();
           },
           err => {
@@ -360,7 +391,7 @@ export class ProjectActionService {
         );
       },
       err => {
-        console.log(err)
+        console.log(err);
       }
     );
 
@@ -369,7 +400,7 @@ export class ProjectActionService {
   openZipNotSupportedModal(zip: string) {
 
     let properties = {
-      title: "Sorry, we are not in your area yet",
+      title: 'Sorry, we are not in your area yet',
       message: 'Home Improve is not serving <b>' + zip + '</b>. We are coming to your area soon.',
       OK: 'Ok',
       confirmOnly: true
@@ -382,8 +413,8 @@ export class ProjectActionService {
     this.confirmDialogRef
       .afterClosed()
       .subscribe(result => {
-        this.questionaryControlService.resetQuestionaryForm()
-        this.reset()
+        this.questionaryControlService.resetQuestionaryForm();
+        this.reset();
       });
   };
 

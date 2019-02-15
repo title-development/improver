@@ -30,7 +30,10 @@
         </cv-radio-group>
 
         <div class="comment-wrapper" [ngClass]="{'visible-input': cancelProjectForm.controls['reason']?.value == 'OTHER'}">
-          <textarea rows="3" trim cv-input placeholder="Type reasons of declining" name="comment" [(ngModel)]="comment" [required]="cancelProjectForm.controls['reason']?.value == 'OTHER'"></textarea>
+          <cv-input-field>
+          <textarea rows="3" #commentMessage="ngModel" maxlength="255" trim cv-input placeholder="Type reasons of declining" name="comment" [(ngModel)]="comment" [required]="cancelProjectForm.controls['reason']?.value == 'OTHER'"></textarea>
+            <cv-field-hint>{{commentMessage.value ? commentMessage.value.length : 0}}/255</cv-field-hint>
+          </cv-input-field>
         </div>
 
 

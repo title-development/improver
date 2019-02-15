@@ -57,18 +57,28 @@
 
           <div class="comment-wrapper"
                [ngClass]="{'visible-input': requestRefundForm.controls['option']?.value == 'OTHER'}">
-          <textarea rows="3" trim maxlength="200" cv-input placeholder="Please specify the reasons" name="comment"
-                    [(ngModel)]="refundRequest.note"
-                    [required]="requestRefundForm.controls['option']?.value == 'OTHER'"></textarea>
+            <cv-input-field>
+              <textarea rows="3" #otherComment="ngModel" trim maxlength="200" cv-input
+                        placeholder="Please specify the reasons" name="comment"
+                        [(ngModel)]="refundRequest.note"
+                        [required]="requestRefundForm.controls['option']?.value == 'OTHER'"></textarea>
+              <cv-field-hint>{{otherComment.value ? otherComment.value.length : 0}}/200</cv-field-hint>
+              <cv-field-error *ngIf="otherComment.dirty || otherComment.touched || requestRefundForm.submitted">
+                <span *ngIf="otherComment.errors?.required">Required</span>
+              </cv-field-error>
+            </cv-input-field>
+
           </div>
 
         </div>
 
-          <div class="step-wrapper status-wrapper" *ngIf="step == 3">
+        <div class="step-wrapper status-wrapper" *ngIf="step == 3">
 
           <div class="refund-request-accepted">
 
-            <div class="refund-request-description">Your refund credit request of <b>{{questionary.serviceName}}</b> in <b>{{questionary.zip}}</b> sent for processing</div>
+            <div class="refund-request-description">Your refund credit request of <b>{{questionary.serviceName}}</b> in
+              <b>{{questionary.zip}}</b> sent for processing
+            </div>
             <div class="contact-message">We may contact you for details</div>
             <div class="time-hint">Request processing may take up to 14 working days</div>
 
@@ -79,7 +89,10 @@
         <div class="buttons-wrapper">
 
           <button cv-button-flat flatStyle="dark" (click)="close()" type="button" *ngIf="step == 1">Nevermind</button>
-          <button cv-button-flat flatStyle="dark" (click)="step = 1; requestRefundForm.resetForm(); refundRequest.issue = null" type="button" *ngIf="step == 2">Back</button>
+          <button cv-button-flat flatStyle="dark"
+                  (click)="step = 1; requestRefundForm.resetForm(); refundRequest.issue = null" type="button"
+                  *ngIf="step == 2">Back
+          </button>
           <div class="cv-error"
                *ngIf="(requestRefundForm.controls?.issue?.errors && requestRefundForm.controls?.issue?.dirty) || (requestRefundForm.controls?.option?.errors && requestRefundForm.controls?.option?.dirty) || !requestRefundForm.valid && requestRefundForm.submitted">
             <span>Required</span>

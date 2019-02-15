@@ -123,10 +123,12 @@
                                 name="description"
                                 rows="6"
                                 type="text"
+                                maxlength="2500"
                                 [(ngModel)]="companyInfo.description"
                                 trim
                                 required>
                   </textarea>
+                      <cv-field-hint>{{description.value ? description.value.length : 0}}/2500</cv-field-hint>
                       <cv-field-error *ngIf="description.dirty || description.touched || companyInfoForm.submitted">
                         <span *ngIf="description.errors?.required">Required</span>
                       </cv-field-error>

@@ -30,7 +30,10 @@
         </cv-radio-group>
 
         <div class="comment-wrapper" [ngClass]="{'visible-input': declineContractorForm.controls['reason']?.value == 'OTHER'}">
-          <textarea rows="3" maxlength="200" cv-input placeholder="Type reasons of declining" name="comment" [(ngModel)]="comment" [required]="declineContractorForm.controls['reason']?.value == 'OTHER'"></textarea>
+          <cv-input-field>
+          <textarea rows="3" #otherMessage="ngModel" maxlength="200" cv-input placeholder="Type reasons of declining" name="comment" [(ngModel)]="comment" [required]="declineContractorForm.controls['reason']?.value == 'OTHER'"></textarea>
+            <cv-field-hint>{{otherMessage.value ? otherMessage.value.length : 0}}/200</cv-field-hint>
+          </cv-input-field>
         </div>
 
         <div class="buttons-wrapper">

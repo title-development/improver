@@ -14,8 +14,8 @@ import { Validator, AbstractControl, NG_VALIDATORS } from '@angular/forms';
 
 export class EqualValidator implements Validator {
 
-  constructor( @Attribute('validateEqual') public validateEqual: string,
-               @Attribute('validationEqualReverse') public validationEqualReverse: string) {
+  constructor(@Attribute('validateEqual') public validateEqual: string,
+              @Attribute('validationEqualReverse') public validationEqualReverse: string) {
   }
 
   private get isReverse() {
@@ -26,27 +26,35 @@ export class EqualValidator implements Validator {
 
   validate(control: AbstractControl): { [key: string]: any } {
     // self value
+    if (!control) {
+      return null;
+    }
     let selfValue = control.value;
 
     // control value
-    let e = control.root.get(this.validateEqual);
+    let compareControl = control.root.get(this.validateEqual);
+    if (!compareControl) {
+      return null;
+    }
 
     // value not equal
-    if (e && selfValue !== e.value && !this.isReverse) {
+    if (compareControl && selfValue !== compareControl.value && !this.isReverse) {
       return {
         validateEqual: true
       };
     }
 
     // value equal and reverse
-    if (e && selfValue === e.value && this.isReverse) {
-      delete e.errors['validateEqual'];
-      if (!Object.keys(e.errors).length) e.setErrors(null);
+    if (compareControl && selfValue === compareControl.value && this.isReverse) {
+      if (compareControl.errors && compareControl.errors['validateEqual']) {
+        delete compareControl.errors['validateEqual'];
+        if (!Object.keys(compareControl.errors).length) compareControl.setErrors(null);
+      }
     }
 
     // value not equal and reverse
-    if (e && selfValue !== e.value && this.isReverse) {
-      e.setErrors({'validateEqual': true});
+    if (compareControl && selfValue !== compareControl.value && this.isReverse) {
+      compareControl.setErrors({'validateEqual': true});
     }
 
     return null;

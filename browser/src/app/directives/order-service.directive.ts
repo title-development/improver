@@ -3,6 +3,7 @@ import { ProjectActionService } from '../util/project-action.service';
 import { ServiceType } from '../model/data-model';
 import { SecurityService } from '../auth/security.service';
 import { Role } from '../model/security-model';
+import { Router } from '@angular/router';
 
 @Directive({
   selector: '[orderService]'
@@ -16,17 +17,27 @@ export class OrderServiceDirective {
   Role = Role;
 
   constructor(private projectActionService: ProjectActionService,
-              private securityService: SecurityService) {
+              private securityService: SecurityService,
+              private router: Router) {
 
   }
 
   @HostListener('click', ['$event'])
   orderService(event: MouseEvent): void {
-    if ((this.securityService.getRole() != Role.CUSTOMER && this.securityService.getRole() != Role.ANONYMOUS) || this.disable) {
-      event.preventDefault();
-      event.stopPropagation();
-    } else {
-      this.projectActionService.openQuestionaryForCompany(this.serviceType, this.companyId);
+    switch (this.securityService.getRole()) {
+      case Role.INCOMPLETE_PRO:
+        event.preventDefault();
+        event.stopPropagation();
+        this.router.navigate(['/', 'signup-pro', 'company']);
+        break;
+      case Role.CUSTOMER:
+      case Role.ANONYMOUS:
+        this.projectActionService.openQuestionaryForCompany(this.serviceType, this.companyId);
+        break;
+      default:
+        event.preventDefault();
+        event.stopPropagation();
+        break;
     }
   }
 }

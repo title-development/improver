@@ -29,6 +29,7 @@
                    [(ngModel)]="user.email"
                    required
                    trim
+                   maxlength="255"
                    pattern="{{constants.patterns.email}}"
                    emailUniqueValidator>
             <cv-field-error *ngIf="email.dirty || email.touched || signupForm.submitted">
@@ -45,9 +46,9 @@
               </span>
             </cv-field-error>
           </cv-input-field>
-
+          <input type="password" style="display: none;">
           <cv-input-field>
-            <!--TODO: add custom maxlength validator with error message?-->
+
             <input cv-input placeholder="Password (at least 8 symbols)"
                    #password="ngModel"
                    name="password"
@@ -100,6 +101,7 @@
                    trim
                    [(ngModel)]="user.firstName"
                    minlength="2"
+                   maxlength="255"
                    [pattern]="constants.patterns.name"
                    required>
             <cv-field-error *ngIf="firstName.dirty || firstName.touched || signupForm.submitted">
@@ -122,6 +124,7 @@
                    type="text"
                    [(ngModel)]="user.lastName"
                    minlength="2"
+                   maxlength="255"
                    [pattern]="constants.patterns.name"
                    trim
                    required>

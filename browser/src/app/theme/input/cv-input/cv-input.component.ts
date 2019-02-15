@@ -61,9 +61,13 @@ export class CvInputComponent {
     return this._hint;
   }
 
+  @Input() type: string;
+  @Input() maxlength: string;
+
   constructor(@Optional() @Self() public ngControl: NgControl,
               public elementRef: ElementRef
   ) {
+
   }
 
   isRequired(): boolean {
@@ -73,4 +77,5 @@ export class CvInputComponent {
   isSubmitted(): boolean {
     return this.ngControl && (this.ngControl as any)._parent && (this.ngControl as any)._parent.submitted;
   }
+
 }

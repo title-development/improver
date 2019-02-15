@@ -15,6 +15,7 @@
       <cv-field-label>Message for <b>{{review.customer.name}}</b></cv-field-label>
       <textarea required trim cv-input name="message" id="" cols="30" rows="5" minlength="10" maxlength="255"
                 [(ngModel)]="model.message" placeholder="Enter your message for {{review.customer.name}} here" #message="ngModel"></textarea>
+      <cv-field-hint>{{message.value ? message.value.length : 0}}/255</cv-field-hint>
       <cv-field-error *ngIf="message.dirty || message.touched || form.submitted">
            <span *ngIf="message.errors?.required">
              {{messages.errors.default.required}}
