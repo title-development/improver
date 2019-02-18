@@ -29,6 +29,7 @@ public class MailClient {
 
     @Async
     public void sendMail(String subject, String template, Context context, MailHolder.MessageType messageType, String... recipients) {
+        if (recipients.length == 0) return;
         String message = templateEngine.process(template, context);
         MimeMessagePreparator messagePreparator = mimeMessage -> {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);

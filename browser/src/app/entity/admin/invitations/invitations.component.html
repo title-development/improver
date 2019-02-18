@@ -81,30 +81,12 @@
     <div class="ui-grid ui-grid-responsive ui-fluid">
 
       <div class="ui-grid-row ui-grid-field">
-        <div class="ui-grid-col-4"><label>Email of Contractor</label></div>
+        <div class="ui-grid-col-4"><label>Emails of Contractor</label></div>
         <div class="ui-grid-col-8">
           <div class="ui-inputgroup">
-            <input required
-                   type="text"
-                   placeholder="Email"
-                   [(ngModel)]="invitation.email"
-                   pInputText
-                   emailUniqueValidator
-                   name="email"
-                   #email="ngModel"
-                   pattern="{{constants.patterns.email}}">
-          </div>
-        </div>
-      </div>
-
-      <div class="ui-grid-row ui-grid-field">
-        <div class="ui-grid-col-4"></div>
-        <div class="ui-grid-col-8">
-          <div class="ui-message ui-messages-error ui-corner-all"
-               *ngIf="(email.dirty || email.touched || form.submitted) && !email.valid && email.errors">
-            <span *ngIf="email.errors?.required">Required</span>
-            <span *ngIf="email.errors?.pattern">Not valid</span>
-            <span *ngIf="email.errors?.emailUnique">User is already exist</span>
+            <p-chips name="email" #email="ngModel" [(ngModel)]="invitation.emails"
+                     [allowDuplicate]="false" [addOnTab] = true [addOnBlur]="true"
+                     inputStyleClass="email-chips-input" (onAdd)="onInvitationEmailAdd($event)"></p-chips>
           </div>
         </div>
       </div>

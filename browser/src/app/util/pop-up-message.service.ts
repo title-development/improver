@@ -99,41 +99,45 @@ export class PopUpMessageService {
     this.containerRef.instance.addMessage(config);
   }
 
-  public showError(text: string) {
+  public showError(text: string, timeout: number = this.DEFAULT_ERROR_TIMEOUT) {
     this.initialized = !this.initialized ? this.init() : true;
     let config: PopUpMessage = {
       type: SystemMessageType.ERROR,
-      text: text
+      text: text,
+      timeout: timeout
     };
     config = this.mergeConfig(config);
     this.containerRef.instance.addMessage(config);
   }
 
-  public showSuccess(text: string) {
+  public showSuccess(text: string, timeout: number = this.DEFAULT_TIMEOUT) {
     this.initialized = !this.initialized ? this.init() : true;
     let config: PopUpMessage = {
       type: SystemMessageType.SUCCESS,
-      text: text
+      text: text,
+      timeout: timeout
     };
     config = this.mergeConfig(config);
     this.containerRef.instance.addMessage(config);
   }
 
-  public showInfo(text: string) {
+  public showInfo(text: string, timeout: number = this.DEFAULT_TIMEOUT) {
     this.initialized = !this.initialized ? this.init() : true;
     let config: PopUpMessage = {
       type: SystemMessageType.INFO,
-      text: text
+      text: text,
+      timeout: timeout
     };
     config = this.mergeConfig(config);
     this.containerRef.instance.addMessage(config);
   }
 
-  public showWarning(text: string) {
+  public showWarning(text: string, timeout: number = this.DEFAULT_TIMEOUT) {
     this.initialized = !this.initialized ? this.init() : true;
     let config: PopUpMessage = {
       type: SystemMessageType.WARN,
-      text: text
+      text: text,
+      timeout: timeout
     };
     config = this.mergeConfig(config);
     this.containerRef.instance.addMessage(config);

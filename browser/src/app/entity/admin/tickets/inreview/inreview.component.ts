@@ -39,7 +39,7 @@ export class TicketsInreviewComponent {
     'businessName',
     'option',
     'priority',
-    'authorEmail'
+    'author'
   ];
   contextMenuItems: Array<MenuItem> = [];
 
@@ -133,6 +133,7 @@ export class TicketsInreviewComponent {
         if (restPage.content.length > 0) {
           this.tableColumns = [...this.selectedTableCols, ...Object.keys(restPage.content[0])]
             .filter((elem, pos, arr) => arr.indexOf(elem) == pos) //remove duplicates
+            .filter(item => !(item == 'assigneeName' || item == 'authorRole' || item == 'assigneeEmail' || item == 'authorEmail'))
             .map(key => {
                 return {label: this.camelCaseHumanPipe.transform(key, true), value: key};
               }

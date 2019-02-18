@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class ContractorInvitation {
-    private String email;
+    private String [] emails;
     private int bonus;
     private String description;
 }

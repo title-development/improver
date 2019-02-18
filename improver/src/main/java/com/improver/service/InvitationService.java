@@ -8,8 +8,12 @@ import com.improver.repository.InvitationRepository;
 import com.improver.repository.UserRepository;
 import com.improver.util.mail.MailService;
 import lombok.extern.java.Log;
+import org.apache.tomcat.util.buf.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.LinkedList;
+import java.util.List;
 
 @Log
 @Service
@@ -22,22 +26,22 @@ public class InvitationService {
     @Autowired private UserRepository userRepository;
     @Autowired private MailService mailService;
 
-    public void post(ContractorInvitation contractorInvitation) {
-        if(contractorInvitation.getBonus() < MIN_ALLOWED_BONUS || contractorInvitation.getBonus() > MAX_ALLOWED_BONUS) {
+    public String[] create(ContractorInvitation invitation) {
+        if(invitation.getBonus() < MIN_ALLOWED_BONUS || invitation.getBonus() > MAX_ALLOWED_BONUS) {
             throw new ValidationException("The bonus amount is out of limits (" + MIN_ALLOWED_BONUS  / 100 + " - " + MAX_ALLOWED_BONUS / 100 + " )");
         }
-        if(userRepository.findByEmail(contractorInvitation.getEmail()).isPresent()) {
-            throw new ValidationException("User with current email is already exist");
+        String [] allowedEmails = userRepository.checkAvailableToInviteEmails(StringUtils.join(invitation.getEmails()));
+        List<Invitation> created = new LinkedList<>();
+        for (String email : allowedEmails) {
+            created.add(new Invitation(email, invitation.getBonus(), invitation.getDescription()));
         }
-        if(invitationRepository.findByEmail(contractorInvitation.getEmail()).isPresent()) {
-            throw new ValidationException("Invitation for current user is already exist");
-        }
-        invitationRepository.save(Invitation.of(contractorInvitation));
-        mailService.sendInvitation(contractorInvitation.getEmail(), contractorInvitation.getBonus());
+        invitationRepository.saveAll(created);
+        mailService.sendInvitation(invitation.getBonus(), allowedEmails);
+        return allowedEmails;
     }
 
     public void resend(Invitation invitation) {
-        mailService.sendInvitation(invitation.getEmail(), invitation.getBonus());
+        mailService.sendInvitation(invitation.getBonus(), invitation.getEmail());
     }
 
     public void delete(long id) {

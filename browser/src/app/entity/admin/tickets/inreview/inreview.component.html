@@ -54,7 +54,7 @@
       <div *ngIf="row.priority">{{row.priority}}</div>
     </ng-template>
   </p-column>
-  <p-column field="authorName" header="Author" filterField="author" sortField="author" [sortable]="false" *ngIf="selectedTableCols.includes('authorEmail')" [filter]="true">
+  <p-column field="author" header="Author" filterField="author" sortField="author" [sortable]="false" *ngIf="selectedTableCols.includes('author')" [filter]="true">
     <ng-template let-col let-row="rowData" pTemplate="body">
       <div *ngIf="row.authorEmail">{{row.authorEmail + ' <' + row.authorRole + '>'}}</div>
     </ng-template>

@@ -156,13 +156,32 @@ export class InvitationsComponent {
     dataTable.paginate(paging);
   }
 
+  onInvitationEmailAdd(event) {
+    if (!new RegExp(this.constants.patterns.email).test(event.value)) {
+      this.invitation.emails = this.invitation.emails.filter(item => item != event.value);
+      this.popUpService.showError("Please enter a valid email")
+    }
+  }
+
   postInvitation(form: NgForm) {
+    if (this.invitation.emails.length === 0) {
+      return this.popUpService.showError("Add at least one company email to invitation");
+    }
+
     let invitation = new Invitation();
     Object.assign(invitation, this.invitation);
     invitation.bonus = invitation.bonus * 100;
     this.invitationService.post(invitation).subscribe(
-      res => {
-        this.popUpService.showSuccess(`Invitation for <b>${this.invitation.email}</b> successfully added`);
+      response => {
+        let emailDiff = invitation.emails.filter(item => !response.includes(item));
+        if (response.length > 0) {
+          this.popUpService.showSuccess(`Invitation for [<b>${response}</b>] successfully created`);
+          if (response.length < invitation.emails.length) {
+            this.popUpService.showWarning(`Invitation(s) can't be created. Invitations or Users with email(s) [<b>${emailDiff}</b>] already exists`);
+          }
+        } else {
+          this.popUpService.showWarning(`Invitation(s) can't be created. Invitations or Users with email(s) [<b>${emailDiff}</b>] already exists`);
+        }
         this.displayInviteDialog = false;
         this.getInvitations();
         form.resetForm();

@@ -25,6 +25,7 @@ public class TicketService {
     @Autowired private UserSecurityService userSecurityService;
     @Autowired private UserRepository userRepository;
 
+    // TODO: Add email notification for Staff leader that new ticket is received
     public void add(Ticket ticket) {
         if (!Ticket.Subject.getForUsers().contains(ticket.getSubject())) {
             throw new ValidationException("Subject '" + ticket.getSubject() + "' is not allowed");
@@ -55,6 +56,9 @@ public class TicketService {
         ticket.setStatus(status);
         ticket.setUpdated(ZonedDateTime.now());
         ticketRepository.save(ticket);
+        if (startingUnassigned) {
+            mailService.sendNewTicketAssignee(ticket);
+        }
     }
 
     public void update(StaffTicketUpdate staffTicket) {
@@ -64,17 +68,22 @@ public class TicketService {
         toUpdate.setPriority(staffTicket.getPriority());
         toUpdate.setUpdated(ZonedDateTime.now());
         String assignee = staffTicket.getAssigneeEmail();
+        boolean assigned = false;
         boolean unassignedOrOwner = toUpdate.getAssignee() == null
             || toUpdate.getAssignee().getEmail().equals(staff.getEmail());
         if(unassignedOrOwner || staff.getRole() == User.Role.ADMIN) {
             if (assignee != null) {
                 toUpdate.setAssignee((Staff) userRepository.findByEmail(assignee)
-                    .orElseThrow(ValidationException::new));
+                    .orElseThrow(() -> new ValidationException("Assignee not found")));
+                assigned = true;
             } else {
                 toUpdate.setAssignee(null);
             }
         }
         ticketRepository.save(toUpdate);
+        if (assigned) {
+            mailService.sendNewTicketAssignee(toUpdate);
+        }
     }
 
     public void addByStaff(StaffTicket staffTicket, Staff currentStaff) {
@@ -87,11 +96,16 @@ public class TicketService {
             .setSubject(staffTicket.getSubject())
             .setAuthor(currentStaff);
         String assignee = staffTicket.getAssigneeEmail();
+        boolean assigned = false;
         if (assignee != null) {
             ticket.setAssignee((Staff) userRepository.findByEmail(assignee)
-                .orElseThrow(ValidationException::new));
+                .orElseThrow(() -> new ValidationException("Assignee not found")));
+            assigned = true;
         }
         ticketRepository.save(ticket);
+        if (assigned) {
+            mailService.sendNewTicketAssignee(ticket);
+        }
     }
 
 

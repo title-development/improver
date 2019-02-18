@@ -1,13 +1,13 @@
 export class Invitation {
   id?: number;
-  bonus: number;
-  email: string;
+  bonus: number = 100;
+  emails = [];
   created?: string;
   activated?: string;
-  description: string;
+  description: string = "";
 
   constructor() {
-    this.email = "";
+    this.emails = [];
     this.bonus = 100;
     this.description = "";
   }

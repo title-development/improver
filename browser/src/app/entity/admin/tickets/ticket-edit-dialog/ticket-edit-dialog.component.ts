@@ -34,13 +34,13 @@ export class TicketEditDialogComponent implements OnChanges {
 
   selected: Ticket;
   baseStatus: Ticket.Status;
-  baseAssignee: string;
+  baseAssigneeName: string;
 
   @Input()
   set ticket(val: Ticket) {
     this.selected = Object.assign({}, val);
     this.baseStatus = this.selected.status;
-    this.baseAssignee = this.selected.assigneeEmail;
+    this.baseAssigneeName = this.selected.assigneeName;
     if (this.selected.assigneeEmail)
       this.selected.assigneeEmail = `${this.selected.assigneeEmail} <${this.selected.assigneeName}>`;
     if (this.selected.authorEmail)
@@ -107,11 +107,11 @@ export class TicketEditDialogComponent implements OnChanges {
   reset() {
     this.selected = new Ticket();
     this.baseStatus = undefined;
-    this.baseAssignee = undefined;
+    this.baseAssigneeName = undefined;
   }
 
   isEditable() {
-    return this.securityService.hasRole(Role.ADMIN) || (this.baseStatus != Ticket.Status.CLOSED && (!this.baseAssignee || this.baseAssignee === this.securityService.getLoginModel().name));
+    return this.securityService.hasRole(Role.ADMIN) || (this.baseStatus != Ticket.Status.CLOSED && (!this.baseAssigneeName || this.baseAssigneeName === this.securityService.getLoginModel().name));
   }
 
   updateTicket(ticket) {

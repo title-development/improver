@@ -3,6 +3,7 @@ package com.improver.util.mail;
 import com.improver.entity.*;
 import com.improver.model.in.OrderDetails;
 import com.improver.model.out.PaymentCard;
+import com.improver.repository.AdminRepository;
 import com.improver.service.PaymentService;
 import com.improver.application.properties.BusinessProperties;
 import com.improver.util.serializer.SerializationUtil;
@@ -20,6 +21,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.improver.application.properties.Path.*;
 import static com.improver.application.properties.UiPath.*;
@@ -67,6 +69,7 @@ public class MailService {
     @Autowired private MailClient mailClient;
     @Autowired private TemplateEngine templateEngine;
     @Autowired private PaymentService paymentService;
+    @Autowired private AdminRepository adminRepository;
     @Autowired private JwtUtil jwtUtil;
 
     @Value("${site.url}") private String siteUrl;
@@ -659,7 +662,7 @@ public class MailService {
 
     /*******************************************************************************************************************
      *
-     *                                                ADMIN
+     *                                                STAFF (ADMIN, SUPPORT)
      *
      ******************************************************************************************************************/
 
@@ -674,7 +677,7 @@ public class MailService {
             MailHolder.MessageType.NOREPLY, getRecipients(company));
     }
 
-    public void sendInvitation(String email, int amount) {
+    public void sendInvitation(int amount, String... emails) {
         Context context = contextTemplate();
         context.setVariable(TITLE, "You have been invited to Home Improve");
         context.setVariable(BODY, "You will receive " + highlight("$" + centsToUsd(amount)) +
@@ -682,7 +685,24 @@ public class MailService {
         context.setVariable(CONFIRM_URL, siteUrl + BECOME_PRO_URL);
         context.setVariable(CONFIRM_BTN_TEXT, "Become a Pro");
         mailClient.sendMail("Bonus from Home Improve", CONFIRMATION_TEMPLATE, context,
-            MailHolder.MessageType.NOREPLY, email);
+            MailHolder.MessageType.NOREPLY, emails);
+    }
+
+    public void sendNewTicketReceived(Ticket ticket) {
+        Context context = contextTemplate();
+        context.setVariable(CONTENT_ALIGN, "left");
+        context.setVariable(TITLE, "New ticket is received");
+        addTicketToContext(context, ticket);
+        String [] emails  = (String[]) adminRepository.findAll().stream().map(Admin::getEmail).toArray();
+        mailClient.sendMail("New ticket is received", CONFIRMATION_TEMPLATE, context, MailHolder.MessageType.NOREPLY, emails);
+    }
+
+    public void sendNewTicketAssignee(Ticket ticket) {
+        Context context = contextTemplate();
+        context.setVariable(CONTENT_ALIGN, "left");
+        context.setVariable(TITLE, "You have new assigned ticket");
+        addTicketToContext(context, ticket);
+        mailClient.sendMail("New ticket", CONFIRMATION_TEMPLATE, context, MailHolder.MessageType.NOREPLY, ticket.getAssignee().getEmail());
     }
 
 
@@ -692,6 +712,19 @@ public class MailService {
 
     private String wrapLink(String phrase, String link) {
         return "<a href= " + link + ">" + phrase + "</a>";
+    }
+
+    private Context addTicketToContext(Context context, Ticket ticket) {
+        String ticketAuthor = ticket.getEmail();
+        if (ticket.getAuthor() != null) {
+            ticketAuthor = ticket.getAuthor().getEmail();
+        }
+        context.setVariable(BODY,highlight("Subject: ") + ticket.getSubject().toString() + "<br>"
+            + highlight("Author: ") + ticketAuthor + "<br>"
+            + highlight("Comment: ") + ticket.getDescription());
+        context.setVariable(CONFIRM_URL, siteUrl + MY_STAFF_TICKETS);
+        context.setVariable(CONFIRM_BTN_TEXT, "View at dashboard");
+        return context;
     }
 
 

@@ -18,3 +18,25 @@
     text-align: right;
   }
 }
+
+p-chips {
+  width: 100%;
+
+  ::ng-deep.ui-inputtext {
+    height: 100px;
+    max-height: initial;
+  }
+
+  ::ng-deep.ui-chips-token {
+    margin-bottom: 2px !important;
+  }
+
+}
+
+.ui-chips > ul.ui-inputtext .ui-chips-token {
+  margin-bottom: 2px;
+}
+
+.email-chips-input {
+  width: 100%;
+}

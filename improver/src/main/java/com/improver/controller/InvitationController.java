@@ -17,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 import static com.improver.application.properties.Path.ID_PATH_VARIABLE;
 import static com.improver.application.properties.Path.INVITATIONS_PATH;
 
@@ -41,9 +43,8 @@ public class InvitationController {
 
     @AdminAccess
     @PostMapping
-    public ResponseEntity<Void> post(@RequestBody ContractorInvitation contractorInvitation) {
-        invitationService.post(contractorInvitation);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<String[]> create(@RequestBody ContractorInvitation contractorInvitation) {
+        return new ResponseEntity<>(invitationService.create(contractorInvitation), HttpStatus.OK);
     }
 
     @AdminAccess

@@ -78,4 +78,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
         "WHERE u.role IN ('CUSTOMER', 'CONTRACTOR') " +
         "GROUP BY u.role")
     List<Record> getUsersInSystem();
+
+    @Query(value = "SELECT * FROM (SELECT unnest(string_to_array(:emails, ',')) as email) " +
+        " as tmp_table WHERE email NOT IN (SELECT email FROM users) AND email NOT IN (SELECT email FROM invitations)", nativeQuery = true)
+    String[] checkAvailableToInviteEmails(String emails);
+
+//    @Query(value = "SELECT 'off.bk@bk.ru' IN :emails", nativeQuery = true)
+//    List<String> checkAvailableToInviteEmails(Set<String> emails);
+
 }

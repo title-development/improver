@@ -14,7 +14,7 @@ import java.time.ZonedDateTime;
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @DiscriminatorValue("MANAGER")
-@Entity(name = "admins")
+@Entity(name = "managers")
 @NoArgsConstructor
 public class Manager extends User {
 

@@ -40,8 +40,8 @@ export class TicketsListComponent {
     'option',
     'status',
     'priority',
-    'assigneeEmail',
-    'authorEmail'
+    'assignee',
+    'author'
   ];
   contextMenuItems: Array<MenuItem> = [];
   filters: any;
@@ -134,6 +134,7 @@ export class TicketsListComponent {
         if (restPage.content.length > 0) {
           this.tableColumns = [...this.selectedTableCols, ...Object.keys(restPage.content[0])]
             .filter((elem, pos, arr) => arr.indexOf(elem) == pos) //remove duplicates
+            .filter(item => !(item == 'assigneeName' || item == 'authorRole' || item == 'assigneeEmail' || item == 'authorEmail'))
             .map(key => {
                 return {label: this.camelCaseHumanPipe.transform(key, true), value: key};
               }

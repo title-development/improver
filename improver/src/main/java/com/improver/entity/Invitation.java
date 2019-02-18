@@ -30,11 +30,10 @@ public class Invitation {
     private ZonedDateTime activated;
     private String description;
 
-    public static Invitation of(ContractorInvitation contractorInvitation) {
-        return new Invitation()
-            .setEmail(contractorInvitation.getEmail())
-            .setBonus(contractorInvitation.getBonus())
-            .setDescription(contractorInvitation.getDescription());
+    public Invitation(String email, int bonus, String description) {
+        this.email = email;
+        this.bonus = bonus;
+        this.description = description;
     }
 
 }
