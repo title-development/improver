@@ -3,8 +3,9 @@ import { users } from "../../../test.data";
 import { login, logout } from "../../utils/common.functions";
 import { browser, by, element } from "protractor";
 import { SECOND } from "../../utils/util";
+import { menuLinkText, pageTitle } from "../../utils/constants";
 
-describe('Company Info Page', () => {
+describe('Notifications Page', () => {
 
   let contractor = users.contractor;
 
@@ -25,12 +26,12 @@ describe('Company Info Page', () => {
       if (value) {
         userMenu.click();
         browser.sleep(SECOND);
-        element(by.linkText('Notifications')).click();
+        element(by.linkText(menuLinkText.notifications)).click();
         browser.sleep(SECOND);
       }
     });
 
-    expect(element(by.css(".account-nav-title")).getText()).toEqual("Notifications");
+    expect(element(by.css(".account-nav-title")).getText()).toEqual(pageTitle.notifications);
   });
 
 });

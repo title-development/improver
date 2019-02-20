@@ -2,28 +2,40 @@ import { $, $$, browser, by, element, promise, protractor } from 'protractor';
 import { users } from "../../../test.data";
 import { login, logout, sendKeysByOne } from "./../../utils/common.functions";
 import { BillingHelper } from "../../utils/billing.helper";
-import { FIVE_SECONDS, SECOND, THREE_SECONDS } from "../../utils/util";
+import { FIVE_SECONDS, SECOND, TEN_SECONDS, THREE_SECONDS } from "../../utils/util";
+import {pageLink,  pageTitle,  headerLinkText,  billingHints,  dashboardCurrentUrl,  validPaymentCard, } from "../../utils/constants";
 
 
 describe('Billing', () => {
 
   let billingHelper: BillingHelper = new BillingHelper();
-  let contractor = users.contractor;
 
   beforeEach(() => {
-
-    login(contractor.email, contractor.password);
+    login(users.contractor.email, users.contractor.password);
+    browser.sleep(SECOND);
+    browser.get(pageLink.billing);
+    browser.sleep(SECOND);
   });
 
   afterEach(() => {
     logout();
   });
 
+ it('should check dashboard and billing links', () => {
+    browser.waitForAngularEnabled(false);
+    element(by.partialLinkText(headerLinkText.dashboard)).click();
+    browser.sleep(SECOND);
+    expect(browser.getCurrentUrl()).toEqual(dashboardCurrentUrl);
+    element(by.css(".balance-bar")).click();
+    expect(element(by.css(".account-nav-title")).getText()).toEqual(pageTitle.billing);
+    browser.sleep(SECOND);
+
+    });
   //TODO:Need contractor without payments cards
   xit('no added payment cards', () => {
     billingHelper.balanceLink();
     browser.sleep(SECOND);
-    expect(element(by.css(".header .no-cards-row")).getText()).toEqual("Please add a credit/debit card to finish your account setup");
+    expect(element(by.css(".header .no-cards-row")).getText()).toEqual(billingHints.noAddedPaymentCardHeader);
   });
 
   //TODO:Need contractor without payments cards
@@ -42,10 +54,10 @@ describe('Billing', () => {
     let iframe = by.css('[name="payment-card-form"] iframe');
     let iframeHtmlElement = driver.findElement(iframe);
     browser.switchTo().frame(iframeHtmlElement);
-    driver.findElement(by.tagName('[name="cardnumber"]')).sendKeys(4242424242424242);
-    driver.findElement(by.tagName('[name="exp-date"]')).sendKeys(1122);
-    driver.findElement(by.tagName('[name="cvc"]')).sendKeys(1111);
-    driver.findElement(by.tagName('[name="postal"]')).sendKeys(10022);
+    driver.findElement(by.tagName('[name="cardnumber"]')).sendKeys(validPaymentCard.cardNumber);
+    driver.findElement(by.tagName('[name="exp-date"]')).sendKeys(validPaymentCard.expDate);
+    driver.findElement(by.tagName('[name="cvc"]')).sendKeys(validPaymentCard.cvc);
+    driver.findElement(by.tagName('[name="postal"]')).sendKeys(validPaymentCard.postal);
     browser.sleep(SECOND);
     browser.waitForAngularEnabled(false);
     browser.switchTo().defaultContent();
@@ -54,24 +66,22 @@ describe('Billing', () => {
   });
 
   it('at least one card added', () => {
-    billingHelper.balanceLink();
-    browser.sleep(THREE_SECONDS);
-    expect(element(by.css('.header span.ng-star-inserted')).getText()).toEqual("Select your default payment method");
+
+    browser.waitForAngularEnabled(false);
     browser.sleep(SECOND);
+    expect(element(by.css('.header span.ng-star-inserted')).getText()).toEqual(billingHints.selectDefaultPaymentCard);
+
   });
 
   it('replenish balance from valid card', () => {
-    billingHelper.balanceLink();
-    browser.sleep(THREE_SECONDS);
 
-    let replenishBalanceButton = element(by.css('.cv-button'));
+    let replenishBalanceButton = element(by.css('.balance-part .cv-button'));
     replenishBalanceButton.click();
     browser.sleep(SECOND);
 
-    /**
-     *Step 1. Check hint, input amount, and click "Continue"
-     */
-    expect(element(by.css('.hint')).getText()).toBe('Please set an amount of money you want to replenish your balance.\nThis is a one time charge.');
+    //Step 1. Check hint, input amount, and click "Continue"
+
+    expect(element(by.css('.hint')).getText()).toBe(billingHints.setAmountToReplenish);
 
     let amount = 50;
     let replenishWindow = element(by.css('.mat-dialog-container'));
@@ -83,9 +93,8 @@ describe('Billing', () => {
     continueReplenishBalanceButton.click();
     browser.sleep(SECOND);
 
-    /**
-     *Step 2. Check hint and replenish
-     */
+    //Step 2. Check hint and replenish
+
     expect($('.hint').getText()).toBe('$' + amount + '.00 will be charged to your payment method and added to your Home Improve balance.\nThis is a one time charge.');
 
     expect($(".charge-info .group .value").getText()).toEqual("$" + amount + ".00");
@@ -93,32 +102,29 @@ describe('Billing', () => {
     replenishWindow = element(by.css('.mat-dialog-container'));
     let completeReplenishButton = replenishWindow.element(by.buttonText('Complete Purchase'));
     completeReplenishButton.click();
-    browser.sleep(SECOND);
+    //menu is overlay by success message, can't open a menu for logout
+    browser.sleep(TEN_SECONDS);
   });
 
   it('should change default card by default link', () => {
-    billingHelper.balanceLink();
-    browser.sleep(THREE_SECONDS);
 
     let defaultCardLink = element(by.css('.default-card'));
     defaultCardLink.click();
     browser.sleep(SECOND);
 
-    billingHelper.radio(1);
+    billingHelper.defaultPaymentCardRadio(1);
     let saveDefaultCardButton = element(by.css('.default-payment-card-form .buttons-wrapper .cv-button'));
     saveDefaultCardButton.click();
-    browser.sleep(SECOND);
+    browser.sleep(FIVE_SECONDS);
   });
 
   it('should change default card by default button', () => {
-    billingHelper.balanceLink();
-    browser.sleep(THREE_SECONDS);
 
     let defaultCardButton = element(by.buttonText('Change default card'));
     defaultCardButton.click();
     browser.sleep(THREE_SECONDS);
 
-    billingHelper.radio(1);
+    billingHelper.defaultPaymentCardRadio(1);
     let saveDefaultCardButton = element(by.css('.default-payment-card-form .buttons-wrapper .cv-button'));
     saveDefaultCardButton.click();
     browser.sleep(SECOND);
@@ -128,10 +134,6 @@ describe('Billing', () => {
 
     let initialCardsCount;
     let afterAddCardsCount;
-
-    billingHelper.balanceLink();
-    browser.sleep(SECOND);
-
     let cards = $$('.card-line');
     cards.count().then(countBefore => {
 
@@ -160,19 +162,14 @@ describe('Billing', () => {
       cardsAfterAdd.count().then(countAfter => {
         afterAddCardsCount = countAfter;
         browser.sleep(THREE_SECONDS);
-
         expect(afterAddCardsCount).toEqual(initialCardsCount + 1);
 
         //Remove card
         $$('.payment-method-part .card-button').filter(item => item.isDisplayed()).first().click();
         $('.dialog-content-wrapper .confirm').click();
-
         browser.sleep(SECOND);
         // browser.waitForAngularEnabled(true);
       });
-
     });
-
   });
-
 });

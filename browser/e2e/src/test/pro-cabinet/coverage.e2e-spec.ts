@@ -3,6 +3,7 @@ import { users } from "../../../test.data";
 import { login, logout } from "../../utils/common.functions";
 import { $, $$, browser, by, element } from "protractor";
 import { SECOND } from "../../utils/util";
+import { pageTitle, menuLinkText } from "../../utils/constants";
 
 describe('Coverage Page', () => {
 
@@ -25,14 +26,14 @@ describe('Coverage Page', () => {
       if (value) {
         userMenu.click();
         browser.sleep(SECOND);
-        element(by.linkText('Coverage')).click();
+        element(by.linkText(menuLinkText.coverage)).click();
         browser.sleep(SECOND);
       }
     });
 
     element(by.linkText('Got it')).click();
 
-    expect(element(by.css(".config h4")).getText()).toEqual("Coverage configuration");
+    expect(element(by.css(".config h4")).getText()).toEqual(pageTitle.coverage);
   });
 
 });

@@ -1,4 +1,5 @@
 import { browser, by, element } from "protractor";
+import { SECOND } from "./util";
 
 export class BillingHelper {
 
@@ -9,7 +10,7 @@ export class BillingHelper {
     element(by.css('.balance-bar')).click();
   }
 
-  public radio(index) {
+  public defaultPaymentCardRadio(index) {
     element.all((by.css(".default-payment-card-form .cv-radio-group .input-holder .cv-radio .radio-circle"))).get(index).click();
   }
 }

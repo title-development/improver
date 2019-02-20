@@ -1,6 +1,6 @@
 import { $, $$, browser, by, element, promise, protractor } from 'protractor';
 import { login, logout } from "../../utils/common.functions";
-import { questionaries, unsupportedZip, users } from "../../../test.data";
+import { users } from "../../../test.data";
 import { SECOND } from "../../utils/util";
 
 xdescribe('User cabinet', () => {

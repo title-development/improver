@@ -3,6 +3,7 @@ import { users } from "../../../test.data";
 import { login, logout } from "../../utils/common.functions";
 import { browser, by, element } from "protractor";
 import { SECOND } from "../../utils/util";
+import { pageTitle } from "../../utils/constants";
 
 describe('Company Info Page', () => {
 
@@ -30,7 +31,7 @@ describe('Company Info Page', () => {
       }
     });
 
-    expect(element(by.css(".account-nav-title")).getText()).toEqual("Company");
+    expect(element(by.css(".account-nav-title")).getText()).toEqual(pageTitle.company);
   });
 
 });

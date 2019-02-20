@@ -3,6 +3,7 @@ import { users } from "../../../test.data";
 import { login, logout } from "../../utils/common.functions";
 import { browser, by, element } from "protractor";
 import { SECOND } from "../../utils/util";
+import { menuLinkText, pageTitle } from "../../utils/constants";
 
 describe('Quick Reply Page', () => {
 
@@ -25,13 +26,13 @@ describe('Quick Reply Page', () => {
       if (value) {
         userMenu.click();
         browser.sleep(SECOND);
-        element(by.linkText('Quick Reply')).click();
+        element(by.linkText(menuLinkText.quickReply)).click();
         browser.sleep(SECOND);
       }
     });
 
     //TODO: after fix should be toEqual("Quick Reply")
-    expect(element(by.css(".account-nav-title")).getText()).toEqual("Quick reply");
+    expect(element(by.css(".account-nav-title")).getText()).toEqual(pageTitle.quickReply);
   });
 
 });

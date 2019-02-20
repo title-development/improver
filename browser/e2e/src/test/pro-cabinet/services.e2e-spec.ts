@@ -3,6 +3,7 @@ import { users } from "../../../test.data";
 import { login, logout } from "../../utils/common.functions";
 import { browser, by, element } from "protractor";
 import { SECOND } from "../../utils/util";
+import { menuLinkText, pageTitle } from "../../utils/constants";
 
 describe('Services Page', () => {
 
@@ -25,12 +26,12 @@ describe('Services Page', () => {
       if (value) {
         userMenu.click();
         browser.sleep(SECOND);
-        element(by.linkText('Services')).click();
+        element(by.linkText(menuLinkText.services)).click();
         browser.sleep(SECOND);
       }
     });
 
-    expect(element(by.css(".account-nav-title")).getText()).toEqual("Services");
+    expect(element(by.css(".account-nav-title")).getText()).toEqual(pageTitle.services);
   });
 
 });

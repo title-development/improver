@@ -28,9 +28,11 @@ export class QuestionaryHelper {
     this.next();
   }
 
-  //TODO: implement this method
   public checkboxImage(...indexes) {
-    throw new Error("Method not implemented")
+    element.all((by.css(".questionary-form .cv-checkbox-group ul li"))).each((element, index) => {
+      if (indexes.includes(index)) element.click();
+    });
+    this.next();
   }
 
   public inputNumeric(value: number) {
