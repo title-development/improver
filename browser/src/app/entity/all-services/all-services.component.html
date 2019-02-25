@@ -1,28 +1,31 @@
 <div class="all-services-wrapper">
   <div class="all-services">
 
-    <div class="main-block" >
+    <div class="main-block">
 
       <div class="all-services-card card">
 
         <div class="title">All Services</div>
 
-        <input cv-input trim placeholder="Pipe, carpet, paint etc." class="services-filter" (input)="onFilter($event.target.value)">
+        <input cv-input trim placeholder="Pipe, carpet, paint etc." class="services-filter" [ngModel]="model"
+               (ngModelChange)="onFilter($event)">
 
         <div class="main-wrapper">
 
-          <ng-template ngFor [ngForOf]="filteredTrades" let-trade [ngForTrackBy]="trackByFn"  let-i="index">
+          <ng-template ngFor [ngForOf]="filteredTrades" let-trade [ngForTrackBy]="trackByFn" let-i="index">
 
             <div class="trade-wrapper">
 
               <a [routerLink]="['/category', trade.id]">
-                <img class="trade-icon" [src]="'assets/trades/icons/' + trade.name + '.svg'" onerror="this.src='assets/trades/icons/default.svg';">
-                <div class="trade-name" >{{trade.name}}</div>
+                <img class="trade-icon" [src]="'assets/trades/icons/' + trade.name + '.svg'"
+                     onerror="this.src='assets/trades/icons/default.svg';">
+                <div class="trade-name">{{trade.name}}</div>
               </a>
 
               <ng-template ngFor [ngForOf]="trade.services" let-service [ngForTrackBy]="trackByFn">
                 <div class="service-type-wrapper">
-                  <div class="service-type-name" (click)="projectActionService.openQuestionary(service)">{{service.name}}</div>
+                  <div class="service-type-name"
+                       (click)="projectActionService.openQuestionary(service)">{{service.name}}</div>
                 </div>
               </ng-template>
             </div>

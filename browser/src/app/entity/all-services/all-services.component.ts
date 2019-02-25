@@ -10,7 +10,7 @@ import { ProjectActionService } from "../../util/project-action.service";
   styleUrls: ['./all-services.component.scss']
 })
 export class AllServicesComponent implements OnInit {
-
+  model = '';
   trades: Trade[] = [];
   filteredTrades: Trade[] = [];
 
@@ -37,8 +37,6 @@ export class AllServicesComponent implements OnInit {
   }
 
   onFilter(searchTerm) {
-    searchTerm = searchTerm.trim();
-
     if (searchTerm == '') {
       this.filteredTrades = this.trades;
       return;

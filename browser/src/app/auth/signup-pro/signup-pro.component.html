@@ -18,7 +18,7 @@
       <form class="account-form"
             name="account-form"
             #accountForm="ngForm"
-            (ngSubmit)="accountForm.valid && registerConractor(accountForm)"
+            (ngSubmit)="accountForm.valid && registerContractor(accountForm)"
             novalidate>
 
         <h3>User Details</h3>
@@ -124,7 +124,7 @@
               <input type="password" style="display: none;">
               <div class="col-md-6 col-sm-6 col-xs-12">
                 <cv-input-field>
-                  <input cv-input placeholder="Password (at least 8 symbols)"
+                  <input cv-input autocomplete="new-password" placeholder="Password (at least 8 symbols)"
                          #passwordEl="ngModel"
                          name="password"
                          type="password"

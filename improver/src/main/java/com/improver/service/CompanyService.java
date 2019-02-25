@@ -13,6 +13,7 @@ import com.improver.model.in.registration.CompanyDetails;
 import com.improver.model.in.registration.CompanyRegistration;
 import com.improver.model.out.CompanyCoverageConfig;
 import com.improver.model.out.CompanyProfile;
+import com.improver.model.out.LoginModel;
 import com.improver.model.out.ValidatedLocation;
 import com.improver.model.out.project.ProjectRequestShort;
 import com.improver.repository.*;
@@ -246,7 +247,6 @@ public class CompanyService {
     }
 
 
-
     public Page<Company> getCompanies(String id, Pageable pageable) {
         return companyRepository.getAllBy(id, pageable);
     }
@@ -384,13 +384,13 @@ public class CompanyService {
 
     /**
      * Performs registration of given company and links to given contractor
-     * @param registration registration data for company
-     * @param contractor company owner
      *
+     * @param registration registration data for company
+     * @param contractor   company owner
      */
     @Transactional
-    public void registerCompany(CompanyRegistration registration, Contractor contractor){
-        if(contractor.getCompany() != null) {
+    public void registerCompany(CompanyRegistration registration, Contractor contractor) {
+        if (contractor.getCompany() != null) {
             throw new ConflictException(contractor.getCompany().getName() + " company already registered for "
                 + contractor.getEmail());
         }
@@ -402,7 +402,9 @@ public class CompanyService {
             registration.getCoverage().getCenter().lng, registration.getCoverage().getRadius());
         // Add initial bonus from Invitation
         billingService.addInitialBonus(company, contractor.getEmail());
-        mailService.sendRegistrationConfirmEmail(contractor);
+        if (contractor.isNativeUser()) {
+            mailService.sendRegistrationConfirmEmail(contractor);
+        }
     }
 
 

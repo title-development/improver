@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -75,7 +76,6 @@ public class FacebookSocialService {
 
         return facebookUserProfile;
     }
-
 
     private FacebookUserProfile getDataFromFacebookApi(URIBuilder uriBuilder) throws ThirdPartyException, URISyntaxException, IOException {
         HttpUriRequest request = RequestBuilder.get()

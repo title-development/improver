@@ -108,7 +108,7 @@
     <div class="row -no-mar">
       <button cv-button-empty flatStyle="dark" routerLink="/pro/settings">Back</button>
       <div class="spacer"></div>
-      <button cv-button-empty (click)="save()" [disabled]="!unsaved">Save</button>
+      <button cv-button-empty (click)="save()" [loading]="mapContentIsLoading" [spinnerColor]="'#14ABE3'" [disabled]="!unsaved">Save</button>
     </div>
   </div>
 </div>

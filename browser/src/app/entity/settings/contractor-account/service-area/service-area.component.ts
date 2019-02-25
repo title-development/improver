@@ -30,6 +30,7 @@ import { CvSwitchComponent } from '../../../../theme/switch/switch.component';
 import { CompanyCoverageConfig } from '../../../../api/models/CompanyCoverageConfig';
 import { mergeMap, switchMap } from 'rxjs/internal/operators';
 import { MediaQuery, MediaQueryService } from '../../../../util/media-query.service';
+import { getErrorMessage } from '../../../../util/functions';
 
 
 @Component({
@@ -268,6 +269,7 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate {
   }
 
   save(): void {
+    this.mapContentIsLoading = true;
     if (this.configCoverage.manualMode) {
       //deleting
       this.configCoverage.zips = this.configCoverage.zips.filter(zip => !this.zipsHistory.removed.some(removedZip => removedZip == zip));
@@ -288,8 +290,10 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate {
       this.zipsHistory = {added: [], removed: []};
       this.detailsMode.zipsHistory = {added: [], removed: []};
       this.popUpService.showSuccess('Coverage area has been updated');
+      this.mapContentIsLoading = false;
     }, err => {
-      console.log(err);
+      this.mapContentIsLoading = false;
+      this.popUpMessageService.showError(getErrorMessage(err));
     });
   }
 

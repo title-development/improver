@@ -50,7 +50,7 @@ export class SignupProComponent {
 
   }
 
-  registerConractor(form) {
+  registerContractor(form) {
     this.registrationService.registerContractor(this.user).subscribe((response: HttpResponse<any>) => {
       this.securityService.loginUser(JSON.parse(response.body) as LoginModel, response.headers.get('authorization'), true);
     }, err => {

@@ -17,7 +17,7 @@ export class Button implements OnInit, OnChanges {
   @HostBinding('class.-dark') darkStyle: boolean = false;
   @Input()
   @HostBinding('class.-loading')
- loading : boolean = false;
+  loading: boolean = false;
 
   @HostListener('click', ['$event']) onClick(event: Event): void {
     (event.target as HTMLElement).blur();

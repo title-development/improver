@@ -55,21 +55,12 @@ export class SocialButtonsComponent {
       this.googleFetching = true;
       socialPlatformProvider = GoogleLoginProvider.PROVIDER_ID;
     }
-    this.socialAuthService.signIn(socialPlatformProvider)
-      .then((userData: SocialUser) => {
-          if (userData && userData.id) {
-            if (this.contractorRegistrationFlow) {
-              this.contractorRegistrationDialog(socialPlatform, userData);
-            } else {
-              this.loginOrRegisterUser(socialPlatform, userData);
-            }
-          } else {
-            this.showError(socialPlatform);
-          }
-        }
-      )
+    this.socialAuthService.signOut()
+      .then(() => {
+        this.socialSignIn(socialPlatformProvider, socialPlatform);
+      })
       .catch(err => {
-        this.showError(socialPlatform);
+        this.socialSignIn(socialPlatformProvider, socialPlatform);
       });
   }
 
@@ -117,6 +108,25 @@ export class SocialButtonsComponent {
     this.responseMessage.emit(`Cannot connect to ${socialPlatform} api`);
     this.responseMessageType.emit(SystemMessageType.ERROR);
     this.showMessage.emit(true);
+  }
+
+  private socialSignIn(socialPlatformProvider, socialPlatform) {
+    this.socialAuthService.signIn(socialPlatformProvider)
+      .then((userData: SocialUser) => {
+          if (userData && userData.id) {
+            if (this.contractorRegistrationFlow) {
+              this.contractorRegistrationDialog(socialPlatform, userData);
+            } else {
+              this.loginOrRegisterUser(socialPlatform, userData);
+            }
+          } else {
+            this.showError(socialPlatform);
+          }
+        }
+      )
+      .catch(err => {
+        this.showError(socialPlatform);
+      });
   }
 
 }

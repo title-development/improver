@@ -7,6 +7,7 @@ import com.improver.model.admin.AdminContractor;
 import com.improver.model.in.registration.StaffRegistration;
 import com.improver.model.in.registration.UserRegistration;
 import com.improver.model.in.*;
+import com.improver.model.socials.SocialUser;
 import com.improver.repository.*;
 import com.improver.security.UserSecurityService;
 import com.improver.util.mail.MailService;
@@ -42,6 +43,7 @@ public class UserService {
     @Autowired private ProjectRequestService projectRequestService;
     @Autowired private CompanyRepository companyRepository;
     @Autowired private StaffRepository staffRepository;
+    @Autowired private SocialConnectionRepository socialConnectionRepository;
 
 
     public User getByEmail(String email) {
@@ -149,6 +151,27 @@ public class UserService {
         Customer customer = (Customer) saveNewUserRegistration(registration, User.Role.CUSTOMER);
         mailService.sendRegistrationConfirmEmail(customer);
         return customer;
+    }
+
+    /**
+     * Register user by SocialConnections
+     * @param user
+     * @param socialUser
+     * @return user
+     */
+    public User registerUser(User user, SocialUser socialUser) {
+        SocialConnection socialConnection = new SocialConnection(socialUser, user);
+        user.addSocialConnection(socialConnection);
+        if (user instanceof Contractor) {
+            contractorRepository.save((Contractor) user);
+        } else if (user instanceof Customer) {
+            customerRepository.save((Customer) user);
+        } else {
+            throw new BadRequestException("Does not support user " + user.getClass());
+        }
+        socialConnectionRepository.save(socialConnection);
+
+        return user;
     }
 
 

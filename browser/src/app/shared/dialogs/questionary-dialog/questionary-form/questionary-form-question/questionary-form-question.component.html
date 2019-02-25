@@ -38,7 +38,7 @@
 
     <div *ngSwitchCase="QuestionType.TEXT_AREA" class="form-element-wrapper text-input-wrapper">
       <h2 class="question-title">{{question.title}}</h2>
-
+      <cv-input-field>
       <cv-field-label>{{question.label}}</cv-field-label>
       <textarea cv-input
                 [placeholder]="question.label"
@@ -49,9 +49,11 @@
                 maxlength="500"
                 required>
       </textarea>
+        <cv-field-hint>{{questionaryForm.controls[question.name].value.length}}/500</cv-field-hint>
       <cv-field-error *ngIf="questionaryForm.controls[question.name]?.dirty || questionaryForm.controls[question.name]?.touched">
         <span *ngIf="questionaryForm.controls[question.name].errors?.required">Required</span>
       </cv-field-error>
+      </cv-input-field>
 
     </div>
 

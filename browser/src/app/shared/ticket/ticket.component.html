@@ -21,6 +21,7 @@
                      name="name"
                      #name="ngModel"
                      [(ngModel)]="ticket.name"
+                     maxlength="255"
                      required>
               <cv-field-error *ngIf="name.dirty || name.touched || ticketForm.submitted">
               <span *ngIf="name.errors?.required">
@@ -37,6 +38,7 @@
               <input cv-input type="text" placeholder="Email"
                      name="email"
                      #email="ngModel"
+                     maxlength="255"
                      [(ngModel)]="ticket.email"
                      required
                      pattern="{{constants.patterns.email}}">
