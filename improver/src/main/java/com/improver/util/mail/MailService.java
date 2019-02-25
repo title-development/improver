@@ -21,7 +21,6 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.improver.application.properties.Path.*;
 import static com.improver.application.properties.UiPath.*;
@@ -47,10 +46,11 @@ public class MailService {
     private static final String SBJ_CONFIRM_REGISTRATION = HOME_IMPROVE + " - Please confirm your registration";
 
     // Templates
-    private static final String NOTICE_TEMPLATE = "email/notice";
-    private static final String CONFIRMATION_TEMPLATE = "email/confirmation";
-    private static final String PROJECT_DETAILS_TEMPLATE = "email/projectDetails";
-    private static final String TEXT_AREA_TEMPLATE = "email/textArea";
+    private static final String NOTICE_TEMPLATE = "user/notice";
+    private static final String CONFIRMATION_TEMPLATE = "user/confirmation";
+    private static final String PROJECT_DETAILS_TEMPLATE = "user/projectDetails";
+    private static final String TEXT_AREA_TEMPLATE = "user/textAreaUser";
+    private static final String CONFIRMATION_STAFF_TEMPLATE = "staff/confirmation";
 
     // Template parts keys
     private static final String TITLE = "title";
@@ -677,14 +677,14 @@ public class MailService {
             MailHolder.MessageType.NOREPLY, getRecipients(company));
     }
 
-    public void sendInvitation(int amount, String... emails) {
+    public void sendInvitations(int amount, String... emails) {
         Context context = contextTemplate();
         context.setVariable(TITLE, "You have been invited to Home Improve");
         context.setVariable(BODY, "You will receive " + highlight("$" + centsToUsd(amount)) +
             " after " + wrapLink("signing up", siteUrl + BECOME_PRO_URL) + " the Home Improve.");
         context.setVariable(CONFIRM_URL, siteUrl + BECOME_PRO_URL);
         context.setVariable(CONFIRM_BTN_TEXT, "Become a Pro");
-        mailClient.sendMail("Bonus from Home Improve", CONFIRMATION_TEMPLATE, context,
+        mailClient.sendMailsSeparate("Bonus from Home Improve", CONFIRMATION_TEMPLATE, context,
             MailHolder.MessageType.NOREPLY, emails);
     }
 
@@ -694,7 +694,7 @@ public class MailService {
         context.setVariable(TITLE, "New ticket is received");
         addTicketToContext(context, ticket);
         String [] emails  = (String[]) adminRepository.findAll().stream().map(Admin::getEmail).toArray();
-        mailClient.sendMail("New ticket is received", CONFIRMATION_TEMPLATE, context, MailHolder.MessageType.NOREPLY, emails);
+        mailClient.sendMail("New ticket is received", CONFIRMATION_STAFF_TEMPLATE, context, MailHolder.MessageType.NOREPLY, emails);
     }
 
     public void sendNewTicketAssignee(Ticket ticket) {
@@ -702,16 +702,7 @@ public class MailService {
         context.setVariable(CONTENT_ALIGN, "left");
         context.setVariable(TITLE, "You have new assigned ticket");
         addTicketToContext(context, ticket);
-        mailClient.sendMail("New ticket", CONFIRMATION_TEMPLATE, context, MailHolder.MessageType.NOREPLY, ticket.getAssignee().getEmail());
-    }
-
-
-    private String highlight(String phrase) {
-        return "<b>" + phrase + "</b>";
-    }
-
-    private String wrapLink(String phrase, String link) {
-        return "<a href= " + link + ">" + phrase + "</a>";
+        mailClient.sendMail("New ticket", CONFIRMATION_STAFF_TEMPLATE, context, MailHolder.MessageType.NOREPLY, ticket.getAssignee().getEmail());
     }
 
     private Context addTicketToContext(Context context, Ticket ticket) {
@@ -725,6 +716,14 @@ public class MailService {
         context.setVariable(CONFIRM_URL, siteUrl + MY_STAFF_TICKETS);
         context.setVariable(CONFIRM_BTN_TEXT, "View at dashboard");
         return context;
+    }
+
+    private String highlight(String phrase) {
+        return "<b>" + phrase + "</b>";
+    }
+
+    private String wrapLink(String phrase, String link) {
+        return "<a href= " + link + ">" + phrase + "</a>";
     }
 
 

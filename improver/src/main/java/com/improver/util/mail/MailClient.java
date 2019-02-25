@@ -19,6 +19,8 @@ import java.util.concurrent.*;
 @Slf4j
 public class MailClient {
 
+    private final static String DUMMY_VALUE = "dummyValue";
+
     @Autowired private TemplateEngine templateEngine;
     @Autowired private JavaMailSender mailSenderNoreply;
     @Autowired private JavaMailSender mailSenderSupport;
@@ -28,18 +30,28 @@ public class MailClient {
     private CopyOnWriteArraySet<MailHolder> unsentMails = new CopyOnWriteArraySet<>();
 
     @Async
+    public void sendMailsSeparate(String subject, String template, Context context, MailHolder.MessageType messageType, String... recipients) {
+        for (String recipient: recipients) {
+            prepareAndSend(subject, template, context, messageType, recipient);
+        }
+    }
+
+    @Async
     public void sendMail(String subject, String template, Context context, MailHolder.MessageType messageType, String... recipients) {
-        if (recipients.length == 0) return;
+        if (recipients.length == 0) throw new IllegalArgumentException("recipients could not be empty");
+        prepareAndSend(subject, template, context, messageType, recipients);
+    }
+
+    protected void prepareAndSend(String subject, String template, Context context, MailHolder.MessageType messageType, String... recipient) {
         String message = templateEngine.process(template, context);
         MimeMessagePreparator messagePreparator = mimeMessage -> {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
-            messageHelper.setTo(recipients);
+            messageHelper.setTo(recipient);
             messageHelper.setSubject(subject);
             messageHelper.setText(message, true);
             // first param will be rewritten by emails sender. It's used because no other way to set sender name
-            messageHelper.setFrom("dummyValue", senderName);
+            messageHelper.setFrom(DUMMY_VALUE, senderName);
         };
-
         MailHolder mailHolder = new MailHolder(messagePreparator, messageType);
         try {
             send(mailHolder);

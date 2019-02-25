@@ -21,8 +21,8 @@ public interface TradeRepository extends JpaRepository<Trade, Long> {
 
     @Query("SELECT new com.improver.model.admin.AdminTrade(t) FROM com.improver.entity.Trade t " +
         "WHERE (:id IS null OR t.id = :id) AND " +
-        "(:name IS null OR lower(t.name) LIKE %:name%) AND " +
-        "(:description IS null OR lower(t.description) LIKE %:description%) AND " +
+        "(:name IS null OR lower(t.name) LIKE '%' || lower(cast(:name as string)) || '%') AND " +
+        "(:description IS null OR lower(t.description) LIKE '%' || lower(cast(:description as string)) || '%') AND " +
         "(:ratingFrom IS null OR t.rating BETWEEN :ratingFrom AND :ratingTo)")
     Page<AdminTrade> getAll(Long id, String name, String description, Integer ratingFrom, Integer ratingTo, Pageable pageable);
 

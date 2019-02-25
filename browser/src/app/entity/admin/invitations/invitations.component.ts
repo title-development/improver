@@ -47,6 +47,7 @@ export class InvitationsComponent {
 
   filters: { [s: string]: FilterMetadata };
   invitation = new Invitation();
+  processing = false;
 
   constructor(private invitationService: InvitationService,
               private confirmationService: ConfirmationService,
@@ -164,6 +165,7 @@ export class InvitationsComponent {
   }
 
   postInvitation(form: NgForm) {
+    this.processing = true;
     if (this.invitation.emails.length === 0) {
       return this.popUpService.showError("Add at least one company email to invitation");
     }
@@ -173,14 +175,15 @@ export class InvitationsComponent {
     invitation.bonus = invitation.bonus * 100;
     this.invitationService.post(invitation).subscribe(
       response => {
+        this.processing = false;
         let emailDiff = invitation.emails.filter(item => !response.includes(item));
         if (response.length > 0) {
           this.popUpService.showSuccess(`Invitation for [<b>${response}</b>] successfully created`);
           if (response.length < invitation.emails.length) {
-            this.popUpService.showWarning(`Invitation(s) can't be created. Invitations or Users with email(s) [<b>${emailDiff}</b>] already exists`);
+            this.popUpService.showWarning(`Invitation(s) can't be created. Invitation(s) or User(s) with email(s) [<b>${emailDiff}</b>] already exists`);
           }
         } else {
-          this.popUpService.showWarning(`Invitation(s) can't be created. Invitations or Users with email(s) [<b>${emailDiff}</b>] already exists`);
+          this.popUpService.showWarning(`Invitation(s) can't be created. Invitation(s) or User(s) with email(s) [<b>${emailDiff}</b>] already exists`);
         }
         this.displayInviteDialog = false;
         this.getInvitations();
@@ -189,6 +192,7 @@ export class InvitationsComponent {
         this.invitation = new Invitation();
       },
       err => {
+        this.processing = false;
         this.popUpService.showError(getErrorMessage(err));
       }
     );

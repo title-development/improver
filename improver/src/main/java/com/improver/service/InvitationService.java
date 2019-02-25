@@ -36,12 +36,12 @@ public class InvitationService {
             created.add(new Invitation(email, invitation.getBonus(), invitation.getDescription()));
         }
         invitationRepository.saveAll(created);
-        mailService.sendInvitation(invitation.getBonus(), allowedEmails);
+        mailService.sendInvitations(invitation.getBonus(), allowedEmails);
         return allowedEmails;
     }
 
     public void resend(Invitation invitation) {
-        mailService.sendInvitation(invitation.getBonus(), invitation.getEmail());
+        mailService.sendInvitations(invitation.getBonus(), invitation.getEmail());
     }
 
     public void delete(long id) {

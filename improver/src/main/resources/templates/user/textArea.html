@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{template.html}">
+      layout:decorate="~{templateUser.html}">
 
 <div layout:fragment="content" style="background-color: #fafafa; font-family: 'Trebuchet MS', sans-serif;">
   <table border="0"
@@ -19,7 +19,12 @@
               <b th:if="${userName != null}" th:text="${userName + '.'}"></b>
               <span th:utext="${title}"></span>
             </div>
-            <div th:utext="${body}" th:style="${'font-size: 14px; margin-bottom: 24px; white-space: pre-line; text-align: ' + contentAlign}"></div>
+            <div th:utext="${bodyBeforeArea}" th:style="${'font-size: 14px; margin-bottom: 24px; white-space: pre-line; text-align: ' + contentAlign}"></div>
+            <div th:utext="${textAreaTitle}" th:style="${'font-size: 14px; text-align: ' + contentAlign}"></div>
+            <div th:utext="${textAreaContent}" th:style="${'border: 1px solid #d8d8d8; padding: 8px; border-radius: 2px; font-size: 14px; margin-bottom: 24px; text-align: ' + contentAlign}"></div>
+            <div th:utext="${bodyAfterArea}" th:style="${'font-size: 14px; margin-bottom: 24px; white-space: pre-line; text-align: ' + contentAlign}"></div>
+
+            <!--<div th:text="${signature}" style="font-size: 14px; margin-bottom: 24px"></div>-->
             <a
               style="display: block; background: #009ede; padding: 12px; text-align: center; border-radius: 2px;
             color: white; font-size: 14px; font-weight: 500; width: 126px; text-decoration: none; margin: 0 auto;

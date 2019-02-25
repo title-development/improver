@@ -92,6 +92,15 @@
       </div>
 
       <div class="ui-grid-row ui-grid-field">
+        <div class="ui-grid-col-4"></div>
+        <div class="ui-grid-col-8">
+          <div class="input-hint">
+            Type Pro's email and push <b>Enter</b> or <b>Tab</b> to add it
+          </div>
+        </div>
+      </div>
+
+      <div class="ui-grid-row ui-grid-field">
         <div class="ui-grid-col-4"><label for="bonus">Initial bonus</label></div>
         <div class="ui-grid-col-8">
           <div class="ui-inputgroup">
@@ -137,7 +146,7 @@
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix">
         <button type="submit" pButton icon="pi pi-check" label="Submit"
-                class="ui-button-success"></button>
+                class="ui-button-success" [disabled]="processing"></button>
       </div>
     </p-footer>
 
