@@ -49,14 +49,11 @@ import static com.improver.util.serializer.SerializationUtil.fromJson;
 @RequestMapping(COMPANIES_PATH)
 public class CompanyController {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
-
     @Autowired private CompanyService companyService;
     @Autowired private CompanyRepository companyRepository;
     @Autowired private UserSecurityService userSecurityService;
     @Autowired private ReviewService reviewService;
     @Autowired private ReviewRepository reviewRepository;
-    @Autowired private MailService mailService;
     @Autowired private ImageController imageController;
     @Autowired private PasswordEncoder passwordEncoder;
 
@@ -70,6 +67,7 @@ public class CompanyController {
         return new ResponseEntity<>(companies, HttpStatus.OK);
     }
 
+    // TODO : create 1 query method to retrieve <Resource>
     @GetMapping(COMPANY_ID + ICON)
     public ResponseEntity<Resource> getCompanyIcon(@PathVariable String companyId) {
         String iconUrl = companyRepository.getIconUrl(companyId)
@@ -101,12 +99,6 @@ public class CompanyController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping(REGISTER)
-    public ResponseEntity<Void> register(@RequestBody Company company) {
-        Company saved = companyRepository.save(company);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
     @SupportAccess
     @PageableSwagger
     @GetMapping(COMPANY_ID + "/logs")
@@ -125,6 +117,8 @@ public class CompanyController {
         return new ResponseEntity<>(project, HttpStatus.OK);
     }
 
+
+    //TODO: not sure about this: /offered-services -> services
     @SupportAccess
     @PageableSwagger
     @GetMapping(COMPANY_ID + "/offered-services")
@@ -158,6 +152,24 @@ public class CompanyController {
     }
 
 
+    //TODO: /base64logo -> /logo
+    @PostMapping(COMPANY_ID + "/base64logo")
+    public ResponseEntity<String> uploadLogoInBase64(@PathVariable String companyId, @RequestBody String imageInBase64) {
+        String imageUrl = companyService.updateLogo(companyId, imageInBase64);
+
+        return new ResponseEntity<>(imageUrl, HttpStatus.OK);
+    }
+
+    //TODO: /base64logo -> /logo
+    @DeleteMapping(COMPANY_ID + "/base64logo")
+    public ResponseEntity<Void> deleteLogo(@PathVariable String companyId) {
+        companyService.deleteLogo(companyId);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    //TODO: /base64background -> /cover
+
     /**
      * Accepts image as BASE64 encoded data like "data:image/jpeg;base64,/9j/4AAQ...yD=="
      */
@@ -166,20 +178,6 @@ public class CompanyController {
         String imageUrl = companyService.updateBackground(companyId, imageInBase64);
 
         return new ResponseEntity<>(imageUrl, HttpStatus.OK);
-    }
-
-    @PostMapping(COMPANY_ID + "/base64logo")
-    public ResponseEntity<String> uploadLogoInBase64(@PathVariable String companyId, @RequestBody String imageInBase64) {
-        String imageUrl = companyService.updateLogo(companyId, imageInBase64);
-
-        return new ResponseEntity<>(imageUrl, HttpStatus.OK);
-    }
-
-    @DeleteMapping(COMPANY_ID + "/base64logo")
-    public ResponseEntity<Void> deleteLogo(@PathVariable String companyId) {
-        companyService.deleteLogo(companyId);
-
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping(COMPANY_ID + "/cover")
@@ -200,6 +198,7 @@ public class CompanyController {
     }
 
 
+    //TODO: move to ReviewController
     @PageableSwagger
     @GetMapping(COMPANY_ID + REVIEWS)
     public ResponseEntity<ReviewRating> getCompanyReviews(@PathVariable String companyId, @RequestParam(defaultValue = "false") boolean publishedOnly,
@@ -211,14 +210,14 @@ public class CompanyController {
         return new ResponseEntity<>(reviewRating, HttpStatus.OK);
     }
 
+    //TODO: move to ReviewController
     @CompanyMemberOrSupportAccess
     @PostMapping(COMPANY_ID + REVIEWS + ID_PATH_VARIABLE + "/revision")
     public ResponseEntity<Void> requestReviewRevision(@PathVariable String companyId,
                                                       @PathVariable Long id,
                                                       @RequestBody
-                                                      @Size(min = REVIEW_MESSAGE_MIN_SIZE, max = REVIEW_MESSAGE_MAX_SIZE,
-                                                      message = "Message should be "+ REVIEW_MESSAGE_MIN_SIZE +" to "+ REVIEW_MESSAGE_MAX_SIZE +" characters long.")
-                                                              String comment) {
+                                                      @Size(min = REVIEW_MESSAGE_MIN_SIZE, max = REVIEW_MESSAGE_MAX_SIZE, message = "Message should be " + REVIEW_MESSAGE_MIN_SIZE + " to " + REVIEW_MESSAGE_MAX_SIZE + " characters long.")
+                                                          String comment) {
         Company company = companyRepository.findById(companyId)
             .orElseThrow(NotFoundException::new);
         Review review = reviewRepository.findById(id)
@@ -227,6 +226,7 @@ public class CompanyController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    //TODO: move to ReviewController
     @PreAuthorize("hasRole('CUSTOMER')")
     @GetMapping(COMPANY_ID + REVIEWS + "/options")
     public ResponseEntity<Void> getReviewCapability(@PathVariable String companyId,
@@ -239,6 +239,7 @@ public class CompanyController {
     }
 
 
+    //TODO: move to ReviewController
     @PreAuthorize("hasRole('CUSTOMER')")
     @PostMapping(COMPANY_ID + REVIEWS)
     public ResponseEntity<Void> addReview(@PathVariable String companyId,
@@ -252,6 +253,7 @@ public class CompanyController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    //TODO: POST on /companies/12 - means approve company?
     @SupportAccess
     @PostMapping(COMPANY_ID)
     public ResponseEntity<Void> approve(@PathVariable String companyId, @RequestParam boolean approved) {
