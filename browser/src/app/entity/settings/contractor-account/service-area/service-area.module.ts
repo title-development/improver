@@ -26,7 +26,6 @@ import { PendingChangesGuard } from '../../../../auth/router-guards/pending-chan
 import { BasicMode } from './BasicMode';
 import { DetailMode } from './DetailMode';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
-import { TutorialService } from '../../../../api/services/tutorial.service';
 import { AgmSnazzyInfoWindowModule } from '@agm/snazzy-info-window';
 const routing: ModuleWithProviders = RouterModule.forChild([
   {
@@ -72,8 +71,7 @@ const routing: ModuleWithProviders = RouterModule.forChild([
     MapTechnicaService,
     MapMarkersStore,
     BasicMode,
-    DetailMode,
-    TutorialService
+    DetailMode
   ]
 
 })

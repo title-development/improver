@@ -31,25 +31,6 @@
     </div>
 
     <div class="header-right">
-      <mat-menu class="mobile-menu app-menu" #mobileMenu="matMenu" yPosition="below" xPosition="after">
-        <div *ngIf="securityService.isAuthenticated() && securityService.hasRole(Role.CONTRACTOR)">
-          <button mat-menu-item routerLink="/pro/dashboard">Dashboard</button>
-          <button mat-menu-item [routerLink]="'/companies/' + securityService.getLoginModel().company">Profile</button>
-        </div>
-        <div *ngIf="securityService.isAuthenticated() && securityService.hasRole(Role.CUSTOMER)">
-          <button mat-menu-item routerLink="/my/projects">My Projects</button>
-        </div>
-        <div *ngIf="securityService.isAuthenticated() && securityService.hasRole(Role.ANONYMOUS)">
-          <div class="nav navbar-nav navbar-right" *ngIf="!securityService.isAuthenticated()">
-            <button cv-button-flat routerLink="/login">Log in</button>
-            <button mat-menu-item routerLink="/signup">Sign up</button>
-            <button class="join-as-pro-button join-as-pro-button-text" mat-menu-item routerLink="/become-pro">Become a
-              Pro
-            </button>
-          </div>
-        </div>
-      </mat-menu>
-
       <!--Notification icon-->
       <div class="notification-bar navbar-right" *ngIf="securityService.isAuthenticated()">
         <button class="menu-button" mat-button color="accent" (click)="isNotificationsPopupOpened = !isNotificationsPopupOpened">
@@ -92,7 +73,7 @@
 
       <!--Right menu on desktop for ANONYMOUS-->
       <div class="navbar-right xs-none sm-none"
-           *ngIf="!securityService.isAuthenticated() || securityService.hasRole(Role.ANONYMOUS)">
+           *ngIf="!securityService.isAuthenticated() && ( securityService.hasRole(Role.ANONYMOUS) || securityService.hasRole(Role.INCOMPLETE_PRO))">
         <a routerLink="/login">Log in</a>
         <a routerLink="/signup">Sign up</a>
         <a class="join-as-pro-button" routerLink="/become-pro">

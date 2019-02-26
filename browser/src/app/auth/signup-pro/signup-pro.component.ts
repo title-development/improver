@@ -14,6 +14,8 @@ import { PopUpMessageService } from '../../util/pop-up-message.service';
 import { HttpResponse } from '@angular/common/http';
 import { getErrorMessage } from '../../util/functions';
 import { SystemMessageType } from '../../model/data-model';
+import { MediaQuery, MediaQueryService } from '../../util/media-query.service';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -22,7 +24,7 @@ import { SystemMessageType } from '../../model/data-model';
   styleUrls: ['signup-pro.component.scss']
 })
 
-export class SignupProComponent {
+export class SignupProComponent implements OnDestroy{
   agreeForSocialLogin: boolean = false;
   processing: boolean = false;
   showMessage: boolean = false;
@@ -40,14 +42,19 @@ export class SignupProComponent {
     confirmPassword: '',
     agree: false
   };
+  mediaQuery: MediaQuery;
+  private mediaQuerySubscription: Subscription;
 
   constructor(public securityService: SecurityService,
               public constants: Constants,
               public messages: Messages,
               public tricksService: TricksService,
               public popUpMessageService: PopUpMessageService,
-              public registrationService: RegistrationService) {
-
+              public registrationService: RegistrationService,
+              private mediaQueryService: MediaQueryService
+              ) {
+    this.mediaQuerySubscription = this.mediaQueryService.screen.subscribe((mediaQuery: MediaQuery) => {
+      this.mediaQuery = mediaQuery;})
   }
 
   registerContractor(form) {
@@ -65,5 +72,11 @@ export class SignupProComponent {
 
   onMessageHide(event) {
     this.showMessage = event;
+  }
+
+  ngOnDestroy(): void {
+    if(this.mediaQuerySubscription) {
+      this.mediaQuerySubscription.unsubscribe();
+    }
   }
 }

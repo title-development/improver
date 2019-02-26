@@ -9,9 +9,6 @@ import { SystemMessageType } from '../../model/data-model';
 import { ProjectService } from '../../api/services/project.service';
 import { HttpResponse } from '@angular/common/http';
 import { getErrorMessage } from '../../util/functions';
-import { ErrorHandler } from '../../util/error-handler';
-import { FacebookLoginProvider, GoogleLoginProvider, AuthService, SocialUser } from 'angularx-social-login';
-import { SocialConnectionsService } from '../social-connections.service';
 
 @Component({
   selector: 'login-page',

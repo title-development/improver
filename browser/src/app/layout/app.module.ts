@@ -89,6 +89,7 @@ import { MyStompService } from 'app/util/my-stomp.service';
 import { LicenseTypeService } from '../api/services/license-type.service';
 import { InternalServerErrorComponent } from '../entity/internal-server-error/internal-server-error.component';
 import { CustomRouteReuseStrategy } from '../util/router-reuse.strategy';
+import { TutorialsService } from '../api/services/tutorials.service';
 
 const rootRouting: ModuleWithProviders = RouterModule.forRoot([], {useHash: false});
 
@@ -200,6 +201,7 @@ export function getAuthServiceConfigs() {
     PendingChangesGuard,
     ScrollHolderService,
     SocialConnectionsService,
+    TutorialsService,
     {
       provide: AuthServiceConfig,
       useFactory: getAuthServiceConfigs

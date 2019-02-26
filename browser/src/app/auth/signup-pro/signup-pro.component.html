@@ -175,6 +175,21 @@
             <div class="hint account-hint">
               <span>Create a PRO account and continue company registration whenever suits you.</span>
             </div>
+            <div class="row" *ngIf="mediaQuery.xs || mediaQuery.sm">
+              <div class="col-md-8 col-sm-12 col-xs-12">
+                <cv-checkbox #agreeEl="ngModel" name="agree"
+                             [(ngModel)]="registerProps.agree"
+                             class="agree"
+                             required>
+                  <div>I agree with Home Improve <a routerLink="/terms-of-use" target="_blank">Terms of Use</a> and <a
+                    routerLink="/privacy-policy" target="_blank">Privacy policy</a></div>
+                </cv-checkbox>
+                <cv-field-error
+                  *ngIf="agreeEl.dirty || agreeEl.touched || accountForm.submitted || agreeForSocialLogin">
+                  <span *ngIf="agreeEl.errors?.required">Please agree to all the terms and conditions</span>
+                </cv-field-error>
+              </div>
+            </div>
             <response-message *ngIf="showMessage" [type]="messageType" [message]="messageText"
                               [paddingV]="12" [paddingH]="24"
                               [marginTop]="16"
@@ -189,7 +204,7 @@
             ></social-buttons>
           </div>
         </div>
-        <div class="row">
+        <div class="row" *ngIf="!(mediaQuery.xs || mediaQuery.sm)">
           <div class="col-md-8 col-sm-12 col-xs-12">
             <cv-checkbox #agreeEl="ngModel" name="agree"
                          [(ngModel)]="registerProps.agree"

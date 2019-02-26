@@ -60,6 +60,7 @@ export class SocialButtonsComponent {
         this.socialSignIn(socialPlatformProvider, socialPlatform);
       })
       .catch(err => {
+        console.log(err);
         this.socialSignIn(socialPlatformProvider, socialPlatform);
       });
   }
@@ -125,6 +126,7 @@ export class SocialButtonsComponent {
         }
       )
       .catch(err => {
+        console.log(err);
         this.showError(socialPlatform);
       });
   }

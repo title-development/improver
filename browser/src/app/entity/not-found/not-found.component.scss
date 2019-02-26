@@ -137,3 +137,8 @@ button {
     transform: rotate(-31deg);
   }
 }
+
+button {
+  position: relative;
+  z-index: 22;
+}

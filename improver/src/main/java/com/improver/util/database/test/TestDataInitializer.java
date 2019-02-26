@@ -74,6 +74,7 @@ public class TestDataInitializer {
     @Autowired private UnavailabilityPeriodRepository unavailabilityPeriodRepository;
     @Autowired private LicenseTypeRepository licenseTypeRepository;
     @Autowired private TestPaymentAccountResolver testPaymentAccountResolver;
+    @Autowired private UserTutorialRepository userTutorialRepository;
 
     private static final String TILE_INSTALLATION = "Tile Installation";
     private static final String ARCHITECTURAL_SERVICES = "Architectural Services";
@@ -286,13 +287,10 @@ public class TestDataInitializer {
     }
 
     private void createCustomer(String email, String firstName, String lastName, String phone, String iconUrl) {
-
-
         Customer customer = new Customer(firstName, lastName, email, DEMO_PASS, phone)
             .setIconUrl(iconUrl)
             .setActivated(true);
         customerRepository.save(customer);
-
     }
 
     private void initUsers() {

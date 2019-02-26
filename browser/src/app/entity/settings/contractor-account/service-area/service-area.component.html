@@ -91,7 +91,7 @@
   </span>
 </div>
 
-<div class="tutorial-wrapper" [ngClass]="{'-opened': toggleInfo || !tutorials.getTutorial('coverage')}">
+<div class="tutorial-wrapper" [ngClass]="{'-opened': toggleInfo || ((tutorialService.tutorials$ | async) && (tutorialService.tutorials$ | async).includes(UserTutorial.Tutorial.COVERAGE))}">
   <div class="tutorial">
     <i class="imp-icon-map-pointer"></i>
     <h4>Adjusting your Company coverage</h4>
@@ -99,7 +99,7 @@
 
     <p>Radius configuration has a circle shape with a center of your company address and adjustable radius in miles.</p>
     <p>If you want more accurate coverage, choose 'By Zip Codes' where you can select individual zip codes.</p>
-    <a href="" (click)="gotTutorial($event)">Got it</a>
+    <a href="" (click)="completeTutorial($event)">Got it</a>
   </div>
 </div>
 

@@ -83,6 +83,10 @@ public class User implements Principal {
     @OneToMany(mappedBy = "author")
     protected List<Ticket> createdTickets;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    protected List<UserTutorial> userTutorials;
+
     protected User() {
     }
 

@@ -25,12 +25,13 @@ import { Subscription, Observable, of, forkJoin } from 'rxjs';
 import { ComponentCanDeactivate } from '../../../../auth/router-guards/pending-chanes.guard';
 import { BasicMode } from './BasicMode';
 import { DetailMode, ZipInfoWindow } from './DetailMode';
-import { TutorialService } from '../../../../api/services/tutorial.service';
+import { TutorialsService } from '../../../../api/services/tutorials.service';
 import { CvSwitchComponent } from '../../../../theme/switch/switch.component';
 import { CompanyCoverageConfig } from '../../../../api/models/CompanyCoverageConfig';
 import { mergeMap, switchMap } from 'rxjs/internal/operators';
 import { MediaQuery, MediaQueryService } from '../../../../util/media-query.service';
 import { getErrorMessage } from '../../../../util/functions';
+import { UserTutorial } from '../../../../api/models/UserTutorial';
 
 
 @Component({
@@ -43,6 +44,7 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate {
   zipFormErrors: boolean;
   searchZip: string;
   configCoverage: CoverageConfig;
+  UserTutorial = UserTutorial;
   miles: Array<number> = [10, 15, 20, 30, 40, 50];
   minZoom: number | 9 | 11 = 9;
   isHistoryShowed: boolean = true;
@@ -87,7 +89,7 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate {
               private basicMode: BasicMode,
               private detailsMode: DetailMode,
               private appRef: ApplicationRef,
-              public tutorials: TutorialService,
+              public tutorialService: TutorialsService,
               private mediaQuery: MediaQueryService,
               private cdRef: ChangeDetectorRef) {
     this.mediaQuery$ = this.mediaQuery.screen.subscribe((medias: MediaQuery) => {
@@ -344,10 +346,10 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate {
     this.toggleInfo = !this.toggleInfo;
   }
 
-  gotTutorial(event: Event) {
+  completeTutorial(event: Event) {
     event.preventDefault();
     this.toggleInfo = false;
-    this.tutorials.earn('coverage');
+    this.tutorialService.complete(new UserTutorial(UserTutorial.Tutorial.COVERAGE));
   }
 
   private enableBasicMode(): void {

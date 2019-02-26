@@ -29,6 +29,7 @@ import { ScrollHolderService } from '../util/scroll-holder.service';
       flex-direction: column;
       min-height: calc(100vh - 50px);
     }
+
     router-outlet ::ng-deep + * > .container {
       flex-grow: 1;
     }
@@ -36,6 +37,7 @@ import { ScrollHolderService } from '../util/scroll-holder.service';
 })
 export class LayoutComponent {
   @ViewChild('scrollHolder') scrollHolder: ElementRef;
+
   constructor(private scrollHolderService: ScrollHolderService) {
 
   }

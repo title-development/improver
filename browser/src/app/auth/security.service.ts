@@ -103,6 +103,7 @@ export class SecurityService {
     if (user.role != Role.INCOMPLETE_PRO) {
       this.window.addEventListener('storage', this.localStorageHandler, false);
       this.onUserInit.next(null);
+
     }
     if (redirect) {
       switch (user.role) {
@@ -162,6 +163,7 @@ export class SecurityService {
     localStorage.removeItem(SecurityService.USER_STORAGE_KEY);
     this.window.removeEventListener('storage', this.localStorageHandler, false);
     this.onLogout.emit();
+
   }
 
   private logoutBackend() {
