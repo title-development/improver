@@ -2803,25 +2803,6 @@ INSERT INTO public.areas (zip, company_id) VALUES ('11425', 1);
 INSERT INTO public.areas (zip, company_id) VALUES ('07088', 1);
 INSERT INTO public.areas (zip, company_id) VALUES ('11770', 1);
 
-INSERT INTO public.license_types (accreditation, state) VALUES ('Electrical contractor', 'NY');
-INSERT INTO public.license_types (accreditation, state) VALUES ('Concrete test lab / Safety managers', 'NY');
-INSERT INTO public.license_types (accreditation, state) VALUES ('Stationary / Portable engineer', 'NY');
-INSERT INTO public.license_types (accreditation, state) VALUES ('Fire suppression contractor', 'NY');
-INSERT INTO public.license_types (accreditation, state) VALUES ('General contractor', 'NY');
-INSERT INTO public.license_types (accreditation, state) VALUES ('Hoist machine operator', 'NY');
-INSERT INTO public.license_types (accreditation, state) VALUES ('Special inspection agency', 'NY');
-INSERT INTO public.license_types (accreditation, state) VALUES ('Energy auditor / Retro-commission agent', 'NY');
-INSERT INTO public.license_types (accreditation, state) VALUES ('Elevator agency / Inspector', 'NY');
-INSERT INTO public.license_types (accreditation, state) VALUES ('Site safety', 'NY');
-INSERT INTO public.license_types (accreditation, state) VALUES ('Superintendent of construction', 'NY');
-INSERT INTO public.license_types (accreditation, state) VALUES ('Oil burner installer', 'NY');
-INSERT INTO public.license_types (accreditation, state) VALUES ('Master plumber', 'NY');
-INSERT INTO public.license_types (accreditation, state) VALUES ('Rigger', 'NY');
-INSERT INTO public.license_types (accreditation, state) VALUES ('Sign hanger', 'NY');
-INSERT INTO public.license_types (accreditation, state) VALUES ('Tower crane Rigger', 'NY');
-INSERT INTO public.license_types (accreditation, state) VALUES ('Welder', 'NY');
-INSERT INTO public.license_types (accreditation, state) VALUES ('Filing representative', 'NY');
-
 CREATE TABLE IF NOT EXISTS shedlock
 (
     name varchar(64) not null

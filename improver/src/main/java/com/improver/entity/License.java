@@ -2,11 +2,11 @@ package com.improver.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.improver.enums.State;
+import com.improver.model.CompanyLicense;
 import com.improver.util.serializer.SerializationUtil;
 import lombok.Data;
 import lombok.experimental.Accessors;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -26,10 +26,10 @@ public class License {
     @JoinColumn(name="company_id",  foreignKey = @ForeignKey(name = "license_company_fkey"))
     private Company company;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name="license_type_id",  foreignKey = @ForeignKey(name = "license_license_type_fkey"))
-    private LicenseType licenseType;
+    @Enumerated(EnumType.STRING)
+    private State state;
+
+    private String accreditation;
 
     private String number;
 

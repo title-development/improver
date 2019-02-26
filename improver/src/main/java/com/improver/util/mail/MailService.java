@@ -49,7 +49,7 @@ public class MailService {
     private static final String NOTICE_TEMPLATE = "user/notice";
     private static final String CONFIRMATION_TEMPLATE = "user/confirmation";
     private static final String PROJECT_DETAILS_TEMPLATE = "user/projectDetails";
-    private static final String TEXT_AREA_TEMPLATE = "user/textAreaUser";
+    private static final String TEXT_AREA_TEMPLATE = "user/textArea";
     private static final String CONFIRMATION_STAFF_TEMPLATE = "staff/confirmation";
 
     // Template parts keys

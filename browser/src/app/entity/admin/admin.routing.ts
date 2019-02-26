@@ -30,7 +30,6 @@ import { ProjectRequestsComponent } from './projects/requests/project-requests.c
 import { InvitationsComponent } from './invitations/invitations.component';
 import { AddUserComponent } from './users/add-user/add-user.component';
 import { AdminAccountComponent } from './account/admin-account.component';
-import { LicenseTypesComponent } from "./license-types/license-types.component";
 import { AdminCoverageComponent } from './coverage/admin-coverage.component';
 import { AdminJobsComponent } from "./jobs/jobs.component";
 import { AuthGuard } from '../../auth/router-guards/auth.guard';
@@ -71,7 +70,6 @@ const routes: Routes = [
           {path: 'tickets/my', component: MyTicketsComponent},
           {path: 'tickets/unassigned', component: TicketsInreviewComponent},
           {path: 'tickets', component: TicketsListComponent},
-          {path: 'license-types', component: LicenseTypesComponent},
           {path: 'jobs', component: AdminJobsComponent},
           {path: 'settings', component: AdminSettingsComponent}
         ]

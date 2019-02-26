@@ -19,6 +19,7 @@
             name="add-license-form"
             #addLicenseForm="ngForm"
             (ngSubmit)="addLicenseForm.valid && onSubmit(addLicenseForm)"
+            [cvSpinner]="retrieving" [cvSpinnerSize]="50" [cvSpinnerBackground]="true"
             novalidate>
 
         <div class="row">
@@ -32,7 +33,6 @@
               <cv-field-label>State</cv-field-label>
               <cv-select [multiple]="false" [tags]="false" [autocomplete]="true"
                          (autocompleteSearch)="onAutoCompleteSearch($event)" [items]="filteredStates"
-                         (onSelect)="onStateSelect($event)"
                          valueKey="value"
                          labelKey="label"
                          name="state"
@@ -50,14 +50,12 @@
           <div class="col-xs-12 group-wrapper">
             <cv-input-field>
               <cv-field-label>Accreditation</cv-field-label>
-              <cv-select [multiple]="false" [tags]="false" [items]="licenseTypes" valueKey="accreditation"
-                         labelKey="accreditation"
-                         name="accreditation"
-                         #accreditation="ngModel"
-                         [(ngModel)]="license.accreditation"
-                         required
-                         label="Choose accreditation">
-              </cv-select>
+              <input cv-input type="text"
+                     name="accreditation"
+                     #accreditation="ngModel"
+                     [(ngModel)]="license.accreditation"
+                     required
+                     placeholder="Accreditation">
               <cv-field-error *ngIf="accreditation.dirty || accreditation.touched || addLicenseForm.submitted">
                 <span *ngIf="accreditation.errors?.required">Required</span>
               </cv-field-error>
@@ -97,12 +95,8 @@
           </div>
 
           <div class="col-xs-12 buttons-wrapper">
-
             <button cv-button-flat flatStyle="dark" (click)="close()" type="button">Cancel</button>
-
-            <button cv-button type="submit" *ngIf="!licenseId">Save</button>
-            <button cv-button type="submit" *ngIf="licenseId">Update</button>
-
+            <button cv-button type="submit" [loading]="saving">{{licenseId ? 'Update' : 'Save'}}</button>
           </div>
 
         </div>

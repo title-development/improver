@@ -86,7 +86,6 @@ import { AuthServiceConfig, FacebookLoginProvider, GoogleLoginProvider } from 'a
 import { SocialConnectionsService } from '../auth/social-connections.service';
 import { AccessDeniedInterceptor } from '../util/interceptors/access-denied.interceptor';
 import { MyStompService } from 'app/util/my-stomp.service';
-import { LicenseTypeService } from '../api/services/license-type.service';
 import { InternalServerErrorComponent } from '../entity/internal-server-error/internal-server-error.component';
 import { CustomRouteReuseStrategy } from '../util/router-reuse.strategy';
 import { TutorialsService } from '../api/services/tutorials.service';
@@ -173,7 +172,6 @@ export function getAuthServiceConfigs() {
     ProjectService,
     CompanyService,
     LicenseService,
-    LicenseTypeService,
     AccountService,
     ServiceTypeService,
     LeadService,

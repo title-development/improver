@@ -92,7 +92,6 @@ import { InvitationService } from "../../api/services/invitation.service";
 import { StatisticService } from '../../api/services/statistic.service';
 import { AddUserComponent } from './users/add-user/add-user.component';
 import { AdminAccountComponent } from './account/admin-account.component';
-import { LicenseTypesComponent } from "./license-types/license-types.component";
 import { AdminCoverageComponent } from './coverage/admin-coverage.component';
 import { GoogleMapsAPIWrapper } from '@agm/core';
 import { AgmSharedModule } from '../../shared/agmShared.module';
@@ -197,7 +196,6 @@ import { TicketEditDialogComponent } from "./tickets/ticket-edit-dialog/ticket-e
     InvitationsComponent,
     AddUserComponent,
     AdminAccountComponent,
-    LicenseTypesComponent,
     AdminCoverageComponent,
     AdminMap
   ],

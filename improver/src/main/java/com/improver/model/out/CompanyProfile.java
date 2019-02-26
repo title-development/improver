@@ -75,7 +75,7 @@ public class CompanyProfile extends CompanyInfo {
             return Collections.emptyList();
         }
         return licenses.stream()
-            .map(license -> license.getLicenseType().getAccreditation() + " " + license.getNumber())
+            .map(license -> license.getAccreditation() + " " + license.getNumber())
             .collect(Collectors.toList());
     }
 }

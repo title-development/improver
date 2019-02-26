@@ -1,11 +1,6 @@
 import { Component, EventEmitter, OnInit, ViewEncapsulation } from '@angular/core';
 import {
-  Accreditation,
-  ContractorProject,
-  ContractorProjectShort,
-  License,
-  LicenseType,
-  State
+  License
 } from '../../../model/data-model';
 import { MatDialogRef } from '@angular/material';
 import { PopUpMessageService } from '../../../util/pop-up-message.service';
@@ -13,7 +8,6 @@ import { LicenseService } from '../../../api/services/license.service';
 import { SecurityService } from '../../../auth/security.service';
 import { TricksService } from '../../../util/tricks.service';
 import { Constants } from '../../../util/constants';
-import { LicenseTypeService } from "../../../api/services/license-type.service";
 import { getErrorMessage } from "../../../util/functions";
 
 @Component({
@@ -32,15 +26,16 @@ export class AddLicenseDialogComponent implements OnInit {
   };
   filteredStates: Array<any> = [];
   onLicenseAdded: EventEmitter<any> = new EventEmitter<any>();
-  licenseTypes: LicenseType[] = [];
   selectedState = null;
+  retrieving = false;
+  saving = false;
+
 
   constructor(public constants: Constants,
               public currentDialogRef: MatDialogRef<any>,
               public securityService: SecurityService,
               public popUpService: PopUpMessageService,
               public licenseService: LicenseService,
-              public licenseTypeService: LicenseTypeService,
               public tricksService: TricksService) {
     this.filteredStates = this.constants.states;
   }
@@ -69,60 +64,46 @@ export class AddLicenseDialogComponent implements OnInit {
   }
 
   getLicense(id): void {
+    this.retrieving = true;
     this.licenseService.getLicense(this.securityService.getLoginModel().company, id)
       .subscribe(
         license => {
           this.license = license;
           this.selectedState = license.state;
-          this.onStateSelect({value: this.selectedState});
+          this.retrieving = false;
         },
         err => {
-          console.log(err);
+          this.retrieving = false;
+          this.popUpService.showError(getErrorMessage(err));
         });
   }
 
   saveLicense(): void {
+    this.saving = true;
     this.licenseService.postLicense(this.securityService.getLoginModel().company, this.license)
       .subscribe(
         () => {
+          this.saving = false;
           this.onLicenseAdded.emit();
           this.close();
-        },
-        err => {
-          console.log(err);
+        }, err => {
+          this.saving = false;
+          this.popUpService.showError(getErrorMessage(err));
         });
   }
 
   updateLicense(): void {
     this.licenseService.updateLicense(this.securityService.getLoginModel().company, this.license)
-      .subscribe(res => {
+      .subscribe(() => {
         this.onLicenseAdded.emit();
         this.close();
       }, err => {
-        console.log(err);
+        this.popUpService.showError(getErrorMessage(err));
       })
   }
 
   onSubmit(form): void {
     this.saveLicense();
-  }
-
-  onStateSelect(state) {
-    if (this.selectedState !== state.value) {
-      this.license.accreditation = null;
-    }
-    this.selectedState = state.value;
-    this.getLicenseTypes(state.value);
-  }
-
-  getLicenseTypes(state: string) {
-    this.licenseTypeService.getByState(state).subscribe(
-      licenseTypes => {
-        this.licenseTypes = licenseTypes
-      },
-      err => {
-        this.popUpService.showError(getErrorMessage(err))
-      })
   }
 
 }

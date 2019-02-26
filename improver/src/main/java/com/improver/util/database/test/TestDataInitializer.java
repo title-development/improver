@@ -1,6 +1,7 @@
 package com.improver.util.database.test;
 
 import com.improver.entity.*;
+import com.improver.enums.State;
 import com.improver.exception.NotFoundException;
 import com.improver.model.in.Order;
 import com.improver.model.in.OrderDetails;
@@ -72,7 +73,6 @@ public class TestDataInitializer {
     @Autowired private UserRepository userRepository;
     @Autowired private RefundRepository refundRepository;
     @Autowired private UnavailabilityPeriodRepository unavailabilityPeriodRepository;
-    @Autowired private LicenseTypeRepository licenseTypeRepository;
     @Autowired private TestPaymentAccountResolver testPaymentAccountResolver;
     @Autowired private UserTutorialRepository userTutorialRepository;
 
@@ -552,13 +552,15 @@ public class TestDataInitializer {
 
     private void initLicenses() {
         licenseRepository.save(new License().setCompany(getContractor(PRO_1).getCompany())
-            .setLicenseType(licenseTypeRepository.findById(1L).get())
+            .setState(State.NY)
+            .setAccreditation("Electrical contractor")
             .setNumber("5555444433331223")
             .setExpired(LocalDate.now().plusYears(5))
         );
 
         licenseRepository.save(new License().setCompany(getContractor(PRO_1).getCompany())
-            .setLicenseType(licenseTypeRepository.findById(2L).get())
+            .setState(State.NY)
+            .setAccreditation("Concrete test lab / Safety managers")
             .setNumber("1233434534534456656")
             .setExpired(LocalDate.now().plusYears(7))
         );

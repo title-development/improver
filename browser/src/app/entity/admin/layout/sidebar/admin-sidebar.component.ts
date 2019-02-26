@@ -101,12 +101,6 @@ export class AdminSidebarComponent {
       visible: this.isVisible(Role.ADMIN, Role.SUPPORT),
     },
     {
-      icon: 'fas fa-file-invoice',
-      label: 'License Types',
-      url: 'license-types',
-      visible: this.isVisible(Role.ADMIN, Role.SUPPORT),
-    },
-    {
       icon: 'fa fa-money',
       label: 'Refunds',
       url: '',

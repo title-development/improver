@@ -25,3 +25,14 @@ p-datatable::ng-deep {
     word-wrap: break-word;
   }
 }
+
+.licenses-wrapper {
+   .license {
+     margin-bottom: 8px;
+     &:after {
+       content: '';
+       display: block;
+       clear: both;
+     }
+   }
+}

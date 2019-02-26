@@ -377,16 +377,6 @@ export class PaymentCard {
   icon?: string;
 }
 
-export class LicenseType {
-  id?: string;
-  state: string;
-  accreditation: string;
-  constructor(state = 'AL', accreditation = '') {
-    this.state = state;
-    this.accreditation = accreditation;
-  }
-}
-
 export class License {
   id?: string;
   state: string;

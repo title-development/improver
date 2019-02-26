@@ -95,38 +95,40 @@
           <div class="ui-g-12 ui-md-12">
             <p-card title="Licenses">
               <div class="ui-g">
-                <div class="ui-g-12 ui-md-12 ui-g-nopad">
+                <div class="ui-g-12 ui-md-12 ui-g-nopad licenses-wrapper">
                   <ng-container *ngFor="let license of company.licenses">
-                    <div class="ui-g-12 ui-md-12 ui-g-nopad">
-                      <div class="ui-g-4 ui-md-4 ui-g-nopad">
-                        Accreditation
+                    <div class="license">
+                      <div class="ui-g-12 ui-md-12 ui-g-nopad">
+                        <div class="ui-g-4 ui-md-4 ui-g-nopad">
+                          Accreditation
+                        </div>
+                        <div class="ui-g-8 ui-md-8 ui-g-nopad">
+                          {{license.accreditation}}
+                        </div>
                       </div>
-                      <div class="ui-g-8 ui-md-8 ui-g-nopad">
-                        {{license.licenseType.accreditation}}
+                      <div class="ui-g-12 ui-md-12 ui-g-nopad">
+                        <div class="ui-g-4 ui-md-4 ui-g-nopad">
+                          Expired
+                        </div>
+                        <div class="ui-g-8 ui-md-8 ui-g-nopad">
+                          {{license.expired}}
+                        </div>
                       </div>
-                    </div>
-                    <div class="ui-g-12 ui-md-12 ui-g-nopad">
-                      <div class="ui-g-4 ui-md-4 ui-g-nopad">
-                        Expired
+                      <div class="ui-g-12 ui-md-12 ui-g-nopad">
+                        <div class="ui-g-4 ui-md-4 ui-g-nopad">
+                          Number
+                        </div>
+                        <div class="ui-g-8 ui-md-8 ui-g-nopad">
+                          {{license.number}}
+                        </div>
                       </div>
-                      <div class="ui-g-8 ui-md-8 ui-g-nopad">
-                        {{license.expired}}
-                      </div>
-                    </div>
-                    <div class="ui-g-12 ui-md-12 ui-g-nopad">
-                      <div class="ui-g-4 ui-md-4 ui-g-nopad">
-                        Number
-                      </div>
-                      <div class="ui-g-8 ui-md-8 ui-g-nopad">
-                        {{license.number}}
-                      </div>
-                    </div>
-                    <div class="ui-g-12 ui-md-12 ui-g-nopad">
-                      <div class="ui-g-4 ui-md-4 ui-g-nopad">
-                        State
-                      </div>
-                      <div class="ui-g-8 ui-md-8 ui-g-nopad">
-                        {{license.licenseType.state}}
+                      <div class="ui-g-12 ui-md-12 ui-g-nopad">
+                        <div class="ui-g-4 ui-md-4 ui-g-nopad">
+                          State
+                        </div>
+                        <div class="ui-g-8 ui-md-8 ui-g-nopad">
+                          {{license.state}}
+                        </div>
                       </div>
                     </div>
                   </ng-container>
