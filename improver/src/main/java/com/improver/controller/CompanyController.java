@@ -6,6 +6,7 @@ import com.improver.exception.NotFoundException;
 import com.improver.exception.ValidationException;
 import com.improver.model.CompanyInfo;
 import com.improver.model.NameIdTuple;
+import com.improver.model.TradesServicesCollection;
 import com.improver.model.in.CustomerReview;
 import com.improver.model.out.CompanyProfile;
 import com.improver.model.out.CompanyReview;
@@ -67,15 +68,6 @@ public class CompanyController {
         return new ResponseEntity<>(companies, HttpStatus.OK);
     }
 
-    // TODO : create 1 query method to retrieve <Resource>
-    @GetMapping(COMPANY_ID + ICON)
-    public ResponseEntity<Resource> getCompanyIcon(@PathVariable String companyId) {
-        String iconUrl = companyRepository.getIconUrl(companyId)
-            .orElseThrow(NotFoundException::new);
-        return imageController.getImageByURL(iconUrl);
-    }
-
-
     @CompanyMemberOrSupportAccess
     @PutMapping(COMPANY_ID)
     public ResponseEntity<Void> update(@PathVariable String companyId,
@@ -117,14 +109,12 @@ public class CompanyController {
         return new ResponseEntity<>(project, HttpStatus.OK);
     }
 
-
-    //TODO: not sure about this: /offered-services -> services
     @SupportAccess
     @PageableSwagger
-    @GetMapping(COMPANY_ID + "/offered-services")
-    public ResponseEntity<Page<NameIdTuple>> getOfferedServices(@PathVariable String companyId,
+    @GetMapping(COMPANY_ID + SERVICES)
+    public ResponseEntity<Page<NameIdTuple>> getCompanyServices(@PathVariable String companyId,
                                                                 @PageableDefault(sort = "created", direction = Sort.Direction.DESC) Pageable pageRequest) {
-        Page<NameIdTuple> services = companyRepository.getOfferedServices(companyId, pageRequest);
+        Page<NameIdTuple> services = companyRepository.getCompanyServices(companyId, pageRequest);
 
         return new ResponseEntity<>(services, HttpStatus.OK);
     }
@@ -134,7 +124,6 @@ public class CompanyController {
         CompanyInfo company = companyService.getCompanyInfo(companyId);
         return new ResponseEntity<>(company, HttpStatus.OK);
     }
-
 
     @GetMapping(COMPANY_ID + "/profile")
     public ResponseEntity<CompanyProfile> getCompanyProfile(@PathVariable String companyId) {
@@ -152,28 +141,24 @@ public class CompanyController {
     }
 
 
-    //TODO: /base64logo -> /logo
-    @PostMapping(COMPANY_ID + "/base64logo")
+    @PostMapping(COMPANY_ID + "/logo")
     public ResponseEntity<String> uploadLogoInBase64(@PathVariable String companyId, @RequestBody String imageInBase64) {
         String imageUrl = companyService.updateLogo(companyId, imageInBase64);
 
         return new ResponseEntity<>(imageUrl, HttpStatus.OK);
     }
 
-    //TODO: /base64logo -> /logo
-    @DeleteMapping(COMPANY_ID + "/base64logo")
+    @DeleteMapping(COMPANY_ID + "/logo")
     public ResponseEntity<Void> deleteLogo(@PathVariable String companyId) {
         companyService.deleteLogo(companyId);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    //TODO: /base64background -> /cover
-
     /**
      * Accepts image as BASE64 encoded data like "data:image/jpeg;base64,/9j/4AAQ...yD=="
      */
-    @PostMapping(COMPANY_ID + "/base64background")
+    @PostMapping(COMPANY_ID + "/cover")
     public ResponseEntity<String> uploadBackgroundInBase64(@PathVariable String companyId, @RequestBody String imageInBase64) {
         String imageUrl = companyService.updateBackground(companyId, imageInBase64);
 
@@ -197,69 +182,10 @@ public class CompanyController {
         return new ResponseEntity<>(companyRepository.isNameFree(name) ? HttpStatus.OK : HttpStatus.CONFLICT);
     }
 
-
-    //TODO: move to ReviewController
-    @PageableSwagger
-    @GetMapping(COMPANY_ID + REVIEWS)
-    public ResponseEntity<ReviewRating> getCompanyReviews(@PathVariable String companyId, @RequestParam(defaultValue = "false") boolean publishedOnly,
-                                                          @PageableDefault(sort = "created", direction = Sort.Direction.DESC) Pageable pageRequest) {
-        Company company = companyRepository.findById(companyId)
-            .orElseThrow(NotFoundException::new);
-        Page<CompanyReview> reviewsPage = reviewService.getReviews(companyId, publishedOnly, pageRequest);
-        ReviewRating reviewRating = new ReviewRating(company.getRating(), reviewsPage);
-        return new ResponseEntity<>(reviewRating, HttpStatus.OK);
-    }
-
-    //TODO: move to ReviewController
-    @CompanyMemberOrSupportAccess
-    @PostMapping(COMPANY_ID + REVIEWS + ID_PATH_VARIABLE + "/revision")
-    public ResponseEntity<Void> requestReviewRevision(@PathVariable String companyId,
-                                                      @PathVariable Long id,
-                                                      @RequestBody
-                                                      @Size(min = REVIEW_MESSAGE_MIN_SIZE, max = REVIEW_MESSAGE_MAX_SIZE, message = "Message should be " + REVIEW_MESSAGE_MIN_SIZE + " to " + REVIEW_MESSAGE_MAX_SIZE + " characters long.")
-                                                          String comment) {
-        Company company = companyRepository.findById(companyId)
-            .orElseThrow(NotFoundException::new);
-        Review review = reviewRepository.findById(id)
-            .orElseThrow(NotFoundException::new);
-        reviewService.requestReviewRevision(company, review, comment);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    //TODO: move to ReviewController
-    @PreAuthorize("hasRole('CUSTOMER')")
-    @GetMapping(COMPANY_ID + REVIEWS + "/options")
-    public ResponseEntity<Void> getReviewCapability(@PathVariable String companyId,
-                                                    @RequestParam(defaultValue = "0") long projectRequestId,
-                                                    @RequestParam(required = false) String reviewToken) {
-
-        Customer customer = userSecurityService.currentCustomer();
-        reviewService.checkReview(projectRequestId, customer, companyId, reviewToken);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-
-    //TODO: move to ReviewController
-    @PreAuthorize("hasRole('CUSTOMER')")
-    @PostMapping(COMPANY_ID + REVIEWS)
-    public ResponseEntity<Void> addReview(@PathVariable String companyId,
-                                          @RequestParam(defaultValue = "0") long projectRequestId,
-                                          @RequestParam(required = false) String reviewToken,
-                                          @RequestBody @Valid CustomerReview review) {
-
-        Customer customer = userSecurityService.currentCustomer();
-        Review companyReview = reviewService.checkReview(projectRequestId, customer, companyId, reviewToken);
-        reviewService.addReview(companyReview.setScore(review.getScore()).setDescription(review.getDescription()), reviewToken, customer);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    //TODO: POST on /companies/12 - means approve company?
     @SupportAccess
-    @PostMapping(COMPANY_ID)
+    @PostMapping(COMPANY_ID + "/approve")
     public ResponseEntity<Void> approve(@PathVariable String companyId, @RequestParam boolean approved) {
         companyRepository.approve(companyId, approved);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-
 }

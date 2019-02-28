@@ -72,8 +72,8 @@ export class CompaniesPreviewComponent implements OnChanges {
       (transactions: RestPage<Transaction>) => this.transactionsPage = transactions);
   }
 
-  getCompanyOfferedServices(pagination: Pagination): void {
-    this.companyService.getOfferedServices(this.company.id, pagination).subscribe(
+  getCompanyServices(pagination: Pagination): void {
+    this.companyService.getCompanyServices(this.company.id, pagination).subscribe(
       (offeredServices: RestPage<ServiceType>) => this.offeredServicesPage = offeredServices);
   }
 
@@ -85,7 +85,7 @@ export class CompaniesPreviewComponent implements OnChanges {
           this.accordionControls[index].first = 0;
           switch (index) {
             case '0':
-              this.getCompanyOfferedServices(new Pagination(0, this.rowsPerPage[0]));
+              this.getCompanyServices(new Pagination(0, this.rowsPerPage[0]));
               break;
             case '1':
               this.getCompanyTransactions(new Pagination(0, this.rowsPerPage[0]));

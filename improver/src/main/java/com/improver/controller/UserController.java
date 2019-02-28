@@ -63,15 +63,6 @@ public class UserController {
         return new ResponseEntity<>(userAccount, HttpStatus.OK);
     }
 
-    //TODO: This is called for Notificationd to display icons
-    @GetMapping(ID_PATH_VARIABLE + ICON)
-    public ResponseEntity<Resource> getUserIcon(@PathVariable("id") long id) {
-        String iconUrl = userRepository.getIconUrl(id)
-            .orElseThrow(NotFoundException::new);
-        return imageController.getImageByURL(iconUrl);
-    }
-
-
     @SupportAccess
     @GetMapping
     @PageableSwagger

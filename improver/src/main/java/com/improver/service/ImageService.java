@@ -107,7 +107,7 @@ public class ImageService {
 
 
     public String deleteProjectImage(String imageUrl, ImageContainable imageContainable) {
-        String imageName = imageUrl.substring(imageUrl.lastIndexOf(SLASH) + 1);
+        String imageName = getImageNameFromURL(imageUrl);
         boolean isCover = imageUrl.equals(imageContainable.getCoverUrl());
         Collection<String> imageUrls = Collections.emptyList();
 
@@ -215,12 +215,16 @@ public class ImageService {
             log.warn("Invalid image link={}", imageUrl);
             return;
         }
-        String imageName = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
+        String imageName = getImageNameFromURL(imageUrl);
         try {
             remove(imageName);
         } catch (NotFoundException e) {
             log.error("Cannot delete image {}. Image already deleted or does not exist", imageName);
         }
+    }
+
+    public String getImageNameFromURL(String imageUrl) {
+        return imageUrl.substring(imageUrl.lastIndexOf(SLASH) + 1);
     }
 
 

@@ -25,7 +25,7 @@ export class CompanyService {
 
   private companyUrl = 'api/companies';
   private profileUrl = '/profile';
-  private servicesUrl = '/services';
+  private tradeAndServicesUrl = '/trade-and-services';
   private licensesUrl = '/licenses';
   private notificationsUrl = '/notifications';
   private areasUrl = '/areas';
@@ -59,11 +59,11 @@ export class CompanyService {
   }
 
   getCompanyTradesAndServiceTypes(id: any): Observable<TradesAndServiceTypes> {
-    return this.http.get<TradesAndServiceTypes>(`${this.companyUrl}/${id}${this.servicesUrl}`);
+    return this.http.get<TradesAndServiceTypes>(`${this.companyUrl}/${id}${this.tradeAndServicesUrl}`);
   }
 
   updateCompanyTradesAndServiceTypes(id: any, json: any): Observable<any> {
-    return this.http.put<any>(`${this.companyUrl}/${id}${this.servicesUrl}`, json);
+    return this.http.put<any>(`${this.companyUrl}/${id}${this.tradeAndServicesUrl}`, json);
   }
 
   getLicenses(id: any): Observable<License[]> {
@@ -112,9 +112,9 @@ export class CompanyService {
     return this.http.get<RestPage<CompanyInfo>>(`${this.companyUrl}/search`, {params});
   }
 
-  updateLogoBase64(companyId: string, base64icon: string): Observable<any> {
+  updateLogo(companyId: string, base64icon: string): Observable<any> {
 
-    return this.http.post(`${this.companyUrl}/${companyId}/base64logo`, base64icon, {
+    return this.http.post(`${this.companyUrl}/${companyId}/logo`, base64icon, {
       observe: 'response',
       responseType: 'text'
     });
@@ -122,7 +122,7 @@ export class CompanyService {
 
   deleteLogo(companyId: string): Observable<any> {
 
-    return this.http.delete(`${this.companyUrl}/${companyId}/base64logo`);
+    return this.http.delete(`${this.companyUrl}/${companyId}/logo`);
   }
 
   deleteCover(companyId: string): Observable<any> {
@@ -130,9 +130,9 @@ export class CompanyService {
     return this.http.delete(`${this.companyUrl}/${companyId}/cover`);
   }
 
-  updateBackgroundBase64(id: string, icon: string) {
+  updateCover(id: string, icon: string) {
     return this.http
-      .post(`${this.companyUrl}/${id}/base64background`, icon, {observe: 'response', responseType: 'text'});
+      .post(`${this.companyUrl}/${id}/cover`, icon, {observe: 'response', responseType: 'text'});
   }
 
   getCompanyLogs(companyId: string, pagination: Pagination): Observable<RestPage<CompanyAction>> {
@@ -147,10 +147,10 @@ export class CompanyService {
     return this.http.get<RestPage<Project>>(`${this.companyUrl}/${companyId}/projects`, {params});
   }
 
-  getOfferedServices(companyId: string, pagination: Pagination): Observable<RestPage<ServiceType>> {
+  getCompanyServices(companyId: string, pagination: Pagination): Observable<RestPage<ServiceType>> {
     const params = toHttpParams(pagination);
 
-    return this.http.get<RestPage<ServiceType>>(`${this.companyUrl}/${companyId}/offered-services`, {params});
+    return this.http.get<RestPage<ServiceType>>(`${this.companyUrl}/${companyId}/services`, {params});
   }
 
   postOrder(order: RequestOrder, companyId: string): Observable<any> {
@@ -184,7 +184,7 @@ export class CompanyService {
   approve(companyId: string, approved: boolean): Observable<any> {
     const params = new HttpParams()
       .set('approved', String(approved));
-    return this.http.post(`${this.companyUrl}/${companyId}`, null, { params: params});
+    return this.http.post(`${this.companyUrl}/${companyId}/approve`, null, { params: params});
   }
 
 

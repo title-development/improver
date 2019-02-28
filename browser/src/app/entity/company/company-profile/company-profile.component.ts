@@ -229,7 +229,7 @@ export class CompanyProfileComponent implements OnInit, OnDestroy {
       onload.subscribe(() => {
         img.src = reader.result as string;
         img.onload = () => {
-          this.companyService.updateBackgroundBase64(this.companyId, resizeImage(img, 1920)).subscribe(
+          this.companyService.updateCover(this.companyId, resizeImage(img, 1920)).subscribe(
             () => {
               this.popupService.showSuccess('Background is updated');
               this.backgroundProcessing = false;
@@ -280,7 +280,7 @@ export class CompanyProfileComponent implements OnInit, OnDestroy {
     this.photoDialogRef.componentInstance.onPhotoReady.pipe(
       switchMap(
         (base64: string) => {
-          return this.companyService.updateLogoBase64(this.companyProfile.id, base64);
+          return this.companyService.updateLogo(this.companyProfile.id, base64);
         }
       )
     ).subscribe(

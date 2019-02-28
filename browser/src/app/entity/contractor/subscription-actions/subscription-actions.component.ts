@@ -1,15 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { addPaymentCardDialogConfig } from "../../../shared/dialogs/dialogs.configs";
-import { dialogsMap } from "../../../shared/dialogs/dialogs.state";
-import { PaymentCard} from "../../../model/data-model";
-import { MatDialog, MatDialogRef } from "@angular/material";
-import { SecurityService } from "../../../auth/security.service";
-import { BillingService } from "../../../api/services/billing.service";
-import { PopUpMessageService } from "../../../util/pop-up-message.service";
-import { TricksService } from "../../../util/tricks.service";
-import { SubscriptionActionsService } from "./subscription-actions.service";
-import { getErrorMessage } from "../../../util/functions";
+import { addPaymentCardDialogConfig } from '../../../shared/dialogs/dialogs.configs';
+import { dialogsMap } from '../../../shared/dialogs/dialogs.state';
+import { PaymentCard } from '../../../model/data-model';
+import { MatDialog, MatDialogRef } from '@angular/material';
+import { SecurityService } from '../../../auth/security.service';
+import { BillingService } from '../../../api/services/billing.service';
+import { PopUpMessageService } from '../../../util/pop-up-message.service';
+import { TricksService } from '../../../util/tricks.service';
+import { SubscriptionActionsService } from './subscription-actions.service';
+import { getErrorMessage } from '../../../util/functions';
 
 enum ModeEnum {NEW = 'NEW', UPDATE = 'UPDATE', CANCEL = 'CANCEL'}
 
@@ -19,7 +19,7 @@ enum ModeEnum {NEW = 'NEW', UPDATE = 'UPDATE', CANCEL = 'CANCEL'}
   styleUrls: ['./subscription-actions.component.scss']
 })
 
-export class SubscriptionActionsComponent {
+export class SubscriptionActionsComponent implements OnDestroy {
 
   ModeEnum = ModeEnum;
   mode: ModeEnum;
@@ -44,7 +44,8 @@ export class SubscriptionActionsComponent {
       const isAmountNotAvailableToChange = subscriptionActionsService.subscriptionAmount <= 0 && this.mode != ModeEnum.CANCEL;
       const isNotAllowUnsubscribe = subscriptionActionsService.nextBillingDate == null && this.mode === ModeEnum.CANCEL;
       if (isIncorrectMode || isAmountNotAvailableToChange || isNotAllowUnsubscribe) {
-        this.router.navigate(['/pro/settings/billing'])
+        console.log('navigate1');
+        this.router.navigate(['/pro/settings/billing']);
       }
       this.getPaymentCards();
 
@@ -91,14 +92,13 @@ export class SubscriptionActionsComponent {
         } else {
           this.popupService.showSuccess(`You have been subscribed for $${this.subscriptionActionsService.subscriptionAmount / 100}/month`);
         }
-        this.subscriptionActionsService.reset();
-        this.router.navigate(['/pro/settings/billing'])
+        this.router.navigate(['pro', 'settings', 'billing']);
       },
       err => {
         this.popupService.showError(getErrorMessage(err));
         this.subscriptionProcessing = false;
       }
-    )
+    );
   }
 
   unsubscribe(): void {
@@ -106,15 +106,14 @@ export class SubscriptionActionsComponent {
     this.billingService.cancelSubscription(this.securityService.getLoginModel().company).subscribe(
       response => {
         this.popupService.showInfo('You have been canceled your subscription for leads');
-        this.subscriptionActionsService.reset();
-        this.router.navigate(['/pro/settings/billing'])
+        this.router.navigate(['pro', 'settings', 'billing']);
       },
       err => {
         console.log(err);
         this.popupService.showError(getErrorMessage(err));
         this.subscriptionProcessing = false;
       }
-    )
+    );
   }
 
   openAddPaymentCard() {
@@ -128,6 +127,10 @@ export class SubscriptionActionsComponent {
     this.updateCreditCardDialogRef.componentInstance.onPaymentCardAdd.subscribe((card: any) => {
       this.getPaymentCards();
     });
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptionActionsService.reset();
   }
 
 }

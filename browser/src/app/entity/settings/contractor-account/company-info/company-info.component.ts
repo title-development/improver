@@ -246,7 +246,7 @@ export class CompanyInfoComponent implements OnInit {
     this.photoDialogRef.componentInstance.onPhotoReady.pipe(
       switchMap(
         (base64: string) => {
-          return this.companyService.updateLogoBase64(this.securityService.getLoginModel().company, base64);
+          return this.companyService.updateLogo(this.securityService.getLoginModel().company, base64);
         }
       )
     ).subscribe(

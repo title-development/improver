@@ -36,7 +36,7 @@ export class RequestReviewRevisionDialogComponent implements OnInit {
 
   submit() {
     this.processing = true;
-    this.reviewService.requestReviewRevision(this.securityService.getLoginModel().company, this.review.id, this.model.message).subscribe(
+    this.reviewService.requestReviewRevision(this.review.id, this.model.message).subscribe(
       response => {
         this.processing = false;
         this.popUpService.showSuccess(`Review revision request to <b>${this.review.customer.name}</b> has been sent`);

@@ -1,4 +1,4 @@
-import { throwError as observableThrowError, Observable, throwError, of } from 'rxjs';
+import { throwError as observableThrowError, Observable, throwError, of, BehaviorSubject, ReplaySubject } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { ServiceType, OfferedServiceType, Pagination } from '../../model/data-model';
 import { QuestionaryBlock } from '../../model/questionary-model';
@@ -6,18 +6,16 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { RestPage } from '../models/RestPage';
 import { AdminServiceType } from '../models/AdminServiceType';
 import { catchError, first, publishReplay, refCount, switchMap } from 'rxjs/internal/operators';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Injectable()
 export class ServiceTypeService {
-
-
   private catalogUrl = 'api/catalog';
   private serviceCatalogUrl = `${this.catalogUrl}/services`;
   private serviceTypesUrl = 'api/services';
-  private _serviceTypes$: Observable<Array<ServiceType>>;
-  private _popular$: Observable<Array<ServiceType>>;
-
+  private _serviceTypes$: ReplaySubject<Array<ServiceType>> = new ReplaySubject<Array<ServiceType>>(1);
+  private _popular$: ReplaySubject<Array<ServiceType>> = new ReplaySubject<Array<ServiceType>>(1);
+  private serviceTypeCached: boolean = false;
+  private popularServiceTypeCached: boolean = false;
 
   constructor(private http: HttpClient) {
   }
@@ -84,20 +82,34 @@ export class ServiceTypeService {
     const params = new HttpParams()
       .set('serviceName', serviceName);
 
-    return this.http.get(`${this.serviceTypesUrl}/isNameFree`, {observe: 'response', responseType: 'text', params: params});
+    return this.http.get(`${this.serviceTypesUrl}/isNameFree`, {
+      observe: 'response',
+      responseType: 'text',
+      params: params
+    });
   }
 
-  get serviceTypes$(): Observable<Array<ServiceType>> {
-    if (!this._serviceTypes$) {
-      this._serviceTypes$ = this.getAllAsModel().pipe(publishReplay(1), refCount(), first());
+  get serviceTypes$(): ReplaySubject<Array<ServiceType>> {
+    if (!this.serviceTypeCached) {
+      this.serviceTypeCached = true;
+      this.getAllAsModel().subscribe((serviceTypes: Array<ServiceType>) => {
+        this._serviceTypes$.next(serviceTypes);
+      }, err => {
+        this.serviceTypeCached = false;
+      });
     }
 
     return this._serviceTypes$;
   }
 
-  get popular$(): Observable<Array<ServiceType>> {
-    if (!this._popular$) {
-      this._popular$ = this.getPopular(16).pipe(publishReplay(1), refCount(), first());
+  get popular$(): ReplaySubject<Array<ServiceType>> {
+    if (!this.popularServiceTypeCached) {
+      this.popularServiceTypeCached = true;
+      this.getPopular(16).subscribe((serviceType: Array<ServiceType>) => {
+        this._popular$.next(serviceType);
+      }, err => {
+        this.popularServiceTypeCached = false;
+      });
     }
 
     return this._popular$;

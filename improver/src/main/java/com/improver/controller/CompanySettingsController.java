@@ -48,27 +48,6 @@ public class CompanySettingsController {
     @Autowired private UserSecurityService userSecurityService;
 
     @CompanyMemberOrSupportAccess
-    @GetMapping(SERVICES)
-    public ResponseEntity<TradesServicesCollection> getCompanyTradesAndServices(@PathVariable String companyId) {
-        Company company = companyRepository.findById(companyId)
-            .orElseThrow(NotFoundException::new);
-        TradesServicesCollection companyTradesServicesCollection = companyService.getCompanyTradesServicesCollection(company);
-        return new ResponseEntity<>(companyTradesServicesCollection, HttpStatus.OK);
-    }
-
-
-    @CompanyMemberOrSupportAccess
-    @PutMapping(SERVICES)
-    public ResponseEntity<Void> updateCompanyTradesAndServices(@PathVariable String companyId,
-                                                               @RequestBody TradesServicesCollection tradesServicesCollection) {
-        Company company = companyRepository.findById(companyId)
-            .orElseThrow(NotFoundException::new);
-        companyService.updateTradesServicesCollection(company, tradesServicesCollection);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-
-    @CompanyMemberOrSupportAccess
     @PutMapping("/location")
     public ResponseEntity<Void> updateCompanyLocation(@PathVariable String companyId, @RequestBody ExtendedLocation location) {
         Company company = companyRepository.findById(companyId)
@@ -159,6 +138,25 @@ public class CompanySettingsController {
         Contractor contractor = userSecurityService.currentPro();
 
         companyService.updateCoverageConfig(coverageConfig, company, contractor);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @CompanyMemberOrSupportAccess
+    @GetMapping(COMPANY_ID + "/trade-and-services")
+    public ResponseEntity<TradesServicesCollection> getCompanyTradesAndServices(@PathVariable String companyId) {
+        Company company = companyRepository.findById(companyId)
+            .orElseThrow(NotFoundException::new);
+        TradesServicesCollection companyTradesServicesCollection = companyService.getCompanyTradesServicesCollection(company);
+        return new ResponseEntity<>(companyTradesServicesCollection, HttpStatus.OK);
+    }
+
+    @CompanyMemberOrSupportAccess
+    @PutMapping(COMPANY_ID + "/trade-and-services")
+    public ResponseEntity<Void> updateCompanyTradesAndServices(@PathVariable String companyId,
+                                                               @RequestBody TradesServicesCollection tradesServicesCollection) {
+        Company company = companyRepository.findById(companyId)
+            .orElseThrow(NotFoundException::new);
+        companyService.updateTradesServicesCollection(company, tradesServicesCollection);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -149,7 +149,7 @@
                          [loading]="fetching"
                          sortField="name"
                          [rows]="rowsPerPage[0]" [totalRecords]="offeredServicesPage.totalElements" [rowsPerPageOptions]="rowsPerPage"
-                         (onLazyLoad)="loadLazy($event, getCompanyOfferedServices)"
+                         (onLazyLoad)="loadLazy($event, getCompanyServices)"
                          [paginator]="true"
                          [responsive]="true">
               <p-column field="name" header="Name" sortField="s.name" [sortable]="true"></p-column>

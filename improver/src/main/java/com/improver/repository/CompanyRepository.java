@@ -63,6 +63,11 @@ public interface CompanyRepository extends JpaRepository<Company, String> {
         " INNER JOIN s.companies c ON c.id = ?1")
     List<NameIdTuple> getAll(String companyId);
 
+    @Query("SELECT new com.improver.model.NameIdTuple(s.id, s.name) FROM com.improver.entity.Company c " +
+        "LEFT JOIN c.serviceTypes s " +
+        "WHERE c.id = :companyId")
+    Page<NameIdTuple> getCompanyServices(String companyId, Pageable pageable);
+
     @Query("SELECT new com.improver.model.NameIdParentTuple(s.id, s.name, t.id) FROM com.improver.entity.ServiceType s" +
         " INNER JOIN s.trades t ON t.id IN ?2" +
         " INNER JOIN s.companies c ON c.id = ?1" +
@@ -98,11 +103,6 @@ public interface CompanyRepository extends JpaRepository<Company, String> {
     @Transactional
     @Query("UPDATE com.improver.entity.Company c SET isApproved = ?2 WHERE c.id = ?1")
     void approve(String companyId, boolean approved);
-
-    @Query("SELECT new com.improver.model.NameIdTuple(s.id, s.name) FROM com.improver.entity.Company c " +
-        "LEFT JOIN c.serviceTypes s " +
-        "WHERE c.id = :companyId")
-    Page<NameIdTuple> getOfferedServices(String companyId, Pageable pageable);
 
     @Query("SELECT new com.improver.model.admin.out.Record(c.rating, c.name, 'RATING') FROM com.improver.entity.Company c " +
         "WHERE c.created > :period " +

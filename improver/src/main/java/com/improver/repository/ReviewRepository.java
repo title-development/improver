@@ -1,5 +1,6 @@
 package com.improver.repository;
 
+import com.improver.entity.Company;
 import com.improver.entity.Customer;
 import com.improver.entity.Review;
 import com.improver.model.out.CompanyReview;
@@ -15,9 +16,6 @@ import java.util.List;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
-    @Query("SELECT new com.improver.model.out.CompanyReview(r)" +
-        " FROM com.improver.entity.Review r WHERE r.company.id = ?1")
-    Page<CompanyReview> findByCompanyId(String companyId, Pageable pageable);
 
     @Query("SELECT r FROM com.improver.entity.Review r" +
         " WHERE r.isPublished = false AND r.publishDate < ?1")
@@ -44,4 +42,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
         " WHERE r.id = :reviewId" +
         " AND r.customer = :customer")
     Optional<CompanyReviewRevision> findByCustomerAndId(Customer customer, long reviewId);
+
+    Optional<Review> findByIdAndCompany(Long id, Company company);
 }

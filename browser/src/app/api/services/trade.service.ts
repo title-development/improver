@@ -1,11 +1,10 @@
-
-import {throwError as observableThrowError,  Observable } from 'rxjs';
+import { throwError as observableThrowError, Observable, BehaviorSubject, ReplaySubject } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { OfferedServiceType, Pagination, ServiceType, Trade } from '../../model/data-model';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { RestPage } from '../models/RestPage';
 import { AdminTrade } from '../models/AdminTrade';
-import { first, publishReplay, refCount } from "rxjs/internal/operators";
+import { first, publishReplay, refCount } from 'rxjs/internal/operators';
 
 
 @Injectable()
@@ -15,14 +14,17 @@ export class TradeService {
   private tradesCatalogUrl = `${this.catalogUrl}/trades`;
   private tradesUrl = 'api/trades';
 
-  private _popular$: Observable<Array<ServiceType>>;
-  private _trades$: Observable<Array<ServiceType>>;
+  private _popular$: ReplaySubject<Array<ServiceType>> = new ReplaySubject<Array<ServiceType>>(1);
+  private _trades$: ReplaySubject<Array<ServiceType>> = new ReplaySubject<Array<ServiceType>>(1);
+
+  private popularTradesCached: boolean = false;
+  private tradesCached: boolean = false;
 
   constructor(private http: HttpClient) {
   }
 
   get(id: number): Observable<Trade> {
-    return this.http.get<Trade>(`${this.tradesUrl}/${id}`)
+    return this.http.get<Trade>(`${this.tradesUrl}/${id}`);
   }
 
   // =============== Admin ====================
@@ -55,7 +57,7 @@ export class TradeService {
   }
 
   getServiceTypes(tradeId: number): Observable<ServiceType[]> {
-    return this.http.get<ServiceType[]>(`${this.tradesCatalogUrl}/${tradeId}/services`)
+    return this.http.get<ServiceType[]>(`${this.tradesCatalogUrl}/${tradeId}/services`);
   }
 
   getTradesWithServices(): Observable<Trade[]> {
@@ -70,22 +72,32 @@ export class TradeService {
 
   isNameFree(tradeName: string): Observable<any> {
     const params = new HttpParams()
-        .set('tradeName', tradeName);
+      .set('tradeName', tradeName);
 
-    return this.http.get(`${this.tradesUrl}/isNameFree`, { observe: 'response', responseType: 'text', params: params })
+    return this.http.get(`${this.tradesUrl}/isNameFree`, {observe: 'response', responseType: 'text', params: params});
   }
 
-  get trades$(): Observable<Array<Trade>> {
-    if (!this._trades$) {
-      this._trades$ = this.getAllAsModel().pipe(publishReplay(1), refCount(), first());
+  get trades$(): ReplaySubject<Array<Trade>> {
+    if (!this.tradesCached) {
+      this.tradesCached = true;
+      this.getAllAsModel().subscribe((serviceTypes: Array<ServiceType>) => {
+        this._trades$.next(serviceTypes);
+      }, err => {
+        this.tradesCached = false;
+      });
     }
 
     return this._trades$;
   }
 
-  get popular$(): Observable<Array<Trade>> {
-    if (!this._popular$) {
-      this._popular$ = this.getPopular(16).pipe(publishReplay(1), refCount(), first());
+  get popular$(): ReplaySubject<Array<Trade>> {
+    if (!this.popularTradesCached) {
+      this.popularTradesCached = true;
+      this.getPopular(16).subscribe((serviceTypes: Array<ServiceType>) => {
+        this._popular$.next(serviceTypes);
+      }, err => {
+        this.popularTradesCached = false;
+      });
     }
 
     return this._popular$;

@@ -1,16 +1,19 @@
 package com.improver.controller;
 
-import com.improver.entity.Contractor;
-import com.improver.entity.Customer;
-import com.improver.entity.Review;
-import com.improver.entity.ReviewRevisionRequest;
+import com.improver.entity.*;
 import com.improver.exception.NotFoundException;
+import com.improver.model.in.CustomerReview;
 import com.improver.model.in.ProRequestReview;
 import com.improver.model.out.CompanyReview;
 import com.improver.model.out.CompanyReviewRevision;
+import com.improver.model.out.ReviewRating;
 import com.improver.model.out.ReviewRevision;
+import com.improver.repository.CompanyRepository;
+import com.improver.repository.ReviewRepository;
 import com.improver.repository.ReviewRevisionRequestRepository;
 import com.improver.security.UserSecurityService;
+import com.improver.security.annotation.CompanyMember;
+import com.improver.security.annotation.CompanyMemberOrSupportAccess;
 import com.improver.service.ReviewRequestService;
 import com.improver.service.ReviewService;
 import com.improver.util.annotation.PageableSwagger;
@@ -28,23 +31,27 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Size;
 
-import static com.improver.application.properties.Path.ID_PATH_VARIABLE;
-import static com.improver.application.properties.Path.REVIEWS_PATH;
+import static com.improver.application.properties.Path.*;
+import static com.improver.application.properties.Path.REVIEWS;
+import static com.improver.util.database.DataAccessUtil.REVIEW_MESSAGE_MAX_SIZE;
+import static com.improver.util.database.DataAccessUtil.REVIEW_MESSAGE_MIN_SIZE;
 
 @Slf4j
 @RestController
-@RequestMapping(REVIEWS_PATH)
 public class ReviewController {
 
     @Autowired ReviewService reviewService;
     @Autowired UserSecurityService userSecurityService;
     @Autowired ReviewRequestService requestReviewService;
     @Autowired ReviewRevisionRequestRepository reviewRevisionRequestRepository;
+    @Autowired CompanyRepository companyRepository;
+    @Autowired ReviewRepository reviewRepository;
 
     @SupportAccess
     @PageableSwagger
-    @GetMapping
+    @GetMapping(REVIEWS_PATH)
     public ResponseEntity<Page<CompanyReview>> getAll(
         @RequestParam(required = false) Long id,
         @RequestParam(required = false) String customerName,
@@ -54,7 +61,7 @@ public class ReviewController {
         return new ResponseEntity<>(reviews, HttpStatus.OK);
     }
 
-    @PostMapping("/request")
+    @PostMapping(REVIEWS_PATH + "/request")
     @PreAuthorize("hasRole('CONTRACTOR')")
     public ResponseEntity<Void> requestReview(@RequestBody @Valid ProRequestReview proRequestReview) {
         Contractor pro = userSecurityService.currentPro();
@@ -63,7 +70,7 @@ public class ReviewController {
     }
 
     @PreAuthorize("hasRole('CUSTOMER')")
-    @GetMapping(ID_PATH_VARIABLE)
+    @GetMapping(REVIEWS_PATH + ID_PATH_VARIABLE)
     public ResponseEntity<CompanyReviewRevision> getReviewById(@PathVariable long id) {
         Customer customer = userSecurityService.currentCustomer();
         CompanyReviewRevision reviewForRevision = reviewService.getReviewForRevision(id, customer);
@@ -71,21 +78,21 @@ public class ReviewController {
     }
 
     @PreAuthorize("hasRole('CUSTOMER')")
-    @PutMapping(ID_PATH_VARIABLE + "/decline")
+    @PutMapping(REVIEWS_PATH + ID_PATH_VARIABLE + "/decline")
     public ResponseEntity<Void> declineReviewRevision(@PathVariable long id) {
         reviewService.declineReviewRevision(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('CUSTOMER')")
-    @PutMapping(ID_PATH_VARIABLE+ "/accept")
+    @PutMapping(REVIEWS_PATH + ID_PATH_VARIABLE+ "/accept")
     public ResponseEntity<Void> acceptReviewRevision(@PathVariable long id, @RequestBody CompanyReviewRevision review) {
         reviewService.updateReview(id, review);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @SupportAccess
-    @GetMapping(ID_PATH_VARIABLE + "/revision")
+    @GetMapping(REVIEWS_PATH + ID_PATH_VARIABLE + "/revision")
     public ResponseEntity<ReviewRevision> getRevisionRequest(@PathVariable long id) {
         ReviewRevision reviewRevision = reviewRevisionRequestRepository.findByReviewId(id).orElseThrow(NotFoundException::new);
         return new ResponseEntity<>(reviewRevision, HttpStatus.OK);
@@ -93,5 +100,54 @@ public class ReviewController {
 
 
 
+    //=========================================================================
 
+    @PreAuthorize("hasRole('CONTRACTOR')")
+    @PostMapping(REVIEWS_PATH + ID_PATH_VARIABLE + "/revision")
+    public ResponseEntity<Void> requestReviewRevision(@PathVariable Long id,
+                                                      @RequestBody
+                                                      @Size(min = REVIEW_MESSAGE_MIN_SIZE, max = REVIEW_MESSAGE_MAX_SIZE, message = "Message should be " + REVIEW_MESSAGE_MIN_SIZE + " to " + REVIEW_MESSAGE_MAX_SIZE + " characters long.")
+                                                          String comment) {
+        Contractor pro = userSecurityService.currentPro();
+        Company company = pro.getCompany();
+        Review review = reviewRepository.findByIdAndCompany(id, company)
+            .orElseThrow(NotFoundException::new);
+        reviewService.requestReviewRevision(company, review, comment);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PageableSwagger
+    @GetMapping(COMPANIES_PATH + COMPANY_ID + REVIEWS)
+    public ResponseEntity<ReviewRating> getCompanyReviews(@PathVariable String companyId, @RequestParam(defaultValue = "false") boolean publishedOnly,
+                                                          @PageableDefault(sort = "created", direction = Sort.Direction.DESC) Pageable pageRequest) {
+        Company company = companyRepository.findById(companyId)
+            .orElseThrow(NotFoundException::new);
+        Page<CompanyReview> reviewsPage = reviewService.getReviews(companyId, publishedOnly, pageRequest);
+        ReviewRating reviewRating = new ReviewRating(company.getRating(), reviewsPage);
+        return new ResponseEntity<>(reviewRating, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('CUSTOMER')")
+    @GetMapping(COMPANIES_PATH + COMPANY_ID + REVIEWS + "/options")
+    public ResponseEntity<Void> getReviewCapability(@PathVariable String companyId,
+                                                    @RequestParam(defaultValue = "0") long projectRequestId,
+                                                    @RequestParam(required = false) String reviewToken) {
+
+        Customer customer = userSecurityService.currentCustomer();
+        reviewService.checkReview(projectRequestId, customer, companyId, reviewToken);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('CUSTOMER')")
+    @PostMapping(COMPANIES_PATH + COMPANY_ID + REVIEWS)
+    public ResponseEntity<Void> addReview(@PathVariable String companyId,
+                                          @RequestParam(defaultValue = "0") long projectRequestId,
+                                          @RequestParam(required = false) String reviewToken,
+                                          @RequestBody @Valid CustomerReview review) {
+
+        Customer customer = userSecurityService.currentCustomer();
+        Review companyReview = reviewService.checkReview(projectRequestId, customer, companyId, reviewToken);
+        reviewService.addReview(companyReview.setScore(review.getScore()).setDescription(review.getDescription()), reviewToken, customer);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
