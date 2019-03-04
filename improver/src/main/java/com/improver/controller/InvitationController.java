@@ -1,10 +1,11 @@
 package com.improver.controller;
 
-import com.improver.entity.Company;
 import com.improver.entity.Invitation;
+import com.improver.entity.Staff;
 import com.improver.exception.NotFoundException;
 import com.improver.model.ContractorInvitation;
 import com.improver.repository.InvitationRepository;
+import com.improver.security.UserSecurityService;
 import com.improver.security.annotation.AdminAccess;
 import com.improver.security.annotation.SupportAccess;
 import com.improver.service.InvitationService;
@@ -17,8 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 import static com.improver.application.properties.Path.ID_PATH_VARIABLE;
 import static com.improver.application.properties.Path.INVITATIONS_PATH;
 
@@ -28,6 +27,7 @@ public class InvitationController {
 
     @Autowired private InvitationRepository invitationRepository;
     @Autowired private InvitationService invitationService;
+    @Autowired private UserSecurityService userSecurityService;
 
     @SupportAccess
     @GetMapping
@@ -44,13 +44,13 @@ public class InvitationController {
     @AdminAccess
     @PostMapping
     public ResponseEntity<String[]> create(@RequestBody ContractorInvitation contractorInvitation) {
-        return new ResponseEntity<>(invitationService.create(contractorInvitation), HttpStatus.OK);
+        return new ResponseEntity<>(invitationService.create(contractorInvitation, userSecurityService.currentStaff()), HttpStatus.OK);
     }
 
     @AdminAccess
     @DeleteMapping(ID_PATH_VARIABLE)
     public ResponseEntity<Void> delete(@PathVariable long id) {
-        invitationService.delete(id);
+        invitationService.delete(id, userSecurityService.currentStaff());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

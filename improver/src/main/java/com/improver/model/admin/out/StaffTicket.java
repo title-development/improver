@@ -30,12 +30,13 @@ public class StaffTicket {
     private Ticket.Status status;
     @NotNull
     private Priority priority;
+    private Long assigneeId;
     private String assigneeEmail;
     private String assigneeName;
     private String authorEmail;
     private User.Role authorRole;
 
-    public StaffTicket(Ticket ticket, String assigneeEmail, String assigneeName, String authorEmail, User.Role authorRole) {
+    public StaffTicket(Ticket ticket, Long assigneeId, String assigneeEmail, String assigneeName, String authorEmail, User.Role authorRole) {
         this.id = ticket.getId();
         this.created = ticket.getCreated();
         this.updated = ticket.getUpdated();
@@ -46,6 +47,7 @@ public class StaffTicket {
         this.subject = ticket.getSubject();
         this.status = ticket.getStatus();
         this.priority = ticket.getPriority();
+        this.assigneeId = assigneeId;
         this.assigneeEmail = assigneeEmail;
         this.assigneeName = assigneeName;
         this.authorEmail = authorEmail;

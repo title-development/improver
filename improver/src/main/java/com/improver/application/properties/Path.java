@@ -40,6 +40,7 @@ public final class Path {
     public static final String LICENSE_TYPES =         "/licenseTypes";
     public static final String JOBS =                  "/jobs";
     public static final String TUTORIALS =             "/tutorials";
+    public static final String STAFF =                 "/staff";
 
     public static final String LOGIN =               "/login";
     public static final String LOGOUT =              "/logout";
@@ -96,6 +97,7 @@ public final class Path {
     public static final String LICENSE_TYPE_PATH =      API_PATH_PREFIX + LICENSE_TYPES;
     public static final String JOB_PATH  =              API_PATH_PREFIX + JOBS;
     public static final String TUTORIALS_PATH  =        API_PATH_PREFIX + TUTORIALS;
+    public static final String STAFF_PATH  =            API_PATH_PREFIX + STAFF;
 
     public static final String REGISTRATION_PATH =          API_PATH_PREFIX + REGISTER;
     public static final String CONFIRM_PATH =               API_PATH_PREFIX + CONFIRM;

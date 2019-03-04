@@ -34,6 +34,7 @@ import { AdminCoverageComponent } from './coverage/admin-coverage.component';
 import { AdminJobsComponent } from "./jobs/jobs.component";
 import { AuthGuard } from '../../auth/router-guards/auth.guard';
 import { MyTicketsComponent } from "./tickets/my/my-tickets.component";
+import { StaffActionsComponent } from "./staff-actions/staff-actions.component";
 
 const routes: Routes = [
   {
@@ -71,6 +72,7 @@ const routes: Routes = [
           {path: 'tickets/unassigned', component: TicketsInreviewComponent},
           {path: 'tickets', component: TicketsListComponent},
           {path: 'jobs', component: AdminJobsComponent},
+          {path: 'staff-actions', component: StaffActionsComponent},
           {path: 'settings', component: AdminSettingsComponent}
         ]
       },

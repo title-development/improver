@@ -82,6 +82,11 @@ public class UserSecurityService implements UserDetailsService {
             .orElseThrow(AuthenticationRequiredException::new);
     }
 
+    public Staff currentStaff() throws AuthenticationRequiredException {
+        return staffRepository.findByEmail(loggedUserEmail())
+            .orElseThrow(AuthenticationRequiredException::new);
+    }
+
     public User currentUserOrNull() {
         return userRepository.findByEmail(loggedUserEmail())
             .orElse(null);

@@ -40,18 +40,17 @@ public class TicketService {
         }
     }
 
-    public void changeStatus(Ticket ticket, Ticket.Status status) {
-        Staff staff = userSecurityService.currentStaffOrNull();
+    public void changeStatus(Ticket ticket, Ticket.Status status, Staff currentStaff) {
         boolean isClosed = ticket.getStatus().equals(Ticket.Status.CLOSED);
         boolean isNew = ticket.getStatus().equals(Ticket.Status.NEW);
         boolean isClosing =  status.equals(Ticket.Status.CLOSED);
-        boolean notMy = ticket.getAssignee() != null && !ticket.getAssignee().getEmail().equals(staff.getEmail());
-        if (isClosed || isNew && isClosing || notMy) {
+        boolean notMy = ticket.getAssignee() != null && !ticket.getAssignee().getEmail().equals(currentStaff.getEmail());
+        if (isClosed || ((isNew && isClosing || notMy) && currentStaff.getRole() != User.Role.ADMIN)) {
             throw new ValidationException("Operation is not permitted");
         }
         boolean startingUnassigned = status == Ticket.Status.IN_PROGRESS && (ticket.getAssignee() == null);
         if (startingUnassigned) {
-            ticket.setAssignee(staff);
+            ticket.setAssignee(currentStaff);
         }
         ticket.setStatus(status);
         ticket.setUpdated(ZonedDateTime.now());
@@ -61,8 +60,7 @@ public class TicketService {
         }
     }
 
-    public void update(StaffTicketUpdate staffTicket) {
-        Staff staff = userSecurityService.currentStaffOrNull();
+    public void update(StaffTicketUpdate staffTicket, Staff currentStaff) {
         Ticket toUpdate = ticketRepository.findById(staffTicket.getId())
             .orElseThrow(NotFoundException::new);
         toUpdate.setPriority(staffTicket.getPriority());
@@ -70,8 +68,8 @@ public class TicketService {
         String assignee = staffTicket.getAssigneeEmail();
         boolean assigned = false;
         boolean unassignedOrOwner = toUpdate.getAssignee() == null
-            || toUpdate.getAssignee().getEmail().equals(staff.getEmail());
-        if(unassignedOrOwner || staff.getRole() == User.Role.ADMIN) {
+            || toUpdate.getAssignee().getEmail().equals(currentStaff.getEmail());
+        if(unassignedOrOwner || currentStaff.getRole() == User.Role.ADMIN) {
             if (assignee != null) {
                 toUpdate.setAssignee((Staff) userRepository.findByEmail(assignee)
                     .orElseThrow(() -> new ValidationException("Assignee not found")));

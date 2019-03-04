@@ -92,14 +92,14 @@ public class TicketController {
     public ResponseEntity<Void> changeStatus(@PathVariable long id, @RequestBody String status) {
         Ticket ticket = ticketRepository.findById(id)
             .orElseThrow(NotFoundException::new);
-        ticketService.changeStatus(ticket, Ticket.Status.valueOf(status));
+        ticketService.changeStatus(ticket, Ticket.Status.valueOf(status), userSecurityService.currentStaff());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @SupportAccess
     @PutMapping(value = ID_PATH_VARIABLE)
     public ResponseEntity<Void> update(@PathVariable long id, @RequestBody @Valid StaffTicketUpdate supportTicket) {
-        ticketService.update(supportTicket);
+        ticketService.update(supportTicket, userSecurityService.currentStaff());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

@@ -4,10 +4,9 @@ import { Role } from '../../../../model/security-model';
 import { Constants } from '../../../../util/constants';
 import { Messages } from '../../../../util/messages';
 import { NgForm } from '@angular/forms';
-import { RegistrationService } from '../../../../api/services/registration.service';
-import { UserService } from '../../../../api/services/user.service';
 import { PopUpMessageService } from '../../../../util/pop-up-message.service';
 import { getErrorMessage } from '../../../../util/functions';
+import { StaffService } from "../../../../api/services/staff.service";
 
 @Component({
   selector: 'add-user',
@@ -32,16 +31,14 @@ export class AddUserComponent {
 
   constructor(public constants: Constants,
               public messages: Messages,
-              private userService: UserService,
+              private staffService: StaffService,
               private popUpService: PopUpMessageService,) {
   }
 
   addNewUser() {
-    this.userService.createStaffUser(this.user).subscribe(res => {
-      this.popUpService.showSuccess('User has been created')
-    }, err => {
-      this.popUpService.showError(`Could not create user. ${getErrorMessage(err)}`);
-    });
+    this.staffService.create(this.user).subscribe(
+      () => this.popUpService.showSuccess('User has been created'),
+      err => this.popUpService.showError(`Could not create user. ${getErrorMessage(err)}`));
     this.reset();
   }
 

@@ -96,9 +96,4 @@ export class UserService {
     return this.http.put(`${this.url}/${userId}/block`, {}, {params});
   }
 
-  createStaffUser(registration: RegistrationUserModel): Observable<any> {
-
-    return this.http.post(`${this.url}/create/staff`, registration);
-  }
-
 }

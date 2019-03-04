@@ -13,6 +13,7 @@ export class Ticket {
   replyMessage?: string;
   isReplied?: boolean;
   created?: string;
+  assigneeId?: string;
   assigneeEmail?: string;
   assigneeName?: string;
   authorEmail?: string;

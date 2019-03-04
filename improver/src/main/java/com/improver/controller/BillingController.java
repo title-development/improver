@@ -59,7 +59,7 @@ public class BillingController {
     public ResponseEntity<Void> addBonus(@PathVariable String companyId, @RequestBody int amount) {
         Company company = companyRepository.findById(companyId)
             .orElseThrow(NotFoundException::new);
-        billingService.addBonus(company, amount, null);
+        billingService.addBonus(company, amount, null, userSecurityService.currentStaff());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

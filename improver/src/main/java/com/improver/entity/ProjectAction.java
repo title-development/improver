@@ -97,12 +97,12 @@ public class ProjectAction {
 
         private final String value;
 
-        Action(String action) {
-            value = action;
+        Action(String value) {
+            this.value = value;
         }
 
-        public boolean equalsValue(String role) {
-            return value.equals(role);
+        public boolean equalsValue(String value) {
+            return this.value.equals(value);
         }
 
         @Override

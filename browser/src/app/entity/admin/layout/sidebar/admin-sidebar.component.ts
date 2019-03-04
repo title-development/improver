@@ -160,6 +160,12 @@ export class AdminSidebarComponent {
       visible: this.isVisible(Role.ADMIN),
     },
     {
+      icon: 'fas fa-history',
+      label: 'Staff Actions',
+      url: 'staff-actions',
+      visible: this.isVisible(Role.ADMIN),
+    },
+    {
       icon: 'fa fa-cogs',
       label: 'Settings',
       url: 'settings',

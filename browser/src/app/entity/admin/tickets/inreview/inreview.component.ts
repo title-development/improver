@@ -75,19 +75,26 @@ export class TicketsInreviewComponent {
         label: 'Start progress',
         icon: 'fa fa-play-circle',
         command: () => this.start(this.selected),
-        visible: this.isEditable() && (this.selected.status == Ticket.Status.NEW || !this.selected.assigneeEmail)
+        visible: this.canStart()
       },
       {
         label: 'Close',
         icon: 'fa fa-minus-circle',
         command: () => this.close(this.selected),
-        visible: this.isEditable() && this.selected.status == Ticket.Status.IN_PROGRESS && !!this.selected.assigneeEmail
+        visible: this.isEditable() && this.selected.status == Ticket.Status.IN_PROGRESS
+          || this.securityService.hasRole(Role.ADMIN) && this.selected.status != Ticket.Status.CLOSED
       }
     ]
   }
 
   isEditable() {
-    return this.securityService.hasRole(Role.ADMIN) || (this.selected.status != Ticket.Status.CLOSED && (!this.selected.assigneeEmail || this.selected.assigneeEmail === this.securityService.getLoginModel().name));
+    return  this.selected.status != Ticket.Status.CLOSED
+      && ((!this.selected.assigneeId || this.selected.assigneeId == this.securityService.getLoginModel().id) || this.securityService.hasRole(Role.ADMIN));
+  }
+
+  canStart() {
+    return  this.selected.status == Ticket.Status.NEW
+      && (!this.selected.assigneeName || this.selected.assigneeName === this.securityService.getLoginModel().name);
   }
 
   refresh(): void {
@@ -123,6 +130,7 @@ export class TicketsInreviewComponent {
   getTickets(filters = {}, pagination: Pagination = new Pagination(0, this.rowsPerPage[0])): void {
     this.processing = true;
     filters['unassignedOnly'] = true;
+    filters['status'] = Ticket.Status.NEW.toString();
     if (filters['option']) {
       filters['option'] = getKeyFromEnum(Ticket.Subject, filters['option']);
     }
@@ -133,7 +141,7 @@ export class TicketsInreviewComponent {
         if (restPage.content.length > 0) {
           this.tableColumns = [...this.selectedTableCols, ...Object.keys(restPage.content[0])]
             .filter((elem, pos, arr) => arr.indexOf(elem) == pos) //remove duplicates
-            .filter(item => !(item == 'assigneeName' || item == 'authorRole' || item == 'assigneeEmail' || item == 'authorEmail'))
+            .filter(e => !(e == 'assigneeId' || e == 'assigneeName' || e == 'assigneeEmail' || e == 'authorRole'  || e == 'authorEmail'))
             .map(key => {
                 return {label: this.camelCaseHumanPipe.transform(key, true), value: key};
               }

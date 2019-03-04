@@ -22,6 +22,10 @@ public abstract class Staff extends User {
     protected List<Ticket> tickets;
 
     @JsonIgnore
+    @OneToMany(mappedBy = "author")
+    protected List<StaffAction> actions;
+
+    @JsonIgnore
     protected LocalDate credentialChanged;
 
     @JsonIgnore

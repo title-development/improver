@@ -1,0 +1,43 @@
+<div class="panel-header">
+  <h1>Staff Actions</h1>
+  <p-button (onClick)="refresh()" icon="pi pi-fw pi-refresh" label="&nbsp;&nbsp;Refresh"></p-button>
+</div>
+
+<p-dataTable class="reviews-table" [lazy]="true" [loading]="processing" #dt
+             [value]="staffActions.content"
+             selectionMode="single" sortMode="single"
+             [responsive]="true" [contextMenu]="cm" [paginator]="true"
+             [rows]="rowsPerPage[0]" [totalRecords]="staffActions.totalElements" [rowsPerPageOptions]="rowsPerPage"
+             sortField="id" [sortOrder]="1"
+             (onContextMenuSelect)="selectItem($event)"
+             (onLazyLoad)="loadLazy($event)">
+  <p-header>
+    <div style="text-align:left">
+      <p-multiSelect [options]="tableColumns" [panelStyle]="{minWidth:'270px'}" [(ngModel)]="selectedTableCols"></p-multiSelect>
+    </div>
+  </p-header>
+  <p-column field="id" header="ID" [sortable]="true" *ngIf="selectedTableCols.includes('id')" [filter]="true" [style]="{'width':'80px'}"></p-column>
+  <p-column field="description" header="Description" filterField="description" sortField="description" *ngIf="selectedTableCols.includes('description')" >
+    <ng-template let-col let-data="rowData" pTemplate="body">
+      {{data[col.field]}}
+    </ng-template>
+  </p-column>
+  <p-column field="author" header="Author" filterField="author" sortField="author" [sortable]="true" *ngIf="selectedTableCols.includes('author')" [filter]="true">
+    <ng-template let-col let-data="rowData" pTemplate="body">
+      {{data[col.field]}}
+    </ng-template>
+  </p-column>
+  <p-column field="action" header="Action" [filter]="true" *ngIf="selectedTableCols.includes('action')">
+    <ng-template pTemplate="filter" let-col>
+      <p-dropdown [options]="actions" [style]="{'width':'100%'}" (onChange)="dt.filter($event.value,col.field,col.filterMatchMode)" styleClass="ui-column-filter"></p-dropdown>
+    </ng-template>
+  </p-column>
+  <p-column field="created" header="Created" [sortable]="true" *ngIf="selectedTableCols.includes('created')">
+    <ng-template let-col let-data="rowData" pTemplate="body">
+      {{data[col.field] | date: 'MMM d, y, h:mm a'}}
+    </ng-template>
+  </p-column>
+
+</p-dataTable>
+
+<p-contextMenu #cm [model]="contextMenuItems"></p-contextMenu>

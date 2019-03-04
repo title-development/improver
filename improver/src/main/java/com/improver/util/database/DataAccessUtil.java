@@ -39,6 +39,7 @@ public final class DataAccessUtil {
     public static final int ADMIN_PROJECT_VALIDATION_COMMENT_MIN_SIZE = 10;
     public static final int ADMIN_PROJECT_VALIDATION_COMMENT_MAX_SIZE = 500;
     public static final int PROJECT_ACTION_COMMENT_MAX_SIZE = ADMIN_PROJECT_VALIDATION_COMMENT_MAX_SIZE + 100;
+    public static final int STAFF_ACTION_DESCRIPTION_MAX_SIZE = 500;
 
 
 }

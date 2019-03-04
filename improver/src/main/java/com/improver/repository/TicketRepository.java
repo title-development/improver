@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface TicketRepository extends JpaRepository<Ticket, Long>{
 
-    @Query("SELECT new com.improver.model.admin.out.StaffTicket(t, su.email, su.displayName, u.email, u.role) FROM com.improver.entity.Ticket t " +
+    @Query("SELECT new com.improver.model.admin.out.StaffTicket(t, su.id, su.email, su.displayName, u.email, u.role) FROM com.improver.entity.Ticket t " +
         "LEFT JOIN com.improver.entity.Staff s ON s.id = t.assignee.id " +
         "LEFT JOIN com.improver.entity.User su ON su.id = s.id " +
         "LEFT JOIN com.improver.entity.User u ON u.id = t.author.id " +

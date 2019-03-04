@@ -4,10 +4,8 @@ import com.improver.entity.*;
 import com.improver.exception.*;
 import com.improver.model.out.CompanyLeadsReport;
 import com.improver.model.out.Receipt;
-import com.improver.repository.BillRepository;
-import com.improver.repository.CompanyRepository;
-import com.improver.repository.InvitationRepository;
-import com.improver.repository.TransactionRepository;
+import com.improver.repository.*;
+import com.improver.security.UserSecurityService;
 import com.improver.util.StringUtil;
 import com.improver.util.ThirdPartyApis;
 import com.improver.util.mail.MailService;
@@ -42,19 +40,24 @@ public class BillingService {
     @Autowired private CompanyRepository companyRepository;
     @Autowired private InvitationRepository invitationRepository;
     @Autowired private MailService mailService;
+    @Autowired private UserSecurityService userSecurityService;
+    @Autowired private StaffActionRepository staffActionRepository;
     // Required for same instance Transactional method call
     @Autowired private BillingService self;
     @Autowired private ThirdPartyApis thirdPartyApis;
+
 
     @PostConstruct
     public void init() {
         Stripe.apiKey = thirdPartyApis.getStripeSecretKey();
     }
 
-    public void addBonus(Company company, int amount, String comment) {
+    public void addBonus(Company company, int amount, String comment, Staff currentStaff) {
         comment = comment != null && !comment.equals("") ? comment : BONUS_MESSAGE;
         self.addBonusTransactional(company, amount, comment);
         notificationService.updateBalance(company, company.getBilling());
+        String logDescription = String.format("Bonus for Company with id: %1$s. Amount: $%2$s.", company.getId(), amount / 100);
+        staffActionRepository.save(new StaffAction(currentStaff, logDescription, StaffAction.Action.ADD_BONUS));
         mailService.sendBonus(company, amount);
     }
 

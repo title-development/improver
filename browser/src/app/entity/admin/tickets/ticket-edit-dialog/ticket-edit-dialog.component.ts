@@ -111,7 +111,8 @@ export class TicketEditDialogComponent implements OnChanges {
   }
 
   isEditable() {
-    return this.securityService.hasRole(Role.ADMIN) || (this.baseStatus != Ticket.Status.CLOSED && (!this.baseAssigneeName || this.baseAssigneeName === this.securityService.getLoginModel().name));
+    return  this.selected.status != Ticket.Status.CLOSED
+      && ((!this.selected.assigneeName || this.selected.assigneeName === this.securityService.getLoginModel().name) || this.securityService.hasRole(Role.ADMIN));
   }
 
   updateTicket(ticket) {

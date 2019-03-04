@@ -200,13 +200,6 @@ public class UserController {
     }
 
     @AdminAccess
-    @PostMapping("/create/staff")
-    public ResponseEntity<Void> createUser(@RequestBody StaffRegistration staffRegistration) {
-        userService.createStaffUser(staffRegistration);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @AdminAccess
     @PostMapping(ID_PATH_VARIABLE + "/password-expire")
     public ResponseEntity<Void> passwordExpire(@PathVariable long id) {
         userService.expireCredentials(id);

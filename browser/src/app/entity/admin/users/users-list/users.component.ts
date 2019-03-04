@@ -1,12 +1,9 @@
 import { Component } from '@angular/core';
 import { UserService } from '../../../../api/services/user.service';
 import { User } from '../../../../api/models/User';
-
-
 import { ConfirmationService, MenuItem, SelectItem } from 'primeng/primeng';
 import { Role } from '../../../../model/security-model';
 import { enumToArrayList, filtersToParams } from '../../../../util/tricks.service';
-import { MessageService } from 'primeng/components/common/messageservice';
 import { Pagination } from '../../../../model/data-model';
 import { getErrorMessage } from '../../../../util/functions';
 import { PopUpMessageService } from '../../../../util/pop-up-message.service';
@@ -14,7 +11,7 @@ import { CamelCaseHumanPipe } from '../../../../pipes/camelcase-to-human.pipe';
 import { RestPage } from '../../../../api/models/RestPage';
 import { FilterMetadata } from 'primeng/components/common/filtermetadata';
 import { dataTableFilter } from '../../util';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs/internal/operators';
 
 @Component({
@@ -31,6 +28,7 @@ export class AdminUsersComponent {
   tableColumns: Array<SelectItem> = [];
   rowsPerPage: Array<number> = [10, 50, 100];
   selectedTableCols: Array<any> = [
+    'id',
     'email',
     'displayName',
     'role',
@@ -50,7 +48,9 @@ export class AdminUsersComponent {
               public popUpService: PopUpMessageService,
               private route: ActivatedRoute) {
     this.route.queryParams.subscribe(params => {
-      this.filters = dataTableFilter('id', params['id']);
+      this.filters = {};
+      if (params['id']) this.filters = dataTableFilter('id', params['id']);
+      if (params['email']) this.filters = dataTableFilter('email', params['email']);
     });
     this.roles = enumToArrayList(Role)
       .filter(item => item != Role.ANONYMOUS)

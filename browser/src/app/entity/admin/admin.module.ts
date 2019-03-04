@@ -103,6 +103,8 @@ import { ReviewRevisionRequestComponent } from "./components/review-revision-req
 import { NgArrayPipesModule } from "angular-pipes";
 import { MyTicketsComponent } from "./tickets/my/my-tickets.component";
 import { TicketEditDialogComponent } from "./tickets/ticket-edit-dialog/ticket-edit-dialog.component";
+import { StaffService } from "../../api/services/staff.service";
+import { StaffActionsComponent } from "./staff-actions/staff-actions.component";
 
 
 
@@ -197,10 +199,12 @@ import { TicketEditDialogComponent } from "./tickets/ticket-edit-dialog/ticket-e
     AddUserComponent,
     AdminAccountComponent,
     AdminCoverageComponent,
+    StaffActionsComponent,
     AdminMap
   ],
   providers: [
     UserService,
+    StaffService,
     ConfirmationService,
     MessageService,
     QuestionariesService,
