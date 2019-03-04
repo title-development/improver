@@ -112,7 +112,7 @@ public final class Path {
     public static final String WEB_SOCKET_ENDPOINT =        "/ws";
     public static final String WS_TOPIC =                   "/topic";
     public static final String WS_QUEUE =                   "/queue";
-    public static final String PATH_WS_CONNECTIONS =        WS_TOPIC + + SLASH + PROJECT_REQUESTS;
+    public static final String PATH_WS_CONNECTIONS =        WS_TOPIC  + PROJECT_REQUESTS;
     public static final String PATH_WS_USERS =              WS_TOPIC + USERS;
 
     /* Resource paths */

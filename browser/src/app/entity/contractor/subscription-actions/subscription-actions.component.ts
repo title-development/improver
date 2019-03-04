@@ -86,12 +86,12 @@ export class SubscriptionActionsComponent implements OnDestroy {
     this.subscriptionProcessing = true;
     this.billingService.subscribe(this.securityService.getLoginModel().company, this.subscriptionActionsService.subscriptionAmount).subscribe(
       response => {
-        this.subscriptionProcessing = false;
         if (this.mode == this.ModeEnum.UPDATE) {
           this.popupService.showSuccess(`You have been updated next subscription to $${this.subscriptionActionsService.subscriptionAmount / 100}/month`);
         } else {
           this.popupService.showSuccess(`You have been subscribed for $${this.subscriptionActionsService.subscriptionAmount / 100}/month`);
         }
+        this.subscriptionActionsService.reset();
         this.router.navigate(['pro', 'settings', 'billing']);
       },
       err => {
@@ -106,6 +106,7 @@ export class SubscriptionActionsComponent implements OnDestroy {
     this.billingService.cancelSubscription(this.securityService.getLoginModel().company).subscribe(
       response => {
         this.popupService.showInfo('You have been canceled your subscription for leads');
+        this.subscriptionActionsService.reset();
         this.router.navigate(['pro', 'settings', 'billing']);
       },
       err => {
@@ -130,7 +131,7 @@ export class SubscriptionActionsComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscriptionActionsService.reset();
+    this.subscriptionProcessing = false;
   }
 
 }

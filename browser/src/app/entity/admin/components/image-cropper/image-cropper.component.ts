@@ -73,9 +73,9 @@ export class ImageCropperComponent implements ControlValueAccessor, OnInit {
 
   hash: number;
 
-  constructor(private popUpMessageService: PopUpMessageService,
-              private renderer: Renderer2,
-              private confirmationService: ConfirmationService) {
+  constructor(private renderer: Renderer2,
+              private confirmationService: ConfirmationService,
+              private popUpService: PopUpMessageService) {
     this.hash = Math.floor(1000 + Math.random() * 9000);
   }
 
@@ -114,12 +114,12 @@ export class ImageCropperComponent implements ControlValueAccessor, OnInit {
     let errorMessage: string;
     if (!allowedMimeType.includes(file.type)) {
       errorMessage = `The file type of ${file.name} is not allowed. \r\n You can only upload the following file types: .png, .jpg, .bmp.`;
-
+      this.popUpService.showError(errorMessage);
 
       return false;
     } else if (file.size > maxFileSize) {
       errorMessage = `The file ${file.name} has failed to upload. Maximum upload file size ${MAX_FILE_SIZE.megabytes} Mb.`;
-
+      this.popUpService.showError(errorMessage);
 
       return false;
     } else {

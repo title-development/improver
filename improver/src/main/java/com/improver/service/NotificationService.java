@@ -26,7 +26,7 @@ public class NotificationService {
     }
 
     public void sendChatMessage(ProjectMessage message, long projectRequestId) {
-        stompTemplate.convertAndSend(PATH_WS_CONNECTIONS + projectRequestId, message);
+        stompTemplate.convertAndSend(PATH_WS_CONNECTIONS + SLASH + projectRequestId, message);
     }
 
     public void newProjectRequest(User receiver, Company company, String serviceType, long projectId){

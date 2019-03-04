@@ -143,7 +143,6 @@ export class MessengerComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private onMessage = (message: Message) => {
-
     let newMessage = JSON.parse(message.body) as ProjectMessage;
     console.log(newMessage);
 
