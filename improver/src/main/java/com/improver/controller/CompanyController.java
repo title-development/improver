@@ -53,9 +53,6 @@ public class CompanyController {
     @Autowired private CompanyService companyService;
     @Autowired private CompanyRepository companyRepository;
     @Autowired private UserSecurityService userSecurityService;
-    @Autowired private ReviewService reviewService;
-    @Autowired private ReviewRepository reviewRepository;
-    @Autowired private ImageController imageController;
     @Autowired private PasswordEncoder passwordEncoder;
 
 

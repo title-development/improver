@@ -16,6 +16,9 @@ import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import java.util.List;
 
+import static com.improver.application.properties.BusinessProperties.DEFAULT_COMPANY_COVERAGE_RADIUS;
+import static com.improver.application.properties.BusinessProperties.MAX_REQUEST_REVIEWS;
+
 @Data
 @Accessors(chain = true)
 @Entity(name = "company_configs")
@@ -29,7 +32,7 @@ public class CompanyConfig {
     @JoinColumn(name="company_id",  foreignKey = @ForeignKey(name = "company_config_fkey"))
     private Company company;
 
-    private int availableReviewRequest = 5;
+    private int availableReviewRequest = MAX_REQUEST_REVIEWS;
 
     @Embedded
     private CoverageConfig coverageConfig;
@@ -39,7 +42,7 @@ public class CompanyConfig {
 
     public static CompanyConfig defaultSettings(Company company) {
         return new CompanyConfig().setCompany(company)
-            .setCoverageConfig(CoverageConfig.ofLocation(company.getLocation(), 15))
+            .setCoverageConfig(CoverageConfig.ofLocation(company.getLocation(), DEFAULT_COMPANY_COVERAGE_RADIUS))
             .setNotificationSettings(new NotificationSettings());
 
     }

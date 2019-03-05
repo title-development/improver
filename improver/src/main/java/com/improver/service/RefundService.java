@@ -46,6 +46,7 @@ public class RefundService {
     @Autowired private NotificationService notificationService;
     @Autowired private BillRepository billRepository;
     @Autowired private MailService mailService;
+    @Autowired private CompanyConfigService companyConfigService;
 
     public RefundQuestionary buildQuestionary(long projectRequestId) {
         ProjectRequest projectRequest = projectRequestRepository.findById(projectRequestId)
@@ -239,8 +240,7 @@ public class RefundService {
                 Arrays.asList(project.getLocation().getZip()));
         }
         if (refundRequest.isRemoveService()) {
-            companyService.removeCompanyService(company,
-                serviceType);
+            companyConfigService.removeCompanyService(company, serviceType);
         }
 
         ProjectMessage refundRequestMessage = ProjectMessage.refundRequest(projectRequest, now);

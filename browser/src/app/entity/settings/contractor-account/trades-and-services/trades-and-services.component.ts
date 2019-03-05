@@ -60,7 +60,7 @@ export class TradesAndServicesComponent implements OnInit {
     }
     this.companyService.updateCompanyTradesAndServiceTypes(this.securityService.getLoginModel().company, this.tradesAndServiceTypes).subscribe(
       response => {
-        this.popUpMessageService.showSuccess('Your service list is updated');
+        this.popUpMessageService.showSuccess('Your Trade and Services configuration is updated');
       },
       err => {
         console.log(err);

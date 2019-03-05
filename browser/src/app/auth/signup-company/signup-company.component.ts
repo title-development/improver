@@ -317,7 +317,7 @@ export class SignupCompanyComponent {
     let othersIndex = this.companyRegistration.tradesAndServices.trades.findIndex((obj => obj.id == 0));
     let allowedTradesCount = othersIndex >= 0 ? 1 : 0;
     if (selectedServicesCount == 0 || this.companyRegistration.tradesAndServices.trades.length <= allowedTradesCount) {
-      this.popUpMessageService.showError('Please select at least one Business Category and Service you can provide');
+      this.popUpMessageService.showError('Please select at least one Trade and Service you can provide');
       return;
     }
 

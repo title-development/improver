@@ -73,13 +73,6 @@ public class ProjectAction {
             .setAction(Action.TO_VALIDATION);
     }
 
-    public static ProjectAction changeOwner(String content, User author) {
-        return new ProjectAction().setAuthor(author.getEmail())
-            .setText(content)
-            .setCreated(ZonedDateTime.now())
-            .setAction(Action.CHANGE_OWNER);
-    }
-
     public static ProjectAction commentProject(String content, User author) {
         return new ProjectAction().setAuthor(author.getEmail())
             .setText(content)
@@ -90,19 +83,14 @@ public class ProjectAction {
     public enum Action {
         COMMENT("COMMENT"),
         UPDATE_LOCATION("UPDATE_LOCATION"),
-        CHANGE_OWNER("CHANGE_OWNER"),
         VALIDATE("VALIDATE"),
         INVALIDATE("INVALIDATE"),
         TO_VALIDATION("TO_VALIDATION");
 
         private final String value;
 
-        Action(String value) {
-            this.value = value;
-        }
-
-        public boolean equalsValue(String value) {
-            return this.value.equals(value);
+        Action(String action) {
+            value = action;
         }
 
         @Override

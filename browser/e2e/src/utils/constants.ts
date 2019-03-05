@@ -80,8 +80,8 @@ export const signUpProHints = {
   coverageCommon: "Coverage is a service area you work in and want to receive leads in. Basic coverage has a circle shape with a center of your company address and radius of 10 miles. The zip codes that intersect with that radius will be selected.",
   coverageRadius: "You can adjust the center of coverage as well as a radius by simply drag it.",
   offeredServices: "Select services you offer and want to receive leads for. You can always change offered services in your account settings.",
-  businessCategories: "Services are grouped into Business Categories for easier configuration. Add the entire Business Categories or particular Services.",
-  checkService: "Please check any service type that applies to you"
+  businessCategories: "Services are grouped into Trades for easier configuration. Add the entire Trades or particular Services.",
+  checkService: "Please check any Service Type that applies to you"
 };
 
 export const validPaymentCard = {

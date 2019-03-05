@@ -159,7 +159,7 @@ export class ServicesSelectorComponent implements OnInit, OnChanges {
         this.allServices = results[1];
 
         this.autocompleteData.push({
-          label: 'Business Categories',
+          label: 'Trades',
           content: this.allTrades
         }, {
           label: 'Services',
@@ -284,15 +284,15 @@ export class ServicesSelectorComponent implements OnInit, OnChanges {
     let minTradesCount = othersIndex < 0 ? 1 : 2;
 
     if (trade.id != 0 && this.tradesAndServiceTypes.trades.length <= minTradesCount) {
-      this.popUpMessageService.showWarning('You should have at least one Business Category');
+      this.popUpMessageService.showWarning('You should have at least one Trade');
       return;
     } else if (trade.id == 0 && this.tradesAndServiceTypes.trades.length <= 1) {
-      this.popUpMessageService.showWarning('You should have at least one Business Category');
+      this.popUpMessageService.showWarning('You should have at least one Trade');
       return;
     }
 
     let properties = {
-      title: 'Are you sure that you want remove this Business Category?',
+      title: 'Are you sure that you want remove this Trade?',
       message: '',
       OK: 'Confirm',
       CANCEL: 'Cancel'

@@ -26,6 +26,10 @@ public class BusinessProperties {
 
     public static final int MAX_AVAILABLE_CARDS_COUNT = 5;
 
+    public static final int MAX_REQUEST_REVIEWS = 5;
+    public static final int DEFAULT_COMPANY_COVERAGE_RADIUS = 15;
+
+
     @Value("${subscription.period}")
     private Duration subscriptionPeriodInternal;
 

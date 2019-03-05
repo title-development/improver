@@ -14,7 +14,7 @@
                  [grouped]="true"
                  (autocompleteSearch)="filter($event)"
                  labelKey="name"
-                 label="Add Business Category or Service e.g. Plumbing">
+                 label="Add Trade or Service e.g. Plumbing">
       </cv-select>
 
       <button class="add-service-button">Add</button>
@@ -23,7 +23,7 @@
 
     <div class="selected-trades-list" *ngIf="tradesAndServiceTypes && tradesAndServiceTypes.services.length > 0">
 
-      <div class="trades-title">Selected Business Categories</div>
+      <div class="trades-title">Selected Trades and Services</div>
 
       <ng-template ngFor [ngForOf]="tradesAndServiceTypes?.trades" let-trade let-i="index" [ngForTrackBy]="trackById">
         <cv-collapse [title]="trade.name" [(collapsed)]="trade.collapsed"
@@ -32,7 +32,7 @@
 
           <div content>
 
-            <div class="hint">Please check any service type that applies to you</div>
+            <div class="hint">Please check any Service Type that applies to you</div>
 
             <div class="check-box-wrapper" [formGroup]="tradesControl">
 
@@ -48,7 +48,7 @@
 
             </div>
 
-            <button cv-button-empty (click)="removeTrade(trade)" type="button">Remove</button>
+            <button cv-button-empty (click)="removeTrade(trade)" type="button">Remove Trade</button>
 
           </div>
 
@@ -58,7 +58,7 @@
       </ng-template>
 
       <div class="empty-service-list-message" *ngIf="tradesAndServiceTypes.services.length == 0">You have not selected
-        any Business Category yet
+        any Trade yet
       </div>
 
     </div>

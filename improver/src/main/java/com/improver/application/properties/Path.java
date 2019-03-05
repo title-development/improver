@@ -37,10 +37,12 @@ public final class Path {
     public static final String SOCIAL_LOGIN =          "/socials";
     public static final String INVITATIONS =           "/invitations";
     public static final String STATISTICS =            "/statistics";
-    public static final String LICENSE_TYPES =         "/licenseTypes";
     public static final String JOBS =                  "/jobs";
     public static final String TUTORIALS =             "/tutorials";
     public static final String STAFF =                 "/staff";
+    public static final String COVERAGE =              "/coverage";
+    public static final String CONFIG =                "/config";
+
 
     public static final String LOGIN =               "/login";
     public static final String LOGOUT =              "/logout";
@@ -94,7 +96,6 @@ public final class Path {
     public static final String SOCIAL_LOGIN_PATH =      API_PATH_PREFIX + SOCIAL_LOGIN;
     public static final String INVITATIONS_PATH =       API_PATH_PREFIX + INVITATIONS;
     public static final String STATISTICS_PATH =        API_PATH_PREFIX + STATISTICS;
-    public static final String LICENSE_TYPE_PATH =      API_PATH_PREFIX + LICENSE_TYPES;
     public static final String JOB_PATH  =              API_PATH_PREFIX + JOBS;
     public static final String TUTORIALS_PATH  =        API_PATH_PREFIX + TUTORIALS;
     public static final String STAFF_PATH  =            API_PATH_PREFIX + STAFF;

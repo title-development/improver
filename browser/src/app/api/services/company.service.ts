@@ -25,11 +25,12 @@ export class CompanyService {
 
   private companyUrl = 'api/companies';
   private profileUrl = '/profile';
-  private tradeAndServicesUrl = '/trade-and-services';
   private licensesUrl = '/licenses';
-  private notificationsUrl = '/notifications';
-  private areasUrl = '/areas';
-  private locationUrl = '/location';
+  private notificationsUrl = '/config/notifications';
+  private locationUrl = '/config/locations';
+  private coverageUrl = '/config/coverage';
+  private tradeAndServicesUrl = '/config/services';
+  private areasUrl = '/config/areas';
 
   constructor(private http: HttpClient) {
   }
@@ -82,12 +83,12 @@ export class CompanyService {
   }
 
   getCoverageConfig(companyId: string): Observable<CompanyCoverageConfig> {
-    return this.http.get<CompanyCoverageConfig>(`${this.companyUrl}/${companyId}/coverage`);
+    return this.http.get<CompanyCoverageConfig>(`${this.companyUrl}/${companyId}${this.coverageUrl}`);
   }
 
   updateCoverage(companyId: string, coverageConfig: CoverageConfig): Observable<any> {
 
-    return this.http.put(`${this.companyUrl}/${companyId}/coverage`, coverageConfig);
+    return this.http.put(`${this.companyUrl}/${companyId}${this.coverageUrl}`, coverageConfig);
   }
 
   addArea(id: any, area: string[]) {
@@ -101,9 +102,6 @@ export class CompanyService {
     return this.http.delete(`${this.companyUrl}/${id}${this.areasUrl}`, {params: params});
   }
 
-  getLocation(companyId: string): Observable<Location> {
-    return this.http.get<Location>(`${this.companyUrl}/${companyId}${this.locationUrl}`);
-  }
 
   search(searchPhrase: string, zip: string, pagination: Pagination): Observable<RestPage<CompanyInfo>> {
     const params = toHttpParams(pagination)

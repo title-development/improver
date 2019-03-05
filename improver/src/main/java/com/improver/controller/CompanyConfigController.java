@@ -9,13 +9,11 @@ import com.improver.exception.ValidationException;
 import com.improver.model.ProNotificationSettings;
 import com.improver.model.TradesServicesCollection;
 import com.improver.model.out.CompanyCoverageConfig;
-import com.improver.repository.AreaRepository;
 import com.improver.repository.CompanyRepository;
 import com.improver.security.UserSecurityService;
-import com.improver.service.CompanyService;
+import com.improver.service.CompanyConfigService;
 import com.improver.security.annotation.CompanyMemberOrSupportAccess;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,43 +31,45 @@ import java.util.List;
 
 import static com.improver.application.properties.Path.COMPANIES_PATH;
 import static com.improver.application.properties.Path.COMPANY_ID;
+import static com.improver.application.properties.Path.CONFIG;
+import static com.improver.application.properties.Path.COVERAGE;
+import static com.improver.application.properties.Path.LOCATIONS;
 import static com.improver.application.properties.Path.SERVICES;
+import static com.improver.application.properties.Path.NOTIFICATIONS;
 
+@Slf4j
 @RestController
-@RequestMapping(COMPANIES_PATH + COMPANY_ID)
-public class CompanySettingsController {
+@RequestMapping(COMPANIES_PATH + COMPANY_ID + CONFIG)
+public class CompanyConfigController {
 
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
-
-    @Autowired private CompanyService companyService;
-    @Autowired private AreaRepository areaRepository;
     @Autowired private CompanyRepository companyRepository;
     @Autowired private UserSecurityService userSecurityService;
+    @Autowired private CompanyConfigService companyConfigService;
 
     @CompanyMemberOrSupportAccess
-    @PutMapping("/location")
+    @PutMapping(LOCATIONS)
     public ResponseEntity<Void> updateCompanyLocation(@PathVariable String companyId, @RequestBody ExtendedLocation location) {
         Company company = companyRepository.findById(companyId)
             .orElseThrow(NotFoundException::new);
-        companyService.updateCompanyLocation(company, location.withOutCoordinates());
+        companyConfigService.updateCompanyLocation(company, location.withOutCoordinates());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @CompanyMemberOrSupportAccess
-    @GetMapping("/notifications")
+    @GetMapping(NOTIFICATIONS)
     public ResponseEntity<ProNotificationSettings> getNotificationSettings(@PathVariable String companyId) {
 
         Company company = companyRepository.findById(companyId)
             .orElseThrow(NotFoundException::new);
         Contractor contractor = userSecurityService.currentPro();
 
-        ProNotificationSettings notificationSettings = companyService.getNotificationSettings(company, contractor);
+        ProNotificationSettings notificationSettings = companyConfigService.getNotificationSettings(company, contractor);
         return new ResponseEntity<>( notificationSettings, HttpStatus.OK);
     }
 
     @CompanyMemberOrSupportAccess
-    @PutMapping("/notifications")
+    @PutMapping(NOTIFICATIONS)
     public ResponseEntity<Void> updateNotificationSettings(@PathVariable String companyId,
                                                            @RequestBody ProNotificationSettings notificationSettings) {
 
@@ -77,56 +77,25 @@ public class CompanySettingsController {
             .orElseThrow(NotFoundException::new);
         Contractor contractor = userSecurityService.currentPro();
 
-        companyService.updateNotificationSettings(notificationSettings, company, contractor);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-
-
-
-    @CompanyMemberOrSupportAccess
-    @PostMapping("/areas")
-    @Deprecated
-    public ResponseEntity<Void> addServiceArea(@PathVariable String companyId, @RequestBody List<String> zipCodes) {
-        Company company = companyRepository.findById(companyId)
-            .orElseThrow(NotFoundException::new);
-        companyService.addAreas(company, zipCodes);
+        companyConfigService.updateNotificationSettings(notificationSettings, company, contractor);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @CompanyMemberOrSupportAccess
-    @DeleteMapping("/areas")
-    @Deprecated
-    public ResponseEntity<Void> removeServiceArea(@PathVariable String companyId, @RequestBody List<String> zipCodes) {
-        areaRepository.deleteZipCodesByCompanyId(companyId, zipCodes);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @CompanyMemberOrSupportAccess
-    @PutMapping("/areas")
-    @Deprecated
-    public ResponseEntity<Void> updateServiceArea(@PathVariable String companyId, @RequestParam List<String> toAdd, @RequestParam List<String> toRemove) {
-        Company company = companyRepository.findById(companyId)
-            .orElseThrow(NotFoundException::new);
-        companyService.updateAreas(company, toAdd, toRemove);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @CompanyMemberOrSupportAccess
-    @GetMapping("/coverage")
+    @GetMapping(COVERAGE)
     public ResponseEntity<CompanyCoverageConfig> getCoverageConfig(@PathVariable String companyId) {
 
         Company company = companyRepository.findById(companyId)
             .orElseThrow(NotFoundException::new);
         Contractor contractor = userSecurityService.currentPro();
 
-        CompanyCoverageConfig coverageConfig = companyService.getCoverageConfig(company, contractor);
+        CompanyCoverageConfig coverageConfig = companyConfigService.getCoverageConfig(company, contractor);
 
         return new ResponseEntity<>(coverageConfig, HttpStatus.OK);
     }
 
     @CompanyMemberOrSupportAccess
-    @PutMapping("/coverage")
+    @PutMapping(COVERAGE)
     public ResponseEntity<Void> updateCoverageConfig(@PathVariable String companyId,
                                                      @RequestBody CompanyConfig.CoverageConfig coverageConfig) {
 
@@ -137,26 +106,67 @@ public class CompanySettingsController {
         }
         Contractor contractor = userSecurityService.currentPro();
 
-        companyService.updateCoverageConfig(coverageConfig, company, contractor);
+        companyConfigService.updateCoverageConfig(coverageConfig, company, contractor);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @CompanyMemberOrSupportAccess
-    @GetMapping(COMPANY_ID + "/trade-and-services")
+    @GetMapping(SERVICES)
     public ResponseEntity<TradesServicesCollection> getCompanyTradesAndServices(@PathVariable String companyId) {
         Company company = companyRepository.findById(companyId)
             .orElseThrow(NotFoundException::new);
-        TradesServicesCollection companyTradesServicesCollection = companyService.getCompanyTradesServicesCollection(company);
+        TradesServicesCollection companyTradesServicesCollection = companyConfigService.getCompanyTradesServicesCollection(company);
         return new ResponseEntity<>(companyTradesServicesCollection, HttpStatus.OK);
     }
 
     @CompanyMemberOrSupportAccess
-    @PutMapping(COMPANY_ID + "/trade-and-services")
+    @PutMapping(SERVICES)
     public ResponseEntity<Void> updateCompanyTradesAndServices(@PathVariable String companyId,
                                                                @RequestBody TradesServicesCollection tradesServicesCollection) {
         Company company = companyRepository.findById(companyId)
             .orElseThrow(NotFoundException::new);
-        companyService.updateTradesServicesCollection(company, tradesServicesCollection);
+        companyConfigService.updateTradesServicesCollection(company, tradesServicesCollection);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+
+
+
+    @CompanyMemberOrSupportAccess
+    @PostMapping("/areas")
+    @Deprecated
+    public ResponseEntity<Void> addServiceArea(@PathVariable String companyId, @RequestBody List<String> zipCodes) {
+        if(true){
+            throw new RuntimeException("Deprecated method");
+        }
+        Company company = companyRepository.findById(companyId)
+            .orElseThrow(NotFoundException::new);
+        companyConfigService.addAreas(company, zipCodes);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @CompanyMemberOrSupportAccess
+    @DeleteMapping("/areas")
+    @Deprecated
+    public ResponseEntity<Void> removeServiceArea(@PathVariable String companyId, @RequestBody List<String> zipCodes) {
+        if(true){
+            throw new RuntimeException("Deprecated method");
+        }
+        companyConfigService.deleteZipCodesByCompanyId(companyId, zipCodes);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @CompanyMemberOrSupportAccess
+    @PutMapping("/areas")
+    @Deprecated
+    public ResponseEntity<Void> updateServiceArea(@PathVariable String companyId, @RequestParam List<String> toAdd, @RequestParam List<String> toRemove) {
+        if(true){
+            throw new RuntimeException("Deprecated method");
+        }
+        Company company = companyRepository.findById(companyId)
+            .orElseThrow(NotFoundException::new);
+        companyConfigService.updateAreas(company, toAdd, toRemove);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

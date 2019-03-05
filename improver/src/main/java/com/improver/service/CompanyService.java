@@ -4,23 +4,15 @@ import com.improver.entity.*;
 
 import com.improver.exception.*;
 import com.improver.model.CompanyInfo;
-import com.improver.model.OfferedService;
-import com.improver.model.ProNotificationSettings;
-import com.improver.model.TradesServicesCollection;
-import com.improver.model.NameIdParentTuple;
-import com.improver.model.NameIdTuple;
 import com.improver.model.in.registration.CompanyDetails;
 import com.improver.model.in.registration.CompanyRegistration;
-import com.improver.model.out.CompanyCoverageConfig;
 import com.improver.model.out.CompanyProfile;
-import com.improver.model.out.LoginModel;
-import com.improver.model.out.ValidatedLocation;
 import com.improver.model.out.project.ProjectRequestShort;
 import com.improver.repository.*;
 import com.improver.security.UserSecurityService;
 import com.improver.util.mail.MailService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,32 +23,27 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.time.ZonedDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.improver.util.TextMessages.REPLY_TEXT_TEMPLATE;
 
+@Slf4j
 @Service
 public class CompanyService {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
-
-    @Autowired private TradeRepository tradeRepository;
-    @Autowired private ServiceTypeRepository serviceTypeRepository;
     @Autowired private UserSecurityService userSecurityService;
     @Autowired private UserService userService;
     @Autowired private CompanyRepository companyRepository;
     @Autowired private TransactionRepository transactionRepository;
     @Autowired private AreaRepository areaRepository;
-    @Autowired private LocationService locationService;
     @Autowired private ImageService imageService;
     @Autowired private BillRepository billRepository;
     @Autowired private ProjectRepository projectRepository;
     @Autowired private CompanyConfigRepository companyConfigRepository;
     @Autowired private ContractorRepository contractorRepository;
-    @Autowired private BoundariesService boundariesService;
-    @Autowired private ServedZipRepository servedZipRepository;
     @Autowired private BillingService billingService;
     @Autowired private MailService mailService;
+    @Autowired private CompanyConfigService companyConfigService;
+
 
     public CompanyProfile getCompanyProfile(String id) {
         Company company = companyRepository.findById(id)
@@ -67,112 +54,7 @@ public class CompanyService {
     }
 
 
-    public TradesServicesCollection getCompanyTradesServicesCollection(Company company) {
-        // 1. Trades
-        List<NameIdTuple> offeredTrades = companyRepository.getOfferedTrades(company.getId());
-        List<Long> tradeIds = offeredTrades.stream()
-            .map(NameIdTuple::getId)
-            .collect(Collectors.toList());
 
-        // 2. Services with Trades
-        List<NameIdParentTuple> selectedWithTrades;
-        List<NameIdParentTuple> allServicesFromTrades;
-        if (tradeIds.size() > 0) {
-            selectedWithTrades = companyRepository.getSelectedByTrades(company.getId(), tradeIds);
-            allServicesFromTrades = serviceTypeRepository.getByTradeIds(tradeIds);
-        } else {
-            selectedWithTrades = Collections.emptyList();
-            allServicesFromTrades = Collections.emptyList();
-        }
-
-        List<OfferedService> offeredServices = allServicesFromTrades.stream()
-            .map(service -> {
-                boolean enabled = selectedWithTrades.contains(service);
-                return new OfferedService(service.getId(), service.getName(), enabled, service.getParentId());
-            })
-            .collect(Collectors.toList());
-
-        // 3. Other Services
-        List<Long> serviceIds = selectedWithTrades.stream()
-            .map(NameIdParentTuple::getId)
-            .collect(Collectors.toList());
-        List<NameIdTuple> other;
-        if (serviceIds.isEmpty()) {
-            other = companyRepository.getAll(company.getId());
-        } else {
-            other = companyRepository.getOther(company.getId(), serviceIds);
-        }
-        other.forEach(service -> offeredServices.add(new OfferedService(service.getId(), service.getName(), true, 0)));
-
-        offeredServices.sort(Comparator.comparing(OfferedService::getName));
-        return new TradesServicesCollection()
-            .setTrades(offeredTrades)
-            .setServices(offeredServices);
-    }
-
-
-    public void updateTradesServicesCollection(Company company, TradesServicesCollection tradesServicesCollection) {
-        List<Long> tradeIds = tradesServicesCollection.getTrades().stream()
-            .map(NameIdTuple::getId)
-            .collect(Collectors.toList());
-        List<Long> serviceIds = tradesServicesCollection.getServices().stream()
-            .filter(OfferedService::isEnabled)
-            .map(OfferedService::getId)
-            .collect(Collectors.toList());
-        List<Trade> trades = tradeRepository.findByIdIn(tradeIds);
-        List<ServiceType> services = serviceTypeRepository.findByIdIn(serviceIds);
-        companyRepository.save(company.setTrades(trades).setServiceTypes(services));
-    }
-
-    public void removeCompanyService(Company company, ServiceType toRemove) {
-        List<Trade> companyTrades = company.getTrades();
-        List<ServiceType> companyServices = company.getServiceTypes();
-        companyServices.removeIf(serviceType -> serviceType.getId() == toRemove.getId());
-        List<Trade> tradesToRemove = Collections.emptyList();
-
-        //TODO: Misha finish this!!!
-        // Remove trade if there are no more selected services
-//        if (companyTrades.size() > 1){
-//            Collections.copy(tradesToRemove, companyTrades);
-//            tradesToRemove.retainAll(toRemove.getTrades());
-//        }
-
-        companyTrades.removeAll(tradesToRemove);
-        companyRepository.save(company.setServiceTypes(companyServices).setTrades(companyTrades));
-    }
-
-
-    public void updateAreas(Company company, List<String> toAdd, List<String> toRemove) {
-        List<String> existed = areaRepository.getZipCodesByCompanyId(company.getId());
-        toAdd.removeAll(toRemove);
-        toAdd.removeAll(existed);
-
-        areaRepository.updateAreasForCompany(company, toAdd, toRemove);
-        log.debug("Company={} Coverage: Added={} ; Removed={}", company.getId(), toAdd, toRemove);
-    }
-
-
-    private void updateAreas(Company company, List<String> toUpdate) {
-        List<String> existed = areaRepository.getZipCodesByCompanyId(company.getId());
-        List<String> toAdd = new ArrayList<>(toUpdate);
-        List<String> toRemove = new ArrayList<>(existed);
-        toAdd.removeAll(existed);
-        toRemove.removeAll(toUpdate);
-        List<String> allServedZips = servedZipRepository.getAllServedZips();
-        toAdd.removeIf(zip -> !allServedZips.contains(zip));
-        areaRepository.updateAreasForCompany(company, toAdd, toRemove);
-        log.debug("Company={} Coverage: Added={}; Removed={}", company.getId(), toAdd, toRemove);
-    }
-
-    public void addAreas(Company company, List<String> zipCodes) {
-        if (zipCodes.size() > 1) {
-            List<String> existed = areaRepository.getZipCodesByCompanyId(company.getId());
-            zipCodes.removeAll(existed);
-        }
-        List<Area> areas = zipCodes.stream().map(zip -> new Area().setZip(zip).setCompany(company))
-            .collect(Collectors.toList());
-        areaRepository.saveAll(areas);
-    }
 
     public Page<Transaction> getTransactions(String companyId, Pageable pageable) {
         return transactionRepository.findByCompanyId(companyId, pageable);
@@ -203,25 +85,7 @@ public class CompanyService {
         companyRepository.save(existed);
     }
 
-    public void updateCompanyLocation(Company company, Location location) {
-        ValidatedLocation result;
-        try {
-            result = locationService.validate(location, true, true);
-            if (!result.isValid()) {
-                throw new ValidationException(result.getError());
-            }
-        } catch (ThirdPartyException e) {
-            throw new InternalServerException("Cannot complete Company Location updated due to 3rd party error", e);
-        }
-        companyRepository.updateCompanyLocation(company.getId(),
-            location.getStreetAddress(),
-            location.getCity(),
-            location.getState(),
-            location.getZip(),
-            result.getSuggested().getLat(),
-            result.getSuggested().getLng());
 
-    }
 
     public void updateCompany(String companyId, Company company, String base64icon, MultipartFile coverImage) {
         Company existed = companyRepository.findById(companyId)
@@ -292,80 +156,6 @@ public class CompanyService {
         return companyRepository.isEmailFree(email);
     }
 
-    public ProNotificationSettings getNotificationSettings(Company company, Contractor contractor) {
-
-        return new ProNotificationSettings(company.getCompanyConfig().getNotificationSettings())
-            .setQuickReply(contractor.isQuickReply())
-            .setReplyText(contractor.getReplyText());
-
-    }
-
-    public void updateNotificationSettings(ProNotificationSettings notificationSettings, Company company, Contractor contractor) {
-        CompanyConfig config = company.getCompanyConfig();
-        config.getNotificationSettings()
-            .setNewLeads(notificationSettings.isNewLeads())
-            .setLeadReceipts(notificationSettings.isLeadReceipts())
-            .setReceiveReviews(notificationSettings.isReceiveReviews())
-            .setReceiveMarketing(notificationSettings.isReceiveMarketing())
-            .setReceiveSuggestions(notificationSettings.isReceiveSuggestions());
-        companyConfigRepository.save(config);
-        contractorRepository.save(contractor.setQuickReply(notificationSettings.isQuickReply())
-            .setReplyText(notificationSettings.getReplyText())
-        );
-    }
-
-    private void updateCoverage(Company company, double lat, double lng, int radius) {
-        List<String> zipCodes;
-        try {
-            zipCodes = boundariesService.getZipCodesInRadius(lat, lng, radius);
-        } catch (ThirdPartyException e) {
-            log.error("Error in request to Mapreflex API", e);
-            throw new InternalServerException("Error in request to Mapreflex API. " + e.getMessage());
-        }
-
-        List<String> served = servedZipRepository.getAllServedZips();
-        zipCodes.retainAll(served);
-
-        updateAreas(company, zipCodes);
-        CompanyConfig companyConfig = company.getCompanyConfig();
-        CompanyConfig.CoverageConfig coverageConfig = companyConfig.getCoverageConfig();
-        coverageConfig
-            .setManualMode(false)
-            .setRadius(radius);
-
-        // fix for case if all coverage is in disabled area
-        if (!zipCodes.isEmpty()) {
-            coverageConfig
-                .setCenterLat(lat)
-                .setCenterLng(lng);
-        } else {
-            coverageConfig
-                .setCenterLat(company.getLocation().getLat())
-                .setCenterLng(company.getLocation().getLng());
-        }
-
-        companyConfigRepository.save(companyConfig);
-    }
-
-    public void updateCoverageConfig(CompanyConfig.CoverageConfig config, Company company, Contractor contractor) {
-        if (config.isManualMode()) {
-            updateAreas(company, config.getZips());
-            CompanyConfig companyConfig = company.getCompanyConfig();
-            companyConfig.getCoverageConfig().updateTo(config);
-            companyConfigRepository.save(companyConfig);
-        } else {
-            updateCoverage(company, config.getCenterLat(), config.getCenterLng(), config.getRadius());
-        }
-
-    }
-
-    public CompanyCoverageConfig getCoverageConfig(Company company, Contractor contractor) {
-        CompanyConfig.CoverageConfig coverageConfig = company.getCompanyConfig().getCoverageConfig();
-        coverageConfig.setZips(areaRepository.getZipCodesByCompanyId(company.getId()));
-        return new CompanyCoverageConfig()
-            .setCoverageConfig(coverageConfig)
-            .setCompanyLocation(company.getLocation());
-    }
 
     public void deleteCompany(Company company) {
         imageService.silentDelete(company.getIconUrl());
@@ -397,9 +187,12 @@ public class CompanyService {
 
         Company company = createCompany(registration.getCompany());
         linkCompanyAndContractor(company, contractor);
-        updateTradesServicesCollection(company, registration.getTradesAndServices());
-        updateCoverage(company, registration.getCoverage().getCenter().lat,
-            registration.getCoverage().getCenter().lng, registration.getCoverage().getRadius());
+        companyConfigService.updateTradesServicesCollection(company, registration.getTradesAndServices());
+        CompanyConfig.CoverageConfig coverageConfig = company.getCompanyConfig().getCoverageConfig();
+        coverageConfig.setCenterLat(registration.getCoverage().getCenter().lat)
+            .setCenterLng(registration.getCoverage().getCenter().lng)
+            .setRadius(registration.getCoverage().getRadius());
+        companyConfigService.updateCoverageConfig(coverageConfig, company, contractor);
         // Add initial bonus from Invitation
         billingService.addInitialBonus(company, contractor.getEmail());
         if (contractor.isNativeUser()) {
