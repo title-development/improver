@@ -56,7 +56,7 @@ export function sendKeysByOne(element, value) {
 }
 
 export function findInputErrorElementByName(name) {
-  return element(by.xpath(`//input[@name="${name}"]/ancestor::cv-input-field/cv-field-error/span`));
+  return element(by.xpath(`//input[@name="${name}"]/ancestor::cv-input-field//cv-field-error/span`));
 }
 export function validateFirstLastNameInputs(inputFirstLastNameElement, errorFirstLastNameElement, firstLastNameErrorMessage, firstLastName) {
 

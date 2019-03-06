@@ -23,9 +23,9 @@ describe('User Account Page', () => {
   // User information form elements
   let personalInfoForm = element(by.css(".personal-info-form"));
   let emailEditableInput = element(by.css("cv-editable-input[name='email']"));
-  let editEmailButton = emailEditableInput.element(by.css(".-edit"));
+
   let emailInput = emailEditableInput.element(by.css("input"));
-  let emailInputErrorMessage = element(by.xpath(`//cv-editable-input[@name="email"]/ancestor::cv-input-field/cv-field-error/span`));
+  let emailInputErrorMessage = element(by.xpath(`//cv-editable-input[@name="email"]/ancestor::cv-input-field//cv-field-error/span`));
   let firstNameInput = personalInfoForm.element(by.name("firstName"));
   let lastNameInput = personalInfoForm.element(by.name("lastName"));
   let phoneInput = personalInfoForm.element(by.name("phone"));

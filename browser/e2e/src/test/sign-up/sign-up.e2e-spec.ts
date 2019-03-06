@@ -47,7 +47,7 @@ describe('Sign up', () => {
     firstNameInput.sendKeys(customer.firstName);
     lastNameInput.sendKeys(customer.lastName);
     clickSubmit();
-    browser.sleep(THREE_SECONDS);
+    browser.sleep(FIVE_SECONDS);
     expect(element(by.css(".success-card .title")).getText()).toEqual(successTitle.registeredUser);
   });
 

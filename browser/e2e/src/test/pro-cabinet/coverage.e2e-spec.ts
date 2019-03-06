@@ -1,4 +1,3 @@
-import { BillingHelper } from "../../utils/billing.helper";
 import { users } from "../../../test.data";
 import { login, logout } from "../../utils/common.functions";
 import { $, $$, browser, by, element } from "protractor";
@@ -20,6 +19,8 @@ describe('Coverage Page', () => {
   });
 
   it('should display coverage configuration title', () => {
+    browser.waitForAngularEnabled(false);
+    browser.sleep(SECOND);
 
     let userMenu = element(by.css(".header .user-name"));
     userMenu.isPresent().then(value => {
