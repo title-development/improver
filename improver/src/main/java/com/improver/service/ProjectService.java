@@ -6,32 +6,20 @@ import com.improver.exception.InternalServerException;
 import com.improver.exception.NotFoundException;
 import com.improver.model.admin.in.ValidationProjectRequest;
 import com.improver.model.in.CloseProjectRequest;
-import com.improver.model.out.NameIdImageTuple;
 import com.improver.model.out.project.*;
 import com.improver.repository.*;
-import com.improver.security.UserSecurityService;
 import com.improver.util.mail.MailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
-import static com.improver.entity.Project.Status.CANCELED;
-import static com.improver.entity.Project.Status.COMPLETED;
-import static com.improver.entity.Project.Status.IN_PROGRESS;
-import static com.improver.model.in.CloseProjectRequest.Action.CANCEL;
 import static com.improver.model.in.CloseProjectRequest.Action.INVALIDATE;
 
 
@@ -106,10 +94,10 @@ public class ProjectService {
      *
      */
     public void processValidation(Project project, User support, ValidationProjectRequest request) {
-        Project.Status newStatus = request.getResolution();
+        Project.Status newStatus = request.getStatus();
         Project.Status oldStatus = project.getStatus();
 
-        if (oldStatus.equals(Project.Status.INVALID)) {
+        if (Project.Status.getArchived().contains(oldStatus)) {
             throw new ValidationException(oldStatus + " invalid status for update");
         }
 
@@ -138,6 +126,7 @@ public class ProjectService {
     private void toValidationProject(Project project, Project.Reason reason, String comment, User support) {
         projectRepository.save(project.setUpdated(ZonedDateTime.now())
             .setStatus(Project.Status.VALIDATION)
+            .setReason(reason)
             .setLead(false)
         );
         projectActionRepository.save(ProjectAction.toValidationProject(reason, comment, support).setProject(project));
@@ -150,6 +139,7 @@ public class ProjectService {
     private void validateProject(Project project, String text, User support) {
         projectRepository.save(project.setUpdated(ZonedDateTime.now())
             .setStatus(Project.Status.ACTIVE)
+            .setReason(null)
             .setLead(true)
         );
         projectActionRepository.save(ProjectAction.validateProject(text, support).setProject(project));

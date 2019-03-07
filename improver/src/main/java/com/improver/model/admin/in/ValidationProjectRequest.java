@@ -12,7 +12,7 @@ import static com.improver.util.database.DataAccessUtil.ADMIN_PROJECT_VALIDATION
 @Data
 public class ValidationProjectRequest {
     @NotNull
-    private Project.Status resolution;
+    private Project.Status status;
     @NotNull
     private Project.Reason reason;
     @Size(min = ADMIN_PROJECT_VALIDATION_COMMENT_MIN_SIZE, max = ADMIN_PROJECT_VALIDATION_COMMENT_MAX_SIZE, message = "Comment should be be between " + ADMIN_PROJECT_VALIDATION_COMMENT_MIN_SIZE + " and " + ADMIN_PROJECT_VALIDATION_COMMENT_MAX_SIZE + " characters")

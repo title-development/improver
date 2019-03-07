@@ -4,10 +4,7 @@ import com.improver.entity.*;
 import com.improver.exception.AuthenticationRequiredException;
 import com.improver.exception.NotFoundException;
 import com.improver.model.out.LoginModel;
-import com.improver.repository.ContractorRepository;
-import com.improver.repository.CustomerRepository;
-import com.improver.repository.StaffRepository;
-import com.improver.repository.UserRepository;
+import com.improver.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.*;
@@ -39,6 +36,7 @@ public class UserSecurityService implements UserDetailsService {
     @Autowired private CustomerRepository customerRepository;
     @Autowired private JwtUtil jwtUtil;
     @Autowired private StaffRepository staffRepository;
+    @Autowired private AdminRepository adminRepository;
 
     /**
      * Intended to be used by {@link LoginFilter}.
@@ -87,6 +85,11 @@ public class UserSecurityService implements UserDetailsService {
             .orElseThrow(AuthenticationRequiredException::new);
     }
 
+    public Admin currentAdmin() throws AuthenticationRequiredException {
+        return adminRepository.findByEmail(loggedUserEmail())
+            .orElseThrow(AuthenticationRequiredException::new);
+    }
+
     public User currentUserOrNull() {
         return userRepository.findByEmail(loggedUserEmail())
             .orElse(null);
@@ -104,6 +107,11 @@ public class UserSecurityService implements UserDetailsService {
 
     public Staff currentStaffOrNull() {
         return staffRepository.findByEmail(loggedUserEmail())
+            .orElse(null);
+    }
+
+    public Admin currentAdminOrNull() {
+        return adminRepository.findByEmail(loggedUserEmail())
             .orElse(null);
     }
 

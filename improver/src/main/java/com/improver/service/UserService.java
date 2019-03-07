@@ -10,6 +10,7 @@ import com.improver.model.in.*;
 import com.improver.model.socials.SocialUser;
 import com.improver.repository.*;
 import com.improver.security.UserSecurityService;
+import com.improver.util.StaffActionLogger;
 import com.improver.util.mail.MailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +45,7 @@ public class UserService {
     @Autowired private CompanyRepository companyRepository;
     @Autowired private StaffRepository staffRepository;
     @Autowired private SocialConnectionRepository socialConnectionRepository;
+    @Autowired private StaffActionLogger staffActionLogger;
 
 
     public User getByEmail(String email) {
@@ -83,6 +85,11 @@ public class UserService {
             .setUpdated(ZonedDateTime.now());
         userRepository.save(user);
         mailService.sendDeletedAccount(user);
+        // TODO: Move currentAdmin retrieving to Controller layer
+        Admin currentAdmin = userSecurityService.currentAdminOrNull();
+        if (currentAdmin != null) {
+            staffActionLogger.logAccountDelete(currentAdmin, user);
+        }
     }
 
     public void deleteCustomer(Customer customer) {
@@ -300,7 +307,7 @@ public class UserService {
         return user;
     }
 
-    public void updateAccount(Long id, UserAccount account) {
+    public void updateAccount(Long id, UserAccount account, Admin currentAdmin) {
         User existed = userRepository.findById(id)
             .orElseThrow(NotFoundException::new);
 
@@ -314,6 +321,9 @@ public class UserService {
             existed.setIconUrl(iconUrl);
         }
         userRepository.save(existed);
+        if (currentAdmin != null) {
+            staffActionLogger.logAccountUpdate(currentAdmin, existed);
+        }
     }
 
     public Page<AdminContractor> getAllContractors(Long id, String displayName, String email, String companyName, Pageable pageable) {

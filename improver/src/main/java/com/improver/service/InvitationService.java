@@ -10,6 +10,7 @@ import com.improver.repository.InvitationRepository;
 import com.improver.repository.StaffActionRepository;
 import com.improver.repository.UserRepository;
 import com.improver.security.UserSecurityService;
+import com.improver.util.StaffActionLogger;
 import com.improver.util.mail.MailService;
 import lombok.extern.java.Log;
 import org.apache.tomcat.util.buf.StringUtils;
@@ -32,6 +33,7 @@ public class InvitationService {
     @Autowired private MailService mailService;
     @Autowired private UserSecurityService userSecurityService;
     @Autowired private StaffActionRepository staffActionRepository;
+    @Autowired private StaffActionLogger staffActionLogger;
 
     public String[] create(ContractorInvitation invitation, Staff currentStaff) {
         if(invitation.getBonus() < MIN_ALLOWED_BONUS || invitation.getBonus() > MAX_ALLOWED_BONUS) {
@@ -43,8 +45,7 @@ public class InvitationService {
             created.add(new Invitation(email, invitation.getBonus(), invitation.getDescription()));
         }
         invitationRepository.saveAll(created);
-        String logDescription = String.format("Invitation for Contractors: %1$s. Amount: $%2$s.", Arrays.toString(allowedEmails), invitation.getBonus() / 100);
-        staffActionRepository.save(new StaffAction(currentStaff, logDescription, StaffAction.Action.CREATE_INVITATION));
+        staffActionLogger.logCreateInvitation(currentStaff, allowedEmails, invitation.getBonus());
         mailService.sendInvitations(invitation.getBonus(), allowedEmails);
         return allowedEmails;
     }
@@ -56,7 +57,6 @@ public class InvitationService {
     public void delete(long id, Staff currentStaff) {
         Invitation invitation = invitationRepository.findByIdAndActivatedIsNull(id).orElseThrow(NotFoundException::new);
         invitationRepository.delete(invitation);
-        String logDescription = String.format("Invitation for Contractor with email: %1$s.", invitation.getEmail());
-        staffActionRepository.save(new StaffAction(currentStaff, logDescription, StaffAction.Action.REMOVE_INVITATION));
+        staffActionLogger.logRemoveInvitation(currentStaff, invitation.getEmail());
     }
 }

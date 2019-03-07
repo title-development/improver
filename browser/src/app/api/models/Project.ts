@@ -62,7 +62,7 @@ export namespace Project {
 
   export class ValidationRequest {
     reason?: Reason;
-    resolution?: Status;
+    status?: Status;
     comment?: string
   }
 

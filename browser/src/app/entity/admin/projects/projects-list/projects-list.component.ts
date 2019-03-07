@@ -1,8 +1,8 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { MenuItem, SelectItem } from 'primeng/primeng';
+import { SelectItem } from 'primeng/primeng';
 import { ProjectService } from '../../../../api/services/project.service';
 import { PopUpMessageService } from '../../../../util/pop-up-message.service';
-import { Pagination, SystemMessageType } from '../../../../model/data-model';
+import { Pagination } from '../../../../model/data-model';
 import { SecurityService } from '../../../../auth/security.service';
 import { StatusToString } from '../../../../pipes/status-to-string.pipe';
 import { Constants } from '../../../../util/constants';
@@ -16,6 +16,7 @@ import { ConfirmationService } from 'primeng/api';
 import { dataTableFilter } from '../../util';
 import { ActivatedRoute } from '@angular/router';
 import { FilterMetadata } from 'primeng/components/common/filtermetadata';
+import isArchived = Project.isArchived;
 
 @Component({
   selector: 'admin-projects',
@@ -37,29 +38,6 @@ export class AdminProjectsComponent {
   displayValidationDialog: boolean = false;
   displayCommentDialog: boolean = false;
   projectValidation: Project.ValidationRequest = {};
-  defaultContextMenuItems: Array<MenuItem> = [
-    {
-      label: 'Update Location',
-      icon: 'fa fa-map-marker',
-      command: () => this.openLocationValidationPopup()
-    },
-    {
-      label: 'Add Comment',
-      icon: 'fa fa-comments',
-      command: () => this.addComment()
-    },
-    {
-      label: 'To Validation',
-      icon: 'fa fa-repeat',
-      command: () => this.toValidation()
-    },
-    {
-      label: 'Invalidate',
-      icon: 'fa fa-minus-circle',
-      command: () => this.invalidate()
-    }
-  ];
-
   contextMenuItems = [];
 
   tableColumns: Array<SelectItem> = [];
@@ -88,6 +66,7 @@ export class AdminProjectsComponent {
               public trickService: TricksService,
               private route: ActivatedRoute
   ) {
+    this.initContextMenu();
     this.route.queryParams.subscribe(params => {
       this.filters = dataTableFilter('id', params['id']);
     });
@@ -99,6 +78,35 @@ export class AdminProjectsComponent {
       return {label: item.label, value: item.value};
     });
     this.projectReasons.unshift({label: 'All', value: ''});
+  }
+
+  initContextMenu() {
+    this.contextMenuItems = [
+      {
+        label: 'Update Location',
+        icon: 'fa fa-map-marker',
+        command: () => this.openLocationValidationPopup(),
+        visible: this.selectedProject && !isArchived(this.selectedProject.status)
+      },
+      {
+        label: 'Add Comment',
+        icon: 'fa fa-comments',
+        command: () => this.addComment(),
+        visible: this.selectedProject && !isArchived(this.selectedProject.status)
+      },
+      {
+        label: 'To Validation',
+        icon: 'fa fa-repeat',
+        command: () => this.toValidation(),
+        visible: this.selectedProject && !isArchived(this.selectedProject.status) && this.selectedProject.status != Project.Status.VALIDATION
+      },
+      {
+        label: 'Invalidate',
+        icon: 'fa fa-minus-circle',
+        command: () => this.invalidate(),
+        visible: this.selectedProject && !isArchived(this.selectedProject.status)
+      }
+    ];
   }
 
   getProjects(filters = {}, pagination: Pagination = new Pagination(0, this.rowsPerPage[0])): void {
@@ -136,18 +144,7 @@ export class AdminProjectsComponent {
 
   selectProject(selection: { originalEvent: MouseEvent, data: any }): void {
     this.selectedProject = selection.data;
-    this.contextMenuItems = this.defaultContextMenuItems.filter(item => {
-      let pass = true;
-      if (this.selectedProject.status == Project.Status.VALIDATION) {
-        pass = item.label != 'To Validation';
-      } else if (this.selectedProject.status == Project.Status.INVALID) {
-        pass = (item.label != 'Update Location') &&
-          (item.label != 'Change Owner') &&
-          (item.label != 'To Validation') &&
-          (item.label != 'Invalidate');
-      }
-      return pass;
-    });
+    this.initContextMenu();
   }
 
   moreInformation(event) {
@@ -186,7 +183,7 @@ export class AdminProjectsComponent {
   toValidation() {
     this.displayValidationDialog = true;
     this.projectValidation = {
-      resolution: Project.Status.VALIDATION,
+      status: Project.Status.VALIDATION,
       reason: Project.Reason.INVALID_LOCATION
     };
   }
@@ -194,7 +191,7 @@ export class AdminProjectsComponent {
   invalidate() {
     this.displayValidationDialog = true;
     this.projectValidation = {
-      resolution: Project.Status.INVALID,
+      status: Project.Status.INVALID,
       reason: this.selectedProject.reason ? this.selectedProject.reason : Project.Reason.INVALID_LOCATION
     };
   }

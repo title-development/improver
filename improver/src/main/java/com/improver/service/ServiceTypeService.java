@@ -1,5 +1,6 @@
 package com.improver.service;
 
+import com.improver.entity.Admin;
 import com.improver.entity.ServiceType;
 import com.improver.entity.Trade;
 import com.improver.exception.ConflictException;
@@ -8,6 +9,8 @@ import com.improver.model.NameIdTuple;
 import com.improver.model.admin.AdminServiceType;
 import com.improver.model.out.NameIdImageTuple;
 import com.improver.repository.*;
+import com.improver.security.UserSecurityService;
+import com.improver.util.StaffActionLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +35,8 @@ public class ServiceTypeService {
     @Autowired private ProjectRepository projectRepository;
     @Autowired private CompanyRepository companyRepository;
     @Autowired private QuestionaryRepository questionaryRepository;
+    @Autowired private StaffActionLogger staffActionLogger;
+    @Autowired private UserSecurityService userSecurityService;
 
     /**
      * Returns list with given <code>size</code> of most popular {@link NameIdImageTuple}
@@ -87,7 +92,7 @@ public class ServiceTypeService {
         return adminServiceType;
     }
 
-    public void updateServiceType(long id, AdminServiceType adminServiceType, MultipartFile file) {
+    public void updateServiceType(long id, AdminServiceType adminServiceType, MultipartFile file, Admin currentAdmin) {
         ServiceType serviceType = serviceTypeRepository.findById(id)
             .orElseThrow(NotFoundException::new);
 
@@ -116,6 +121,8 @@ public class ServiceTypeService {
         List<Long> tradeIds = adminServiceType.getTrades().stream().map(NameIdTuple::getId).collect(Collectors.toList());
         List<Trade> trades = tradeRepository.findByIdIn(tradeIds);
 
+        boolean leadPriceIsChanged = serviceType.getLeadPrice() != adminServiceType.getLeadPrice();
+
         serviceType.setName(adminServiceType.getName());
         serviceType.setDescription(adminServiceType.getDescription());
         serviceType.setActive(adminServiceType.isActive());
@@ -126,9 +133,14 @@ public class ServiceTypeService {
         serviceType.updateTrades(trades);
 
         serviceTypeRepository.save(serviceType);
+
+        if (leadPriceIsChanged) {
+            staffActionLogger.logLeadPriceChange(currentAdmin, serviceType.getId(), serviceType.getLeadPrice());
+        }
+
     }
 
-    public void addServiceType(AdminServiceType adminServiceType, MultipartFile file) {
+    public void addServiceType(AdminServiceType adminServiceType, MultipartFile file, Admin currentAdmin) {
         if (!serviceTypeRepository.isServiceNameFree(adminServiceType.getName())) {
             throw new ConflictException("Service Type with name " + adminServiceType.getName() + " already exist");
         }
@@ -146,10 +158,10 @@ public class ServiceTypeService {
         ServiceType serviceType = new ServiceType(adminServiceType, trades, imageUrl);
 
         serviceTypeRepository.save(serviceType);
-
+        staffActionLogger.logCreateServiceType(currentAdmin, serviceType);
     }
 
-    public void deleteServiceType(long id) {
+    public void deleteServiceType(long id, Admin currentAdmin) {
         ServiceType serviceType = serviceTypeRepository.findById(id)
             .orElseThrow(NotFoundException::new);
         if (projectRepository.existsByServiceTypeId(id)) {
@@ -170,8 +182,8 @@ public class ServiceTypeService {
         }
 
         serviceType.getTrades().forEach(trade -> trade.removeServiceTypeById(id));
-
         serviceTypeRepository.delete(serviceType);
+        staffActionLogger.logRemoveServiceType(currentAdmin, serviceType);
     }
 
     public boolean isNameFree(String serviceName) {

@@ -137,7 +137,7 @@ public class UserController {
     @PutMapping(ID_PATH_VARIABLE + "/update")
     public ResponseEntity<Void> updateUserAccount(@PathVariable long id,
                                                   @RequestBody @Valid UserAccount user) {
-        userService.updateAccount(id, user);
+        userService.updateAccount(id, user, userSecurityService.currentAdminOrNull());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

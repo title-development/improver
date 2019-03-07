@@ -2,9 +2,12 @@ package com.improver.controller;
 
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.improver.entity.Admin;
+import com.improver.entity.Staff;
 import com.improver.model.NameIdTuple;
 import com.improver.model.admin.AdminServiceType;
 import com.improver.repository.ServiceTypeRepository;
+import com.improver.security.UserSecurityService;
 import com.improver.security.annotation.StaffAccess;
 import com.improver.security.annotation.SupportAccess;
 import com.improver.service.ServiceTypeService;
@@ -38,6 +41,7 @@ public class ServiceTypeController {
 
     @Autowired private ServiceTypeService serviceTypeService;
     @Autowired private ServiceTypeRepository serviceTypeRepository;
+    @Autowired private UserSecurityService userSecurityService;
 
 
     @SupportAccess
@@ -74,7 +78,7 @@ public class ServiceTypeController {
                                                    @RequestPart(value = "file", required = false) MultipartFile image) {
         AdminServiceType adminServiceType = fromJson(new TypeReference<AdminServiceType>() {
         }, data);
-        serviceTypeService.updateServiceType(id, adminServiceType, image);
+        serviceTypeService.updateServiceType(id, adminServiceType, image, userSecurityService.currentAdmin());
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -85,7 +89,7 @@ public class ServiceTypeController {
                                                   @RequestPart(value = "file", required = false) MultipartFile image) {
         AdminServiceType adminServiceType = fromJson(new TypeReference<AdminServiceType>() {
         }, data);
-        serviceTypeService.addServiceType(adminServiceType, image);
+        serviceTypeService.addServiceType(adminServiceType, image, userSecurityService.currentAdmin());
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -93,8 +97,7 @@ public class ServiceTypeController {
     @AdminAccess
     @DeleteMapping(ID_PATH_VARIABLE)
     public ResponseEntity<Void> deleteServiceType(@PathVariable long id) {
-        serviceTypeService.deleteServiceType(id);
-
+        serviceTypeService.deleteServiceType(id, userSecurityService.currentAdmin());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

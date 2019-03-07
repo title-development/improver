@@ -35,7 +35,7 @@ public class StaffAction {
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     private ZonedDateTime created = ZonedDateTime.now();
 
-    public StaffAction(Staff author, String description, Action action) {
+    public StaffAction(Action action, Staff author, String description) {
         this.author = author;
         this.description = description;
         this.action = action;
@@ -44,7 +44,12 @@ public class StaffAction {
     public enum Action {
         ADD_BONUS("ADD_BONUS"),
         CREATE_INVITATION("CREATE_INVITATION"),
-        REMOVE_INVITATION("REMOVE_INVITATION");
+        REMOVE_INVITATION("REMOVE_INVITATION"),
+        CHANGE_LEAD_PRICE("CHANGE_LEAD_PRICE"),
+        CREATE_SERVICE_TYPE("CREATE_SERVICE_TYPE"),
+        REMOVE_SERVICE_TYPE("REMOVE_SERVICE_TYPE"),
+        ACCOUNT_UPDATE("ACCOUNT_UPDATE"),
+        ACCOUNT_DELETE("ACCOUNT_DELETE");
 
         private final String value;
 

@@ -6,6 +6,7 @@ import com.improver.model.out.CompanyLeadsReport;
 import com.improver.model.out.Receipt;
 import com.improver.repository.*;
 import com.improver.security.UserSecurityService;
+import com.improver.util.StaffActionLogger;
 import com.improver.util.StringUtil;
 import com.improver.util.ThirdPartyApis;
 import com.improver.util.mail.MailService;
@@ -34,6 +35,8 @@ public class BillingService {
     public static final String INITIAL_BONUS_MESSAGE = "Initial bonus from Home Improve";
     public static final String BONUS_MESSAGE = "Bonus from Home Improve";
 
+    // Required for same instance Transactional method call
+    @Autowired private BillingService self;
     @Autowired private BillRepository billRepository;
     @Autowired private TransactionRepository transactionRepository;
     @Autowired private NotificationService notificationService;
@@ -42,9 +45,8 @@ public class BillingService {
     @Autowired private MailService mailService;
     @Autowired private UserSecurityService userSecurityService;
     @Autowired private StaffActionRepository staffActionRepository;
-    // Required for same instance Transactional method call
-    @Autowired private BillingService self;
     @Autowired private ThirdPartyApis thirdPartyApis;
+    @Autowired private StaffActionLogger staffActionLogger;
 
 
     @PostConstruct
@@ -56,8 +58,7 @@ public class BillingService {
         comment = comment != null && !comment.equals("") ? comment : BONUS_MESSAGE;
         self.addBonusTransactional(company, amount, comment);
         notificationService.updateBalance(company, company.getBilling());
-        String logDescription = String.format("Bonus for Company with id: %1$s. Amount: $%2$s.", company.getId(), amount / 100);
-        staffActionRepository.save(new StaffAction(currentStaff, logDescription, StaffAction.Action.ADD_BONUS));
+        staffActionLogger.logAddBonus(currentStaff, company.getId(), amount);
         mailService.sendBonus(company, amount);
     }
 

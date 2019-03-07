@@ -80,7 +80,6 @@ export class StaffActionsComponent {
         if (restPage.content.length > 0) {
           this.tableColumns = [...this.selectedTableCols, ...Object.keys(restPage.content[0])]
             .filter((elem, pos, arr) => arr.indexOf(elem) == pos) //remove duplicates
-            .filter(item => !(item == 'customerIconUrl' || item == 'description'))
             .map(key => {
                 return {label: this.camelCaseHumanPipe.transform(key, true), value: key};
               }
