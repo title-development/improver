@@ -27,10 +27,6 @@ export class UserService {
     return this.http.get<RestPage<User>>(`${this.url}/staff`, {params: null});
   }
 
-  archiveUser(userId: number): Observable<void> {
-    return this.http.delete<void>(`${this.url}/${userId}/archive`);
-  }
-
   updateUser(userId: number, user: User): Observable<any> {
     return this.http.put(`${this.url}/${userId}`, user, {responseType: 'text'});
   }

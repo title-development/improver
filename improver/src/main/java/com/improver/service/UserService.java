@@ -17,6 +17,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
@@ -40,8 +42,6 @@ public class UserService {
     @Autowired private CustomerRepository customerRepository;
     @Autowired private MailService mailService;
     @Autowired private ImageService imageService;
-    @Autowired private CustomerProjectService customerProjectService;
-    @Autowired private ProjectRequestService projectRequestService;
     @Autowired private CompanyRepository companyRepository;
     @Autowired private StaffRepository staffRepository;
     @Autowired private SocialConnectionRepository socialConnectionRepository;
@@ -67,50 +67,8 @@ public class UserService {
         return user;
     }
 
-    //TODO
-    public void archiveUserById(long id) {
-        User existed = userRepository.findById(id)
-            .orElseThrow(NotFoundException::new);
-        if(existed.getRole().equals(User.Role.ADMIN)) {
-            throw new ValidationException("Admin can't be archived");
-        }
-        existed.setDeleted(true);
-        userRepository.save(existed);
-    }
 
-    private void deleteAccount(User user) {
-        imageService.silentDelete(user.getIconUrl());
-        user.setDeleted(true)
-            .setIconUrl(null)
-            .setUpdated(ZonedDateTime.now());
-        userRepository.save(user);
-        mailService.sendDeletedAccount(user);
-        // TODO: Move currentAdmin retrieving to Controller layer
-        Admin currentAdmin = userSecurityService.currentAdminOrNull();
-        if (currentAdmin != null) {
-            staffActionLogger.logAccountDelete(currentAdmin, user);
-        }
-    }
 
-    public void deleteCustomer(Customer customer) {
-        customer.getProjects().forEach(project -> {
-            if (project.getStatus().equals(Project.Status.IN_PROGRESS) ||
-                project.getStatus().equals(Project.Status.ACTIVE) ||
-                project.getStatus().equals(Project.Status.VALIDATION)) {
-                customerProjectService.closeProject(project, new CloseProjectRequest(CANCEL, Project.Reason.OTHER, "Customer deleted account"));
-            }
-        });
-        deleteAccount(customer);
-    }
-
-    public void deleteContractor(Contractor contractor) {
-        contractor.getProjectRequests().forEach(projectRequest -> {
-            if (ProjectRequest.Status.getActive().contains(projectRequest.getStatus()))
-                projectRequestService.closeProject(projectRequest, ZonedDateTime.now(), true);
-        });
-        deleteAccount(contractor);
-
-    }
 
     public void blockUser(Long id, boolean blocked) {
         User user = userRepository.findById(id)
@@ -120,9 +78,7 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void deleteContractors(List<Contractor> contractors) {
-        contractors.forEach(this::deleteContractor);
-    }
+
 
 
     public void updateUser(long id, User toUpdate) {
@@ -273,6 +229,7 @@ public class UserService {
     }
 
 
+    @Deprecated
     public boolean checkPassword(String password) {
         log.info("Checking password");
         User user = userSecurityService.currentUser();
@@ -348,9 +305,6 @@ public class UserService {
     }
 
 
-    public User findByRefreshId(String refreshToken) {
-        return userRepository.findByRefreshId(refreshToken);
-    }
 
     public void createStaffUser(StaffRegistration registration) throws BadRequestException {
         switch (registration.getRole()) {

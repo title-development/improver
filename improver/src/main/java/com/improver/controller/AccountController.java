@@ -1,24 +1,20 @@
 package com.improver.controller;
 
-import com.improver.entity.Contractor;
 import com.improver.entity.Customer;
 import com.improver.entity.User;
 import com.improver.exception.NotFoundException;
-import com.improver.exception.ValidationException;
 import com.improver.model.in.OldNewValue;
-import com.improver.repository.ContractorRepository;
 import com.improver.repository.CustomerRepository;
 import com.improver.repository.UserRepository;
 import com.improver.security.UserSecurityService;
 import com.improver.security.annotation.SameUserAccess;
-import com.improver.service.CompanyService;
+import com.improver.service.AccountService;
 import com.improver.service.ImageService;
 import com.improver.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,20 +30,12 @@ import static com.improver.application.properties.Path.NOTIFICATIONS;
 @RequestMapping(USERS_PATH)
 public class AccountController {
 
-    @Autowired
-    private UserSecurityService userSecurityService;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private CompanyService companyService;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private ImageService imageService;
-    @Autowired
-    private CustomerRepository customerRepository;
+    @Autowired private UserSecurityService userSecurityService;
+    @Autowired private UserService userService;
+    @Autowired private UserRepository userRepository;
+    @Autowired private ImageService imageService;
+    @Autowired private CustomerRepository customerRepository;
+    @Autowired private AccountService accountService;
 
 
     @SameUserAccess
@@ -61,25 +49,8 @@ public class AccountController {
 
     @PutMapping("/delete")
     public ResponseEntity<Void> deleteMyAccount(@RequestBody(required = false) String password) {
-
-        Customer customer = userSecurityService.currentCustomerOrNull();
-        if (customer != null) {
-            if (customer.isNativeUser() && !passwordEncoder.matches(password, customer.getPassword())) {
-                throw new ValidationException("Password is not valid");
-            }
-            userService.deleteCustomer(customer);
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-        Contractor contractor = userSecurityService.currentProOrNull();
-        if (contractor != null) {
-            if (contractor.isNativeUser() && !passwordEncoder.matches(password, contractor.getPassword())) {
-                throw new ValidationException("Password is not valid");
-            }
-            companyService.deleteCompany(contractor.getCompany());
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        accountService.archiveAccountWithPassword(userSecurityService.currentUser(), password);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @SameUserAccess

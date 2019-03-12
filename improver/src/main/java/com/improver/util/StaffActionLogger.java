@@ -1,9 +1,6 @@
 package com.improver.util;
 
-import com.improver.entity.ServiceType;
-import com.improver.entity.Staff;
-import com.improver.entity.StaffAction;
-import com.improver.entity.User;
+import com.improver.entity.*;
 import com.improver.repository.StaffActionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -62,6 +59,12 @@ public class StaffActionLogger {
     public void logAccountDelete(Staff author, User user){
         String description = String.format("User with id %1$s is deleted. %2$s with email %3$s.",
             user.getId(), user.getName(), user.getEmail());
+        this.log(StaffAction.Action.ACCOUNT_DELETE, author, description);
+    }
+
+    public void logCompanyDelete(Staff author, Company company){
+        String description = String.format("Company with id=%1$s  name=%2$s is deleted.",
+            company.getId(), company.getName());
         this.log(StaffAction.Action.ACCOUNT_DELETE, author, description);
     }
 

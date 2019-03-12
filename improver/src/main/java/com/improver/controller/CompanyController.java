@@ -3,46 +3,28 @@ package com.improver.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.improver.entity.*;
 import com.improver.exception.NotFoundException;
-import com.improver.exception.ValidationException;
 import com.improver.model.CompanyInfo;
 import com.improver.model.NameIdTuple;
-import com.improver.model.TradesServicesCollection;
-import com.improver.model.in.CustomerReview;
 import com.improver.model.out.CompanyProfile;
-import com.improver.model.out.CompanyReview;
-import com.improver.model.out.ReviewRating;
 import com.improver.model.out.project.ProjectRequestShort;
-import com.improver.repository.ReviewRepository;
 import com.improver.security.UserSecurityService;
-import com.improver.security.annotation.CompanyMember;
 import com.improver.service.*;
 import com.improver.repository.CompanyRepository;
 import com.improver.util.annotation.PageableSwagger;
 import com.improver.security.annotation.CompanyMemberOrSupportAccess;
 import com.improver.security.annotation.SupportAccess;
-import com.improver.util.mail.MailService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Size;
-
 import static com.improver.application.properties.Path.*;
-import static com.improver.util.database.DataAccessUtil.REVIEW_MESSAGE_MAX_SIZE;
-import static com.improver.util.database.DataAccessUtil.REVIEW_MESSAGE_MIN_SIZE;
 import static com.improver.util.serializer.SerializationUtil.fromJson;
 
 @Validated
@@ -53,7 +35,7 @@ public class CompanyController {
     @Autowired private CompanyService companyService;
     @Autowired private CompanyRepository companyRepository;
     @Autowired private UserSecurityService userSecurityService;
-    @Autowired private PasswordEncoder passwordEncoder;
+    @Autowired private AccountService accountService;
 
 
     @SupportAccess
@@ -80,11 +62,7 @@ public class CompanyController {
     
     @PutMapping("/delete")
     public ResponseEntity<Void> delete(@RequestBody String password) {
-        Contractor pro = userSecurityService.currentPro();
-        if (!passwordEncoder.matches(password, pro.getPassword())) {
-            throw new ValidationException("Password is not valid");
-        }
-        companyService.deleteCompany(pro.getCompany());
+        accountService.archiveAccountWithPassword(userSecurityService.currentPro(), password);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

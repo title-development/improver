@@ -31,7 +31,6 @@ import static com.improver.util.TextMessages.REPLY_TEXT_TEMPLATE;
 public class CompanyService {
 
     @Autowired private UserSecurityService userSecurityService;
-    @Autowired private UserService userService;
     @Autowired private CompanyRepository companyRepository;
     @Autowired private TransactionRepository transactionRepository;
     @Autowired private AreaRepository areaRepository;
@@ -157,7 +156,7 @@ public class CompanyService {
     }
 
 
-    public void deleteCompany(Company company) {
+    public void archiveCompany(Company company) {
         imageService.silentDelete(company.getIconUrl());
         company.setDeleted(true)
             .setIconUrl(null)
@@ -168,8 +167,6 @@ public class CompanyService {
         Billing billing = company.getBilling();
         billing.getSubscription().reset();
         billRepository.save(billing);
-        List<Contractor> pros = company.getContractors();
-        userService.deleteContractors(pros);
     }
 
     /**

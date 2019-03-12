@@ -1,41 +1,29 @@
 package com.improver.controller;
 
-import com.improver.entity.Contractor;
-import com.improver.entity.Customer;
+
 import com.improver.entity.User;
 import com.improver.exception.NotFoundException;
-import com.improver.exception.ValidationException;
 import com.improver.model.UserAccount;
 import com.improver.model.admin.AdminContractor;
 import com.improver.model.in.EmailPasswordTuple;
-import com.improver.model.in.OldNewValue;
-import com.improver.model.in.registration.StaffRegistration;
 import com.improver.repository.ContractorRepository;
 import com.improver.repository.CustomerRepository;
 import com.improver.repository.UserRepository;
 import com.improver.security.annotation.*;
 import com.improver.security.UserSecurityService;
 import com.improver.security.annotation.AdminAccess;
-import com.improver.security.annotation.*;
-import com.improver.service.CompanyService;
-import com.improver.service.ImageService;
+import com.improver.service.AccountService;
 import com.improver.service.UserService;
 import com.improver.util.annotation.PageableSwagger;
-import com.improver.util.serializer.SerializationUtil;
-import javassist.tools.web.BadHttpRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
@@ -43,18 +31,18 @@ import java.util.List;
 
 import static com.improver.application.properties.Path.*;
 
+@Slf4j
 @RestController
 @RequestMapping(USERS_PATH)
 public class UserController {
-    private final Logger log = LoggerFactory.getLogger(getClass());
 
-    @Autowired private ImageController imageController;
+    @Autowired private AccountService accountService;
     @Autowired private UserService userService;
     @Autowired private UserSecurityService userSecurityService;
     @Autowired private UserRepository userRepository;
     @Autowired private CustomerRepository customerRepository;
     @Autowired private ContractorRepository contractorRepository;
-    @Autowired private CompanyService companyService;
+
 
     @SameUserOrAdminAccess
     @GetMapping(ID_PATH_VARIABLE)
@@ -62,6 +50,7 @@ public class UserController {
         UserAccount userAccount = userRepository.getAccount(id);
         return new ResponseEntity<>(userAccount, HttpStatus.OK);
     }
+
 
     @SupportAccess
     @GetMapping
@@ -75,6 +64,7 @@ public class UserController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
+
     @SupportAccess
     @GetMapping("/staff")
     @PageableSwagger
@@ -83,32 +73,17 @@ public class UserController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
+
     @AdminAccess
-    @DeleteMapping(ID_PATH_VARIABLE + "/archive")
-    public ResponseEntity<Void> archiveUser(@PathVariable("id") long id) {
-        userService.archiveUserById(id);
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
-    }
-
-
-
-    @SupportAccess
     @PutMapping(ID_PATH_VARIABLE + "/delete")
-    public ResponseEntity<Void> deleteAccount(@PathVariable long id, @RequestBody(required = false) String password) {
+    public ResponseEntity<Void> deleteAccount(@PathVariable long id) {
 
-        Customer customer = customerRepository.findById(id).orElse(null);
-        if (customer != null) {
-            userService.deleteCustomer(customer);
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-        Contractor contractor = contractorRepository.findById(id).orElse(null);
-        if (contractor != null) {
-            companyService.deleteCompany(contractor.getCompany());
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        User user = userRepository.findById(id)
+            .orElseThrow(NotFoundException::new);
+        accountService.archiveAccount(user, userSecurityService.currentAdmin());
+        return new ResponseEntity<>(HttpStatus.OK);
     }
+
 
     @SupportAccess
     @PutMapping(ID_PATH_VARIABLE + "/block")
@@ -116,6 +91,7 @@ public class UserController {
         userService.blockUser(id, blocked);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
 
     @AdminAccess
     @PutMapping(ID_PATH_VARIABLE + "/restore")
@@ -133,6 +109,7 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+
     @SameUserOrAdminAccess
     @PutMapping(ID_PATH_VARIABLE + "/update")
     public ResponseEntity<Void> updateUserAccount(@PathVariable long id,
@@ -149,6 +126,7 @@ public class UserController {
     }
 
 
+    //TODO: Andriy move check password inside service method
     @SameUserAccess
     @PutMapping(ID_PATH_VARIABLE + EMAIL)
     public ResponseEntity<Void> updateEmail(@PathVariable long id, @RequestBody EmailPasswordTuple emailPasswordTuple) {
@@ -192,12 +170,14 @@ public class UserController {
         return new ResponseEntity<>(customers, HttpStatus.OK);
     }
 
+
     @SupportAccess
     @PutMapping(ID_PATH_VARIABLE + CUSTOMERS)
     public ResponseEntity<Void> updateCustomer(@PathVariable long id, @RequestBody AdminContractor adminContractor) {
         userService.updateAdminUser(id, adminContractor);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
 
     @AdminAccess
     @PostMapping(ID_PATH_VARIABLE + "/password-expire")
