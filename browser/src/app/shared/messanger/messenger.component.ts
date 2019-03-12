@@ -1,29 +1,24 @@
 import { HttpEventType, HttpResponse } from '@angular/common/http';
-import {
-  AfterViewInit,
-  Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output,
-  ViewChild
-} from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { MessengerDocument } from '../../api/models/MessengerDocument';
-import { Message, StompSubscription } from '@stomp/stompjs';
-import { isUndefined } from 'util';
+import { Message } from '@stomp/stompjs';
 import { SecurityService } from '../../auth/security.service';
 import { ProjectRequestService } from '../../api/services/project-request.service';
 import { CompanyService } from '../../api/services/company.service';
-import { ALLOWED_FILE_EXTENTIONS, ALLOWED_FILE_TYPE, FILE_MIME_TYPES, MAX_FILE_SIZE } from '../../util/file-parameters';
+import { ALLOWED_FILE_EXTENTIONS, FILE_MIME_TYPES, MAX_FILE_SIZE } from '../../util/file-parameters';
 import { jsonParse } from '../../util/functions';
 import { PopUpMessageService } from '../../util/pop-up-message.service';
 import { hasClass } from '../../util/dom';
 import { PerfectScrollbarComponent } from 'ngx-perfect-scrollbar';
 import { Autosize } from '../../directives/autosize.directive';
-import { of, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { MediaQuery, MediaQueryService } from '../../util/media-query.service';
 import { Project } from '../../api/models/Project';
 import { ProjectMessage } from '../../api/models/ProjectMessage';
 import { ProjectRequest } from '../../api/models/ProjectRequest';
-import { catchError, distinctUntilChanged, first } from 'rxjs/internal/operators';
-import { StompRService } from '@stomp/ng2-stompjs';
+import { distinctUntilChanged, first } from 'rxjs/internal/operators';
 import { MyStompService } from '../../util/my-stomp.service';
+import { ProjectActionService } from '../../util/project-action.service';
 
 @Component({
   selector: 'messenger',
@@ -33,7 +28,7 @@ import { MyStompService } from '../../util/my-stomp.service';
     '[class.disabled]': '!isMessengerEnabled()',
   }
 })
-export class MessengerComponent implements OnInit, OnDestroy, AfterViewInit {
+export class MessengerComponent implements OnInit, OnDestroy {
 
   @Input() projectRequestId: string;
   @Input() projectRequestStatus: ProjectRequest.Status;
@@ -45,7 +40,8 @@ export class MessengerComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() targetUserId: string = '';
   @Input() contentClass: string = '';
 
-  @Output() onProjectUpdate: EventEmitter<any> = new EventEmitter();
+  @Output() onSystemMessage: EventEmitter<ProjectRequest.Status> = new EventEmitter<ProjectRequest.Status>();
+
 
   @ViewChild('messengerContent') messengerContent: ElementRef;
   @ViewChild('textAreaScrollBar') textAreaScrollBar: ElementRef;
@@ -57,7 +53,7 @@ export class MessengerComponent implements OnInit, OnDestroy, AfterViewInit {
 
   MESSAGES_GLUE_TIME = 5000;
   IS_TYPING_TIME = 5000;
-  READ_MESSEGES_DEBOUNCE_TIME = 1000;
+  READ_MESSAGES_DEBOUNCE_TIME = 1000;
 
   readEventSend: boolean = false;
   dragOver: boolean = false;
@@ -83,7 +79,8 @@ export class MessengerComponent implements OnInit, OnDestroy, AfterViewInit {
               public companyService: CompanyService,
               private myStompService: MyStompService,
               private query: MediaQueryService,
-              private popUpService: PopUpMessageService) {
+              private popUpService: PopUpMessageService,
+              private projectActionService: ProjectActionService) {
     this.mediaWatcher = this.query.screen.pipe(
       distinctUntilChanged()
     ).subscribe((res: MediaQuery) => {
@@ -96,9 +93,6 @@ export class MessengerComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.isMessengerEnabled()) {
       this.subscribeOnNewMessages();
     }
-  }
-
-  ngAfterViewInit(): void {
   }
 
   ngOnDestroy(): void {
@@ -151,6 +145,12 @@ export class MessengerComponent implements OnInit, OnDestroy, AfterViewInit {
       return;
     }
 
+    this.handleSystemMessage((newMessage.event as ProjectRequest.MessageEvent));
+
+    // if (newMessage.type == this.ProjectRequest.MessageType.PLAIN) {
+    //   return;
+    // }
+
     if (newMessage.event == this.ProjectRequest.MessageEvent.READ) {
       if (newMessage.sender != this.securityService.getLoginModel().id) {
         this.onReadEvent();
@@ -160,10 +160,6 @@ export class MessengerComponent implements OnInit, OnDestroy, AfterViewInit {
 
     if (newMessage.type == this.ProjectRequest.MessageType.DOCUMENT || newMessage.type == this.ProjectRequest.MessageType.IMAGE) {
       newMessage.body = typeof newMessage.body == 'string' ? jsonParse<MessengerDocument>(newMessage.body) : '';
-    }
-
-    if (newMessage.event == ProjectRequest.MessageEvent.DECLINE) {
-      this.onProjectUpdate.emit();
     }
 
     let lastMessage = this.messages[this.messages.length - 1];
@@ -254,7 +250,7 @@ export class MessengerComponent implements OnInit, OnDestroy, AfterViewInit {
       }
       setTimeout(() => {
         this.readEventSend = false;
-      }, this.READ_MESSEGES_DEBOUNCE_TIME);
+      }, this.READ_MESSAGES_DEBOUNCE_TIME);
       this.readEventSend = true;
     }
   }
@@ -351,4 +347,34 @@ export class MessengerComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  private handleSystemMessage(messageEvent: ProjectRequest.MessageEvent): void {
+    switch (messageEvent) {
+      case ProjectRequest.MessageEvent.DECLINE:
+        this.onSystemMessage.emit(ProjectRequest.Status.DECLINED);
+        break;
+      case ProjectRequest.MessageEvent.CANCEL:
+        this.onSystemMessage.emit(ProjectRequest.Status.INACTIVE);
+        break;
+      case ProjectRequest.MessageEvent.HIRE:
+        this.onSystemMessage.emit(ProjectRequest.Status.HIRED);
+        break;
+      case ProjectRequest.MessageEvent.HIRE_OTHER:
+        this.onSystemMessage.emit(ProjectRequest.Status.INACTIVE);
+        break;
+      case ProjectRequest.MessageEvent.LEAVE:
+        this.onSystemMessage.emit(ProjectRequest.Status.CLOSED);
+        break;
+      case ProjectRequest.MessageEvent.CUSTOMER_CLOSE:
+        this.onSystemMessage.emit(ProjectRequest.Status.INACTIVE);
+        break;
+      case ProjectRequest.MessageEvent.PRO_COMPLETE:
+        this.onSystemMessage.emit(ProjectRequest.Status.COMPLETED);
+        break;
+      case ProjectRequest.MessageEvent.INVALIDATED:
+        this.onSystemMessage.emit(ProjectRequest.Status.INACTIVE);
+        break;
+      default:
+        break;
+    }
+  }
 }

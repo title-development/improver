@@ -88,7 +88,9 @@
                        [projectRequestStatus]="projectRequest.status"
                        [targetUserIcon]="projectRequest.company?.iconUrl"
                        [companyName]="projectRequest.company?.name"
-                       [contractorName]="projectRequest.contractor?.name">
+                       [contractorName]="projectRequest.contractor?.name"
+                       (onSystemMessage)="updateProjectRequestStatus($event)"
+            >
             </messenger>
 
           </div>

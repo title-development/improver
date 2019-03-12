@@ -34,7 +34,7 @@
                    [projectRequestStatus]="project.status"
                    [customerName]="project.customer.name"
                    [targetUserId]="project.customer.id" [targetUserIcon]="project.customer.iconUrl"
-                   (onProjectUpdate)="getProject()"
+                   (onSystemMessage)="updateProjectRequestStatus($event)"
                    contentClass="contractor-messenger-content ">
         </messenger>
       </div>

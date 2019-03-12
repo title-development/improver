@@ -80,7 +80,7 @@ export class SignupComponent {
   }
 
   resendConfirmation() {
-    this.registrationService.resendActivationMail(this.user.email).subscribe(
+    this.registrationService.resendActivationMail(null, this.user.email).subscribe(
       response => {
         this.popUpMessageService.showMessage({
           type: SystemMessageType.SUCCESS,

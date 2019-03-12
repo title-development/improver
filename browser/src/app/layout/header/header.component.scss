@@ -95,16 +95,22 @@
           position: absolute;
           top: 11px;
           right: 13px;
-          font-size: 10px;
           border-radius: 50%;
           background-color: #14ABE3;
-          /* height: 11px; */
-          /* width: 11px; */
+          height: 15px;
+          width: 15px;
           color: white;
-          line-height: 12px;
           border: solid 2px white;
           box-sizing: content-box;
-          padding: 0px 3px;
+          span {
+            display: block;
+            font-size: 10px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            line-height: 1.5;
+          }
         }
 
         .mat-button {

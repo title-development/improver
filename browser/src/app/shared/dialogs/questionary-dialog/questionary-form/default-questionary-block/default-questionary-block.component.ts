@@ -180,7 +180,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
 
   orderSuccess(requestOrder: RequestOrder): void {
     this.postOrderProcessing = false;
-    this.projectActionService.onProjectsUpdate.emit();
+    this.projectActionService.projectUpdated();
     this.dialog.closeAll();
     if (this.securityService.isAuthenticated()) {
       this.router.navigate(['my','projects']);

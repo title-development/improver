@@ -33,11 +33,19 @@ export class RegistrationService {
     return this.http.post(`${this.companyUrl}`, company, { observe: 'response', responseType: 'text' });
   }
 
-  resendActivationMail (email: string = ''): Observable<any> {
-    return this.http.post(`${this.resendEmailUrl}`, email, {observe: 'response', responseType: 'text' })
+  resendActivationMail(userId: string, email: string = ''): Observable<any> {
+    let params;
+    if(userId) {
+      params = new HttpParams().append('userId', userId);
+    }
+    if(email) {
+      params = new HttpParams().append('email', email);
+    }
+    return this.http.post(`${this.resendEmailUrl}`, {}, {params: params, observe: 'response', responseType: 'text' })
   }
 
   changeActivationMail (oldNewValue: any): Observable<any> {
     return this.http.post(`${this.changeEmailUrl}`, oldNewValue, { observe: 'response', responseType: 'text'  })
   }
+
 }

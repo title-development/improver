@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output, ViewEncapsulation } from '@angular/core';
-import { ContractorProject, ContractorProjectShort } from "../../../model/data-model";
+import { ContractorProject, ContractorProjectShort } from '../../../model/data-model';
 import { MatDialogRef } from "@angular/material";
 import { PopUpMessageService } from "../../../util/pop-up-message.service";
 import { ProjectService } from "../../../api/services/project.service";
@@ -91,7 +91,7 @@ export class RequestRefundDialogComponent implements OnInit {
           this.step = 3;
           this.questionaryProcessing = false;
           this.onDone.emit();
-          this.projectActionsService.onProjectsUpdate.emit();
+          this.projectActionsService.projectUpdated();
         },
         err => {
           this.questionaryProcessing = false;

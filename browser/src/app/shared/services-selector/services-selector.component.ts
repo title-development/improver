@@ -1,5 +1,5 @@
 import {
-  ApplicationRef, Component, EventEmitter, Input, OnChanges, OnInit, Output,
+  ApplicationRef, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output,
   SimpleChanges
 } from '@angular/core';
 import { FormControl, FormGroup, NgForm } from '@angular/forms';
@@ -14,9 +14,9 @@ import { getErrorMessage } from '../../util/functions';
 import { Trade } from '../../model/data-model';
 import { dialogsMap } from '../dialogs/dialogs.state';
 import { confirmDialogConfig } from '../dialogs/dialogs.configs';
-import { combineLatest } from 'rxjs';
-import { el } from '@angular/platform-browser/testing/src/browser_util';
+import { combineLatest, Subscription } from 'rxjs';
 import { ScrollHolderService } from '../../util/scroll-holder.service';
+import { MediaQuery, MediaQueryService } from '../../util/media-query.service';
 
 
 @Component({
@@ -25,7 +25,7 @@ import { ScrollHolderService } from '../../util/scroll-holder.service';
   styleUrls: ['./services-selector.component.scss']
 })
 
-export class ServicesSelectorComponent implements OnInit, OnChanges {
+export class ServicesSelectorComponent implements OnInit {
 
   @Input()
   initialData;
@@ -57,7 +57,6 @@ export class ServicesSelectorComponent implements OnInit, OnChanges {
               public dialog: MatDialog,
               private serviceTypeService: ServiceTypeService,
               public  popUpMessageService: PopUpMessageService,
-              public  applicationRef: ApplicationRef,
               public scrollHolder: ScrollHolderService) {
     this.getTradesAndServiceTypes();
   }
@@ -65,9 +64,6 @@ export class ServicesSelectorComponent implements OnInit, OnChanges {
   ngOnInit() {
     this.tradesAndServiceTypes = this.initialData ? this.initialData : this.tradesAndServiceTypes;
     this.handleCompanyTradesAndServiceTypes();
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
   }
 
   initCheckboxControl() {
@@ -371,5 +367,6 @@ export class ServicesSelectorComponent implements OnInit, OnChanges {
     }
     this.onUpdate.emit(tradesAndServiceTypes);
   }
+
 
 }

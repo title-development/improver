@@ -55,14 +55,7 @@ export class SocialButtonsComponent {
       this.googleFetching = true;
       socialPlatformProvider = GoogleLoginProvider.PROVIDER_ID;
     }
-    this.socialAuthService.signOut()
-      .then(() => {
-        this.socialSignIn(socialPlatformProvider, socialPlatform);
-      })
-      .catch(err => {
-        console.log(err);
-        this.socialSignIn(socialPlatformProvider, socialPlatform);
-      });
+    this.socialSignIn(socialPlatformProvider, socialPlatform);
   }
 
   private contractorRegistrationDialog(socialPlatform: SocialPlatform, userData: SocialUser) {

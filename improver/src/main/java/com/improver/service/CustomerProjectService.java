@@ -37,16 +37,11 @@ import static com.improver.model.in.CloseProjectRequest.Action.INVALIDATE;
 @Service
 public class CustomerProjectService {
 
-    @Autowired
-    private ProjectRepository projectRepository;
-    @Autowired
-    private ProjectRequestRepository projectRequestRepository;
-    @Autowired
-    private ImageService imageService;
-    @Autowired
-    private ProjectMessageRepository projectMessageRepository;
-    @Autowired
-    private NotificationService notificationService;
+    @Autowired private ProjectRepository projectRepository;
+    @Autowired private ProjectRequestRepository projectRequestRepository;
+    @Autowired private ImageService imageService;
+    @Autowired private ProjectMessageRepository projectMessageRepository;
+    @Autowired private NotificationService notificationService;
 
 
     public Page<CustomerProjectShort> getProjectsForCustomer(Customer customer, boolean current, Pageable pageable) {
@@ -186,7 +181,7 @@ public class CustomerProjectService {
             && (projectRequest.getStatus().equals(ProjectRequest.Status.ACTIVE)
             || projectRequest.getStatus().equals(ProjectRequest.Status.HIRED))) {
             projectRequestRepository.save(projectRequest.setStatus(ProjectRequest.Status.COMPLETED).setUpdated(ZonedDateTime.now()));
-            ProjectMessage message = projectMessageRepository.save(ProjectMessage.close(projectRequest, time));
+            ProjectMessage message = projectMessageRepository.save(ProjectMessage.completedPro(projectRequest, time));
             notificationService.sendChatMessage(message, projectRequest.getId());
             notificationService.customerCloseProject(projectRequest.getContractor(), project.getCustomer(), project.getServiceType().getName(), projectRequest.getId());
         } else {

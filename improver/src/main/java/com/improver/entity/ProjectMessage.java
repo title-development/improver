@@ -85,6 +85,10 @@ public class ProjectMessage {
         return new ProjectMessage(projectRequest, SENDER_SYSTEM, time, Type.EVENT, Event.CUSTOMER_CLOSE);
     }
 
+    public static ProjectMessage completedPro(ProjectRequest projectRequest, ZonedDateTime time) {
+        return new ProjectMessage(projectRequest, SENDER_SYSTEM, time, Type.EVENT, Event.PRO_COMPLETE);
+    }
+
     public static ProjectMessage cancel(ProjectRequest projectRequest, ZonedDateTime time) {
         return new ProjectMessage(projectRequest, SENDER_SYSTEM, time, Type.EVENT, Event.CANCEL);
     }
@@ -165,6 +169,7 @@ public class ProjectMessage {
         CUSTOMER_CLOSE("CUSTOMER_CLOSE"),
         CANCEL ("CANCEL"),
         HIRE_OTHER ("HIRE_OTHER"),
+        PRO_COMPLETE("PRO_COMPLETE"),
         //==== PRO ====
         PRO_CLOSE("PRO_CLOSE"),
         LEAVE ("LEAVE"),

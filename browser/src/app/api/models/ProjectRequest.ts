@@ -49,6 +49,7 @@ export namespace ProjectRequest {
     CUSTOMER_CLOSE = "CUSTOMER_CLOSE",
     CANCEL = 'CANCEL',
     HIRE_OTHER = "HIRE_OTHER",
+    PRO_COMPLETE = "PRO_COMPLETE",
     //Pro
     PRO_CLOSE = "PRO_CLOSE",
     LEAVE = 'LEAVE',
@@ -59,6 +60,7 @@ export namespace ProjectRequest {
   }
 
   export enum MessageType {
+    PLAIN = 'PLAIN',
     TEXT = 'TEXT',
     IMAGE = 'IMAGE',
     DOCUMENT = 'DOCUMENT',

@@ -29,6 +29,7 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy {
   Project = Project;
   private onProjectsUpdate$: Subscription;
   private onProjectDialogClose$: Subscription;
+  private projectDialogOpened: boolean = false;
 
   constructor(private route: ActivatedRoute,
               private projectService: ProjectService,
@@ -50,12 +51,13 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy {
     );
 
     this.onProjectsUpdate$ = this.projectActionService.onProjectsUpdate.subscribe(() => {
-      this.getProject();
+      if(!this.projectDialogOpened) {
+        this.getProject();
+      }
     });
     this.onProjectDialogClose$ = this.projectActionService.onCloseProjectRequestDialog.subscribe(() => {
-      this.projectId = null;
+      this.projectDialogOpened = false;
       this.router.navigate([]); //clear hash fragment from url (projects/22#21 => projects/22)
-      this.getProject();
     })
   }
 
@@ -75,9 +77,11 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy {
     projectRequest.unreadMessages = 0; // Mutation for optimistic UI
     this.projectRequestService.getProjectRequest(projectRequest.id).subscribe(
       projectRequest => {
+        this.projectDialogOpened = true;
         this.projectActionService.openProjectRequest(projectRequest);
       },
       err => {
+        this.projectDialogOpened = false;
         this.popUpMessageService.showError(getErrorMessage(err));
       }
     );
@@ -86,9 +90,11 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy {
   openProjectRequestByUrlFragment(projectRequestId: string) {
     this.projectRequestService.getProjectRequest(projectRequestId).subscribe(
       projectRequest => {
+        this.projectDialogOpened = true;
         this.projectActionService.openProjectRequest(projectRequest);
       },
       err => {
+        this.projectDialogOpened = false;
         this.router.navigate([this.router.url.split('#')[0]]);
       }
     );

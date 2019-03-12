@@ -130,7 +130,8 @@ export class ContractorProjectViewComponent implements OnDestroy, AfterViewInit 
       );
   }
 
-  onSubmit() {
+  updateProjectRequestStatus(status: ProjectRequest.Status) {
+    this.project.status = status;
   }
 
   openGallery(index, images): void {

@@ -101,6 +101,10 @@ export class CustomerProjectRequestDialogComponent implements OnInit, OnDestroy 
     );
   }
 
+  updateProjectRequestStatus(status: ProjectRequest.Status) {
+    this.projectRequest.status = status;
+  }
+
 
   loadOverview(): void {
     console.log(this.projectRequest);

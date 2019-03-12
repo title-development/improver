@@ -33,7 +33,7 @@
 
       <div class="col-sm-8 col-md-4 charge-card-wrapper" >
         <div class="card" >
-          <div class="charge-block" [cvSpinner]="cardProcessing" [cvSpinnerSize]="30" [cvSpinnerBackground]="true">
+          <div class="charge-block" [cvSpinner]="cardProcessing || subscriptionProcessing" [cvSpinnerSize]="30" [cvSpinnerBackground]="true">
             <div class="charge-to-card" *ngIf="mode == ModeEnum.NEW && subscriptionActionsService.subscriptionAmount > billingService.billing.balance">
               <div class="label">Charge to card</div>
               <div class="value">{{(subscriptionActionsService.subscriptionAmount - billingService.billing.balance) / 100 | currency:'USD':'symbol' }}</div>
@@ -85,13 +85,8 @@
                 (click)="openAddPaymentCard()">Add card
         </button>
 
-        <button cv-button class="confirm-button" *ngIf="paymentCards?.length > 0" [disabled]="cardProcessing"
-                (click)="confirmSubscription()"
-                [ngStyle]="subscriptionProcessing && {'background-color': 'transparent', 'color': 'transparent'}"
-                [cvSpinner]="subscriptionProcessing"
-                [cvSpinnerSize]="20"
-                [cvSpinnerBackground]="false"
-                cvSpinnerBackgroundColor="transparent">
+        <button cv-button class="confirm-button" *ngIf="paymentCards?.length > 0 && !subscriptionProcessing" [disabled]="cardProcessing"
+                (click)="confirmSubscription()">
           <span *ngIf="mode == ModeEnum.NEW">Confirm subscription</span>
           <span *ngIf="mode == ModeEnum.UPDATE">Update subscription</span>
         </button>

@@ -3,7 +3,9 @@ package com.improver.controller;
 
 import com.improver.entity.Contractor;
 import com.improver.entity.User;
+import com.improver.exception.BadRequestException;
 import com.improver.exception.ConflictException;
+import com.improver.exception.NotFoundException;
 import com.improver.exception.ValidationException;
 import com.improver.model.in.registration.CompanyRegistration;
 import com.improver.model.in.OldNewValue;
@@ -19,14 +21,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.Optional;
 import java.util.UUID;
 
 import static com.improver.application.properties.Path.*;
@@ -69,20 +69,14 @@ public class RegistrationController {
 
     @PreAuthorize("isAnonymous() || hasRole('INCOMPLETE_PRO')")
     @PostMapping("/resend")
-    public ResponseEntity resendConfirmationMail(@RequestBody(required = false) String email) {
-        User user;
-        if (email != null && !email.isEmpty()) {
-            user = userService.getByEmail(email.toLowerCase());
-        } else {
-            user = userSecurityService.currentUser();
+    public ResponseEntity resendConfirmationMail(@RequestParam(required = false) String email, @RequestParam(required = false) Long userId) {
+        if((email == null || email.isEmpty()) && userId == null) {
+            throw new BadRequestException("Bad request");
         }
-        if (user.isActivated() || user.getValidationKey() == null) {
-            throw new ConflictException("Cannot resend confirmation mail. Email already confirmed!");
-        }
+        User user = userService.resendConfirmationEmail(email, userId);
         mailService.sendRegistrationConfirmEmail(user);
         return new ResponseEntity(HttpStatus.OK);
     }
-
 
     @PreAuthorize("isAnonymous()")
     @PostMapping(CUSTOMERS)
@@ -112,6 +106,8 @@ public class RegistrationController {
         LoginModel loginModel = null;
         if (!contractor.isNativeUser()) {
             loginModel = userSecurityService.performUserLogin(contractor, res);
+        } else {
+            userSecurityService.performLogout(contractor,res);
         }
         return new ResponseEntity<>(loginModel, HttpStatus.OK);
     }

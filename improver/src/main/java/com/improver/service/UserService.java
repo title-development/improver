@@ -283,6 +283,21 @@ public class UserService {
         }
     }
 
+    public User resendConfirmationEmail(String email, Long userId) {
+        User user = null;
+        if(email != null && !email.isEmpty()) {
+            user = getByEmail(email.toLowerCase());
+        }
+        if(userId != null) {
+            user = userRepository.findById(userId).orElseThrow(NotFoundException::new);
+        }
+        if (user == null || user.isActivated() || user.getValidationKey() == null) {
+            throw new ConflictException("Cannot resend confirmation mail. Email already confirmed!");
+        }
+
+        return user;
+    }
+
     public Page<AdminContractor> getAllContractors(Long id, String displayName, String email, String companyName, Pageable pageable) {
         return userRepository.getAllContractors(id, displayName, email, companyName, pageable);
     }

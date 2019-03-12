@@ -1,13 +1,15 @@
+import { EventEmitter, Injectable } from '@angular/core';
 import {
-  EventEmitter,
-  Injectable
-} from '@angular/core';
-import {
-  completeProjectDialogConfig, confirmDialogConfig, customerProjectRequestDialogConfig,
+  completeProjectDialogConfig,
+  confirmDialogConfig,
+  customerProjectRequestDialogConfig,
   questionaryDialogConfig
 } from '../shared/dialogs/dialogs.configs';
 import {
-  CloseProjectRequest, ContractorProjectShort, CustomerProject, ServiceType, SystemMessageType
+  CloseProjectRequest,
+  ContractorProjectShort,
+  CustomerProject,
+  ServiceType
 } from '../model/data-model';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { ProjectService } from '../api/services/project.service';
@@ -16,13 +18,14 @@ import { ProjectRequestService } from '../api/services/project-request.service';
 import { QuestionaryControlService } from './questionary-control.service';
 import { SecurityService } from '../auth/security.service';
 import { dialogsMap } from '../shared/dialogs/dialogs.state';
-import { QuestionaryBlock } from '../model/questionary-model';
 import { ServiceTypeService } from '../api/services/service-type.service';
 import { getErrorMessage } from './functions';
 import { ProjectRequest } from '../api/models/ProjectRequest';
 import { BoundariesService } from '../api/services/boundaries.service';
 import { Role } from '../model/security-model';
 import { Router } from '@angular/router';
+import { Observable, Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 @Injectable()
 export class ProjectActionService {
@@ -31,11 +34,14 @@ export class ProjectActionService {
   projectId = '';
   project: CustomerProject;
   confirmDialogRef: MatDialogRef<any>;
-  onProjectsUpdate: EventEmitter<any> = new EventEmitter<any>();
+  onProjectsUpdate: Observable<any>;
   onCloseProjectRequestDialog: EventEmitter<any> = new EventEmitter<any>();
-  private questionaryDialogRef: MatDialogRef<any>;
   zipIsChecking = false;
   zipIsSupported = true;
+
+  private DEBOUNCE_TIME: number = 300;
+  private questionaryDialogRef: MatDialogRef<any>;
+  private projectUpdateSubject: Subject<any> = new Subject();
 
   constructor(public dialog: MatDialog,
               public securityService: SecurityService,
@@ -46,6 +52,8 @@ export class ProjectActionService {
               public questionaryControlService: QuestionaryControlService,
               public boundariesService: BoundariesService,
               private router: Router) {
+    //avoid duplicate project update event emitting
+    this.onProjectsUpdate = this.projectUpdateSubject.pipe(debounceTime(this.DEBOUNCE_TIME))
   }
 
   openProjectRequest(projectRequest) {
@@ -111,7 +119,7 @@ export class ProjectActionService {
     this.projectRequestService.hire(projectRequest.id).subscribe(
       () => {
         if (this.securityService.isAuthenticated()) {
-          this.onProjectsUpdate.emit();
+          this.projectUpdated()
         }
         this.popUpService.showSuccess(`You have hired <b>${projectRequest.company.name}</b> for your <b>${this.project.serviceType}</b> project`);
       },
@@ -149,7 +157,7 @@ export class ProjectActionService {
     this.projectRequestService.decline(projectRequestId, body).subscribe(
       response => {
         if (this.securityService.isAuthenticated()) {
-          this.onProjectsUpdate.emit();
+          this.projectUpdated()
         }
       },
       err => {
@@ -219,7 +227,7 @@ export class ProjectActionService {
       .subscribe(
         response => {
           if (this.securityService.isAuthenticated()) {
-            this.onProjectsUpdate.emit();
+            this.projectUpdated()
           }
           if (this.confirmDialogRef) {
             this.confirmDialogRef.close();
@@ -233,7 +241,6 @@ export class ProjectActionService {
   }
 
   cancelProjectConfirm(project) {
-
     this.confirmDialogRef = this.dialog.open(dialogsMap['cancel-project-dialog'], completeProjectDialogConfig);
     this.confirmDialogRef
       .afterClosed()
@@ -260,7 +267,7 @@ export class ProjectActionService {
       .subscribe(
         response => {
           if (this.securityService.isAuthenticated()) {
-            this.onProjectsUpdate.emit();
+            this.projectUpdated()
           }
           this.confirmDialogRef.close();
         },
@@ -352,7 +359,7 @@ export class ProjectActionService {
     this.projectRequestService.closeProject(project.id, false).subscribe(
       response => {
         this.popUpService.showInfo('<b>' + project.serviceType + '</b>' + ' closed');
-        this.onProjectsUpdate.emit();
+        this.projectUpdated()
       },
       err => {
         console.log(err);
@@ -382,7 +389,7 @@ export class ProjectActionService {
         this.projectRequestService.closeProject(project.id, true).subscribe(
           response => {
             this.popUpService.showInfo('You leaved <b>' + project.serviceType + '</b>' + ' project');
-            this.onProjectsUpdate.emit();
+            this.projectUpdated();
           },
           err => {
             console.log(err);
@@ -420,6 +427,10 @@ export class ProjectActionService {
 
   reset() {
     this.zipIsSupported = true;
+  }
+
+  projectUpdated(): void {
+    this.projectUpdateSubject.next();
   }
 
 }

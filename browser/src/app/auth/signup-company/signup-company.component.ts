@@ -87,6 +87,7 @@ export class SignupCompanyComponent {
   };
 
   unsupportedArea: any;
+  private readonly NOT_ACTIVE_USER_KEY : string = 'NOT_ACTIVE_USER';
 
   constructor(public securityService: SecurityService,
               public constants: Constants,
@@ -328,6 +329,8 @@ export class SignupCompanyComponent {
           this.securityService.loginUser(JSON.parse(response.body) as LoginModel, response.headers.get('authorization'), true);
         } else {
           this.step++;
+          this.storeUserIdIsSessionStorage(this.securityService.getLoginModel().id);
+          this.securityService.systemLogout();
         }
         this.registrationProcessing = false;
       }, err => {
@@ -339,17 +342,26 @@ export class SignupCompanyComponent {
   }
 
   resendConfirmation() {
-    this.registrationService.resendActivationMail().subscribe(
-      response => {
-        this.popUpMessageService.showMessage({
-          type: SystemMessageType.SUCCESS,
-          text: 'A confirmation link has been resent to your email'
-        });
-      },
-      err => {
-        console.log(err);
-        this.popUpMessageService.showError(JSON.parse(err.error).message);
-      }
-    );
+    const userId = sessionStorage.getItem(this.NOT_ACTIVE_USER_KEY);
+    if(userId) {
+      this.registrationService.resendActivationMail(userId).subscribe(
+        response => {
+          this.popUpMessageService.showMessage({
+            type: SystemMessageType.SUCCESS,
+            text: 'A confirmation link has been resent to your email'
+          });
+        },
+        err => {
+          console.log(err);
+          this.popUpMessageService.showError(JSON.parse(err.error).message);
+        }
+      );
+    } else {
+      this.popUpMessageService.showError('Resend activation to the email is not available anymore')
+    }
+  }
+
+  private storeUserIdIsSessionStorage(userId: string): void {
+    sessionStorage.setItem(this.NOT_ACTIVE_USER_KEY, userId.toString());
   }
 }
