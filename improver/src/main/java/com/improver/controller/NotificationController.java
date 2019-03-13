@@ -1,6 +1,7 @@
 package com.improver.controller;
 
 import com.improver.entity.Notification;
+import com.improver.entity.ProjectRequest;
 import com.improver.entity.User;
 import com.improver.repository.NotificationRepository;
 import com.improver.repository.ProjectMessageRepository;
@@ -57,9 +58,11 @@ public class NotificationController {
         User user = userSecurityService.currentUser();
         List<Notification> messages = new ArrayList<>();
         if(user.getRole() == User.Role.CUSTOMER) {
-            messages = projectMessageRepository.getAllUnreadMessagesForCustomers(user.getId());
+            messages = projectMessageRepository.getAllUnreadMessagesForCustomers(user.getId(),
+                ProjectRequest.Status.getActiveForCustomer());
         } else if(user.getRole() == User.Role.CONTRACTOR) {
-            messages = projectMessageRepository.getAllUnreadMessagesForContractors(user.getId());
+            messages = projectMessageRepository.getAllUnreadMessagesForContractors(user.getId(),
+                ProjectRequest.Status.getActiveForCustomer());
         }
         return new ResponseEntity<>(messages, HttpStatus.OK);
     }

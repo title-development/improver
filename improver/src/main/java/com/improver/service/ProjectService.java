@@ -62,7 +62,10 @@ public class ProjectService {
             : ProjectRequest.Status.getArchived();
 
         Page<ProjectRequestShort> projects = projectRequestRepository.getForDashboard(contractor.getId(), statuses, search, pageable);
-        projects.forEach(project -> project.setUnreadMessages(projectMessageRepository.getUnreadMessagesCount(Long.toString(contractor.getId()), project.getId())));
+        projects.forEach(project -> project.setUnreadMessages(projectMessageRepository.getUnreadMessagesCount(
+            Long.toString(contractor.getId()),
+            project.getId(),
+            ProjectRequest.Status.getActiveForCustomer())));
 
         return projects;
     }

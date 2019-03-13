@@ -1,14 +1,13 @@
 package com.improver.controller;
 
 import com.improver.entity.StaffAction;
-import com.improver.entity.User;
 import com.improver.model.in.registration.StaffRegistration;
 import com.improver.model.out.StaffActionModel;
 import com.improver.repository.StaffActionRepository;
 import com.improver.security.annotation.AdminAccess;
 import com.improver.service.UserService;
 import com.improver.util.annotation.PageableSwagger;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import static com.improver.application.properties.Path.*;
 
 
-@Log
+@Slf4j
 @RestController
 @RequestMapping(STAFF_PATH)
 public class StaffController {

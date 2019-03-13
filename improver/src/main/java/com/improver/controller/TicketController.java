@@ -11,7 +11,7 @@ import com.improver.security.UserSecurityService;
 import com.improver.service.TicketService;
 import com.improver.util.annotation.PageableSwagger;
 import com.improver.security.annotation.SupportAccess;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,7 +29,7 @@ import java.util.List;
 
 import static com.improver.application.properties.Path.*;
 
-@Log
+@Slf4j
 @RestController
 @RequestMapping(TICKETS_PATH)
 public class TicketController {

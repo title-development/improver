@@ -81,7 +81,7 @@ public class UserService {
 
 
 
-    public void updateUser(long id, User toUpdate) {
+    public void updateUser(long id, User toUpdate, Admin currentAdmin) {
         User existed = userRepository.findById(id)
             .orElseThrow(NotFoundException::new);
 
@@ -92,6 +92,9 @@ public class UserService {
             .setInternalPhone(toUpdate.getInternalPhone());
 
         userRepository.save(existed);
+        if (currentAdmin != null) {
+            staffActionLogger.logAccountUpdate(currentAdmin, existed);
+        }
     }
 
     /**
@@ -264,7 +267,7 @@ public class UserService {
         return user;
     }
 
-    public void updateAccount(Long id, UserAccount account, Admin currentAdmin) {
+    public void updateAccount(Long id, UserAccount account) {
         User existed = userRepository.findById(id)
             .orElseThrow(NotFoundException::new);
 
@@ -278,9 +281,6 @@ public class UserService {
             existed.setIconUrl(iconUrl);
         }
         userRepository.save(existed);
-        if (currentAdmin != null) {
-            staffActionLogger.logAccountUpdate(currentAdmin, existed);
-        }
     }
 
     public User resendConfirmationEmail(String email, Long userId) {

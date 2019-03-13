@@ -12,16 +12,14 @@ import com.improver.repository.UserRepository;
 import com.improver.security.UserSecurityService;
 import com.improver.util.StaffActionLogger;
 import com.improver.util.mail.MailService;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.buf.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-@Log
+@Slf4j
 @Service
 public class InvitationService {
 

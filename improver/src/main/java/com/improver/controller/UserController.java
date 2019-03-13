@@ -105,16 +105,16 @@ public class UserController {
     @AdminAccess
     @PutMapping(ID_PATH_VARIABLE)
     public ResponseEntity<Void> updateUser(@PathVariable long id, @RequestBody User user) {
-        userService.updateUser(id, user);
+        userService.updateUser(id, user, userSecurityService.currentAdminOrNull());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
-    @SameUserOrAdminAccess
+    @SameUserAccess
     @PutMapping(ID_PATH_VARIABLE + "/update")
     public ResponseEntity<Void> updateUserAccount(@PathVariable long id,
                                                   @RequestBody @Valid UserAccount user) {
-        userService.updateAccount(id, user, userSecurityService.currentAdminOrNull());
+        userService.updateAccount(id, user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

@@ -3,6 +3,7 @@ package com.improver.util.mail;
 import com.improver.entity.*;
 import com.improver.model.in.OrderDetails;
 import com.improver.model.out.PaymentCard;
+import com.improver.model.tmp.UnreadProjectMessageInfo;
 import com.improver.repository.AdminRepository;
 import com.improver.service.PaymentService;
 import com.improver.application.properties.BusinessProperties;
@@ -20,7 +21,9 @@ import javax.annotation.PostConstruct;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.improver.application.properties.Path.*;
 import static com.improver.application.properties.UiPath.*;
@@ -205,6 +208,30 @@ public class MailService {
         context.setVariable(TITLE, title);
         context.setVariable(BODY, body);
         mailClient.sendMail("Account has been " + newStatus, NOTICE_TEMPLATE, context, MailHolder.MessageType.NOREPLY, user.getEmail());
+    }
+
+    public void sendUnreadMessageNotificationEmails(String email, List<UnreadProjectMessageInfo> unreadProjectMessageInfos, boolean isForCustomers) {
+        Context context = contextTemplate();
+        String title = "You have new messages";
+        StringBuilder body = new StringBuilder();
+        if (isForCustomers) {
+            body.append("You have new messages from Pro's in your recent projects: <br>");
+            unreadProjectMessageInfos.forEach(message ->
+                body.append(String.format("In %1$s project <br>",
+                    highlight(message.getServiceTypeName()))));
+            context.setVariable(CONFIRM_URL, siteUrl + CUSTOMER_PROJECTS);
+        } else {
+            body.append("You have new messages from Clients in your recent projects: <br>");
+            unreadProjectMessageInfos.forEach(message ->
+                body.append(String.format("From %1$s in %2$s project <br>",
+                    highlight(message.getClientName()),
+                    highlight(message.getServiceTypeName()))));
+            context.setVariable(CONFIRM_URL, siteUrl + PRO + DASHBOARD);
+        }
+        context.setVariable(TITLE, title);
+        context.setVariable(BODY, body);
+        context.setVariable(CONFIRM_BTN_TEXT, "View at Home Improve");
+        mailClient.sendMail("You have new messages", CONFIRMATION_TEMPLATE, context, MailHolder.MessageType.NOREPLY, email);
     }
 
     /********************************************************************************************************

@@ -110,6 +110,9 @@ public class ProjectRequest {
             return this.value;
         }
 
+        public static List<Status> getActiveForCustomer() {
+            return Arrays.asList(ACTIVE, HIRED);
+        }
 
         public static List<Status> getActive() {
             return Arrays.asList(ACTIVE, HIRED, DECLINED, INACTIVE, REFUND);
