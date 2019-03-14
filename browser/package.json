@@ -45,7 +45,7 @@
     "@angular/router": "7.0.0",
     "@angular/service-worker": "7.0.0",
     "@fortawesome/fontawesome-free": "5.4.1",
-    "@stomp/ng2-stompjs": "^6.1.0-beta.4",
+    "@stomp/ng2-stompjs": "^7.2.0",
     "@types/cropperjs": "^1.1.0",
     "@types/googlemaps": "3.30.12",
     "@types/lunr": "^2.1.6",

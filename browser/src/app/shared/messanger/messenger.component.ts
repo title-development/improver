@@ -131,7 +131,7 @@ export class MessengerComponent implements OnInit, OnDestroy {
 
   private subscribeOnNewMessages() {
     if (this.msgSubscription === undefined) {
-      this.msgSubscription = this.myStompService.subscribe(`/topic/project-requests/${this.projectRequestId}`).subscribe(this.onMessage);
+      this.msgSubscription = this.myStompService.watch(`/topic/project-requests/${this.projectRequestId}`).subscribe(this.onMessage);
       console.log('Subscribed for messages on projectRequest ' + this.projectRequestId);
     }
   }
@@ -193,7 +193,7 @@ export class MessengerComponent implements OnInit, OnDestroy {
   private sendMessage(message: string = '', type: ProjectRequest.MessageType, event: ProjectRequest.MessageEvent) {
     if (message && message.trim() == '') return;
     const newMessage = new ProjectMessage(this.securityService.getLoginModel().id, message, type, event);
-    this.myStompService.publish(`/queue/project-requests/${this.projectRequestId}`, JSON.stringify(newMessage));
+    this.myStompService.publish({destination: `/queue/project-requests/${this.projectRequestId}`, body: JSON.stringify(newMessage)}, );
     //run adjust after synchronous function
     if (newMessage.event != this.ProjectRequest.MessageEvent.READ) {
       setTimeout(() => {

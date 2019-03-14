@@ -70,7 +70,7 @@ export class NotificationResource {
 
   public getNotificationSubscription(userId: string): Observable<any> {
     if (!this.notificationsObservable) {
-      this.notificationsObservable = this.myStompService.subscribe(`/topic/users/${userId}/notifications`);
+      this.notificationsObservable = this.myStompService.watch(`/topic/users/${userId}/notifications`);
     }
     return this.notificationsObservable;
   }

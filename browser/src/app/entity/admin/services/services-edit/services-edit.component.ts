@@ -64,9 +64,9 @@ export class ServicesEditComponent {
     });
   }
 
-  addUpdateServiceType(): void {
+  saveServiceType(): void {
     const formData: FormData = new FormData();
-    this.serviceType.leadPrice *=  100;
+    this.serviceType.leadPrice = this.serviceType.leadPrice * 100;
     if (this.newImage) {
       formData.append('file', this.newImage);
     }
@@ -77,12 +77,16 @@ export class ServicesEditComponent {
         this.getServiceType(this.serviceType.id);
         this.previousName = this.serviceType.name;
         this.router.navigate(['admin', 'services']);
+      },err => {
+        this.serviceType.leadPrice = this.serviceType.leadPrice / 100;
       });
     } else {
       this.serviceTypeService.createServiceType(formData).subscribe(res => {
         this.popUpService.showSuccess(`${this.serviceType.name} has been added`);
         this.previousName = this.serviceType.name;
         this.router.navigate(['admin', 'services']);
+      }, err => {
+        this.serviceType.leadPrice = this.serviceType.leadPrice / 100;
       });
     }
   }

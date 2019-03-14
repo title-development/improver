@@ -27,6 +27,7 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy {
   project: CustomerProject;
   ProjectRequest = ProjectRequest;
   Project = Project;
+  private hashFragment: string;
   private onProjectsUpdate$: Subscription;
   private onProjectDialogClose$: Subscription;
   private projectDialogOpened: boolean = false;
@@ -57,7 +58,12 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy {
     });
     this.onProjectDialogClose$ = this.projectActionService.onCloseProjectRequestDialog.subscribe(() => {
       this.projectDialogOpened = false;
-      this.router.navigate([]); //clear hash fragment from url (projects/22#21 => projects/22)
+      if(this.hashFragment) {
+        //navigate and refresh component
+        this.router.navigate([]); //clear hash fragment from url (projects/22#21 => projects/22)
+      } else {
+        this.getProject();
+      }
     })
   }
 
@@ -123,6 +129,7 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy {
 
   getProjectRequest() {
     this.route.fragment.subscribe((fragment: string) => {
+      this.hashFragment = fragment;
       if (fragment) {
         this.openProjectRequestByUrlFragment(fragment);
       }

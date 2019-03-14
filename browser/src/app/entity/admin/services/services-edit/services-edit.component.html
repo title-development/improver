@@ -1,5 +1,5 @@
 <h1 class="page-title" [innerHtml]="pageTitle"></h1>
-<form action="" *ngIf="serviceType" #serviceEditFrom="ngForm" (submit)="serviceEditFrom.valid && addUpdateServiceType()">
+<form action="" *ngIf="serviceType" #serviceEditFrom="ngForm" (submit)="serviceEditFrom.valid && saveServiceType()">
   <div class="ui-grid ui-grid-responsive ui-fluid trades-list">
     <div class="ui-grid-row ui-grid-field">
       <div class="ui-grid-col-3"><label for="name">Active</label></div>

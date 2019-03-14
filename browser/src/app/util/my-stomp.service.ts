@@ -1,21 +1,26 @@
 import {Inject, Injectable} from "@angular/core";
-import {StompConfig, StompRService} from "@stomp/ng2-stompjs";
+import {InjectableRxStompConfig, RxStompService} from '@stomp/ng2-stompjs';
 import {SecurityService} from "../auth/security.service";
-import * as Stomp from '@stomp/stompjs';
+import {RxStompState} from '@stomp/rx-stomp';
+import {IFrame} from '@stomp/stompjs';
+import { filter, take } from 'rxjs/operators';
 
 
 @Injectable()
-export class MyStompService extends StompRService {
+export class MyStompService extends RxStompService {
 
   private readonly wsEndpoint = (this.window.location.protocol == 'https:' ? 'wss' : 'ws' ) + '://' + this.window.location.host + '/ws';
 
-  private readonly initialConfig: StompConfig = {
-    url: this.wsEndpoint,
-    headers: {},
-    heartbeat_in: 0,        // Typical value 0 - disabled
-    heartbeat_out: 20000,   // Typical value 20000 - every 20 seconds
-    reconnect_delay: 0,     // every 10 seconds
-    debug: true
+  private init: boolean = false;
+  private readonly initialConfig: InjectableRxStompConfig = {
+    brokerURL: this.wsEndpoint,
+    connectHeaders: {},
+    heartbeatIncoming: 0,        // Typical value 0 - disabled
+    heartbeatOutgoing: 20000,   // Typical value 20000 - every 20 seconds
+    reconnectDelay: 0,     // every 10 seconds
+    debug: (str) => {
+      console.log(new Date(), str);
+    }
   };
 
 
@@ -23,20 +28,22 @@ export class MyStompService extends StompRService {
   public constructor(private securityService: SecurityService,
                      @Inject('Window') private window: Window) {
     super();
-    this.errorSubject.subscribe(value => {
-      if (typeof value === 'object') {
-        value = (<Stomp.Message>value).body;
-      }
-      if (value.startsWith('Valid token required')) {
-        this.disconnect();
-      } else if (value.startsWith('Expired')) {
+    this.connectionState$.subscribe((state : RxStompState) => {
+      if(state == RxStompState.CLOSED && this.init) {
         this.reconnectAfter(1000);
-      } else if (value.startsWith('Whoops! Lost connection to')) {
-        this.reconnectAfter(1000)
-      } else {
-        console.error('Cannot connect to STOMP broker')
       }
-    })
+    });
+    this.stompErrors$.subscribe((iframe: IFrame) => {
+      console.log(iframe);
+      let body;
+      if (typeof iframe === 'object') {
+        body = iframe.body;
+      }
+      if (body.startsWith('Valid token required')) {
+        this.deactivate();
+      }
+    });
+    this.init = true;
   }
 
   private reconnectAfter(ms: number): void {
@@ -44,7 +51,7 @@ export class MyStompService extends StompRService {
       .then(any => {
         if(this.securityService.isAuthenticated()) {
           if (this.securityService.isTokenExpired()){
-            this.securityService.refreshAccessToken().subscribe(value1 => this.restartBroker());
+            this.securityService.refreshAccessToken().subscribe(() => this.restartBroker());
           } else {
             this.restartBroker();
           }
@@ -57,18 +64,16 @@ export class MyStompService extends StompRService {
   }
 
   public shutDown(): void {
-    this.disconnect();
-    this.config = null;
-    this.client = null;
+    this.deactivate();
   }
 
   restartBroker() {
-    this.initialConfig.headers = {
+    this.initialConfig.connectHeaders = {
       authorization: this.securityService.getTokenHeader()
     };
     //this.initialConfig.url = this.wsEndpoint + '?access_token=' + this.securityService.getTokenHeader();
-    this.config = this.initialConfig;
-    this.initAndConnect();
+    this.configure(this.initialConfig);
+    this.activate();
   }
 
 }
