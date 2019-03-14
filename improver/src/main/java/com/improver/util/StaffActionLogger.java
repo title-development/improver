@@ -68,4 +68,15 @@ public class StaffActionLogger {
         this.log(StaffAction.Action.ACCOUNT_DELETE, author, description);
     }
 
+    public void logChangeAccountBlockingStatus(Staff author, User user){
+        String description = String.format("User with id %1$s is %2$s. %3$s with email %4$s.",
+            user.getId(),
+            user.isBlocked() ? "blocked" : "unblocked",
+            user.getName(),
+            user.getEmail());
+        this.log(StaffAction.Action.ACCOUNT_UPDATE,
+            author,
+            description);
+    }
+
 }

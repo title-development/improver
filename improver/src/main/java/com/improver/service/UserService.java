@@ -17,16 +17,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
-import java.util.List;
 import java.util.UUID;
 
-import static com.improver.model.in.CloseProjectRequest.Action.CANCEL;
 import static com.improver.util.ErrorMessages.ERR_MSG_PASS_MINIMUM_REQUIREMENTS;
 import static com.improver.util.serializer.SerializationUtil.PASS_PATTERN;
 
@@ -68,17 +64,14 @@ public class UserService {
     }
 
 
-
-
-    public void blockUser(Long id, boolean blocked) {
+    public void changeUserBlockedStatus(Long id, boolean blocked, Admin currentAdmin) {
         User user = userRepository.findById(id)
             .orElseThrow(() -> new BadRequestException("Bad request"));
         user.setBlocked(blocked);
         mailService.sendBlockAccount(user);
         userRepository.save(user);
+        staffActionLogger.logChangeAccountBlockingStatus(currentAdmin, user);
     }
-
-
 
 
     public void updateUser(long id, User toUpdate, Admin currentAdmin) {

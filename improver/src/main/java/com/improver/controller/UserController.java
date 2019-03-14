@@ -1,6 +1,7 @@
 package com.improver.controller;
 
 
+import com.improver.entity.Admin;
 import com.improver.entity.User;
 import com.improver.exception.NotFoundException;
 import com.improver.model.UserAccount;
@@ -88,7 +89,8 @@ public class UserController {
     @SupportAccess
     @PutMapping(ID_PATH_VARIABLE + "/block")
     public ResponseEntity<Void> blockAccount(@PathVariable long id, @RequestParam boolean blocked) {
-        userService.blockUser(id, blocked);
+        Admin admin = userSecurityService.currentAdmin();
+        userService.changeUserBlockedStatus(id, blocked, admin);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

@@ -34,16 +34,16 @@ public class UnreadMessagesMailNotificationJob {
         ZonedDateTime now = ZonedDateTime.now();
 
         List<UnreadProjectMessageInfo> customersUnreadMessages = projectMessageRepository.getCustomersWithUnreadMessagesByCreatedDateBetween(
-            now.minus(UNREAD_MESSAGE_JOB_INTERVAL),
             now.minus(UNREAD_MESSAGE_JOB_INTERVAL.multipliedBy(2)),
+            now.minus(UNREAD_MESSAGE_JOB_INTERVAL),
             ProjectRequest.Status.getActiveForCustomer());
         customersUnreadMessages.stream()
             .collect(Collectors.groupingBy(UnreadProjectMessageInfo::getRecipientEmail))
             .forEach((email, messages) -> mailService.sendUnreadMessageNotificationEmails(email, messages, true));
 
         List<UnreadProjectMessageInfo> contractorsUnreadMessages = projectMessageRepository.getContractorsWithUnreadMessagesByCreatedDateBetween(
-            now.minus(UNREAD_MESSAGE_JOB_INTERVAL),
             now.minus(UNREAD_MESSAGE_JOB_INTERVAL.multipliedBy(2)),
+            now.minus(UNREAD_MESSAGE_JOB_INTERVAL),
             ProjectRequest.Status.getActiveForCustomer());
         contractorsUnreadMessages.stream()
             .collect(Collectors.groupingBy(UnreadProjectMessageInfo::getRecipientEmail))
