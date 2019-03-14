@@ -86,7 +86,7 @@ public interface ProjectMessageRepository extends JpaRepository<ProjectMessage, 
         "AND pm.isRead = false " +
         "AND pm.sender != cast(cus.id as string) " +
         "AND pm.sender != 'system' " +
-        "GROUP BY pr.id, cus.email, st.name")
+        "GROUP BY p.id, cus.email, st.name")
     List<UnreadProjectMessageInfo> getCustomersWithUnreadMessagesByCreatedDateBetween(ZonedDateTime dateFrom, ZonedDateTime dateTo, List <ProjectRequest.Status> projectRequestStatuses);
 
     @Query("SELECT new com.improver.model.tmp.UnreadProjectMessageInfo(ctr.email, st.name, cus.displayName) " +
