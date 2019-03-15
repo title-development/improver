@@ -159,6 +159,7 @@ public class CompanyService {
     public void archiveCompany(Company company) {
         imageService.silentDelete(company.getIconUrl());
         company.setDeleted(true)
+            .setUpdated(ZonedDateTime.now())
             .setIconUrl(null)
             .setTrades(Collections.emptyList())
             .setServiceTypes(Collections.emptyList());

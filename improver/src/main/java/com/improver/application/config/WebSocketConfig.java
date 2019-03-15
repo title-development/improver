@@ -1,6 +1,6 @@
 package com.improver.application.config;
 
-import com.improver.ws.interceptors.AuthStompInterceptor;
+import com.improver.ws.interceptors.WsSecurityInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
@@ -28,8 +28,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     }
 
     @Bean
-    public AuthStompInterceptor authStompInterceptor(){
-        return new AuthStompInterceptor();
+    public WsSecurityInterceptor authStompInterceptor() {
+        return new WsSecurityInterceptor();
     }
 
 
@@ -57,7 +57,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
-        //registration.addDecoratorFactory(CustomWebSocketHandler::new) // for debug purposes
+        //registration.addDecoratorFactory(LogWsHandlerDecorator::new) // for debug purposes
         ;
     }
 

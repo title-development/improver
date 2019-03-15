@@ -1,36 +1,27 @@
-package com.improver.controller;
+package com.improver.ws;
 
 import com.improver.entity.ProjectMessage;
 import com.improver.entity.ProjectRequest;
-import com.improver.entity.User;
-import com.improver.exception.AccessDeniedException;
-import com.improver.exception.ConflictException;
-import com.improver.exception.NotFoundException;
-import com.improver.repository.ProjectMessageRepository;
-import com.improver.repository.ProjectRequestRepository;
-import com.improver.security.JwtPrincipal;
 import com.improver.security.annotation.SameUserAccess;
 import com.improver.service.ChatService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.handler.annotation.*;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
-import java.time.ZonedDateTime;
 import static com.improver.application.properties.Path.*;
 
 @Slf4j
 @Controller
-public class WebSocketEndpoint {
+public class WsEndpointController {
 
     @Autowired private ChatService chatService;
+
+/*    @MessageExceptionHandler
+    @SendToUser(value="/queue/errors")
+    public String handleException(Throwable exception) {
+        return exception.getMessage();
+    }*/
 
 
     @SameUserAccess

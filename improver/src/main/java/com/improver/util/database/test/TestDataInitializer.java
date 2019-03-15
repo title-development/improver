@@ -1,7 +1,7 @@
 package com.improver.util.database.test;
 
 import com.improver.entity.*;
-import com.improver.enums.State;
+import com.improver.util.enums.State;
 import com.improver.exception.NotFoundException;
 import com.improver.model.in.Order;
 import com.improver.model.in.OrderDetails;
@@ -53,7 +53,8 @@ public class TestDataInitializer {
     @Autowired private ContractorRepository contractorRepository;
     @Autowired private ProjectRepository projectRepository;
     @Autowired private ProjectRequestRepository projectRequestRepository;
-    @Autowired private GalleryProjectRepository galleryProjectRepository;
+    @Autowired
+    private DemoProjectRepository demoProjectRepository;
     @Autowired private CompanyRepository companyRepository;
     @Autowired private TransactionRepository transactionRepository;
     @Autowired private LicenseRepository licenseRepository;
@@ -129,8 +130,8 @@ public class TestDataInitializer {
             initUnavailabilityPeriods();
             log.info("=========== Init Test Projects ...");
             initProjects();
-            log.info("=========== Init Test Gallery Projects ...");
-            initGalleryProjects();
+        log.info("=========== Init Test Demo Projects ...");
+        initDemoProjects();
             log.info("=========== Init Test Transactions ...");
             initTransactions();
             log.info("=========== Init Test Reviews ...");
@@ -424,8 +425,8 @@ public class TestDataInitializer {
     }
 
 
-    private void initGalleryProjects() {
-        GalleryProject withImg = galleryProjectRepository.save(new GalleryProject()
+    private void initDemoProjects() {
+        DemoProject withImg = demoProjectRepository.save(new DemoProject()
             .setName("Brick house")
             .setDescription("Brick whole hose with stone in 7 month. We did all job from planing till the end.")
             .setCompany(getContractor(PRO_1).getCompany())
@@ -436,9 +437,9 @@ public class TestDataInitializer {
             .setCoverUrl(saveImage("tmp/projects/brick-house.jpg"))
         );
         Stream.of(1, 2, 3, 4, 5, 6, 7, 8, 9)
-            .forEach(i -> saveGalleryProjectImage(withImg, "tmp/projects/kitchen-photo-" + i + ".jpg"));
+            .forEach(i -> saveDemoProjectImage(withImg, "tmp/projects/kitchen-photo-" + i + ".jpg"));
 
-        galleryProjectRepository.save(new GalleryProject()
+        demoProjectRepository.save(new DemoProject()
             .setName("Kitchen from scratch")
             .setDescription("We did all job from planing till the end.")
             .setCompany(getContractor(PRO_1).getCompany())
@@ -448,7 +449,7 @@ public class TestDataInitializer {
             .setPrice(7_000)
         );
 
-        galleryProjectRepository.save(new GalleryProject()
+        demoProjectRepository.save(new DemoProject()
             .setName("Wooden Attic")
             .setDescription("I remember it like it was yesterday. The sun wa unusual bright and that rain... It reminded me my childhood."
                 + "Raindrops are such funny things.\n" +
@@ -464,7 +465,7 @@ public class TestDataInitializer {
             .setPrice(7_000)
         );
 
-        galleryProjectRepository.save(new GalleryProject()
+        demoProjectRepository.save(new DemoProject()
             .setName("Wooden Attic")
             .setDescription("If you awaken from this illusion and you understand that black implies white, self implies other, " +
                 "life implies death (or shall I say death implies life?), you can feel yourself – not as a stranger in the world, " +
@@ -477,7 +478,7 @@ public class TestDataInitializer {
             .setPrice(950)
         );
 
-        galleryProjectRepository.save(new GalleryProject()
+        demoProjectRepository.save(new DemoProject()
             .setName("Think a lot ...")
             .setDescription("What we have forgotten is that thoughts and words are conventions, and that it is fatal to take conventions too seriously. " +
                 "A convention is a social convenience, as, for example, money ... " +
@@ -730,11 +731,11 @@ public class TestDataInitializer {
         return imageUrl;
     }
 
-    private String saveGalleryProjectImage(GalleryProject project, String path) {
+    private String saveDemoProjectImage(DemoProject project, String path) {
         String ext = path.substring(path.lastIndexOf('.'));
         String name = UUID.randomUUID().toString().toLowerCase() + ext;
         byte[] bytes = fileUtil.loadFile(path);
-        companyImageRepository.save(new CompanyImage(project, name, ext, bytes));
+        companyImageRepository.save(new DemoProjectImage(project, name, ext, bytes));
         return IMAGES_PATH + '/' + name;
 
     }

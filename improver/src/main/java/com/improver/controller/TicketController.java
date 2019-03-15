@@ -2,7 +2,7 @@ package com.improver.controller;
 
 import com.improver.entity.Staff;
 import com.improver.entity.Ticket;
-import com.improver.enums.Priority;
+import com.improver.util.enums.Priority;
 import com.improver.exception.NotFoundException;
 import com.improver.model.admin.out.StaffTicket;
 import com.improver.model.in.StaffTicketUpdate;

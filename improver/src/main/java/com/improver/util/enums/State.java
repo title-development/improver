@@ -1,4 +1,4 @@
-package com.improver.enums;
+package com.improver.util.enums;
 
 public enum State {
     AL("AL"),

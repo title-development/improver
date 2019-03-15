@@ -10,6 +10,7 @@ import com.improver.model.out.project.ShortLead;
 import com.improver.repository.*;
 import com.improver.util.serializer.SerializationUtil;
 import com.improver.util.mail.MailService;
+import com.improver.ws.WsNotificationService;
 import com.stripe.model.Card;
 import com.stripe.model.Charge;
 import org.slf4j.Logger;
@@ -24,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.LockModeType;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -40,7 +40,8 @@ public class LeadService {
 
     @Autowired private ProjectRepository projectRepository;
     @Autowired private TransactionRepository transactionRepository;
-    @Autowired private NotificationService notificationService;
+    @Autowired
+    private WsNotificationService wsNotificationService;
     @Autowired private ProjectRequestService projectRequestService;
     @Autowired private BillRepository billRepository;
     @Autowired private PaymentService paymentService;
@@ -148,13 +149,13 @@ public class LeadService {
         ProjectRequest projectRequest = self.purchaseLead(lead, discount, company, assignment, isManual, fromCard);
 
         String serviceType = lead.getServiceType().getName();
-        notificationService.newProjectRequest(lead.getCustomer(), company, serviceType, lead.getId());
+        wsNotificationService.newProjectRequest(lead.getCustomer(), company, serviceType, lead.getId());
 
         if (isManual) {
             mailService.sendManualLeadPurchaseEmail(assignment, projectRequest);
         } else {
             mailService.sendLeadAutoPurchaseEmail(company, projectRequest);
-            notificationService.newLeadPurchase(assignment, lead.getCustomer(), serviceType, projectRequest.getId());
+            wsNotificationService.newLeadPurchase(assignment, lead.getCustomer(), serviceType, projectRequest.getId());
         }
         mailService.sendNewProposalEmail(company, lead);
         return projectRequest;
@@ -279,7 +280,7 @@ public class LeadService {
             isManualLead,
             balance)
         );
-        notificationService.updateBalance(company, billing);
+        wsNotificationService.updateBalance(company, billing);
     }
 
 

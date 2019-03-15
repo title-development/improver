@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { of, Subscription } from 'rxjs';
 import { ReviewService } from '../../api/services/review.service';
 import { switchMap } from 'rxjs/operators';
-import { GalleryProject, Review } from '../../model/data-model';
+import {DemoProject, Review} from '../../model/data-model';
 import { NgForm } from '@angular/forms';
 import { dialogsMap } from '../../shared/dialogs/dialogs.state';
 import { confirmDialogConfig } from '../../shared/dialogs/dialogs.configs';

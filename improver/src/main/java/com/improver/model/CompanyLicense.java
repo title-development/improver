@@ -1,7 +1,7 @@
 package com.improver.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.improver.enums.State;
+import com.improver.util.enums.State;
 import com.improver.util.serializer.SerializationUtil;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

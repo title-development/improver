@@ -10,6 +10,7 @@ import com.improver.util.StaffActionLogger;
 import com.improver.util.StringUtil;
 import com.improver.util.ThirdPartyApis;
 import com.improver.util.mail.MailService;
+import com.improver.ws.WsNotificationService;
 import com.stripe.Stripe;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,8 @@ public class BillingService {
     @Autowired private BillingService self;
     @Autowired private BillRepository billRepository;
     @Autowired private TransactionRepository transactionRepository;
-    @Autowired private NotificationService notificationService;
+    @Autowired
+    private WsNotificationService wsNotificationService;
     @Autowired private CompanyRepository companyRepository;
     @Autowired private InvitationRepository invitationRepository;
     @Autowired private MailService mailService;
@@ -57,7 +59,7 @@ public class BillingService {
     public void addBonus(Company company, int amount, String comment, Staff currentStaff) {
         comment = comment != null && !comment.equals("") ? comment : BONUS_MESSAGE;
         self.addBonusTransactional(company, amount, comment);
-        notificationService.updateBalance(company, company.getBilling());
+        wsNotificationService.updateBalance(company, company.getBilling());
         staffActionLogger.logAddBonus(currentStaff, company.getId(), amount);
         mailService.sendBonus(company, amount);
     }

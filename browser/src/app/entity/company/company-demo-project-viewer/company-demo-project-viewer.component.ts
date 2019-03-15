@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { CompanyProfile, GalleryProject, ServiceType } from "../../../model/data-model";
+import {CompanyProfile, DemoProject, ServiceType} from "../../../model/data-model";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Constants } from "../../../util/constants";
 import { Messages } from "../../../util/messages";
-import { GalleryProjectService } from "../../../api/services/gallery-project.service";
+import {DemoProjectService} from "../../../api/services/demo-project.service";
 import { SecurityService } from "../../../auth/security.service";
 import { ServiceTypeService } from "../../../api/services/service-type.service";
 import * as Swiper from 'swiper/dist/js/swiper.min.js';
@@ -16,16 +16,16 @@ import { dialogsMap } from '../../../shared/dialogs/dialogs.state';
 import { getErrorMessage } from "../../../util/functions";
 
 @Component({
-  selector: 'app-company-gallery-project-viewer',
-  templateUrl: './company-gallery-project-viewer.component.html',
-  styleUrls: ['./company-gallery-project-viewer.component.scss']
+  selector: 'app-company-demo-project-viewer',
+  templateUrl: './company-demo-project-viewer.component.html',
+  styleUrls: ['./company-demo-project-viewer.component.scss']
 })
-export class CompanyGalleryProjectViewerComponent implements OnInit {
+export class CompanyDemoProjectViewerComponent implements OnInit {
 
-  galleryProject: GalleryProject;
+  demoProject: DemoProject;
   allServiceTypes: ServiceType[];
   selectedServices:  ServiceType[] = [];
-  project: GalleryProject = new GalleryProject();
+  project: DemoProject = new DemoProject();
   userId: string;
   companyProfile: CompanyProfile;
   projectImages: any[];
@@ -36,7 +36,7 @@ export class CompanyGalleryProjectViewerComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private serviceTypeService: ServiceTypeService,
-    private galleryProjectService: GalleryProjectService,
+    private demoProjectService: DemoProjectService,
     private companyService: CompanyService,
     public popUpMessageService: PopUpMessageService,
     public dialog: MatDialog,
@@ -51,19 +51,19 @@ export class CompanyGalleryProjectViewerComponent implements OnInit {
       this.companyId = params['companyId'];
       this.projectId = params['projectId'];
 
-      // this.getGalleryProject();
+      // this.getDemoProject();
       // this.getProjectImages();
       // this.getServiceTypes();
 
       let requests = [
         this.serviceTypeService.serviceTypes$,
-        this.galleryProjectService.get(this.companyId, this.projectId),
-        this.galleryProjectService.getImages(this.companyId, this.projectId),
+        this.demoProjectService.get(this.companyId, this.projectId),
+        this.demoProjectService.getImages(this.companyId, this.projectId),
       ];
 
       combineLatest(requests).subscribe(result => {
           this.allServiceTypes = result[0];
-          this.galleryProject = result[1];
+          this.demoProject = result[1];
           this.projectImages = result[2];
         },
         err => {
@@ -95,12 +95,12 @@ export class CompanyGalleryProjectViewerComponent implements OnInit {
         });
   }
 
-  getGalleryProject() {
-    this.galleryProjectService.get(this.companyId, this.projectId)
+  getDemoProject() {
+    this.demoProjectService.get(this.companyId, this.projectId)
       .subscribe(
         project => {
           this.project = project;
-          this.galleryProject = project;
+          this.demoProject = project;
           this.selectedServices = this.project.serviceTypes;
 
         },
@@ -123,7 +123,7 @@ export class CompanyGalleryProjectViewerComponent implements OnInit {
   }
 
   getProjectImages() {
-    this.galleryProjectService.getImages(this.companyId, this.projectId)
+    this.demoProjectService.getImages(this.companyId, this.projectId)
       .subscribe(
         images => {
           this.projectImages = images;

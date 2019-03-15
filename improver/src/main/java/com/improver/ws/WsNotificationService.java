@@ -1,4 +1,4 @@
-package com.improver.service;
+package com.improver.ws;
 
 import com.improver.entity.*;
 import com.improver.model.out.NotificationMessage;
@@ -13,7 +13,7 @@ import javax.transaction.Transactional;
 import static com.improver.application.properties.Path.*;
 
 @Service
-public class NotificationService {
+public class WsNotificationService {
 
     @Autowired private SimpMessagingTemplate stompTemplate;
     @Autowired private NotificationRepository notificationRepository;

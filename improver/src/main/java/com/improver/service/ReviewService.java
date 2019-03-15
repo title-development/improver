@@ -10,6 +10,7 @@ import com.improver.model.out.CompanyReviewRevision;
 import com.improver.repository.*;
 import com.improver.security.UserSecurityService;
 import com.improver.util.mail.MailService;
+import com.improver.ws.WsNotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,7 +28,8 @@ public class ReviewService {
     @Autowired private ReviewRepository reviewRepository;
     @Autowired private ProjectRequestRepository projectRequestRepository;
     @Autowired private MailService mailService;
-    @Autowired private NotificationService notificationService;
+    @Autowired
+    private WsNotificationService wsNotificationService;
     @Autowired private ReviewRequestRepository reviewRequestRepository;
     @Autowired private UserSecurityService userSecurityService;
     @Autowired private ReviewRevisionRequestRepository reviewRevisionRequestRepository;
@@ -88,11 +90,11 @@ public class ReviewService {
         if(isNegative) {
             mailService.sendNewNegativeReviewMail(company, review, customer);
             company.getContractors()
-                .forEach(contractor -> notificationService.reviewedNegative(contractor, review.getCustomer(), company.getId()));
+                .forEach(contractor -> wsNotificationService.reviewedNegative(contractor, review.getCustomer(), company.getId()));
         } else {
             mailService.sendNewReviewReceivedMail(company, review);
             company.getContractors()
-                .forEach(contractor -> notificationService.reviewed(contractor, review.getCustomer(), company.getId()));
+                .forEach(contractor -> wsNotificationService.reviewed(contractor, review.getCustomer(), company.getId()));
         }
 
         if (reviewToken != null) {
@@ -172,7 +174,7 @@ public class ReviewService {
         reviewRepository.save(review);
         updateCompanyRating(review.getCompany(), review);
         company.getContractors()
-            .forEach(contractor -> notificationService.reviewPublished(contractor, review.getCustomer(), company.getId()));
+            .forEach(contractor -> wsNotificationService.reviewPublished(contractor, review.getCustomer(), company.getId()));
         mailService.sendReviewPublishedMail(company, review);
     }
 

@@ -8,6 +8,7 @@ import com.improver.model.out.RefundResult;
 import com.improver.model.in.RefundRequest;
 import com.improver.repository.*;
 import com.improver.util.mail.MailService;
+import com.improver.ws.WsNotificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,8 @@ public class RefundService {
     @Autowired private CompanyService companyService;
     @Autowired private ProjectActionRepository projectActionRepository;
     @Autowired private TransactionRepository transactionRepository;
-    @Autowired private NotificationService notificationService;
+    @Autowired
+    private WsNotificationService wsNotificationService;
     @Autowired private BillRepository billRepository;
     @Autowired private MailService mailService;
     @Autowired private CompanyConfigService companyConfigService;
@@ -268,7 +270,7 @@ public class RefundService {
         projectRequest.setStatus(newProjectRequestStatus).setUpdated(now).setRefund(refund);
         projectRequestRepository.save(projectRequest);
         if (oldProjectRequestStatus.equals(ProjectRequest.Status.ACTIVE))
-            notificationService.proLeftProject(customer, company, project.getServiceType().getName(), project.getId());
+            wsNotificationService.proLeftProject(customer, company, project.getServiceType().getName(), project.getId());
         log.info("Refund request submitted for projectRequest " + projectRequest.getId());
     }
 
@@ -452,7 +454,7 @@ public class RefundService {
                 billing.getBalance(),
                 comment));
             transactionRepository.save(purchase.setRefunded(true));
-            notificationService.updateBalance(company, billing);
+            wsNotificationService.updateBalance(company, billing);
         }
 
     }

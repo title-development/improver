@@ -1,8 +1,8 @@
 <div class="company-gallery-project-viewer-wrapper">
 
-  <div class="container" *ngIf="galleryProject">
+  <div class="container" *ngIf="demoProject">
 
-    <div class="top-line">{{galleryProject.name}}</div>
+    <div class="top-line">{{demoProject.name}}</div>
 
     <div class="card header-card" *ngIf="companyProfile" [routerLink]="['/companies', companyId]">
       <div class="container">
@@ -27,10 +27,12 @@
       </div>
     </div>
 
-    <div class="card photos-card" *ngIf="galleryProject.coverUrl">
+    <div class="card photos-card" *ngIf="demoProject.coverUrl">
       <div class="container">
         <div class="row">
-          <div *ngIf="galleryProject.coverUrl && galleryProject.coverUrl != ''" class="project-main-photo col-xs-12" [ngStyle]="galleryProject.coverUrl != '' && {'background-image':'url(' + galleryProject.coverUrl + ')'}" (click)="openGallery(0)"></div>
+          <div *ngIf="demoProject.coverUrl && demoProject.coverUrl != ''" class="project-main-photo col-xs-12"
+               [ngStyle]="demoProject.coverUrl != '' && {'background-image':'url(' + demoProject.coverUrl + ')'}"
+               (click)="openGallery(0)"></div>
           <div class="project-photos-wrapper container">
             <div class="row">
               <ng-template ngFor [ngForOf]="projectImages | tail" let-image let-index="index">
@@ -51,21 +53,23 @@
               <div class="info-group">
                 <div class="label">Location:</div>
                 <div class="value">
-                  <span *ngIf="galleryProject.location.city != ''">{{galleryProject.location.city}}, </span>
-                  <span *ngIf="galleryProject.location.state != ''">{{galleryProject.location.state}} </span>
-                  <span *ngIf="galleryProject.location.zip != ''">{{galleryProject.location.zip}}</span>
-                  <span *ngIf="galleryProject.location.city == '' && galleryProject.location.state == '' && galleryProject.location.zip == ''" class="unknown" >none</span>
+                  <span *ngIf="demoProject.location.city != ''">{{demoProject.location.city}}, </span>
+                  <span *ngIf="demoProject.location.state != ''">{{demoProject.location.state}} </span>
+                  <span *ngIf="demoProject.location.zip != ''">{{demoProject.location.zip}}</span>
+                  <span
+                    *ngIf="demoProject.location.city == '' && demoProject.location.state == '' && demoProject.location.zip == ''"
+                    class="unknown">none</span>
                 </div>
               </div>
               <div class="info-group">
                 <div class="label">Date:</div>
-                <div class="value">{{galleryProject.date | date:'MMM y'}}</div>
+                <div class="value">{{demoProject.date | date:'MMM y'}}</div>
               </div>
               <div class="info-group">
                 <div class="label">Cost:</div>
                 <div class="value">
-                  <span *ngIf="galleryProject.price > 0">{{galleryProject.price | currency:'USD':'symbol'}}</span>
-                  <span *ngIf="galleryProject.price == 0" class="unknown">none</span>
+                  <span *ngIf="demoProject.price > 0">{{demoProject.price | currency:'USD':'symbol'}}</span>
+                  <span *ngIf="demoProject.price == 0" class="unknown">none</span>
                 </div>
               </div>
             </div>
@@ -73,11 +77,11 @@
         <div class="about-body">
           <div class="sub-title">About</div>
           <div class="project-description">
-            {{galleryProject.description}}
+            {{demoProject.description}}
           </div>
-          <div class="services-list" *ngIf="galleryProject.serviceTypes.length > 0">
+          <div class="services-list" *ngIf="demoProject.serviceTypes.length > 0">
             <div class="sub-title">Services</div>
-            <ng-template ngFor let-service [ngForOf]="galleryProject.serviceTypes">
+            <ng-template ngFor let-service [ngForOf]="demoProject.serviceTypes">
               <div class="project-service-type">{{service}}</div>
             </ng-template>
           </div>

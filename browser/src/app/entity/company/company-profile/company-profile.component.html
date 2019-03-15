@@ -187,7 +187,7 @@
           </div>
         </div>
 
-        <company-projects-gallery [companyId]="companyId" [editMode]="editMode"></company-projects-gallery>
+        <demo-projects-gallery [companyId]="companyId" [editMode]="editMode"></demo-projects-gallery>
         <div *ngIf="companyProfile">
           <company-reviews id="reviews" reviewsTitle="Reviews" (loadMore)="updateGlueBox($event)"
                            [companyProfile]="companyProfile" [editMode]="editMode"></company-reviews>

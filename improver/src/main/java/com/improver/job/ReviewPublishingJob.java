@@ -2,7 +2,7 @@ package com.improver.job;
 
 import com.improver.entity.Company;
 import com.improver.repository.ReviewRepository;
-import com.improver.service.NotificationService;
+import com.improver.ws.WsNotificationService;
 import com.improver.service.ReviewService;
 import com.improver.util.mail.MailService;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,8 @@ public class ReviewPublishingJob {
 
     @Autowired private ReviewRepository reviewRepository;
     @Autowired private ReviewService reviewService;
-    @Autowired private NotificationService notificationService;
+    @Autowired
+    private WsNotificationService wsNotificationService;
     @Autowired private MailService mailService;
 
     @Scheduled(cron = "${review.publishing.cron}")
@@ -33,7 +34,7 @@ public class ReviewPublishingJob {
             reviewService.updateCompanyRating(company, review);
             reviewRepository.save(review.setPublished(true));
             company.getContractors()
-                .forEach(contractor -> notificationService.reviewPublished(contractor, review.getCustomer(), company.getId()));
+                .forEach(contractor -> wsNotificationService.reviewPublished(contractor, review.getCustomer(), company.getId()));
             mailService.sendReviewPublishedMail(company, review);
             log.debug("Review " + review.getId() + " is published");
         });

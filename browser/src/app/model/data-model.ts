@@ -319,7 +319,7 @@ export class CompanyProfile extends CompanyInfo {
 }
 
 // TODO: Fix model
-export class GalleryProject {
+export class DemoProject {
   id?: number;
   name?: string;
   image?: string;

@@ -13,6 +13,7 @@ import com.improver.repository.BillRepository;
 import com.improver.repository.TransactionRepository;
 import com.improver.util.mail.MailService;
 import com.improver.util.serializer.SerializationUtil;
+import com.improver.ws.WsNotificationService;
 import com.stripe.exception.*;
 import com.stripe.model.*;
 import org.slf4j.Logger;
@@ -32,7 +33,8 @@ public class PaymentService {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    @Autowired private NotificationService notificationService;
+    @Autowired
+    private WsNotificationService wsNotificationService;
     @Autowired private TransactionRepository transactionRepository;
     @Autowired private BillRepository billRepository;
     @Autowired private MailService mailService;
@@ -69,19 +71,19 @@ public class PaymentService {
             throw new ValidationException("Amount should be greater then 0");
         }
         Billing billing = addToBalance(company, contractor, amount, Transaction.Type.REPLENISHMENT, REPLENISHMENT_PURPOSE, null);
-        notificationService.updateBalance(company, billing);
+        wsNotificationService.updateBalance(company, billing);
         mailService.sendBalanceReplenished(company, amount);
     }
 
     public Billing autoChargeForSubscription(Company company, int amount, int budget) {
         Billing billing = addToBalance(company, null, amount, Transaction.Type.SUBSCRIPTION, "Subscription balance replenishment", "Charged " + SerializationUtil.formatUsd(amount) + " to fulfill subscription of $" + SerializationUtil.centsToUsd(amount));
-        notificationService.updateBalance(company, billing);
+        wsNotificationService.updateBalance(company, billing);
         return billing;
     }
 
     public void replenishForSubscription(Company company, Contractor contractor, int amount, int budget) {
         Billing billing = addToBalance(company, contractor, amount, Transaction.Type.SUBSCRIPTION, "Subscription balance replenishment", "Charged " + SerializationUtil.formatUsd(amount) + " to fulfill subscription of $" + SerializationUtil.centsToUsd(amount));
-        notificationService.updateBalance(company, billing);
+        wsNotificationService.updateBalance(company, billing);
     }
 
     @Transactional

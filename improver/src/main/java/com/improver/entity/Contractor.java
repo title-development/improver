@@ -34,10 +34,18 @@ public class Contractor extends User {
     private List<ProjectRequest> projectRequests;
 
     @JsonIgnore
-    private boolean quickReply;
+    private boolean isIncomplete;
 
     @JsonIgnore
-    private boolean isIncomplete;
+    private String refCode;
+
+    @JsonIgnore
+    private String referredBy;
+
+
+    // TODO move to Notification settings
+    @JsonIgnore
+    private boolean quickReply;
 
     @JsonIgnore
     @Column(columnDefinition = "varchar(500)")

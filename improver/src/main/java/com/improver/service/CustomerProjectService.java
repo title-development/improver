@@ -15,6 +15,7 @@ import com.improver.model.out.project.CustomerProjectShort;
 import com.improver.repository.ProjectMessageRepository;
 import com.improver.repository.ProjectRepository;
 import com.improver.repository.ProjectRequestRepository;
+import com.improver.ws.WsNotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -41,7 +42,8 @@ public class CustomerProjectService {
     @Autowired private ProjectRequestRepository projectRequestRepository;
     @Autowired private ImageService imageService;
     @Autowired private ProjectMessageRepository projectMessageRepository;
-    @Autowired private NotificationService notificationService;
+    @Autowired
+    private WsNotificationService wsNotificationService;
 
 
     public Page<CustomerProjectShort> getProjectsForCustomer(Customer customer, boolean current, Pageable pageable) {
@@ -123,8 +125,8 @@ public class CustomerProjectService {
                 }
             }
             projectMessageRepository.save(message);
-            notificationService.sendChatMessage(message, projectRequest.getId());
-            notificationService.customerCloseProject(projectRequest.getContractor(), project.getCustomer(), project.getServiceType().getName(), projectRequest.getId());
+            wsNotificationService.sendChatMessage(message, projectRequest.getId());
+            wsNotificationService.customerCloseProject(projectRequest.getContractor(), project.getCustomer(), project.getServiceType().getName(), projectRequest.getId());
         });
     }
 
@@ -182,8 +184,8 @@ public class CustomerProjectService {
             || projectRequest.getStatus().equals(ProjectRequest.Status.HIRED))) {
             projectRequestRepository.save(projectRequest.setStatus(ProjectRequest.Status.COMPLETED).setUpdated(ZonedDateTime.now()));
             ProjectMessage message = projectMessageRepository.save(ProjectMessage.completedPro(projectRequest, time));
-            notificationService.sendChatMessage(message, projectRequest.getId());
-            notificationService.customerCloseProject(projectRequest.getContractor(), project.getCustomer(), project.getServiceType().getName(), projectRequest.getId());
+            wsNotificationService.sendChatMessage(message, projectRequest.getId());
+            wsNotificationService.customerCloseProject(projectRequest.getContractor(), project.getCustomer(), project.getServiceType().getName(), projectRequest.getId());
         } else {
             throw new ValidationException("Invalid executor");
         }

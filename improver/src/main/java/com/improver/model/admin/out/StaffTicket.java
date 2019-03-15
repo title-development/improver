@@ -1,7 +1,7 @@
 package com.improver.model.admin.out;
 import com.improver.entity.Ticket;
 import com.improver.entity.User;
-import com.improver.enums.Priority;
+import com.improver.util.enums.Priority;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;

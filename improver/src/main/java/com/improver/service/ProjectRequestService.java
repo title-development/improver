@@ -9,6 +9,7 @@ import com.improver.repository.ProjectRequestRepository;
 import com.improver.repository.ProjectRepository;
 import com.improver.util.StringUtil;
 import com.improver.util.mail.MailService;
+import com.improver.ws.WsNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +27,8 @@ public class ProjectRequestService {
     @Autowired private ProjectRequestRepository projectRequestRepository;
     @Autowired private ProjectMessageRepository projectMessageRepository;
     @Autowired private ProjectRepository projectRepository;
-    @Autowired private NotificationService notificationService;
+    @Autowired
+    private WsNotificationService wsNotificationService;
     @Autowired private MailService mailService;
 
     /**
@@ -93,13 +95,13 @@ public class ProjectRequestService {
         projectRequestRepository.save(projectRequest.setStatus(ProjectRequest.Status.CLOSED).setUpdated(now));
         ProjectMessage message = leave ? ProjectMessage.leave(projectRequest, now) : ProjectMessage.proClose(projectRequest, now);
         projectMessageRepository.save(message);
-        notificationService.sendChatMessage(message, projectRequest.getId());
+        wsNotificationService.sendChatMessage(message, projectRequest.getId());
         Project project = projectRequest.getProject();
 
         if (!oldStatus.equals(ProjectRequest.Status.INACTIVE) &&
             !oldStatus.equals(ProjectRequest.Status.REFUND) &&
             !oldStatus.equals(ProjectRequest.Status.DECLINED))
-            notificationService.proLeftProject(project.getCustomer(),
+            wsNotificationService.proLeftProject(project.getCustomer(),
                 projectRequest.getContractor().getCompany(),
                 project.getServiceType().getName(),
                 project.getId());
@@ -181,8 +183,8 @@ public class ProjectRequestService {
      */
     private void sendHireNotification(Project project, ProjectRequest projectRequest, ZonedDateTime updated) {
         ProjectMessage message = projectMessageRepository.save(ProjectMessage.hire(projectRequest, updated));
-        notificationService.sendChatMessage(message, projectRequest.getId());
-        notificationService.customerHired(projectRequest.getContractor(), project.getCustomer(), project.getServiceType().getName(), projectRequest.getId());
+        wsNotificationService.sendChatMessage(message, projectRequest.getId());
+        wsNotificationService.customerHired(projectRequest.getContractor(), project.getCustomer(), project.getServiceType().getName(), projectRequest.getId());
     }
 
     /**
@@ -190,8 +192,8 @@ public class ProjectRequestService {
      */
     private void sendHireOtherNotification(Project project, ProjectRequest projectRequest, ZonedDateTime updated) {
         ProjectMessage message = projectMessageRepository.save(ProjectMessage.hireOther(projectRequest, updated));
-        notificationService.sendChatMessage(message, projectRequest.getId());
-        notificationService.customerCloseProject(projectRequest.getContractor(), project.getCustomer(), project.getServiceType().getName(), projectRequest.getId());
+        wsNotificationService.sendChatMessage(message, projectRequest.getId());
+        wsNotificationService.customerCloseProject(projectRequest.getContractor(), project.getCustomer(), project.getServiceType().getName(), projectRequest.getId());
     }
 
     /**
@@ -199,8 +201,8 @@ public class ProjectRequestService {
      */
     private void sendDeclineNotification(Project project, ProjectRequest projectRequest, ZonedDateTime updated) {
         ProjectMessage message = projectMessageRepository.save(ProjectMessage.decline(projectRequest, updated));
-        notificationService.sendChatMessage(message, projectRequest.getId());
-        notificationService.customerCloseProject(projectRequest.getContractor(), project.getCustomer(), project.getServiceType().getName(), projectRequest.getId());
+        wsNotificationService.sendChatMessage(message, projectRequest.getId());
+        wsNotificationService.customerCloseProject(projectRequest.getContractor(), project.getCustomer(), project.getServiceType().getName(), projectRequest.getId());
     }
 
 

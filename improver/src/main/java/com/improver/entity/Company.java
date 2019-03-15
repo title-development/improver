@@ -93,7 +93,7 @@ public class Company {
 
     @JsonIgnore
     @OneToMany(mappedBy = "company")
-    private List<GalleryProject> galleryProjects;
+    private List<DemoProject> demoProjects;
 
     @JsonIgnore
     @OneToMany(mappedBy = "company")

@@ -13,15 +13,18 @@ const routes: Routes = [
   },
   {
     path: ':companyId/projects/:projectId/view',
-    loadChildren: './company-gallery-project-viewer/company-gallery-project-viewer.module#CompanyGalleryProjectViewerModule', canActivate: [ AuthGuard ]
+    loadChildren: './company-demo-project-viewer/company-demo-project-viewer.module#CompanyDemoProjectViewerModule',
+    canActivate: [AuthGuard]
   },
   {
     path: ':companyId/projects/:projectId/:mode',
-    loadChildren: './company-gallery-project-editor/company-gallery-project-editor.module#CompanyGalleryProjectEditorModule', canActivate: [ AuthGuard, ContractorGuard ]
+    loadChildren: './company-demo-project-editor/company-demo-project-editor.module#CompanyDemoProjectEditorModule',
+    canActivate: [AuthGuard, ContractorGuard]
   },
   {
     path: ':companyId/projects/:projectId/:mode',
-    loadChildren: './company-gallery-project-editor/company-gallery-project-editor.module#CompanyGalleryProjectEditorModule', canActivate: [ AuthGuard, ContractorGuard ]
+    loadChildren: './company-demo-project-editor/company-demo-project-editor.module#CompanyDemoProjectEditorModule',
+    canActivate: [AuthGuard, ContractorGuard]
   }
 
 ];

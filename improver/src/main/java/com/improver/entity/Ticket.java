@@ -1,6 +1,6 @@
 package com.improver.entity;
 
-import com.improver.enums.Priority;
+import com.improver.util.enums.Priority;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;

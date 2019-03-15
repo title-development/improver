@@ -1,4 +1,4 @@
-package com.improver.enums;
+package com.improver.util.enums;
 
 public enum Priority {
     LOWEST(1),

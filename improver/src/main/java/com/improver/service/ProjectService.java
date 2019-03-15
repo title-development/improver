@@ -9,6 +9,7 @@ import com.improver.model.in.CloseProjectRequest;
 import com.improver.model.out.project.*;
 import com.improver.repository.*;
 import com.improver.util.mail.MailService;
+import com.improver.ws.WsNotificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,8 @@ public class ProjectService {
     @Autowired private LocationService locationService;
     @Autowired private ProjectActionRepository projectActionRepository;
     @Autowired private ProjectMessageRepository projectMessageRepository;
-    @Autowired private NotificationService notificationService;
+    @Autowired
+    private WsNotificationService wsNotificationService;
     @Autowired
     private CustomerProjectService customerProjectService;
     @Autowired private MailService mailService;
@@ -136,7 +138,7 @@ public class ProjectService {
         if(project.getCustomer().getMailSettings().isProjectLifecycle()) {
             mailService.sendProjectStatusChanged(project, reason);
         }
-        notificationService.projectToValidation(project.getCustomer(), project.getServiceType().getName(), project.getId());
+        wsNotificationService.projectToValidation(project.getCustomer(), project.getServiceType().getName(), project.getId());
     }
 
     private void validateProject(Project project, String text, User support) {
@@ -149,7 +151,7 @@ public class ProjectService {
         if(project.getCustomer().getMailSettings().isProjectLifecycle()) {
             mailService.sendProjectStatusChanged(project, null);
         }
-        notificationService.projectValidated(project.getCustomer(), project.getServiceType().getName(), project.getId());
+        wsNotificationService.projectValidated(project.getCustomer(), project.getServiceType().getName(), project.getId());
     }
 
     private void invalidateProject(Project project, Project.Reason reason, String text, User support) {
@@ -162,7 +164,7 @@ public class ProjectService {
         if (project.getCustomer().getMailSettings().isProjectLifecycle()) {
             mailService.sendProjectStatusChanged(project, reason);
         }
-        notificationService.projectInvalidated(project.getCustomer(), project.getServiceType().getName(), project.getId());
+        wsNotificationService.projectInvalidated(project.getCustomer(), project.getServiceType().getName(), project.getId());
 
         customerProjectService.closeActiveProjectRequests(project, ZonedDateTime.now(), new CloseProjectRequest(INVALIDATE, reason, text));
     }

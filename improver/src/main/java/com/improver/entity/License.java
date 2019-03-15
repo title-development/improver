@@ -2,8 +2,7 @@ package com.improver.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.improver.enums.State;
-import com.improver.model.CompanyLicense;
+import com.improver.util.enums.State;
 import com.improver.util.serializer.SerializationUtil;
 import lombok.Data;
 import lombok.experimental.Accessors;

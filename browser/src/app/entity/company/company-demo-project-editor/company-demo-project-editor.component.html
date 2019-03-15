@@ -1,13 +1,13 @@
 <div class="company-gallery-project-wrapper">
   <div class="company-gallery-project">
 
-    <div class="main-block" *ngIf="galleryProject.id" [cvSpinner]="!galleryProject.id" [cvSpinnerSize]="32">
+    <div class="main-block" *ngIf="demoProject.id" [cvSpinner]="!demoProject.id" [cvSpinnerSize]="32">
 
       <div class="gallery-project-card card">
 
         <form name="gallery-project-form" class="gallery-project-form"
-              #galleryProjectForm="ngForm"
-              (ngSubmit)="galleryProjectForm.valid && onUpdateGalleryProject()"
+              #demoProjectForm="ngForm"
+              (ngSubmit)="demoProjectForm.valid && onUpdateDemoProject()"
               novalidate>
 
           <div class="row">
@@ -24,11 +24,11 @@
                        trim
                        name="name"
                        #name="ngModel"
-                       [(ngModel)]="galleryProject.name"
+                       [(ngModel)]="demoProject.name"
                        maxlength="255"
                        required>
                 <cv-field-hint>{{name.value ? name.value.length : 0}}/255</cv-field-hint>
-                <cv-field-error *ngIf="name.dirty || name.touched || galleryProjectForm.submitted">
+                <cv-field-error *ngIf="name.dirty || name.touched || demoProjectForm.submitted">
                   <span *ngIf="name.errors?.required">Required</span>
                 </cv-field-error>
               </cv-input-field>
@@ -42,10 +42,10 @@
                        placeholder="e.g. 120000"
                        name="price"
                        #price="ngModel"
-                       [(ngModel)]="galleryProject.price"
+                       [(ngModel)]="demoProject.price"
                        numericMask
                        maxlength="9">
-                <!--<cv-field-error *ngIf="price.dirty || price.touched || galleryProjectForm.submitted">-->
+                <!--<cv-field-error *ngIf="price.dirty || price.touched || demoProjectForm.submitted">-->
                 <!--<span *ngIf="price.errors?.required">Required</span>-->
                 <!--</cv-field-error>-->
               </cv-input-field>
@@ -60,11 +60,11 @@
                                 [maxDate]="maxDate"
                                 [minDate]="minDate"
                                 format="YYYY-MM-DD"
-                                [(ngModel)]="galleryProject.date"
+                                [(ngModel)]="demoProject.date"
                                 label="Choose date"
                                 required>
                 </cv-date-picker>
-                <cv-field-error *ngIf="date.dirty || date.touched || galleryProjectForm.submitted">
+                <cv-field-error *ngIf="date.dirty || date.touched || demoProjectForm.submitted">
                   <span *ngIf="date.errors?.required">Required</span>
                 </cv-field-error>
               </cv-input-field>
@@ -77,7 +77,7 @@
                           placeholder="Tell your potential client a little about this project such as materials included in the cost, specific problems solved by your company, and the scope of the project"
                           name="description"
                           #description="ngModel"
-                          [(ngModel)]="galleryProject.description"
+                          [(ngModel)]="demoProject.description"
                           rows="6"
                           trim
                           type="text"
@@ -85,7 +85,7 @@
                           required>
                   </textarea>
                 <cv-field-hint>{{description.value ? description.value.length : 0}}/1500</cv-field-hint>
-                <cv-field-error *ngIf="description.dirty || description.touched || galleryProjectForm.submitted">
+                <cv-field-error *ngIf="description.dirty || description.touched || demoProjectForm.submitted">
                   <span *ngIf="description.errors?.required">Required</span>
                 </cv-field-error>
               </cv-input-field>
@@ -104,7 +104,7 @@
                        placeholder="Project city"
                        name="city"
                        #city="ngModel"
-                       [(ngModel)]="galleryProject.location.city">
+                       [(ngModel)]="demoProject.location.city">
               </cv-input-field>
             </div>
 
@@ -114,7 +114,7 @@
                          [autocomplete]="true" [items]="filteredStates" valueKey="value" labelKey="label"
                          name="state"
                          #state="ngModel"
-                         [(ngModel)]="galleryProject.location.state"
+                         [(ngModel)]="demoProject.location.state"
                          (autocompleteSearch)="autocompleteSearch($event)"
                          label="Choose state">
               </cv-select>
@@ -127,7 +127,7 @@
                        placeholder="e.g. 10022"
                        name="zip"
                        #zip="ngModel"
-                       [(ngModel)]="galleryProject.location.zip"
+                       [(ngModel)]="demoProject.location.zip"
                        numericMask
                        maxlength="5">
               </cv-input-field>
@@ -145,14 +145,14 @@
                          name="serviceType"
                          #selectedServices="ngModel"
                          [trackBy]="trackBy"
-                         [(ngModel)]="galleryProject.serviceTypes"
+                         [(ngModel)]="demoProject.serviceTypes"
                          label="Select service">
               </cv-select>
             </div>
           </div>
 
           <div class="row image-uploader-wrapper" *ngIf="projectImages">
-            <image-uploader [apiUrl]="'/api/companies/'+companyId+'/demoprojects/'+projectId+'/images'"
+            <image-uploader [apiUrl]="'/api/companies/'+companyId+'/profile/projects/'+projectId+'/images'"
                             [projectView]="true"
                             [projectImages]="projectImages" title="Project photos"></image-uploader>
           </div>
@@ -162,7 +162,7 @@
               <button cv-button-flat flatStyle="dark" [routerLink]="'/companies/' + securityService.getLoginModel().company"
                       *ngIf="!newMode">Cancel
               </button>
-              <button cv-button-flat flatStyle="dark" (click)="deleteGalleryProject(projectId)" *ngIf="newMode">Cancel
+              <button cv-button-flat flatStyle="dark" (click)="deleteDemoProject(projectId)" *ngIf="newMode">Cancel
               </button>
             </div>
             <div class="right-buttons">

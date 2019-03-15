@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.image.ImageObserver;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -94,8 +93,8 @@ public class ImageService {
                 Project project = (Project) imageContainable;
                 imageUrl = saveProjectImage(project, image);
             } else {
-                GalleryProject project = (GalleryProject) imageContainable;
-                imageUrl = saveGalleryProjectImage(project, image);
+                DemoProject project = (DemoProject) imageContainable;
+                imageUrl = saveDemoProjectImage(project, image);
             }
             log.debug("Image saved by {}", imageUrl);
         } catch (Exception e) {
@@ -118,10 +117,10 @@ public class ImageService {
                 imageUrls = getProjectImageUrls(project.getId());
             }
         } else {
-            GalleryProject project = (GalleryProject) imageContainable;
+            DemoProject project = (DemoProject) imageContainable;
             companyImageRepository.deleteByNameAndProjectId(imageName, project.getId());
             if (isCover) {
-                imageUrls = getGalleryProjectImageUrls(project.getId());
+                imageUrls = getDemoProjectImageUrls(project.getId());
             }
         }
 
@@ -145,8 +144,8 @@ public class ImageService {
         return ProjectImage.toProjectImageUrl(image.getName());
     }
 
-    private String saveGalleryProjectImage(GalleryProject project, Image image) {
-        companyImageRepository.save(new CompanyImage(image, project));
+    private String saveDemoProjectImage(DemoProject project, Image image) {
+        companyImageRepository.save(new DemoProjectImage(image, project));
         return Image.toImageUrl(image.getName());
     }
 
@@ -167,7 +166,7 @@ public class ImageService {
             .collect(Collectors.toList());
     }
 
-    public Collection<String> getGalleryProjectImageUrls(long projectId) {
+    public Collection<String> getDemoProjectImageUrls(long projectId) {
         return companyImageRepository.getImagesByProject(projectId).stream()
             .map(Image::toImageUrl)
             .collect(Collectors.toList());

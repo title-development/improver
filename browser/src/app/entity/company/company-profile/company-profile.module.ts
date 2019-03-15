@@ -17,11 +17,11 @@ import {
 
 import { CompanyReviewItemComponent } from "./company-reviews/company-review-item/company-review-item.component";
 import { AccountService } from '../../../api/services/account.service';
-import { GalleryProjectService } from '../../../api/services/gallery-project.service';
+import {DemoProjectService} from '../../../api/services/demo-project.service';
 import { SharedModule } from '../../../shared/shared.module';
 import { AgmSharedModule } from "../../../shared/agmShared.module";
 import { LayoutModule } from "../../../layout/layout.module";
-import { CompanyProjectsGalleryComponent } from './company-projects-gallery/company-projects-gallery.component';
+import {DemoProjectsGalleryComponent} from './demo-projects-gallery/demo-projects-gallery.component';
 import { CvButtonModule } from '../../../theme/button/cv-button.module';
 
 const routing: ModuleWithProviders = RouterModule.forChild([
@@ -51,12 +51,12 @@ const routing: ModuleWithProviders = RouterModule.forChild([
   ],
   declarations: [
     CompanyProfileComponent,
-    CompanyProjectsGalleryComponent
+    DemoProjectsGalleryComponent
   ],
   exports: [],
   providers: [
     AccountService,
-    GalleryProjectService
+    DemoProjectService
   ]
 })
 

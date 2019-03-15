@@ -18,8 +18,8 @@ import static com.improver.util.serializer.SerializationUtil.DATE_PATTERN;
 
 @Data
 @Accessors(chain = true)
-@Entity(name = "gallery_projects")
-public class GalleryProject implements ImageContainable {
+@Entity(name = "demo_projects")
+public class DemoProject implements ImageContainable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +27,7 @@ public class GalleryProject implements ImageContainable {
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name="company_id",  foreignKey = @ForeignKey(name = "gallery_project_company_fkey"))
+    @JoinColumn(name = "company_id", foreignKey = @ForeignKey(name = "demo_project_company_fkey"))
     private Company company;
 
     private String name;
@@ -54,12 +54,11 @@ public class GalleryProject implements ImageContainable {
     private ZonedDateTime created = ZonedDateTime.now();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "galleryProject", cascade = CascadeType.REMOVE)
-    private List<CompanyImage> companyImages;
+    @OneToMany(mappedBy = "demoProject", cascade = CascadeType.REMOVE)
+    private List<DemoProjectImage> demoProjectImages;
 
 
-
-    public GalleryProject setServiceTypes(List<String> serviceTypes){
+    public DemoProject setServiceTypes(List<String> serviceTypes) {
         this.services = SerializationUtil.toJson(serviceTypes);
         return this;
     }
@@ -71,7 +70,7 @@ public class GalleryProject implements ImageContainable {
 
 
     @Override
-    public GalleryProject setCoverUrl(String imageCoverUrl) {
+    public DemoProject setCoverUrl(String imageCoverUrl) {
         this.coverUrl = imageCoverUrl;
         return this;
     }

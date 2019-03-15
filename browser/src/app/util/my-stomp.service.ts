@@ -3,7 +3,7 @@ import {InjectableRxStompConfig, RxStompService} from '@stomp/ng2-stompjs';
 import {SecurityService} from "../auth/security.service";
 import {RxStompState} from '@stomp/rx-stomp';
 import {IFrame} from '@stomp/stompjs';
-import { filter, take } from 'rxjs/operators';
+import {environment} from '../../environments/environment';
 
 
 @Injectable()
@@ -11,15 +11,17 @@ export class MyStompService extends RxStompService {
 
   private readonly wsEndpoint = (this.window.location.protocol == 'https:' ? 'wss' : 'ws' ) + '://' + this.window.location.host + '/ws';
 
-  private init: boolean = false;
+  private initialized: boolean = false;
   private readonly initialConfig: InjectableRxStompConfig = {
     brokerURL: this.wsEndpoint,
     connectHeaders: {},
     heartbeatIncoming: 0,        // Typical value 0 - disabled
-    heartbeatOutgoing: 20000,   // Typical value 20000 - every 20 seconds
-    reconnectDelay: 0,     // every 10 seconds
+    heartbeatOutgoing: 20000,    // Typical value 20000 - every 20 seconds
+    reconnectDelay: 0,           // Disabled, we do manual reconnect through this.reconnectAfter()
     debug: (str) => {
-      console.log(new Date(), str);
+      if (!environment.production) {
+        console.log(new Date(), str);
+      }
     }
   };
 
@@ -29,7 +31,7 @@ export class MyStompService extends RxStompService {
                      @Inject('Window') private window: Window) {
     super();
     this.connectionState$.subscribe((state : RxStompState) => {
-      if(state == RxStompState.CLOSED && this.init) {
+      if (state == RxStompState.CLOSED && this.initialized) {
         this.reconnectAfter(1000);
       }
     });
@@ -40,10 +42,9 @@ export class MyStompService extends RxStompService {
         body = iframe.body;
       }
       if (body.startsWith('Valid token required')) {
-        this.deactivate();
+        this.shutDown();
       }
     });
-    this.init = true;
   }
 
   private reconnectAfter(ms: number): void {
@@ -64,14 +65,15 @@ export class MyStompService extends RxStompService {
   }
 
   public shutDown(): void {
+    this.initialized = false;
     this.deactivate();
   }
 
   restartBroker() {
+    this.initialized = true;
     this.initialConfig.connectHeaders = {
       authorization: this.securityService.getTokenHeader()
     };
-    //this.initialConfig.url = this.wsEndpoint + '?access_token=' + this.securityService.getTokenHeader();
     this.configure(this.initialConfig);
     this.activate();
   }

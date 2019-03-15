@@ -1,7 +1,7 @@
 package com.improver.repository;
 
 import com.improver.entity.Ticket;
-import com.improver.enums.Priority;
+import com.improver.util.enums.Priority;
 import com.improver.model.admin.out.StaffTicket;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

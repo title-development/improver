@@ -1,4 +1,4 @@
-package com.improver.ws;
+package com.improver.ws.interceptors;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.CloseStatus;
@@ -9,12 +9,12 @@ import org.springframework.web.socket.handler.WebSocketHandlerDecorator;
 /**
  * Used for debug purposes for now.
  */
-public class CustomWebSocketHandler extends WebSocketHandlerDecorator {
+public class LogWsHandlerDecorator extends WebSocketHandlerDecorator {
 
     final org.slf4j.Logger log = LoggerFactory.getLogger(getClass());
 
 
-    public CustomWebSocketHandler(org.springframework.web.socket.WebSocketHandler delegate) {
+    public LogWsHandlerDecorator(org.springframework.web.socket.WebSocketHandler delegate) {
         super(delegate);
     }
 

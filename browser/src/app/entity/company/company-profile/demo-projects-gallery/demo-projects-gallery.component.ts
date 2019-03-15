@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit } from '@angular/core';
-import { GalleryProject, Review } from "../../../../model/data-model";
-import { GalleryProjectService } from "../../../../api/services/gallery-project.service";
+import {DemoProject, Review} from "../../../../model/data-model";
+import {DemoProjectService} from "../../../../api/services/demo-project.service";
 import { SecurityService } from "../../../../auth/security.service";
 import { Role } from "../../../../model/security-model";
 import { PopUpMessageService } from "../../../../util/pop-up-message.service";
@@ -10,22 +10,22 @@ import { dialogsMap } from '../../../../shared/dialogs/dialogs.state';
 import { confirmDialogConfig } from '../../../../shared/dialogs/dialogs.configs';
 
 @Component({
-  selector: 'company-projects-gallery',
-  templateUrl: './company-projects-gallery.component.html',
-  styleUrls: ['./company-projects-gallery.component.scss']
+  selector: 'demo-projects-gallery',
+  templateUrl: './demo-projects-gallery.component.html',
+  styleUrls: ['./demo-projects-gallery.component.scss']
 })
-export class CompanyProjectsGalleryComponent implements OnInit {
+export class DemoProjectsGalleryComponent implements OnInit {
   @Input()
   public companyId: any;
   @Input()
   public editMode : boolean = false;
 
-  projects : GalleryProject[] = [];
+  projects: DemoProject[] = [];
   Role = Role;
   preSavingProject = false;
   confirmDialogRef: MatDialogRef<any>;
 
-  emptyGalleryProject: GalleryProject = {
+  emptyDemoProject: DemoProject = {
     name: "",
     coverUrl: "",
     date: "",
@@ -43,7 +43,7 @@ export class CompanyProjectsGalleryComponent implements OnInit {
 
   constructor (
     private securityService: SecurityService,
-    private galleryProjectService: GalleryProjectService,
+    private demoProjectService: DemoProjectService,
     public popUpMessageService: PopUpMessageService,
     public dialog: MatDialog,
     public router: Router
@@ -52,11 +52,11 @@ export class CompanyProjectsGalleryComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getGalleryProjects();
+    this.getDemoProjects();
   }
 
-  getGalleryProjects() {
-    this.galleryProjectService.getAll(this.companyId).subscribe(
+  getDemoProjects() {
+    this.demoProjectService.getAll(this.companyId).subscribe(
       (projects) => {
         this.projects = projects;
       },
@@ -70,13 +70,13 @@ export class CompanyProjectsGalleryComponent implements OnInit {
     return item.id
   }
 
-  preSaveGalleryProject() {
+  preSaveDemoProject() {
     this.preSavingProject = true;
-    this.galleryProjectService.preSave(this.emptyGalleryProject)
+    this.demoProjectService.preSave(this.emptyDemoProject)
       .subscribe(
-        galleryProject => {
+        demoProject => {
           this.preSavingProject = false;
-          this.router.navigate(['/companies', this.companyId, 'projects', galleryProject.id, 'add']);
+          this.router.navigate(['/companies', this.companyId, 'projects', demoProject.id, 'add']);
         },
         err => {
           console.log(err);
@@ -85,7 +85,7 @@ export class CompanyProjectsGalleryComponent implements OnInit {
         });
   }
 
-  deleteGalleryProjectConfirm(project: GalleryProject) {
+  deleteDemoProjectConfirm(project: DemoProject) {
     let properties = {
       title: "Are you sure that you want to delete current project?",
       message: "",
@@ -101,7 +101,7 @@ export class CompanyProjectsGalleryComponent implements OnInit {
     this.confirmDialogRef.componentInstance.properties = properties;
     this.confirmDialogRef.componentInstance.onConfirm.subscribe(
       () => {
-        this.deleteGalleryProject(project.id);
+        this.deleteDemoProject(project.id);
       },
       err => {
         console.log(err)
@@ -109,11 +109,11 @@ export class CompanyProjectsGalleryComponent implements OnInit {
     );
   }
 
-  deleteGalleryProject(id) {
-    this.galleryProjectService.delete(id)
+  deleteDemoProject(id) {
+    this.demoProjectService.delete(id)
       .subscribe(
         response => {
-          this.getGalleryProjects()
+          this.getDemoProjects()
         },
         err => {
           console.log(err);

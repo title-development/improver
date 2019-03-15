@@ -1,6 +1,6 @@
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { CompanyGalleryProjectEditorComponent } from "./company-gallery-project-editor.component";
+import {CompanyDemoProjectEditorComponent} from "./company-demo-project-editor.component";
 import { FlexLayoutModule } from "@angular/flex-layout";
 import { CommonModule, DatePipe } from "@angular/common";
 
@@ -11,7 +11,7 @@ import {
   MatSelectModule
 } from "@angular/material";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { GalleryProjectService } from "../../../api/services/gallery-project.service";
+import {DemoProjectService} from "../../../api/services/demo-project.service";
 import { CvInputFieldModule } from "../../../theme/input-field/form-field.module";
 import { CvInputModule } from "../../../theme/input/cv-input.module";
 import { CvButtonModule } from "../../../theme/button/cv-button.module";
@@ -24,7 +24,7 @@ import { CvDatePickerModule } from "../../../theme/date-picker/cv-date-picker.mo
 const routing: ModuleWithProviders = RouterModule.forChild([
   {
     path: '',
-    component: CompanyGalleryProjectEditorComponent
+    component: CompanyDemoProjectEditorComponent
   }
 ]);
 
@@ -53,9 +53,10 @@ const routing: ModuleWithProviders = RouterModule.forChild([
     SharedModule
   ],
   declarations: [
-    CompanyGalleryProjectEditorComponent
+    CompanyDemoProjectEditorComponent
   ],
-  providers: [DatePipe, GalleryProjectService]
+  providers: [DatePipe, DemoProjectService]
 })
 
-export class CompanyGalleryProjectEditorModule {}
+export class CompanyDemoProjectEditorModule {
+}

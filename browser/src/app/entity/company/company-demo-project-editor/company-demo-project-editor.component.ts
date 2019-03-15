@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, NgForm } from '@angular/forms';
 
-import { GalleryProject, ServiceType, SystemMessageType } from '../../../model/data-model';
+import {DemoProject, ServiceType, SystemMessageType} from '../../../model/data-model';
 import { ServiceTypeService } from '../../../api/services/service-type.service';
-import { GalleryProjectService } from '../../../api/services/gallery-project.service';
+import {DemoProjectService} from '../../../api/services/demo-project.service';
 import { SecurityService } from '../../../auth/security.service';
 import { Constants } from '../../../util/constants';
 import { Messages } from '../../../util/messages';
@@ -18,16 +18,16 @@ import { map, startWith } from "rxjs/internal/operators";
 
 
 @Component({
-  selector: 'company-gallery-project-editor-page',
-  templateUrl: './company-gallery-project-editor.component.html',
-  styleUrls: ['./company-gallery-project-editor.component.scss']
+  selector: 'company-demo-project-editor-page',
+  templateUrl: './company-demo-project-editor.component.html',
+  styleUrls: ['./company-demo-project-editor.component.scss']
 })
-export class CompanyGalleryProjectEditorComponent implements OnInit {
+export class CompanyDemoProjectEditorComponent implements OnInit {
 
   minDate: string;
   maxDate: string;
 
-  galleryProject: GalleryProject = {
+  demoProject: DemoProject = {
     name: "",
     coverUrl: "",
     date: "",
@@ -47,7 +47,7 @@ export class CompanyGalleryProjectEditorComponent implements OnInit {
 
   allServiceTypes: ServiceType[];
   // selectedServices: ServiceType[] = [];
-  project: GalleryProject = new GalleryProject();
+  project: DemoProject = new DemoProject();
   newMode: boolean = false;
   filteredStates = [];
   selectedControl = new FormControl();
@@ -60,7 +60,7 @@ export class CompanyGalleryProjectEditorComponent implements OnInit {
               public popUpMessageService: PopUpMessageService,
               private trickService: TricksService,
               private serviceTypeService: ServiceTypeService,
-              private galleryProjectService: GalleryProjectService,
+              private demoProjectService: DemoProjectService,
               public securityService: SecurityService,
               public router: Router,
               public constants: Constants,
@@ -77,13 +77,13 @@ export class CompanyGalleryProjectEditorComponent implements OnInit {
 
       let requests = [
         this.serviceTypeService.serviceTypes$,
-        this.galleryProjectService.get(this.companyId, this.projectId),
-        this.galleryProjectService.getImages(this.companyId, this.projectId),
+        this.demoProjectService.get(this.companyId, this.projectId),
+        this.demoProjectService.getImages(this.companyId, this.projectId),
       ];
 
       combineLatest(requests).subscribe(result => {
           this.allServiceTypes = result[0];
-          this.galleryProject = result[1];
+          this.demoProject = result[1];
           this.projectImages = result[2];
         },
         err => {
@@ -145,11 +145,11 @@ export class CompanyGalleryProjectEditorComponent implements OnInit {
         });
   }
 
-  getGalleryProject() {
-    this.galleryProjectService.get(this.companyId, this.projectId)
+  getDemoProject() {
+    this.demoProjectService.get(this.companyId, this.projectId)
       .subscribe(
         project => {
-          this.galleryProject = project;
+          this.demoProject = project;
         },
         err => {
           console.log(err);
@@ -168,12 +168,12 @@ export class CompanyGalleryProjectEditorComponent implements OnInit {
     throw new Error('Method not implemented.');
   }
 
-  onUpdateGalleryProject() {
-    this.updateGalleryProject(this.galleryProject.id, this.galleryProject);
+  onUpdateDemoProject() {
+    this.updateDemoProject(this.demoProject.id, this.demoProject);
   }
 
-  updateGalleryProject(id, galleryProject) {
-    this.galleryProjectService.update(id, galleryProject)
+  updateDemoProject(id, demoProject) {
+    this.demoProjectService.update(id, demoProject)
       .subscribe(
         response => {
           this.popUpMessageService.showMessage({
@@ -189,7 +189,7 @@ export class CompanyGalleryProjectEditorComponent implements OnInit {
   }
 
   getProjectImages() {
-    this.galleryProjectService.getImages(this.companyId, this.projectId)
+    this.demoProjectService.getImages(this.companyId, this.projectId)
       .subscribe(
         images => {
           this.projectImages = images;
@@ -200,13 +200,13 @@ export class CompanyGalleryProjectEditorComponent implements OnInit {
   }
 
   // TODO: Implementation
-  publishGalleryProject() {
+  publishDemoProject() {
     this.popUpMessageService.showMessage(this.popUpMessageService.METHOD_NOT_IMPLEMENTED);
     throw new Error('Method not implemented.');
   }
 
-  deleteGalleryProject(id) {
-    this.galleryProjectService.delete(id)
+  deleteDemoProject(id) {
+    this.demoProjectService.delete(id)
       .subscribe(
         response => {
           this.router.navigate(['/companies', this.companyId]);

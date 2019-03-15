@@ -1,17 +1,17 @@
 package com.improver.repository;
 
-import com.improver.entity.GalleryProject;
+import com.improver.entity.DemoProject;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 
 import javax.transaction.Transactional;
 import java.util.List;
 
-public interface GalleryProjectRepository extends JpaRepository<GalleryProject, Long> {
+public interface DemoProjectRepository extends JpaRepository<DemoProject, Long> {
 
-    List<GalleryProject> findByCompanyIdOrderByCreatedDesc(String companyId);
+    List<DemoProject> findByCompanyIdOrderByCreatedDesc(String companyId);
 
-    GalleryProject findByCompanyIdAndId(String companyId, long id);
+    DemoProject findByCompanyIdAndId(String companyId, long id);
 
     @Modifying
     @Transactional

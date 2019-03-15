@@ -23,7 +23,7 @@ import org.springframework.web.socket.CloseStatus;
  *
  */
 @Slf4j
-public class AuthStompInterceptor implements ChannelInterceptor {
+public class WsSecurityInterceptor implements ChannelInterceptor {
 
     @Autowired
     @Qualifier("clientOutboundChannel")
