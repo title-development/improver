@@ -8,7 +8,7 @@
   font-weight: 500;
   border: 1px solid $black-300;
   border-radius: 2px;
-  padding: 11px 16px 10px;
+  padding: 10px 16px 10px;
   margin: 0;
   outline: none;
   vertical-align: bottom;
@@ -20,6 +20,7 @@
   @include response(xs) {
     //we have to increase font size for avoid zoom in on inputs IOS
     font-size: 16px;
+    line-height: 16px;
   }
   &::placeholder {
     color: $placeholder;

@@ -38,9 +38,9 @@
         margin: 0;
 
         @include response-to(xs) {
-          font-size: 14px;
-          padding: 9px 14px;
-          //height: 43px;
+          font-size: 15px;
+          padding: 13px 14px;
+          line-height: 15px;
         }
 
       }

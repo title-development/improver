@@ -18,8 +18,6 @@ import { SecurityService } from '../../auth/security.service';
 import { dialogsMap } from '../dialogs/dialogs.state';
 import { Subject } from 'rxjs/internal/Subject';
 import { Observable } from 'rxjs/internal/Observable';
-import { LevelCapLogger } from '@angular-devkit/core/src/logger';
-import { createConsoleLogger } from '@angular-devkit/core/node';
 
 @Component({
   selector: 'image-uploader',
@@ -46,6 +44,7 @@ export class ProjectImagesComponent implements OnInit {
   private MAX_WIDTH: number = 1920;
   private MAX_HEIGHT: number = 1080;
   private COMPRESS_RATIO: number = 0.7;
+  private refreshingAccessToken: boolean = false;
 
   constructor(private projectService: ProjectService,
               private renderer: Renderer2,
@@ -63,6 +62,7 @@ export class ProjectImagesComponent implements OnInit {
       maxFileSize: MAX_FILE_SIZE.bytes
     });
     this.uploader.onWhenAddingFileFailed = (item: FileLikeObject, filter: any, options: any) => {
+      console.log(item);
       let text: string = '';
       if (filter.name == 'mimeType') {
         text = `The file type of ${item.name} is not allowed. \r\n You can only upload the following file types: .png, .jpg, .bmp.`;
@@ -77,6 +77,19 @@ export class ProjectImagesComponent implements OnInit {
         timeout: 10000
       });
     };
+    this.uploader.onProgressItem = (item: FileItem) => {
+      this.checkAccessToken(item);
+    };
+    this.uploader.onBeforeUploadItem = (item: FileItem) => {
+      this.checkAccessToken(item);
+    };
+    this.uploader.onErrorItem = (item: FileItem, response: string, status: number,) => {
+      if(status == 401) {
+        //resetting image to upload again
+        item.isUploaded = false;
+        item.isError = false;
+      }
+    }
   }
 
   @HostListener('window:keyup', ['$event'])
@@ -195,12 +208,17 @@ export class ProjectImagesComponent implements OnInit {
   uploadAllImages(event): void {
     this.uploader.uploadAll();
     this.uploader.onCompleteAll = () => {
-      setTimeout(() => {
-        this.uploadCompleted.next(true);
-        this.uploader.clearQueue();
-        this.dropZoneTrigger = false;
-        this.getProjectImages();
-      }, 500);
+      //uploading canceled item
+      if (this.uploader.getNotUploadedItems().length > 0) {
+          this.uploader.uploadAll();
+      } else {
+        setTimeout(() => {
+          this.uploadCompleted.next(true);
+          this.uploader.clearQueue();
+          this.dropZoneTrigger = false;
+          this.getProjectImages();
+        }, 500);
+      }
     };
   }
 
@@ -267,6 +285,28 @@ export class ProjectImagesComponent implements OnInit {
       return false;
     } else {
       return true;
+    }
+  }
+
+  private refreshAccessToken(): void {
+    this.securityService.refreshAccessToken().subscribe(() => {
+      this.uploader.setOptions(
+        {authToken: this.securityService.getTokenHeader()}
+      );
+      this.refreshingAccessToken = false;
+    });
+  }
+
+  private checkAccessToken(item: FileItem): void {
+    if (this.securityService.isAuthenticated()) {
+      if (this.securityService.isTokenExpired()) {
+        //cancel upload if access token expired
+        this.uploader.cancelItem(item);
+        if (!this.refreshingAccessToken) {
+          this.refreshingAccessToken = true;
+          this.refreshAccessToken();
+        }
+      }
     }
   }
 }
