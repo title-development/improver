@@ -94,42 +94,51 @@
   </ng-template>
 </p-dataTable>
 
-<p-dialog header="Edit Company" [(visible)]="displayEditDialog" [responsive]="true" showEffect="fade" [width]="700"
+<p-dialog [header]="securityService.hasRole(Role.ADMIN) ? 'Edit Company' : 'Company info'" [(visible)]="displayEditDialog"
+          [responsive]="true" showEffect="fade" [width]="700"
           [modal]="true" (onHide)="closeDialog()">
   <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="selectedCompany">
     <div class="ui-card-title">General information</div>
     <div class="ui-grid-row ui-grid-field">
       <div class="ui-grid-col-4"><label for="name">Company logo</label></div>
       <div class="ui-grid-col-8">
-        <image-cropper confirmTitle="Delete company logo" [image]="selectedCompany.iconUrl" (fileChange)="newIcon = $event" (delete)="deleteCompanyLogo()"></image-cropper>
+        <image-cropper confirmTitle="Delete company logo" [image]="selectedCompany.iconUrl" (fileChange)="newIcon = $event"
+                       (delete)="deleteCompanyLogo()"
+                       [disabled]="!securityService.hasRole(Role.ADMIN)"></image-cropper>
       </div>
     </div>
     <div class="ui-grid-row ui-grid-field">
       <div class="ui-grid-col-4"><label for="name">Cover image</label></div>
       <div class="ui-grid-col-8">
-        <image-preview confirmTitle="Delete company cover" (delete)="deleteCompanyCover()" (fileChange)="newCoverImage = $event" [image]="selectedCompany.backgroundUrl"></image-preview>
+        <image-preview confirmTitle="Delete company cover" (delete)="deleteCompanyCover()" (fileChange)="newCoverImage = $event"
+                       [image]="selectedCompany.backgroundUrl"
+                       [disabled]="!securityService.hasRole(Role.ADMIN)"></image-preview>
       </div>
     </div>
     <div class="ui-grid-row ui-grid-field">
       <div class="ui-grid-col-4"><label for="name">Name</label></div>
-      <div class="ui-grid-col-8"><input pInputText id="name" [(ngModel)]="selectedCompany.name" maxlength="255"/></div>
+      <div class="ui-grid-col-8"><input pInputText id="name" [(ngModel)]="selectedCompany.name" maxlength="255"
+                                        [disabled]="!securityService.hasRole(Role.ADMIN)"/></div>
     </div>
     <div class="ui-grid-row ui-grid-field">
       <div class="ui-grid-col-4"><label for="description">Description</label></div>
       <div class="ui-grid-col-8">
         <textarea pInputTextarea rows="4" id="description" [(ngModel)]="selectedCompany.description"
+                  [disabled]="!securityService.hasRole(Role.ADMIN)"
                   maxlength="1024"></textarea>
       </div>
     </div>
     <div class="ui-grid-row ui-grid-field">
       <div class="ui-grid-col-4"><label for="founded">Founded</label></div>
       <div class="ui-grid-col-8"><input pInputText type="number" id="founded" [(ngModel)]="selectedCompany.founded"
+                                        [disabled]="!securityService.hasRole(Role.ADMIN)"
                                         min="1940" max="3000"/>
       </div>
     </div>
     <div class="ui-grid-row ui-grid-field">
       <div class="ui-grid-col-4"><label for="uri">Uri</label></div>
       <div class="ui-grid-col-8"><input pInputText type="text" id="uri" [(ngModel)]="selectedCompany.uri"
+                                        [disabled]="!securityService.hasRole(Role.ADMIN)"
                                         maxlength="255"/></div>
     </div>
     <div class="ui-grid-row ">
@@ -138,6 +147,7 @@
         <div class="ui-inputgroup">
           <span class="ui-inputgroup-addon">http://&nbsp;</span>
           <input pInputText type="text" id="siteUrl" [(ngModel)]="selectedCompany.siteUrl"
+                 [disabled]="!securityService.hasRole(Role.ADMIN)"
                  maxlength="255"/>
         </div>
 
@@ -148,17 +158,20 @@
     <div class="ui-grid-row ui-grid-field">
       <div class="ui-grid-col-4"><label for="internalPhone">Internal phone</label></div>
       <div class="ui-grid-col-8"><input pInputText type="text" id="internalPhone"
-                                        [(ngModel)]="selectedCompany.internalPhone" maxlength="255"/></div>
+                                        [(ngModel)]="selectedCompany.internalPhone" maxlength="255"
+                                        [disabled]="!securityService.hasRole(Role.ADMIN)"/></div>
     </div>
     <div class="ui-grid-row">
       <div class="ui-grid-col-4"><label for="email">Email</label></div>
-      <div class="ui-grid-col-8"><input pInputText id="email" [(ngModel)]="selectedCompany.email" maxlength="255"/>
+      <div class="ui-grid-col-8"><input pInputText id="email" [(ngModel)]="selectedCompany.email" maxlength="255"
+                                        [disabled]="!securityService.hasRole(Role.ADMIN)"/>
       </div>
     </div>
   </div>
   <p-footer>
     <div class="ui-dialog-buttonpane ui-helper-clearfix">
-      <button type="button" pButton icon="pi pi-check" (click)="save()" label="Update" class="ui-button-success"></button>
+      <button *ngIf="securityService.hasRole(Role.ADMIN)" type="button" pButton icon="pi pi-check" (click)="save()" label="Update"></button>
+      <button *ngIf="!securityService.hasRole(Role.ADMIN)"  type="button" pButton icon="pi pi-check" (click)="displayEditDialog = false" label="Ok"></button>
     </div>
   </p-footer>
 </p-dialog>
@@ -185,7 +198,7 @@
   </div>
   <p-footer>
     <div class="ui-dialog-buttonpane ui-helper-clearfix">
-      <button type="button" pButton icon="pi pi-check" (click)="addBonus()" label="Submit" class="ui-button-success"></button>
+      <button type="button" pButton icon="pi pi-check" (click)="addBonus()" label="Submit"></button>
     </div>
   </p-footer>
 </p-dialog>

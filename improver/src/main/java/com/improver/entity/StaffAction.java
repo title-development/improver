@@ -49,7 +49,8 @@ public class StaffAction {
         CREATE_SERVICE_TYPE("CREATE_SERVICE_TYPE"),
         REMOVE_SERVICE_TYPE("REMOVE_SERVICE_TYPE"),
         ACCOUNT_UPDATE("ACCOUNT_UPDATE"),
-        ACCOUNT_DELETE("ACCOUNT_DELETE");
+        ACCOUNT_DELETE("ACCOUNT_DELETE"),
+        COMPANY_UPDATE("COMPANY_UPDATE");
 
         private final String value;
 

@@ -11,6 +11,7 @@ import com.improver.model.TradesServicesCollection;
 import com.improver.model.out.CompanyCoverageConfig;
 import com.improver.repository.CompanyRepository;
 import com.improver.security.UserSecurityService;
+import com.improver.security.annotation.CompanyMemberOrAdminAccess;
 import com.improver.service.CompanyConfigService;
 import com.improver.security.annotation.CompanyMemberOrSupportAccess;
 import lombok.extern.slf4j.Slf4j;
@@ -47,12 +48,12 @@ public class CompanyConfigController {
     @Autowired private UserSecurityService userSecurityService;
     @Autowired private CompanyConfigService companyConfigService;
 
-    @CompanyMemberOrSupportAccess
+    @CompanyMemberOrAdminAccess
     @PutMapping(LOCATIONS)
     public ResponseEntity<Void> updateCompanyLocation(@PathVariable String companyId, @RequestBody ExtendedLocation location) {
         Company company = companyRepository.findById(companyId)
             .orElseThrow(NotFoundException::new);
-        companyConfigService.updateCompanyLocation(company, location.withOutCoordinates());
+        companyConfigService.updateCompanyLocation(company, location.withOutCoordinates(), userSecurityService.currentAdminOrNull());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

@@ -34,6 +34,7 @@ export class CompaniesComponent {
   fetching: boolean = true;
   states: Array<SelectItem> = [];
   accreditations: Array<SelectItem> = [];
+  Role = Role;
   selectedTableCols: Array<string> = [
     'id',
     'email',
@@ -48,43 +49,7 @@ export class CompaniesComponent {
   displayBonusDialog: boolean = false;
   toLocationValidate: Location;
 
-  baseContextMenuItems: Array<MenuItem> = [
-    {
-      label: 'Edit',
-      icon: 'fa fa-pencil',
-      command: () => this.editCompany()
-    },
-    {
-      label: 'Update Location',
-      icon: 'fa fa-map-marker',
-      command: () => this.openLocationValidationPopup()
-    },
-    {
-      label: 'Add Bonus',
-      icon: 'fa fa-money',
-      command: () => {
-        this.displayBonusDialog = true
-      },
-      visible: this.securityService.hasRole(Role.ADMIN)
-    },
-    {
-      label: 'Approve',
-      icon: 'fas fa-thumbs-up',
-      command: () => {
-        this.approve()
-      }
-    },
-    {
-      label: 'Disapprove',
-      icon: 'fas fa-thumbs-down',
-      command: () => {
-        this.disapprove()
-      }
-    },
-
-  ];
-
-  contextMenuItems: Array<MenuItem> = this.baseContextMenuItems;
+  contextMenuItems: Array<MenuItem> = [];
   newIcon: String;
   newCoverImage: File;
   bonus: number = 0;
@@ -95,7 +60,7 @@ export class CompaniesComponent {
               public camelCaseHumanPipe: CamelCaseHumanPipe,
               public constants: Constants,
               private route: ActivatedRoute,
-              private securityService: SecurityService,
+              public securityService: SecurityService,
               private billingService: BillingService,
               private popUpService: PopUpMessageService) {
     this.route.queryParams.subscribe(params => {
@@ -112,6 +77,41 @@ export class CompaniesComponent {
       return {label: item, value: item};
     });
 
+  }
+
+  initContextMenu () {
+    this.contextMenuItems = [
+      {
+        label: this.securityService.hasRole(Role.ADMIN) ? 'Edit' : "View",
+        icon: this.securityService.hasRole(Role.ADMIN) ? 'fa fa-pencil' : 'fas fa-eye',
+        command: () => this.editCompany()
+      },
+      {
+        label: 'Update Location',
+        icon: 'fa fa-map-marker',
+        visible: this.securityService.hasRole(Role.ADMIN),
+        command: () => this.openLocationValidationPopup()
+      },
+      {
+        label: 'Add Bonus',
+        icon: 'fa fa-money',
+        visible: this.securityService.hasRole(Role.ADMIN),
+        command: () => {this.displayBonusDialog = true}
+      },
+      {
+        label: 'Approve',
+        icon: 'fas fa-thumbs-up',
+        visible: !this.selectedCompany.approved,
+        command: () => this.approve()
+      },
+      {
+        label: 'Disapprove',
+        icon: 'fas fa-thumbs-down',
+        visible: this.selectedCompany.approved,
+        command: () => this.disapprove()
+      },
+
+    ];
   }
 
   loadLazy(event, callback: () => void): void {
@@ -149,14 +149,7 @@ export class CompaniesComponent {
 
   selectCompany(selection: { originalEvent: MouseEvent, data: any }): void {
     this.selectedCompany = selection.data;
-    this.contextMenuItems = this.baseContextMenuItems.filter(item => {
-        if ((this.selectedCompany.approved && item.label == "Approve") || (!this.selectedCompany.approved && item.label == "Disapprove")) {
-          return false
-        } else {
-          return true
-        }
-      }
-    )
+    this.initContextMenu();
   }
 
   deleteCompanyLogo(): void {

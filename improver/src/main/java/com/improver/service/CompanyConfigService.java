@@ -1,12 +1,6 @@
 package com.improver.service;
 
-import com.improver.entity.Area;
-import com.improver.entity.Company;
-import com.improver.entity.CompanyConfig;
-import com.improver.entity.Contractor;
-import com.improver.entity.Location;
-import com.improver.entity.ServiceType;
-import com.improver.entity.Trade;
+import com.improver.entity.*;
 import com.improver.exception.InternalServerException;
 import com.improver.exception.ThirdPartyException;
 import com.improver.exception.ValidationException;
@@ -24,6 +18,7 @@ import com.improver.repository.ContractorRepository;
 import com.improver.repository.ServedZipRepository;
 import com.improver.repository.ServiceTypeRepository;
 import com.improver.repository.TradeRepository;
+import com.improver.util.StaffActionLogger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,6 +42,7 @@ public class CompanyConfigService {
     @Autowired private ContractorRepository contractorRepository;
     @Autowired private BoundariesService boundariesService;
     @Autowired private ServedZipRepository servedZipRepository;
+    @Autowired private StaffActionLogger staffActionLogger;
 
 
     public void updateCoverageConfig(CompanyConfig.CoverageConfig config, Company company, Contractor contractor) {
@@ -126,7 +122,7 @@ public class CompanyConfigService {
     }
 
 
-    public void updateCompanyLocation(Company company, Location location) {
+    public void updateCompanyLocation(Company company, Location location, Admin currentAdmin) {
         ValidatedLocation result;
         try {
             result = locationService.validate(location, true, true);
@@ -143,7 +139,9 @@ public class CompanyConfigService {
             location.getZip(),
             result.getSuggested().getLat(),
             result.getSuggested().getLng());
-
+        if (currentAdmin != null) {
+            staffActionLogger.logCompanyUpdate(currentAdmin, company);
+        }
     }
 
     public TradesServicesCollection getCompanyTradesServicesCollection(Company company) {

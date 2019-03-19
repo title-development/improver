@@ -79,4 +79,10 @@ public class StaffActionLogger {
             description);
     }
 
+    public void logCompanyUpdate(Staff author, Company company){
+        String description = String.format("Company with id=%1$s  name=%2$s is updated.",
+            company.getId(), company.getName());
+        this.log(StaffAction.Action.COMPANY_UPDATE, author, description);
+    }
+
 }

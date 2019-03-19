@@ -13,6 +13,7 @@ import { UserService } from '../../../../api/services/user.service';
 import { dataTableFilter } from '../../util';
 import { FilterMetadata } from 'primeng/components/common/filtermetadata';
 import { getErrorMessage } from "../../../../util/functions";
+import { Role } from "../../../../model/security-model";
 
 @Component({
   selector: 'contractors',
@@ -29,6 +30,7 @@ export class ContractorsComponent {
   editContractor: AdminContractor;
   displayEditDialog: boolean = false;
   filters: { [s: string]: FilterMetadata };
+  Role = Role;
   selectedTableCols: Array<string> = [
     'id',
     'email',
@@ -39,23 +41,7 @@ export class ContractorsComponent {
     'created'
   ];
 
-  contextMenuItems: Array<MenuItem> = [
-    {
-      label: 'Edit',
-      icon: 'fa fa-edit',
-      command: () => this.edit(this.selected)
-    },
-    {
-      label: 'Show company',
-      icon: 'fa fa-search',
-      command: () => this.moveToCompany(this.selected)
-    },
-    {
-      label: 'Show project requests',
-      icon: 'fa fa-search',
-      command: () => this.moveToProjectRequests(this.selected)
-    }
-  ];
+  contextMenuItems: Array<MenuItem> = [];
 
   constructor(public securityService: SecurityService,
               public popUpService: PopUpMessageService,
@@ -66,6 +52,26 @@ export class ContractorsComponent {
     this.route.queryParams.subscribe(params => {
       this.filters = dataTableFilter('email', params['email']);
     });
+  }
+
+  initContextMenu () {
+    this.contextMenuItems = [
+      {
+        label: this.securityService.hasRole(Role.ADMIN) ? 'Edit' : "View",
+        icon: this.securityService.hasRole(Role.ADMIN) ? 'fa fa-pencil' : 'fas fa-eye',
+        command: () => this.edit(this.selected)
+      },
+      {
+        label: 'Show company',
+        icon: 'fa fa-search',
+        command: () => this.moveToCompany(this.selected)
+      },
+      {
+        label: 'Show project requests',
+        icon: 'fa fa-search',
+        command: () => this.moveToProjectRequests(this.selected)
+      }
+    ];
   }
 
   refresh(): void {
@@ -83,6 +89,7 @@ export class ContractorsComponent {
 
   selectItem(selection: { originalEvent: MouseEvent, data: AdminContractor }): void {
     this.selected = selection.data;
+    this.initContextMenu();
   }
 
   edit(contractor: AdminContractor): void {

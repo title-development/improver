@@ -10,6 +10,7 @@ import com.improver.model.out.CompanyProfile;
 import com.improver.model.out.project.ProjectRequestShort;
 import com.improver.repository.*;
 import com.improver.security.UserSecurityService;
+import com.improver.util.StaffActionLogger;
 import com.improver.util.mail.MailService;
 import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +43,7 @@ public class CompanyService {
     @Autowired private BillingService billingService;
     @Autowired private MailService mailService;
     @Autowired private CompanyConfigService companyConfigService;
+    @Autowired private StaffActionLogger staffActionLogger;
 
 
     public CompanyProfile getCompanyProfile(String id) {
@@ -86,7 +88,7 @@ public class CompanyService {
 
 
 
-    public void updateCompany(String companyId, Company company, String base64icon, MultipartFile coverImage) {
+    public void updateCompany(String companyId, Company company, String base64icon, MultipartFile coverImage, Admin currentAdmin) {
         Company existed = companyRepository.findById(companyId)
             .orElseThrow(NotFoundException::new);
         if (userSecurityService.currentUser().getRole() == User.Role.ADMIN || userSecurityService.currentUser().getRole() == User.Role.SUPPORT) {
@@ -107,6 +109,10 @@ public class CompanyService {
             existed.setBackgroundUrl(coverImageUrl);
         }
         companyRepository.save(existed);
+        if (currentAdmin != null) {
+            staffActionLogger.logCompanyUpdate(currentAdmin, existed);
+        }
+
     }
 
 

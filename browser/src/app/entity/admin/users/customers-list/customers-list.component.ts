@@ -14,6 +14,7 @@ import { User } from '../../../../api/models/User';
 import { dataTableFilter } from '../../util';
 import { FilterMetadata } from 'primeng/components/common/filtermetadata';
 import { getErrorMessage } from "../../../../util/functions";
+import { Role } from "../../../../model/security-model";
 
 @Component({
   selector: 'customers',
@@ -30,13 +31,8 @@ export class CustomersListComponent {
   editCustomer: User;
   displayEditDialog: boolean = false;
   filters: { [s: string]: FilterMetadata } = {};
-  contextMenuItems: Array<MenuItem> = [
-    {
-      label: 'Edit',
-      icon: 'fa fa-edit',
-      command: () => this.edit(this.selected)
-    }
-  ];
+  contextMenuItems: Array<MenuItem> = [];
+  Role = Role;
   selectedTableCols: Array<string> = [
     'id',
     'email',
@@ -57,6 +53,16 @@ export class CustomersListComponent {
       Object.assign(this.filters, dataTableFilter('email', params['email']));
       Object.assign(this.filters, dataTableFilter('id', params['id']));
     });
+  }
+
+  initContextMenu () {
+    this.contextMenuItems = [
+      {
+        label: this.securityService.hasRole(Role.ADMIN) ? 'Edit' : "View",
+        icon: this.securityService.hasRole(Role.ADMIN) ? 'fa fa-pencil' : 'fas fa-eye',
+        command: () => this.edit(this.selected)
+      }
+    ];
   }
 
   loadLazy(event): void {
@@ -95,6 +101,7 @@ export class CustomersListComponent {
 
   selectItem(selection: { originalEvent: MouseEvent, data: AdminContractor }): void {
     this.selected = selection.data;
+    this.initContextMenu();
   }
 
   edit(customer: User): void {

@@ -79,28 +79,28 @@
   </p-column>
 </p-dataTable>
 
-<p-dialog header="Edit Contractor" [(visible)]="displayEditDialog" [responsive]="true" showEffect="fade" [width]="500"
+<p-dialog [header]="securityService.hasRole(Role.ADMIN) ? 'Edit Contractor' : 'Contractor info'" [(visible)]="displayEditDialog" [responsive]="true" showEffect="fade" [width]="500"
           [modal]="true">
   <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="selected">
     <div class="ui-grid-row ui-grid-field">
       <div class="ui-grid-col-4"><label for="email">Email</label></div>
-      <div class="ui-grid-col-8"><input pInputText id="email" [(ngModel)]="selected.email"/></div>
+      <div class="ui-grid-col-8"><input pInputText id="email" [(ngModel)]="selected.email" [disabled]="!securityService.hasRole(Role.ADMIN)"/></div>
     </div>
     <div class="ui-grid-row ui-grid-field">
       <div class="ui-grid-col-4"><label for="firstName">First name</label></div>
-      <div class="ui-grid-col-8"><input pInputText id="firstName" [(ngModel)]="selected.firstName"/></div>
+      <div class="ui-grid-col-8"><input pInputText id="firstName" [(ngModel)]="selected.firstName" [disabled]="!securityService.hasRole(Role.ADMIN)"/></div>
     </div>
     <div class="ui-grid-row ui-grid-field">
       <div class="ui-grid-col-4"><label for="lastName">Last name</label></div>
-      <div class="ui-grid-col-8"><input pInputText id="lastName" [(ngModel)]="selected.lastName"/></div>
+      <div class="ui-grid-col-8"><input pInputText id="lastName" [(ngModel)]="selected.lastName" [disabled]="!securityService.hasRole(Role.ADMIN)"/></div>
     </div>
     <div class="ui-grid-row ui-grid-field">
       <div class="ui-grid-col-4"><label for="displayName">Display name</label></div>
-      <div class="ui-grid-col-8"><input pInputText id="displayName" [(ngModel)]="selected.displayName"/></div>
+      <div class="ui-grid-col-8"><input pInputText id="displayName" [(ngModel)]="selected.displayName" [disabled]="!securityService.hasRole(Role.ADMIN)"/></div>
     </div>
     <div class="ui-grid-row ui-grid-field">
       <div class="ui-grid-col-4"><label for="internalPhone">Internal phone</label></div>
-      <div class="ui-grid-col-8"><input pInputText id="internalPhone" [(ngModel)]="selected.internalPhone"/></div>
+      <div class="ui-grid-col-8"><input pInputText id="internalPhone" [(ngModel)]="selected.internalPhone" [disabled]="!securityService.hasRole(Role.ADMIN)"/></div>
     </div>
     <div class="ui-grid-row ui-grid-field">
       <div class="ui-grid-col-4"><label>Blocked</label></div>
@@ -117,7 +117,8 @@
   </div>
   <p-footer>
     <div class="ui-dialog-buttonpane ui-helper-clearfix">
-      <button type="button" pButton icon="pi pi-check" (click)="updateContractor(selected)" label="Save"></button>
+      <button *ngIf="securityService.hasRole(Role.ADMIN)" type="button" pButton icon="pi pi-check" (click)="updateContractor(selected)" label="Save"></button>
+      <button *ngIf="!securityService.hasRole(Role.ADMIN)" type="button" pButton icon="pi pi-check" (click)="displayEditDialog = false" label="Ok"></button>
     </div>
   </p-footer>
 </p-dialog>

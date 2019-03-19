@@ -2,16 +2,14 @@ package com.improver.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.improver.entity.*;
-import com.improver.exception.NotFoundException;
 import com.improver.model.CompanyInfo;
 import com.improver.model.NameIdTuple;
-import com.improver.model.out.CompanyProfile;
 import com.improver.model.out.project.ProjectRequestShort;
 import com.improver.security.UserSecurityService;
+import com.improver.security.annotation.CompanyMemberOrAdminAccess;
 import com.improver.service.*;
 import com.improver.repository.CompanyRepository;
 import com.improver.util.annotation.PageableSwagger;
-import com.improver.security.annotation.CompanyMemberOrSupportAccess;
 import com.improver.security.annotation.SupportAccess;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -47,7 +45,7 @@ public class CompanyController {
         return new ResponseEntity<>(companies, HttpStatus.OK);
     }
 
-    @CompanyMemberOrSupportAccess
+    @CompanyMemberOrAdminAccess
     @PutMapping(COMPANY_ID)
     public ResponseEntity<Void> update(@PathVariable String companyId,
                                        @RequestPart(value = "data") String data,
@@ -55,7 +53,7 @@ public class CompanyController {
                                        @RequestPart(value = "coverImage", required = false) MultipartFile coverImage) {
         Company company = fromJson(new TypeReference<Company>() {
         }, data);
-        companyService.updateCompany(companyId, company, base64icon, coverImage);
+        companyService.updateCompany(companyId, company, base64icon, coverImage, userSecurityService.currentAdminOrNull());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

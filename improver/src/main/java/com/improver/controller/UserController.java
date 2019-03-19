@@ -154,7 +154,7 @@ public class UserController {
         return new ResponseEntity<>(contractor, HttpStatus.OK);
     }
 
-    @SupportAccess
+    @AdminAccess
     @PutMapping(ID_PATH_VARIABLE + CONTRACTORS)
     public ResponseEntity<Void> updateContractor(@PathVariable long id, @RequestBody AdminContractor adminContractor) {
         userService.updateAdminUser(id, adminContractor);
@@ -173,7 +173,7 @@ public class UserController {
     }
 
 
-    @SupportAccess
+    @AdminAccess
     @PutMapping(ID_PATH_VARIABLE + CUSTOMERS)
     public ResponseEntity<Void> updateCustomer(@PathVariable long id, @RequestBody AdminContractor adminContractor) {
         userService.updateAdminUser(id, adminContractor);
