@@ -1,25 +1,18 @@
 <div class="header">
   <h3 class="title" *ngIf="title">{{title}}</h3>
   <h4 *ngIf="subtitle">{{subtitle}}</h4>
-  <div class="drop-zone-actions" *ngIf="dropZoneTrigger">
-    <button cv-button-flat
-            size="small"
-            flatStyle="dark"
-            type="button"
-            (click)="closeDropZone($event)">
-      Cancel
-    </button>
-    <button cv-button
-            type="button"
-            size="small"
-            (click)="uploadAllImages($event)"
-            [disabled]="!uploader?.queue?.length">
-      Upload
-    </button>
-  </div>
 </div>
 <div class="row content">
-  <div class="image-spacer" [ngClass]="{'project-view': projectView}" *ngIf="!isArchived"></div>
+  <ng-template ngFor let-photo let-index="index" let-last="last" [ngForOf]="projectImages">
+    <div class="col-xs-6 col-sm-4 col-md-3 photo" (click)="openGallery('image-viewer',index);">
+      <div class="photo-inner" [ngStyle]="{'background-image': 'url(' + photo + ')'}">
+        <div class="remove" *ngIf="!isArchived" (click)="deleteImage($event,index, photo)">
+          <mat-icon>close</mat-icon>
+        </div>
+        <div class="hover-text">View</div>
+      </div>
+    </div>
+  </ng-template>
   <div class="col-xs-6 col-sm-4 col-md-3 toggle-drop-zone" *ngIf="!isArchived" [ngClass]="{'-opened': dropZoneTrigger}">
     <div class="add-image-button" (click)="showDropZone($event)">
       <div class="inner">
@@ -27,10 +20,9 @@
         <div class="add-photo-button-text">Add photo</div>
       </div>
     </div>
-    <input type="file" id="file-uploader" ng2FileSelect (onFileSelected)="beforeAdd($event)" [uploader]="uploader" multiple/>
+    <input type="file" id="file-uploader" ng2FileSelect [uploader]="uploader" multiple/>
     <label for="file-uploader"
            ng2FileDrop
-           (onFileDrop)="beforeAdd($event)"
            [ngClass]="{'nv-file-over': hasBaseDropZoneOver}"
            (fileOver)="fileOverBase($event)"
            [uploader]="uploader"
@@ -58,19 +50,28 @@
           </div>
         </div>
       </div>
-        <label  *ngIf="uploader?.queue?.length" cv-button size="small" for="file-uploader">Add another photo</label>
+      <label  *ngIf="uploader?.queue?.length" cv-button size="small" for="file-uploader">Add another photo</label>
     </label>
 
   </div>
-  <ng-template ngFor let-photo let-index="index" let-last="last" [ngForOf]="projectImages">
-    <div class="col-xs-6 col-sm-4 col-md-3 photo" (click)="openGallery('image-viewer',index);">
-      <div class="photo-inner" [ngStyle]="{'background-image': 'url(' + photo + ')'}">
-        <div class="remove" *ngIf="!isArchived" (click)="deleteImage($event,index, photo)">
-          <mat-icon>close</mat-icon>
-        </div>
-        <div class="hover-text">View</div>
-      </div>
-    </div>
-  </ng-template>
+  <div class="image-spacer" [ngClass]="{'project-view': projectView}" *ngIf="!isArchived"></div>
+</div>
+<div class="drop-zone-actions" *ngIf="dropZoneTrigger && showActionButtons">
+  <button cv-button-flat
+          title="Cancel upload"
+          size="small"
+          flatStyle="dark"
+          type="button"
+          (click)="closeDropZone($event)">
+    Cancel
+  </button>
+  <button cv-button
+          title="Upload photos"
+          type="button"
+          size="small"
+          (click)="uploadAllImages()"
+          [disabled]="!uploader?.queue?.length">
+    Upload
+  </button>
 </div>
 

@@ -7,7 +7,11 @@
 
         <form name="gallery-project-form" class="gallery-project-form"
               #demoProjectForm="ngForm"
-              (ngSubmit)="demoProjectForm.valid && onUpdateDemoProject()"
+              [formHasChanges]="demoProjectForm"
+              [formHasChangesAsyncData]="demoProject.id"
+              (onFormHasChanges)="formHasChanges = $event"
+              #formChanges="formHasChanges"
+              (ngSubmit)="demoProjectForm.valid && saveDemoProject(demoProjectForm, formChanges)"
               novalidate>
 
           <div class="row">
@@ -153,21 +157,23 @@
 
           <div class="row image-uploader-wrapper" *ngIf="projectImages">
             <image-uploader [apiUrl]="'/api/companies/'+companyId+'/profile/projects/'+projectId+'/images'"
+                            [showActionButtons]="false"
                             [projectView]="true"
                             [projectImages]="projectImages" title="Project photos"></image-uploader>
           </div>
 
           <div class="buttons-wrapper">
             <div class="left-buttons">
-              <button cv-button-flat flatStyle="dark" [routerLink]="'/companies/' + securityService.getLoginModel().company"
+              <button cv-button-flat flatStyle="dark"
+                      [routerLink]="'/companies/' + securityService.getLoginModel().company"
                       *ngIf="!newMode">Cancel
               </button>
               <button cv-button-flat flatStyle="dark" (click)="deleteDemoProject(projectId)" *ngIf="newMode">Cancel
               </button>
             </div>
             <div class="right-buttons">
-              <button cv-button type="submit" *ngIf="newMode">Save</button>
-              <button cv-button type="submit" *ngIf="!newMode">Save changes</button>
+              <button cv-button [loading]="savingData" [disabled]="canDeactivate()" type="submit" *ngIf="newMode">Save</button>
+              <button cv-button [loading]="savingData" [disabled]="canDeactivate()" type="submit" *ngIf="!newMode">Save changes</button>
             </div>
           </div>
 

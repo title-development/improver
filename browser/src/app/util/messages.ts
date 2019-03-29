@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 
+export const UNSAVED_CHANGES_MESSAGE : string = 'WARNING: You have unsaved changes. Press Cancel to go back and save these changes, or OK to lose these changes.';
+
 export const httpStatusCodeResponses = {
   "0"  : "Unknown Error",
   "400": "Malformed request",

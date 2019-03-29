@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { ProjectImagesComponent } from './image-uploader/image-uploader.component';
+import { ImagesUploaderComponent } from './image-uploader/image-uploader.component';
 import { RatingComponent } from './rating-component/rating.component';
 import { PhoneHelpComponent } from './phone-help/phone-help.component';
 
@@ -83,7 +83,7 @@ import { CvRadioModule } from "../theme/radio/radio.module";
     RatingComponent,
     ResponseMessageComponent,
     PhoneHelpComponent,
-    ProjectImagesComponent,
+    ImagesUploaderComponent,
     CompanyReviewsComponent,
     CompanyReviewItemComponent,
     OrderServiceDirective,
@@ -115,7 +115,7 @@ import { CvRadioModule } from "../theme/radio/radio.module";
     PipesModule,
     MessengerModule,
     NgStringPipesModule,
-    ProjectImagesComponent,
+    ImagesUploaderComponent,
     CompanyReviewsComponent,
     CompanyReviewItemComponent,
     CvButtonModule,

@@ -3,7 +3,7 @@ import {
 } from '@angular/core';
 import { FileItem, FileLikeObject, FileUploader } from 'ng2-file-upload';
 import { ProjectService } from '../../api/services/project.service';
-import { FILE_MIME_TYPES, MAX_FILE_SIZE } from '../../util/file-parameters';
+import { FILE_MIME_TYPES, IMAGE_UPLOADER_QUERY_LIMIT, MAX_FILE_SIZE } from '../../util/file-parameters';
 import {
   confirmDialogConfig,
   customerGalleryDialogConfig,
@@ -24,7 +24,7 @@ import { Observable } from 'rxjs/internal/Observable';
   templateUrl: './image-uploader.component.html',
   styleUrls: ['./image-uploader.component.scss', './image-preview.scss']
 })
-export class ProjectImagesComponent implements OnInit {
+export class ImagesUploaderComponent implements OnInit {
 
   @Input() title: string;
   @Input() subtitle: string;
@@ -32,6 +32,7 @@ export class ProjectImagesComponent implements OnInit {
   @Input() apiUrl: string;
   @Input() isArchived: boolean;
   @Input() projectView: boolean = false;
+  @Input() showActionButtons: boolean = true;
   @Output() uploadCompleted: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   editMode: boolean;
@@ -59,22 +60,17 @@ export class ProjectImagesComponent implements OnInit {
       url: this.apiUrl,
       authToken: this.securityService.getTokenHeader(),
       allowedMimeType: FILE_MIME_TYPES.images,
-      maxFileSize: MAX_FILE_SIZE.bytes
+      maxFileSize: MAX_FILE_SIZE.bytes,
+      queueLimit: IMAGE_UPLOADER_QUERY_LIMIT,
     });
     this.uploader.onWhenAddingFileFailed = (item: FileLikeObject, filter: any, options: any) => {
-      console.log(item);
-      let text: string = '';
-      if (filter.name == 'mimeType') {
-        text = `The file type of ${item.name} is not allowed. \r\n You can only upload the following file types: .png, .jpg, .bmp.`;
-      } else if (filter.name == 'fileSize') {
-        text = `The file ${item.name} has failed to upload. Maximum upload file size ${MAX_FILE_SIZE.megabytes} Mb.`;
-      } else {
-        text = 'Something happened wrong';
-      }
-      this.popupService.showMessage({
-        text: text,
-        type: SystemMessageType.ERROR,
-        timeout: 10000
+      this.handleError(item, filter);
+    };
+    this.uploader.onAfterAddingAll = (items: Array<FileItem>) => {
+      this.uploader.queue.forEach((item: FileItem) => {
+        this.resizeImage(item._file).subscribe((blob: Blob) => {
+          item._file = (blob as File);
+        });
       });
     };
     this.uploader.onProgressItem = (item: FileItem) => {
@@ -84,12 +80,12 @@ export class ProjectImagesComponent implements OnInit {
       this.checkAccessToken(item);
     };
     this.uploader.onErrorItem = (item: FileItem, response: string, status: number,) => {
-      if(status == 401) {
+      if (status == 401) {
         //resetting image to upload again
         item.isUploaded = false;
         item.isError = false;
       }
-    }
+    };
   }
 
   @HostListener('window:keyup', ['$event'])
@@ -97,6 +93,10 @@ export class ProjectImagesComponent implements OnInit {
     if (event.keyCode == 27 && this.dropZoneTrigger) {
       this.closeDropZone(event);
     }
+  }
+
+  hasUnsavedImages(): boolean {
+    return this.uploader.getNotUploadedItems().length > 0;
   }
 
   toggleEditMode() {
@@ -185,32 +185,18 @@ export class ProjectImagesComponent implements OnInit {
     };
   }
 
-  beforeAdd(files: FileList): void {
-    const fileList = Array.from(files).filter(file => this.fileValidation(file));
-    if (fileList.length == 1) {
-      this.resizeImage(fileList[0]).subscribe((blob: Blob) => {
-        this.uploader.queue[this.uploader.queue.length - 1]._file = (blob as File);
-      });
-    } else {
-      const length = this.uploader.queue.length - fileList.length;
-      for (let i = 0; i < fileList.length; i++) {
-        this.resizeImage(fileList[i]).subscribe((blob: Blob) => {
-          this.uploader.queue[length + i]._file = (blob as File);
-        });
-      }
-    }
-  }
-
   onProcessDone(event: Event, item): void {
     item['processing'] = false;
   }
 
-  uploadAllImages(event): void {
+  uploadAllImages(): void {
     this.uploader.uploadAll();
     this.uploader.onCompleteAll = () => {
       //uploading canceled item
       if (this.uploader.getNotUploadedItems().length > 0) {
+        setTimeout(() => {
           this.uploader.uploadAll();
+        }, 500);
       } else {
         setTimeout(() => {
           this.uploadCompleted.next(true);
@@ -308,5 +294,24 @@ export class ProjectImagesComponent implements OnInit {
         }
       }
     }
+  }
+
+  private handleError(item: FileLikeObject, filter: any) {
+    let text: string = '';
+    switch (filter.name) {
+      case 'mimeType':
+        text = `The file type of ${item.name} is not allowed. \r\n You can only upload the following file types: .png, .jpg, .bmp.`;
+        break;
+      case 'fileSize':
+        text = `The file ${item.name} has failed to upload. Maximum upload file size ${MAX_FILE_SIZE.megabytes} Mb.`;
+        break;
+      case 'queueLimit':
+        text = `Query limit. You can add only ${IMAGE_UPLOADER_QUERY_LIMIT} images to upload query.`;
+        break;
+      default:
+        text = 'Could not add image to upload query';
+        break;
+    }
+    this.popupService.showError(text, 10000);
   }
 }

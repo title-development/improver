@@ -32,6 +32,7 @@ import { mergeMap, switchMap } from 'rxjs/internal/operators';
 import { MediaQuery, MediaQueryService } from '../../../../util/media-query.service';
 import { getErrorMessage } from '../../../../util/functions';
 import { UserTutorial } from '../../../../api/models/UserTutorial';
+import { UNSAVED_CHANGES_MESSAGE } from '../../../../util/messages';
 
 
 @Component({
@@ -74,7 +75,6 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate {
   private fetching$: Subscription;
   private zipsChange$: Subscription;
   private zipInfoWindow$: Subscription;
-  private unsavedMessage: string = 'WARNING: You have unsaved changes. Press Cancel to go back and save these changes, or OK to lose these changes.';
   unsupportedArea: any;
 
   constructor(private securityService: SecurityService,
@@ -194,7 +194,7 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate {
 
   preventSwitch(cvSwitch: CvSwitchComponent, event: MouseEvent): void {
     if (this.unsaved) {
-      if (!confirm(this.unsavedMessage)) {
+      if (!confirm(UNSAVED_CHANGES_MESSAGE)) {
         event.preventDefault();
         event.stopPropagation();
       } else {
@@ -326,7 +326,6 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate {
   @HostListener('window:beforeunload', ['$event'])
   unloadNotification(event): any {
     if (!this.canDeactivate()) {
-      event.returnValue = this.unsavedMessage;
 
       return false;
     }

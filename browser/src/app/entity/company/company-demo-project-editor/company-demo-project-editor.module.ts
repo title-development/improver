@@ -20,11 +20,13 @@ import { CvSelectModule } from "../../../theme/select/cv-select-module";
 import { CvFieldsModule } from "../../../theme/fields/cv-fields.module";
 import { SharedModule } from "../../../shared/shared.module";
 import { CvDatePickerModule } from "../../../theme/date-picker/cv-date-picker.module";
+import { PendingChangesGuard } from '../../../auth/router-guards/pending-chanes.guard';
 
 const routing: ModuleWithProviders = RouterModule.forChild([
   {
     path: '',
-    component: CompanyDemoProjectEditorComponent
+    component: CompanyDemoProjectEditorComponent,
+    canDeactivate: [PendingChangesGuard]
   }
 ]);
 

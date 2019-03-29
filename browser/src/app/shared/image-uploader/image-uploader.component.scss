@@ -6,9 +6,9 @@
 }
 
 .drop-zone-actions {
-  position: absolute;
-  right: 0;
-  top: 0;
+  display: flex;
+  margin-bottom: 24px;
+  justify-content: space-between;
   .submit-button {
     &:disabled {
       background: #dddddd !important;

@@ -1,20 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, NgForm } from '@angular/forms';
 
-import {DemoProject, ServiceType, SystemMessageType} from '../../../model/data-model';
+import { DemoProject, ServiceType, SystemMessageType } from '../../../model/data-model';
 import { ServiceTypeService } from '../../../api/services/service-type.service';
-import {DemoProjectService} from '../../../api/services/demo-project.service';
+import { DemoProjectService } from '../../../api/services/demo-project.service';
 import { SecurityService } from '../../../auth/security.service';
 import { Constants } from '../../../util/constants';
 import { Messages } from '../../../util/messages';
-import { Observable ,  forkJoin ,  combineLatest } from 'rxjs';
+import { Observable, forkJoin, combineLatest } from 'rxjs';
 import { PopUpMessageService } from '../../../util/pop-up-message.service';
 import { TricksService } from '../../../util/tricks.service';
 import { addDays, addYears, format } from 'date-fns';
-import { MatDialogRef } from "@angular/material";
-import { getErrorMessage } from "../../../util/functions";
-import { map, startWith } from "rxjs/internal/operators";
+import { getErrorMessage } from '../../../util/functions';
+import { map, startWith } from 'rxjs/internal/operators';
+import { ImagesUploaderComponent } from '../../../shared/image-uploader/image-uploader.component';
+import { ComponentCanDeactivate } from '../../../auth/router-guards/pending-chanes.guard';
+import { FormHasChangesDirective } from '../../../directives/form-has-changes.directive';
 
 
 @Component({
@@ -22,22 +24,22 @@ import { map, startWith } from "rxjs/internal/operators";
   templateUrl: './company-demo-project-editor.component.html',
   styleUrls: ['./company-demo-project-editor.component.scss']
 })
-export class CompanyDemoProjectEditorComponent implements OnInit {
+export class CompanyDemoProjectEditorComponent implements OnInit, ComponentCanDeactivate {
 
   minDate: string;
   maxDate: string;
 
   demoProject: DemoProject = {
-    name: "",
-    coverUrl: "",
-    date: "",
-    description: "",
-    price: "",
+    name: '',
+    coverUrl: '',
+    date: '',
+    description: '',
+    price: '',
     location: {
-      state: "",
-      city: "",
-      streetAddress: "",
-      zip: ""
+      state: '',
+      city: '',
+      streetAddress: '',
+      zip: ''
     },
     serviceTypes: [],
     images: [],
@@ -46,7 +48,6 @@ export class CompanyDemoProjectEditorComponent implements OnInit {
   projectImages: any[] = [];
 
   allServiceTypes: ServiceType[];
-  // selectedServices: ServiceType[] = [];
   project: DemoProject = new DemoProject();
   newMode: boolean = false;
   filteredStates = [];
@@ -55,6 +56,11 @@ export class CompanyDemoProjectEditorComponent implements OnInit {
   userId: string;
   companyId: string;
   projectId: string;
+  formHasChanges: boolean = false;
+  savingData: boolean = false;
+
+  @ViewChild(ImagesUploaderComponent) imageUploader: ImagesUploaderComponent;
+  @ViewChild('demoProjectForm') demoProjectForm: NgForm;
 
   constructor(public route: ActivatedRoute,
               public popUpMessageService: PopUpMessageService,
@@ -89,7 +95,7 @@ export class CompanyDemoProjectEditorComponent implements OnInit {
         err => {
           console.log(err);
           if (err.status == 404) {
-            this.router.navigate(['404'])
+            this.router.navigate(['404']);
           } else {
             this.popUpMessageService.showError(getErrorMessage(err));
           }
@@ -99,6 +105,20 @@ export class CompanyDemoProjectEditorComponent implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  unloadNotification(event): any {
+    if (!this.canDeactivate()) {
+
+      return false;
+    }
+  }
+
+  canDeactivate(): boolean {
+    const haveUnsavedImages: boolean = this.imageUploader && this.imageUploader.hasUnsavedImages();
+
+    return !(haveUnsavedImages || this.formHasChanges);
   }
 
   filter(name: string, arr: any): any[] {
@@ -137,19 +157,8 @@ export class CompanyDemoProjectEditorComponent implements OnInit {
             startWith(null),
             map(serviceType => serviceType && typeof serviceType === 'object' ? serviceType.name : serviceType),
             map(name => name ? this.filter(name, this.allServiceTypes) : this.allServiceTypes ? this.allServiceTypes.slice() : []),
-          )
+          );
 
-        },
-        err => {
-          console.log(err);
-        });
-  }
-
-  getDemoProject() {
-    this.demoProjectService.get(this.companyId, this.projectId)
-      .subscribe(
-        project => {
-          this.demoProject = project;
         },
         err => {
           console.log(err);
@@ -168,35 +177,31 @@ export class CompanyDemoProjectEditorComponent implements OnInit {
     throw new Error('Method not implemented.');
   }
 
-  onUpdateDemoProject() {
-    this.updateDemoProject(this.demoProject.id, this.demoProject);
-  }
-
-  updateDemoProject(id, demoProject) {
-    this.demoProjectService.update(id, demoProject)
-      .subscribe(
-        response => {
-          this.popUpMessageService.showMessage({
-            text: 'Project is updated',
-            type: SystemMessageType.SUCCESS
-          });
-          this.router.navigate(['companies', this.companyId, 'projects', this.projectId, 'view'])
-        },
-        err => {
-          console.log(err);
-          this.popUpMessageService.showError(JSON.parse(err.error).message)
+  saveDemoProject(form: NgForm, formChanges: FormHasChangesDirective): void {
+    formChanges.markAsNotChanged();
+    let observable;
+    this.savingData = true;
+    if (this.imageUploader.hasUnsavedImages()) {
+      this.imageUploader.uploadAllImages();
+      observable = combineLatest(
+        this.demoProjectService.update(this.demoProject.id, this.demoProject),
+        this.imageUploader.uploadCompleted);
+    } else {
+      observable = this.demoProjectService.update(this.demoProject.id, this.demoProject);
+    }
+    observable.subscribe(
+      () => {
+        this.savingData = false;
+        this.popUpMessageService.showMessage({
+          text: 'Project is updated',
+          type: SystemMessageType.SUCCESS
         });
-  }
-
-  getProjectImages() {
-    this.demoProjectService.getImages(this.companyId, this.projectId)
-      .subscribe(
-        images => {
-          this.projectImages = images;
-        },
-        err => {
-          console.log(err);
-        });
+        this.router.navigate(['companies', this.companyId, 'projects', this.projectId, 'view']);
+      },
+      err => {
+        this.savingData = false;
+        this.popUpMessageService.showError(JSON.parse(err.error).message);
+      });
   }
 
   // TODO: Implementation
@@ -213,7 +218,7 @@ export class CompanyDemoProjectEditorComponent implements OnInit {
         },
         err => {
           console.log(err);
-          this.popUpMessageService.showError(err.statusText)
+          this.popUpMessageService.showError(err.statusText);
         });
   }
 

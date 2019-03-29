@@ -105,8 +105,7 @@ export class CompanyDemoProjectViewerComponent implements OnInit {
 
         },
         err => {
-          console.log(err);
-          this.popUpMessageService.showError(JSON.parse(err.error).message)
+          this.popUpMessageService.showError(getErrorMessage(err))
         });
   }
 

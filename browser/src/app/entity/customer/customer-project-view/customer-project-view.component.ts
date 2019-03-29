@@ -1,5 +1,5 @@
-import { Component, EventEmitter, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { Component, EventEmitter, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, CanDeactivate, NavigationEnd, Router } from '@angular/router';
 import {
   CloseProjectRequest, CustomerProject, Review
 } from '../../../model/data-model';
@@ -14,6 +14,8 @@ import { getErrorMessage } from '../../../util/functions';
 import { SomePipe } from 'angular-pipes';
 import { of, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { ComponentCanDeactivate } from '../../../auth/router-guards/pending-chanes.guard';
+import { ImagesUploaderComponent } from '../../../shared/image-uploader/image-uploader.component';
 
 @Component({
   selector: 'customer-project-view',
@@ -21,12 +23,13 @@ import { switchMap } from 'rxjs/operators';
   styleUrls: ['./customer-project-view.component.scss']
 })
 
-export class CustomerProjectViewComponent implements OnInit, OnDestroy {
+export class CustomerProjectViewComponent implements OnInit, OnDestroy, ComponentCanDeactivate {
 
   projectId: number;
   project: CustomerProject;
   ProjectRequest = ProjectRequest;
   Project = Project;
+  @ViewChild(ImagesUploaderComponent) imageUploader;
   private hashFragment: string;
   private onProjectsUpdate$: Subscription;
   private onProjectDialogClose$: Subscription;
@@ -52,29 +55,41 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy {
     );
 
     this.onProjectsUpdate$ = this.projectActionService.onProjectsUpdate.subscribe(() => {
-      if(!this.projectDialogOpened) {
+      if (!this.projectDialogOpened) {
         this.getProject();
       }
     });
     this.onProjectDialogClose$ = this.projectActionService.onCloseProjectRequestDialog.subscribe(() => {
       this.projectDialogOpened = false;
-      if(this.hashFragment) {
+      if (this.hashFragment) {
         //navigate and refresh component
         this.router.navigate([]); //clear hash fragment from url (projects/22#21 => projects/22)
       } else {
         this.getProject();
       }
-    })
+    });
   }
 
   ngOnInit() {
+  }
+
+  canDeactivate(): boolean {
+    return !(this.imageUploader && this.imageUploader.hasUnsavedImages());
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  unloadNotification(event): any {
+    if (!this.canDeactivate()) {
+
+      return false;
+    }
   }
 
   ngOnDestroy(): void {
     if (this.onProjectsUpdate$) {
       this.onProjectsUpdate$.unsubscribe();
     }
-    if(this.onProjectDialogClose$) {
+    if (this.onProjectDialogClose$) {
       this.onProjectDialogClose$.unsubscribe();
     }
   }
@@ -143,7 +158,6 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy {
   isProjectRequestActive(item) {
     return item.status == ProjectRequest.Status.HIRED || item.status == ProjectRequest.Status.COMPLETED || item.status == ProjectRequest.Status.ACTIVE;
   }
-
 
   isInactiveProsExist() {
     return this.somePipe.transform(this.project.projectRequests, this.isProjectRequestInactive);

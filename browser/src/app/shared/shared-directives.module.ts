@@ -17,6 +17,7 @@ import { CompanyNameUniqueValidator } from "../validators/company-name-unique-va
 import { TrimDirective } from '../directives/trim.directive';
 import { ServiceNameUniqueValidatorDirective } from '../validators/service-name-unique-validator.directive';
 import { TradeNameUniqueValidatorDirective } from '../validators/trade-name-unique-validator.directive';
+import { FormHasChangesDirective } from '../directives/form-has-changes.directive';
 
 @NgModule({
   imports: [
@@ -39,6 +40,7 @@ import { TradeNameUniqueValidatorDirective } from '../validators/trade-name-uniq
     TrimDirective,
     ServiceNameUniqueValidatorDirective,
     TradeNameUniqueValidatorDirective,
+    FormHasChangesDirective
   ],
   exports: [
     EqualValidator,
@@ -58,6 +60,7 @@ import { TradeNameUniqueValidatorDirective } from '../validators/trade-name-uniq
     TrimDirective,
     ServiceNameUniqueValidatorDirective,
     TradeNameUniqueValidatorDirective,
+    FormHasChangesDirective
   ],
   providers: [
   ]

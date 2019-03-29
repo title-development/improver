@@ -78,7 +78,7 @@ public class ImageService {
 
     public String saveProjectImage(MultipartFile file, ImageContainable imageContainable) throws ValidationException, InternalServerException {
         String imageUrl;
-        if (file.isEmpty()) {
+        if (file == null || file.isEmpty()) {
             log.error("Image is empty");
             throw new ValidationException("Image is empty");
         }
