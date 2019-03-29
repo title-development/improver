@@ -13,6 +13,7 @@ import lombok.experimental.Accessors;
 import javax.persistence.*;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.UUID;
 
 
 @Data
@@ -42,6 +43,8 @@ public class Contractor extends User {
     @JsonIgnore
     private String referredBy;
 
+    @JsonIgnore
+    private boolean referralBonusReceived;
 
     // TODO move to Notification settings
     @JsonIgnore
@@ -63,13 +66,16 @@ public class Contractor extends User {
         super(firstName, lastName, email, plainPassword, internalPhone, iconUrl);
     }
 
-    public static Contractor of(SocialUser socialUser, String internalPhone) {
+    public static Contractor of(SocialUser socialUser, String internalPhone, String refCode, String referredBy) {
+
         return new Contractor(socialUser.getFirstName(),
             socialUser.getLastName(),
             socialUser.getEmail(),
             null,
             internalPhone,
             socialUser.getPicture())
+            .setReferredBy(referredBy)
+            .setRefCode(refCode)
             .setIncomplete(true)
             .setActivated(true);
     }

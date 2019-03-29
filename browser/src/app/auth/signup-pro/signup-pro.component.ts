@@ -13,9 +13,10 @@ import {
 import { PopUpMessageService } from '../../util/pop-up-message.service';
 import { HttpResponse } from '@angular/common/http';
 import { getErrorMessage } from '../../util/functions';
-import { SystemMessageType } from '../../model/data-model';
 import { MediaQuery, MediaQueryService } from '../../util/media-query.service';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
+import { ActivatedRoute, Params } from '@angular/router';
+import { takeUntil } from 'rxjs/operators';
 
 
 @Component({
@@ -24,7 +25,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['signup-pro.component.scss']
 })
 
-export class SignupProComponent implements OnDestroy{
+export class SignupProComponent implements OnDestroy {
   agreeForSocialLogin: boolean = false;
   processing: boolean = false;
   showMessage: boolean = false;
@@ -36,6 +37,7 @@ export class SignupProComponent implements OnDestroy{
     lastName: '',
     phone: '',
     password: '',
+    referralCode: ''
   };
 
   registerProps: RegistrationUserProps = {
@@ -43,7 +45,9 @@ export class SignupProComponent implements OnDestroy{
     agree: false
   };
   mediaQuery: MediaQuery;
-  private mediaQuerySubscription: Subscription;
+  private readonly REFERRAL_CODE_STORAGE_KEY: string = 'REFERRAL_CODE';
+  private referralQueryParamKey: string = 'referer';
+  private componentDestroyed: Subject<any> = new Subject();
 
   constructor(public securityService: SecurityService,
               public constants: Constants,
@@ -51,21 +55,26 @@ export class SignupProComponent implements OnDestroy{
               public tricksService: TricksService,
               public popUpMessageService: PopUpMessageService,
               public registrationService: RegistrationService,
-              private mediaQueryService: MediaQueryService
-              ) {
-    this.mediaQuerySubscription = this.mediaQueryService.screen.subscribe((mediaQuery: MediaQuery) => {
-      this.mediaQuery = mediaQuery;})
+              private mediaQueryService: MediaQueryService,
+              private route: ActivatedRoute
+  ) {
+    this.route.queryParams.pipe(takeUntil(this.componentDestroyed)).subscribe((params: Params) => {
+      this.user.referralCode = this.useReferralCode(params);
+    });
+    this.mediaQueryService.screen.pipe(takeUntil(this.componentDestroyed)).subscribe((mediaQuery: MediaQuery) => {
+      this.mediaQuery = mediaQuery;
+    });
   }
 
   registerContractor(form) {
-    this.registrationService.registerContractor(this.user).subscribe((response: HttpResponse<any>) => {
+    this.registrationService.registerContractor(this.user).pipe(takeUntil(this.componentDestroyed)).subscribe((response: HttpResponse<any>) => {
       this.securityService.loginUser(JSON.parse(response.body) as LoginModel, response.headers.get('authorization'), true);
     }, err => {
       if (err.status == 401) {
         this.securityService.systemLogout();
         this.popUpMessageService.showError(getErrorMessage(err));
       } else {
-        this.popUpMessageService.showError(getErrorMessage(err))
+        this.popUpMessageService.showError(getErrorMessage(err));
       }
     });
   }
@@ -75,8 +84,19 @@ export class SignupProComponent implements OnDestroy{
   }
 
   ngOnDestroy(): void {
-    if(this.mediaQuerySubscription) {
-      this.mediaQuerySubscription.unsubscribe();
+    this.componentDestroyed.next();
+    this.componentDestroyed.complete();
+  }
+
+  private useReferralCode(params): string {
+    let referralCode: string = '';
+    if (params[this.referralQueryParamKey]) {
+      referralCode = params[this.referralQueryParamKey];
+      sessionStorage.setItem(this.REFERRAL_CODE_STORAGE_KEY, referralCode);
+    } else if (sessionStorage.getItem(this.REFERRAL_CODE_STORAGE_KEY)) {
+      referralCode = sessionStorage.getItem(this.REFERRAL_CODE_STORAGE_KEY);
     }
+
+    return referralCode;
   }
 }

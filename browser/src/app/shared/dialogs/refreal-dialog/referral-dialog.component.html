@@ -1,0 +1,22 @@
+<div class="dialog-content-wrapper">
+  <div class="dialog-content-container">
+    <div class="header">
+      <mat-icon class="close-modal" color="accent" (click)="close()">clear</mat-icon>
+      <div class="header-content">
+        <div class="title">Give {{constants.REFERRAL_BONUS_AMOUNT / 100 | currency:'USD':'symbol':'0.0-0'}}, Get {{constants.REFERRAL_BONUS_AMOUNT / 100 | currency:'USD':'symbol':'0.0-0'}}</div>
+      </div>
+    </div>
+    <div [cvSpinner]="fetching" [cvSpinnerSize]="24" [cvSpinnerBackground]="true">
+      <div class="content" >
+        <p>Introduce a friend to Home Improve.
+          They'll get {{constants.REFERRAL_BONUS_AMOUNT / 100 | currency:'USD':'symbol':'0.0-0'}} when they sign up and do first purchase,
+          and you'll get {{constants.REFERRAL_BONUS_AMOUNT / 100 | currency:'USD':'symbol':'0.0-0'}} credit once they complete their first purchase. Only for new Home Improve members</p>
+      </div>
+      <div class="actions">
+        <button cv-button ngxClipboard [cbContent]="referralUrl">Copy url</button>
+        <button cv-button (click)="shareByFacebook()"><cv-icon icon="imp-icon-social-facebook"></cv-icon>Facebook</button>
+        <a [href]="mailTo" cv-button ><cv-icon icon="imp-icon-mail"></cv-icon>Email</a>
+      </div>
+    </div>
+  </div>
+</div>

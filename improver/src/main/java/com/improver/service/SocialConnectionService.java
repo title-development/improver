@@ -49,7 +49,7 @@ public class SocialConnectionService {
         }
     }
 
-    public User registerPro(@Valid SocialUser socialUser, String phone) throws AuthenticationRequiredException {
+    public User registerPro(@Valid SocialUser socialUser, String phone, String referredBy) throws AuthenticationRequiredException {
         SocialConnection connection = socialConnectionRepository.findByProviderId(socialUser.getId());
         if (connection != null) {
             throw new AuthenticationRequiredException(StringUtil.capitalize(socialUser.getProvider().toString()) + " account is already connected to another user");
@@ -60,7 +60,8 @@ public class SocialConnectionService {
             throw new AuthenticationRequiredException("User with email "+socialUser.getEmail()+ " already registered");
         }
 
-        Contractor contractor = Contractor.of(socialUser, phone);
+        String refCode = UserService.generateRefCode();
+        Contractor contractor = Contractor.of(socialUser, phone, refCode, referredBy);
 
         return userService.registerUser(contractor, socialUser);
     }

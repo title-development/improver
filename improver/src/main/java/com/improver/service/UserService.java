@@ -96,10 +96,14 @@ public class UserService {
      */
     public Contractor registerContractor(UserRegistration registration) {
         String validationKey = UUID.randomUUID().toString();
+        String refCode = generateRefCode();
         Contractor contractor = contractorRepository.save(new Contractor(registration)
+            .setReferredBy(registration.getReferralCode())
+            .setRefCode(refCode)
             .setValidationKey(validationKey)
             .setIncomplete(true)
         );
+
         return contractor;
     }
 
@@ -360,5 +364,9 @@ public class UserService {
         Staff staff = staffRepository.findById(id)
             .orElseThrow(NotFoundException::new);
         staffRepository.save(staff.setCredentialExpired(true));
+    }
+
+    public static String generateRefCode() {
+        return UUID.randomUUID().toString().substring(0,16);
     }
 }

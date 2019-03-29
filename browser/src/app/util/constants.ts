@@ -11,6 +11,7 @@ export class Constants {
   REVIEW_MESSAGE_MIN_LENGTH: number = 10;
   ADMIN_PROJECT_VALIDATION_COMMENT_MIN_SIZE: number = 10;
   ADMIN_PROJECT_VALIDATION_COMMENT_MAX_SIZE: number = 500;
+  REFERRAL_BONUS_AMOUNT: number = 10000;
   patterns: any;
   projectStatuses: Array<any>;
   months: string[];

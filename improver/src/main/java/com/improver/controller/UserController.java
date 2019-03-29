@@ -187,6 +187,4 @@ public class UserController {
         userService.expireCredentials(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-
 }

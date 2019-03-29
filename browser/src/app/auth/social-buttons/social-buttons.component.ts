@@ -22,6 +22,7 @@ export enum SocialPlatform {
 })
 export class SocialButtonsComponent {
 
+  @Input() referralCode: string;
   @Input() preventLogin: boolean = false;
   @Input() disabled: boolean = false;
   @Input() processing: boolean = false;
@@ -67,6 +68,7 @@ export class SocialButtonsComponent {
       .subscribe(result => {
         this.phoneRequestDialogRef = null;
       });
+    this.phoneRequestDialogRef.componentInstance.referralCode = this.referralCode;
     this.phoneRequestDialogRef.componentInstance.socialUser = userData;
     this.phoneRequestDialogRef.componentInstance.socialPlatform = socialPlatform;
   }

@@ -13,8 +13,12 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { Role } from '../../../model/security-model';
 import { Subscription } from 'rxjs';
 import { MediaQuery, MediaQueryService } from '../../../util/media-query.service';
-import { distinctUntilChanged } from "rxjs/internal/operators";
-
+import { distinctUntilChanged } from 'rxjs/internal/operators';
+import { Constants } from '../../../util/constants';
+import { MatDialog, MatDialogRef } from '@angular/material';
+import { dialogsMap } from '../../../shared/dialogs/dialogs.state';
+import { confirmDialogConfig } from '../../../shared/dialogs/dialogs.configs';
+import { ReferralDialogComponent } from '../../../shared/dialogs/refreal-dialog/referral-dialog.component';
 
 
 @Component({
@@ -47,17 +51,21 @@ export class MainMenuComponent implements OnChanges, OnDestroy {
   Role = Role;
   animationState: string | 'inactive' | 'active';
   mediaQuery: MediaQuery;
+  private referralDialogRef: MatDialogRef<ReferralDialogComponent>;
 
   private _toggle: boolean = false;
   private mediaWatcher: Subscription;
-  private menuWidth: number =  215;
+  private menuWidth: number = 215;
   resizeHandler = () => this.onResize();
 
   constructor(public securityService: SecurityService,
               private elementRef: ElementRef,
               @Inject('Window') private window: Window,
               private query: MediaQueryService,
-              private renderer: Renderer2) {
+              private renderer: Renderer2,
+              public constants: Constants,
+              private dialog: MatDialog
+  ) {
     this.mediaWatcher = this.query.screen.pipe(
       distinctUntilChanged()
     ).subscribe((media: MediaQuery) => {
@@ -99,6 +107,14 @@ export class MainMenuComponent implements OnChanges, OnDestroy {
     setTimeout(() => {
       this.securityService.logout();
     }, 250);
+  }
+
+  toggleReferralDialog(): void {
+    this.referralDialogRef = this.dialog.open(dialogsMap['referral-dialog'], confirmDialogConfig);
+    this.referralDialogRef.afterClosed()
+      .subscribe(() => {
+        this.referralDialogRef = null;
+      });
   }
 
   ngOnDestroy(): void {

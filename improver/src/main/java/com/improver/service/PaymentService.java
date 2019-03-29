@@ -4,12 +4,10 @@ import com.improver.entity.Billing;
 import com.improver.entity.Company;
 import com.improver.entity.Contractor;
 import com.improver.entity.Transaction;
-import com.improver.exception.ConflictException;
-import com.improver.exception.PaymentFailureException;
-import com.improver.exception.InternalServerException;
-import com.improver.exception.ValidationException;
+import com.improver.exception.*;
 import com.improver.model.out.PaymentCard;
 import com.improver.repository.BillRepository;
+import com.improver.repository.ContractorRepository;
 import com.improver.repository.TransactionRepository;
 import com.improver.util.mail.MailService;
 import com.improver.util.serializer.SerializationUtil;
@@ -26,18 +24,21 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.improver.application.properties.BusinessProperties.MAX_AVAILABLE_CARDS_COUNT;
+import static com.improver.application.properties.BusinessProperties.REFERRAL_BONUS_AMOUNT;
 import static com.improver.application.properties.Constants.REPLENISHMENT_PURPOSE;
+import static com.improver.util.TextMessages.REFERRAL_BONUS_MESSAGE;
 
 @Service
 public class PaymentService {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    @Autowired
-    private WsNotificationService wsNotificationService;
+    @Autowired private WsNotificationService wsNotificationService;
     @Autowired private TransactionRepository transactionRepository;
     @Autowired private BillRepository billRepository;
     @Autowired private MailService mailService;
+    @Autowired private BillingService billingService;
+    @Autowired private ContractorRepository contractorRepository;
 
     public enum ChargeStatus {
         SUCCEEDED("succeeded"),
@@ -71,6 +72,7 @@ public class PaymentService {
             throw new ValidationException("Amount should be greater then 0");
         }
         Billing billing = addToBalance(company, contractor, amount, Transaction.Type.REPLENISHMENT, REPLENISHMENT_PURPOSE, null);
+        addReferredBonuses(company, contractor, amount);
         wsNotificationService.updateBalance(company, billing);
         mailService.sendBalanceReplenished(company, amount);
     }
@@ -243,6 +245,20 @@ public class PaymentService {
             throw new InternalServerException("Your card was declined", e);
         } catch (AuthenticationException | InvalidRequestException | APIConnectionException | APIException e) {
             throw new InternalServerException("Payment Card cannot be proceed due to connectivity issue. Try again in a while", e);
+        }
+    }
+
+    private void addReferredBonuses(Company company, Contractor contractor, int amount) throws NotFoundException {
+        if (amount >= REFERRAL_BONUS_AMOUNT &&
+            !contractor.isReferralBonusReceived() &&
+            contractor.getReferredBy() != null &&
+            !contractor.getReferredBy().isEmpty()
+        ) {
+            Contractor referredByContractor = contractorRepository.getContractorByRefCode(contractor.getReferredBy())
+                .orElseThrow(NotFoundException::new);
+            billingService.addBonus(company, REFERRAL_BONUS_AMOUNT, REFERRAL_BONUS_MESSAGE, null);
+            contractor.setReferralBonusReceived(true);
+            billingService.addBonus(referredByContractor.getCompany(), REFERRAL_BONUS_AMOUNT, REFERRAL_BONUS_MESSAGE, null);
         }
     }
 

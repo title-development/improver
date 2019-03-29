@@ -5,7 +5,6 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.improver.entity.SocialConnection;
 import com.improver.entity.User;
 import com.improver.exception.AuthenticationRequiredException;
 import com.improver.model.socials.PhoneSocialCredentials;
@@ -43,7 +42,7 @@ public class GoogleSocialService {
     public User registerPro(PhoneSocialCredentials phoneSocialCredentials) {
         SocialUser socialUser = getSocialUser(phoneSocialCredentials.getAccessToken());
 
-        return socialConnectionService.registerPro(socialUser, phoneSocialCredentials.getPhone());
+        return socialConnectionService.registerPro(socialUser, phoneSocialCredentials.getPhone(), phoneSocialCredentials.getReferralCode());
     }
 
     public void connect(User user, String idTokenString) {

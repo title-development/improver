@@ -42,6 +42,7 @@ public final class Path {
     public static final String STAFF =                 "/staff";
     public static final String COVERAGE =              "/coverage";
     public static final String CONFIG =                "/config";
+    public static final String REFERRAL =              "/referral";
 
 
     public static final String LOGIN =               "/login";
@@ -99,6 +100,7 @@ public final class Path {
     public static final String JOB_PATH  =              API_PATH_PREFIX + JOBS;
     public static final String TUTORIALS_PATH  =        API_PATH_PREFIX + TUTORIALS;
     public static final String STAFF_PATH  =            API_PATH_PREFIX + STAFF;
+    public static final String REFERRAL_PATH  =         API_PATH_PREFIX + REFERRAL;
 
     public static final String REGISTRATION_PATH =          API_PATH_PREFIX + REGISTER;
     public static final String CONFIRM_PATH =               API_PATH_PREFIX + CONFIRM;

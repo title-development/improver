@@ -37,6 +37,11 @@ public class WsNotificationService {
         sendNotification(receiver.getId(), Notification.proLeftProject(receiver, company.getName(), company.getId(), serviceType, projectId));
     }
 
+    public void bonusReceived(Company company, int amount) {
+        company.getContractors().forEach(contractor ->
+            sendNotification(contractor.getId(), Notification.bonusReceived(contractor, amount))
+        );
+    }
 
     public void newLeadPurchase(User receiver, Customer customer, String serviceType, long projectRequestId){
         sendNotification(receiver.getId(), Notification.newLeadPurchase(receiver, customer.getDisplayName(), customer.getId(), serviceType, projectRequestId));

@@ -169,6 +169,20 @@
                   </cv-field-error>
                 </cv-input-field>
               </div>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <cv-input-field>
+                  <input cv-input placeholder="Referral code"
+                         #referralCode="ngModel"
+                         name="referralCode"
+                         type="text"
+                         [(ngModel)]="user.referralCode">
+                  <cv-field-error *ngIf="referralCode.dirty || referralCode.touched || accountForm.submitted">
+                  </cv-field-error>
+                </cv-input-field>
+              </div>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+
+              </div>
             </div>
           </div>
           <div class="col-md-4 col-sm-12 col-xs-12">
@@ -197,11 +211,13 @@
             <social-buttons [preventLogin]="!registerProps.agree"
                             [processing]="processing"
                             [contractorRegistrationFlow]="true"
+                            [referralCode]="referralCode"
                             (responseMessageType)="messageType = $event;"
                             (responseMessage)="messageText = $event;"
                             (showMessage)="showMessage = $event;"
                             (click)="agreeForSocialLogin = !registerProps.agree"
             ></social-buttons>
+            <div *ngIf="user.referralCode" class="card hint">To receive the bonus you should do replenish the balance for {{constants.REFERRAL_BONUS_AMOUNT / 100 | currency:'USD':'symbol':'0.0-0'}}</div>
           </div>
         </div>
         <div class="row" *ngIf="!(mediaQuery.xs || mediaQuery.sm)">

@@ -40,6 +40,7 @@
       <a routerLink="/pro/settings/services" (click)="close()">Services</a>
       <a routerLink="/pro/settings/coverage" (click)="close()">Coverage</a>
       <a routerLink="/pro/settings/billing" (click)="close()">Billing</a>
+      <a (click)="close(); toggleReferralDialog()">Give {{constants.REFERRAL_BONUS_AMOUNT / 100 | currency:'USD':'symbol':'0.0-0'}}, Get {{constants.REFERRAL_BONUS_AMOUNT / 100 | currency:'USD':'symbol':'0.0-0'}}</a>
       <a routerLink="/pro/settings/notifications" (click)="close()">Notifications</a>
       <a routerLink="/pro/settings/quick-reply" (click)="close()">Quick Reply</a>
       <a routerLink="/pro/settings/scheduling-availability" (click)="close()">Scheduling</a>
@@ -49,11 +50,8 @@
     </div>
 
     <div class="user-role" *ngIf="!securityService.isAuthenticated() && ( securityService.hasRole(Role.ANONYMOUS) || securityService.hasRole(Role.INCOMPLETE_PRO))">
-
       <button class="join-as-pro-button" routerLink="/become-pro" (click)="close()">Become a Pro</button>
-
       <div class="buttons-wrapper">
-
         <a routerLink="/login" (click)="close()">
           <i class="imp-icon-login"></i>
           <span>LOG IN</span>
@@ -62,11 +60,7 @@
           <i class="imp-icon-signup"></i>
           <span>SIGN UP</span>
         </a>
-
       </div>
-
-
-
     </div>
   </div>
   <div class="menu-footer" *ngIf="securityService.isAuthenticated()">
@@ -75,6 +69,5 @@
       <i class="imp-icon-signout"></i>
       <!--<img class="logout-icon -desktop" src="../../../../assets/img/logout-icon.png">-->
     </a>
-
   </div>
 </div>

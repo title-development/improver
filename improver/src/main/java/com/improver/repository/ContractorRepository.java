@@ -27,6 +27,8 @@ public interface ContractorRepository extends JpaRepository<Contractor, Long> {
     @Query("SELECT new com.improver.model.QuickReply(c.quickReply, c.replyText) FROM com.improver.entity.Contractor c WHERE c.id = ?1")
     QuickReply getQuickReply(long contractorId);
 
+    Optional<Contractor> getContractorByRefCode(String refCode);
+
 
     @Query("SELECT c.company from com.improver.entity.Contractor c" +
         " INNER JOIN c.company com" +

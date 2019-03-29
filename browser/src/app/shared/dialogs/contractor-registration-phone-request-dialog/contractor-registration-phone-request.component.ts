@@ -25,6 +25,7 @@ import { catchError, switchMap } from 'rxjs/operators';
 export class ContractorRegistrationPhoneRequestComponent {
   socialUser: SocialUser;
   socialPlatform: SocialPlatform;
+  referralCode: string;
   phone: string;
   showMessage: boolean = false;
   messageType: string;
@@ -47,14 +48,14 @@ export class ContractorRegistrationPhoneRequestComponent {
     let observable: Observable<any>;
     switch (this.socialPlatform) {
       case SocialPlatform.FACEBOOK:
-        observable = this.socialLoginService.proFacebookRegister(new PhoneSocialCredentials(this.socialUser.authToken, this.phone));
+        observable = this.socialLoginService.proFacebookRegister(new PhoneSocialCredentials(this.socialUser.authToken, this.phone, this.referralCode));
         break;
       case SocialPlatform.GOOGLE:
         observable = fromPromise(this.socialAuthService.signIn(GoogleLoginProvider.PROVIDER_ID)).pipe(
           switchMap((userData: SocialUser) => {
             if (userData && userData.id) {
 
-              return this.socialLoginService.proGoogleApiRegister(new PhoneSocialCredentials(userData.idToken, this.phone));
+              return this.socialLoginService.proGoogleApiRegister(new PhoneSocialCredentials(userData.idToken, this.phone, this.referralCode));
             } else {
               throwError('Unknown error try again later');
             }

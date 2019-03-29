@@ -1,0 +1,53 @@
+@import "../../../../improver-mixins.scss";
+
+
+.header {
+  .header-content {
+    padding: 16px 48px 16px 24px;
+    background-color: $black-100;
+    font-size: 20px;
+    font-weight: 600;
+    text-align: left;
+    color: $black-secondary;
+  }
+  .title {
+    text-align: center;
+  }
+}
+
+.content {
+  margin-bottom: 12px;
+  color: rgba(0, 0, 0, 0.92);
+  padding: 0px 24px;
+  p {
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+}
+
+ .copy-url {
+   width: 71%;
+   margin: 0 auto 4px;
+   display: block;
+ }
+.actions {
+  padding: 0px 24px 16px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+
+  .cv-button {
+    &:not(:first-child) {
+      margin-left: 8px;
+    }
+    width: 25%;
+  }
+
+}
+
+.close-modal {
+  position: relative;
+  right: 32px;
+  top: 32px;
+}

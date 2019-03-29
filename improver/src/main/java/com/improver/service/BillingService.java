@@ -60,7 +60,10 @@ public class BillingService {
         comment = comment != null && !comment.equals("") ? comment : BONUS_MESSAGE;
         self.addBonusTransactional(company, amount, comment);
         wsNotificationService.updateBalance(company, company.getBilling());
-        staffActionLogger.logAddBonus(currentStaff, company.getId(), amount);
+        wsNotificationService.bonusReceived(company, amount);
+        if(currentStaff != null) {
+            staffActionLogger.logAddBonus(currentStaff, company.getId(), amount);
+        }
         mailService.sendBonus(company, amount);
     }
 

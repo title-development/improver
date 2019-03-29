@@ -21,6 +21,8 @@ import { CvCheckboxModule } from '../../theme/checkbox/checkbox.module';
 import { dialogs } from './dialogs.state';
 import { CvDateRangePickerModule } from '../../theme/date-range-picker/cv-date-range-picker.module';
 import { BoundariesService } from "../../api/services/boundaries.service";
+import { ReferralService } from '../../api/services/referral.service';
+import { ClipboardModule } from 'ngx-clipboard';
 
 @NgModule({
   imports: [
@@ -41,7 +43,8 @@ import { BoundariesService } from "../../api/services/boundaries.service";
     CvCheckboxModule,
     CvSpinnerModule,
     CvDateRangePickerModule,
-    PerfectScrollbarModule
+    PerfectScrollbarModule,
+    ClipboardModule
   ],
   declarations: [
     QuestionaryFormComponent,
@@ -54,7 +57,8 @@ import { BoundariesService } from "../../api/services/boundaries.service";
   ],
   providers: [
     LocationValidateService,
-    BoundariesService
+    BoundariesService,
+    ReferralService
   ]
 })
 export class DialogsModule {

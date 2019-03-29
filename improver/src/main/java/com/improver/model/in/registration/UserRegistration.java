@@ -31,4 +31,6 @@ public class UserRegistration {
 
     @Pattern(regexp = PHONE_PATTERN_STRING, message = PHONE_PATTERN_ERROR_MESSAGE)
     private String phone;
+
+    private String referralCode;
 }

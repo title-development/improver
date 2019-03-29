@@ -1,7 +1,6 @@
 package com.improver.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.improver.entity.SocialConnection;
 import com.improver.entity.User;
 import com.improver.exception.AuthenticationRequiredException;
 import com.improver.exception.ThirdPartyException;
@@ -20,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -52,7 +50,7 @@ public class FacebookSocialService {
     public User registerPro(PhoneSocialCredentials phoneSocialCredentials) {
         SocialUser socialUser = getSocialUser(phoneSocialCredentials.getAccessToken());
 
-        return socialConnectionService.registerPro(socialUser, phoneSocialCredentials.getPhone());
+        return socialConnectionService.registerPro(socialUser, phoneSocialCredentials.getPhone(), phoneSocialCredentials.getReferralCode());
     }
 
     public void connect(User user, String accessToken) {

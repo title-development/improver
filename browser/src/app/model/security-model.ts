@@ -32,6 +32,7 @@ export class RegistrationUserModel {
   zip?: string;
   phone?: string;
   role?: string;
+  referralCode?: string;
 }
 
 export class RegistrationUserProps {
@@ -76,10 +77,11 @@ export class ActivationCustomerModel {
 export class PhoneSocialCredentials {
   accessToken: string;
   phone: string;
+  referralCode: string;
 
-
-  constructor(accessToken: string, phone: string) {
+  constructor(accessToken: string, phone: string, referralCode: string) {
     this.accessToken = accessToken;
     this.phone = phone;
+    this.referralCode = referralCode;
   }
 }

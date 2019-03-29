@@ -15,16 +15,17 @@ import { CancelProjectDialogComponent } from './cancel-project-dialog/cancel-pro
 import { QuestionaryDialogComponent } from './questionary-dialog/questionary-dialog.component';
 import { RequestRefundDialogComponent } from './request-refund-dialog/request-refund-dialog.component';
 import { UnavailabilityPeriodDialogComponent } from './unavailability-period-dialog/unavailability-period-dialog.component';
-import { RefundStatusDialogComponent } from "./refund-status-dialog/refund-status-dialog.component";
+import { RefundStatusDialogComponent } from './refund-status-dialog/refund-status-dialog.component';
 import { SubscriptionDialogComponent } from './subscription-dialog/subscription-dialog.component';
 import { RequestReviewDialogComponent } from './request-review-dialog/request-review-dialog.component';
 import { DeleteAccountDialogComponent } from './delete-account-dialog/delete-account-dialog.component';
 import { DeleteCompanyDialogComponent } from './delete-company-dialog/delete-company-dialog.component';
-import {CustomerProjectRequestDialogAboutComponent} from "../../entity/customer/customer-project-request-dialog/customer-project-request-dialog-about/customer-project-request-dialog-about.component";
-import {CustomerProjectRequestDialogReviewsComponent} from "../../entity/customer/customer-project-request-dialog/customer-project-request-dialog-reviews/customer-project-request-dialog-reviews.component";
+import {CustomerProjectRequestDialogAboutComponent} from '../../entity/customer/customer-project-request-dialog/customer-project-request-dialog-about/customer-project-request-dialog-about.component';
+import {CustomerProjectRequestDialogReviewsComponent} from '../../entity/customer/customer-project-request-dialog/customer-project-request-dialog-reviews/customer-project-request-dialog-reviews.component';
 import { EmailConfirmDialogComponent } from './email-confirm-dialog/email-confirm-dialog.component';
-import { RequestReviewRevisionDialogComponent } from "./request-review-revision-dialog/request-review-revision-dialog.component";
+import { RequestReviewRevisionDialogComponent } from './request-review-revision-dialog/request-review-revision-dialog.component';
 import { ContractorRegistrationPhoneRequestComponent } from './contractor-registration-phone-request-dialog/contractor-registration-phone-request.component';
+import { ReferralDialogComponent } from './refreal-dialog/referral-dialog.component';
 
 export const dialogs = [
   QuestionaryDialogComponent,
@@ -53,7 +54,8 @@ export const dialogs = [
   RequestReviewRevisionDialogComponent,
   DeleteAccountDialogComponent,
   DeleteCompanyDialogComponent,
-  ContractorRegistrationPhoneRequestComponent
+  ContractorRegistrationPhoneRequestComponent,
+  ReferralDialogComponent
 ];
 
 export const dialogsMap = {
@@ -80,5 +82,6 @@ export const dialogsMap = {
   'subscription-dialog': SubscriptionDialogComponent,
   'delete-account-dialog': DeleteAccountDialogComponent,
   'delete-company-dialog': DeleteCompanyDialogComponent,
-  'contractor-registration-phone-request': ContractorRegistrationPhoneRequestComponent
+  'contractor-registration-phone-request': ContractorRegistrationPhoneRequestComponent,
+  'referral-dialog': ReferralDialogComponent
 };

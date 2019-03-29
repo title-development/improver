@@ -157,6 +157,12 @@ public class Notification {
             .setLink(CUSTOMER_PROJECTS + projectId);
     }
 
+    public static Notification bonusReceived(User receiver, int amount){
+        return new Notification().setUser(receiver)
+            .setIcon(SYSTEM_NOTIFICATION_ICON)
+            .setPayload(String.format("You have been received <b>$%d</b> bonus.", amount / 100))
+            .setLink(BILLING_URL);
+    }
 
     private static String customerIconURL(long customerId){
         return USERS_PATH + SLASH + customerId + ICON;
