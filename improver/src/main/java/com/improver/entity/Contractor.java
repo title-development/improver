@@ -38,6 +38,7 @@ public class Contractor extends User {
     private boolean isIncomplete;
 
     @JsonIgnore
+    @Column(unique = true)
     private String refCode;
 
     @JsonIgnore
@@ -56,17 +57,21 @@ public class Contractor extends User {
 
     public Contractor(UserRegistration reg) {
         super(reg);
+        this.setRefCode(generateRefCode());
     }
 
     public Contractor(String firstName, String lastName, String email, String plainPassword, String internalPhone) {
         super(firstName, lastName, email, plainPassword, internalPhone);
+        this.setRefCode(generateRefCode());
+
     }
 
     public Contractor(String firstName, String lastName, String email, String plainPassword, String internalPhone, String iconUrl) {
         super(firstName, lastName, email, plainPassword, internalPhone, iconUrl);
+        this.setRefCode(generateRefCode());
     }
 
-    public static Contractor of(SocialUser socialUser, String internalPhone, String refCode, String referredBy) {
+    public static Contractor of(SocialUser socialUser, String internalPhone, String referredBy) {
 
         return new Contractor(socialUser.getFirstName(),
             socialUser.getLastName(),
@@ -75,9 +80,12 @@ public class Contractor extends User {
             internalPhone,
             socialUser.getPicture())
             .setReferredBy(referredBy)
-            .setRefCode(refCode)
             .setIncomplete(true)
             .setActivated(true);
+    }
+
+    private static String generateRefCode() {
+        return UUID.randomUUID().toString().substring(0,16);
     }
 
     @Override

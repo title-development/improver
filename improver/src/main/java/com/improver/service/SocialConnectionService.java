@@ -60,8 +60,7 @@ public class SocialConnectionService {
             throw new AuthenticationRequiredException("User with email "+socialUser.getEmail()+ " already registered");
         }
 
-        String refCode = UserService.generateRefCode();
-        Contractor contractor = Contractor.of(socialUser, phone, refCode, referredBy);
+        Contractor contractor = Contractor.of(socialUser, phone, referredBy);
 
         return userService.registerUser(contractor, socialUser);
     }

@@ -307,7 +307,6 @@ public class TestDataInitializer {
         contractorRepository.save(new Contractor("Lory", "Macalister", PRO_1, DEMO_PASS, DEMO_PHONE)
             .setQuickReply(true)
             .setActivated(true)
-            .setRefCode(UserService.generateRefCode())
             .setReplyText("Hi, we received your project request from Home Improve and would love to discuss this with you. " +
                 "Please let us know a convenient time for you. We look forward to connecting with you! Thanks, " +
                 "Lory from Bravo inc!")
@@ -315,24 +314,20 @@ public class TestDataInitializer {
 
         contractorRepository.save(new Contractor("James", "Brown", PRO_2, DEMO_PASS, DEMO_PHONE)
             .setActivated(true)
-            .setRefCode(UserService.generateRefCode())
             .setCreated(ZonedDateTime.now().minusYears(2).minusMonths(1))
         );
 
         contractorRepository.save(new Contractor("Tod", "Googled", PRO_3, DEMO_PASS, DEMO_PHONE)
             .setActivated(true)
-            .setRefCode(UserService.generateRefCode())
         );
 
         contractorRepository.save(new Contractor("Mike", "Mucus", PRO_4, DEMO_PASS, DEMO_PHONE)
             .setActivated(true)
-            .setRefCode(UserService.generateRefCode())
             .setCreated(ZonedDateTime.now().minusYears(2).plusMonths(2))
         );
 
         contractorRepository.save(new Contractor("Example", "Pro", PRO_5, DEMO_PASS, DEMO_PHONE)
             .setActivated(true)
-            .setRefCode(UserService.generateRefCode())
         );
 
         adminRepository.save(new Admin("Bridget", "Jones", ADMIN_1, ADMIN_DEMO_PASS, DEMO_PHONE)
