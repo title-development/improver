@@ -46,6 +46,7 @@ describe('Sign up', () => {
     confirmPasswordInput.sendKeys(customer.password);
     firstNameInput.sendKeys(customer.firstName);
     lastNameInput.sendKeys(customer.lastName);
+    browser.sleep(SECOND);
     clickSubmit();
     browser.sleep(FIVE_SECONDS);
     expect(element(by.css(".success-card .title")).getText()).toEqual(successTitle.registeredUser);
