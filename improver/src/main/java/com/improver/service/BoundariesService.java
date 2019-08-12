@@ -28,10 +28,10 @@ import java.util.List;
 @Service
 public class BoundariesService {
 
-    private static final String BASE_URL = "https://www.mapreflex.com/api/v1/us";
-    private static final String RADIUS_ZIP_SEARCH_URL = "/zcta/search/inRadius";
-    private static final String ZIP_SEARCH_URL = "/zcta/search/byZipCodes";
-    private static final String BBOX_ZIP_SEARCH_URL = "/zcta/search/inBoundingBox";
+    private static final String BASE_URL = "https://www.mapreflex.com/api/us/v1";
+    private static final String RADIUS_ZIP_SEARCH_URL = "/zipcodes/search/in-radius";
+    private static final String ZIP_SEARCH_URL = "/zipcodes/search/by-ids";
+    private static final String BBOX_ZIP_SEARCH_URL = "/zipcodes/search/in-bounding-box";
     private static final String PREPARING_REQUEST_ERROR_MESSAGE = "Error while preparing request URI to Mapreflex API. ";
 
     @Autowired
@@ -69,7 +69,7 @@ public class BoundariesService {
         String result;
         try {
             URIBuilder uriBuilder = new URIBuilder(BASE_URL + ZIP_SEARCH_URL);
-            uriBuilder.setParameter("zipCodes", String.join(",", zipCodes));
+            uriBuilder.setParameter("ids", String.join(",", zipCodes));
             result = makeRequestToMapreflex(uriBuilder);
         } catch (URISyntaxException e) {
             String message = PREPARING_REQUEST_ERROR_MESSAGE + e.getMessage();
