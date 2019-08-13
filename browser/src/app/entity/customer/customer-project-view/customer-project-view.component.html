@@ -15,11 +15,11 @@
         <mat-menu class="project-menu" #projectMenu="matMenu" yPosition="below" xPosition="before">
           <button mat-menu-item (click)="projectActionService.completeProjectConfirm(project)"
                   *ngIf="project.status != Project.Status.CANCELED && project.status != Project.Status.COMPLETED">
-            Complete
+            Complete Project
           </button>
           <button mat-menu-item (click)="projectActionService.cancelProjectConfirm(project)"
                   *ngIf="project.status != Project.Status.CANCELED && project.status != Project.Status.COMPLETED"
-                  class="cancel-button">Cancel
+                  class="cancel-button">Cancel Project
           </button>
         </mat-menu>
       </div>

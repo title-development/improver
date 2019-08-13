@@ -48,7 +48,7 @@
     <div class="buttons-block" *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.ACTIVE && !Project.isArchived(projectRequest.projectStatus)">
       <div class="info-icon" (click)="openMessage = !openMessage">i</div>
       <button cv-button class="hire-company-button" (click)="hireCompany(projectRequest)">
-        Hire
+        Accept Offer
       </button>
       <button cv-button class="decline-company-button" (click)="declineCompany(projectRequest)">
         Decline
@@ -161,7 +161,7 @@
         </div>
         <div class="buttons-block"
              *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.ACTIVE && !Project.isArchived(projectRequest.projectStatus)">
-          <button cv-button class="hire-company-button" (click)="hireCompany(projectRequest)">Hire</button>
+          <button cv-button class="hire-company-button" (click)="hireCompany(projectRequest)">Accept Offer</button>
           <span class="message" (click)="event.preventDefault();">
               Don't want to receive requests and messages from other professionals? Hire one and let other know.
             </span>

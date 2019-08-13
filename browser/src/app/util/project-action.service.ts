@@ -91,8 +91,8 @@ export class ProjectActionService {
 
   hireCompanyConfirm(projectRequest) {
     let properties = {
-      title: 'Are you sure that you want to hire current Pro?',
-      message: 'By hiring current Pro - other Pros will receive decline from you',
+      title: 'Are you sure that you want to accept Pros offer?',
+      message: 'By accepting current Pros offer - other Pros will receive decline from you',
       OK: 'Confirm',
       CANCEL: 'Cancel'
     };
@@ -121,7 +121,7 @@ export class ProjectActionService {
         if (this.securityService.isAuthenticated()) {
           this.projectUpdated()
         }
-        this.popUpService.showSuccess(`You have hired <b>${projectRequest.company.name}</b> for your <b>${this.project.serviceType}</b> project`);
+        this.popUpService.showSuccess(`You have accepted offer <b>${projectRequest.company.name}</b> for your <b>${this.project.serviceType}</b> project`);
       },
       err => {
         console.log(err);
