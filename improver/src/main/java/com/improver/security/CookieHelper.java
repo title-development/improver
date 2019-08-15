@@ -4,9 +4,10 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static com.improver.security.SecurityProperties.*;
+import static com.improver.application.properties.Path.REFRESH_COOKIE_PATH;
+import static com.improver.application.properties.SecurityProperties.*;
 
-public class TokenProvider {
+public class CookieHelper {
 
     public static Cookie buildRefreshCookie(String refreshToken) {
         return newCookie(REFRESH_COOKIE_NAME, refreshToken, REFRESH_COOKIE_PATH, Math.toIntExact(REFRESH_TOKEN_EXPIRATION / 1000));

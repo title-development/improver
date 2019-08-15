@@ -109,6 +109,7 @@ public final class Path {
     public static final String REFRESH_ACCESS_TOKEN_PATH =  API_PATH_PREFIX + "/token/access";
     public static final String PRINCIPAL_PATH =             API_PATH_PREFIX + "/principal";
     public static final String HEATH_CHECK_PATH =           SLASH + "healthcheck";
+    public static final String REFRESH_COOKIE_PATH = REFRESH_ACCESS_TOKEN_PATH;
 
 
     /*  WebSocket */

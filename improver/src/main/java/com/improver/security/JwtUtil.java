@@ -1,24 +1,24 @@
 package com.improver.security;
 
 import com.improver.exception.ValidationException;
-import com.improver.model.out.LoginModel;
 import com.improver.util.StringUtil;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.CredentialsExpiredException;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import java.util.Date;
 
-import static com.improver.security.SecurityProperties.*;
+import static com.improver.application.properties.SecurityProperties.*;
 import static com.improver.util.ErrorMessages.INVALID_ACTIVATION_LINK;
 
 @Slf4j
 @Component
 public class JwtUtil {
 
+    public static final String BEARER_TOKEN_PREFIX = "Bearer ";
+    public static final String AUTHORIZATION_HEADER_NAME = "Authorization";
     private static final String ROLE_CLAIM = "role";
 
     @Value("${jwt.secret}") private String secret;

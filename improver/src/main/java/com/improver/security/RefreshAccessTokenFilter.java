@@ -1,5 +1,6 @@
 package com.improver.security;
 
+import com.improver.application.properties.SecurityProperties;
 import com.improver.entity.User;
 import com.improver.exception.handler.RestError;
 import com.improver.util.serializer.SerializationUtil;
@@ -17,7 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 
-import static com.improver.security.SecurityProperties.*;
+import static com.improver.security.JwtUtil.AUTHORIZATION_HEADER_NAME;
+import static com.improver.security.JwtUtil.BEARER_TOKEN_PREFIX;
 import static com.improver.util.ErrorMessages.*;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
@@ -45,7 +47,7 @@ public class RefreshAccessTokenFilter extends GenericFilterBean {
         if(antPathRequestMatcher.matches(request)){
             // 1. Check cookies
             logger.debug("Refresh access call");
-            String refreshToken = TokenProvider.getRefreshTokenFromCookie(request);
+            String refreshToken = CookieHelper.getRefreshTokenFromCookie(request);
             if (refreshToken == null){
                 logger.debug("Refresh token is absent");
                 sendError(response, SC_UNAUTHORIZED, "Authentication is required");
@@ -56,7 +58,7 @@ public class RefreshAccessTokenFilter extends GenericFilterBean {
             User user = userSecurityService.findByRefreshId(refreshToken);
             if (user == null || ZonedDateTime.now().isAfter(user.getLastLogin().plus(SecurityProperties.REFRESH_TOKEN_EXPIRATION, MILLIS))) {
                 logger.debug("Refresh token expired or invalid");
-                TokenProvider.eraseRefreshCookie(response);
+                CookieHelper.eraseRefreshCookie(response);
                 sendError(response, SC_UNAUTHORIZED, SESSION_TIMED_OUT_MSG);
                 return;
             }

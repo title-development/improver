@@ -107,7 +107,7 @@ public class CompanyConfig {
         private boolean isReceiveSuggestions = true;
 
         // Marketing
-        // Receive emails regarding product and special offers from Home Improve
+        // Receive emails regarding updates and special offers from Home Improve
         private boolean isReceiveMarketing = true;
 
 

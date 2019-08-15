@@ -10,10 +10,10 @@ import java.time.temporal.TemporalAmount;
 @Component
 public class BusinessProperties {
 
-    public static final int MONTHS_STATISTIC_COUNT = 7;
+    public static final int MONTHS_STATISTIC_COUNT = 6;
     public static final int MIN_SUBSCRIPTION = 100 * 100; // in cents
     public static final int SUBSCRIPTION_CHARGE_ATTEMPTS = 3;
-    public static final int REFERRAL_BONUS_AMOUNT = 100 * 100;
+    public static final int REFERRAL_BONUS_AMOUNT = 100 * 100; // in cents
 
     public static final int DAYS_TO_ACCEPT_REFUND = 30;                 // After this period no refunds will be allowed
     public static final int RELAPSE_PROJECT_COUNT = 15;                 // Count of projects that will be scanned for relapse of issue

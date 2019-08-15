@@ -8,7 +8,7 @@ import com.improver.repository.*;
 import com.improver.security.UserSecurityService;
 import com.improver.util.StaffActionLogger;
 import com.improver.util.StringUtil;
-import com.improver.util.ThirdPartyApis;
+import com.improver.application.properties.ThirdPartyApis;
 import com.improver.util.mail.MailService;
 import com.improver.ws.WsNotificationService;
 import com.stripe.Stripe;
@@ -93,9 +93,9 @@ public class BillingService {
         Billing billing = billRepository.findByCompanyId(companyId)
             .orElseThrow(NotFoundException::new);
         ZonedDateTime now = ZonedDateTime.now();
-        ZonedDateTime countingDate = now.minusMonths(MONTHS_STATISTIC_COUNT);
+        ZonedDateTime countingDate = now.minusMonths(MONTHS_STATISTIC_COUNT + 1L);
         LinkedList<CompanyLeadsReport.MonthReport> past = new LinkedList<>();
-        for (int i = 0; i < MONTHS_STATISTIC_COUNT; i++) {
+        for (int i = 0; i <= MONTHS_STATISTIC_COUNT; i++) {
             countingDate = countingDate.plusMonths(1);
             List<Transaction> transactions = transactionRepository.findPurchasedByCompanyBetween(companyId, countingDate.with(firstDayOfMonth()), countingDate.with(lastDayOfMonth()));
             String monthName = countingDate.getMonth().getDisplayName(TextStyle.FULL, Locale.US);

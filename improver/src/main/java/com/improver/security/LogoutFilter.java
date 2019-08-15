@@ -26,7 +26,7 @@ public class LogoutFilter extends GenericFilterBean {
 
         if(antPathRequestMatcher.matches(request)){
             logger.debug("Performing logout");
-            TokenProvider.eraseRefreshCookie(response);
+            CookieHelper.eraseRefreshCookie(response);
             return;
         }
 

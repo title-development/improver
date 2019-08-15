@@ -1,4 +1,4 @@
-package com.improver.util;
+package com.improver.application.properties;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;

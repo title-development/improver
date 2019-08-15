@@ -18,9 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
 
-import static com.improver.security.SecurityProperties.AUTHORIZATION_HEADER_NAME;
-import static com.improver.security.SecurityProperties.BEARER_TOKEN_PREFIX;
-
 public class LoginFilter extends AbstractAuthenticationProcessingFilter {
 
     private UserSecurityService userSecurityService;

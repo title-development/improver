@@ -2,7 +2,7 @@ package com.improver.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.improver.exception.ThirdPartyException;
-import com.improver.util.ThirdPartyApis;
+import com.improver.application.properties.ThirdPartyApis;
 import com.improver.util.serializer.SerializationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.Header;
@@ -15,11 +15,11 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +29,7 @@ import java.util.List;
 public class BoundariesService {
 
     private static final String BASE_URL = "https://www.mapreflex.com/api/us/v1";
+    //private static final String BASE_URL = "http://127.0.0.1:8033/api/us/v1";
     private static final String RADIUS_ZIP_SEARCH_URL = "/zipcodes/search/in-radius";
     private static final String ZIP_SEARCH_URL = "/zipcodes/by-ids";
     private static final String BBOX_ZIP_SEARCH_URL = "/zipcodes/search/in-bounding-box";
@@ -36,8 +37,8 @@ public class BoundariesService {
 
     @Autowired
     private ThirdPartyApis thirdPartyApis;
-
     private HttpClient client;
+
 
     @PostConstruct
     public void init() {
@@ -50,54 +51,89 @@ public class BoundariesService {
             .build();
     }
 
+
     public String searchZipCodesInBbox(String southWest, String northEast) throws ThirdPartyException {
-        String result;
+        HttpUriRequest request;
         try {
-            URIBuilder uriBuilder = new URIBuilder(BASE_URL + BBOX_ZIP_SEARCH_URL);
-            uriBuilder.setParameter("southWest", southWest);
-            uriBuilder.setParameter("northEast", northEast);
-            result = makeRequestToMapreflex(uriBuilder);
+            URI uri = new URIBuilder(BASE_URL + BBOX_ZIP_SEARCH_URL)
+                .setParameter("southWest", southWest)
+                .setParameter("northEast", northEast)
+                .build();
+            request = RequestBuilder.get().setUri(uri).build();
         } catch (URISyntaxException e) {
-            String message = PREPARING_REQUEST_ERROR_MESSAGE + e.getMessage();
-            log.error(message, e);
-            throw new ThirdPartyException(message);
+            throw new ThirdPartyException(PREPARING_REQUEST_ERROR_MESSAGE + e.getMessage());
         }
-        return result;
+        return makeRequestToMapreflex(request);
     }
 
+
+    // TODO: split into couple requests on UI side
     public String getZipBoundaries(String... zipCodes) throws ThirdPartyException {
-        String result;
-        try {
-            URIBuilder uriBuilder = new URIBuilder(BASE_URL + ZIP_SEARCH_URL);
-            uriBuilder.setParameter("ids", String.join(",", zipCodes));
-            result = makeRequestToMapreflex(uriBuilder);
-        } catch (URISyntaxException e) {
-            String message = PREPARING_REQUEST_ERROR_MESSAGE + e.getMessage();
-            log.error(message, e);
-            throw new ThirdPartyException(message);
+        HttpUriRequest request;
+        if (zipCodes.length > 200) {
+            log.debug("ZIP Code array size=" + zipCodes.length);
         }
-        return result;
+        try {
+            URI uri = new URIBuilder(BASE_URL + ZIP_SEARCH_URL)
+                .setParameter("ids", String.join(",", zipCodes))
+                .build();
+            request = RequestBuilder.get().setUri(uri).build();
+        } catch (URISyntaxException e) {
+            throw new ThirdPartyException(PREPARING_REQUEST_ERROR_MESSAGE + e.getMessage());
+        }
+        return makeRequestToMapreflex(request);
     }
+
 
     public String searchZipCodesInRadius(String latitude, String longitude, String radius) throws ThirdPartyException {
-        String result;
+        HttpUriRequest request;
         try {
-            URIBuilder uriBuilder = new URIBuilder(BASE_URL + RADIUS_ZIP_SEARCH_URL);
-            uriBuilder.setParameter("radius", radius);
-            uriBuilder.setParameter("latitude", latitude);
-            uriBuilder.setParameter("longitude", longitude);
-            result = makeRequestToMapreflex(uriBuilder);
+            URI uri = new URIBuilder(BASE_URL + RADIUS_ZIP_SEARCH_URL)
+                .setParameter("radius", radius)
+                .setParameter("latitude", latitude)
+                .setParameter("longitude", longitude)
+                .build();
+            request = RequestBuilder.get().setUri(uri).build();
         } catch (URISyntaxException e) {
-            String message = PREPARING_REQUEST_ERROR_MESSAGE + e.getMessage();
-            log.error(message, e);
+            throw new ThirdPartyException(PREPARING_REQUEST_ERROR_MESSAGE + e.getMessage());
+        }
+        return makeRequestToMapreflex(request);
+    }
+
+
+    private String makeRequestToMapreflex(HttpUriRequest request) throws ThirdPartyException {
+        log.debug("Sending '" + request.getMethod() + "' request to URL : " + request.getURI());
+        HttpResponse response;
+        String result;
+
+        try {
+            response = client.execute(request);
+            result = EntityUtils.toString(response.getEntity());
+        } catch (IOException e) {
+            String message = "Error while executing request to Mapreflex API. " + e.getMessage();
             throw new ThirdPartyException(message);
         }
+
+        int statusCode = response.getStatusLine().getStatusCode();
+        if (statusCode != 200) {
+            JsonNode jsonNode = null;
+            String defMsg = "Error in request to Mapreflex API with statusCode " + statusCode + ". " + response.getStatusLine().getReasonPhrase();
+            String msg;
+            try {
+                jsonNode = SerializationUtil.mapper().readTree(result);
+                msg = jsonNode.get("message").asText(defMsg);
+                throw new ThirdPartyException(msg);
+            } catch (IOException e) {
+                throw new ThirdPartyException(defMsg);
+            }
+        }
+
         return result;
     }
 
 
     public List<String> getZipCodesInRadius(double latitude, double longitude, int radius) throws ThirdPartyException {
-        String geoJson = searchZipCodesInRadius(String.valueOf(latitude),  String.valueOf(longitude), String.valueOf(radius));
+        String geoJson = searchZipCodesInRadius(String.valueOf(latitude), String.valueOf(longitude), String.valueOf(radius));
         List<String> zipCodes = new ArrayList<>();
         try {
             JsonNode rootNode = SerializationUtil.mapper().readTree(geoJson);
@@ -108,40 +144,6 @@ public class BoundariesService {
             throw new ThirdPartyException("Error parsing response from searchZipInRadius()", e);
         }
 
-    }
-
-    private String makeRequestToMapreflex(URIBuilder uriBuilder) throws ThirdPartyException, URISyntaxException {
-        HttpUriRequest request = RequestBuilder.get()
-            .setUri(uriBuilder.build())
-            .build();
-        log.debug("Sending '" + request.getMethod() + "' request to URL : " + request.getURI());
-
-        HttpResponse response;
-        try {
-            response = client.execute(request);
-        } catch (IOException e) {
-            String message = "Error while executing request to Mapreflex API. " + e.getMessage();
-            log.error(message, e);
-            throw new ThirdPartyException(message);
-        }
-
-        String result;
-        int statusCode;
-        try {
-            statusCode = response.getStatusLine().getStatusCode();
-            result = EntityUtils.toString(response.getEntity());
-        } catch (IOException e) {
-            log.error("Error while reading response from Mapreflex API", e);
-            throw new ThirdPartyException(e.getMessage());
-        }
-
-        if (statusCode != 200) {
-            String message = "Error in request to Mapreflex API with statusCode " + statusCode + ". " + response.getStatusLine().getReasonPhrase();
-            log.error(message);
-            throw new ThirdPartyException(message);
-        }
-
-        return result;
     }
 
 }

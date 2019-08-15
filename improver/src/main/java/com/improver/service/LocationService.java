@@ -12,7 +12,7 @@ import com.improver.exception.ThirdPartyException;
 import com.improver.exception.ValidationException;
 import com.improver.model.out.ValidatedLocation;
 import com.improver.repository.ServedZipRepository;
-import com.improver.util.ThirdPartyApis;
+import com.improver.application.properties.ThirdPartyApis;
 import com.shippo.Shippo;
 import com.shippo.exception.*;
 import com.shippo.model.Address;

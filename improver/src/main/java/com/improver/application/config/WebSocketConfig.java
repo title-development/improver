@@ -11,6 +11,7 @@ import org.springframework.web.socket.server.standard.ServletServerContainerFact
 import static com.improver.application.properties.Path.WEB_SOCKET_ENDPOINT;
 import static com.improver.application.properties.Path.WS_QUEUE;
 import static com.improver.application.properties.Path.WS_TOPIC;
+import static com.improver.application.properties.SecurityProperties.WS_CONNECTION_IDLE_TIME;
 
 @Configuration
 @EnableWebSocketMessageBroker
@@ -23,7 +24,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Bean
     public ServletServerContainerFactoryBean servletServerContainerFactoryBean() {
         ServletServerContainerFactoryBean container = new ServletServerContainerFactoryBean();
-        container.setMaxSessionIdleTimeout(15 * 60 * 1000L);
+        container.setMaxSessionIdleTimeout(WS_CONNECTION_IDLE_TIME);
         return container;
     }
 

@@ -23,8 +23,8 @@ import java.util.UUID;
 
 import static com.improver.entity.User.Role.CONTRACTOR;
 import static com.improver.entity.User.Role.INCOMPLETE_PRO;
-import static com.improver.security.SecurityProperties.AUTHORIZATION_HEADER_NAME;
-import static com.improver.security.SecurityProperties.BEARER_TOKEN_PREFIX;
+import static com.improver.security.JwtUtil.AUTHORIZATION_HEADER_NAME;
+import static com.improver.security.JwtUtil.BEARER_TOKEN_PREFIX;
 import static com.improver.util.ErrorMessages.*;
 
 @Slf4j
@@ -127,7 +127,7 @@ public class UserSecurityService implements UserDetailsService {
     }
 
     public void performLogout(User user, HttpServletResponse res) {
-        TokenProvider.eraseRefreshCookie(res);
+        CookieHelper.eraseRefreshCookie(res);
     }
 
     /**
@@ -146,7 +146,7 @@ public class UserSecurityService implements UserDetailsService {
         LoginModel loginModel = getLoginModel(updated);
         String jwt = getAccessJWT(updated);
         res.setHeader(AUTHORIZATION_HEADER_NAME, BEARER_TOKEN_PREFIX + jwt);
-        res.addCookie(TokenProvider.buildRefreshCookie(loginModel.getRefreshId()));
+        res.addCookie(CookieHelper.buildRefreshCookie(loginModel.getRefreshId()));
         log.info("User {} logged in", user.getEmail());
         return loginModel;
     }

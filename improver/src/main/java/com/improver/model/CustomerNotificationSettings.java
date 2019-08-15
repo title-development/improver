@@ -18,6 +18,6 @@ public class CustomerNotificationSettings {
     private boolean isProRequests;
 
     //Marketing
-    //Receive emails regarding product and special offers from Home Improve
+    //Receive emails regarding updates and special offers from Home Improve
     private boolean isMarketing;
 }

@@ -9,7 +9,7 @@ import com.improver.entity.User;
 import com.improver.exception.AuthenticationRequiredException;
 import com.improver.model.socials.PhoneSocialCredentials;
 import com.improver.model.socials.SocialUser;
-import com.improver.util.ThirdPartyApis;
+import com.improver.application.properties.ThirdPartyApis;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

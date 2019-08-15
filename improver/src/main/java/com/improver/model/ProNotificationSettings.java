@@ -29,7 +29,7 @@ public class ProNotificationSettings {
     private boolean isReceiveSuggestions;
 
     // Marketing
-    // Receive emails regarding product and special offers from Home Improve
+    // Receive emails regarding updates and special offers from Home Improve
     private boolean isReceiveMarketing;
 
 
