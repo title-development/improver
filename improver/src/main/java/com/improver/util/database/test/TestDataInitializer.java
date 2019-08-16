@@ -244,13 +244,6 @@ public class TestDataInitializer {
             projectRequests.add(createDeclined(canceledContractor, lead));
         }
 
-        // chat
-        projectRequests.forEach(projectRequest -> {
-            List<ProjectMessage> conversation = RandomChatGenerator.generate(
-                projectRequest, String.valueOf(projectRequest.getContractor().getId()), String.valueOf(projectRequest.getProject().getCustomer().getId()));
-            projectMessageRepository.saveAll(conversation);
-        });
-
         boolean isLead = Project.Status.forPurchase().contains(status);
         return projectRepository.save(lead.setLead(isLead)
             .setStatus(status)
@@ -265,9 +258,9 @@ public class TestDataInitializer {
 
 
     private ProjectRequest createDeclined(Contractor contractor, Project project) {
-        ProjectRequest projectRequest = createTestProjectRequest(contractor, project);
         ZonedDateTime created = TestDateUtil.randomDateFrom(project.getCreated());
         ZonedDateTime declined = TestDateUtil.randomDateFrom(created);
+        ProjectRequest projectRequest = createTestProjectRequest(contractor, project, declined);
         ProjectRequest saved = projectRequestRepository.save(projectRequest.setStatus(ProjectRequest.Status.DECLINED).setCreated(created));
         projectMessageRepository.save(ProjectMessage.decline(projectRequest, declined));
         return saved;
@@ -683,8 +676,11 @@ public class TestDataInitializer {
      * and {@link ProjectMessage} with {@link ProjectMessage.Type} type
      */
     private ProjectRequest createTestProjectRequest(Contractor contractor, Project project) {
-        ZonedDateTime now = ZonedDateTime.now();
-        ZonedDateTime created = TestDateUtil.randomDateBetween(project.getCreated(), now).minusDays(1);
+        return createTestProjectRequest(contractor, project, ZonedDateTime.now());
+    }
+
+    private ProjectRequest createTestProjectRequest(Contractor contractor, Project project, ZonedDateTime conversationEnd) {
+        ZonedDateTime created = TestDateUtil.randomDateBetween(project.getCreated(), conversationEnd).minusDays(1);
         ProjectRequest projectRequest = projectRequestRepository.save(new ProjectRequest().setContractor(contractor)
             .setCreated(created)
             .setUpdated(created.plusDays(1))
@@ -692,6 +688,10 @@ public class TestDataInitializer {
             .setManual(true)
             .setStatus(ProjectRequest.Status.ACTIVE));
         projectMessageRepository.save(ProjectMessage.request(projectRequest, created));
+        // chat
+        List<ProjectMessage> conversation = RandomChatGenerator.generate(projectRequest, String.valueOf(contractor.getId()),
+            String.valueOf(project.getCustomer().getId()), conversationEnd);
+        projectMessageRepository.saveAll(conversation);
         return projectRequest;
     }
 

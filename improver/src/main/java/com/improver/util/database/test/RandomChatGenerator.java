@@ -3,6 +3,7 @@ package com.improver.util.database.test;
 import com.improver.entity.ProjectRequest;
 import com.improver.entity.ProjectMessage;
 
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -61,7 +62,7 @@ public class RandomChatGenerator {
     );
 
 
-    public static List<ProjectMessage> generate(ProjectRequest projectRequest, String sender, String receiver) {
+    public static List<ProjectMessage> generate(ProjectRequest projectRequest, String sender, String receiver, ZonedDateTime till) {
         List<ProjectMessage> conversation = new ArrayList<>();
         conversation.add(new ProjectMessage()
             .setProjectRequest(projectRequest)
@@ -75,7 +76,7 @@ public class RandomChatGenerator {
             .mapToObj(i -> new ProjectMessage().setProjectRequest(projectRequest)
                 .setSender(i % 2 == 0 ? receiver : sender)
                 .setBody(messages.get(i))
-                .setCreated(TestDateUtil.randomDateFrom(projectRequest.getCreated())))
+                .setCreated(TestDateUtil.randomDateBetween(projectRequest.getCreated(), till)))
             .sorted(Comparator.comparing(ProjectMessage::getCreated))
             .collect(Collectors.toList());
         conversation.addAll(random);

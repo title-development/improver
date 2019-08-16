@@ -58,10 +58,10 @@
             <ng-container *ngSwitchCase="ProjectRequest.MessageEvent.REQUEST">
               <ng-container *ngIf="securityService.hasRole(Role.CUSTOMER)">
                 <span class="name">{{companyName}}</span>
-                <span> send you a project request</span>
+                <span> sent you a project request</span>
               </ng-container>
               <ng-container *ngIf="securityService.hasRole(Role.CONTRACTOR)">
-                <span>You send project request to </span>
+                <span>You sent a project request to </span>
                 <span class="name">{{customerName}}</span>
               </ng-container>
             </ng-container>
@@ -78,17 +78,17 @@
 
             <ng-container *ngSwitchCase="ProjectRequest.MessageEvent.CANCEL">
               <ng-container *ngIf="securityService.hasRole(Role.CUSTOMER)">
-                <span>You've canceled the project</span>
+                <span>You canceled the project</span>
               </ng-container>
               <ng-container *ngIf="securityService.hasRole(Role.CONTRACTOR)">
                 <span class="name">{{customerName}}</span>
-                <span> closed this project</span>
+                <span> closed the project</span>
               </ng-container>
             </ng-container>
 
             <ng-container *ngSwitchCase="ProjectRequest.MessageEvent.CUSTOMER_CLOSE">
               <ng-container *ngIf="securityService.hasRole(Role.CUSTOMER)">
-                <span>You've closed the project</span>
+                <span>You closed the project</span>
               </ng-container>
               <ng-container *ngIf="securityService.hasRole(Role.CONTRACTOR)">
                 <span class="name">{{customerName}}</span>
@@ -102,7 +102,7 @@
                 <span> left the project</span>
               </ng-container>
               <ng-container *ngIf="securityService.hasRole(Role.CONTRACTOR)">
-                <span>You've closed project request</span>
+                <span>You closed this project request</span>
               </ng-container>
             </ng-container>
 
@@ -112,11 +112,11 @@
 
             <ng-container *ngSwitchCase="ProjectRequest.MessageEvent.CALL">
               <ng-container *ngIf="securityService.hasRole(Role.CUSTOMER)">
-                <span>You have phone call with </span>
+                <span>You had a phone call with </span>
                 <span class="name">{{companyName}}</span>
               </ng-container>
               <ng-container *ngIf="securityService.hasRole(Role.CONTRACTOR)">
-                <span>You have phone call with </span>
+                <span>You had a phone call with </span>
                 <span class="name">{{customerName}}</span>
               </ng-container>
             </ng-container>
@@ -140,7 +140,7 @@
               </ng-container>
               <ng-container *ngIf="securityService.hasRole(Role.CONTRACTOR)">
                 <span class="name">{{customerName}}</span>
-                <span> declined your project request</span>
+                <span> removed you from the project</span>
               </ng-container>
             </ng-container>
 
@@ -160,7 +160,7 @@
                 <span> left the project</span>
               </ng-container>
               <ng-container *ngIf="securityService.hasRole(Role.CONTRACTOR)">
-                <span>You requested refund</span>
+                <span>You requested a refund</span>
               </ng-container>
             </ng-container>
 
@@ -178,7 +178,7 @@
 
             <ng-container *ngSwitchCase="ProjectRequest.MessageEvent.INVALIDATED">
               <ng-container *ngIf="securityService.hasRole(Role.CUSTOMER)">
-                <span>Closed due to project invalidation</span>
+                <span>Project closed due to project invalidation</span>
               </ng-container>
               <ng-container *ngIf="securityService.hasRole(Role.CONTRACTOR)">
                 <span class="name">{{customerName}}</span>

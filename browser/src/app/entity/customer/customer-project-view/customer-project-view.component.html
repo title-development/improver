@@ -197,7 +197,7 @@
           <div class="no-requests-block" *ngIf="project.projectRequests.length == 0">
 
             <div *ngIf="project.status == Project.Status.INVALID; else noRequests">
-              Project was delete due to validation issues
+              Project was deleted due to validation issues
             </div>
 
             <ng-template #noRequests>
