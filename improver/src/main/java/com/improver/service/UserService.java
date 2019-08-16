@@ -341,18 +341,26 @@ public class UserService {
         }
     }
 
-    public void restoreCustomer(Customer customer) {
-        restoreAccount(customer);
+
+    public void restoreAccountByUser(User user) {
+        if (user instanceof Customer || user instanceof Stakeholder || user instanceof Support ) {
+            restoreAccount(user);
+        }else if (user instanceof Contractor) {
+            restoreContractor((Contractor) user);
+        }else {
+            throw new BadRequestException(user.getRole() + " not allowed to restore");
+        }
     }
 
-    public void restoreContractor(Contractor contractor) {
+
+    private void restoreContractor(Contractor contractor) {
         Company company = contractor.getCompany();
         company.setDeleted(false);
         companyRepository.save(company);
         restoreAccount(contractor);
     }
 
-    public void restoreAccount(User user) {
+    private void restoreAccount(User user) {
         user.setDeleted(false);
         userRepository.save(user);
         mailService.sendRestoredAccount(user);

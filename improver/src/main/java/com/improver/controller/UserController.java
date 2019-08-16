@@ -10,9 +10,11 @@ import com.improver.model.in.EmailPasswordTuple;
 import com.improver.repository.ContractorRepository;
 import com.improver.repository.CustomerRepository;
 import com.improver.repository.UserRepository;
-import com.improver.security.annotation.*;
 import com.improver.security.UserSecurityService;
 import com.improver.security.annotation.AdminAccess;
+import com.improver.security.annotation.SameUserAccess;
+import com.improver.security.annotation.SameUserOrAdminAccess;
+import com.improver.security.annotation.SupportAccess;
 import com.improver.service.AccountService;
 import com.improver.service.UserService;
 import com.improver.util.annotation.PageableSwagger;
@@ -27,7 +29,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-
 import java.util.List;
 
 import static com.improver.application.properties.Path.*;
@@ -98,8 +99,9 @@ public class UserController {
     @AdminAccess
     @PutMapping(ID_PATH_VARIABLE + "/restore")
     public ResponseEntity<Void> restoreAccount(@PathVariable long id) {
-        customerRepository.findById(id).ifPresent(customer -> userService.restoreCustomer(customer));
-        contractorRepository.findById(id).ifPresent(contractor -> userService.restoreContractor(contractor));
+        User user = userRepository.findById(id)
+            .orElseThrow(NotFoundException::new);
+        userService.restoreAccountByUser(user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
