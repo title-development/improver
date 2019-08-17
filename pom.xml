@@ -68,6 +68,18 @@
         </profile>
 
         <profile>
+            <id>initdb</id>
+            <properties>
+                <environment>initdb</environment>
+                <npm.arguments>install</npm.arguments>
+                <npm.build.cmd>run build</npm.build.cmd>
+            </properties>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+        </profile>
+
+        <profile>
             <id>qa</id>
             <activation>
                 <property>
@@ -96,14 +108,14 @@
                 <npm.build.cmd>run build:stg</npm.build.cmd>
             </properties>
         </profile>
-
+<!--
         <profile>
-            <!-- Check is bound to verify phase, so this should be run via
-                 mvn verify -P owasp-dependency-check in a separate bitbucket step -->
+            &lt;!&ndash; Check is bound to verify phase, so this should be run via
+                 mvn verify -P owasp-dependency-check in a separate bitbucket step &ndash;&gt;
             <id>owasp-dependency-check</id>
             <properties>
                 <owasp.check.skip>false</owasp.check.skip>
-                <!-- No need to run tests during this build. It's only for checking dependencies. -->
+                &lt;!&ndash; No need to run tests during this build. It's only for checking dependencies. &ndash;&gt;
                 <skipTests>true</skipTests>
             </properties>
         </profile>
@@ -112,7 +124,7 @@
             <id>javadoc</id>
             <build>
                 <plugins>
-                    <!-- Explicitly enable the maven-javadoc-plugin for this profile -->
+                    &lt;!&ndash; Explicitly enable the maven-javadoc-plugin for this profile &ndash;&gt;
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
@@ -131,7 +143,7 @@
 
         <profile>
             <id>coverage</id>
-            <!-- for generating code coverage reports on all modules -->
+            &lt;!&ndash; for generating code coverage reports on all modules &ndash;&gt;
             <build>
                 <plugins>
                     <plugin>
@@ -165,7 +177,7 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-dependency-plugin</artifactId>
                         <executions>
-                            <!-- Copy the ant tasks jar. Needed for ts.jacoco.report-ant . -->
+                            &lt;!&ndash; Copy the ant tasks jar. Needed for ts.jacoco.report-ant . &ndash;&gt;
                             <execution>
                                 <id>jacoco-dependency-ant</id>
                                 <goals>
@@ -199,14 +211,14 @@
                                 </goals>
                                 <configuration>
                                     <target>
-                                        <!-- Execute an ant task within maven -->
+                                        &lt;!&ndash; Execute an ant task within maven &ndash;&gt;
                                         <echo message="Generating JaCoCo Reports" />
                                         <taskdef name="report" classname="org.jacoco.ant.ReportTask">
                                             <classpath path="${basedir}/target/jacoco-jars/org.jacoco.ant.jar" />
                                         </taskdef>
                                         <mkdir dir="${basedir}/target/coverage-report" />
                                         <report>
-                                            <!-- execution data is a file created by Jacoco for code coverage -->
+                                            &lt;!&ndash; execution data is a file created by Jacoco for code coverage &ndash;&gt;
                                             <executiondata>
                                                 <fileset dir="${user.dir}/improver/target">
                                                     <include name="jacoco.exec" />
@@ -214,17 +226,17 @@
                                             </executiondata>
                                             <structure name="JaCoCo-Multi Project">
                                                 <group name="JaCoCo-Multi">
-                                                    <!-- class files in each target directory -->
+                                                    &lt;!&ndash; class files in each target directory &ndash;&gt;
                                                     <classfiles>
                                                         <fileset dir="${user.dir}/improver/target/classes" />
                                                     </classfiles>
                                                     <sourcefiles encoding="UTF-8">
-                                                        <!-- source classes -->
+                                                        &lt;!&ndash; source classes &ndash;&gt;
                                                         <fileset dir="${user.dir}/improver/src/main/java" />
                                                     </sourcefiles>
                                                 </group>
                                             </structure>
-                                            <!-- coverage report location -->
+                                            &lt;!&ndash; coverage report location &ndash;&gt;
                                             <html destdir="${basedir}/target/coverage-report/html" />
                                             <xml destfile="${basedir}/target/coverage-report/coverage-report.xml" />
                                             <csv destfile="${basedir}/target/coverage-report/coverage-report.csv" />
@@ -243,7 +255,7 @@
                     </plugin>
                 </plugins>
             </build>
-        </profile>
+        </profile>-->
     </profiles>
 
     <build>

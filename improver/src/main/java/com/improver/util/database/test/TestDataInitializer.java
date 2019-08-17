@@ -29,10 +29,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.improver.application.properties.Environments.DEV;
-import static com.improver.application.properties.Environments.PROD;
-import static com.improver.application.properties.Environments.QA;
-import static com.improver.application.properties.Environments.STG;
+import static com.improver.application.properties.Environments.*;
 import static com.improver.application.properties.Path.*;
 
 /**
@@ -42,7 +39,7 @@ import static com.improver.application.properties.Path.*;
  */
 @Slf4j
 @Component
-@Profile({DEV, PROD, STG, QA})
+@Profile({INITDB, QA})
 public class TestDataInitializer {
 
     @Autowired private ResourceLoader resourceLoader;
