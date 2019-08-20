@@ -1,6 +1,6 @@
 <mat-sidenav-container>
   <mat-sidenav #sidenav [opened]="isSidebarOpen" [disableClose]="true" [mode]="'over'">
-    <ng-container *ngIf="mediaQuery == 'xs'">
+    <ng-container *ngIf="mediaQuery?.xs">
       <mat-icon class="toggle-sidenav" color="primary" (click)="sidenav.close()" *ngIf="sidenav.opened">
         keyboard_arrow_left
       </mat-icon>

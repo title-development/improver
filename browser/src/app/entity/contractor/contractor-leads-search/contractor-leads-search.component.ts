@@ -1,11 +1,7 @@
-import {
-  ApplicationRef,
-  Component, ElementRef, HostListener, OnDestroy, ViewChild
-} from '@angular/core';
-import { Subscription } from 'rxjs';
+import { ApplicationRef, Component, ElementRef, HostListener, OnDestroy, ViewChild } from '@angular/core';
+import { Subject } from 'rxjs';
 import { MapOptions } from '@agm/core/services/google-maps-types';
 import { MatDialog, MatSidenav } from '@angular/material';
-import { MediaChange, ObservableMedia } from '@angular/flex-layout';
 import { InfoWindowInt } from './intefaces/infoWindowInt';
 import { PackMan } from './packman';
 import { Lead, SystemMessageType } from '../../../model/data-model';
@@ -13,8 +9,9 @@ import { PopUpMessageService } from '../../../util/pop-up-message.service';
 import { LeadService } from '../../../api/services/lead.service';
 import { MapMarkersStore } from '../../../util/google-map-markers-store.service';
 import { defaultMapOptions, infoWindowDefaults } from '../../../util/google-map-default-options';
-import { applyStyleToMapLayers } from '../../../util/google-map.utils';
 import { getErrorMessage } from '../../../util/functions';
+import { takeUntil } from 'rxjs/operators';
+import { MediaQuery, MediaQueryService } from '../../../util/media-query.service';
 
 @Component({
   selector: 'contractor-leads-search',
@@ -25,7 +22,6 @@ import { getErrorMessage } from '../../../util/functions';
 export class ContractorLeadsSearchComponent implements OnDestroy {
   mapContentIsLoading: boolean = true;
   areas: Array<string> = [];
-  mediaQuery: string = '';
   search: string = '';
   isSidebarOpen: boolean = true;
   sortedLeads: Array<Lead> = [];
@@ -48,18 +44,23 @@ export class ContractorLeadsSearchComponent implements OnDestroy {
   ];
   @ViewChild(MatSidenav) private mdSidebar: MatSidenav;
   @ViewChild('leadsPanel') private leadsPanelEl: ElementRef;
-  private mediaWatcher: Subscription;
   private packMan: PackMan;
   private map;
+  mediaQuery: MediaQuery;
 
-  constructor(private query: ObservableMedia,
+  private readonly destroyed$ = new Subject<void>();
+
+  constructor(private mediaQueryService: MediaQueryService,
               private leadService: LeadService,
               private markersStore: MapMarkersStore,
               private dialog: MatDialog,
               private popUpMessageService: PopUpMessageService,
               private appRef: ApplicationRef) {
-    this.mediaWatcher = this.query.subscribe((change: MediaChange) => {
-      this.mediaQuery = change.mqAlias;
+    this.mediaQueryService.screen
+      .pipe(
+        takeUntil(this.destroyed$)
+      ).subscribe((mediaQuery: MediaQuery) => {
+      this.mediaQuery = mediaQuery;
     });
   }
 
@@ -86,7 +87,9 @@ export class ContractorLeadsSearchComponent implements OnDestroy {
       this.mapContentIsLoading = true;
       this.selectedLeadId = lead.id;
       this.leadService
-        .get(lead.id).subscribe(
+        .get(lead.id)
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe(
         data => {
           this.selectedLead = data;
           this.mapContentIsLoading = false;
@@ -102,7 +105,7 @@ export class ContractorLeadsSearchComponent implements OnDestroy {
               timeout: 5000
             });
           } else {
-            this.popUpMessageService.showError(getErrorMessage(err))
+            this.popUpMessageService.showError(getErrorMessage(err));
           }
           this.mapContentIsLoading = false;
         });
@@ -168,7 +171,8 @@ export class ContractorLeadsSearchComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.mediaWatcher.unsubscribe();
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
   /**

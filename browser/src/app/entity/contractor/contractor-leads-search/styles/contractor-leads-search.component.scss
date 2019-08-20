@@ -73,6 +73,9 @@ agm-map::ng-deep {
     top: 0px;
     right: 0;
     z-index: 1;
+    @include response(xs) {
+      left: 0;
+    }
   }
 
 }
