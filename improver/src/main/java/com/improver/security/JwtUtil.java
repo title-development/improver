@@ -1,16 +1,16 @@
 package com.improver.security;
 
+import com.improver.application.properties.SecurityProperties;
 import com.improver.exception.ValidationException;
 import com.improver.util.StringUtil;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.stereotype.Component;
 import java.util.Date;
 
-import static com.improver.application.properties.SecurityProperties.*;
 import static com.improver.util.ErrorMessages.INVALID_ACTIVATION_LINK;
 
 @Slf4j
@@ -21,15 +21,16 @@ public class JwtUtil {
     public static final String AUTHORIZATION_HEADER_NAME = "Authorization";
     private static final String ROLE_CLAIM = "role";
 
-    @Value("${jwt.secret}") private String secret;
+    @Autowired
+    private SecurityProperties securityProperties;
 
 
     String generateAccessJWT(String email, String role){
         return Jwts.builder()
             .claim(ROLE_CLAIM, role)
             .setSubject(email)
-            .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION))
-            .signWith(SignatureAlgorithm.HS512, secret)
+            .setExpiration(new Date(System.currentTimeMillis() + securityProperties.accessTokenExpiration()))
+            .signWith(SignatureAlgorithm.HS512, securityProperties.getJwtSecret())
             .compact();
     }
 
@@ -48,7 +49,7 @@ public class JwtUtil {
         }
         Claims body;
         try {
-            body = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+            body = Jwts.parser().setSigningKey(securityProperties.getJwtSecret()).parseClaimsJws(token).getBody();
         } catch (SignatureException | MalformedJwtException | UnsupportedJwtException e) {
             throw new BadCredentialsException("Invalid token", e);
         } catch (ExpiredJwtException e){
@@ -68,8 +69,8 @@ public class JwtUtil {
         return Jwts.builder()
             .setId(validationKey)
             .setSubject(email)
-            .setExpiration(new Date(System.currentTimeMillis() + ACTIVATION_LINK_EXPIRATION))
-            .signWith(SignatureAlgorithm.HS512, secret)
+            .setExpiration(new Date(System.currentTimeMillis() + securityProperties.activationLinkExpiration()))
+            .signWith(SignatureAlgorithm.HS512, securityProperties.getJwtSecret())
             .compact();
     }
 
@@ -80,7 +81,7 @@ public class JwtUtil {
         String validationKey;
         Claims body;
         try {
-            body = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+            body = Jwts.parser().setSigningKey(securityProperties.getJwtSecret()).parseClaimsJws(token).getBody();
         } catch (ExpiredJwtException e) {
             log.warn("The token is expired and not valid anymore", e);
             throw new ValidationException("Activation link is expired");

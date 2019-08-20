@@ -1,5 +1,6 @@
 package com.improver.application.config;
 
+import com.improver.application.properties.SecurityProperties;
 import com.improver.security.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +27,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired UserSecurityService userSecurityService;
     @Autowired JwtUtil jwtUtil;
+    @Autowired
+    SecurityProperties securityProperties;
 
     private LoginFilter loginFilter() throws Exception {
         return new LoginFilter(LOGIN_PATH, authenticationManager(), userSecurityService, jwtUtil);
@@ -40,7 +43,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     private RefreshAccessTokenFilter refreshAccessTokenFilter() {
-        return new RefreshAccessTokenFilter(REFRESH_ACCESS_TOKEN_PATH, userSecurityService, jwtUtil);
+        return new RefreshAccessTokenFilter(REFRESH_ACCESS_TOKEN_PATH, userSecurityService, securityProperties);
     }
 
     @Bean

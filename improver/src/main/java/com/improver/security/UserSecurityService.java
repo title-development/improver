@@ -1,5 +1,6 @@
 package com.improver.security;
 
+import com.improver.application.properties.SecurityProperties;
 import com.improver.entity.*;
 import com.improver.exception.AuthenticationRequiredException;
 import com.improver.exception.NotFoundException;
@@ -37,6 +38,8 @@ public class UserSecurityService implements UserDetailsService {
     @Autowired private JwtUtil jwtUtil;
     @Autowired private StaffRepository staffRepository;
     @Autowired private AdminRepository adminRepository;
+    @Autowired
+    private SecurityProperties securityProperties;
 
     /**
      * Intended to be used by {@link LoginFilter}.
@@ -142,12 +145,19 @@ public class UserSecurityService implements UserDetailsService {
      */
     public LoginModel performUserLogin(User user, HttpServletResponse res) {
         //updateLastLogin
-        User updated = userRepository.save(user.setLastLogin(ZonedDateTime.now()).setRefreshId(UUID.randomUUID().toString()));
-        LoginModel loginModel = getLoginModel(updated);
-        String jwt = getAccessJWT(updated);
-        res.setHeader(AUTHORIZATION_HEADER_NAME, BEARER_TOKEN_PREFIX + jwt);
-        res.addCookie(CookieHelper.buildRefreshCookie(loginModel.getRefreshId()));
         log.info("User {} logged in", user.getEmail());
+        return performUserLogin(user, res, false);
+    }
+
+
+    public LoginModel performUserLogin(User user, HttpServletResponse res, boolean isReauthentication) {
+        //updateLastLogin
+        User updated = userRepository.save(user.setLastLogin(ZonedDateTime.now()).setRefreshId(UUID.randomUUID().toString()));
+        LoginModel loginModel = buildLoginModel(updated);
+        String jwt = generateAccessToken(updated);
+        res.setHeader(AUTHORIZATION_HEADER_NAME, BEARER_TOKEN_PREFIX + jwt);
+        res.addCookie(CookieHelper.buildRefreshCookie(loginModel.getRefreshId(), securityProperties.maxUserSessionIdle()));
+
         return loginModel;
     }
 
@@ -159,7 +169,7 @@ public class UserSecurityService implements UserDetailsService {
         } catch (AuthenticationException e) {
             throw new AuthenticationRequiredException(e.getMessage());
         }
-        return getLoginModel(currentUser);
+        return buildLoginModel(currentUser);
     }
 
     /**
@@ -175,6 +185,7 @@ public class UserSecurityService implements UserDetailsService {
     public void checkUser(User user) throws DisabledException, LockedException, CredentialsExpiredException, AccountExpiredException {
         if(!user.isActivated()) {
             if (user instanceof Contractor && ((Contractor) user).isIncomplete()) {
+                log.debug("Skip incomplete PRO " + user.getEmail());
             } else {
                 throw new DisabledException(ACCOUNT_NOT_ACTIVATED_MSG);
             }
@@ -199,7 +210,7 @@ public class UserSecurityService implements UserDetailsService {
      * @param user
      * @return
      */
-    private LoginModel getLoginModel(User user) {
+    private LoginModel buildLoginModel(User user) {
         String displayName = user.getDisplayName();
         String iconUrl = user.getIconUrl();
         String companyId = null;
@@ -225,7 +236,7 @@ public class UserSecurityService implements UserDetailsService {
     /**
      * Handles {@link User.Role#INCOMPLETE_PRO} activation scenario.
      */
-    public String getAccessJWT(User user) {
+    public String generateAccessToken(User user) {
         User.Role role = user.getRole();
         if (user instanceof Contractor && ((Contractor) user).isIncomplete()) {
             role = INCOMPLETE_PRO;

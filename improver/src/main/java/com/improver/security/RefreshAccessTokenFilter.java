@@ -31,12 +31,12 @@ public class RefreshAccessTokenFilter extends GenericFilterBean {
 
     private UserSecurityService userSecurityService;
     private AntPathRequestMatcher antPathRequestMatcher;
-    private JwtUtil jwtUtil;
+    private SecurityProperties securityProperties;
 
-    public RefreshAccessTokenFilter(String url, UserSecurityService userSecurityService, JwtUtil jwtUtil) {
+    public RefreshAccessTokenFilter(String url, UserSecurityService userSecurityService, SecurityProperties securityProperties) {
         antPathRequestMatcher = new AntPathRequestMatcher(url);
         this.userSecurityService = userSecurityService;
-        this.jwtUtil = jwtUtil;
+        this.securityProperties = securityProperties;
     }
 
     @Override
@@ -54,24 +54,48 @@ public class RefreshAccessTokenFilter extends GenericFilterBean {
                 return;
             }
 
-            // 2. Check token expiration
+            // 2. Check if token exist
             User user = userSecurityService.findByRefreshId(refreshToken);
-            if (user == null || ZonedDateTime.now().isAfter(user.getLastLogin().plus(SecurityProperties.REFRESH_TOKEN_EXPIRATION, MILLIS))) {
+            if (user == null) {
                 logger.debug("Refresh token expired or invalid");
                 CookieHelper.eraseRefreshCookie(response);
                 sendError(response, SC_UNAUTHORIZED, SESSION_TIMED_OUT_MSG);
                 return;
             }
 
-            // 3. Check user
+            // 3. Check if token and sessionIdle expired
+            ZonedDateTime now = ZonedDateTime.now();
+            ZonedDateTime tokenExpiration = user.getLastLogin().plus(securityProperties.refreshTokenExpiration(), MILLIS);
+            boolean isReauthenticate = false;
+            if (now.isAfter(tokenExpiration)) {
+                ZonedDateTime sessionExpiration = user.getLastLogin().plus(securityProperties.maxUserSessionIdle(), MILLIS);
+                if (now.isBefore(sessionExpiration)) {
+                    isReauthenticate = true;
+                } else {
+                    logger.debug("Refresh token expired");
+                    CookieHelper.eraseRefreshCookie(response);
+                    sendError(response, SC_UNAUTHORIZED, SESSION_TIMED_OUT_MSG);
+                    return;
+                }
+            }
+
+            // 4. Check user
             try {
                 userSecurityService.checkUser(user);
             } catch (AuthenticationException e) {
                 logger.error(user.getEmail() + " " + e.getMessage());
+                userSecurityService.performLogout(user, response);
                 sendError(response, SC_FORBIDDEN, e.getMessage());
                 return;
             }
-            String jwt = userSecurityService.getAccessJWT(user);
+
+            // 5. Re-authenticate or return access token
+            if (isReauthenticate) {
+                logger.debug("Re-authentication user=" + user.getEmail());
+                userSecurityService.performUserLogin(user, response, true);
+                return;
+            }
+            String jwt = userSecurityService.generateAccessToken(user);
             response.addHeader(AUTHORIZATION_HEADER_NAME, BEARER_TOKEN_PREFIX + jwt);
             return;
         }

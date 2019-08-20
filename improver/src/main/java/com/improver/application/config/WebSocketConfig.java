@@ -1,6 +1,8 @@
 package com.improver.application.config;
 
+import com.improver.application.properties.SecurityProperties;
 import com.improver.ws.interceptors.WsSecurityInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
@@ -11,11 +13,13 @@ import org.springframework.web.socket.server.standard.ServletServerContainerFact
 import static com.improver.application.properties.Path.WEB_SOCKET_ENDPOINT;
 import static com.improver.application.properties.Path.WS_QUEUE;
 import static com.improver.application.properties.Path.WS_TOPIC;
-import static com.improver.application.properties.SecurityProperties.WS_CONNECTION_IDLE_TIME;
 
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+
+    @Autowired
+    private SecurityProperties securityProperties;
 
     /**
      * Configuration of WebSocket server container
@@ -24,7 +28,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Bean
     public ServletServerContainerFactoryBean servletServerContainerFactoryBean() {
         ServletServerContainerFactoryBean container = new ServletServerContainerFactoryBean();
-        container.setMaxSessionIdleTimeout(WS_CONNECTION_IDLE_TIME);
+        container.setMaxSessionIdleTimeout(securityProperties.wsConnectionIdleMillis());
+        //container.setMaxSessionIdleTimeout(55 * 1000L);
         return container;
     }
 

@@ -9,8 +9,8 @@ import static com.improver.application.properties.SecurityProperties.*;
 
 public class CookieHelper {
 
-    public static Cookie buildRefreshCookie(String refreshToken) {
-        return newCookie(REFRESH_COOKIE_NAME, refreshToken, REFRESH_COOKIE_PATH, Math.toIntExact(REFRESH_TOKEN_EXPIRATION / 1000));
+    public static Cookie buildRefreshCookie(String refreshToken, long refreshTokenExpiration) {
+        return newCookie(REFRESH_COOKIE_NAME, refreshToken, REFRESH_COOKIE_PATH, Math.toIntExact(refreshTokenExpiration / 1000));
     }
 
 

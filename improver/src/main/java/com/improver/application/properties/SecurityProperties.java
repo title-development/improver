@@ -1,20 +1,49 @@
 package com.improver.application.properties;
 
-/**
- * Created by msoltys on 5/30/2017.
- */
-public final class SecurityProperties {
-    private SecurityProperties() {}
+import lombok.Getter;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
-    private static final long MILLISECONDS_IN_DAY = 24 * 60 * 60 * 1000L;
+import java.time.Duration;
 
 
-    public static final long ACCESS_TOKEN_EXPIRATION = 15 * 60 * 1000L;
-    public static final long REFRESH_TOKEN_EXPIRATION = 24 * 60 * 60 * 1000L;
-    public static final long ACTIVATION_LINK_EXPIRATION = 2 * MILLISECONDS_IN_DAY;
+@Component
+public class SecurityProperties {
 
-    public static final long WS_CONNECTION_IDLE_TIME = 15 * 60 * 1000L;
     public static final String REFRESH_COOKIE_NAME = "imp-ref";
 
+    @Getter
+    @Value("${security.token.jwt.secret}")
+    private String jwtSecret;
+    @Value("${security.token.access.expiration}")
+    private Duration accessTokenDuration;
+    @Value("${security.token.refresh.expiration}")
+    private Duration refreshTokenDuration;
+    @Value("${security.login-session.idle}")
+    private Duration userSessionIdle;
+    @Value("${security.token.activation.expiration}")
+    private Duration activationTokenDuration;
+    @Value("${security.ws.connection.idle}")
+    private Duration wsConnectionDuration;
 
+
+    public long accessTokenExpiration() {
+        return accessTokenDuration.toMillis();
+    }
+
+    public long refreshTokenExpiration() {
+        return refreshTokenDuration.toMillis();
+    }
+
+    public long maxUserSessionIdle() {
+        return refreshTokenDuration.plus(userSessionIdle).toMillis();
+    }
+
+    public long activationLinkExpiration() {
+        return activationTokenDuration.toMillis();
+    }
+
+    public long wsConnectionIdleMillis() {
+        return wsConnectionDuration.toMillis();
+    }
 }
