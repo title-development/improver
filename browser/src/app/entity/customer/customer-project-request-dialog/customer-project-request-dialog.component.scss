@@ -86,6 +86,7 @@
       background-repeat: no-repeat;
       background-position: center;
       box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.17);
+
       &.-archived {
         pointer-events: none;
       }
@@ -259,6 +260,9 @@
 .content {
   display: flex;
   flex-grow: 1;
+  @include response(xs) {
+    overflow: hidden;
+  }
 
   .content-tabs {
     display: flex;
@@ -312,9 +316,13 @@
       background: $white;
       position: relative;
       height: 100%;
+
       &.-about {
         position: static !important;
         display: flex;
+        @include response(xs) {
+          display: none;
+        }
       }
 
       &.active {
@@ -412,6 +420,7 @@
       background-position: 50%;
       background-size: cover;
       border: 1px solid $black-300;
+
       &.-archived {
         pointer-events: none;
       }
@@ -501,7 +510,7 @@
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.15);
 
       @include response-to(md) {
-        width: 107px;
+        min-width: 107px;
         height: 35px;
         background-color: #63be8d;
         box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.15);
@@ -534,7 +543,6 @@
         height: 35px;
         padding: 0;
       }
-
 
 
       &:hover {
@@ -607,6 +615,7 @@
   text-align: center;
   padding: 16px 0;
   color: $black;
+
   &.-archived {
     pointer-events: none;
   }
@@ -697,7 +706,7 @@
   display: flex;
   justify-content: center;
 
-  @include response(sm,md){
+  @include response(sm, md) {
     position: absolute;
     right: 24px;
     top: 90px;
@@ -705,7 +714,7 @@
     z-index: 129;
   }
 
-  @include response-to(xs){
+  @include response-to(xs) {
     padding: 14px 23px 0;
   }
 
@@ -721,13 +730,14 @@
   margin-top: 16px;
   align-items: center;
 
-  @include response(sm, md){
+  @include response(sm, md) {
     justify-content: start;
   }
 
   .approve-icon {
     margin-right: 8px;
   }
+
   .approve-text {
     font-weight: 500;
     font-size: 11px;
