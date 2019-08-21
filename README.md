@@ -133,9 +133,15 @@ DNS.1   = localhost
 [SAN]
 subjectAltName=DNS:localhost
 ```
-##### 2. Run console command
+##### 3. Run console command
 ````
 openssl req -newkey rsa:2048 -x509 -nodes -keyout server.key -new -out server.crt -reqexts SAN -e
 xtensions SAN -config ssl.conf -sha256 -days 3650
 ````
-##### 3. Add generated certificate to Trusted Root Certification Authorities
+##### 4. Add generated certificate to Trusted Root Certification Authorities
+
+##### 5. Generate pkcs12 keystore for embedded tomcat.  
+_Note. Password is "password"_
+````
+openssl pkcs12 -export -in C:\certificates\server.crt -inkey C:\certificates\server.key -out C:\certificates\keystore.p12 -name improver -caname improver
+````
