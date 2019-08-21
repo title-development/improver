@@ -196,7 +196,11 @@ public class CompanyService {
         coverageConfig.setCenterLat(registration.getCoverage().getCenter().lat)
             .setCenterLng(registration.getCoverage().getCenter().lng)
             .setRadius(registration.getCoverage().getRadius());
-        companyConfigService.updateCoverageConfig(coverageConfig, company, contractor);
+        try {
+            companyConfigService.updateCoverageConfig(coverageConfig, company, contractor);
+        } catch (Exception e) {
+            log.error("Could not update Company coverage for " + company.getName(), e);
+        }
         // Add initial bonus from Invitation
         billingService.addInitialBonus(company, contractor.getEmail());
         if (contractor.isNativeUser()) {

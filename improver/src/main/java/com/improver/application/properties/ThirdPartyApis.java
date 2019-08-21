@@ -9,11 +9,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class ThirdPartyApis {
 
-    @Value("${google.auth.client.id}") private String googleClientId;
-    @Value("${shippo.private.key}") private String shippoPrivateKey;
-    @Value("${google.auth.client.id}") private String googleAuthClientId;
-    @Value("${google.api.key}") private String googleApiKey;
-    @Value("${mapreflex.api.key}") private String mapreflexApiKey;
-    @Value("${stripe.secret.key}") private String stripeSecretKey;
+    @Value("${account.google.auth.client.id}")
+    private String googleClientId;
+    @Value("${account.shippo.private.key}")
+    private String shippoPrivateKey;
+    @Value("${account.google.auth.client.id}")
+    private String googleAuthClientId;
+    @Value("${account.google.map.api.key}")
+    private String googleApiKey;
+    @Value("${account.mapreflex.api.key}")
+    private String mapreflexApiKey;
+    @Value("${account.stripe.secret.key}")
+    private String stripeSecretKey;
 
 }
