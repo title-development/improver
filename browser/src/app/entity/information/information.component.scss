@@ -77,16 +77,9 @@ p {
   }
 
   &:first-child {
-    &:first-letter {
-      float: left;
-      margin-right: 10px;
-      font-size: 42.4px;
-      font-weight: bold;
-      font-style: italic;
-      line-height: 44px;
-      letter-spacing: 0.8px;
-      text-align: left;
-      color: #212121;
-    }
   }
+}
+
+a {
+  cursor: pointer;
 }
