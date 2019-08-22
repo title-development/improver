@@ -58,6 +58,7 @@ public class BoundariesService {
             URI uri = new URIBuilder(BASE_URL + BBOX_ZIP_SEARCH_URL)
                 .setParameter("southWest", southWest)
                 .setParameter("northEast", northEast)
+                .setParameter("properties", "zip,centroid")
                 .build();
             request = RequestBuilder.get().setUri(uri).build();
         } catch (URISyntaxException e) {
@@ -76,6 +77,7 @@ public class BoundariesService {
         try {
             URI uri = new URIBuilder(BASE_URL + ZIP_SEARCH_URL)
                 .setParameter("ids", String.join(",", zipCodes))
+                .setParameter("properties", "zip,centroid")
                 .build();
             request = RequestBuilder.get().setUri(uri).build();
         } catch (URISyntaxException e) {
@@ -92,6 +94,7 @@ public class BoundariesService {
                 .setParameter("radius", radius)
                 .setParameter("latitude", latitude)
                 .setParameter("longitude", longitude)
+                .setParameter("properties", "zip,centroid")
                 .build();
             request = RequestBuilder.get().setUri(uri).build();
         } catch (URISyntaxException e) {
