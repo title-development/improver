@@ -5,10 +5,7 @@ import com.improver.model.out.NotificationMessage;
 import com.improver.repository.NotificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
 
 import static com.improver.application.properties.Path.*;
 
@@ -43,8 +40,8 @@ public class WsNotificationService {
         );
     }
 
-    public void newLeadPurchase(User receiver, Customer customer, String serviceType, long projectRequestId){
-        sendNotification(receiver.getId(), Notification.newLeadPurchase(receiver, customer.getDisplayName(), customer.getId(), serviceType, projectRequestId));
+    public void newSubscriptionLeadPurchase(User receiver, Customer customer, String serviceType, long projectRequestId){
+        sendNotification(receiver.getId(), Notification.newSubscriptionLeadPurchase(receiver, customer.getDisplayName(), customer.getId(), serviceType, projectRequestId));
     }
 
     public void customerHired(User receiver, Customer customer, String serviceType, long projectRequestId){

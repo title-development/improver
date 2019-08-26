@@ -155,7 +155,7 @@ public class LeadService {
             mailService.sendManualLeadPurchaseEmail(assignment, projectRequest);
         } else {
             mailService.sendLeadAutoPurchaseEmail(company, projectRequest);
-            wsNotificationService.newLeadPurchase(assignment, lead.getCustomer(), serviceType, projectRequest.getId());
+            wsNotificationService.newSubscriptionLeadPurchase(assignment, lead.getCustomer(), serviceType, projectRequest.getId());
         }
         mailService.sendNewProposalEmail(company, lead);
         return projectRequest;

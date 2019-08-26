@@ -56,7 +56,7 @@ public class Notification {
         this.isNewMessage = true;
         this.icon = companyIconURL(companyId);
         this.link = CUSTOMER_PROJECTS + projectId + "#" + projectRequestId;
-        this.payload = String.format("New messages from <b>%s</b> on %s", companyName, serviceTypeName);
+        this.payload = String.format("New messages from <b>%s</b> on <b>%s</b> project", companyName, serviceTypeName);
         this.created = created;
     }
 
@@ -72,7 +72,7 @@ public class Notification {
         this.isNewMessage = true;
         this.icon = customerIconURL(customerId);
         this.link = PRO_PROJECTS + projectRequestId;
-        this.payload = String.format("New messages from <b>%s</b> on %s", customerName, serviceTypeName);
+        this.payload = String.format("New messages from <b>%s</b> on <b>%s</b> project", customerName, serviceTypeName);
         this.created = created;
     }
 
@@ -86,30 +86,28 @@ public class Notification {
     public static Notification proLeftProject(User receiver, String company, String companyId, String serviceType, long projectId){
         return new Notification().setUser(receiver)
             .setIcon(companyIconURL(companyId))
-            .setPayload(String.format("<b>%s</b> left the project <b>%s</b>", company, serviceType))
+            .setPayload(String.format("<b>%s</b> left the <b>%s</b> project", company, serviceType))
             .setLink(CUSTOMER_PROJECTS + projectId);
     }
 
-
-
-    public static Notification newLeadPurchase(User receiver, String client, long customerId, String serviceType, long projectRequestId){
+    public static Notification newSubscriptionLeadPurchase(User receiver, String client, long customerId, String serviceType, long projectRequestId){
         return new Notification().setUser(receiver)
             .setIcon(customerIconURL(customerId))
-            .setPayload(String.format("New project request for <b>%s</b> from <b>%s</b>",  serviceType, client))
+            .setPayload(String.format("New subscription <b>%s</b> project for <b>%s</b>",  serviceType, client))
             .setLink(PRO_PROJECTS + projectRequestId);
     }
 
     public static Notification customerHired(User receiver, String client, long customerId, String serviceType, long projectRequestId){
         return new Notification().setUser(receiver)
             .setIcon(customerIconURL(customerId))
-            .setPayload(String.format("<b>%s</b> hired you for project <b>%s</b>", client, serviceType))
+            .setPayload(String.format("<b>%s</b> accepted your offer on <b>%s</b> project", client, serviceType))
             .setLink(PRO_PROJECTS + projectRequestId);
     }
 
     public static Notification customerCloseProject(User receiver, String client, long customerId, String serviceType, long projectRequestId){
         return new Notification().setUser(receiver)
             .setIcon(customerIconURL(customerId))
-            .setPayload(String.format("<b>%s</b> closed the project <b>%s</b>", client, serviceType))
+            .setPayload(String.format("<b>%s</b> closed the <b>%s</b> project", client, serviceType))
             .setLink(PRO_PROJECTS + projectRequestId);
     }
 
@@ -160,7 +158,7 @@ public class Notification {
     public static Notification bonusReceived(User receiver, int amount){
         return new Notification().setUser(receiver)
             .setIcon(SYSTEM_NOTIFICATION_ICON)
-            .setPayload(String.format("You have been received <b>$%d</b> bonus.", amount / 100))
+            .setPayload(String.format("You have been received <b>$%d</b> bonus", amount / 100))
             .setLink(BILLING_URL);
     }
 

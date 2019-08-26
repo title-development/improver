@@ -127,8 +127,8 @@ public class TestDataInitializer {
             initUnavailabilityPeriods();
             log.info("=========== Init Test Projects ...");
             initProjects();
-        log.info("=========== Init Test Demo Projects ...");
-        initDemoProjects();
+            log.info("=========== Init Test Demo Projects ...");
+            initDemoProjects();
             log.info("=========== Init Test Transactions ...");
             initTransactions();
             log.info("=========== Init Test Reviews ...");
