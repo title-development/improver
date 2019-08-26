@@ -36,7 +36,6 @@ import { first, skip } from "rxjs/operators";
     ])
   ]
 })
-
 export class NotificationsPopupComponent implements OnChanges, OnDestroy {
 
   @Input() get toggle(): boolean {

@@ -6,7 +6,7 @@
     <div class="title">
       <span>Notifications</span>
     </div>
-    <button class="mark-read" (click)="readAll()">Mark all as read</button>
+    <button class="mark-read" (click)="readAll()" *ngIf="notificationResource.unreadNotificationsCounter > 0">Mark all as read</button>
   </div>
   <div class="popup-body">
     <ng-container ></ng-container>
