@@ -104,7 +104,13 @@ export class DetailModeService implements OnDestroy {
         const southWest: string = [this.map.getBounds().getSouthWest().lat(), this.map.getBounds().getSouthWest().lng()].join();
         const northEast: string = [this.map.getBounds().getNorthEast().lat(), this.map.getBounds().getNorthEast().lng()].join();
 
-        return this.boundariesService.getZipCodesInBbox(northEast, southWest);
+        return this.boundariesService.getZipCodesInBbox(northEast, southWest).pipe(
+          catchError(err => {
+            this.fetching.next(false);
+            this.popUpMessageService.showError('Unexpected error during map rendering');
+
+            return of(null);
+          }));
       }),
       catchError(err => {
         this.fetching.next(false);

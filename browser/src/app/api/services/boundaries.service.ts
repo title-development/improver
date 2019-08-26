@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { from, Observable, of } from 'rxjs';
+import { from, Observable, of, throwError } from 'rxjs';
 
 import { ZipBoundaries } from '../models/ZipBoundaries';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { chunk } from '../../util/functions';
+import { chunk, getErrorMessage } from '../../util/functions';
 import { catchError, mergeMap, retry } from 'rxjs/operators';
 
 @Injectable()
@@ -38,13 +38,13 @@ export class BoundariesService {
   }
 
   getSplitZipBoundaries(zips: ReadonlyArray<string>, splitSize: number | null = null): Observable<ZipBoundaries> {
-    if(splitSize) {
+    if (splitSize) {
       const splicedZips = chunk<string>(zips, splitSize);
       return from(splicedZips)
         .pipe(
           mergeMap(chunk => this.getZipBoundaries(chunk), splicedZips.length),
           retry(2)
-        )
+        );
     }
     return this.getZipBoundaries(zips);
   }
@@ -54,7 +54,11 @@ export class BoundariesService {
       southWest: sw,
       northEast: nw
     };
-    return this.http.get<ZipBoundaries>(`${this.geoUrl}${this.zipsUrl}${this.searchUrl}${this.bboxUrl}${this.boundariesUrl}`, {params: params});
+    return this.http.get<ZipBoundaries>(`${this.geoUrl}${this.zipsUrl}${this.searchUrl}${this.bboxUrl}${this.boundariesUrl}`, {params: params})
+      .pipe(catchError(err => {
+        console.error(getErrorMessage(err));
+        return throwError(err);
+      }));
   }
 
   queryByRadius(latitude, longitude, radius): Observable<ZipBoundaries> {
@@ -77,6 +81,6 @@ export class BoundariesService {
     return this.getZipBoundaries(zips).pipe(
       retry(2),
       catchError(err => of(null))
-    )
+    );
   }
 }
