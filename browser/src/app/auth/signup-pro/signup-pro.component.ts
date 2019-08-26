@@ -1,20 +1,16 @@
-import { ApplicationRef, Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 
 import { SecurityService } from '../security.service';
 import { Constants } from '../../util/constants';
 import { Messages } from 'app/util/messages';
 import { RegistrationService } from '../../api/services/registration.service';
 import { TricksService } from '../../util/tricks.service';
-import {
-  LoginModel,
-  RegistrationUserModel,
-  RegistrationUserProps
-} from '../../model/security-model';
+import { LoginModel, RegistrationUserModel, RegistrationUserProps } from '../../model/security-model';
 import { PopUpMessageService } from '../../util/pop-up-message.service';
 import { HttpResponse } from '@angular/common/http';
 import { getErrorMessage } from '../../util/functions';
 import { MediaQuery, MediaQueryService } from '../../util/media-query.service';
-import { Subject, Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
 import { ActivatedRoute, Params } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 
@@ -68,6 +64,7 @@ export class SignupProComponent implements OnDestroy {
 
   registerContractor(form) {
     this.registrationService.registerContractor(this.user).pipe(takeUntil(this.componentDestroyed)).subscribe((response: HttpResponse<any>) => {
+      this.clearReferralCode();
       this.securityService.loginUser(JSON.parse(response.body) as LoginModel, response.headers.get('authorization'), true);
     }, err => {
       if (err.status == 401) {
@@ -98,5 +95,9 @@ export class SignupProComponent implements OnDestroy {
     }
 
     return referralCode;
+  }
+
+  private clearReferralCode(): void {
+    sessionStorage.removeItem(this.REFERRAL_CODE_STORAGE_KEY);
   }
 }
