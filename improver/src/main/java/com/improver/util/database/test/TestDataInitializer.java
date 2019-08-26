@@ -1,7 +1,6 @@
 package com.improver.util.database.test;
 
 import com.improver.entity.*;
-import com.improver.service.UserService;
 import com.improver.util.enums.State;
 import com.improver.exception.NotFoundException;
 import com.improver.model.in.Order;
@@ -39,7 +38,7 @@ import static com.improver.application.properties.Path.*;
  */
 @Slf4j
 @Component
-@Profile({INITDB, QA})
+@Profile({INITDB, QA, STG})
 public class TestDataInitializer {
 
     @Autowired private ResourceLoader resourceLoader;
