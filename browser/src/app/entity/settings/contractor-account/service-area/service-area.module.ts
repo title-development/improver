@@ -23,8 +23,8 @@ import { AgmSharedModule } from '../../../../shared/agmShared.module';
 import { CvSwitchModule } from '../../../../theme/switch/switch.module';
 import { CvSelectModule } from '../../../../theme/select/cv-select-module';
 import { PendingChangesGuard } from '../../../../auth/router-guards/pending-chanes.guard';
-import { BasicMode } from './BasicMode';
-import { DetailMode } from './DetailMode';
+import { BasicModeService } from './services/basic-mode.service';
+import { DetailModeService } from './services/detail-mode.service';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { AgmSnazzyInfoWindowModule } from '@agm/snazzy-info-window';
 const routing: ModuleWithProviders = RouterModule.forChild([
@@ -70,8 +70,8 @@ const routing: ModuleWithProviders = RouterModule.forChild([
     DataLayerManager,
     MapTechnicaService,
     MapMarkersStore,
-    BasicMode,
-    DetailMode
+    BasicModeService,
+    DetailModeService
   ]
 
 })

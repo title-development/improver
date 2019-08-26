@@ -1,15 +1,15 @@
-import { ApplicationRef, ChangeDetectorRef, EventEmitter, Injectable } from '@angular/core';
-import { ZipBoundaries, ZipFeature } from '../../../../api/models/ZipBoundaries';
-import { CoverageConfig } from '../../../../api/models/CoverageConfig';
-import { Observable, of, Subscription, BehaviorSubject, fromEventPattern, Subject } from 'rxjs';
-import { getErrorMessage } from '../../../../util/functions';
-import { BoundariesService } from '../../../../api/services/boundaries.service';
-import { SecurityService } from '../../../../auth/security.service';
-import { CompanyService } from '../../../../api/services/company.service';
-import { applyStyleToMapLayers, GoogleMapUtilsService } from '../../../../util/google-map.utils';
-import { PopUpMessageService } from '../../../../util/pop-up-message.service';
-import { CompanyCoverageConfig } from '../../../../api/models/CompanyCoverageConfig';
-import { MediaQuery, MediaQueryService } from '../../../../util/media-query.service';
+import { EventEmitter, Injectable, OnDestroy } from '@angular/core';
+import { ZipBoundaries } from '../../../../../api/models/ZipBoundaries';
+import { CoverageConfig } from '../../../../../api/models/CoverageConfig';
+import { of, Subscription, BehaviorSubject, fromEventPattern } from 'rxjs';
+import { getErrorMessage } from '../../../../../util/functions';
+import { BoundariesService } from '../../../../../api/services/boundaries.service';
+import { SecurityService } from '../../../../../auth/security.service';
+import { CompanyService } from '../../../../../api/services/company.service';
+import { applyStyleToMapLayers, GoogleMapUtilsService } from '../../../../../util/google-map.utils';
+import { PopUpMessageService } from '../../../../../util/pop-up-message.service';
+import { CompanyCoverageConfig } from '../../../../../api/models/CompanyCoverageConfig';
+import { MediaQuery, MediaQueryService } from '../../../../../util/media-query.service';
 import { catchError, debounceTime, switchMap, takeWhile, tap } from 'rxjs/internal/operators';
 
 
@@ -23,7 +23,7 @@ export class ZipInfoWindow {
 }
 
 @Injectable()
-export class DetailMode {
+export class DetailModeService implements OnDestroy {
   fetching: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   zips: EventEmitter<{ added: Array<string>, removed: Array<string> }> = new EventEmitter<{ added: Array<string>, removed: Array<string> }>();
   onInfoWindow: EventEmitter<ZipInfoWindow> = new EventEmitter<ZipInfoWindow>();
@@ -147,10 +147,13 @@ export class DetailMode {
       this.mediaQuerySubscription$.unsubscribe();
     }
     if (this.idle$) {
-      console.log(this.idle$);
       this.idle$.unsubscribe();
       this.subscribedMapIdle = false;
     }
+  }
+
+  ngOnDestroy(): void {
+    console.log('destroy');
   }
 
   addRemoveZip(zip: string, undo: boolean = false): void {
@@ -176,7 +179,6 @@ export class DetailMode {
 
   private boundaryClickHandler = (event: google.maps.Data.MouseEvent) => {
     this.addRemoveZip(event.feature.getProperty('zip'));
-    console.log(event.feature.getProperty('selected'));
     event.feature.setProperty('selected', !event.feature.getProperty('selected'));
     this.map.data.overrideStyle(event.feature, {
       strokeWeight: 2,

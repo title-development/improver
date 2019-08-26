@@ -27,4 +27,9 @@ export class ZipBoundaries {
     this.type = type;
     this.features = features;
   }
+
+  addFeature(zipFeature: Array<ZipFeature>): ZipBoundaries {
+    this.features = [...this.features, ...zipFeature];
+    return this
+  }
 }

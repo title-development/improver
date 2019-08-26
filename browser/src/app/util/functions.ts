@@ -181,3 +181,13 @@ export function capitalize(string: string): string {
   let [s, ...tring] = (string.toLowerCase() as any);
   return [s.toUpperCase(), ...tring].join('');
 }
+
+export function chunk<T>(array: ReadonlyArray<T>, size: number): T[][] {
+  const chunked: T[][] = [];
+  let index = 0;
+  while (index < array.length) {
+    chunked.push(array.slice(index, size + index));
+    index += size;
+  }
+  return chunked;
+}

@@ -20,15 +20,15 @@ import { CoverageConfig } from '../../../../api/models/CoverageConfig';
 import { AgmMap } from '@agm/core';
 import { SecurityService } from '../../../../auth/security.service';
 import { CompanyService } from '../../../../api/services/company.service';
-import { Subscription, Observable, of, forkJoin } from 'rxjs';
+import { Subscription, Observable, of, forkJoin, Subject } from 'rxjs';
 
 import { ComponentCanDeactivate } from '../../../../auth/router-guards/pending-chanes.guard';
-import { BasicMode } from './BasicMode';
-import { DetailMode, ZipInfoWindow } from './DetailMode';
+import { BasicModeService } from './services/basic-mode.service';
+import { DetailModeService, ZipInfoWindow } from './services/detail-mode.service';
 import { TutorialsService } from '../../../../api/services/tutorials.service';
 import { CvSwitchComponent } from '../../../../theme/switch/switch.component';
 import { CompanyCoverageConfig } from '../../../../api/models/CompanyCoverageConfig';
-import { mergeMap, switchMap } from 'rxjs/internal/operators';
+import { mergeMap, switchMap, takeUntil } from 'rxjs/internal/operators';
 import { MediaQuery, MediaQueryService } from '../../../../util/media-query.service';
 import { getErrorMessage } from '../../../../util/functions';
 import { UserTutorial } from '../../../../api/models/UserTutorial';
@@ -40,7 +40,7 @@ import { UNSAVED_CHANGES_MESSAGE } from '../../../../util/messages';
   templateUrl: './service-area.component.html',
   styleUrls: ['./service-area.component.scss']
 })
-export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate {
+export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate, OnInit {
   mapContentIsLoading: boolean = true;
   zipFormErrors: boolean;
   searchZip: string;
@@ -67,14 +67,10 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate {
   MIN_COVERAGE_RADIUS = 5;
   MAX_COVERAGE_RADIUS = 50;
   media: MediaQuery;
-  mediaQuery$: Subscription;
   private servedZipCodes: Array<string>;
   private companyCoverageConfig: CompanyCoverageConfig;
   private map: google.maps.Map;
-  private initEffect$: Subscription;
-  private fetching$: Subscription;
-  private zipsChange$: Subscription;
-  private zipInfoWindow$: Subscription;
+  private readonly destroyed$ = new Subject<void>();
   unsupportedArea: any;
 
   constructor(private securityService: SecurityService,
@@ -86,24 +82,23 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate {
               private gMapUtils: GoogleMapUtilsService,
               private popUpMessageService: PopUpMessageService,
               private applicationRef: ApplicationRef,
-              private basicMode: BasicMode,
-              private detailsMode: DetailMode,
+              private basicMode: BasicModeService,
+              private detailsMode: DetailModeService,
               private appRef: ApplicationRef,
               public tutorialService: TutorialsService,
               private mediaQuery: MediaQueryService,
               private cdRef: ChangeDetectorRef) {
-    this.mediaQuery$ = this.mediaQuery.screen.subscribe((medias: MediaQuery) => {
+    this.mediaQuery.screen.pipe(takeUntil(this.destroyed$)).subscribe((medias: MediaQuery) => {
       this.media = medias;
     });
-    this.init();
   }
 
-  init(): void {
-
+  ngOnInit(): void {
     let servedZipCodes$ = this.boundariesService.getAllServedZips();
     let configCoverage$ = this.companyService.getCoverageConfig(this.securityService.getLoginModel().company);
 
-    this.initEffect$ = forkJoin([servedZipCodes$, configCoverage$]).pipe(
+    forkJoin([servedZipCodes$, configCoverage$]).pipe(
+      takeUntil(this.destroyed$),
       switchMap((results) => {
         let [servedZipCodes, companyCoverageConfig] = results;
         this.servedZipCodes = servedZipCodes;
@@ -302,21 +297,8 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate {
   ngOnDestroy(): void {
     this.basicMode.destroy();
     this.detailsMode.destroy();
-    if (this.fetching$) {
-      this.fetching$.unsubscribe();
-    }
-    if (this.initEffect$) {
-      this.initEffect$.unsubscribe();
-    }
-    if (this.zipsChange$) {
-      this.zipsChange$.unsubscribe();
-    }
-    if (this.zipInfoWindow$) {
-      this.zipInfoWindow$.unsubscribe();
-    }
-    if (this.mediaQuery$) {
-      this.mediaQuery$.unsubscribe();
-    }
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
   canDeactivate(): Observable<boolean> | boolean {
@@ -333,11 +315,17 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate {
 
   zoomIn(): void {
     const zoom = this.map.getZoom();
+    if(zoom >= this.mapOptions.maxZoom) {
+      return
+    }
     this.map.setZoom(zoom + 1);
   }
 
   zoomOut(): void {
     const zoom = this.map.getZoom();
+    if(zoom <= this.minZoom) {
+      return;
+    }
     this.map.setZoom(zoom - 1);
   }
 
@@ -355,11 +343,11 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate {
     this.minZoom = 10;
     this.detailsMode.destroy();
     this.basicMode.init(this.map, this.companyCoverageConfig, this.servedZipCodes);
-    this.fetching$ = this.basicMode.fetching.subscribe((res: boolean) => {
+    this.basicMode.fetching.pipe(takeUntil(this.destroyed$)).subscribe((res: boolean) => {
       this.mapContentIsLoading = res;
       this.cdRef.detectChanges();
     });
-    this.zipsChange$ = this.basicMode.toUpdate.subscribe((zips: Array<string>) => {
+    this.basicMode.toUpdate.pipe(takeUntil(this.destroyed$)).subscribe((zips: Array<string>) => {
       this.toUpdate = zips;
       this.unsaved = this.toUpdate.length > 0;
     });
@@ -369,15 +357,15 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate {
     this.minZoom = 10;
     this.basicMode.destroy();
     this.detailsMode.init(this.map, this.companyCoverageConfig, this.servedZipCodes);
-    this.fetching$ = this.detailsMode.fetching.subscribe((res: boolean) => {
+    this.detailsMode.fetching.pipe(takeUntil(this.destroyed$)).subscribe((res: boolean) => {
       this.mapContentIsLoading = res;
       this.cdRef.detectChanges();
     });
-    this.zipInfoWindow$ = this.detailsMode.onInfoWindow.subscribe((zipInfoWindow: ZipInfoWindow) => {
+    this.detailsMode.onInfoWindow.pipe(takeUntil(this.destroyed$)).subscribe((zipInfoWindow: ZipInfoWindow) => {
       this.infoWindow = zipInfoWindow;
       this.appRef.tick();
     });
-    this.zipsChange$ = this.detailsMode.zips.subscribe((zips: { added: Array<string>, removed: Array<string> }) => {
+    this.detailsMode.zips.pipe(takeUntil(this.destroyed$)).subscribe((zips: { added: Array<string>, removed: Array<string> }) => {
       this.zipsHistory = zips;
       this.unsaved = !(this.zipsHistory.added.length == 0 && this.zipsHistory.removed.length == 0);
       this.appRef.tick();

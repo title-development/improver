@@ -3,14 +3,15 @@ import { GoogleMapsAPIWrapper } from '@agm/core';
 import { BoundariesService } from '../../../api/services/boundaries.service';
 
 import { fromPromise } from 'rxjs-compat/observable/fromPromise';
-import { catchError, debounceTime, first, switchMap, tap } from 'rxjs/operators';
-import { BehaviorSubject, fromEventPattern, Observable, of, Subscription } from 'rxjs';
+import { catchError, debounceTime, first, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { BehaviorSubject, fromEventPattern, Observable, of, Subject, Subscription } from 'rxjs';
 import { applyStyleToMapLayers, GoogleMapUtilsService } from '../../../util/google-map.utils';
 import { ZipBoundaries } from '../../../api/models/ZipBoundaries';
 import { MediaQuery, MediaQueryService } from '../../../util/media-query.service';
-import { ZipInfoWindow } from '../../settings/contractor-account/service-area/DetailMode';
+import { ZipInfoWindow } from '../../settings/contractor-account/service-area/services/detail-mode.service';
 import { getErrorMessage } from '../../../util/functions';
 import { PopUpMessageService } from '../../../util/pop-up-message.service';
+import { Constants } from '../../../util/constants';
 
 @Component({
   selector: 'admin-map',
@@ -48,16 +49,15 @@ export class AdminMap implements OnDestroy {
   private mouseOverListener;
   private mouseLeaveListener;
   private clickListener;
-  private mediaQuerySubscription: Subscription;
-  private adminCoverage$: Subscription;
-
+  private readonly destroyed$ = new Subject<void>();
 
   constructor(private googleMapsAPIWrapper: GoogleMapsAPIWrapper,
               private boundariesService: BoundariesService,
               private gMapUtils: GoogleMapUtilsService,
               private popUpMessageService: PopUpMessageService,
-              private mediaQueryService: MediaQueryService) {
-    this.mediaQuerySubscription = this.mediaQueryService.screen.subscribe((mediaQuery: MediaQuery) => {
+              private mediaQueryService: MediaQueryService,
+              private constants: Constants) {
+    this.mediaQueryService.screen.pipe(takeUntil(this.destroyed$)).subscribe((mediaQuery: MediaQuery) => {
       this.mediaQuery = mediaQuery;
     });
   }
@@ -65,12 +65,13 @@ export class AdminMap implements OnDestroy {
   init(coveredArea: Array<string>) {
     this.coveredArea = coveredArea;
     this.fetching.next(true);
-    this.adminCoverage$ = fromPromise(this.googleMapsAPIWrapper.getNativeMap()).pipe(
+    fromPromise(this.googleMapsAPIWrapper.getNativeMap()).pipe(
+      takeUntil(this.destroyed$),
       switchMap(map => {
         this.map = map;
         applyStyleToMapLayers(map, true);
 
-        return this.boundariesService.getZipBoundaries(this.coveredArea);
+        return this.boundariesService.getSplitZipBoundaries(this.coveredArea, this.constants.BOUNDARIES_SPILT_SIZE);
       }),
       switchMap( (coverage: ZipBoundaries) => {
         this.gMapUtils.clearAllDataLayers(this.map);
@@ -241,12 +242,8 @@ export class AdminMap implements OnDestroy {
       added: [],
       removed: []
     };
-    if (this.adminCoverage$) {
-      this.adminCoverage$.unsubscribe();
-    }
-    if (this.mediaQuerySubscription) {
-      this.mediaQuerySubscription.unsubscribe();
-    }
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
   refresh() {

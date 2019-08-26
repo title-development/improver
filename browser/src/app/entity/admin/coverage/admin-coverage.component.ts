@@ -1,7 +1,7 @@
 import { ApplicationRef, Component, ContentChild, ViewChild } from '@angular/core';
 import { MapOptions } from '@agm/core/services/google-maps-types';
 import { defaultMapOptions } from '../../../util/google-map-default-options';
-import { ZipInfoWindow } from '../../settings/contractor-account/service-area/DetailMode';
+import { ZipInfoWindow } from '../../settings/contractor-account/service-area/services/detail-mode.service';
 import { AdminMap } from './admin-map';
 import { NgForm } from '@angular/forms';
 import { ZipBoundaries, ZipFeature } from '../../../api/models/ZipBoundaries';
