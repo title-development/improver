@@ -1,12 +1,9 @@
-import {
-  ApplicationRef,
-  Component, EventEmitter, Input, OnDestroy, OnInit, Output
-} from '@angular/core';
+import { ApplicationRef, Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
 import { GoogleMapsAPIWrapper } from '@agm/core';
-import { ErrorHandler } from '../../../util/error-handler'
+import { ErrorHandler } from '../../../util/error-handler';
 import { InfoWindowInt } from './intefaces/infoWindowInt';
 
-import { Lead, Location, Pagination } from '../../../model/data-model';
+import { Lead, Pagination } from '../../../model/data-model';
 import { SecurityService } from '../../../auth/security.service';
 import { CompanyService } from '../../../api/services/company.service';
 import { BoundariesService } from '../../../api/services/boundaries.service';
@@ -16,16 +13,12 @@ import { MapMarkersStore } from '../../../util/google-map-markers-store.service'
 import { applyStyleToMapLayers, GoogleMapUtilsService } from '../../../util/google-map.utils';
 import { ZipBoundaries, ZipFeature } from '../../../api/models/ZipBoundaries';
 import { PopUpMessageService } from '../../../util/pop-up-message.service';
-import { getErrorMessage } from '../../../util/functions';
 
 import { RestPage } from '../../../api/models/RestPage';
-import { CoverageConfig } from '../../../api/models/CoverageConfig';
 import { CompanyCoverageConfig } from '../../../api/models/CompanyCoverageConfig';
-import { Observable, of, Subscription } from 'rxjs/index';
-import { debounceTime, first, mergeMap, switchMap, tap } from 'rxjs/internal/operators';
-import { fromPromise } from "rxjs/internal/observable/fromPromise";
-import { map } from "rxjs/internal/operators";
-import { catchError } from "rxjs/internal/operators";
+import { of, Subscription } from 'rxjs';
+import { catchError, debounceTime, first, map, mergeMap, switchMap, tap } from 'rxjs/internal/operators';
+import { fromPromise } from 'rxjs/internal/observable/fromPromise';
 
 
 @Component({
@@ -74,9 +67,8 @@ export class LeadsSearchMapComponent implements OnDestroy {
               public leadService: LeadService,
               private googleMapsAPIWrapper: GoogleMapsAPIWrapper,
               private markersStore: MapMarkersStore,
-              private gMapUtils: GoogleMapUtilsService,
-              private popupMessageService: PopUpMessageService,
-              private errorHandler: ErrorHandler) {
+              private popUpMessageService: PopUpMessageService,
+              private gMapUtils: GoogleMapUtilsService) {
 
     this.initMap();
   }
@@ -114,24 +106,39 @@ export class LeadsSearchMapComponent implements OnDestroy {
         const southWest: string = [this.map.getBounds().getSouthWest().lat(), this.map.getBounds().getSouthWest().lng()].join();
         const northEast: string = [this.map.getBounds().getNorthEast().lat(), this.map.getBounds().getNorthEast().lng()].join();
 
-        return this.boundariesService.getZipCodesInBbox(northEast, southWest)
+        return this.boundariesService.getZipCodesInBbox(northEast, southWest).pipe(catchError(err => {
+          this.popUpMessageService.showError('Unexpected error during coverage rendering');
+          return of(null);
+        }));
       }),
       catchError(err => {
         this.mapIsLoading = false;
 
         return of(null);
       }),
-      switchMap((zipBoundaries: ZipBoundaries) => {
+      switchMap((zipBoundaries: ZipBoundaries | null) => {
+        if (!zipBoundaries) {
+          return of(null);
+        }
         this.gMapUtils.drawBoundaries(this.map, this.gMapUtils.zipsToDraw(this.map, zipBoundaries, this.areas));
 
-        return this.leadService.getAll(true, this.pagination, zipBoundaries.features.map(feature => feature.properties.zip))
+        return this.leadService.getAll(true, this.pagination, zipBoundaries.features.map(feature => feature.properties.zip)).pipe(catchError(err =>
+          {
+            this.popUpMessageService.showError('Unexpected error during getting lead');
+            return of(null);
+          }
+        ));
       }),
       catchError(err => {
         this.mapIsLoading = false;
 
         return of(null);
       }),
-      mergeMap((leads: RestPage<Lead>) => {
+      mergeMap((leads: RestPage<Lead> | null) => {
+          if (!leads) {
+            this.mapIsLoading = false;
+            return of(null);
+          }
           this.updateLeads.emit(leads.content);
           this.mapIsLoading = false;
           const outsizeAreaZips: Map<string, Array<ZipFeature>> = this.gMapUtils.drawLeadsMarkers(this.map, leads.content, this.showInfoWindow);
@@ -141,7 +148,7 @@ export class LeadsSearchMapComponent implements OnDestroy {
                 map((zipBoundaries: ZipBoundaries) => {
                   return {zipBoundaries: zipBoundaries, outsizeAreaZips: outsizeAreaZips};
                 })
-              )
+              );
 
           } else {
             return of(null);
