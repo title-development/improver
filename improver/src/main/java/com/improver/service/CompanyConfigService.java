@@ -45,7 +45,7 @@ public class CompanyConfigService {
     @Autowired private StaffActionLogger staffActionLogger;
 
 
-    public void updateCoverageConfig(CompanyConfig.CoverageConfig config, Company company, Contractor contractor) {
+    public void updateCoverageConfig(CompanyConfig.CoverageConfig config, Company company, Contractor contractor) throws ThirdPartyException {
         if (config.isManualMode()) {
             updateAreas(company, config.getZips());
             CompanyConfig companyConfig = company.getCompanyConfig();
@@ -57,15 +57,8 @@ public class CompanyConfigService {
 
     }
 
-    private void updateCoverageByRadius(Company company, double lat, double lng, int radius) {
-        List<String> zipCodes;
-        try {
-            zipCodes = boundariesService.getZipCodesInRadius(lat, lng, radius);
-        } catch (ThirdPartyException e) {
-            log.error("Error in request to Mapreflex API", e);
-            throw new InternalServerException("Error in request to Mapreflex API. " + e.getMessage());
-        }
-
+    private void updateCoverageByRadius(Company company, double lat, double lng, int radius) throws ThirdPartyException {
+        List<String> zipCodes = boundariesService.getZipCodesInRadius(lat, lng, radius);
         List<String> served = servedZipRepository.getAllServedZips();
         zipCodes.retainAll(served);
 

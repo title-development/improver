@@ -4,7 +4,9 @@ import com.improver.entity.Company;
 import com.improver.entity.CompanyConfig;
 import com.improver.entity.Contractor;
 import com.improver.entity.ExtendedLocation;
+import com.improver.exception.InternalServerException;
 import com.improver.exception.NotFoundException;
+import com.improver.exception.ThirdPartyException;
 import com.improver.exception.ValidationException;
 import com.improver.model.ProNotificationSettings;
 import com.improver.model.TradesServicesCollection;
@@ -106,8 +108,11 @@ public class CompanyConfigController {
             throw new ValidationException("Zip codes not provided for manual coverage mode");
         }
         Contractor contractor = userSecurityService.currentPro();
-
-        companyConfigService.updateCoverageConfig(coverageConfig, company, contractor);
+        try {
+            companyConfigService.updateCoverageConfig(coverageConfig, company, contractor);
+        } catch (ThirdPartyException e) {
+            throw new InternalServerException("Error in request to Mapreflex API. " + e.getMessage(), e);
+        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
