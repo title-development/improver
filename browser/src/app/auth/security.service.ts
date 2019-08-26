@@ -95,7 +95,7 @@ export class SecurityService {
   }
 
 
-  public loginUser(user: LoginModel, header: string, redirect?: boolean) {
+  public loginUser(user: LoginModel, header: string, redirect?: boolean): Promise<boolean> {
     if (!SecurityService.USE_COOKIE_FOR_TOKENS) {
       this.setTokenHeader(header);
     }
@@ -106,27 +106,24 @@ export class SecurityService {
 
     }
     if (redirect) {
+      const url = this._returnUrl;
+      this._returnUrl = '';
       switch (user.role) {
         case Role.CUSTOMER:
-          this.router.navigateByUrl(this._returnUrl || '/');
-          break;
+         return this.router.navigateByUrl(url || '/');
         case Role.CONTRACTOR:
-          this.router.navigateByUrl(this._returnUrl || '/pro/dashboard');
-          break;
+          return this.router.navigateByUrl(url || '/pro/dashboard');
         case Role.ADMIN:
-          this.router.navigateByUrl(this._returnUrl || '/admin');
+          return this.router.navigateByUrl(url || '/admin');
         case Role.SUPPORT:
-          this.router.navigateByUrl(this._returnUrl || '/admin');
-          break;
+          return this.router.navigateByUrl(url || '/admin');
         case Role.INCOMPLETE_PRO:
-          this.router.navigateByUrl('/signup-pro/company');
-          break;
+          return this.router.navigateByUrl('/signup-pro/company');
         default:
-          this.router.navigateByUrl(this._returnUrl || '/');
-          break;
+          return this.router.navigateByUrl(url || '/');
       }
-      this._returnUrl = '';
     }
+    return Promise.resolve(true);
   }
 
 

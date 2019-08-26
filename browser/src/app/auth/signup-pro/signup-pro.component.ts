@@ -43,7 +43,7 @@ export class SignupProComponent implements OnDestroy {
   mediaQuery: MediaQuery;
   private readonly REFERRAL_CODE_STORAGE_KEY: string = 'REFERRAL_CODE';
   private referralQueryParamKey: string = 'referer';
-  private componentDestroyed: Subject<any> = new Subject();
+  private readonly destroyed$: Subject<void> = new Subject();
 
   constructor(public securityService: SecurityService,
               public constants: Constants,
@@ -54,26 +54,32 @@ export class SignupProComponent implements OnDestroy {
               private mediaQueryService: MediaQueryService,
               private route: ActivatedRoute
   ) {
-    this.route.queryParams.pipe(takeUntil(this.componentDestroyed)).subscribe((params: Params) => {
+    this.route.queryParams.pipe(takeUntil(this.destroyed$)).subscribe((params: Params) => {
       this.user.referralCode = this.useReferralCode(params);
     });
-    this.mediaQueryService.screen.pipe(takeUntil(this.componentDestroyed)).subscribe((mediaQuery: MediaQuery) => {
+    this.mediaQueryService.screen.pipe(takeUntil(this.destroyed$)).subscribe((mediaQuery: MediaQuery) => {
       this.mediaQuery = mediaQuery;
     });
   }
 
   registerContractor(form) {
-    this.registrationService.registerContractor(this.user).pipe(takeUntil(this.componentDestroyed)).subscribe((response: HttpResponse<any>) => {
-      this.clearReferralCode();
-      this.securityService.loginUser(JSON.parse(response.body) as LoginModel, response.headers.get('authorization'), true);
-    }, err => {
-      if (err.status == 401) {
-        this.securityService.systemLogout();
+    this.registrationService.registerContractor(this.user)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((response: HttpResponse<any>) => {
+        this.clearReferralCode();
+        this.securityService.loginUser(JSON.parse(response.body) as LoginModel, response.headers.get('authorization'), true)
+          .then((result) => {
+              if (result) {
+                this.popUpMessageService.showSuccess('Pro Account successfully created.');
+              }
+            }
+          );
+      }, err => {
+        if (err.status == 401) {
+          this.securityService.systemLogout();
+        }
         this.popUpMessageService.showError(getErrorMessage(err));
-      } else {
-        this.popUpMessageService.showError(getErrorMessage(err));
-      }
-    });
+      });
   }
 
   onMessageHide(event) {
@@ -81,8 +87,8 @@ export class SignupProComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.componentDestroyed.next();
-    this.componentDestroyed.complete();
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
   private useReferralCode(params): string {

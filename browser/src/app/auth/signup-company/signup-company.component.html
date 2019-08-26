@@ -248,6 +248,7 @@
              [cvSpinnerSize]="30"
              [cvSpinnerBackground]="true"
              cvSpinnerBackgroundColor="white">
+          <button cv-button-flat [flatStyle]="'dark'" type="button" (click)="cancelRegistration()">Cancel</button>
           <button cv-button class="button-next" type="submit"
                   [disabled]="addressValidationProcessing">Next Step
           </button>

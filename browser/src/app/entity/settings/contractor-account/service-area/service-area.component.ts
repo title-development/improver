@@ -12,7 +12,7 @@ import { defaultMapOptions, mapStyle } from '../../../../util/google-map-default
 import { NgForm } from '@angular/forms';
 import { BoundariesService } from '../../../../api/services/boundaries.service';
 import { ZipBoundaries, ZipFeature } from '../../../../api/models/ZipBoundaries';
-import { applyStyleToMapLayers, GoogleMapUtilsService } from '../../../../util/google-map.utils';
+import { GoogleMapUtilsService } from '../../../../util/google-map.utils';
 import { PopUpMessageService } from '../../../../util/pop-up-message.service';
 import { SystemMessageType } from '../../../../model/data-model';
 import { TricksService } from '../../../../util/tricks.service';
@@ -20,7 +20,7 @@ import { CoverageConfig } from '../../../../api/models/CoverageConfig';
 import { AgmMap } from '@agm/core';
 import { SecurityService } from '../../../../auth/security.service';
 import { CompanyService } from '../../../../api/services/company.service';
-import { Subscription, Observable, of, forkJoin, Subject } from 'rxjs';
+import { forkJoin, Observable, of, Subject } from 'rxjs';
 
 import { ComponentCanDeactivate } from '../../../../auth/router-guards/pending-chanes.guard';
 import { BasicModeService } from './services/basic-mode.service';
@@ -28,12 +28,11 @@ import { DetailModeService, ZipInfoWindow } from './services/detail-mode.service
 import { TutorialsService } from '../../../../api/services/tutorials.service';
 import { CvSwitchComponent } from '../../../../theme/switch/switch.component';
 import { CompanyCoverageConfig } from '../../../../api/models/CompanyCoverageConfig';
-import { mergeMap, switchMap, takeUntil } from 'rxjs/internal/operators';
+import { switchMap, takeUntil } from 'rxjs/internal/operators';
 import { MediaQuery, MediaQueryService } from '../../../../util/media-query.service';
 import { getErrorMessage } from '../../../../util/functions';
 import { UserTutorial } from '../../../../api/models/UserTutorial';
 import { UNSAVED_CHANGES_MESSAGE } from '../../../../util/messages';
-
 
 @Component({
   selector: 'service-area',

@@ -19,10 +19,12 @@ import {
   personalPhotoDialogConfig
 } from '../../shared/dialogs/dialogs.configs';
 import { ValidatedLocation } from '../../api/models/LocationsValidation';
-import { first } from 'rxjs/operators';
+import { finalize, first, takeUntil } from 'rxjs/operators';
 import { getErrorMessage } from '../../util/functions';
 import { SystemMessageType } from '../../model/data-model';
 import { HttpResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'signup-company',
@@ -87,19 +89,22 @@ export class SignupCompanyComponent {
   };
 
   unsupportedArea: any;
-  private readonly NOT_ACTIVE_USER_KEY : string = 'NOT_ACTIVE_USER';
+  private readonly NOT_ACTIVE_USER_KEY: string = 'NOT_ACTIVE_USER';
+  private readonly destroyed$ = new Subject<void>();
+  private cancelRegistrationDialogRef: MatDialogRef<any>;
 
   constructor(public securityService: SecurityService,
               public constants: Constants,
               public messages: Messages,
-              public dialog: MatDialog,
               public tricksService: TricksService,
               public locationValidateService: LocationValidateService,
               public popUpMessageService: PopUpMessageService,
               public registrationService: RegistrationService,
               public boundariesService: BoundariesService,
               private gMapUtils: GoogleMapUtilsService,
-              private applicationRef: ApplicationRef) {
+              private applicationRef: ApplicationRef,
+              public dialog: MatDialog,
+              private router: Router) {
     this.years = this.tricksService.fillArrayWithNumbers(this.constants.COMPANY_FOUNDATION_MIN_YEAR, new Date().getFullYear(), false);
     this.companyRegistration.company.founded = (new Date()).getFullYear().toString();
     this.getServedZipCodes();
@@ -218,6 +223,8 @@ export class SignupCompanyComponent {
   }
 
   ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
   radiusChange(event) {
@@ -239,6 +246,10 @@ export class SignupCompanyComponent {
     };
 
     this.locationValidateService.validate(locationRequest)
+      .pipe(
+        takeUntil(this.destroyed$),
+        finalize(() => this.addressValidationProcessing = false)
+      )
       .subscribe((validatedLocation: ValidatedLocation) => {
           if (validatedLocation.valid) {
             if (this.servedZipCodes.includes(this.companyRegistration.company.location.zip)) {
@@ -276,7 +287,6 @@ export class SignupCompanyComponent {
           }
         },
         err => {
-          this.addressValidationProcessing = false;
           console.log(err);
           this.popUpMessageService.showError(getErrorMessage(err));
         });
@@ -323,42 +333,73 @@ export class SignupCompanyComponent {
     }
 
     this.registrationProcessing = true;
-    this.registrationService.registerCompany(this.companyRegistration).subscribe(
-      (response: HttpResponse<any>) => {
-        if ((response.body)) {
-          this.securityService.loginUser(JSON.parse(response.body) as LoginModel, response.headers.get('authorization'), true);
-        } else {
-          this.step++;
-          this.storeUserIdIsSessionStorage(this.securityService.getLoginModel().id);
-          this.securityService.systemLogout();
+    this.registrationService.registerCompany(this.companyRegistration)
+      .pipe(
+        takeUntil(this.destroyed$),
+        finalize(() => this.registrationProcessing = false)
+      )
+      .subscribe(
+        (response: HttpResponse<any>) => {
+          if ((response.body)) {
+            this.securityService.loginUser(JSON.parse(response.body) as LoginModel, response.headers.get('authorization'), true);
+          } else {
+            this.step++;
+            this.storeUserIdIsSessionStorage(this.securityService.getLoginModel().id);
+            this.securityService.systemLogout();
+          }
+        }, err => {
+          this.popUpMessageService.showError(getErrorMessage(err));
         }
-        this.registrationProcessing = false;
-      }, err => {
-        this.registrationProcessing = false;
-        this.popUpMessageService.showError(getErrorMessage(err));
-      }
-    );
+      );
 
   }
 
   resendConfirmation() {
     const userId = sessionStorage.getItem(this.NOT_ACTIVE_USER_KEY);
-    if(userId) {
-      this.registrationService.resendActivationMail(userId).subscribe(
-        response => {
-          this.popUpMessageService.showMessage({
-            type: SystemMessageType.SUCCESS,
-            text: 'A confirmation link has been resent to your email'
-          });
-        },
-        err => {
-          console.log(err);
-          this.popUpMessageService.showError(JSON.parse(err.error).message);
-        }
-      );
+    if (userId) {
+      this.registrationService.resendActivationMail(userId)
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe(
+          response => {
+            this.popUpMessageService.showMessage({
+              type: SystemMessageType.SUCCESS,
+              text: 'A confirmation link has been resent to your email'
+            });
+          },
+          err => {
+            console.log(err);
+            this.popUpMessageService.showError(JSON.parse(err.error).message);
+          }
+        );
     } else {
-      this.popUpMessageService.showError('Resend activation to the email is not available anymore')
+      this.popUpMessageService.showError('Resend activation to the email is not available anymore');
     }
+  }
+
+  cancelRegistration(): void {
+    const properties = {
+      title: 'Leave Company creation?',
+      message: `<p>Once you've created your account, you can come back later to finish the Company profile at your own pace.</p>
+                <p>Note. If you leave now, to continue Company profile creation you need to login with your created PRO account credentials.</p>`,
+      OK: 'Leave',
+      CANCEL: 'Skip'
+    };
+    this.cancelRegistrationDialogRef = this.dialog.open(dialogsMap['confirm-dialog'], confirmDialogConfig);
+    this.cancelRegistrationDialogRef
+      .afterClosed()
+      .subscribe(result => {
+        this.cancelRegistrationDialogRef = null;
+      });
+    this.cancelRegistrationDialogRef.componentInstance.properties = properties;
+    this.cancelRegistrationDialogRef.componentInstance.onConfirm.subscribe(
+      () => {
+        this.securityService.systemLogout();
+        this.router.navigate(['/become-pro']);
+      },
+      err => {
+        console.log(err);
+      }
+    );
   }
 
   private storeUserIdIsSessionStorage(userId: string): void {
