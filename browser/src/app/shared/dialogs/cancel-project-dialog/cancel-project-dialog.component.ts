@@ -1,9 +1,11 @@
 import { Component, EventEmitter, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog, MatDialogRef } from "@angular/material";
-import { CloseProjectRequest, CloseProjectVariant, CompanyProfile, ContractorProjectShort, CustomerProjectShort } from "../../../model/data-model";
-import { SecurityService } from "../../../auth/security.service";
+import { MatDialog, MatDialogRef } from '@angular/material';
+import { CloseProjectRequest, CloseProjectVariant, CustomerProjectShort } from '../../../model/data-model';
+import { SecurityService } from '../../../auth/security.service';
 import { CompanyService } from '../../../api/services/company.service';
 import { ProjectService } from '../../../api/services/project.service';
+import { Observable, Subject } from 'rxjs';
+import { takeUntil, publishReplay, refCount } from 'rxjs/operators';
 
 @Component({
   selector: 'cancel-project-dialog',
@@ -14,10 +16,11 @@ import { ProjectService } from '../../../api/services/project.service';
 export class CancelProjectDialogComponent implements OnInit, OnDestroy {
 
   project: CustomerProjectShort;
-  closeProjectVariants: CloseProjectVariant;
+  closeProjectVariants$: Observable<CloseProjectVariant>;
   reason: string;
   comment: string;
-  onConfirm :EventEmitter<any> = new EventEmitter<any>();
+  onConfirm: EventEmitter<any> = new EventEmitter<any>();
+  private readonly destroyed$ = new Subject<void>();
 
   constructor(public currentDialogRef: MatDialogRef<any>,
               public dialog: MatDialog,
@@ -37,27 +40,22 @@ export class CancelProjectDialogComponent implements OnInit, OnDestroy {
     this.currentDialogRef.close();
   }
 
-  getCloseProjectVariants () {
-    this.projectService
-      .getCloseProjectVariants(this.project.id)
-      .subscribe(
-        response => {
-          this.closeProjectVariants = response as CloseProjectVariant;
-          console.log(this.closeProjectVariants);
-        },
-        err => {
-          console.log(err);
-        }
+  getCloseProjectVariants() {
+    this.closeProjectVariants$ = this.projectService.getCloseProjectVariants(this.project.id)
+      .pipe(
+        takeUntil(this.destroyed$),
+        publishReplay(1),
+        refCount()
       );
   }
 
   onSubmit(form) {
     let closeProjectRequest: CloseProjectRequest = {
-      action: "CANCEL",
+      action: 'CANCEL',
       comment: this.comment,
       reason: this.reason
     };
-    this.onConfirm.emit(closeProjectRequest)
+    this.onConfirm.emit(closeProjectRequest);
   }
 
 }

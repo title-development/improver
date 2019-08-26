@@ -13,7 +13,7 @@
 
     </div>
 
-    <div class="content">
+    <div class="content" [cvSpinner]="!(closeProjectVariants$ | async)" [cvSpinnerSize]="24" [cvSpinnerBackground]="true">
 
       <form class="cancel-project-form"
             name="cancel-project-form"
@@ -21,7 +21,7 @@
             (ngSubmit)="cancelProjectForm.valid && onSubmit(cancelProjectForm)"
             novalidate>
 
-        <cv-radio-group  name="reason" *ngIf="closeProjectVariants" [(ngModel)]="reason" required  >
+        <cv-radio-group  name="reason" *ngIf="closeProjectVariants$ | async as closeProjectVariants" [(ngModel)]="reason" required  >
 
           <cv-radio *ngFor="let variant of closeProjectVariants.cancelVariants | forjson" [value]="variant.key" >
             <div>{{variant.value}}</div>
