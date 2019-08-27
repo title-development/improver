@@ -1,17 +1,9 @@
-import {
-  HTTP_INTERCEPTORS,
-  HttpErrorResponse,
-  HttpEvent,
-  HttpHandler,
-  HttpInterceptor,
-  HttpRequest
-} from '@angular/common/http';
-import { Injectable, Injector, Provider } from '@angular/core';
-import { BehaviorSubject, Observable, Subject, throwError } from 'rxjs';
+import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import { Injectable, Injector } from '@angular/core';
+import { Observable, Subject, throwError } from 'rxjs';
 import { SecurityService } from '../../auth/security.service';
-import { catchError, delay, filter, finalize, first, switchMap, take } from 'rxjs/operators';
-import { ErrorHandler } from '../error-handler';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
+import { catchError, finalize, first, switchMap } from 'rxjs/operators';
+import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material';
 import { OverlayRef } from '../../theme/util/overlayRef';
 
@@ -54,32 +46,33 @@ export class TokenInterceptor implements HttpInterceptor {
             if ((<HttpErrorResponse>err).status == 401 && request.url.indexOf('api/login') == -1) {
               if (!this.isRefreshingToken) {
                 this.isRefreshingToken = true;
-                if(this.securityService.isUserExistInLocalStorage()) {
-                  return this.securityService.refreshAccessToken().pipe(
-                    switchMap((accessToken: string) => {
-                      this.pendingQuery.next(accessToken);
-
-                      return next.handle(this.addToken(request));
-                    }),
-                    catchError(err => {
-                      // for not secured pages
-                      if(!this.securedBasePath.some(url => this.router.url.indexOf(url) > -1) && !this.securityService.isUserExistInLocalStorage()) {
+                if (this.securityService.isUserExistInLocalStorage()) {
+                  return this.securityService.refreshAccessToken()
+                    .pipe(
+                      catchError(err => {
+                        // for not secured pages
+                        if (!this.securedBasePath.some(url => this.router.url.indexOf(url) > -1) && !this.securityService.isUserExistInLocalStorage()) {
 
                           return throwError(err);
-                      }
+                        }
 
-                      this.securityService.systemLogout();
-                      this.securityService.returnUrl = this.router.url;
-                      this.dialog.closeAll();
-                      this.overlayRef.removeBackdrop();
-                      this.router.navigate(['/login']);
+                        this.securityService.systemLogout();
+                        this.securityService.returnUrl = this.router.url;
+                        this.dialog.closeAll();
+                        this.overlayRef.removeBackdrop();
+                        this.router.navigate(['/login']);
 
-                      return throwError(err);
-                    }),
-                    finalize(() => {
-                      this.isRefreshingToken = false;
-                    })
-                  );
+                        return throwError(err);
+                      }),
+                      switchMap((accessToken: string) => {
+                        this.pendingQuery.next(accessToken);
+
+                        return next.handle(this.addToken(request));
+                      }),
+                      finalize(() => {
+                        this.isRefreshingToken = false;
+                      })
+                    );
                 } else {
                   this.isRefreshingToken = false;
 
