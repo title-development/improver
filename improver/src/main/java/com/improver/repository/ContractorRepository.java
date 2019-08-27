@@ -3,8 +3,6 @@ package com.improver.repository;
 import com.improver.entity.Company;
 import com.improver.entity.Contractor;
 import com.improver.model.QuickReply;
-import com.improver.model.admin.AdminContractor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

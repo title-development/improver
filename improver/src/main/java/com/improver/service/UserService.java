@@ -345,9 +345,9 @@ public class UserService {
     public void restoreAccountByUser(User user) {
         if (user instanceof Customer || user instanceof Stakeholder || user instanceof Support ) {
             restoreAccount(user);
-        }else if (user instanceof Contractor) {
+        } else if (user instanceof Contractor) {
             restoreContractor((Contractor) user);
-        }else {
+        } else {
             throw new BadRequestException(user.getRole() + " not allowed to restore");
         }
     }
@@ -355,8 +355,10 @@ public class UserService {
 
     private void restoreContractor(Contractor contractor) {
         Company company = contractor.getCompany();
-        company.setDeleted(false);
-        companyRepository.save(company);
+        if (company != null) {
+            company.setDeleted(false);
+            companyRepository.save(company);
+        }
         restoreAccount(contractor);
     }
 

@@ -4,6 +4,7 @@ import com.improver.entity.*;
 import com.improver.exception.AccessDeniedException;
 import com.improver.exception.ValidationException;
 import com.improver.model.in.CloseProjectRequest;
+import com.improver.repository.ContractorRepository;
 import com.improver.repository.UserRepository;
 import com.improver.util.StaffActionLogger;
 import com.improver.util.mail.MailService;
@@ -30,6 +31,7 @@ public class AccountService {
     @Autowired private ProjectRequestService projectRequestService;
     @Autowired private StaffActionLogger staffActionLogger;
     @Autowired private UserRepository userRepository;
+    @Autowired private ContractorRepository contractorRepository;
 
 
     public void archiveAccountWithPassword(User user, String password) {
@@ -48,7 +50,12 @@ public class AccountService {
                 break;
 
             case CONTRACTOR:
-                archiveEntireCompany((Contractor)user, admin);
+                Company company = ((Contractor) user).getCompany();
+                if (company != null) {
+                    archiveEntireCompany(company, admin);
+                } else {
+                    archiveUserAccount(user, admin);
+                }
                 break;
 
             case SUPPORT:
@@ -79,8 +86,7 @@ public class AccountService {
         archiveUserAccount(customer, currentAdmin);
     }
 
-    private void archiveEntireCompany(Contractor contractor, Admin currentAdmin) {
-        Company company = contractor.getCompany();
+    private void archiveEntireCompany(Company company, Admin currentAdmin) {
         companyService.archiveCompany(company);
         if (currentAdmin != null) {
             staffActionLogger.logCompanyDelete(currentAdmin, company);
