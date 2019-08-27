@@ -114,6 +114,9 @@
           <ng-container *ngSwitchCase="ProjectRequest.MessageType.TEXT">
             {{message.body}}
           </ng-container>
+          <ng-container *ngSwitchCase="ProjectRequest.MessageType.EVENT">
+            {{message.event}}
+          </ng-container>
           <ng-container *ngSwitchCase="ProjectRequest.MessageType.DOCUMENT">
             <a pButton [href]="message.body.url" icon="pi pi-fw pi-paperclip" [label]="message.body.name"></a>
           </ng-container>

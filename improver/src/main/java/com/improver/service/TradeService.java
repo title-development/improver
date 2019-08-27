@@ -131,7 +131,7 @@ public class TradeService {
         }
 
         if (companyRepository.existsByTradesId(id)) {
-            throw new ConflictException("Some Company use this trade");
+            throw new ConflictException("Some Companies use this trade");
         }
 
         trade.getServiceTypes().forEach(serviceType -> serviceType.removeTradeById(trade.getId()));

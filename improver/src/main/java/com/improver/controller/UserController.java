@@ -62,7 +62,7 @@ public class UserController {
                                                @RequestParam(required = false) String displayName,
                                                @RequestParam(required = false) User.Role role,
                                                @PageableDefault(sort = "email", direction = Sort.Direction.DESC) Pageable pageRequest) {
-        Page<User> users = userRepository.findBy(id, email, displayName, role, pageRequest);
+        Page<User> users = userService.findBy(id, email, displayName, role, pageRequest);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 

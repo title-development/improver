@@ -37,6 +37,17 @@ public interface UserRepository extends JpaRepository<User, Long> {
                       User.Role role,
                       Pageable pageable);
 
+
+    @Query("SELECT c from com.improver.entity.Contractor c WHERE " +
+        "c.role = 'CONTRACTOR' AND c.company.id = null AND " +
+        "(:id IS null OR c.id = :id) AND " +
+        "(:email IS null OR c.email LIKE %:email%) AND " +
+        "(:displayName IS null OR c.displayName LIKE %:displayName%)")
+    Page<User> findIncompleteProsBy(Long id,
+                                    String email,
+                                    String displayName,
+                                    Pageable pageable);
+
     @Modifying
     @Transactional
     @Query("UPDATE com.improver.entity.User u SET u.lastLogin = ?2, u.refreshId = ?3 WHERE u.email = ?1")

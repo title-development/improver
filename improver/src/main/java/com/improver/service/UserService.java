@@ -371,4 +371,12 @@ public class UserService {
             .orElseThrow(NotFoundException::new);
         staffRepository.save(staff.setCredentialExpired(true));
     }
+
+
+    public Page<User> findBy(Long id, String email, String displayName, User.Role role, Pageable pageRequest) {
+        if (User.Role.INCOMPLETE_PRO.equals(role)) {
+            return userRepository.findIncompleteProsBy(id, email, displayName, pageRequest);
+        }
+        return userRepository.findBy(id, email, displayName, role, pageRequest);
+    }
 }

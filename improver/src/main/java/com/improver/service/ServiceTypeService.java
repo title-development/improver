@@ -165,11 +165,11 @@ public class ServiceTypeService {
         ServiceType serviceType = serviceTypeRepository.findById(id)
             .orElseThrow(NotFoundException::new);
         if (projectRepository.existsByServiceTypeId(id)) {
-            throw new ConflictException("Some project use this service type");
+            throw new ConflictException("Some projects use this service type");
         }
 
         if (companyRepository.existsByServiceTypesId(id)) {
-            throw new ConflictException("Some Company use this service type");
+            throw new ConflictException("Some Companies use this service type");
         }
 
         if (questionaryRepository.existsByServiceTypesId(id)) {

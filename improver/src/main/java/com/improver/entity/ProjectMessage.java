@@ -78,7 +78,7 @@ public class ProjectMessage {
     }
 
     public static ProjectMessage hireOther(ProjectRequest projectRequest, ZonedDateTime time) {
-        return new ProjectMessage(projectRequest, SENDER_SYSTEM, time,Type.EVENT, Event.HIRE_OTHER);
+        return new ProjectMessage(projectRequest, SENDER_SYSTEM, time, Type.EVENT, Event.HIRE_OTHER);
     }
 
     public static ProjectMessage close(ProjectRequest projectRequest, ZonedDateTime time) {
