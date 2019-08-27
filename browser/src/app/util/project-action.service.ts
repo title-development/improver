@@ -173,7 +173,7 @@ export class ProjectActionService {
       return projectRequest.status == ProjectRequest.Status.HIRED;
     });
 
-    if (hiredProjectRequests.length > 0) {
+    if (hiredProjectRequests.length) {
       let properties = {
         title: 'Completing project',
         message: `Do you want to complete project? <br/>Note. We assume, ${hiredProjectRequests[0].company.name} finished this project.`,

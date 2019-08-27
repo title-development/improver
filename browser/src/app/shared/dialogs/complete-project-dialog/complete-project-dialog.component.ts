@@ -1,9 +1,11 @@
 import { Component, EventEmitter, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog, MatDialogRef } from "@angular/material";
-import { CloseProjectVariant, CompanyProfile, ContractorProjectShort, CustomerProjectShort } from "../../../model/data-model";
-import { SecurityService } from "../../../auth/security.service";
+import { MatDialog, MatDialogRef } from '@angular/material';
+import { CloseProjectVariant, CustomerProjectShort } from '../../../model/data-model';
+import { SecurityService } from '../../../auth/security.service';
 import { CompanyService } from '../../../api/services/company.service';
 import { ProjectService } from '../../../api/services/project.service';
+import { publishReplay, refCount, takeUntil } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
 
 @Component({
   selector: 'complete-project-dialog',
@@ -14,11 +16,12 @@ import { ProjectService } from '../../../api/services/project.service';
 export class CompleteProjectDialogComponent implements OnInit, OnDestroy {
 
   project: CustomerProjectShort;
-  closeProjectVariants: CloseProjectVariant;
+  closeProjectVariants$: Observable<CloseProjectVariant>;
   reason: string;
   comment: string;
   onConfirm :EventEmitter<any> = new EventEmitter<any>();
   selectedVariant : any;
+  private readonly destroyed$ = new Subject<void>();
 
   constructor(public currentDialogRef: MatDialogRef<any>,
               public dialog: MatDialog,
@@ -28,13 +31,12 @@ export class CompleteProjectDialogComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-
     this.getCloseProjectVariants();
-
   }
 
   ngOnDestroy(): void {
-
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
   close() {
@@ -42,17 +44,12 @@ export class CompleteProjectDialogComponent implements OnInit, OnDestroy {
   }
 
   getCloseProjectVariants () {
-    this.projectService
-      .getCloseProjectVariants(this.project.id)
-      .subscribe(
-        response => {
-          this.closeProjectVariants = response as CloseProjectVariant;
-          console.log(this.closeProjectVariants);
-        },
-        err => {
-          console.log(err);
-        }
-      );
+    this.closeProjectVariants$ = this.projectService.getCloseProjectVariants(this.project.id)
+      .pipe(
+        takeUntil(this.destroyed$),
+        publishReplay(1),
+        refCount()
+      )
   }
 
   selectVariant(variant, projectRequestId) {

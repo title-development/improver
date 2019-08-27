@@ -34,6 +34,8 @@ export class CancelProjectDialogComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
   close() {

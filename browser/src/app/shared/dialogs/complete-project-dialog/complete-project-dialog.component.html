@@ -13,7 +13,7 @@
 
     </div>
 
-    <div class="content">
+    <div class="content" [cvSpinner]="!(closeProjectVariants$ | async)" [cvSpinnerSize]="24" [cvSpinnerBackground]="true">
 
       <form class="complete-project-form"
             name="complete-project-form"
@@ -21,7 +21,7 @@
             (ngSubmit)="completeProjectForm.valid && onSubmit(completeProjectForm)"
             novalidate>
 
-        <div class="variants-wrapper" *ngIf="closeProjectVariants">
+        <div class="variants-wrapper" *ngIf="closeProjectVariants$ | async as closeProjectVariants">
 
           <ng-template ngFor let-variant [ngForOf]="closeProjectVariants.completeVariants | forjson" let-i="index">
 
