@@ -7,6 +7,7 @@ import com.improver.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.concurrent.TimeUnit;
 
 import static com.improver.application.properties.Path.DOCUMENTS_PATH;
 
@@ -30,7 +33,8 @@ public class DocumentController {
         if(document == null) {
             throw new NotFoundException("File not found");
         }
-        HttpHeaders headers = new HttpHeaders(); headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename="+document.getOriginalName());
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + document.getOriginalName());
 
         ByteArrayResource  resource =  new ByteArrayResource(document.getData());
 
@@ -38,6 +42,7 @@ public class DocumentController {
                 .headers(headers)
                 .contentLength(resource.contentLength())
                 .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .cacheControl(CacheControl.maxAge(14, TimeUnit.DAYS))
                 .body(resource);
     }
 }
