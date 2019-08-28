@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouteReuseStrategy, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpModule, JsonpModule } from '@angular/http';
+import { JsonpModule } from '@angular/http';
 import { ErrorHandler } from '../util/error-handler';
 import { AppComponent } from './app.component';
 import { requestOptionsProvider } from '../util/default-request-options.service';
@@ -15,15 +15,17 @@ import { ObserveMediaDirective } from '../directives/observe-media.directive';
 import { routing } from './app.routing';
 
 import {
+  MAT_DATE_FORMATS,
   MatAutocompleteModule,
-  MatToolbarModule,
-  MatDialogModule,
   MatButtonModule,
-  MatInputModule,
-  MatIconModule,
   MatCheckboxModule,
+  MatDialogModule,
+  MatIconModule,
+  MatInputModule,
+  MatNativeDateModule,
   MatRadioModule,
-  MatSnackBarModule, MatNativeDateModule, MAT_DATE_FORMATS
+  MatSnackBarModule,
+  MatToolbarModule
 } from '@angular/material';
 
 import { ScrollService } from '../util/scroll.service';
@@ -72,7 +74,6 @@ import { MediaQueryService } from '../util/media-query.service';
 import { LayoutComponent } from './layout.component';
 import { CvButtonModule } from '../theme/button/cv-button.module';
 import { UserService } from '../api/services/user.service';
-import { InformationModule } from '../entity/information/information.module';
 import { environment } from '../../environments/environment';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { FindProfessionalService } from '../util/find-professional.service';
@@ -122,7 +123,6 @@ export function getAuthServiceConfigs() {
     HomeModule,
     SharedModule,
     LayoutModule,
-    InformationModule,
     MatAutocompleteModule,
     MatToolbarModule,
     MatDialogModule,

@@ -1,5 +1,5 @@
 import { ModuleWithProviders } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { PageNotFoundComponent } from '../entity/not-found/not-found.component';
 import { AuthGuard } from '../auth/router-guards/auth.guard';
 import { NotAuthenticatedGuard } from '../auth/router-guards/notAuthenticated.guard';
@@ -9,7 +9,6 @@ import { CustomerGuard } from '../auth/router-guards/customer.guard';
 import { UserGuard } from '../auth/router-guards/user.guard';
 import { LayoutComponent } from './layout.component';
 import { HomeComponent } from '../entity/home/home.component';
-import { InformationComponent } from "../entity/information/information.component";
 import { ContractorHomeGuard } from "../auth/router-guards/contractor-home.guard";
 import { InternalServerErrorComponent } from '../entity/internal-server-error/internal-server-error.component';
 import { IncompleteProGuard } from '../auth/router-guards/incomplete-pro.guard';
@@ -35,8 +34,8 @@ const routes: Routes = [
       { path: 'search', loadChildren: '../entity/search/search.module#SearchModule'},
       { path: 'my/review-revision', loadChildren: '../entity/review-revision/review-revision.module#ReviewRevisionModule', canActivateChild: [AuthGuard, CustomerGuard]},
       { path: 'ticket', loadChildren: '../shared/ticket/ticket.module#TicketModule'},
-      { path: 'privacy-policy', component: InformationComponent },
-      { path: 'terms-of-use', component: InformationComponent }
+      { path: 'privacy-policy', loadChildren: '../entity/information/privacy-policy/privacy-policy.module#PrivacyPolicyModule'},
+      { path: 'terms-of-use', loadChildren: '../entity/information/terms-of-use/terms-of-use.module#TermsOfUseModule'}
     ]
   },
   { path: 'admin', loadChildren: '../entity/admin/admin.module#AdminModule'},

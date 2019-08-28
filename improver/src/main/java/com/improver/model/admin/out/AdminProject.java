@@ -37,14 +37,10 @@ public class AdminProject {
     private int freePositions;
     private boolean isLead;
     private String notes;
+    private boolean hasProjectRequests;
 
     private List<CompanyProjectRequest> projectRequests;
     private List<ProjectAction> projectActions;
-
-
-
-
-
 
     public static AdminProject from(Project project){
         return new AdminProject()
@@ -60,8 +56,8 @@ public class AdminProject {
             .setLeadPrice(project.getLeadPrice())
             .setFreePositions(project.getFreePositions())
             .setLead(project.isLead())
-            .setNotes(project.getNotes()
-            );
+            .setNotes(project.getNotes())
+            .setHasProjectRequests(project.getFreePositions() != Project.MAX_CONNECTIONS);
     }
 
     public static AdminProject full(Project project, List<CompanyProjectRequest> pros){

@@ -10,24 +10,9 @@ import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-import static com.improver.entity.Project.Reason.DONE;
-import static com.improver.entity.Project.Reason.DO_MYSELF;
-import static com.improver.entity.Project.Reason.DUPLICATED;
-import static com.improver.entity.Project.Reason.ESTIMATED;
-import static com.improver.entity.Project.Reason.EVALUATING;
-import static com.improver.entity.Project.Reason.HIRE_OTHER;
-import static com.improver.entity.Project.Reason.INVALID_LOCATION;
-import static com.improver.entity.Project.Reason.INVALID_SERVICE;
-import static com.improver.entity.Project.Reason.INVALID_USER;
-import static com.improver.entity.Project.Reason.OTHER;
-import static com.improver.entity.Project.Reason.TOO_EXPENSIVE;
+import static com.improver.entity.Project.Reason.*;
 import static com.improver.util.database.DataAccessUtil.ORDER_DESCRIPTION_SIZE;
 import static com.improver.util.serializer.SerializationUtil.DATE_TIME_PATTERN;
 
@@ -36,7 +21,7 @@ import static com.improver.util.serializer.SerializationUtil.DATE_TIME_PATTERN;
 @Entity(name = "projects")
 public class Project implements ImageContainable {
 
-    public static final int MAX_CONNECTIONS = 4;
+    public static final int MAX_CONNECTIONS = 5;
     public static final int SUBS_MAX_CONNECTIONS = MAX_CONNECTIONS - 1;
 
 

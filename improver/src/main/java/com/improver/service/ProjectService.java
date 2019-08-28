@@ -1,13 +1,18 @@
 package com.improver.service;
 
 import com.improver.entity.*;
-import com.improver.exception.*;
 import com.improver.exception.InternalServerException;
 import com.improver.exception.NotFoundException;
+import com.improver.exception.ThirdPartyException;
+import com.improver.exception.ValidationException;
 import com.improver.model.admin.in.ValidationProjectRequest;
 import com.improver.model.in.CloseProjectRequest;
-import com.improver.model.out.project.*;
-import com.improver.repository.*;
+import com.improver.model.out.project.ProjectRequestDetailed;
+import com.improver.model.out.project.ProjectRequestShort;
+import com.improver.repository.ProjectActionRepository;
+import com.improver.repository.ProjectMessageRepository;
+import com.improver.repository.ProjectRepository;
+import com.improver.repository.ProjectRequestRepository;
 import com.improver.util.mail.MailService;
 import com.improver.ws.WsNotificationService;
 import org.slf4j.Logger;
@@ -19,7 +24,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
 import java.util.List;
-
 
 import static com.improver.model.in.CloseProjectRequest.Action.INVALIDATE;
 
@@ -35,10 +39,8 @@ public class ProjectService {
     @Autowired private LocationService locationService;
     @Autowired private ProjectActionRepository projectActionRepository;
     @Autowired private ProjectMessageRepository projectMessageRepository;
-    @Autowired
-    private WsNotificationService wsNotificationService;
-    @Autowired
-    private CustomerProjectService customerProjectService;
+    @Autowired private WsNotificationService wsNotificationService;
+    @Autowired private CustomerProjectService customerProjectService;
     @Autowired private MailService mailService;
 
 
@@ -73,6 +75,10 @@ public class ProjectService {
     }
 
     public void updateLocation(Project project, Location location, User support) {
+
+        if (project.getStatus() != Project.Status.VALIDATION || project.getFreePositions() != Project.MAX_CONNECTIONS) {
+            throw new ValidationException("Location update is not allowed for current project state");
+        }
 
         try {
             if (!locationService.validate(location, false, true).isValid()) {

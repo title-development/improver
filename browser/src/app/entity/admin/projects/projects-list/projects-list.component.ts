@@ -86,7 +86,7 @@ export class AdminProjectsComponent {
         label: 'Update Location',
         icon: 'fa fa-map-marker',
         command: () => this.openLocationValidationPopup(),
-        visible: this.selectedProject && !isArchived(this.selectedProject.status)
+        visible: this.selectedProject && this.selectedProject.status == Project.Status.VALIDATION && !this.selectedProject.hasProjectRequests
       },
       {
         label: 'Add Comment',

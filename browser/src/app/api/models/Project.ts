@@ -21,6 +21,7 @@ export class Project {
   details: Array<ProjectDetail>;
   images: Array<string>;
   projectRequests: Array<ProjectRequest>;
+  hasProjectRequests: boolean;
 }
 
 export namespace Project {
