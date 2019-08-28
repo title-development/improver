@@ -9,6 +9,7 @@ import com.improver.exception.NotFoundException;
 import com.improver.exception.ValidationException;
 import com.improver.model.in.CloseProjectRequest;
 import com.improver.model.out.NameIdImageTuple;
+import com.improver.model.out.project.CloseProjectQuestionary;
 import com.improver.model.out.project.CompanyProjectRequest;
 import com.improver.model.out.project.CustomerProject;
 import com.improver.model.out.project.CustomerProjectShort;
@@ -28,9 +29,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.improver.entity.Project.Status.CANCELED;
-import static com.improver.entity.Project.Status.COMPLETED;
-import static com.improver.entity.Project.Status.IN_PROGRESS;
+import static com.improver.entity.Project.Status.*;
 import static com.improver.model.in.CloseProjectRequest.Action.CANCEL;
 import static com.improver.model.in.CloseProjectRequest.Action.INVALIDATE;
 
@@ -77,7 +76,7 @@ public class CustomerProjectService {
     }
 
 
-    public List<NameIdImageTuple> getPotentialExecutors(Project project) {
+    private List<NameIdImageTuple> getPotentialExecutors(Project project) {
         List<NameIdImageTuple> potentialExecutors = Collections.emptyList();
         if (IN_PROGRESS.equals(project.getStatus())) {
             List<CompanyProjectRequest> projectRequests = projectRequestRepository.getShortProjectRequests(project.getId());
@@ -190,5 +189,15 @@ public class CustomerProjectService {
             throw new ValidationException("Invalid executor");
         }
 
+    }
+
+
+
+    public CloseProjectQuestionary getCloseVariants(Project project) {
+        if (Project.Status.getArchived().contains(project.getStatus())){
+            throw new ValidationException("Project with status " + project.getStatus() + " cannot be closed/canceled");
+        }
+        List<NameIdImageTuple> potentialExecutors = getPotentialExecutors(project);
+        return new CloseProjectQuestionary(potentialExecutors);
     }
 }

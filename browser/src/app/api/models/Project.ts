@@ -60,6 +60,10 @@ export namespace Project {
     return status === Status.COMPLETED || status === Status.CANCELED || status === Status.INVALID;
   }
 
+  export function isActive(status: Project.Status) {
+    return status === Status.ACTIVE || status === Status.IN_PROGRESS || status === Status.VALIDATION;
+  }
+
   export class ValidationRequest {
     reason?: Reason;
     status?: Status;

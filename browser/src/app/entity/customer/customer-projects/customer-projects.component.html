@@ -90,10 +90,14 @@
                     <mat-menu class="project-card-menu" #projectCardMenu="matMenu" yPosition="below" xPosition="before">
                       <a mat-menu-item [routerLink]="['/my/projects', project.id]">Details</a>
                       <button mat-menu-item class="complete-button"
-                              (click)="projectActionService.completeProjectConfirm(project)">Complete
+                              (click)="projectActionService.completeProjectConfirm(project)"
+                              *ngIf="Project.isActive(project.status)">
+                        Complete
                       </button>
                       <button mat-menu-item class="cancel-button"
-                              (click)="projectActionService.cancelProjectConfirm(project)">Cancel
+                              (click)="projectActionService.cancelProjectConfirm(project)"
+                              *ngIf="Project.isActive(project.status)">
+                        Cancel
                       </button>
                     </mat-menu>
                   </div>

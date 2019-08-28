@@ -29,6 +29,7 @@ interface Tab {
 })
 
 export class CustomerDashboardComponent implements OnDestroy {
+  Project = Project;
   ProjectStatus = Project.Status;
   ProjectRequest = ProjectRequest;
   projectsProcessing = true;

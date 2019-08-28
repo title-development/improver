@@ -7,18 +7,18 @@
         <div fxFlexOffset="5px">Back to Projects</div>
       </a>
       <div class="more-button-wrapper"
-           *ngIf="project && (project.status != Project.Status.CANCELED && project.status != Project.Status.COMPLETED)">
+           *ngIf="Project.isActive(project.status)">
         <button class="project-menu-button" mat-icon-button [matMenuTriggerFor]="projectMenu"
                 (click)="$event.stopPropagation()">
           <mat-icon>more_vert</mat-icon>
         </button>
         <mat-menu class="project-menu" #projectMenu="matMenu" yPosition="below" xPosition="before">
           <button mat-menu-item (click)="projectActionService.completeProjectConfirm(project)"
-                  *ngIf="project.status != Project.Status.CANCELED && project.status != Project.Status.COMPLETED">
+                  *ngIf="Project.isActive(project.status)">
             Complete Project
           </button>
           <button mat-menu-item (click)="projectActionService.cancelProjectConfirm(project)"
-                  *ngIf="project.status != Project.Status.CANCELED && project.status != Project.Status.COMPLETED"
+                  *ngIf="Project.isActive(project.status)"
                   class="cancel-button">Cancel Project
           </button>
         </mat-menu>
@@ -116,7 +116,7 @@
                       <!--<button mat-menu-item *ngIf="(projectRequest.status == ProjectRequest.Status.DECLINED) && !Project.isArchived(project.status)">Activate</button>-->
                       <button mat-menu-item
                               *ngIf="(projectRequest.status == ProjectRequest.Status.ACTIVE) && !Project.isArchived(project.status)"
-                              (click)="projectActionService.hireCompanyConfirm(projectRequest)">Hire
+                              (click)="projectActionService.hireCompanyConfirm(projectRequest)">Accept Offer
                       </button>
                       <button mat-menu-item class="cancel-button"
                               *ngIf="(projectRequest.status == ProjectRequest.Status.ACTIVE) && !Project.isArchived(project.status)"
@@ -181,7 +181,7 @@
                       <!--<button mat-menu-item *ngIf="(projectRequest.status == ProjectRequest.Status.DECLINED) && !Project.isArchived(project.status)">Activate</button>-->
                       <button mat-menu-item
                               *ngIf="(projectRequest.status == ProjectRequest.Status.ACTIVE) && !Project.isArchived(project.status)"
-                              (click)="projectActionService.hireCompanyConfirm(projectRequest)">Hire
+                              (click)="projectActionService.hireCompanyConfirm(projectRequest)">Accept Offer
                       </button>
                       <button mat-menu-item class="cancel-button"
                               *ngIf="(projectRequest.status == ProjectRequest.Status.ACTIVE) && !Project.isArchived(project.status)"
