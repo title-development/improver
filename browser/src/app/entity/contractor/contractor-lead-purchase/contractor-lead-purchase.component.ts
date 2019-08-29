@@ -1,7 +1,7 @@
 import { ApplicationRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog, MatDialogRef } from '@angular/material';
-import { PaymentCard, Lead, SystemMessageType } from '../../../model/data-model';
+import { Lead, PaymentCard, SystemMessageType } from '../../../model/data-model';
 import { PopUpMessageService } from '../../../util/pop-up-message.service';
 import { SecurityService } from '../../../auth/security.service';
 import { addPaymentCardDialogConfig } from '../../../shared/dialogs/dialogs.configs';
@@ -10,13 +10,13 @@ import { BillingService } from '../../../api/services/billing.service';
 import { BoundariesService } from '../../../api/services/boundaries.service';
 import { applyStyleToMapLayers, GoogleMapUtilsService } from '../../../util/google-map.utils';
 import { TricksService } from '../../../util/tricks.service';
-import { ZipBoundaries, ZipFeature } from '../../../api/models/ZipBoundaries';
-import { interval, of, Subscription } from 'rxjs';
+import { ZipFeature } from '../../../api/models/ZipBoundaries';
+import { interval, Observable, of, Subject, Subscription } from 'rxjs';
 import { AgmMap } from '@agm/core';
 
 import { dialogsMap } from '../../../shared/dialogs/dialogs.state';
 import { getErrorMessage } from '../../../util/functions';
-import { switchMap, tap, first } from 'rxjs/internal/operators';
+import { first, map, switchMap, takeUntil, tap } from 'rxjs/internal/operators';
 
 @Component({
   selector: 'contractor-lead-purchase-page',
@@ -41,13 +41,11 @@ export class ContractorLeadPurchaseComponent implements OnInit, OnDestroy {
   similarLeads: Array<Lead> = [];
   // subscription: BillingSubscription;
   @ViewChild(AgmMap) agmMap: AgmMap;
-  private leadPurchaseEffect$: Subscription;
-  private sub: any;
   private MINS_TO_REFRESH: number = 1;
-  private leadRefresh$: Subscription;
   chargeFromCard: boolean;
   projectRequestId;
-  zipCircleIsDrew = false;
+  private readonly destroyed$ = new Subject<void>();
+  private mapCircle: google.maps.Circle | null = null;
 
   constructor(public route: ActivatedRoute,
               public dialog: MatDialog,
@@ -59,7 +57,10 @@ export class ContractorLeadPurchaseComponent implements OnInit, OnDestroy {
               private billingService: BillingService,
               private boundariesService: BoundariesService,
               private gMapUtils: GoogleMapUtilsService) {
-    this.sub = this.route.params.subscribe(params => {
+  }
+
+  ngOnInit(): void {
+    this.route.params.pipe(takeUntil(this.destroyed$)).subscribe(params => {
       params['uid'] ? this.leadUID = params['uid'].toString() : this.leadUID = '';
       this.getLead();
       this.getPaymentCards();
@@ -67,7 +68,9 @@ export class ContractorLeadPurchaseComponent implements OnInit, OnDestroy {
     });
 
     // TODO: Consider to add notification about billing updates instead of checking subscription by interval
-    this.leadRefresh$ = interval(this.MINS_TO_REFRESH * 1000 * 60).subscribe(() => {
+    interval(this.MINS_TO_REFRESH * 1000 * 60)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(() => {
       if (this.step != 1)
         return;
       this.getLead();
@@ -75,15 +78,11 @@ export class ContractorLeadPurchaseComponent implements OnInit, OnDestroy {
 
   }
 
-  ngOnInit(): void {
-
-  }
-
   ngOnDestroy(): void {
-    this.leadPurchaseEffect$.unsubscribe();
-    this.leadRefresh$.unsubscribe();
-    if (this.lead) {
-      this.gMapUtils.zipBoundariesStore.delete(this.lead.location.zip.toString());
+    this.destroyed$.next();
+    this.destroyed$.complete();
+    if (this.lead && this.lead.location.zip) {
+      this.gMapUtils.zipBoundariesStore.delete(this.lead.location.zip);
     }
   }
 
@@ -94,7 +93,7 @@ export class ContractorLeadPurchaseComponent implements OnInit, OnDestroy {
   getLead(): void {
     this.step = 1;
     this.leadError = false;
-    this.leadPurchaseEffect$ = this.leadService.get(this.leadUID).pipe(
+    this.leadService.get(this.leadUID).pipe(
       switchMap((lead: Lead) => {
         this.lead = lead;
         //TODO: check this after fixed map
@@ -105,29 +104,16 @@ export class ContractorLeadPurchaseComponent implements OnInit, OnDestroy {
       }),
       switchMap((gmap: google.maps.Map) => {
         applyStyleToMapLayers(gmap);
-        if (this.gMapUtils.zipBoundariesStore.has(this.lead.location.zip.toString())) {
-          const zipFeature: ZipFeature = this.gMapUtils.zipBoundariesStore.get(this.lead.location.zip.toString());
-          // clear all data layer
-          if (!this.zipCircleIsDrew) {
-            this.gMapUtils.clearAllDataLayers(gmap);
-            const bounds = this.gMapUtils.drawZipCircle(gmap, zipFeature);
-            gmap.fitBounds(bounds);
-            this.zipCircleIsDrew = true;
-          }
-          return of(null);
-        } else {
-          return this.boundariesService.getZipBoundaries([this.lead.location.zip.toString()]);
-        }
+        return this.getLeadZipFeature(this.lead);
       }),
-      tap((zipBoundaries: ZipBoundaries) => {
-          if (zipBoundaries && zipBoundaries.features.length > 0) {
-            // clear all data layer
-            if (!this.zipCircleIsDrew) {
-              this.gMapUtils.clearAllDataLayers(this.map);
-              const zipFeature: ZipFeature = zipBoundaries.features[0];
-              const bounds = this.gMapUtils.drawZipCircle(this.map, zipFeature);
-              this.map.fitBounds(bounds);
-              this.zipCircleIsDrew = true;
+      tap((zipFeature: ZipFeature | null) => {
+          if (!zipFeature) {
+            this.popUpMessageService.showError('Unexpected error during map rendering');
+          } else {
+            this.clearCircle();
+            this.mapCircle = this.gMapUtils.drawZipCircle(this.map, zipFeature);
+            if (this.mapCircle) {
+              this.map.fitBounds(this.mapCircle.getBounds());
             }
           }
         }
@@ -158,6 +144,7 @@ export class ContractorLeadPurchaseComponent implements OnInit, OnDestroy {
       this.billingService.billing.subscriptionOn && this.lead.price > (this.billingService.billing.balance - this.billingService.billing.reserve);
     this.leadProcessing = true;
     this.leadService.purchase(this.leadUID, this.chargeFromCard)
+      .pipe(takeUntil(this.destroyed$))
       .subscribe(
         projectRequestId => {
           this.projectRequestId = projectRequestId;
@@ -195,6 +182,7 @@ export class ContractorLeadPurchaseComponent implements OnInit, OnDestroy {
 
   getPaymentCards() {
     this.billingService.getCards(this.securityService.getLoginModel().company)
+      .pipe(takeUntil(this.destroyed$))
       .subscribe(
         cards => {
           this.paymentCards = cards;
@@ -245,6 +233,33 @@ export class ContractorLeadPurchaseComponent implements OnInit, OnDestroy {
   viewInvoice() {
     this.popUpMessageService.showMessage(this.popUpMessageService.METHOD_NOT_IMPLEMENTED);
     throw new Error('Method not implemented.');
+  }
+
+  private getLeadZipFeature(lead: Lead | null): Observable<ZipFeature | null> {
+    if (!lead || !lead.location.zip) {
+      return of(null);
+    }
+    if (this.gMapUtils.zipBoundariesStore.has(lead.location.zip)) {
+      const zipFeature = this.gMapUtils.zipBoundariesStore.get(lead.location.zip)!;
+      return of(zipFeature);
+    }
+    return this.boundariesService.getZipBoundaries([lead.location.zip])
+      .pipe(
+        map(zipBoundaries => {
+          if (zipBoundaries && zipBoundaries.features.length) {
+            return zipBoundaries.features[0];
+          }
+          return null;
+        })
+      );
+  }
+
+  private clearCircle(): void {
+    if (!this.mapCircle) {
+      return;
+    }
+    this.mapCircle.setMap(null);
+    this.mapCircle = null;
   }
 
   private getSimilarLeads(): void {

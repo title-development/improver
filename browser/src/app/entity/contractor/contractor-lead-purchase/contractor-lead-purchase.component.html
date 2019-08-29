@@ -262,7 +262,7 @@
     <div class="another-projects-card" *ngIf="similarLeads.length > 0">
       <div class="title">You may also be interested in:</div>
       <div class="row">
-        <ng-template ngFor [ngForOf]="similarLeads" let-similar let-i="index" [ngForTrackBy]="id">
+        <ng-template ngFor [ngForOf]="similarLeads" let-similar let-i="index" [ngForTrackBy]="trackBy">
           <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="card" (click)="redirectToLeadBuy()" [routerLink]="['/pro', 'leads-purchase', similar.id]">
               <div class="top-line">

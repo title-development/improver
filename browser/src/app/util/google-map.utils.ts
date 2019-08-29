@@ -216,17 +216,17 @@ export class GoogleMapUtilsService {
     return this.getPolygonBounds(zipFeature.geometry.coordinates);
   }
 
-  drawZipCircle(map, zipFeature: ZipFeature): google.maps.LatLngBounds {
-    let zipBounds = this.getPolygonBounds(zipFeature.geometry.coordinates);
+  drawZipCircle(map, zipFeature: ZipFeature): google.maps.Circle {
+    const zipBounds = this.getPolygonBounds(zipFeature.geometry.coordinates);
 
-    let radius = this.distanceBetweenPoints(
+    const radius = this.distanceBetweenPoints(
       zipBounds.getSouthWest().lat(),
       zipBounds.getSouthWest().lng(),
       zipBounds.getNorthEast().lat(),
       zipBounds.getNorthEast().lng())
       / 2;
 
-    let zipCircle = new google.maps.Circle({
+    return  new google.maps.Circle({
       strokeColor: '#009EDE',
       strokeOpacity: 0.5,
       strokeWeight: 1,
@@ -238,8 +238,6 @@ export class GoogleMapUtilsService {
       draggable: false,
       editable: false
     });
-
-    return zipCircle.getBounds();
   }
 
   addressGeocode(address: string): Observable<google.maps.LatLng | google.maps.LatLngBounds> {
