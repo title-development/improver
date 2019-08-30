@@ -1,10 +1,9 @@
-import { Component } from '@angular/core';
-import { AuthService, GoogleLoginProvider, SocialLoginModule, SocialUser } from 'angularx-social-login';
+import { Component, OnDestroy } from '@angular/core';
+import { AuthService, GoogleLoginProvider, SocialUser } from 'angularx-social-login';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { Constants } from '../../../util/constants';
 import { Messages } from '../../../util/messages';
 import { NgForm } from '@angular/forms';
-import { RegistrationService } from '../../../api/services/registration.service';
 import { SocialConnectionsService } from '../../../auth/social-connections.service';
 import { SocialPlatform } from '../../../auth/social-buttons/social-buttons.component';
 import { HttpResponse } from '@angular/common/http';
@@ -13,16 +12,16 @@ import { getErrorMessage } from '../../../util/functions';
 import { SystemMessageType } from '../../../model/data-model';
 import { SecurityService } from '../../../auth/security.service';
 import { Router } from '@angular/router';
-import { Observable, throwError } from 'rxjs';
+import { Observable, Subject, throwError } from 'rxjs';
 import { fromPromise } from 'rxjs-compat/observable/fromPromise';
-import { catchError, switchMap } from 'rxjs/operators';
+import { switchMap, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'contractor-registration-phone-request',
   templateUrl: './contractor-registration-phone-request.component.html',
   styleUrls: ['./contractor-registration-phone-request.component.scss']
 })
-export class ContractorRegistrationPhoneRequestComponent {
+export class ContractorRegistrationPhoneRequestComponent implements OnDestroy {
   socialUser: SocialUser;
   socialPlatform: SocialPlatform;
   referralCode: string;
@@ -31,6 +30,7 @@ export class ContractorRegistrationPhoneRequestComponent {
   messageType: string;
   messageText: string;
   processing: boolean = false;
+  private readonly destroyed$ = new Subject<void>();
 
   constructor(public messages: Messages,
               public currentDialogRef: MatDialogRef<any>,
@@ -41,44 +41,41 @@ export class ContractorRegistrationPhoneRequestComponent {
               private dialog: MatDialog,
               private socialAuthService: AuthService
   ) {
+
   }
 
   registerUser(form: NgForm): void {
     this.processing = true;
-    let observable: Observable<any>;
+    this.processRegister().pipe(takeUntil(this.destroyed$)).subscribe((response: HttpResponse<any>) => {
+      this.processing = false;
+      this.dialog.closeAll();
+      this.securityService.loginUser(response.body as LoginModel, response.headers.get('authorization'), true);
+    }, err => {
+      this.processing = false;
+      if (getErrorMessage(err)) {
+        this.showError(getErrorMessage(err));
+      } else {
+        this.showError(err);
+      }
+    });
+  }
+
+  processRegister(): Observable<any> {
     switch (this.socialPlatform) {
       case SocialPlatform.FACEBOOK:
-        observable = this.socialLoginService.proFacebookRegister(new PhoneSocialCredentials(this.socialUser.authToken, this.phone, this.referralCode));
-        break;
+        return this.socialLoginService.proFacebookRegister(new PhoneSocialCredentials(this.socialUser.authToken, this.phone, this.referralCode));
       case SocialPlatform.GOOGLE:
-        observable = fromPromise(this.socialAuthService.signIn(GoogleLoginProvider.PROVIDER_ID)).pipe(
+        return fromPromise<SocialUser>(this.socialAuthService.signIn(GoogleLoginProvider.PROVIDER_ID)).pipe(
           switchMap((userData: SocialUser) => {
             if (userData && userData.id) {
-
               return this.socialLoginService.proGoogleApiRegister(new PhoneSocialCredentials(userData.idToken, this.phone, this.referralCode));
-            } else {
-              throwError('Unknown error try again later');
             }
+            return throwError('Unknown error try again later');
           })
         );
-        break;
       default:
-        console.error('Social platform is undefined');
-        break;
-    }
-    if (observable) {
-      observable.subscribe((response: HttpResponse<any>) => {
-        this.processing = false;
-        this.dialog.closeAll();
-        this.securityService.loginUser(response.body as LoginModel, response.headers.get('authorization'), true);
-      }, err => {
-        this.processing = false;
-        if (getErrorMessage(err)) {
-          this.showError(getErrorMessage(err));
-        } else {
-          this.showError(err);
-        }
-      });
+        console.error('Please provide a correct social platform');
+        return throwError('Please provide a correct social platform');
     }
   }
 
@@ -86,8 +83,13 @@ export class ContractorRegistrationPhoneRequestComponent {
     this.currentDialogRef.close();
   }
 
-  onMessageHide(event) {
-    this.showMessage = event;
+  onMessageHide(hidden: boolean) {
+    this.showMessage = hidden;
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
   private showError(message: string): void {
