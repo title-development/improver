@@ -28,8 +28,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u from com.improver.entity.User u WHERE " +
         "(:id IS null OR u.id = :id) AND " +
-        "(:email IS null OR u.email LIKE %:email%) AND " +
-        "(:displayName IS null OR u.displayName LIKE %:displayName%) AND " +
+        "(:email IS null OR LOWER(u.email) LIKE CONCAT('%', LOWER(cast(:email as string)), '%')) AND " +
+        "(:displayName IS null OR LOWER(u.displayName) LIKE CONCAT('%', LOWER(cast(:displayName as string)), '%')) AND " +
         "(:role IS null OR u.role = :role)")
     Page<User> findBy(Long id,
                       String email,
@@ -41,8 +41,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT c from com.improver.entity.Contractor c WHERE " +
         "c.role = 'CONTRACTOR' AND c.company.id = null AND " +
         "(:id IS null OR c.id = :id) AND " +
-        "(:email IS null OR c.email LIKE %:email%) AND " +
-        "(:displayName IS null OR c.displayName LIKE %:displayName%)")
+        "(:email IS null OR LOWER(c.email) LIKE CONCAT('%', LOWER(cast(:email as string)), '%')) AND " +
+        "(:displayName IS null OR LOWER(c.displayName) LIKE CONCAT('%', LOWER(cast(:displayName as string)), '%'))")
     Page<User> findIncompleteProsBy(Long id,
                                     String email,
                                     String displayName,
@@ -70,17 +70,17 @@ public interface UserRepository extends JpaRepository<User, Long> {
         "INNER JOIN pro.company c " +
         "WHERE pro.company.id = c.id AND " +
         "(:id IS null OR pro.id = :id) AND " +
-        "(:displayName IS null OR lower(pro.displayName) LIKE %:displayName%) AND " +
-        "(:email IS null OR lower(pro.email) LIKE %:email%) AND " +
-        "(:companyName IS null OR lower(c.name) LIKE %:companyName%)")
+        "(:displayName IS null OR LOWER(pro.displayName) LIKE CONCAT('%', LOWER(cast(:displayName as string)),'%')) AND " +
+        "(:email IS null OR LOWER(pro.email) LIKE CONCAT('%', LOWER(cast(:email as string)), '%')) AND " +
+        "(:companyName IS null OR LOWER(c.name) LIKE CONCAT('%', LOWER(cast(:companyName as string)), '%'))")
     Page<AdminContractor> getAllContractors(Long id, String displayName, String email, String companyName, Pageable pageable);
 
     @Query("SELECT u  " +
         "FROM com.improver.entity.Customer u " +
         "WHERE " +
         "(:id IS null OR u.id = :id) AND " +
-        "(:displayName IS null OR lower(u.displayName) LIKE %:displayName%) AND " +
-        "(:email IS null OR lower(u.email) LIKE %:email%) ")
+        "(:displayName IS null OR LOWER(u.displayName) LIKE CONCAT('%', LOWER(cast(:displayName as string)), '%')) AND " +
+        "(:email IS null OR LOWER(u.email) LIKE CONCAT('%', LOWER(cast(:email as string)), '%')) ")
     Page<User> getAllCustomers(Long id, String displayName, String email, Pageable pageable);
 
     User findByRefreshId(String refreshToken);

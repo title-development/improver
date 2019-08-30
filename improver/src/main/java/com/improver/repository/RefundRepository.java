@@ -16,8 +16,8 @@ public interface RefundRepository extends JpaRepository<Refund, Long> {
         "INNER JOIN com.improver.entity.ProjectRequest con ON con.id = ref.projectRequest.id " +
         "LEFT JOIN com.improver.entity.Project proj ON proj.id = con.project.id " +
         "WHERE (:id IS null OR ref.id = :id) " +
-        "AND (:contractorEmail IS null OR lower(con.contractor.email) LIKE %:contractorEmail%) " +
-        "AND (:customerEmail IS null OR lower(proj.customer.email) LIKE %:customerEmail%) " +
+        "AND (:contractorEmail IS null OR LOWER(con.contractor.email) LIKE CONCAT('%', LOWER(cast(:contractorEmail as string)), '%')) " +
+        "AND (:customerEmail IS null OR LOWER(proj.customer.email) LIKE CONCAT('%', LOWER(cast(:customerEmail as string)), '%')) " +
         "AND (:issue IS null OR ref.issue = :issue) " +
         "AND (:option IS null OR ref.option = :option) " +
         "AND (:status IS null OR ref.status = :status)")

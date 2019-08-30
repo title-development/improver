@@ -7,18 +7,16 @@
         <div fxFlexOffset="5px">Back to Projects</div>
       </a>
       <div class="more-button-wrapper"
-           *ngIf="Project.isActive(project.status)">
+           *ngIf="project && Project.isActive(project.status)">
         <button class="project-menu-button" mat-icon-button [matMenuTriggerFor]="projectMenu"
                 (click)="$event.stopPropagation()">
           <mat-icon>more_vert</mat-icon>
         </button>
         <mat-menu class="project-menu" #projectMenu="matMenu" yPosition="below" xPosition="before">
-          <button mat-menu-item (click)="projectActionService.completeProjectConfirm(project)"
-                  *ngIf="Project.isActive(project.status)">
+          <button mat-menu-item (click)="projectActionService.completeProjectConfirm(project)">
             Complete Project
           </button>
           <button mat-menu-item (click)="projectActionService.cancelProjectConfirm(project)"
-                  *ngIf="Project.isActive(project.status)"
                   class="cancel-button">Cancel Project
           </button>
         </mat-menu>

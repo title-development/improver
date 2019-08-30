@@ -63,8 +63,8 @@ public interface ProjectRequestRepository extends JpaRepository<ProjectRequest, 
         "INNER JOIN com.improver.entity.Project pro ON pro.id = con.project.id " +
         "LEFT JOIN com.improver.entity.Refund ref ON ref.id = con.refund.id " +
         "WHERE (:id IS null OR con.id = :id) " +
-        "AND (:contractorEmail IS null OR lower(con.contractor.email) LIKE %:contractorEmail%) " +
-        "AND (:customerEmail IS null OR lower(pro.customer.email) LIKE %:customerEmail%) " +
+        "AND (:contractorEmail IS null OR LOWER(con.contractor.email) LIKE CONCAT('%', LOWER(cast(:contractorEmail as string)), '%')) " +
+        "AND (:customerEmail IS null OR LOWER(pro.customer.email) LIKE CONCAT('%', LOWER(cast(:customerEmail as string)), '%')) " +
         "AND (:status IS null OR con.status = :status) " +
         "AND (:projectStatus IS null OR pro.status = :projectStatus) ")
     Page<AdminProjectRequest> getAll(Long id, String contractorEmail, String customerEmail, ProjectRequest.Status status, Project.Status projectStatus, Pageable pageable);

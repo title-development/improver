@@ -73,14 +73,8 @@ public class ServiceTypeService {
     }
 
     public Page<AdminServiceType> getAllServiceTypes(Long id, String name, String description, String labels, String tradeName, Integer ratingFrom, Integer ratingTo, Integer leadPriceFrom, Integer leadPriceTo, Pageable pageable) {
-        name = name != null ? name.toLowerCase() : name;
-        labels = labels != null ? labels.toLowerCase() : labels;
-        description = description != null ? description.toLowerCase() : description;
-        tradeName = tradeName != null ? tradeName.toLowerCase() : tradeName;
-
         Page<AdminServiceType> serviceTypes = serviceTypeRepository.getAll(id, name, description, labels, tradeName, ratingFrom, ratingTo, leadPriceFrom, leadPriceTo, pageable)
             .map(adminServiceType -> adminServiceType.setTrades(tradeRepository.getByServiceTypeId(adminServiceType.getId())));
-
         return serviceTypes;
     }
 

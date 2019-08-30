@@ -92,14 +92,14 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
 
     @Query("SELECT p FROM com.improver.entity.Project p WHERE " +
         "(:id IS null OR p.id = :id)" +
-        " AND (:customerEmail IS null OR p.customer.email LIKE %:customerEmail%)" +
-        " AND (:serviceType IS null OR p.serviceType.name LIKE %:serviceType%)" +
+        " AND (:customerEmail IS null OR LOWER(p.customer.email) LIKE CONCAT('%', LOWER(cast(:customerEmail as string)), '%'))" +
+        " AND (:serviceType IS null OR LOWER(p.serviceType.name) LIKE CONCAT('%', LOWER(cast(:serviceType as string)), '%'))" +
         " AND (:status IS null OR p.status = :status)" +
         " AND (:reason IS null OR p.reason = :reason)" +
-        " AND (:location IS null OR (p.location.streetAddress LIKE %:location%)" +
-        " OR (p.location.city LIKE %:location% ) " +
-        " OR (p.location.state LIKE %:location% ) " +
-        " OR (p.location.zip LIKE %:location% ) ) ")
+        " AND (:location IS null OR (LOWER(p.location.streetAddress) LIKE CONCAT('%', LOWER(cast(:location as string)), '%'))" +
+        " OR (LOWER(p.location.city) LIKE CONCAT('%', LOWER(cast(:location as string)), '%')) " +
+        " OR (LOWER(p.location.state) LIKE CONCAT('%', LOWER(cast(:location as string)), '%')) " +
+        " OR (LOWER(p.location.zip) LIKE CONCAT('%', LOWER(cast(:location as string)), '%'))) ")
     Page<Project> findBy(Long id, String customerEmail, String serviceType, Project.Status status, Project.Reason reason, String location, Pageable pageRequest);
 
 

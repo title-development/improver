@@ -17,17 +17,17 @@ public interface TicketRepository extends JpaRepository<Ticket, Long>{
         "LEFT JOIN com.improver.entity.User su ON su.id = s.id " +
         "LEFT JOIN com.improver.entity.User u ON u.id = t.author.id " +
         "WHERE (:id IS null OR t.id = :id) AND " +
-        "(:email IS null OR t.email = :email) AND " +
-        "(:name IS null OR t.email = :name) AND " +
-        "(:businessName IS null OR t.businessName = :businessName) AND " +
+        "(:email IS null OR LOWER(t.email) LIKE CONCAT('%', LOWER(cast(:email as string)), '%')) AND " +
+        "(:name IS null OR LOWER(t.name) LIKE CONCAT('%', LOWER(cast(:name as string)), '%')) AND " +
+        "(:businessName IS null OR LOWER(t.businessName) LIKE CONCAT('%', LOWER(cast(:businessName as string)), '%')) AND " +
         "(:subject IS null OR t.subject = :subject) AND " +
         "(t.status IN :statuses OR :statuses IS null) AND " +
         "(:priority IS null OR t.priority = :priority) AND " +
-        "((:author IS null OR lower(u.email) LIKE '%' || lower(cast(:author as string)) || '%') " +
-        "OR lower(u.role) LIKE '%' || lower(cast(:author as string)) || '%') AND " +
+        "((:author IS null OR LOWER(u.email) LIKE CONCAT('%', LOWER(cast(:author as string)), '%')) " +
+        "OR LOWER(u.role) LIKE CONCAT('%', LOWER(cast(:author as string)), '%')) AND " +
         "((:unassignedOnly = true AND t.assignee IS null) OR " +
-        "(:unassignedOnly = false AND :assignee IS null OR lower(su.email) LIKE '%' || lower(cast(:assignee as string)) || '%' " +
-        "OR lower(su.displayName) LIKE '%' || lower(cast(:assignee as string)) || '%'))" )
+        "(:unassignedOnly = false AND :assignee IS null OR LOWER(su.email) LIKE CONCAT('%', LOWER(cast(:assignee as string)), '%') " +
+        "OR LOWER(su.displayName) LIKE CONCAT('%', LOWER(cast(:assignee as string)), '%')))" )
     Page<StaffTicket> getAll(Long id, String email, String name, String businessName, Ticket.Subject subject,
                              List<Ticket.Status> statuses, Priority priority, String assignee, String author, Boolean unassignedOnly, Pageable pageable);
 

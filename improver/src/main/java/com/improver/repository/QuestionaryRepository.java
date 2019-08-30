@@ -15,7 +15,7 @@ public interface QuestionaryRepository extends JpaRepository<Questionary, Long> 
     @Query("SELECT new com.improver.model.admin.AdminQuestionary(q.id, q.name, q.description) " +
             "FROM com.improver.entity.Questionary q " +
             "WHERE (:id IS null OR q.id = :id) AND " +
-            "(:name IS null OR lower(q.name) LIKE %:name%)")
+            "(:name IS null OR LOWER(q.name) LIKE CONCAT('%', LOWER(cast(:name as string)), '%'))")
     Page<AdminQuestionary> getAll(Long id, String name, Pageable pageable);
 
     @Query("SELECT new com.improver.model.admin.AdminQuestionary(q.id, q.name, q.description) " +

@@ -32,12 +32,12 @@ public interface ServiceTypeRepository extends JpaRepository<ServiceType, Long> 
         "FROM com.improver.entity.ServiceType s " +
         "LEFT JOIN s.questionary q ON q.id = s.questionary.id " +
         "WHERE (:id IS null OR s.id = :id) AND " +
-        "(:name IS null OR lower(s.name) LIKE %:name%) AND " +
-        "(:description IS null OR lower(s.description) LIKE  %:description%) AND " +
-        "(:labels IS null OR lower(s.labels) LIKE %:labels%) AND " +
+        "(:name IS null OR LOWER(s.name) LIKE CONCAT('%', LOWER(cast(:name as string)), '%')) AND " +
+        "(:description IS null OR LOWER(s.description) LIKE  CONCAT('%', LOWER(cast(:description as string)), '%')) AND " +
+        "(:labels IS null OR LOWER(s.labels) LIKE CONCAT('%', LOWER(cast(:labels as string)), '%')) AND " +
         "(:ratingFrom IS null OR s.rating BETWEEN :ratingFrom AND :ratingTo) AND " +
         "(:leadPriceFrom IS null OR s.leadPrice BETWEEN :leadPriceFrom AND :leadPriceTo) AND " +
-        "(:tradeName IS null OR EXISTS(SELECT tr FROM s.trades tr WHERE lower(tr.name) LIKE %:tradeName%))")
+        "(:tradeName IS null OR EXISTS(SELECT tr FROM s.trades tr WHERE LOWER(tr.name) LIKE CONCAT('%', LOWER(cast(:tradeName as string)), '%')))")
     Page<AdminServiceType> getAll(Long id, String name, String description, String labels, String tradeName, Integer ratingFrom, Integer ratingTo, Integer leadPriceFrom, Integer leadPriceTo, Pageable pageable);
 
     @Query("SELECT new com.improver.model.admin.AdminServiceType(s, q.id) " +
