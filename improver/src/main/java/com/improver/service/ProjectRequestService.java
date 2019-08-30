@@ -5,8 +5,8 @@ import com.improver.exception.AccessDeniedException;
 import com.improver.exception.BadRequestException;
 import com.improver.exception.ValidationException;
 import com.improver.repository.ProjectMessageRepository;
-import com.improver.repository.ProjectRequestRepository;
 import com.improver.repository.ProjectRepository;
+import com.improver.repository.ProjectRequestRepository;
 import com.improver.util.StringUtil;
 import com.improver.util.mail.MailService;
 import com.improver.ws.WsNotificationService;
@@ -99,7 +99,7 @@ public class ProjectRequestService {
         Project project = projectRequest.getProject();
 
         if (!oldStatus.equals(ProjectRequest.Status.INACTIVE) &&
-            !oldStatus.equals(ProjectRequest.Status.REFUND) &&
+            !oldStatus.equals(ProjectRequest.Status.REFUND_REQUESTED) &&
             !oldStatus.equals(ProjectRequest.Status.DECLINED))
             wsNotificationService.proLeftProject(project.getCustomer(),
                 projectRequest.getContractor().getCompany(),
@@ -122,7 +122,7 @@ public class ProjectRequestService {
             case HIRED:
                 throw new ValidationException("Cannot decline hired contractor");
             case DECLINED:
-            case REFUND:
+            case REFUND_REQUESTED:
                 throw new ValidationException("Contractor is already declined");
             default:
                 throw new IllegalArgumentException(projectRequest.getStatus() + " is not a valid status");
@@ -162,7 +162,7 @@ public class ProjectRequestService {
                 break;
 
             case DECLINED:
-            case REFUND:
+            case REFUND_REQUESTED:
                 if (toHire) {
                     throw new ValidationException("Cannot hire not active contractor");
                 }

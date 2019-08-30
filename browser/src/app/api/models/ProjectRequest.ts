@@ -30,10 +30,11 @@ export namespace ProjectRequest {
     HIRED = 'HIRED',
     DECLINED = 'DECLINED',
     INACTIVE = 'INACTIVE',
-    REFUND = 'REFUND',
+    REFUND_REQUESTED = 'REFUND_REQUESTED',
     // PREVIOUS TAB
-    COMPLETED = 'COMPLETED',
+    REFUND_REJECTED = 'REFUND_REJECTED',
     REFUNDED = 'REFUNDED',
+    COMPLETED = 'COMPLETED',
     CLOSED = 'CLOSED'
   }
 
@@ -67,4 +68,43 @@ export namespace ProjectRequest {
     FILE = 'FILE',
     EVENT = 'EVENT'
   }
+
+  export function isCurrent(status: ProjectRequest.Status) {
+    return status === ProjectRequest.Status.ACTIVE
+      || status === ProjectRequest.Status.HIRED
+      || status === ProjectRequest.Status.DECLINED
+      || status === ProjectRequest.Status.INACTIVE
+      || status === ProjectRequest.Status.REFUND_REQUESTED;
+  }
+
+  export function isActive(status: ProjectRequest.Status) {
+    return status === ProjectRequest.Status.ACTIVE
+      || status === ProjectRequest.Status.HIRED
+  }
+
+  export function isInactive(status: ProjectRequest.Status) {
+    return !isActive(status)
+  }
+
+  export function hasExecutor(status: ProjectRequest.Status) {
+    return status === ProjectRequest.Status.HIRED
+      || status === ProjectRequest.Status.COMPLETED
+  }
+
+  export function canBeLeft(status: ProjectRequest.Status) {
+    return isActive(status)
+  }
+
+  export function canBeClosed(status: ProjectRequest.Status) {
+    return status === ProjectRequest.Status.DECLINED
+      || status === ProjectRequest.Status.INACTIVE
+  }
+
+  export function proLeft(status: ProjectRequest.Status) {
+    return status == ProjectRequest.Status.CLOSED
+      || status == ProjectRequest.Status.REFUND_REQUESTED
+      || status == ProjectRequest.Status.REFUNDED
+      || status == ProjectRequest.Status.REFUND_REJECTED
+  }
+
 }

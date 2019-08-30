@@ -69,7 +69,7 @@
               <ng-template ngFor let-projectRequest [ngForOf]="project.projectRequests" let-i="index">
                 <div class="projectRequest"
                      (click)="openProjectRequest(projectRequest)"
-                     *ngIf="isProjectRequestActive(projectRequest)">
+                     *ngIf="ProjectRequest.isActive(projectRequest.status)">
                   <div class="projectRequest-left">
                       <i class="notifications" *ngIf="projectRequest.unreadMessages > 0" title="{{unreadMessagesTittle(projectRequest.unreadMessages)}}">{{projectRequest.unreadMessages}}</i>
                     <div class="projectRequest-icon {{projectRequest.status | toclassname}}"
@@ -84,7 +84,7 @@
                         </div>
                       </div>
                       <div class="additional-info hired"
-                           *ngIf="projectRequest.status == ProjectRequest.Status.HIRED || projectRequest.status == ProjectRequest.Status.COMPLETED">
+                           *ngIf="projectRequest.status == ProjectRequest.hasExecutor(projectRequest.status)">
                         You hired this Pro
                       </div>
                       <div class="additional-info" *ngIf="projectRequest.status == ProjectRequest.Status.ACTIVE">This
@@ -134,7 +134,7 @@
               <ng-template ngFor let-projectRequest [ngForOf]="project.projectRequests" let-i="index">
                 <div class="projectRequest"
                      (click)="openProjectRequest(projectRequest)"
-                     *ngIf="!isProjectRequestActive(projectRequest)">
+                     *ngIf="ProjectRequest.isInactive(projectRequest.status)">
                   <div class="projectRequest-left">
                     <div class="projectRequest-icon {{projectRequest.status | toclassname}}"
                          [ngClass]="{'no-icon' : projectRequest.company.iconUrl != ''}"
@@ -150,8 +150,7 @@
                       <div class="additional-info" *ngIf="projectRequest.status == ProjectRequest.Status.DECLINED">You
                         declined this Pro
                       </div>
-                      <div class="additional-info" *ngIf="projectRequest.status == ProjectRequest.Status.CLOSED
-                    || projectRequest.status == ProjectRequest.Status.REFUND || projectRequest.status == ProjectRequest.Status.REFUNDED">
+                      <div class="additional-info" *ngIf="ProjectRequest.proLeft(projectRequest.status)">
                         This Pro left the project
                       </div>
                     </div>

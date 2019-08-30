@@ -2,8 +2,8 @@ package com.improver.model.out.project;
 
 import com.improver.entity.Company;
 import com.improver.entity.Contractor;
-import com.improver.entity.ProjectRequest;
 import com.improver.entity.Project;
+import com.improver.entity.ProjectRequest;
 import com.improver.model.out.UserModel;
 import lombok.Getter;
 
@@ -40,7 +40,7 @@ public class CompanyProjectRequest {
         this.id = projectRequest.getId();
         this.company = new CompanyModel(company.getId(), company.getName(), company.getIconUrl(), company.getRating(), company.getReviewCount(), company.getFounded(), company.isApproved());
         this.contractor = contractor == null? null : new UserModel(contractor.getId(), contractor.getDisplayName(), null, contractor.getEmail(), null);
-        this.status = REFUND.equals(projectRequest.getStatus()) || REFUNDED.equals(projectRequest.getStatus()) ? CLOSED : projectRequest.getStatus();
+        this.status = REFUND_REQUESTED.equals(projectRequest.getStatus()) || REFUNDED.equals(projectRequest.getStatus()) ? CLOSED : projectRequest.getStatus();
         this.isReviewed = reviewId != null;
         this.projectStatus = projectStatus;
         this.unreadMessages = unreadMessages;

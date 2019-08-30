@@ -1,24 +1,23 @@
 package com.improver.controller;
 
 import com.improver.entity.Company;
-import com.improver.entity.ProjectRequest;
 import com.improver.entity.Contractor;
+import com.improver.entity.ProjectRequest;
 import com.improver.exception.NotFoundException;
 import com.improver.exception.ValidationException;
+import com.improver.model.in.RefundRequest;
 import com.improver.model.out.Receipt;
 import com.improver.model.out.RefundQuestionary;
+import com.improver.model.out.RefundResult;
+import com.improver.model.out.project.ProjectRequestDetailed;
+import com.improver.model.out.project.ProjectRequestShort;
+import com.improver.repository.ProjectRequestRepository;
 import com.improver.security.UserSecurityService;
 import com.improver.service.BillingService;
-import com.improver.model.out.RefundResult;
-import com.improver.model.out.project.ProjectRequestShort;
-import com.improver.model.out.project.ProjectRequestDetailed;
-import com.improver.model.in.RefundRequest;
-import com.improver.repository.ProjectRequestRepository;
 import com.improver.service.ProjectService;
 import com.improver.service.RefundService;
 import com.improver.util.annotation.PageableSwagger;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,19 +30,17 @@ import org.springframework.web.bind.annotation.*;
 
 import static com.improver.application.properties.Path.*;
 
+@Slf4j
 @PreAuthorize("hasRole('CONTRACTOR')")
 @RestController
 @RequestMapping(PROS_PATH + PROJECTS)
 public class ContractorProjectController {
-
-    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired private UserSecurityService userSecurityService;
     @Autowired private ProjectService projectService;
     @Autowired private ProjectRequestRepository projectRequestRepository;
     @Autowired private RefundService refundService;
     @Autowired private BillingService billingService;
-
 
     @GetMapping
     @PageableSwagger
@@ -77,7 +74,7 @@ public class ContractorProjectController {
         Contractor contractor = userSecurityService.currentPro();
         ProjectRequest projectRequest = projectRequestRepository.findByIdAndContractorId(id, contractor.getId())
             .orElseThrow(NotFoundException::new);
-        refundService.register(refundRequest, projectRequest);
+        refundService.registerRefund(refundRequest, projectRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

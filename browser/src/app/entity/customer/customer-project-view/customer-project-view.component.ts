@@ -1,9 +1,7 @@
-import { Component, EventEmitter, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, CanDeactivate, NavigationEnd, Router } from '@angular/router';
-import {
-  CloseProjectRequest, CustomerProject, Review
-} from '../../../model/data-model';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { CustomerProject } from '../../../model/data-model';
+import { MatDialog } from '@angular/material';
 import { PopUpMessageService } from '../../../util/pop-up-message.service';
 import { ProjectService } from '../../../api/services/project.service';
 import { ProjectRequestService } from '../../../api/services/project-request.service';
@@ -12,8 +10,7 @@ import { Project } from '../../../api/models/Project';
 import { ProjectRequest } from '../../../api/models/ProjectRequest';
 import { getErrorMessage } from '../../../util/functions';
 import { SomePipe } from 'angular-pipes';
-import { of, Subscription } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 import { ComponentCanDeactivate } from '../../../auth/router-guards/pending-chanes.guard';
 import { ImagesUploaderComponent } from '../../../shared/image-uploader/image-uploader.component';
 
@@ -130,7 +127,9 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy, Componen
           this.projectActionService.project = this.project;
           this.getProjectRequest();
           if (this.projectActionService.projectRequestDialogRef) {
-            this.projectActionService.projectRequestDialogRef.componentInstance.projectRequest = project.projectRequests.find((item) => item.id == this.projectActionService.projectRequestDialogRef.componentInstance.projectRequest.id);
+            this.projectActionService.projectRequestDialogRef.componentInstance.projectRequest =
+              project.projectRequests.find((item) =>
+                item.id == this.projectActionService.projectRequestDialogRef.componentInstance.projectRequest.id);
           }
         },
         err => {
@@ -151,20 +150,12 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy, Componen
     });
   }
 
-  isProjectRequestInactive = (item) => {
-    return !this.isProjectRequestActive(item);
-  };
-
-  isProjectRequestActive(item) {
-    return item.status == ProjectRequest.Status.HIRED || item.status == ProjectRequest.Status.COMPLETED || item.status == ProjectRequest.Status.ACTIVE;
-  }
-
   isInactiveProsExist() {
-    return this.somePipe.transform(this.project.projectRequests, this.isProjectRequestInactive);
+    return this.somePipe.transform(this.project.projectRequests, ProjectRequest.isInactive);
   }
 
   isActiveProsExist() {
-    return this.somePipe.transform(this.project.projectRequests, this.isProjectRequestActive);
+    return this.somePipe.transform(this.project.projectRequests, ProjectRequest.isActive);
   }
 
   unreadMessagesTittle(count: number): string {

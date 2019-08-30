@@ -1,21 +1,15 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Pagination } from '../../../../model/data-model';
 import { RestPage } from '../../../../api/models/RestPage';
-import { ConfirmationService, MenuItem } from 'primeng/api';
+import { MenuItem } from 'primeng/api';
 import { ProjectService } from '../../../../api/services/project.service';
 import { SecurityService } from '../../../../auth/security.service';
 import { PopUpMessageService } from '../../../../util/pop-up-message.service';
-import { ServiceTypeService } from '../../../../api/services/service-type.service';
-import { StatusToString } from '../../../../pipes/status-to-string.pipe';
-import { Constants } from '../../../../util/constants';
-import { LocationValidateService } from '../../../../api/services/location-validate.service';
 import { getErrorMessage } from '../../../../util/functions';
 import { Project } from '../../../../api/models/Project';
 import { SelectItem } from "primeng/primeng";
 import { CamelCaseHumanPipe } from "../../../../pipes/camelcase-to-human.pipe";
-import { enumToArrayList, filtersToParams, TricksService } from "../../../../util/tricks.service";
-import { ScrollHolderService } from '../../../../util/scroll-holder.service';
-import isArchived = Project.isArchived;
+import { enumToArrayList, filtersToParams } from "../../../../util/tricks.service";
 
 @Component({
   selector: 'projects-validation',
@@ -25,7 +19,6 @@ import isArchived = Project.isArchived;
 export class AdminProjectsValidationComponent {
   @ViewChild('dt') dataTable: any;
   @ViewChild('target') animationTarget: ElementRef;
-  SystemMessageType = this.SystemMessageType;
   rowsPerPage: Array<number> = [10, 50, 100];
   projects: RestPage<Project> = new RestPage<Project>();
   projectsProcessing = true;
@@ -87,25 +80,25 @@ export class AdminProjectsValidationComponent {
         label: 'Update Location',
         icon: 'fa fa-map-marker',
         command: () => this.openLocationValidationPopup(),
-        visible: this.selectedProject && !isArchived(this.selectedProject.status)
+        visible: this.selectedProject && this.selectedProject.status == Project.Status.VALIDATION && !this.selectedProject.hasProjectRequests
       },
       {
         label: 'Add Comment',
         icon: 'fa fa-comments',
         command: () => this.addComment(),
-        visible: this.selectedProject && !isArchived(this.selectedProject.status)
+        visible: this.selectedProject && this.selectedProject.status == Project.Status.VALIDATION
       },
       {
         label: 'Validate',
         icon: 'fa fa-check-circle',
         command: () => this.validate(),
-        visible: this.selectedProject && !isArchived(this.selectedProject.status)
+        visible: this.selectedProject && this.selectedProject.status == Project.Status.VALIDATION
       },
       {
         label: 'Invalidate',
         icon: 'fa fa-minus-circle',
         command: () => this.invalidate(),
-        visible: this.selectedProject && !isArchived(this.selectedProject.status)
+        visible: this.selectedProject && this.selectedProject.status == Project.Status.VALIDATION
       }
     ]
   }
@@ -113,7 +106,7 @@ export class AdminProjectsValidationComponent {
 
   getProjects(isValid, filters, pagination: Pagination = new Pagination(0, this.rowsPerPage[0])) {
     this.projectsProcessing = true;
-      filters.status = 'VALIDATION';
+    filters.status = Project.Status.VALIDATION;
     this.projectService.getAll(filters, pagination).subscribe(projects => {
       this.fetching = false;
       this.projects = projects;

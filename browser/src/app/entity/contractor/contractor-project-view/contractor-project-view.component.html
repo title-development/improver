@@ -9,10 +9,8 @@
         <button mat-menu-item [routerLink]="['/pro/receipt/conn', project?.id]">View Receipt</button>
         <button mat-menu-item (click)="openRequestRefundDialog(project)" *ngIf="project?.refundable">Request Refund</button>
         <button mat-menu-item (click)="openRefundStatusDialog(project)" *ngIf="project?.refundRequested">Refund Status</button>
-        <button mat-menu-item (click)="projectActionService.leaveProject(project)" *ngIf="project.status == ProjectRequestStatus.ACTIVE
-           || project.status == ProjectRequestStatus.HIRED">Leave</button>
-        <button mat-menu-item (click)="projectActionService.closeProject(project)" *ngIf="project.status == ProjectRequestStatus.DECLINED
-           || project.status == ProjectRequestStatus.INACTIVE">Close</button>
+        <button mat-menu-item (click)="projectActionService.leaveProject(project)" *ngIf="ProjectRequest.canBeLeft(project.status)">Leave</button>
+        <button mat-menu-item (click)="projectActionService.closeProject(project)" *ngIf="ProjectRequest.canBeClosed(project.status)">Close</button>
         <button mat-menu-item *ngIf="mediaQuery.xs || mediaQuery.sm"
                 (click)="toggleContractorInformation()">
           <ng-container *ngIf="showContractorInformation == 'hide'">

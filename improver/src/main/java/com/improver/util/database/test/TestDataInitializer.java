@@ -1,13 +1,13 @@
 package com.improver.util.database.test;
 
 import com.improver.entity.*;
-import com.improver.util.enums.State;
 import com.improver.exception.NotFoundException;
 import com.improver.model.in.Order;
 import com.improver.model.in.OrderDetails;
 import com.improver.repository.*;
 import com.improver.service.ReviewService;
 import com.improver.util.FileUtil;
+import com.improver.util.enums.State;
 import com.improver.util.payment.TestPaymentAccountResolver;
 import com.improver.util.serializer.SerializationUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +29,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.improver.application.properties.Environments.*;
-import static com.improver.application.properties.Path.*;
+import static com.improver.application.properties.Path.IMAGES_PATH;
+import static com.improver.application.properties.Path.PROJECTS;
+import static java.util.Objects.nonNull;
 
 /**
  * This temp class to set images for {@link ServiceType}
@@ -169,15 +171,15 @@ public class TestDataInitializer {
         createLead(randomService(), cust3());
         createLead(randomService(), cust3());
 
-        createProject(randomService(), cust4(), Arrays.asList(pro1(), pro5()), Collections.singletonList(pro2()));
-        createProject(randomService(), cust5(), Arrays.asList(pro1(), pro5()), Collections.singletonList(pro2()));
-        createProject(randomService(), cust6(), Collections.singletonList(pro1()), Arrays.asList(pro2(), pro5()));
-        Project withImg = createProject(randomService(), cust1(), Arrays.asList(pro1(), pro3(), pro5()), Collections.singletonList(pro2()));
+        createProject(randomService(), cust4(), Arrays.asList(pro1(), pro5()), Collections.singletonList(pro2()), getRandomDate());
+        createProject(randomService(), cust5(), Arrays.asList(pro1(), pro5()), Collections.singletonList(pro2()), getRandomDate());
+        createProject(randomService(), cust6(), Collections.singletonList(pro1()), Arrays.asList(pro2(), pro5()), getRandomDate());
+        Project withImg = createProject(randomService(), cust1(), Arrays.asList(pro1(), pro2(), pro3()), Collections.singletonList(pro5()), getFreshRandomDate());
         Stream.of(1, 2, 3, 4, 5, 6, 7, 8, 9)
             .forEach(i -> saveProjectImage(withImg, "tmp/projects/kitchen-photo-" + i + ".jpg"));
-        createProject(randomService(), cust1(), Arrays.asList(pro1(), pro2()), Collections.emptyList());
-        createProjectWithStatus(randomService(), cust1(), Arrays.asList(pro2(), pro4()), Collections.singletonList(pro1()), Project.Status.COMPLETED);
-        createProjectWithStatus(randomService(), cust1(), Arrays.asList(pro2(), pro3()), Arrays.asList(pro1(), pro5()), Project.Status.CANCELED);
+        createProject(randomService(), cust1(), Arrays.asList(pro1(), pro2()), Collections.emptyList(), getFreshRandomDate());
+        createProjectWithStatus(randomService(), cust1(), Arrays.asList(pro2(), pro4()), Collections.singletonList(pro1()), Project.Status.COMPLETED, getRandomDate());
+        createProjectWithStatus(randomService(), cust1(), Arrays.asList(pro2(), pro3()), Arrays.asList(pro1(), pro5()), Project.Status.CANCELED, getRandomDate());
     }
 
     private Project createValidationLead(String serviceName, Customer customer, Project.Reason reason) {
@@ -229,9 +231,9 @@ public class TestDataInitializer {
     }
 
 
-    private Project createProjectWithStatus(String serviceType, Customer customer, List<Contractor> actives, List<Contractor> canceled, Project.Status status) {
+    private Project createProjectWithStatus(String serviceType, Customer customer, List<Contractor> actives, List<Contractor> canceled, Project.Status status, ZonedDateTime date) {
         Project lead = createLead(serviceType, customer);
-        lead.setCreated(getRandomDate());
+        lead.setCreated(nonNull(date) ? date : getRandomDate());
         List<ProjectRequest> projectRequests = new ArrayList<>();
         for (Contractor activeContractor : actives) {
             projectRequests.add(createTestProjectRequest(activeContractor, lead));
@@ -248,8 +250,8 @@ public class TestDataInitializer {
             .setProjectRequests(projectRequests));
     }
 
-    private Project createProject(String serviceType, Customer customer, List<Contractor> actives, List<Contractor> canceled) {
-        return createProjectWithStatus(serviceType, customer, actives, canceled, Project.Status.IN_PROGRESS);
+    private Project createProject(String serviceType, Customer customer, List<Contractor> actives, List<Contractor> canceled, ZonedDateTime date) {
+        return createProjectWithStatus(serviceType, customer, actives, canceled, Project.Status.IN_PROGRESS, date);
     }
 
 

@@ -15,8 +15,7 @@ import com.improver.repository.ProjectRepository;
 import com.improver.repository.ProjectRequestRepository;
 import com.improver.util.mail.MailService;
 import com.improver.ws.WsNotificationService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,11 +26,9 @@ import java.util.List;
 
 import static com.improver.model.in.CloseProjectRequest.Action.INVALIDATE;
 
-
+@Slf4j
 @Service
 public class ProjectService {
-
-    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired private ProjectRepository projectRepository;
     @Autowired private ProjectRequestRepository projectRequestRepository;
@@ -42,13 +39,13 @@ public class ProjectService {
     @Autowired private WsNotificationService wsNotificationService;
     @Autowired private CustomerProjectService customerProjectService;
     @Autowired private MailService mailService;
+    @Autowired private RefundService refundService;
 
 
     public Project getProject(long id) {
         return projectRepository.findById(id)
             .orElseThrow(NotFoundException::new);
     }
-
 
     // ======== PRO
     public ProjectRequestDetailed getContractorProject(long projectRequestId, long contractorId) {
@@ -148,6 +145,11 @@ public class ProjectService {
     }
 
     private void validateProject(Project project, String text, User support) {
+
+        if (!project.getStatus().equals(Project.Status.VALIDATION)) {
+            throw new ValidationException("Only projects with VALIDATION status can be validated");
+        }
+
         projectRepository.save(project.setUpdated(ZonedDateTime.now())
             .setStatus(Project.Status.ACTIVE)
             .setReason(null)
@@ -161,6 +163,11 @@ public class ProjectService {
     }
 
     private void invalidateProject(Project project, Project.Reason reason, String text, User support) {
+
+        if (!project.getStatus().equals(Project.Status.VALIDATION)) {
+            throw new ValidationException("Only projects with VALIDATION status can be invalidated");
+        }
+
         projectRepository.save(project.setUpdated(ZonedDateTime.now())
             .setLead(false)
             .setStatus(Project.Status.INVALID)
@@ -170,8 +177,13 @@ public class ProjectService {
         if (project.getCustomer().getMailSettings().isProjectLifecycle()) {
             mailService.sendProjectStatusChanged(project, reason);
         }
+
         wsNotificationService.projectInvalidated(project.getCustomer(), project.getServiceType().getName(), project.getId());
 
         customerProjectService.closeActiveProjectRequests(project, ZonedDateTime.now(), new CloseProjectRequest(INVALIDATE, reason, text));
+
+        refundService.postProcessRefundRequests(project);
+
     }
+
 }

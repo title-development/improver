@@ -34,11 +34,9 @@
           <button mat-menu-item (click)="openRefundStatusDialog(project)" *ngIf="project.refundRequested">Refund
             Status
           </button>
-          <button mat-menu-item (click)="projectActionService.leaveProject(project)" *ngIf="project.status == ProjectRequestStatus.ACTIVE
-           || project.status == ProjectRequestStatus.HIRED">Leave
+          <button mat-menu-item (click)="projectActionService.leaveProject(project)" *ngIf="ProjectRequest.canBeLeft(project.status)">Leave
           </button>
-          <button mat-menu-item (click)="projectActionService.closeProject(project)" *ngIf="project.status == ProjectRequestStatus.DECLINED
-           || project.status == ProjectRequestStatus.INACTIVE">Close
+          <button mat-menu-item (click)="projectActionService.closeProject(project)" *ngIf="ProjectRequest.canBeClosed(project.status)">Close
           </button>
 
         </mat-menu>

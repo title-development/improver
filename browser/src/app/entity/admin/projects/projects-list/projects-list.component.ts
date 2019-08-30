@@ -83,12 +83,6 @@ export class AdminProjectsComponent {
   initContextMenu() {
     this.contextMenuItems = [
       {
-        label: 'Update Location',
-        icon: 'fa fa-map-marker',
-        command: () => this.openLocationValidationPopup(),
-        visible: this.selectedProject && this.selectedProject.status == Project.Status.VALIDATION && !this.selectedProject.hasProjectRequests
-      },
-      {
         label: 'Add Comment',
         icon: 'fa fa-comments',
         command: () => this.addComment(),
@@ -99,12 +93,6 @@ export class AdminProjectsComponent {
         icon: 'fa fa-repeat',
         command: () => this.toValidation(),
         visible: this.selectedProject && !isArchived(this.selectedProject.status) && this.selectedProject.status != Project.Status.VALIDATION
-      },
-      {
-        label: 'Invalidate',
-        icon: 'fa fa-minus-circle',
-        command: () => this.invalidate(),
-        visible: this.selectedProject && !isArchived(this.selectedProject.status)
       }
     ];
   }

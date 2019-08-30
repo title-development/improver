@@ -5,7 +5,10 @@ import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.improver.application.properties.BusinessProperties.DAYS_TO_ACCEPT_REFUND;
 
@@ -84,16 +87,17 @@ public class ProjectRequest {
 
     public enum Status {
         // ACTIVE TAB
-        ACTIVE ("ACTIVE"),           // active
-        HIRED("HIRED"),              // hired but project still in progress
-        DECLINED("DECLINED"),        // Contractor declined by Customer
-        INACTIVE("INACTIVE"),        // project was canceled or closed by Customer
-        REFUND("REFUND"),            // in process of refund
+        ACTIVE ("ACTIVE"),                      // Active
+        HIRED("HIRED"),                         // Hired but project still in progress
+        DECLINED("DECLINED"),                   // Contractor declined by Customer
+        INACTIVE("INACTIVE"),                   // Project was canceled or closed by Customer
+        REFUND_REQUESTED("REFUND_REQUESTED"),   // In process of refund
         // PREVIOUS TAB
-        COMPLETED("COMPLETED"),      // Completed the project
-        REFUNDED("REFUNDED"),        // refund approved
-        CLOSED("CLOSED"),            // Contractor left project by himself or
-        AUTO_CLOSED("AUTO_CLOSED");  // refund rejected or closed automatically after 7 days of inactivity
+        COMPLETED("COMPLETED"),                 // Completed the project
+        REFUNDED("REFUNDED"),                   // Refund approved
+        REFUND_REJECTED("REFUND_REJECTED"),     // Refund rejected
+        CLOSED("CLOSED"),                       // Contractor left project by himself
+        AUTO_CLOSED("AUTO_CLOSED");             // Closed automatically after 7 days of inactivity
 
         private final String value;
 
@@ -115,11 +119,11 @@ public class ProjectRequest {
         }
 
         public static List<Status> getActive() {
-            return Arrays.asList(ACTIVE, HIRED, DECLINED, INACTIVE, REFUND);
+            return Arrays.asList(ACTIVE, HIRED, DECLINED, INACTIVE, REFUND_REQUESTED);
         }
 
         public static List<Status>  getArchived() {
-            return Arrays.asList(COMPLETED, CLOSED, REFUNDED, AUTO_CLOSED);
+            return Arrays.asList(COMPLETED, CLOSED, REFUNDED, REFUND_REJECTED, AUTO_CLOSED);
         }
     }
 

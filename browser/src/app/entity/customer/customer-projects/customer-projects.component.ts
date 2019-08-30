@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { ServiceType, CustomerProjectShort, Pagination, ContractorProjectShort } from '../../../model/data-model';
+import { CustomerProjectShort, Pagination, ServiceType } from '../../../model/data-model';
 import { SecurityService } from '../../../auth/security.service';
 import { MatDialog } from '@angular/material';
 import { PopUpMessageService } from '../../../util/pop-up-message.service';
@@ -162,9 +162,8 @@ export class CustomerDashboardComponent implements OnDestroy {
   moveHiredContractorsToFirstPosition(projects: CustomerProjectShort[]) {
     for (let project of projects) {
       if (project.projectRequests.length === 0) continue;
-      // projectRequest.status == ProjectRequest.Status.HIRED || projectRequest.status == ProjectRequest.Status.COMPLETED
       let index = project.projectRequests.findIndex(projectRequest =>
-        projectRequest.status == ProjectRequest.Status.HIRED || projectRequest.status == ProjectRequest.Status.COMPLETED);
+        ProjectRequest.hasExecutor(projectRequest.status));
       if (index < 0) continue;
       let hired = project.projectRequests[index];
       console.log(index);

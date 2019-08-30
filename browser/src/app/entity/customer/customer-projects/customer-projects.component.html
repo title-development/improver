@@ -62,13 +62,9 @@
                       <div class="project-request" [matTooltip]="projectRequest.company.name"
                            [matTooltipClass]="'imp-tooltip'"
                            (click)="projectActionService.project = project; openProjectRequest(projectRequest)"
-                      [ngClass]="{'hired': projectRequest.status == ProjectRequest.Status.HIRED || projectRequest.status == ProjectRequest.Status.COMPLETED}">
+                      [ngClass]="{'hired': ProjectRequest.hasExecutor(projectRequest.status)}">
                         <div class="project-request-icon  {{projectRequest.status | toclassname}}"
                              [ngStyle]="projectRequest.company.iconUrl && projectRequest.company.iconUrl != '' && {'background-image':'url(' + projectRequest.company.iconUrl + ')'} || {'background-image':'url(assets/img/company-logo-placeholder.png)'}">
-                          <!--<div class="hired-foreground"-->
-                               <!--*ngIf="projectRequest.status == ProjectRequest.Status.HIRED || projectRequest.status == ProjectRequest.Status.COMPLETED">-->
-                            <!--<i class="imp-icon-ok"></i>-->
-                          <!--</div>-->
                         </div>
                       </div>
                     </ng-template>

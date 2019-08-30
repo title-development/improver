@@ -1,11 +1,11 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ContractorProject } from '../../../model/data-model';
 import { ProjectService } from '../../../api/services/project.service';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { dialogsMap } from '../../../shared/dialogs/dialogs.state';
 import { completeProjectDialogConfig, customerGalleryDialogConfig } from '../../../shared/dialogs/dialogs.configs';
-import { MatButton, MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material';
 import { MediaQuery, MediaQueryService } from '../../../util/media-query.service';
 import { Subscription } from 'rxjs';
 import * as Swiper from 'swiper/dist/js/swiper.min';
@@ -34,7 +34,7 @@ export class ContractorProjectViewComponent implements OnDestroy, AfterViewInit 
   mediaQuery: MediaQuery;
   truncateNotes = 300;
   @ViewChild('notes') notes: ElementRef;
-  ProjectRequestStatus = ProjectRequest.Status;
+  ProjectRequest = ProjectRequest;
 
   private projectRequestId: string;
   private sub: any;

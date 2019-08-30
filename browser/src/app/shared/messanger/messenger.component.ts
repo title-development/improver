@@ -333,7 +333,7 @@ export class MessengerComponent implements OnInit, OnDestroy {
   }
 
   isMessengerEnabled(): boolean {
-    return (this.projectRequestStatus == ProjectRequest.Status.ACTIVE || this.projectRequestStatus == ProjectRequest.Status.HIRED) && !Project.isArchived(this.projectStatus);
+    return ProjectRequest.isActive(this.projectRequestStatus) && !Project.isArchived(this.projectStatus);
   }
 
 

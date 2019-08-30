@@ -1,13 +1,11 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ContractorProjectShort } from '../../../../../model/data-model';
 import { MatDialog, MatDialogRef } from '@angular/material';
-import {
-  completeProjectDialogConfig
-} from '../../../../../shared/dialogs/dialogs.configs';
+import { completeProjectDialogConfig } from '../../../../../shared/dialogs/dialogs.configs';
 import { dialogsMap } from '../../../../../shared/dialogs/dialogs.state';
 import { ProjectRequest } from "../../../../../api/models/ProjectRequest";
 import { PopUpMessageService } from "../../../../../util/pop-up-message.service";
-import {ProjectRequestService} from "../../../../../api/services/project-request.service";
+import { ProjectRequestService } from "../../../../../api/services/project-request.service";
 import { ProjectActionService } from "../../../../../util/project-action.service";
 
 @Component({
@@ -19,7 +17,7 @@ import { ProjectActionService } from "../../../../../util/project-action.service
 export class ProjectsListComponent {
   @Input() list: Array<ContractorProjectShort>;
   refundDialog: MatDialogRef<any>;
-  ProjectRequestStatus = ProjectRequest.Status;
+  ProjectRequest = ProjectRequest;
 
   constructor(public dialog: MatDialog,
               public popUpService: PopUpMessageService,
@@ -39,7 +37,7 @@ export class ProjectsListComponent {
     this.refundDialog.componentInstance.onDone.subscribe(() => {
       this.list.forEach(item => {
         if (item.id == project.id) {
-          item.status = ProjectRequest.Status.REFUND;
+          item.status = ProjectRequest.Status.REFUND_REQUESTED;
           item.refundRequested = true;
           item.refundable = false;
         }
