@@ -1,13 +1,12 @@
-import { ApplicationRef, ChangeDetectorRef, Component, Inject, NgZone, OnInit, Renderer2 } from '@angular/core';
-import { MatIconRegistry, MatDialog } from "@angular/material";
-import { DomSanitizer } from "@angular/platform-browser";
-import { PopUpMessageService } from "../util/pop-up-message.service";
+import { Component, Inject, OnInit, Renderer2 } from '@angular/core';
+import { MatDialog, MatIconRegistry } from '@angular/material';
+import { DomSanitizer } from '@angular/platform-browser';
+import { PopUpMessageService } from '../util/pop-up-message.service';
 import { SecurityService } from '../auth/security.service';
 import { dialogsMap } from '../shared/dialogs/dialogs.state';
-import { SwUpdate } from "@angular/service-worker";
-import { environment } from "../../environments/environment";
-import {NotificationResource} from "../util/notification.resource";
-import { ActivatedRoute, NavigationEnd, Router, RouterLinkActive } from "@angular/router";
+import { SwUpdate } from '@angular/service-worker';
+import { NavigationEnd, Router } from '@angular/router';
+import { GoogleAnalyticsService } from '../util/google-analytics.service';
 
 @Component({
   selector: 'app-root',
@@ -25,15 +24,13 @@ export class AppComponent implements OnInit {
               private securityService: SecurityService,
               private renderer: Renderer2,
               private router: Router,
-              private ngZone: NgZone,
-              private appRef: ApplicationRef,
-              private notificationResource : NotificationResource,
-              private cdRef: ChangeDetectorRef) {
+              private googleAnalyticsService: GoogleAnalyticsService) {
 
     //todo Fix entry Component for compiler
     dialogsMap;
     popUpMessageService.renderer = renderer;
     this.fixMaterialModals();
+
   }
 
   ngOnInit() {

@@ -51,6 +51,7 @@
     "@types/lunr": "^2.1.6",
     "@types/node": "10.12.0",
     "@types/swiper": "3.4.2",
+    "@types/gtag.js": "0.0.3",
     "angular-pipes": "8.1.1",
     "angularx-social-login": "^1.2.6",
     "blueimp-canvas-to-blob": "^3.14.0",

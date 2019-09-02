@@ -4,6 +4,7 @@ import { SecurityService } from '../security.service';
 import { Constants } from '../../util/constants';
 import { Messages } from 'app/util/messages';
 import * as Swiper from 'swiper/dist/js/swiper.min';
+import { GoogleAnalyticsService } from '../../util/google-analytics.service';
 
 @Component({
   selector: 'become-pro-page',
@@ -50,6 +51,7 @@ export class BecomeProComponent implements AfterViewInit {
   constructor(public securityService: SecurityService,
               public constants: Constants,
               public messages: Messages,
+              private googleAnalyticsService: GoogleAnalyticsService
               ) {
 
   }
@@ -70,5 +72,9 @@ export class BecomeProComponent implements AfterViewInit {
     this.swiperNav = new Swiper('.testimonials-nav', this.swiperConfigNav);
     this.swiperNav.disableMousewheelControl();
     this.swiperNav.disableTouchControl();
+  }
+
+  gTagTrackClick(): void {
+    this.googleAnalyticsService.event('seen/read become a pro', {event_category:'Seen', description: 'seen or read content'})
   }
 }
