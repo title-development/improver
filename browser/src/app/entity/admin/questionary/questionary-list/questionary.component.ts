@@ -3,7 +3,6 @@ import { Questionary } from '../../../../api/models/Questionary';
 import { QuestionariesService } from '../../../../api/services/questionaries.service';
 import { ConfirmationService, MenuItem } from 'primeng/primeng';
 import { Router } from '@angular/router';
-import { MessageService } from 'primeng/components/common/messageservice';
 import { Pagination } from '../../../../model/data-model';
 import { filtersToParams } from '../../../../util/tricks.service';
 import { RestPage } from '../../../../api/models/RestPage';
@@ -41,7 +40,8 @@ export class QuestionaryListComponent {
       label: 'Delete',
       icon: 'fa fa-trash',
       command: () => this.deleteQuestionary(this.selectedQuestionary),
-      visible: this.securityService.hasRole(Role.ADMIN)
+      visible: this.securityService.hasRole(Role.ADMIN),
+      styleClass: 'danger-menu-button'
     }
   ];
 

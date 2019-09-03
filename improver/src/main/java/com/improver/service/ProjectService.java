@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -30,6 +31,7 @@ import static com.improver.model.in.CloseProjectRequest.Action.INVALIDATE;
 @Service
 public class ProjectService {
 
+    @Autowired private ProjectService self;
     @Autowired private ProjectRepository projectRepository;
     @Autowired private ProjectRequestRepository projectRequestRepository;
     @Autowired private ImageService imageService;
@@ -96,11 +98,6 @@ public class ProjectService {
         projectActionRepository.save(ProjectAction.commentProject(comment, support).setProject(project));
     }
 
-
-    /**
-     *
-     *
-     */
     public void processValidation(Project project, User support, ValidationProjectRequest request) {
         Project.Status newStatus = request.getStatus();
         Project.Status oldStatus = project.getStatus();
@@ -112,17 +109,17 @@ public class ProjectService {
         switch (newStatus) {
             case VALIDATION:
                 log.info("Project {} to validation", project.getId());
-                toValidationProject(project, request.getReason(), request.getComment(), support);
+                self.toValidationProject(project, request.getReason(), request.getComment(), support);
                 break;
 
             case ACTIVE:
                 log.info("Project {} validation", project.getId());
-                validateProject(project, request.getComment(), support);
+                self.validateProject(project, request.getComment(), support);
                 break;
 
             case INVALID:
                 log.info("Project {} invalidation", project.getId());
-                invalidateProject(project, request.getReason(), request.getComment(), support);
+                self.invalidateProject(project, request.getReason(), request.getComment(), support);
                 break;
 
             default:
@@ -130,8 +127,8 @@ public class ProjectService {
         }
     }
 
-
-    private void toValidationProject(Project project, Project.Reason reason, String comment, User support) {
+    @Transactional
+    public void toValidationProject(Project project, Project.Reason reason, String comment, User support) {
         projectRepository.save(project.setUpdated(ZonedDateTime.now())
             .setStatus(Project.Status.VALIDATION)
             .setReason(reason)
@@ -144,17 +141,28 @@ public class ProjectService {
         wsNotificationService.projectToValidation(project.getCustomer(), project.getServiceType().getName(), project.getId());
     }
 
-    private void validateProject(Project project, String text, User support) {
+    @Transactional
+    public void validateProject(Project project, String text, User support) {
 
         if (!project.getStatus().equals(Project.Status.VALIDATION)) {
             throw new ValidationException("Only projects with VALIDATION status can be validated");
         }
 
-        projectRepository.save(project.setUpdated(ZonedDateTime.now())
-            .setStatus(Project.Status.ACTIVE)
-            .setReason(null)
-            .setLead(true)
-        );
+        if (project.getFreePositions() > 0) {
+            project.setLead(true);
+        }
+
+        if (project.getFreePositions() == Project.MAX_CONNECTIONS) {
+            project.setStatus(Project.Status.ACTIVE);
+        } else {
+            project.setStatus(Project.Status.IN_PROGRESS);
+        }
+
+        project.setUpdated(ZonedDateTime.now())
+            .setReason(null);
+
+        projectRepository.save(project);
+
         projectActionRepository.save(ProjectAction.validateProject(text, support).setProject(project));
         if(project.getCustomer().getMailSettings().isProjectLifecycle()) {
             mailService.sendProjectStatusChanged(project, null);
@@ -162,7 +170,8 @@ public class ProjectService {
         wsNotificationService.projectValidated(project.getCustomer(), project.getServiceType().getName(), project.getId());
     }
 
-    private void invalidateProject(Project project, Project.Reason reason, String text, User support) {
+    @Transactional
+    public void invalidateProject(Project project, Project.Reason reason, String text, User support) {
 
         if (!project.getStatus().equals(Project.Status.VALIDATION)) {
             throw new ValidationException("Only projects with VALIDATION status can be invalidated");

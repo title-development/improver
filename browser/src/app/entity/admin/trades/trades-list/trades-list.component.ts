@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { TradeService } from '../../../../api/services/trade.service';
 import { ConfirmationService, DataTable, FilterMetadata, MenuItem, OverlayPanel } from 'primeng/primeng';
 import { Router } from '@angular/router';
-import { Pagination, Review } from '../../../../model/data-model';
+import { Pagination } from '../../../../model/data-model';
 import { RestPage } from '../../../../api/models/RestPage';
 import { ErrorHandler } from '../../../../util/error-handler';
 import { AdminTrade } from '../../../../api/models/AdminTrade';
@@ -48,7 +48,8 @@ export class TradesListComponent {
       label: 'Delete',
       icon: 'fa fa-trash',
       command: () => this.deleteTrade(this.selectedTrade),
-      visible: this.securityService.hasRole(Role.ADMIN)
+      visible: this.securityService.hasRole(Role.ADMIN),
+      styleClass: 'danger-menu-button'
     }
   ];
 

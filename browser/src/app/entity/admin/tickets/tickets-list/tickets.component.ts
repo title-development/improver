@@ -84,7 +84,8 @@ export class TicketsListComponent {
         icon: 'fa fa-minus-circle',
         command: () => this.close(this.selected),
         visible: this.isEditable() && this.selected.status == Ticket.Status.IN_PROGRESS
-          || this.securityService.hasRole(Role.ADMIN) && this.selected.status != Ticket.Status.CLOSED
+          || this.securityService.hasRole(Role.ADMIN) && this.selected.status != Ticket.Status.CLOSED,
+      styleClass: 'danger-menu-button'
       }
     ]
   }

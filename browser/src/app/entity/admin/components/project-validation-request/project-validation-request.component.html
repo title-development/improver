@@ -1,5 +1,5 @@
 <p-dialog
-  header="Project validation"
+  header="{{validation.status == Project.Status.INVALID ? 'Invalidate Project' : 'Project validation'}}"
   [contentStyle]="{'overflow':'visible'}" [(visible)]="toggle" [responsive]="true" showEffect="fade"
   [width]="700"
   [modal]="true">
@@ -22,7 +22,7 @@
 
       <div class="ui-g">
         <div class="ui-grid-col-4">
-          <label for="status">Reason</label>
+          <label for="status">{{validation.status == Project.Status.ACTIVE ? 'Review reason' : 'Reason'}}</label>
         </div>
         <div class="ui-grid-col-8">
 

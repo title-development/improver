@@ -11,7 +11,7 @@ import { CamelCaseHumanPipe } from '../../../../pipes/camelcase-to-human.pipe';
 import { RestPage } from '../../../../api/models/RestPage';
 import { FilterMetadata } from 'primeng/components/common/filtermetadata';
 import { dataTableFilter } from '../../util';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { first } from 'rxjs/internal/operators';
 
 @Component({
@@ -72,7 +72,8 @@ export class AdminUsersComponent {
         label: 'Block User',
         icon: 'fa fa-ban',
         command: () => this.blockUser(this.selectedUser),
-        visible: (this.selectedUser !== undefined) && !this.selectedUser.deleted && !this.selectedUser.blocked && this.selectedUser.role != Role.ADMIN
+        visible: (this.selectedUser !== undefined) && !this.selectedUser.deleted && !this.selectedUser.blocked && this.selectedUser.role != Role.ADMIN,
+        styleClass: 'danger-menu-button'
       },
       {
         label: 'Unblock User',
@@ -84,7 +85,8 @@ export class AdminUsersComponent {
         label: 'Delete User',
         icon: 'fa fa-trash',
         command: () => this.deleteUser(this.selectedUser),
-        visible: (this.selectedUser !== undefined) && !this.selectedUser.deleted && this.selectedUser.role != Role.ADMIN
+        visible: (this.selectedUser !== undefined) && !this.selectedUser.deleted && this.selectedUser.role != Role.ADMIN,
+        styleClass: 'danger-menu-button'
       },
       {
         label: 'Restore User',

@@ -50,7 +50,8 @@ export class ServicesListComponent {
       label: 'Delete',
       icon: 'fa fa-trash',
       command: () => this.deleteService(this.selectedService),
-      visible: this.securityService.hasRole(Role.ADMIN)
+      visible: this.securityService.hasRole(Role.ADMIN),
+      styleClass: 'danger-menu-button'
     }
   ];
 

@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { enumToArrayList, filtersToParams } from '../../../../util/tricks.service';
-import { Pagination, Review } from '../../../../model/data-model';
+import { Pagination } from '../../../../model/data-model';
 import { RestPage } from '../../../../api/models/RestPage';
 import { RefundService } from '../../../../api/services/refund.service';
 import { MenuItem, SelectItem } from 'primeng/primeng';
@@ -60,7 +60,8 @@ export class RefundsInreviewComponent {
       command: () => {
         this.refundActionDialog = true;
         this.refundAction = RefundAction.Action.REJECT;
-      }
+      },
+      styleClass: 'danger-menu-button'
     },
     {
       label: 'Comment',

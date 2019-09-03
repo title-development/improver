@@ -98,7 +98,8 @@ export class AdminProjectsValidationComponent {
         label: 'Invalidate',
         icon: 'fa fa-minus-circle',
         command: () => this.invalidate(),
-        visible: this.selectedProject && this.selectedProject.status == Project.Status.VALIDATION
+        visible: this.selectedProject && this.selectedProject.status == Project.Status.VALIDATION,
+        styleClass: 'danger-menu-button'
       }
     ]
   }
