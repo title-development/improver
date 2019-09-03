@@ -7,9 +7,11 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.improver.entity.User;
 import com.improver.exception.AuthenticationRequiredException;
+import com.improver.exception.InternalServerException;
 import com.improver.model.socials.PhoneSocialCredentials;
 import com.improver.model.socials.SocialUser;
 import com.improver.application.properties.ThirdPartyApis;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
+@Slf4j
 @Service
 public class GoogleSocialService {
 
@@ -57,8 +60,8 @@ public class GoogleSocialService {
             idToken = verifier.verify(idTokenString);
         } catch (GeneralSecurityException e) {
             throw new AuthenticationRequiredException("Token id is invalid");
-        } catch (IOException e) {
-            throw new AuthenticationRequiredException("Could not connect to google api");
+        } catch (Exception e) {
+            throw new InternalServerException("Could not connect to google api", e);
         }
         if (idToken == null) {
             throw new AuthenticationRequiredException("Could not connect to google api");

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.improver.entity.User;
 import com.improver.exception.AuthenticationRequiredException;
 import com.improver.exception.ThirdPartyException;
+import com.improver.exception.ValidationException;
 import com.improver.model.socials.FacebookUserProfile;
 import com.improver.model.socials.PhoneSocialCredentials;
 import com.improver.model.socials.SocialUser;
@@ -112,6 +113,9 @@ public class FacebookSocialService {
         } catch (ThirdPartyException e) {
             log.error("Could not connect to facebook api", e);
             throw new AuthenticationRequiredException("Could not connect to facebook api", e);
+        }
+        if (userProfile.getEmail() == null) {
+            throw new ValidationException("Email is required for Facebook login");
         }
 
         return new SocialUser(userProfile);
