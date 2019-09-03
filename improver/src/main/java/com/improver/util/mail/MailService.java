@@ -444,14 +444,14 @@ public class MailService {
     public void sendHiredContractorEmail(Contractor contractor, ProjectRequest projectRequest) {
         Context context = contextTemplate();
         Project project = projectRequest.getProject();
-        context.setVariable(TITLE, "You have been hired by customer");
+        context.setVariable(TITLE, "Your offer accepted");
         context.setVariable(BODY, highlight(project.getCustomer().getDisplayName()) +
-            " hired you for " +
+            " accepted your offer on " +
             highlight(project.getServiceType().getName()) +
             " project");
         context.setVariable(CONFIRM_URL, siteUrl + PRO_PROJECTS + projectRequest.getId());
         context.setVariable(CONFIRM_BTN_TEXT, "View project");
-        mailClient.sendMail("You've been hired", CONFIRMATION_TEMPLATE, context, MailHolder.MessageType.NOREPLY, contractor.getEmail());
+        mailClient.sendMail("Your offer accepted", CONFIRMATION_TEMPLATE, context, MailHolder.MessageType.NOREPLY, contractor.getEmail());
     }
 
 

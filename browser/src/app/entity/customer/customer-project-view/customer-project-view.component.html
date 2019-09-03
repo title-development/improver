@@ -106,12 +106,6 @@
                       <a mat-menu-item (click)="openProjectRequest(projectRequest)">Details
                       </a>
                       <a mat-menu-item [routerLink]="['/companies', projectRequest.company.id]">View company</a>
-                      <!--TODO: Remove action buttons after archiving-->
-                      <button mat-menu-item
-                              *ngIf="(projectRequest.status == ProjectRequest.Status.HIRED) && !Project.isArchived(project.status)"
-                              class="cancel-button">Dismiss
-                      </button>
-                      <!--<button mat-menu-item *ngIf="(projectRequest.status == ProjectRequest.Status.DECLINED) && !Project.isArchived(project.status)">Activate</button>-->
                       <button mat-menu-item
                               *ngIf="(projectRequest.status == ProjectRequest.Status.ACTIVE) && !Project.isArchived(project.status)"
                               (click)="projectActionService.hireCompanyConfirm(projectRequest)">Accept Offer
