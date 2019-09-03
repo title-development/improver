@@ -5,6 +5,7 @@ import { Constants } from '../../util/constants';
 import { Messages } from 'app/util/messages';
 import * as Swiper from 'swiper/dist/js/swiper.min';
 import { GoogleAnalyticsService } from '../../util/google-analytics.service';
+import { HotJarService } from '../../util/hotjar.service';
 
 @Component({
   selector: 'become-pro-page',
@@ -51,7 +52,8 @@ export class BecomeProComponent implements AfterViewInit {
   constructor(public securityService: SecurityService,
               public constants: Constants,
               public messages: Messages,
-              private googleAnalyticsService: GoogleAnalyticsService
+              private googleAnalyticsService: GoogleAnalyticsService,
+              private hotJarService: HotJarService
               ) {
 
   }
@@ -67,6 +69,7 @@ export class BecomeProComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    this.hotJarService.ping();
     this.swiperBody = new Swiper('.testimonials-body', this.swiperConfigOne);
     this.swiperBody.disableMousewheelControl();
     this.swiperNav = new Swiper('.testimonials-nav', this.swiperConfigNav);

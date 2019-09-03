@@ -7,6 +7,7 @@ import { dialogsMap } from '../shared/dialogs/dialogs.state';
 import { SwUpdate } from '@angular/service-worker';
 import { NavigationEnd, Router } from '@angular/router';
 import { GoogleAnalyticsService } from '../util/google-analytics.service';
+import { HotJarService } from '../util/hotjar.service';
 
 @Component({
   selector: 'app-root',
@@ -24,7 +25,8 @@ export class AppComponent implements OnInit {
               private securityService: SecurityService,
               private renderer: Renderer2,
               private router: Router,
-              private googleAnalyticsService: GoogleAnalyticsService) {
+              private googleAnalyticsService: GoogleAnalyticsService,
+              private hotJarService: HotJarService) {
 
     //todo Fix entry Component for compiler
     dialogsMap;
