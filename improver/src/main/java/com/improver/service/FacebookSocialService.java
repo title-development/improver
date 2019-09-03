@@ -110,7 +110,8 @@ public class FacebookSocialService {
         try {
             userProfile = getFacebookUserProfile(accessToken);
         } catch (ThirdPartyException e) {
-            throw new AuthenticationRequiredException("Could not connect to facebook api");
+            log.error("Could not connect to facebook api", e);
+            throw new AuthenticationRequiredException("Could not connect to facebook api", e);
         }
 
         return new SocialUser(userProfile);

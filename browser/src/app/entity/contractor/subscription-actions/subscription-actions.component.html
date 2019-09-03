@@ -39,7 +39,7 @@
               <div class="value">{{(subscriptionActionsService.subscriptionAmount - billingService.billing.balance) / 100 | currency:'USD':'symbol' }}</div>
             </div>
             <div class="monthly-budged">
-              <div class="label">Monthly budged</div>
+              <div class="label">Monthly budget</div>
               <div class="value">{{subscriptionActionsService.subscriptionAmount / 100 | currency:'USD':'symbol' }}</div>
             </div>
 
@@ -102,7 +102,7 @@
       <div class="cancel-description">
         <img src="/assets/img/round-icons/cancel-subscription.png" alt="Cancel subscription">
         <div class="title">Unsubscribe from automatic leads</div>
-        <div class="body">You will cancel you Subscription. Your current plan will expire on
+        <div class="body">You will cancel your Subscription. Your current plan will expire on
           <span class="highlight">{{subscriptionActionsService.nextBillingDate | date:'longDate'}}</span> and you will receive leads and benefits up until that date</div>
         <div class="question">Proceed to unsubscribe?</div>
         <div class="buttons-wrapper">
