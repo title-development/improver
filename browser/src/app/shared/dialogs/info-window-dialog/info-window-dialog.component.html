@@ -1,0 +1,10 @@
+<div class="dialog-content-container">
+  <mat-icon class="close-modal" color="accent" (click)="close()">clear</mat-icon>
+  <div class="content">
+    <img [src]="iconUrl" [alt]="message" class="image">
+    <h3>{{message}}</h3>
+  </div>
+  <div class="actions">
+    <button cv-button-empty [mat-dialog-close]="null">{{buttonTitle}}</button>
+  </div>
+</div>

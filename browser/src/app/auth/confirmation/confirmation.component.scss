@@ -36,7 +36,7 @@
 
   }
 
-  .confirmation-error-card, .confirmation-success-card {
+  .confirmation-error-card {
     width: 420px;
   }
 
@@ -49,67 +49,17 @@
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
   margin-bottom: 24px;
 
-
-  .buttons-wrapper {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 400px;
-    justify-self: center;
-    margin: 24px auto auto;
-
-    @include response-to(xs) {
-      flex-direction: column;
-    }
-
-    button {
-      width: 180px;
-      margin: 0px auto;
-
-      &:nth-child(1) {
-        @include response-to(xs) {
-          margin-bottom: 16px;
-        }
-      }
-
-    }
-
-  }
-
-  .confirmation-success-image {
+  image {
     width: 82px;
     height: 82px;
     margin-bottom: 24px;
   }
 
-  .confirmation-success-title {
+  h3 {
     color: $black-primary;
     font-size: 20px;
     font-weight: 700;
-  }
-
-  .confirmation-success-message {
-    color: $black-primary;
-    font-size: 20px;
-    font-weight: 700;
-  }
-
-  .confirmation-error-image {
-    width: 82px;
-    height: 82px;
-    margin-bottom: 24px;
-  }
-
-  .confirmation-error-title {
-    color: $black-primary;
-    font-size: 20px;
-    font-weight: 700;
-  }
-
-  .confirmation-error-message {
-    color: $black-primary;
-    font-size: 20px;
-    font-weight: 700;
+    margin: 0;
   }
 
   .home-button {

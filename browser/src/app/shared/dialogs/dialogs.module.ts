@@ -20,9 +20,10 @@ import { LocationValidateService } from '../../api/services/location-validate.se
 import { CvCheckboxModule } from '../../theme/checkbox/checkbox.module';
 import { dialogs } from './dialogs.state';
 import { CvDateRangePickerModule } from '../../theme/date-range-picker/cv-date-range-picker.module';
-import { BoundariesService } from "../../api/services/boundaries.service";
+import { BoundariesService } from '../../api/services/boundaries.service';
 import { ReferralService } from '../../api/services/referral.service';
 import { ClipboardModule } from 'ngx-clipboard';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   imports: [
@@ -44,13 +45,14 @@ import { ClipboardModule } from 'ngx-clipboard';
     CvSpinnerModule,
     CvDateRangePickerModule,
     PerfectScrollbarModule,
-    ClipboardModule
+    ClipboardModule,
+    MatDialogModule
   ],
   declarations: [
     QuestionaryFormComponent,
     QuestionaryFormQuestionComponent,
     DefaultQuestionaryBlockComponent,
-    ...dialogs
+    ...dialogs,
   ],
   entryComponents: [
     ...dialogs

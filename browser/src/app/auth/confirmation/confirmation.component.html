@@ -1,5 +1,5 @@
 <div class="confirmation-page"
-     [cvSpinner]="confirmationProcessing"
+     [cvSpinner]="processing"
      [cvSpinnerSize]="30"
      [cvSpinnerBackground]="true"
      cvSpinnerBackgroundColor="#fafafa">
@@ -9,7 +9,7 @@
     <form class="confirmation-form"
           name="confirmation-form"
           #confirmationForm="ngForm"
-          (ngSubmit)="confirmationForm.valid && onSubmit(confirmationForm)"
+          (ngSubmit)="confirmationForm.valid && onSubmit()"
           novalidate>
 
       <div class="title">Enter password for your account please</div>
@@ -69,42 +69,12 @@
 
   <ng-container *ngIf="step == 2">
 
-    <div class="confirmation-result-wrapper"
-         [cvSpinner]="confirmationProcessing"
-         [cvSpinnerSize]="30"
-         [cvSpinnerBackground]="true"
-         cvSpinnerBackgroundColor="#fafafa">
+    <div class="confirmation-result-wrapper">
 
-      <div class="confirmation-success-card card" *ngIf="activationSuccess == true">
-
-        <img src="assets/img/round-icons/confirmation-envelope.png" alt="SUCCESS" class="confirmation-success-image">
-        <div class="confirmation-success-title">Confirmation successful!</div>
-        <div class="confirmation-success-message">Thank you for choosing Home Improve!</div>
-
-        <div class="buttons-wrapper" *ngIf="securityService.hasRole(Role.CUSTOMER)">
-          <button cv-button-empty routerLink="/">Request service</button>
-          <button cv-button-empty routerLink="/">Learn how it works</button>
-        </div>
-
-        <div class="buttons-wrapper" *ngIf="securityService.hasRole(Role.CONTRACTOR)">
-          <button cv-button-empty routerLink="/pro/dashboard">Go to Dashboard</button>
-          <!--<button cv-button-empty routerLink="/">Learn how it works</button>-->
-        </div>
-
-      </div>
-
-      <div class="confirmation-success-card card" *ngIf="emailConfirmationSuccess == true">
-        <img src="assets/img/round-icons/confirmation-envelope.png" alt="SUCCESS" class="confirmation-success-image">
-        <div class="confirmation-success-title">Email confirmed</div>
-        <div class="confirmation-success-message"></div>
-        <button class="home-button" cv-button-empty routerLink="/" *ngIf="securityService.hasRole(Role.CUSTOMER)">Back to Home</button>
-        <button class="home-button" cv-button-empty routerLink="/pro/dashboard" *ngIf="securityService.hasRole(Role.CONTRACTOR)">Go to Dashboard</button>
-      </div>
-
-      <div class="confirmation-error-card card" *ngIf="(activationSuccess == false) && (emailConfirmationSuccess == false)">
-        <img src="assets/img/round-icons/email-error.svg" alt="ERROR" class="confirmation-error-image">
-        <div class="confirmation-error-title">Error!</div>
-        <div class="confirmation-error-message">Confirmation link is invalid</div>
+      <div class="confirmation-error-card card" *ngIf="isConfirmationError">
+        <img src="assets/img/round-icons/email-error.svg" alt="ERROR" class="image">
+        <h3>Error!</h3>
+        <h3>Confirmation link is invalid</h3>
         <button class="home-button" cv-button-empty routerLink="/">Back to Home</button>
       </div>
 

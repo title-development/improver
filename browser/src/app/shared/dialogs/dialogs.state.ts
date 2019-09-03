@@ -26,6 +26,7 @@ import { EmailConfirmDialogComponent } from './email-confirm-dialog/email-confir
 import { RequestReviewRevisionDialogComponent } from './request-review-revision-dialog/request-review-revision-dialog.component';
 import { ContractorRegistrationPhoneRequestComponent } from './contractor-registration-phone-request-dialog/contractor-registration-phone-request.component';
 import { ReferralDialogComponent } from './refreal-dialog/referral-dialog.component';
+import { InfoWindowDialogComponent } from './info-window-dialog';
 
 export const dialogs = [
   QuestionaryDialogComponent,
@@ -55,7 +56,8 @@ export const dialogs = [
   DeleteAccountDialogComponent,
   DeleteCompanyDialogComponent,
   ContractorRegistrationPhoneRequestComponent,
-  ReferralDialogComponent
+  ReferralDialogComponent,
+  InfoWindowDialogComponent,
 ];
 
 export const dialogsMap = {
@@ -83,5 +85,6 @@ export const dialogsMap = {
   'delete-account-dialog': DeleteAccountDialogComponent,
   'delete-company-dialog': DeleteCompanyDialogComponent,
   'contractor-registration-phone-request': ContractorRegistrationPhoneRequestComponent,
-  'referral-dialog': ReferralDialogComponent
+  'referral-dialog': ReferralDialogComponent,
+  'info-window-dialog': InfoWindowDialogComponent,
 };

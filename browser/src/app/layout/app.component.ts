@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, Renderer2 } from '@angular/core';
+import { AfterViewInit, Component, Inject, OnInit, Renderer2 } from '@angular/core';
 import { MatDialog, MatIconRegistry } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
 import { PopUpMessageService } from '../util/pop-up-message.service';
@@ -14,7 +14,7 @@ import { HotJarService } from '../util/hotjar.service';
   templateUrl: 'app.component.html',
   styleUrls: [ 'app.component.scss' ]
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewInit {
 
   constructor(@Inject('Window') private window: Window,
               private swUpdate: SwUpdate,
@@ -31,8 +31,6 @@ export class AppComponent implements OnInit {
     //todo Fix entry Component for compiler
     dialogsMap;
     popUpMessageService.renderer = renderer;
-    this.fixMaterialModals();
-
   }
 
   ngOnInit() {
@@ -46,8 +44,11 @@ export class AppComponent implements OnInit {
     });
   }
 
-  fixMaterialModals() {
+  ngAfterViewInit(): void {
+    this.fixMaterialModals();
+  }
 
+  fixMaterialModals() {
     this.mdDialog.afterOpened.subscribe(
       (modal) => {
         document.documentElement.style.overflow = 'hidden';

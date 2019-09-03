@@ -1,12 +1,16 @@
-import { Component } from '@angular/core';
-import { Constants } from "../../util/constants";
-import { ActivatedRoute } from "@angular/router";
-import { ActivationCustomerModel, LoginModel } from "../../model/security-model";
+import { Component, OnDestroy } from '@angular/core';
+import { Constants } from '../../util/constants';
+import { ActivatedRoute } from '@angular/router';
+import { ActivationCustomerModel, LoginModel } from '../../model/security-model';
 import { ActivationService } from '../../api/services/activation.service';
-import { Messages } from "../../util/messages";
-import { SecurityService } from "../security.service";
-import { getErrorMessage } from "../../util/functions";
-import { Role } from "../../model/security-model";
+import { Messages } from '../../util/messages';
+import { SecurityService } from '../security.service';
+import { getErrorMessage } from '../../util/functions';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { IInfoWindowDialogData, InfoWindowDialogComponent } from '../../shared/dialogs/info-window-dialog';
+import { dialogsMap } from '../../shared/dialogs/dialogs.state';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'confirmation-page',
@@ -14,11 +18,8 @@ import { Role } from "../../model/security-model";
   styleUrls: ['./confirmation.component.scss']
 })
 
-export class ConfirmationComponent {
-
-  Role = Role;
+export class ConfirmationComponent implements OnDestroy {
   step = 2;
-  private sub: any;
   token = "";
   activationCustomerModel: ActivationCustomerModel = {
     token: "",
@@ -30,19 +31,26 @@ export class ConfirmationComponent {
   activationSuccess = false;
   emailConfirmationSuccess = false;
   confirmationErrorMessage: string;
-  confirmationProcessing = false;
+  processing = false;
+
+  get isConfirmationError(): boolean {
+    return !(this.activationSuccess && this.emailConfirmationSuccess);
+  }
+
+  private readonly destroyed$ = new Subject<void>();
 
   constructor(public constants: Constants,
               public messages: Messages,
               public route: ActivatedRoute,
               public activationService: ActivationService,
-              public securityService: SecurityService) {
+              public securityService: SecurityService,
+              private dialog: MatDialog) {
 
     if (this.securityService.isAuthenticated()) {
       this.securityService.systemLogout();
     }
 
-    this.sub = this.route.params.subscribe(params => {
+    this.route.params.pipe(takeUntil(this.destroyed$)).subscribe(params => {
 
       params['token'] ? this.token = params['token'] : this.token = "";
       this.activationCustomerModel.token = this.token;
@@ -62,7 +70,7 @@ export class ConfirmationComponent {
           case 'activation':
             this.step = 2;
             delete this.activationCustomerModel.password;
-            this.activateCustomer(this.activationCustomerModel);
+            this.activateUser(this.activationCustomerModel);
         }
 
     });
@@ -70,60 +78,82 @@ export class ConfirmationComponent {
   }
 
   checkToken(token) {
-    this.confirmationProcessing = true;
-    this.activationService.checkToken({token: token}).subscribe(
+    this.processing = true;
+    this.activationService.checkToken({token: token})
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
       (response) => {
-        this.confirmationProcessing = false;
+        this.processing = false;
       }, err => {
         console.log(err);
-        this.confirmationProcessing = false;
+        this.processing = false;
         this.step = 2;
       }
     )
 
   }
 
-  activateCustomer(activationCustomerModel:any) {
-    this.confirmationProcessing = true;
+  activateUser(activationCustomerModel:any) {
+    this.processing = true;
     this.activationService.activateUser(activationCustomerModel)
+      .pipe(takeUntil(this.destroyed$))
       .subscribe(
         response => {
           this.step = 2;
           this.activationSuccess = true;
-          this.confirmationProcessing = false;
-          this.securityService.loginUser(response.body as LoginModel, response.headers.get('authorization'), false);
+          this.securityService.loginUser(response.body as LoginModel, response.headers.get('authorization'), true)
+            .then(() => this.openSuccessDialog('Thank you for choosing Home Improve!'))
         },
         err => {
           console.log(err);
           this.confirmationErrorMessage = getErrorMessage(err);
           this.step = 2;
           this.activationSuccess = false;
-          this.confirmationProcessing = false;
+          this.processing = false;
         });
   }
 
   confirmEmail(activationCustomerModel:any) {
-    this.confirmationProcessing = true;
+    this.processing = true;
     this.activationService.confirmUserEmail(activationCustomerModel)
+      .pipe(takeUntil(this.destroyed$))
       .subscribe(
         response => {
           this.step = 2;
           this.emailConfirmationSuccess = true;
-          this.confirmationProcessing = false;
-          this.securityService.loginUser(response.body as LoginModel, response.headers.get('authorization'), false);
+          this.securityService.loginUser(response.body as LoginModel, response.headers.get('authorization'), true)
+            .then(()=> this.openSuccessDialog('Email confirmed'))
         },
         err => {
           console.log(err);
           this.confirmationErrorMessage = getErrorMessage(err);
           this.step = 2;
           this.emailConfirmationSuccess = false;
-          this.confirmationProcessing = false;
+          this.processing = false;
         });
   }
 
   onSubmit() {
     let activation =  { ...this.activationCustomerModel };
-    this.activateCustomer(activation)
+    this.activateUser(activation)
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
+  }
+
+  private openSuccessDialog(message: string): void {
+    this.dialog.open<InfoWindowDialogComponent, IInfoWindowDialogData>
+    (dialogsMap['info-window-dialog'], {
+      minWidth: 460,
+      panelClass: 'dialog-fix-position',
+      data: {
+        message: message,
+        buttonTitle: 'OK',
+        iconUrl: 'assets/img/round-icons/confirmation-envelope.png'
+      }
+    });
   }
 
 }
