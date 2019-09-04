@@ -69,12 +69,12 @@ export class BecomeProComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.hotJarService.ping();
     this.swiperBody = new Swiper('.testimonials-body', this.swiperConfigOne);
     this.swiperBody.disableMousewheelControl();
     this.swiperNav = new Swiper('.testimonials-nav', this.swiperConfigNav);
     this.swiperNav.disableMousewheelControl();
     this.swiperNav.disableTouchControl();
+    this.hotJarService.tagRecording(['become a pro']);
   }
 
   gTagTrackClick(): void {

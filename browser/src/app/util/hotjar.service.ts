@@ -5,12 +5,57 @@ declare let hj: Function;
 
 @Injectable({providedIn: 'root'})
 export class HotJarService {
-  private readonly debug = true;
+  private readonly debug = false;
   private readonly hotJarVersion = 6;
 
   constructor() {
     // if (!environment.production) return;
     this.injectScript();
+  }
+
+  /**
+   * allows you to track a URL even if your visitors did not actually have that URL loaded in their browser
+   * @example hj('vpv', '/some/path');
+   * @param path
+   */
+  virtualPageView(path: string): void {
+    if(hj) {
+      hj('vpv', path);
+    }
+  }
+
+  /**
+   * Javascript trigger Heatmaps
+   * @example hj('trigger', 'split_test_a');
+              hj('trigger', 'split_test_b');
+   * @param code
+   */
+  trigger(code: string): void {
+    if(hj) {
+      hj('trigger', code);
+    }
+  }
+
+  /**
+   * Tagging your Recordings allows you to note specific actions, like CTA clicks, sign-ups, or visitor states.
+   * @example hj('tagRecording', ['tag1', 'tag2']);
+   * @param tags
+   */
+  tagRecording(tags: string[]): void {
+    if(hj) {
+      hj('tagRecording', tags);
+    }
+  }
+
+  /**
+   * Manually track page change
+   * @example hj('stateChange', 'some/relative/path');
+   * @param path
+   */
+  stateChange(path: string): void {
+    if(hj) {
+      hj('stateChange', path);
+    }
   }
 
   private injectScript(): void {
@@ -36,12 +81,4 @@ export class HotJarService {
     })(window, document, 'https://static.hotjar.com/c/hotjar-', '.js?sv=');
   }
 
-  ping(): void {
-    if (hj) {
-      hj('vpv', 'homePage');
-      hj('trigger', 'homePage');
-      hj('stateChange', 'homePage');
-      hj('tagRecording', 'homePage');
-    }
-  }
 }
