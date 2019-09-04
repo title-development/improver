@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { Constants } from '../../../../util/constants';
 import { Messages } from '../../../../util/messages';
 import { Account, OldNewValue, SystemMessageType } from '../../../../model/data-model';
@@ -17,10 +17,11 @@ import { Role } from '../../../../model/security-model';
 import { dialogsMap } from '../../../../shared/dialogs/dialogs.state';
 import { NgForm } from '@angular/forms';
 import { capitalize, getErrorMessage } from '../../../../util/functions';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { SocialConnectionsService } from '../../../../auth/social-connections.service';
 import { SocialConnection } from '../../../../api/models/SocialConnection';
 import { AuthService, FacebookLoginProvider, GoogleLoginProvider, SocialUser } from 'angularx-social-login';
+import { from, Observable, Subject, throwError } from 'rxjs';
 
 
 @Component({
@@ -29,7 +30,7 @@ import { AuthService, FacebookLoginProvider, GoogleLoginProvider, SocialUser } f
   styleUrls: ['./personal-info.component.scss']
 })
 
-export class PersonalInfoComponent implements OnInit {
+export class PersonalInfoComponent implements OnDestroy {
 
   account: Account;
   confirmDialogRef: MatDialogRef<any>;
@@ -53,6 +54,8 @@ export class PersonalInfoComponent implements OnInit {
   socialProviders: Array<string> = [];
   showEmailChangeMessage: boolean = false;
 
+  private readonly destroyed$ = new Subject<void>();
+
   constructor(public constants: Constants,
               public messages: Messages,
               public route: ActivatedRoute,
@@ -67,7 +70,9 @@ export class PersonalInfoComponent implements OnInit {
     this.socialProviders = enumToArrayList(SocialConnection.Provider);
   }
 
-  ngOnInit(): void {
+  ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
 
@@ -95,7 +100,7 @@ export class PersonalInfoComponent implements OnInit {
 
   updateUserInfo(form: NgForm): void {
     const formHasChanges = Object.values(form.controls).some(control => control.dirty || control.touched);
-    if(formHasChanges) {
+    if (formHasChanges) {
       this.accountService
         .updateAccount(this.securityService.getLoginModel().id, this.account)
         .subscribe(
@@ -104,7 +109,7 @@ export class PersonalInfoComponent implements OnInit {
             this.securityService.getCurrentUser();
             Object.values(form.controls).forEach(control => {
               control.markAsPristine();
-            })
+            });
           },
           err => {
             console.log(err);
@@ -216,20 +221,16 @@ export class PersonalInfoComponent implements OnInit {
     } else if (socialPlatform == SocialConnection.Provider.GOOGLE) {
       socialPlatformProvider = GoogleLoginProvider.PROVIDER_ID;
     }
-    this.socialAuthService.signIn(socialPlatformProvider)
-      .then((userData: SocialUser) => {
-        let observable;
-        if (socialPlatform == SocialConnection.Provider.FACEBOOK) {
-          observable = this.socialConnectionService.connectFacebook(userData.authToken);
-        } else {
-          observable = this.socialConnectionService.connectGoogle(userData.authToken);
-        }
-        observable.subscribe(res => {
-          this.popupService.showSuccess(`${capitalize(socialPlatform)} account has been connected`);
-          this.getUserAccount();
-        }, err => {
-          this.popupService.showError(getErrorMessage(err));
-        });
+    from(this.socialAuthService.signIn(socialPlatformProvider))
+      .pipe(
+        switchMap(socialUser => this.processSocialConnect(socialUser)),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe(() => {
+        this.popupService.showSuccess(`${capitalize(socialPlatform)} account has been connected`);
+        this.getUserAccount();
+      }, err => {
+        this.popupService.showError(getErrorMessage(err));
       });
   }
 
@@ -271,4 +272,18 @@ export class PersonalInfoComponent implements OnInit {
     this.securityService.getCurrentUser();
   }
 
+  private processSocialConnect(socialUser: SocialUser): Observable<unknown> {
+    switch (socialUser.provider) {
+      case 'FACEBOOK': {
+        return this.socialConnectionService.connectFacebook(socialUser.authToken);
+      }
+      case 'GOOGLE': {
+        return this.socialConnectionService.connectGoogle(socialUser.idToken);
+      }
+      default: {
+        console.error('Please provide a correct social platform');
+        return throwError('Please provide a correct social platform');
+      }
+    }
+  }
 }
