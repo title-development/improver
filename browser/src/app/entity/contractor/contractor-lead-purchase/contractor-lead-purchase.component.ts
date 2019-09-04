@@ -11,7 +11,7 @@ import { BoundariesService } from '../../../api/services/boundaries.service';
 import { applyStyleToMapLayers, GoogleMapUtilsService } from '../../../util/google-map.utils';
 import { TricksService } from '../../../util/tricks.service';
 import { ZipFeature } from '../../../api/models/ZipBoundaries';
-import { interval, Observable, of, Subject, Subscription } from 'rxjs';
+import { interval, Observable, of, Subject } from 'rxjs';
 import { AgmMap } from '@agm/core';
 
 import { dialogsMap } from '../../../shared/dialogs/dialogs.state';
@@ -39,13 +39,11 @@ export class ContractorLeadPurchaseComponent implements OnInit, OnDestroy {
   paymentCards: PaymentCard[];
   updateCreditCardDialogRef: MatDialogRef<any>;
   similarLeads: Array<Lead> = [];
-  // subscription: BillingSubscription;
   @ViewChild(AgmMap) agmMap: AgmMap;
   private MINS_TO_REFRESH: number = 1;
   chargeFromCard: boolean;
   projectRequestId;
   private readonly destroyed$ = new Subject<void>();
-  private mapCircle: google.maps.Circle | null = null;
 
   constructor(public route: ActivatedRoute,
               public dialog: MatDialog,
@@ -71,10 +69,10 @@ export class ContractorLeadPurchaseComponent implements OnInit, OnDestroy {
     interval(this.MINS_TO_REFRESH * 1000 * 60)
       .pipe(takeUntil(this.destroyed$))
       .subscribe(() => {
-      if (this.step != 1)
-        return;
-      this.getLead();
-    });
+        if (this.step != 1)
+          return;
+        this.getLead();
+      });
 
   }
 
@@ -110,11 +108,9 @@ export class ContractorLeadPurchaseComponent implements OnInit, OnDestroy {
           if (!zipFeature) {
             this.popUpMessageService.showError('Unexpected error during map rendering');
           } else {
-            this.clearCircle();
-            this.mapCircle = this.gMapUtils.drawZipCircle(this.map, zipFeature);
-            if (this.mapCircle) {
-              this.map.fitBounds(this.mapCircle.getBounds());
-            }
+            this.gMapUtils.clearAllDataLayers(this.map);
+            const bounds = this.gMapUtils.drawZipBoundary(this.map, zipFeature);
+            this.map.fitBounds(bounds);
           }
         }
       )
@@ -252,14 +248,6 @@ export class ContractorLeadPurchaseComponent implements OnInit, OnDestroy {
           return null;
         })
       );
-  }
-
-  private clearCircle(): void {
-    if (!this.mapCircle) {
-      return;
-    }
-    this.mapCircle.setMap(null);
-    this.mapCircle = null;
   }
 
   private getSimilarLeads(): void {
