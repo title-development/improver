@@ -1,10 +1,12 @@
 package com.improver.controller;
 
 import com.improver.entity.StaffAction;
+import com.improver.entity.User;
 import com.improver.model.in.registration.StaffRegistration;
 import com.improver.model.out.StaffActionModel;
 import com.improver.repository.StaffActionRepository;
 import com.improver.security.annotation.AdminAccess;
+import com.improver.security.annotation.StaffAccess;
 import com.improver.service.UserService;
 import com.improver.util.annotation.PageableSwagger;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +19,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static com.improver.application.properties.Path.*;
+import static com.improver.application.properties.Path.ACTIONS;
+import static com.improver.application.properties.Path.STAFF_PATH;
 
 
 @Slf4j
@@ -35,15 +38,16 @@ public class StaffController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @AdminAccess
+    @StaffAccess
     @PageableSwagger
     @GetMapping(ACTIONS)
     public ResponseEntity<Page<StaffActionModel>> getActions(
         @RequestParam(required = false) Long id,
         @RequestParam(required = false) String author,
+        @RequestParam(required = false) User.Role authorRole,
         @RequestParam(required = false) StaffAction.Action action,
         @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageRequest) {
-        Page<StaffActionModel> actions = this.staffActionRepository.getAllBy(id, author, action, pageRequest);
+        Page<StaffActionModel> actions = this.staffActionRepository.getAllBy(id, author, authorRole, action, pageRequest);
         return new ResponseEntity<>(actions, HttpStatus.OK);
     }
 

@@ -163,7 +163,7 @@ export class AdminSidebarComponent {
       icon: 'fas fa-history',
       label: 'Staff Actions',
       url: 'staff-actions',
-      visible: this.isVisible(Role.ADMIN),
+      visible: this.isVisible(Role.ADMIN, Role.STAKEHOLDER),
     },
     {
       icon: 'fa fa-cogs',

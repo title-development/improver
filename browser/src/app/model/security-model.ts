@@ -1,4 +1,4 @@
-import { OfferedServiceType, Trade, Location } from './data-model';
+import { Location, OfferedServiceType, Trade } from './data-model';
 
 export class Credentials {
   email: string;
@@ -22,6 +22,12 @@ export enum Role {
   CONTRACTOR = 'CONTRACTOR',
   ANONYMOUS = 'ANONYMOUS',
   INCOMPLETE_PRO = 'INCOMPLETE_PRO'
+}
+
+export namespace Role {
+  export function getStaff() {
+    return [Role.ADMIN, Role.SUPPORT]
+  }
 }
 
 export class RegistrationUserModel {

@@ -1,8 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { ReviewService } from '../../../api/services/review.service';
+import { Component, ViewChild } from '@angular/core';
 import { Pagination, Review } from '../../../model/data-model';
 import { MenuItem, SelectItem } from 'primeng/primeng';
-import { AdminProjectRequest } from '../../../api/models/AdminProjectRequest';
 import { enumToArrayList, filtersToParams } from '../../../util/tricks.service';
 import { RestPage } from '../../../api/models/RestPage';
 import { CamelCaseHumanPipe } from '../../../pipes/camelcase-to-human.pipe';
@@ -10,6 +8,7 @@ import { Router } from '@angular/router';
 import { StaffAction } from "../../../api/models/StaffAction";
 import { StaffService } from "../../../api/services/staff.service";
 import { Role } from "../../../model/security-model";
+import { SecurityService } from "../../../auth/security.service";
 
 @Component({
   selector: 'staff-actions',
@@ -27,19 +26,29 @@ export class StaffActionsComponent {
     'id',
     'description',
     'author',
+    'authorRole',
     'action',
     'created',
   ];
   contextMenuItems: Array<MenuItem> = [];
   filters: any;
   actions: Array<SelectItem> = [];
+  roles: Array<SelectItem> = [];
 
-  constructor(private staffService: StaffService, public camelCaseHumanPipe: CamelCaseHumanPipe, private router: Router) {
+  constructor(private staffService: StaffService,
+              public camelCaseHumanPipe: CamelCaseHumanPipe,
+              private router: Router,
+              private securityService: SecurityService) {
     this.actions = enumToArrayList(StaffAction.Action)
       .map(item => {
         return {label: item, value: item};
       });
     this.actions.unshift({label: 'All', value: ''});
+    this.roles = Role.getStaff()
+      .map(item => {
+        return {label: item, value: item};
+      });
+    this.roles.unshift({label: 'All', value: ''});
     this.initContextMenu();
   }
 

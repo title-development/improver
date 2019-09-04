@@ -26,6 +26,9 @@ public class StaffAction {
     @JoinColumn(name="staff_id", foreignKey = @ForeignKey(name = "staff_actions_staff_fkey"))
     private Staff author;
 
+    @Enumerated(value = EnumType.STRING)
+    private User.Role authorRole;
+
     @Column(columnDefinition = "varchar(" + STAFF_ACTION_DESCRIPTION_MAX_SIZE + ")")
     private String description;
 
@@ -39,6 +42,7 @@ public class StaffAction {
         this.author = author;
         this.description = description;
         this.action = action;
+        this.authorRole = author.getRole();
     }
 
     public enum Action {

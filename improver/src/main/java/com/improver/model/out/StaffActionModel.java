@@ -2,9 +2,11 @@ package com.improver.model.out;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.improver.entity.StaffAction;
+import com.improver.entity.User;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+
 import java.time.ZonedDateTime;
 
 import static com.improver.util.serializer.SerializationUtil.DATE_TIME_PATTERN;
@@ -16,18 +18,20 @@ public class StaffActionModel {
 
     private long id;
     private String author;
+    private User.Role authorRole;
     private String description;
     private StaffAction.Action action;
 
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     private ZonedDateTime created;
 
-    public StaffActionModel(long id, String author, String description, StaffAction.Action action, ZonedDateTime created) {
+    public StaffActionModel(long id, String author, User.Role authorRole, String description, StaffAction.Action action, ZonedDateTime created) {
         this.id = id;
         this.author = author;
         this.description = description;
         this.action = action;
         this.created = created;
+        this.authorRole = authorRole;
     }
 
 }

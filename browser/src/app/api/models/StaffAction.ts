@@ -1,6 +1,9 @@
+import { Role } from "../../model/security-model";
+
 export class StaffAction {
   id?: number;
   author?: string;
+  authorRole?: Role;
   description?: string;
   created?: string;
 }
