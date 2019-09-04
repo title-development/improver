@@ -505,7 +505,7 @@ public class RefundService {
         ZonedDateTime now = now();
         refund.setStatus(Refund.Status.REJECTED).setComment(comment).setUpdated(now);
         refundRepository.save(refund);
-        mailService.sendRefundRequestApproved(company, customer.getDisplayName(), serviceType.getName());
+        mailService.sendRefundRequestRejected(company, customer.getDisplayName(), serviceType.getName());
         projectMessageRepository.save(ProjectMessage.refundRejected(projectRequest, now));
         // TODO: send notification
         projectRequest.setStatus(ProjectRequest.Status.CLOSED).setUpdated(now);

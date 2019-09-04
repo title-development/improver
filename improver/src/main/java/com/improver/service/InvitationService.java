@@ -2,7 +2,6 @@ package com.improver.service;
 
 import com.improver.entity.Invitation;
 import com.improver.entity.Staff;
-import com.improver.entity.StaffAction;
 import com.improver.exception.NotFoundException;
 import com.improver.exception.ValidationException;
 import com.improver.model.ContractorInvitation;
@@ -16,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.buf.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -41,6 +41,9 @@ public class InvitationService {
         List<Invitation> created = new LinkedList<>();
         for (String email : allowedEmails) {
             created.add(new Invitation(email, invitation.getBonus(), invitation.getDescription()));
+        }
+        if (allowedEmails.length == 0){
+            throw new ValidationException("No valid emails where specified");
         }
         invitationRepository.saveAll(created);
         staffActionLogger.logCreateInvitation(currentStaff, allowedEmails, invitation.getBonus());
