@@ -52,9 +52,9 @@
                 </cv-field-error>
               </div>
 
-              <div class="col-md-6" *ngIf="subscription.active">
+              <div class="col-md-6">
                 <div class="field">
-                  <cv-field-label>Next billing date</cv-field-label>
+                  <cv-field-label>{{subscription.active && subscription.autoContinue ? 'Next billing date' : 'Subscription expires'}}</cv-field-label>
                   <div class="next-billing-date">{{subscription.nextBillingDate | date:'longDate'}}</div>
                 </div>
               </div>
@@ -127,12 +127,12 @@
 
       </div>
 
-      <div class="hint-line" *ngIf="subscription.nextBudget > subscription.budget">
+      <div class="hint-line" *ngIf="subscription.active && subscription.autoContinue && subscription.budget != subscription.nextBudget">
         You've updated subscription budget to <span class="highlight">{{subscription.nextBudget / 100 | currency:'USD':'symbol'}}</span>.
         Changes will apply starting from your next billing date.
       </div>
 
-      <div class="hint-line" *ngIf="!subscription.autoContinue && subscription.active">You've canceled the subscription.
+      <div class="hint-line" *ngIf="subscription.active && !subscription.autoContinue">You've canceled the subscription.
         You still will receive automatic leads up to the end of current billing period.
       </div>
 
