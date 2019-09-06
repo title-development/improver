@@ -10,8 +10,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.improver.application.properties.BusinessProperties.DAYS_TO_ACCEPT_REFUND;
-
 @Data
 @Accessors(chain = true)
 @Entity(name = "project_requests")
@@ -59,11 +57,10 @@ public class ProjectRequest {
 
 
     public boolean isRefundable(){
-        return ZonedDateTime.now().isBefore(created.plusDays(DAYS_TO_ACCEPT_REFUND))
-            && (status.equals(Status.ACTIVE) ||
+        return status.equals(Status.ACTIVE) ||
                 status.equals(Status.HIRED) ||
                 status.equals(Status.DECLINED) ||
-                status.equals(Status.INACTIVE));
+                status.equals(Status.INACTIVE);
     }
 
     public boolean isConversationActive(){

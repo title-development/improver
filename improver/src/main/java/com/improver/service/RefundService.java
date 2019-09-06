@@ -121,6 +121,9 @@ public class RefundService {
         if (project.getStatus().equals(Project.Status.INVALID)) {
             refund.setComment(REFUND_APPROVE_DEFAULT_MESSAGE);
             refund.setStatus(AUTO_APPROVED);
+        } else if (now().isAfter(projectRequest.getCreated().plusDays(DAYS_TO_ACCEPT_REFUND))) {
+            refund.setComment("The period of refund possibility by this project is over");
+            refund.setStatus(AUTO_REJECTED);
         } else {
             switch (refund.getOption()) {
                 case NEVER_WORK_IN_ZIP:
@@ -237,7 +240,7 @@ public class RefundService {
                     break;
                 case BAD_CONTACT_INFO:
                     // Case 17
-                    refund.setComment(REFUND_REJECT_DEFAULT_MESSAGE);
+                    refund.setComment(REFUND_MANUAL_DEFAULT_MESSAGE);
                     refund.setStatus(IN_REVIEW);
                     break;
                 case NOT_AGREED_PRICE:
@@ -294,13 +297,9 @@ public class RefundService {
 
     private void checkRefundability(ProjectRequest projectRequest) {
         if (ProjectRequest.Status.getArchived().contains(projectRequest.getStatus())) {
-            throw new ValidationException("Project is already hireOther");
+            throw new ValidationException("Project is already archived");
         } else if (projectRequest.getRefund() != null) {
             throw new ValidationException("Refund request for this project is already submitted");
-        } else if (now().isAfter(projectRequest.getCreated().plusDays(DAYS_TO_ACCEPT_REFUND))) {
-            projectRequest.setStatus(ProjectRequest.Status.REFUND_REJECTED).setUpdated(now());
-            projectRequestRepository.save(projectRequest);
-            throw new ValidationException("The period of refund possibility by this project is over");
         }
     }
 
