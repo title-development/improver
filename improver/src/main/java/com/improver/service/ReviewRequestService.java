@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 
 import static com.improver.application.properties.Path.PROJECTS;
 import static com.improver.application.properties.Path.SLASH;
+import static com.improver.application.properties.UiPath.UI_CUSTOMER_BASE_PATH;
 
 @Slf4j
 @Service
@@ -110,7 +111,7 @@ public class ReviewRequestService {
                 message.append("<h3>Unreviewed projects:<h3/>");
                 notReviewProjectRequests.forEach(projectRequest -> {
                     String template = "<a href='%s'>%s</a><br>\r\n";
-                    String projectRow = String.format(template, siteUrl + PROJECTS + SLASH + projectRequest.getProject().getId() + "#" + projectRequest.getId(), projectRequest.getProject().getServiceType().getName());
+                    String projectRow = String.format(template, siteUrl + UI_CUSTOMER_BASE_PATH + PROJECTS + SLASH + projectRequest.getProject().getId() + "#" + projectRequest.getId(), projectRequest.getProject().getServiceType().getName());
                     message.append(projectRow);
                 });
 
