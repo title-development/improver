@@ -1,5 +1,6 @@
 package com.improver.service;
 
+import com.improver.entity.Project;
 import com.improver.entity.ProjectMessage;
 import com.improver.entity.ProjectRequest;
 import com.improver.entity.User;

@@ -17,6 +17,7 @@
                       message.event == ProjectRequest.MessageEvent.DECLINE && {'background-image':'url(' + 'assets/img/round-icons/contractor-declined.svg' + ')'} ||
                       message.event == ProjectRequest.MessageEvent.HIRE_OTHER && {'background-image':'url(' + 'assets/img/round-icons/contractor-declined.svg' + ')'} ||
                       message.event == ProjectRequest.MessageEvent.LEAVE && {'background-image':'url(' + 'assets/img/round-icons/contractor-leaved-project.svg' + ')'} ||
+                      message.event == ProjectRequest.MessageEvent.PRO_COMPLETE && {'background-image':'url(' + 'assets/img/round-icons/project-completed.png' + ')'} ||
                       message.event == ProjectRequest.MessageEvent.PRO_CLOSE && securityService.hasRole(Role.CUSTOMER) && {'background-image':'url(' + 'assets/img/round-icons/contractor-leaved-project.svg' + ')'} ||
                       message.event == ProjectRequest.MessageEvent.PRO_CLOSE && securityService.hasRole(Role.CONTRACTOR) && {'background-image':'url(' + 'assets/img/round-icons/closed-project.svg' + ')'} ||
                       message.event == ProjectRequest.MessageEvent.CALL && {'background-image':'url(' + 'assets/img/round-icons/call.png' + ')'} ||
@@ -176,13 +177,21 @@
               </ng-container>
             </ng-container>
 
+            <ng-container *ngSwitchCase="ProjectRequest.MessageEvent.PRO_COMPLETE">
+              <ng-container *ngIf="securityService.hasRole(Role.CUSTOMER)">
+                <span>Project completed</span>
+              </ng-container>
+              <ng-container *ngIf="securityService.hasRole(Role.CONTRACTOR)">
+                <span>Project completed</span>
+              </ng-container>
+            </ng-container>
+
             <ng-container *ngSwitchCase="ProjectRequest.MessageEvent.INVALIDATED">
               <ng-container *ngIf="securityService.hasRole(Role.CUSTOMER)">
                 <span>Project closed due to project invalidation</span>
               </ng-container>
               <ng-container *ngIf="securityService.hasRole(Role.CONTRACTOR)">
-                <span class="name">{{customerName}}</span>
-                <span> closed the project</span>
+                <span>Project closed due to project invalidation</span>
               </ng-container>
             </ng-container>
 

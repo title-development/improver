@@ -92,6 +92,8 @@ public interface ProjectRequestRepository extends JpaRepository<ProjectRequest, 
 
     List<ProjectRequest> findByStatusAndProjectId(ProjectRequest.Status status, long projectId);
 
+    List<ProjectRequest> findByStatusInAndProjectId(Iterable<ProjectRequest.Status> statuses, long projectId);
+
     @Query("SELECT pr FROM com.improver.entity.ProjectRequest pr " +
         "INNER JOIN com.improver.entity.Project p ON pr.project.id = p.id " +
         "INNER JOIN com.improver.entity.Contractor c on pr.contractor.id = c.id " +

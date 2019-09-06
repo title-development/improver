@@ -27,9 +27,9 @@
     <div *ngIf="projectRequestStatus == ProjectRequest.Status.COMPLETED" class="conversation-closed-message">
       Conversation closed due to project completion
     </div>
-    <div *ngIf="projectRequestStatus != ProjectRequest.Status.COMPLETED
+    <div *ngIf="projectStatus == Project.Status.INVALID || (projectRequestStatus != ProjectRequest.Status.COMPLETED
     && projectRequestStatus != ProjectRequest.Status.ACTIVE
-    && projectRequestStatus != ProjectRequest.Status.HIRED"
+    && projectRequestStatus != ProjectRequest.Status.HIRED)"
          class="conversation-closed-message">Conversation closed
     </div>
 

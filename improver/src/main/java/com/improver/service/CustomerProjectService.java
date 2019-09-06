@@ -24,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -41,8 +42,7 @@ public class CustomerProjectService {
     @Autowired private ProjectRequestRepository projectRequestRepository;
     @Autowired private ImageService imageService;
     @Autowired private ProjectMessageRepository projectMessageRepository;
-    @Autowired
-    private WsNotificationService wsNotificationService;
+    @Autowired private WsNotificationService wsNotificationService;
 
 
     public Page<CustomerProjectShort> getProjectsForCustomer(Customer customer, boolean current, Pageable pageable) {
@@ -107,7 +107,7 @@ public class CustomerProjectService {
     }
 
     public void closeActiveProjectRequests(Project project, ZonedDateTime time, CloseProjectRequest request) {
-        List<ProjectRequest> projectRequests = projectRequestRepository.findByStatusAndProjectId(ProjectRequest.Status.ACTIVE, project.getId());
+        List<ProjectRequest> projectRequests = projectRequestRepository.findByStatusInAndProjectId(Arrays.asList(ProjectRequest.Status.ACTIVE, ProjectRequest.Status.HIRED), project.getId());
         boolean hireOther = request.getProjectRequestId() > 0;
         projectRequests.forEach(projectRequest -> {
             projectRequestRepository.save(projectRequest.setStatus(ProjectRequest.Status.INACTIVE).setUpdated(time));
