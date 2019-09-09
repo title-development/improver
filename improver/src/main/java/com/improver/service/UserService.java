@@ -4,9 +4,10 @@ import com.improver.entity.*;
 import com.improver.exception.*;
 import com.improver.model.UserAccount;
 import com.improver.model.admin.AdminContractor;
+import com.improver.model.in.OldNewValue;
+import com.improver.model.in.UserActivation;
 import com.improver.model.in.registration.StaffRegistration;
 import com.improver.model.in.registration.UserRegistration;
-import com.improver.model.in.*;
 import com.improver.model.socials.SocialUser;
 import com.improver.repository.*;
 import com.improver.security.UserSecurityService;
@@ -316,33 +317,28 @@ public class UserService {
 
 
 
-    public void createStaffUser(StaffRegistration registration) throws BadRequestException {
+    public void createStaffUser(StaffRegistration registration, Admin currentUser) throws BadRequestException {
+        User createdStaff;
         switch (registration.getRole()) {
             case SUPPORT:
-                Support support = new Support(registration)
-                    .setActivated(true)
-                    .setCreated(ZonedDateTime.now());
-                userRepository.save(support);
+                createdStaff = new Support(registration);
                 break;
             case STAKEHOLDER:
-                Stakeholder stakeholder = new Stakeholder(registration)
-                    .setActivated(true)
-                    .setCreated(ZonedDateTime.now());
-                userRepository.save(stakeholder);
-                break;
-            case MANAGER:
-                Manager manager = new Manager(registration)
-                    .setActivated(true)
-                    .setCreated(ZonedDateTime.now());
-                userRepository.save(manager);
+                createdStaff = new Stakeholder(registration);
                 break;
             default:
                 throw new BadRequestException("Bad request");
         }
+
+        createdStaff.setActivated(true)
+            .setCreated(ZonedDateTime.now());
+        userRepository.save(createdStaff);
+        staffActionLogger.logUserCreated(currentUser, createdStaff);
+
     }
 
 
-    public void restoreAccountByUser(User user) {
+    public void restoreAccountByUser(User user, Staff currentUser) {
         if (user instanceof Customer || user instanceof Stakeholder || user instanceof Support ) {
             restoreAccount(user);
         } else if (user instanceof Contractor) {
@@ -350,6 +346,7 @@ public class UserService {
         } else {
             throw new BadRequestException(user.getRole() + " not allowed to restore");
         }
+        staffActionLogger.logUserRestored(currentUser, user);
     }
 
 

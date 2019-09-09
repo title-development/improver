@@ -8,7 +8,10 @@ import com.improver.model.out.LoginModel;
 import com.improver.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.*;
+import org.springframework.security.authentication.AccountExpiredException;
+import org.springframework.security.authentication.CredentialsExpiredException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -38,8 +41,7 @@ public class UserSecurityService implements UserDetailsService {
     @Autowired private JwtUtil jwtUtil;
     @Autowired private StaffRepository staffRepository;
     @Autowired private AdminRepository adminRepository;
-    @Autowired
-    private SecurityProperties securityProperties;
+    @Autowired private SecurityProperties securityProperties;
 
     /**
      * Intended to be used by {@link LoginFilter}.

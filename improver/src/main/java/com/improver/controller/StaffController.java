@@ -5,6 +5,7 @@ import com.improver.entity.User;
 import com.improver.model.in.registration.StaffRegistration;
 import com.improver.model.out.StaffActionModel;
 import com.improver.repository.StaffActionRepository;
+import com.improver.security.UserSecurityService;
 import com.improver.security.annotation.AdminAccess;
 import com.improver.security.annotation.StaffAccess;
 import com.improver.service.UserService;
@@ -30,11 +31,12 @@ public class StaffController {
 
     @Autowired private UserService userService;
     @Autowired private StaffActionRepository staffActionRepository;
+    @Autowired private UserSecurityService userSecurityService;
 
     @AdminAccess
     @PostMapping()
     public ResponseEntity<Void> createUser(@RequestBody StaffRegistration staffRegistration) {
-        userService.createStaffUser(staffRegistration);
+        userService.createStaffUser(staffRegistration, userSecurityService.currentAdmin());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

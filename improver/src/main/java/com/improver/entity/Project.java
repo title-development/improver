@@ -79,8 +79,6 @@ public class Project implements ImageContainable {
     private List<ProjectAction> projectActions;
 
 
-
-
     @Override
     public Project setCoverUrl(String imageCoverUrl) {
         this.coverUrl = imageCoverUrl;
@@ -112,6 +110,9 @@ public class Project implements ImageContainable {
         return this;
     }
 
+    public boolean hasProjectRequests() {
+        return this.getFreePositions() != Project.MAX_CONNECTIONS;
+    }
 
     /**
      *  Project Status
@@ -149,7 +150,7 @@ public class Project implements ImageContainable {
             return archived;
         }
 
-        public static List<Status>  forPurchase() {
+        public static List<Status> forPurchase() {
             return Arrays.asList(ACTIVE, IN_PROGRESS);
         }
     }

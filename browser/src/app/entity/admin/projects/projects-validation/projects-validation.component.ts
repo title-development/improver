@@ -187,7 +187,7 @@ export class AdminProjectsValidationComponent {
   validate() {
     this.displayValidationDialog = true;
     this.projectValidation = {
-      status: Project.Status.ACTIVE,
+      status: this.selectedProject.hasProjectRequests ? Project.Status.IN_PROGRESS : Project.Status.ACTIVE,
       reason: this.selectedProject.reason
     }
   }

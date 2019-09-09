@@ -1,7 +1,7 @@
 <div class="panel-header">
   <div class="panel-title">Coverage</div>
   <p-progressSpinner *ngIf="fetching" [style]="{width: '24px', height: '24px'}"></p-progressSpinner>
-  <button pButton class="ui-button-success" [disabled]="!hasChanges" (onClick)="updateCoverage()" icon="pi pi-fw pi-check"
+  <button pButton class="ui-button-success" [disabled]="!hasChanges" (click)="updateCoverage()" icon="pi pi-fw pi-check"
             label="&nbsp;&nbsp;Update"></button>
 </div>
 <div class="map-holder">

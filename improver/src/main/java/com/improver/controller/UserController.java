@@ -101,7 +101,7 @@ public class UserController {
     public ResponseEntity<Void> restoreAccount(@PathVariable long id) {
         User user = userRepository.findById(id)
             .orElseThrow(NotFoundException::new);
-        userService.restoreAccountByUser(user);
+        userService.restoreAccountByUser(user, userSecurityService.currentAdmin());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

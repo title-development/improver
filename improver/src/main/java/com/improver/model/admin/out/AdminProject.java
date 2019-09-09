@@ -57,7 +57,7 @@ public class AdminProject {
             .setFreePositions(project.getFreePositions())
             .setLead(project.isLead())
             .setNotes(project.getNotes())
-            .setHasProjectRequests(project.getFreePositions() != Project.MAX_CONNECTIONS);
+            .setHasProjectRequests(project.hasProjectRequests());
     }
 
     public static AdminProject full(Project project, List<CompanyProjectRequest> pros){

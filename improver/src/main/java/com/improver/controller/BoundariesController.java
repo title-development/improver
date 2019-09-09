@@ -1,9 +1,9 @@
 package com.improver.controller;
 
-import com.improver.entity.ServedZip;
 import com.improver.exception.InternalServerException;
 import com.improver.exception.ThirdPartyException;
 import com.improver.repository.ServedZipRepository;
+import com.improver.security.UserSecurityService;
 import com.improver.security.annotation.AdminAccess;
 import com.improver.service.BoundariesService;
 import com.improver.service.CoverageService;
@@ -15,16 +15,11 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.improver.application.properties.Path.GEO_PATH;
 
@@ -40,6 +35,7 @@ public class BoundariesController {
     @Autowired private ServedZipRepository servedZipRepository;
     @Autowired private ResourceLoader resourceLoader;
     @Autowired private CoverageService coverageService;
+    @Autowired private UserSecurityService userSecurityService;
 
     private String coverageGeometry;
 
@@ -64,7 +60,7 @@ public class BoundariesController {
     @AdminAccess
     @PutMapping("/coverage/zips")
     public ResponseEntity<Void> updateServedZips(@RequestBody List<String> zips) {
-        coverageService.updateCoverage(zips);
+        coverageService.updateCoverage(zips, userSecurityService.currentAdmin());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

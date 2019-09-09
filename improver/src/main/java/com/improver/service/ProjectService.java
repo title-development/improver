@@ -113,6 +113,7 @@ public class ProjectService {
                 break;
 
             case ACTIVE:
+            case IN_PROGRESS:
                 log.info("Project {} validation", project.getId());
                 self.validateProject(project, request.getComment(), support);
                 break;
@@ -152,13 +153,10 @@ public class ProjectService {
             project.setLead(true);
         }
 
-        if (project.getFreePositions() == Project.MAX_CONNECTIONS) {
-            project.setStatus(Project.Status.ACTIVE);
-        } else {
-            project.setStatus(Project.Status.IN_PROGRESS);
-        }
+        Project.Status statusBeforeValidation = project.hasProjectRequests() ? Project.Status.IN_PROGRESS : Project.Status.ACTIVE;
 
-        project.setUpdated(ZonedDateTime.now())
+        project.setStatus(statusBeforeValidation)
+            .setUpdated(ZonedDateTime.now())
             .setReason(null);
 
         projectRepository.save(project);

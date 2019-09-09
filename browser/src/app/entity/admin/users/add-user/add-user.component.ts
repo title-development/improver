@@ -16,8 +16,7 @@ import { StaffService } from "../../../../api/services/staff.service";
 export class AddUserComponent {
   roles: Array<SelectItem> = [
     {label: Role.SUPPORT, value: Role.SUPPORT},
-    {label: Role.STAKEHOLDER, value: Role.STAKEHOLDER},
-    {label: Role.MANAGER, value: Role.MANAGER}
+    {label: Role.STAKEHOLDER, value: Role.STAKEHOLDER}
   ];
   user = {
     email: '',

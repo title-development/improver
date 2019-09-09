@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Service
 public class StaffActionLogger {
@@ -52,13 +53,13 @@ public class StaffActionLogger {
 
     public void logAccountUpdate(Staff author, User user){
         String description = String.format("User with id %1$s is updated. %2$s with email %3$s.",
-            user.getId(), user.getName(), user.getEmail());
+            user.getId(), user.getDisplayName(), user.getEmail());
         this.log(StaffAction.Action.ACCOUNT_UPDATE, author, description);
     }
 
     public void logAccountDelete(Staff author, User user){
         String description = String.format("User with id %1$s is deleted. %2$s with email %3$s.",
-            user.getId(), user.getName(), user.getEmail());
+            user.getId(), user.getDisplayName(), user.getEmail());
         this.log(StaffAction.Action.ACCOUNT_DELETE, author, description);
     }
 
@@ -72,7 +73,7 @@ public class StaffActionLogger {
         String description = String.format("User with id %1$s is %2$s. %3$s with email %4$s.",
             user.getId(),
             user.isBlocked() ? "blocked" : "unblocked",
-            user.getName(),
+            user.getDisplayName(),
             user.getEmail());
         this.log(StaffAction.Action.ACCOUNT_UPDATE,
             author,
@@ -83,6 +84,34 @@ public class StaffActionLogger {
         String description = String.format("Company with id=%1$s  name=%2$s is updated.",
             company.getId(), company.getName());
         this.log(StaffAction.Action.COMPANY_UPDATE, author, description);
+    }
+
+    public void logUserCreated(Staff author, User user){
+        String description = String.format("User with id %1$s is created. %2$s with email %3$s.",
+            user.getId(),
+            user.getDisplayName(),
+            user.getEmail());
+        this.log(StaffAction.Action.USER_CREATED,
+            author,
+            description);
+    }
+
+    public void logUserRestored(Staff author, User user){
+        String description = String.format("User with id %1$s is restored. %2$s with email %3$s.",
+            user.getId(),
+            user.getDisplayName(),
+            user.getEmail());
+        this.log(StaffAction.Action.USER_RESTORED,
+            author,
+            description);
+    }
+
+    public void logCoverageUpdate(Staff author, List<String> toAdd, List<String> toDelete){
+        String description = String.format("Service coverage is updated. Added: %s .Deleted: %s",
+            toAdd, toDelete);
+        this.log(StaffAction.Action.COVERAGE_UPDATE,
+            author,
+            description);
     }
 
 }
