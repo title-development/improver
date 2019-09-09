@@ -7,11 +7,19 @@
 <div class="content" [cvSpinner]="processing" [cvSpinnerSize]="40" [cvSpinnerBackground]="true"
      cvSpinnerBackgroundColor="white">
   <form action="" #form="ngForm" (ngSubmit)="form.valid && submit()">
+    <p>For fast ramp up, you can ask clients from previous projects to rate you on Home Improve.</p>
+    <p>Send requests for review for up to 5 clients. Each client will receive a separate mail.</p>
+
+    <!--
+    <p><i>Requested: client1@gmail.com, client1@gmail.com, client1@gmail.com</i></p>
     <p>Send requests for review so customers can rate you. This is not a group letter, each client will receive separate mail.</p>
     <p>Enter up to 5 client comma-separated emails.</p>
+    -->
     <cv-input-field>
-      <cv-field-label>Emails</cv-field-label>
-      <textarea maxlength="500" multipleEmailsValidator #emailsEl="ngModel" placeholder="client1@mail.com, client2@mail.com, client3@mail.com" trim required cv-input name="emails" cols="30" rows="4" [(ngModel)]="emails"></textarea>
+      <cv-field-label>Emails (comma-separated)</cv-field-label>
+      <textarea maxlength="500" multipleEmailsValidator #emailsEl="ngModel"
+                placeholder="client1@mail.com, client2@mail.com, client3@mail.com" trim required cv-input name="emails"
+                cols="30" rows="2" [(ngModel)]="emails"></textarea>
       <cv-field-hint>{{emailsEl.value ? emailsEl.value.length : 0}}/500</cv-field-hint>
       <cv-field-error *ngIf="emailsEl.dirty || emailsEl.touched || form.submitted">
         <span *ngIf="emailsEl.errors?.required">{{messages.errors.default.required}}</span>
@@ -31,11 +39,12 @@
     </cv-input-field>
     <cv-input-field>
       <cv-field-label>Message</cv-field-label>
-      <textarea #messageEl="ngModel" minlength="10" maxlength="255" required trim cv-input name="message" id="" cols="30" rows="5" [(ngModel)]="message"></textarea>
+      <textarea #messageEl="ngModel" minlength="10" maxlength="255" required trim cv-input name="message" id=""
+                cols="30" rows="6" [(ngModel)]="message"></textarea>
       <cv-field-hint>{{messageEl.value ? messageEl.value.length : 0}}/255</cv-field-hint>
       <cv-field-error *ngIf="messageEl.dirty || messageEl.touched || form.submitted">
         <span *ngIf="messageEl.errors?.required">Please enter a message</span>
-        <span *ngIf="messageEl.errors?.minlength">Please more describe your request</span>
+        <span *ngIf="messageEl.errors?.minlength">Please more details</span>
         <span *ngIf="messageEl.errors?.maxlength">{{messages.errors.default.maxlength}}</span>
       </cv-field-error>
     </cv-input-field>

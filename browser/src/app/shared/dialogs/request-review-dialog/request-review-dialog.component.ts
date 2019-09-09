@@ -15,7 +15,7 @@ import { Messages } from '../../../util/messages';
 export class RequestReviewDialogComponent implements OnInit {
   emails: string;
   subject: string = 'Rate me on Home Improve';
-  message: string = "I'm sending this to ask you if you can rate me on Home Improve. It only takes a few seconds, and would really help me.\r\n\r\nThank you.\r\n\r\n";
+  message: string = "I'm sending this to ask you if you can rate me on Home Improve. It only takes a few seconds, and would really help me.\r\n\r\nThank you\r\n";
   companyName: string;
   processing: boolean = false;
 
