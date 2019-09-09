@@ -119,7 +119,7 @@ public class ProjectRequest {
             return Arrays.asList(ACTIVE, HIRED, DECLINED, INACTIVE, REFUND_REQUESTED);
         }
 
-        public static List<Status>  getArchived() {
+        public static List<Status> getArchived() {
             return Arrays.asList(COMPLETED, CLOSED, REFUNDED, REFUND_REJECTED, AUTO_CLOSED);
         }
     }

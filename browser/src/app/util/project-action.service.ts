@@ -92,7 +92,7 @@ export class ProjectActionService {
   hireCompanyConfirm(projectRequest) {
     let properties = {
       title: 'Are you sure that you want to accept Pros offer?',
-      message: 'By accepting current Pros offer - other Pros will receive decline from you',
+      message: 'By accepting the current Pro offer - all other Pros will be declined on your behalf',
       OK: 'Confirm',
       CANCEL: 'Cancel'
     };

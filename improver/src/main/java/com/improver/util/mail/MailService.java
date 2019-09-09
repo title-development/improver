@@ -42,7 +42,7 @@ public class MailService {
     private static final String SUPPORT_EMAIL = "support@homeimprove.com";
     private static final String SUPPORT_TEXT = "If you have any questions you can contact us at";
     private static final String SIGNATURE = "Sincerely, The Home Improve Team";
-    private static final String THANK_YOU_FOR_JOIN = "Thank you for join Home Improve!";
+    private static final String THANK_YOU_FOR_JOIN = "Thank you for joining Home Improve!";
     private static final String HOME_IMPROVE = "Home Improve";
 
     // Email Subjects
@@ -121,7 +121,7 @@ public class MailService {
         Context context = contextTemplate();
         context.setVariable(USER_NAME, user.getFirstName());
         context.setVariable(TITLE, "Your password was updated");
-        context.setVariable(BODY, "If you did not do this action please contact support immediately");
+        context.setVariable(BODY, "If you did not authorize this action please contact support immediately");
         mailClient.sendMail("Your password was updated", NOTICE_TEMPLATE, context, MailHolder.MessageType.NOREPLY, user.getEmail());
     }
 
@@ -135,7 +135,7 @@ public class MailService {
         Context context = contextTemplate();
         context.setVariable(USER_NAME, user.getFirstName());
         context.setVariable(TITLE, "Now you can reset your password");
-        context.setVariable(BODY, "You requested a password reset. For next step, you need to proceed by the following link");
+        context.setVariable(BODY, "You requested a password reset. For the next step, click the link below.");
         context.setVariable(CONFIRM_URL, siteUrl + UI_RESTORE_PASSWORD + SLASH + jwtUtil.generateActivationJWT(user.getValidationKey(), user.getEmail()));
         context.setVariable(CONFIRM_BTN_TEXT, "Reset password");
         mailClient.sendMail("Password restoring", CONFIRMATION_TEMPLATE, context, MailHolder.MessageType.NOREPLY, user.getEmail());
@@ -168,7 +168,7 @@ public class MailService {
         Context context = contextTemplate();
         context.setVariable(USER_NAME, user.getFirstName());
         context.setVariable(TITLE, "Your email has been changed to " + highlight(user.getNewEmail()));
-        context.setVariable(BODY, "if you did not do this action, please contact with support immediately!");
+        context.setVariable(BODY, "If you did not authorize this action please contact support immediately.");
         mailClient.sendMail("Account email is changed", NOTICE_TEMPLATE, context, MailHolder.MessageType.NOREPLY, user.getEmail());
     }
 
@@ -215,7 +215,7 @@ public class MailService {
         String title = "You have new messages";
         StringBuilder body = new StringBuilder();
         if (isForCustomers) {
-            body.append("You have new messages from Pro's in your recent projects: <br>");
+            body.append("You have new messages from Pros on your recent projects: <br>");
             unreadProjectMessageInfos.forEach(message ->
                 body.append(String.format("In %1$s project <br>",
                     highlight(message.getServiceTypeName()))));
@@ -244,7 +244,7 @@ public class MailService {
         context.setVariable(USER_NAME, customer.getFirstName());
         context.setVariable(TITLE, "Your project has been submitted!");
         context.setVariable("serviceType", serviceType);
-        context.setVariable(BODY, "You've submitted project request for " + serviceType + ". If you didn't do this action, please skip this mail.");
+        context.setVariable(BODY, "You've submitted  a project request for " + serviceType + ". If you didn't do this action, please ignore this mail.");
         context.setVariable("message", "We've created a cabinet for you where you can track the status and manage your project request. To view your project request please proceed to Home Improve.");
         context.setVariable("projectDetails", details);
         context.setVariable(CONFIRM_URL, siteUrl + CONFIRM + PASSWORD + SLASH + jwtUtil.generateActivationJWT(customer.getValidationKey(), customer.getEmail()));
@@ -261,9 +261,9 @@ public class MailService {
         String serviceType = project.getServiceType().getName();
         context.setVariable(USER_NAME, customer.getFirstName());
         context.setVariable(TITLE, "Your project has been submitted!");
-        context.setVariable(BODY, "You've submitted project request for "
+        context.setVariable(BODY, "You've submitted  a project request for "
             + highlight(serviceType) +
-            ". If you didn't do this action, please skip this mail.");
+            ". If you didn't do this action, please ignore this mail.");
         context.setVariable("projectDetails", details);
         context.setVariable(CONFIRM_URL, siteUrl + CUSTOMER_PROJECTS + project.getId());
         context.setVariable(CONFIRM_BTN_TEXT, "View project");
@@ -298,12 +298,12 @@ public class MailService {
         String publishDate = review.getPublishDate().format(DateTimeFormatter.ISO_LOCAL_DATE);
         context.setVariable(CONTENT_ALIGN, "left");
         context.setVariable(TITLE, "Your have new review revision request");
-        context.setVariable(BODY_BEFORE_AREA, String.format("%s would like you to revise your review on %s project. Till %s Pro may contact you to fix outstanding problems if any.",
+        context.setVariable(BODY_BEFORE_AREA, String.format("%s would like you to revise your review on %s project. Till %s the Pro may contact you to fix outstanding problems if any.",
             highlight(company.getName()), highlight(serviceType), highlight(publishDate)));
         context.setVariable(TEXT_AREA_TITLE,"Message from Pro:");
         context.setVariable(TEXT_AREA_CONTENT, comment);
-        context.setVariable(BODY_AFTER_AREA, String.format("Revision request expires after %1$s and if you would not revise it, your original review won't be changed." +
-            "<br/>We may send you a reminder if you haven't responded till %s.", highlight(publishDate)));
+        context.setVariable(BODY_AFTER_AREA, String.format("Revision request expires on %1$s and if you would not revise it, your original review won't be changed." +
+            "<br/>We may send you a reminder if you haven't responded before %s.", highlight(publishDate)));
         context.setVariable(CONFIRM_URL, siteUrl + UI_CUSTOMER_BASE_PATH + "/review-revision/" + review.getId());
         context.setVariable(CONFIRM_BTN_TEXT, "Edit review");
         mailClient.sendMail("Review revision request", TEXT_AREA_TEMPLATE, context, MailHolder.MessageType.NOREPLY, review.getCustomer().getEmail());
@@ -446,7 +446,7 @@ public class MailService {
         Project project = projectRequest.getProject();
         context.setVariable(TITLE, "Your offer accepted");
         context.setVariable(BODY, highlight(project.getCustomer().getDisplayName()) +
-            " accepted your offer on " +
+            " accepted your offer on the " +
             highlight(project.getServiceType().getName()) +
             " project");
         context.setVariable(CONFIRM_URL, siteUrl + PRO_PROJECTS + projectRequest.getId());
@@ -497,7 +497,7 @@ public class MailService {
         Context context = contextTemplate();
         context.setVariable(TITLE, "You have subscribed for a stream of leads from Home Improve");
         context.setVariable(BODY, "You will receive leads up to " + highlight(formatUsd(currentBudget)) +
-            " to the end of the current billing period (" + highlight(endDate) + ").");
+            " until the end of the current billing period (" + highlight(endDate) + ").");
         context.setVariable(CONFIRM_URL, siteUrl + BILLING_URL);
         context.setVariable(CONFIRM_BTN_TEXT, "Check billing");
         mailClient.sendMail("Subscription confirmed for Home Improve", CONFIRMATION_TEMPLATE, context, MailHolder.MessageType.BILLING, recipients);
@@ -537,7 +537,7 @@ public class MailService {
         String last4digits = getLast4DigitsSilent(company);
 
         context.setVariable(TITLE, "Subscription is prolonged for next billing period");
-        StringBuilder body = new StringBuilder("Thank you for being a member of Home Improve.");
+        StringBuilder body = new StringBuilder("Thank you for being a member of Home Improve. ");
         if (charged > 0) {
             body.append("We successfully charged ").append(highlight(formatUsd(charged)))
                 .append(" to your credit card ending in ").append(last4digits)
@@ -587,10 +587,10 @@ public class MailService {
 
     public void sendRefundRequestAccepted(Company company, String customer, String serviceType) {
         Context context = contextTemplate();
-        context.setVariable(TITLE, "Refund request accepted on review");
-        context.setVariable(BODY, String.format("Refund request for project \"%s for %s\" is accepted on review." +
+        context.setVariable(TITLE, "Refund request accepted to review");
+        context.setVariable(BODY, String.format("Refund request for the project \"%s for %s\" is accepted to review." +
                 " We may contact you to clarify some details regarding this project." +
-                " You can track status of your refund request in PRO Dashboard",
+                " You can track the status of your refund request in the PRO Dashboard.",
             highlight(serviceType), highlight(customer)));
         context.setVariable(CONFIRM_URL, siteUrl + PRO + DASHBOARD);
         context.setVariable(CONFIRM_BTN_TEXT, "View in Dashboard");
@@ -601,8 +601,8 @@ public class MailService {
     public void sendRefundRequestApproved(Company company, String customer, String serviceType) {
         Context context = contextTemplate();
         context.setVariable(TITLE, "Refund request is approved");
-        context.setVariable(BODY, String.format("Refund request for project \"%s for %s\" is approved." +
-                " We credit back the lead price to you internal balance at Home Improve",
+        context.setVariable(BODY, String.format("Refund request for the project \"%s for %s\" is approved." +
+                " We will credit back the lead price to you internal balance at Home Improve",
             highlight(serviceType), highlight(customer)));
         mailClient.sendMail("Refund request is approved", NOTICE_TEMPLATE, context, MailHolder.MessageType.NOREPLY, getRecipients(company));
     }
@@ -611,7 +611,7 @@ public class MailService {
     public void sendRefundRequestRejected(Company company, String customer, String serviceType) {
         Context context = contextTemplate();
         context.setVariable(TITLE, "Refund request is rejected");
-        context.setVariable(BODY, String.format("Refund request for project \"%s for %s\" is rejected according to Home Improve %s",
+        context.setVariable(BODY, String.format("Refund request for the project \"%s for %s\" is rejected according to Home Improve's %s",
             highlight(serviceType), highlight(customer), wrapLink("Lead Return Credit Policy", siteUrl + TERMS_OF_USE_URL)));
         mailClient.sendMail("Refund request is rejected", NOTICE_TEMPLATE, context, MailHolder.MessageType.NOREPLY, getRecipients(company));
     }
@@ -656,8 +656,8 @@ public class MailService {
                 " Client cannot rate you lower than original review. We recommend to get in touch with %1$s and try to fix outstanding issues if any." +
 
                 "<br/><br/>If the client accepts your request, the revised review will be published on your profile." +
-                "<br/>If the client declines your request, or not respond till %2$s, the original review will be published." +
-                "<br/>We'll let you know the client’s decision immediately by email. Regardless of the outcome of your request, please respect the client decision." ,
+                "<br/>If the client declines your request, or does not respond before %2$s, the original review will be published." +
+                "<br/>We'll let you know the client’s decision immediately by email. Regardless of the outcome of your request, please respect the client’s decision." ,
             highlight(customer.getDisplayName()), highlight(publishDate)));
         context.setVariable(CONFIRM_URL, siteUrl + COMPANIES + SLASH + company.getId() + "#reviews");
         context.setVariable(CONFIRM_BTN_TEXT, "View at Profile");
@@ -708,7 +708,7 @@ public class MailService {
         Context context = contextTemplate();
         context.setVariable(TITLE, "You have been invited to Home Improve");
         context.setVariable(BODY, "You will receive " + highlight("$" + centsToUsd(amount)) +
-            " after " + wrapLink("signing up", siteUrl + BECOME_PRO_URL) + " the Home Improve.");
+            " after " + wrapLink("signing up", siteUrl + BECOME_PRO_URL) + " at Home Improve.");
         context.setVariable(CONFIRM_URL, siteUrl + BECOME_PRO_URL);
         context.setVariable(CONFIRM_BTN_TEXT, "Become a Pro");
         mailClient.sendMailsSeparate("Bonus from Home Improve", CONFIRMATION_TEMPLATE, context,

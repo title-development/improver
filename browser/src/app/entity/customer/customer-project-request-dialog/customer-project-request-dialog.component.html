@@ -163,7 +163,7 @@
              *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.ACTIVE && !Project.isArchived(projectRequest.projectStatus)">
           <button cv-button class="hire-company-button" (click)="hireCompany(projectRequest)">Accept Offer</button>
           <span class="message" (click)="event.preventDefault();">
-              Don't want to receive requests and messages from other professionals? Hire one and let others know.
+              Don't want to receive requests and messages from other professionals about this project? Hire one and let others know.
             </span>
           <button cv-button class="decline-company-button" (click)="declineCompany(projectRequest)">Decline</button>
         </div>

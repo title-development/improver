@@ -79,7 +79,7 @@ public class Notification {
     public static Notification newProjectRequest(User receiver, String company, String companyId, String serviceType, long projectId){
         return new Notification().setUser(receiver)
             .setIcon(companyIconURL(companyId))
-            .setPayload(String.format("<b>%s</b> sent you project request for <b>%s</b>", company, serviceType))
+            .setPayload(String.format("<b>%s</b> sent you a project request for <b>%s</b>", company, serviceType))
             .setLink(CUSTOMER_PROJECTS + projectId);
     }
 
@@ -100,7 +100,7 @@ public class Notification {
     public static Notification customerHired(User receiver, String client, long customerId, String serviceType, long projectRequestId){
         return new Notification().setUser(receiver)
             .setIcon(customerIconURL(customerId))
-            .setPayload(String.format("<b>%s</b> accepted your offer on <b>%s</b> project", client, serviceType))
+            .setPayload(String.format("<b>%s</b> accepted your offer on the <b>%s</b> project", client, serviceType))
             .setLink(PRO_PROJECTS + projectRequestId);
     }
 
@@ -115,21 +115,21 @@ public class Notification {
     public static Notification reviewed(User receiver, String client, long customerId, String companyId){
         return new Notification().setUser(receiver)
             .setIcon(customerIconURL(customerId))
-            .setPayload(String.format("<b>%s</b> left review", client))
+            .setPayload(String.format("<b>%s</b> left a review", client))
             .setLink(COMPANIES + SLASH + companyId + "#reviews");
     }
 
     public static Notification reviewedNegative(User receiver, String client, long customerId, String companyId){
         return new Notification().setUser(receiver)
             .setIcon(customerIconURL(customerId))
-            .setPayload(String.format("You got new review with low rating from <b>%s</b>", client))
+            .setPayload(String.format("You got a new review with a low rating from <b>%s</b>", client))
             .setLink(COMPANIES + SLASH + companyId + "#reviews");
     }
 
     public static Notification reviewPublished(User receiver, String client, long customerId, String companyId){
         return new Notification().setUser(receiver)
             .setIcon(customerIconURL(customerId))
-            .setPayload(String.format("Review from <b>%s</b> is published on your profile page", client))
+            .setPayload(String.format("The review from <b>%s</b> has been published on your profile page", client))
             .setLink(COMPANIES + SLASH + companyId + "#reviews");
     }
 

@@ -124,9 +124,8 @@
 
             <ng-container *ngSwitchCase="ProjectRequest.MessageEvent.HIRE">
               <ng-container *ngIf="securityService.hasRole(Role.CUSTOMER)">
-                <span>You accepted the </span>
+                <span>You accepted the offer by </span>
                 <span class="name">{{companyName}}</span>
-                <span> offer</span>
               </ng-container>
               <ng-container *ngIf="securityService.hasRole(Role.CONTRACTOR)">
                 <span class="name">{{customerName}}</span>
@@ -188,10 +187,10 @@
 
             <ng-container *ngSwitchCase="ProjectRequest.MessageEvent.INVALIDATED">
               <ng-container *ngIf="securityService.hasRole(Role.CUSTOMER)">
-                <span>Project closed due to project invalidation</span>
+                <span>Project invalidated and closed</span>
               </ng-container>
               <ng-container *ngIf="securityService.hasRole(Role.CONTRACTOR)">
-                <span>Project closed due to project invalidation</span>
+                <span>Project invalidated and closed</span>
               </ng-container>
             </ng-container>
 
