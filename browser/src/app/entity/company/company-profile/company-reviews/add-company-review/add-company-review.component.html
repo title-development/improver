@@ -30,8 +30,17 @@
         </mat-hint>
         <div class="review-post-message-container">
           <cv-input-field>
-            <textarea class="review-post-message" #companyReview="ngModel" rows="5" placeholder="Tell something about your experience with North America Development Group, LLC" name="review" maxlength="500" [(ngModel)]="newReview.description" trim required></textarea>
-            <cv-field-hint>{{companyReview.value ? companyReview.value.length : 0}}/500</cv-field-hint>
+            <textarea #companyReview="ngModel" class="review-post-message"  rows="5"
+                      cv-input
+                      trim
+                      [placeholder]="'Tell something about your experience with ' + companyProfile.name"
+                      name="review" [minlength]="constants.REVIEW_MESSAGE_MIN_LENGTH" [maxlength]="constants.REVIEW_MESSAGE_MAX_LENGTH" [(ngModel)]="newReview.description"
+                      required></textarea>
+            <cv-field-hint>{{companyReview.value ? companyReview.value.length : 0}}/{{constants.REVIEW_MESSAGE_MAX_LENGTH}}</cv-field-hint>
+            <cv-field-error *ngIf="companyReview.dirty || companyReview.touched || reviewPostForm.submitted">
+              <span *ngIf="companyReview.errors?.required">Please tell us about your experience with {{companyProfile.name}}</span>
+              <span *ngIf="companyReview.errors?.minlength">Please enter a message greater then 10 symbols</span>
+            </cv-field-error>
           </cv-input-field>
         </div>
         <div *ngIf="reviewPostForm.submitted && (newReview.description == '' || newReview.description == undefined)" class="mat-error">

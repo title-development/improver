@@ -8,6 +8,7 @@ import { ReviewService } from '../../../../../api/services/review.service';
 import { ProjectRequest } from '../../../../../api/models/ProjectRequest';
 import { SecurityService } from '../../../../../auth/security.service';
 import { Router, RouterStateSnapshot } from '@angular/router';
+import {Constants} from "../../../../../util/constants";
 
 @Component({
   selector: 'add-company-review',
@@ -30,7 +31,8 @@ export class AddCompanyReviewComponent implements OnInit {
               public reviewService: ReviewService,
               public dialog: MatDialog,
               public securityService: SecurityService,
-              private router: Router,) {
+              private router: Router,
+              public constants: Constants) {
 
   }
 
