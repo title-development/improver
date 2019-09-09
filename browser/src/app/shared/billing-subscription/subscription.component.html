@@ -52,9 +52,9 @@
                 </cv-field-error>
               </div>
 
-              <div class="col-md-6">
+              <div class="col-md-6" *ngIf="subscription.active">
                 <div class="field">
-                  <cv-field-label>{{subscription.active && subscription.autoContinue ? 'Next billing date' : 'Subscription expires'}}</cv-field-label>
+                  <cv-field-label>{{subscription.autoContinue ? 'Next billing date' : 'Subscription expires'}}</cv-field-label>
                   <div class="next-billing-date">{{subscription.nextBillingDate | date:'longDate'}}</div>
                 </div>
               </div>
