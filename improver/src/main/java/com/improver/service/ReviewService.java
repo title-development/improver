@@ -73,7 +73,7 @@ public class ReviewService {
         Company company = review.getCompany();
         ProjectRequest projectRequest = review.getProjectRequest();
 
-        if (isNegative) {
+        if (isNegative && projectRequest != null) {
             review.setPublishDate(ZonedDateTime.now().plusDays(BusinessProperties.NEGATIVE_REVIEW_PREPUBLISH_DAYS));
         } else {
             review.setPublishDate(ZonedDateTime.now());
@@ -143,6 +143,9 @@ public class ReviewService {
 
     public void requestReviewRevision(Company company, Review review, String comment) {
         ServiceType serviceType = serviceTypeRepository.findByProjectsProjectRequestsReviewId(review.getId());
+        if (serviceType == null){
+            throw new ValidationException("Cannot request review revision for non project review");
+        }
         mailService.sendReviewRevisionRequest(company, review, serviceType.getName(), comment);
         reviewRevisionRequestRepository.save(new ReviewRevisionRequest().setComment(comment).setReview(review));
     }
