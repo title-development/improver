@@ -171,8 +171,7 @@ export class AdminProjectsComponent {
   toValidation() {
     this.displayValidationDialog = true;
     this.projectValidation = {
-      status: Project.Status.VALIDATION,
-      reason: Project.Reason.INVALID_LOCATION
+      status: Project.Status.VALIDATION
     };
   }
 

@@ -169,6 +169,7 @@ public class Project implements ImageContainable {
 
         //====== System resolution =====
         DUPLICATED("Project is duplicated"),
+        INVALID_PROJECT("Suspicious project"),
         INVALID_LOCATION("Invalid project location"),
         INVALID_SERVICE("Wrong service selected"),
         INVALID_USER("Wrong user");
@@ -206,6 +207,7 @@ public class Project implements ImageContainable {
 
     public static final Map<Project.Reason, String> invalidateList =  new LinkedHashMap(){{
         put(DUPLICATED, DUPLICATED.getPhrase());
+        put(INVALID_PROJECT, INVALID_PROJECT.getPhrase());
         put(INVALID_SERVICE, INVALID_LOCATION.getPhrase());
         put(INVALID_LOCATION, INVALID_LOCATION.getPhrase());
         put(INVALID_USER, INVALID_USER.getPhrase());
