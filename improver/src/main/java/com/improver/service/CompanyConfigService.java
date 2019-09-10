@@ -4,20 +4,10 @@ import com.improver.entity.*;
 import com.improver.exception.InternalServerException;
 import com.improver.exception.ThirdPartyException;
 import com.improver.exception.ValidationException;
-import com.improver.model.NameIdParentTuple;
-import com.improver.model.NameIdTuple;
-import com.improver.model.OfferedService;
-import com.improver.model.ProNotificationSettings;
-import com.improver.model.TradesServicesCollection;
+import com.improver.model.*;
 import com.improver.model.out.CompanyCoverageConfig;
 import com.improver.model.out.ValidatedLocation;
-import com.improver.repository.AreaRepository;
-import com.improver.repository.CompanyConfigRepository;
-import com.improver.repository.CompanyRepository;
-import com.improver.repository.ContractorRepository;
-import com.improver.repository.ServedZipRepository;
-import com.improver.repository.ServiceTypeRepository;
-import com.improver.repository.TradeRepository;
+import com.improver.repository.*;
 import com.improver.util.StaffActionLogger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,9 +93,8 @@ public class CompanyConfigService {
     public void updateNotificationSettings(ProNotificationSettings notificationSettings, Company company, Contractor contractor) {
         CompanyConfig config = company.getCompanyConfig();
         config.getNotificationSettings()
-            .setNewLeads(notificationSettings.isNewLeads())
-            .setLeadReceipts(notificationSettings.isLeadReceipts())
-            .setReceiveReviews(notificationSettings.isReceiveReviews())
+            .setReceiveNewLeads(notificationSettings.isReceiveNewLeads())
+            .setReceiveMessages(notificationSettings.isReceiveMessages())
             .setReceiveMarketing(notificationSettings.isReceiveMarketing())
             .setReceiveSuggestions(notificationSettings.isReceiveSuggestions());
         companyConfigRepository.save(config);

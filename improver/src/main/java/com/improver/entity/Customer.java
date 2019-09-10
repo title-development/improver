@@ -9,12 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Embeddable;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import java.time.ZonedDateTime;
+import javax.persistence.*;
 import java.util.List;
 
 
@@ -36,22 +31,19 @@ public class Customer extends User {
     private List<Review> reviews;
 
     @Embedded
-    private MailSettings mailSettings = new MailSettings();
+    private NotificationSettings notificationSettings = new NotificationSettings();
 
     @Embeddable
     @Data
-    public static class MailSettings {
-        //Order Lifecycle
-        //Email notification on order request, close, cancel, etc
-        private boolean isProjectLifecycle = true;
+    public static class NotificationSettings {
 
-        //Pro requests
-        //Receive emails when PRO sent you project request
-        private boolean isProRequests = true;
+        //Messages
+        //Receive emails about new chat messages
+        private boolean isReceiveMessages = true;
 
         //Marketing
         //Receive emails regarding updates and special offers from Home Improve
-        private boolean isMarketing = true;
+        private boolean isReceiveMarketing = true;
     }
 
 

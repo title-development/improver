@@ -4,16 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Embeddable;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.List;
 
 import static com.improver.application.properties.BusinessProperties.DEFAULT_COMPANY_COVERAGE_RADIUS;
@@ -92,29 +83,24 @@ public class CompanyConfig {
 
         // New Leads
         // Email notifications of new leads available for purchase
-        private boolean isNewLeads = true;
+        private boolean isReceiveNewLeads = true;
 
-        // Lead Receipts
-        // Email receipts for leads you manually purchase
-        private boolean isLeadReceipts = true;
-
-        // Customer Reviews
-        // Notifications when customers leave you reviews, etc..
-        private boolean isReceiveReviews = true;
-
-        // Suggestions and tips
-        // Receive personalized tips and suggestion to success on market
-        private boolean isReceiveSuggestions = true;
+        // Messages
+        // Receive emails about new chat messages
+        private boolean isReceiveMessages = true;
 
         // Marketing
         // Receive emails regarding updates and special offers from Home Improve
         private boolean isReceiveMarketing = true;
 
+        // Suggestions and tips
+        // Receive personalized tips and suggestion to success on market
+        private boolean isReceiveSuggestions = true;
+
 
         public NotificationSettings updateTo(NotificationSettings source) {
-            this.setNewLeads(source.isNewLeads())
-                .setLeadReceipts(source.isLeadReceipts())
-                .setReceiveReviews(source.isReceiveReviews())
+            this.setReceiveNewLeads(source.isReceiveNewLeads())
+                .setReceiveMessages(source.isReceiveMessages())
                 .setReceiveMarketing(source.isReceiveMarketing())
                 .setReceiveSuggestions(source.isReceiveSuggestions());
             return this;

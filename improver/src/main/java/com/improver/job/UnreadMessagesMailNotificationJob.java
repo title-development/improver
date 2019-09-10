@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Component
 public class UnreadMessagesMailNotificationJob {
 
-    public static final int UNREAD_MESSAGES_MAIL_NOTIFICATION_LOCK = 60 * 1000;
+    public static final int UNREAD_MESSAGES_MAIL_NOTIFICATION_LOCK = 60 * 1000 * 15;
     public static final Duration UNREAD_MESSAGE_JOB_INTERVAL = Duration.ofMinutes(15);
 
     @Autowired private ProjectMessageRepository projectMessageRepository;

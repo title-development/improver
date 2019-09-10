@@ -1,16 +1,14 @@
 export class ContractorNotificationSettings {
-  leadReceipts: boolean;
-  newLeads: boolean;
-  quickReply: boolean;
+  receiveNewLeads: boolean;
+  receiveMessages: boolean;
   receiveMarketing: boolean;
-  receiveReviews: boolean;
   receiveSuggestions: boolean;
+  quickReply: boolean;
   replyText: string
 }
 
 
 export class CustomerNotificationSettings {
-  marketing: boolean;
-  proRequests: boolean;
-  projectLifecycle: boolean;
+  receiveMessages: boolean;
+  receiveMarketing: boolean;
 }

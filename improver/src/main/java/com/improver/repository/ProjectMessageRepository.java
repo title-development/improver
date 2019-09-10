@@ -1,6 +1,9 @@
 package com.improver.repository;
 
-import com.improver.entity.*;
+import com.improver.entity.Notification;
+import com.improver.entity.ProjectMessage;
+import com.improver.entity.ProjectRequest;
+import com.improver.entity.User;
 import com.improver.model.tmp.UnreadProjectMessageInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -81,11 +84,12 @@ public interface ProjectMessageRepository extends JpaRepository<ProjectMessage, 
         "INNER JOIN com.improver.entity.Project p ON p.id = pr.project.id " +
         "INNER JOIN com.improver.entity.ServiceType st ON st.id = p.serviceType.id " +
         "INNER JOIN com.improver.entity.Customer cus ON p.customer.id = cus.id " +
-        "WHERE (pm.created BETWEEN :dateFrom AND :dateTo) " +
-        "AND pr.status IN :projectRequestStatuses " +
+        "WHERE cus.notificationSettings.isReceiveMessages = true " +
         "AND pm.isRead = false " +
-        "AND pm.sender != cast(cus.id as string) " +
+        "AND pr.status IN :projectRequestStatuses " +
+        "AND (pm.created BETWEEN :dateFrom AND :dateTo) " +
         "AND pm.sender != 'system' " +
+        "AND pm.sender != cast(cus.id as string) " +
         "GROUP BY p.id, cus.email, st.name")
     List<UnreadProjectMessageInfo> getCustomersWithUnreadMessagesByCreatedDateBetween(ZonedDateTime dateFrom, ZonedDateTime dateTo, List <ProjectRequest.Status> projectRequestStatuses);
 
@@ -96,11 +100,14 @@ public interface ProjectMessageRepository extends JpaRepository<ProjectMessage, 
         "INNER JOIN com.improver.entity.ServiceType st ON st.id = p.serviceType.id " +
         "INNER JOIN com.improver.entity.Customer cus ON p.customer.id = cus.id " +
         "INNER JOIN com.improver.entity.Contractor ctr ON ctr.id = pr.contractor.id " +
-        "WHERE (pm.created BETWEEN :dateFrom AND :dateTo) " +
-        "AND pr.status IN :projectRequestStatuses " +
+        "INNER JOIN com.improver.entity.Company cmp ON cmp.id = ctr.company.id " +
+        "INNER JOIN com.improver.entity.CompanyConfig cc ON cc.company.id = cmp.id " +
+        "WHERE cc.notificationSettings.isReceiveMessages = true " +
         "AND pm.isRead = false " +
-        "AND pm.sender != cast(ctr.id as string) " +
+        "AND pr.status IN :projectRequestStatuses " +
+        "AND (pm.created BETWEEN :dateFrom AND :dateTo) " +
         "AND pm.sender != 'system' " +
+        "AND pm.sender != cast(ctr.id as string) " +
         "GROUP BY pr.id, ctr.email, cus.displayName, st.name")
     List<UnreadProjectMessageInfo> getContractorsWithUnreadMessagesByCreatedDateBetween(ZonedDateTime dateFrom, ZonedDateTime dateTo, List <ProjectRequest.Status> projectRequestStatuses);
 

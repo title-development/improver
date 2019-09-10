@@ -19,21 +19,14 @@
 
               <div class="notification-settings-form-content">
 
-                <cv-checkbox name="projectLifecycle" [(ngModel)]="notificationSettings.projectLifecycle">
+                <cv-checkbox name="projectLifecycle" [(ngModel)]="notificationSettings.receiveMessages">
                   <div class="notification-label">
-                    <div class="label">Project Life-cycle</div>
-                    <div class="hint">Email notification on order submit, close, cancel, etc</div>
+                    <div class="label">Messages</div>
+                    <div class="hint">Receive emails about new chat messages</div>
                   </div>
                 </cv-checkbox>
 
-                <cv-checkbox name="proRequests" [(ngModel)]="notificationSettings.proRequests">
-                  <div class="notification-label">
-                    <div class="label">PRO Requests</div>
-                    <div class="hint">Receive emails when a PRO sends you project request</div>
-                  </div>
-                </cv-checkbox>
-
-                <cv-checkbox name="marketing" [(ngModel)]="notificationSettings.marketing">
+                <cv-checkbox name="marketing" [(ngModel)]="notificationSettings.receiveMarketing">
                   <div class="notification-label">
                     <div class="label">Marketing</div>
                     <div class="hint">Receive emails regarding updates and special offers from Home Improve</div>

@@ -1,14 +1,14 @@
 package com.improver.util.mail;
 
+import com.improver.application.properties.BusinessProperties;
 import com.improver.entity.*;
 import com.improver.model.in.OrderDetails;
 import com.improver.model.out.PaymentCard;
 import com.improver.model.tmp.UnreadProjectMessageInfo;
 import com.improver.repository.AdminRepository;
-import com.improver.service.PaymentService;
-import com.improver.application.properties.BusinessProperties;
-import com.improver.util.serializer.SerializationUtil;
 import com.improver.security.JwtUtil;
+import com.improver.service.PaymentService;
+import com.improver.util.serializer.SerializationUtil;
 import lombok.extern.slf4j.Slf4j;
 import nz.net.ultraq.thymeleaf.LayoutDialect;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,6 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.improver.application.properties.Path.*;
 import static com.improver.application.properties.UiPath.*;
@@ -254,9 +253,6 @@ public class MailService {
 
 
     public void sendOrderSubmitMail(Customer customer, Project project, OrderDetails details) {
-        if (!customer.getMailSettings().isProjectLifecycle()) {
-            return;
-        }
         Context context = contextTemplate();
         String serviceType = project.getServiceType().getName();
         context.setVariable(USER_NAME, customer.getFirstName());
@@ -278,9 +274,6 @@ public class MailService {
      */
     public void sendNewProposalEmail(Company company, Project project) {
         Customer customer = project.getCustomer();
-        if (!customer.getMailSettings().isProRequests()) {
-            return;
-        }
         Context context = contextTemplate();
         context.setVariable(USER_NAME, customer.getFirstName());
         context.setVariable(TITLE, "You have new Professional's request to your project");
@@ -401,9 +394,6 @@ public class MailService {
      * @param projectRequest projectRequest created after purchase
      */
     public void sendManualLeadPurchaseEmail(Contractor contractor, ProjectRequest projectRequest) {
-        if (!contractor.getCompany().getCompanyConfig().getNotificationSettings().isLeadReceipts()) {
-            return;
-        }
         Context context = contextTemplate();
         Project project = projectRequest.getProject();
         context.setVariable(USER_NAME, contractor.getFirstName());

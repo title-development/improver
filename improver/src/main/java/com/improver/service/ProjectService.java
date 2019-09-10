@@ -136,9 +136,7 @@ public class ProjectService {
             .setLead(false)
         );
         projectActionRepository.save(ProjectAction.toValidationProject(reason, comment, support).setProject(project));
-        if(project.getCustomer().getMailSettings().isProjectLifecycle()) {
-            mailService.sendProjectStatusChanged(project, reason);
-        }
+        mailService.sendProjectStatusChanged(project, reason);
         wsNotificationService.projectToValidation(project.getCustomer(), project.getServiceType().getName(), project.getId());
     }
 
@@ -162,9 +160,7 @@ public class ProjectService {
         projectRepository.save(project);
 
         projectActionRepository.save(ProjectAction.validateProject(text, support).setProject(project));
-        if(project.getCustomer().getMailSettings().isProjectLifecycle()) {
-            mailService.sendProjectStatusChanged(project, null);
-        }
+        mailService.sendProjectStatusChanged(project, null);
         wsNotificationService.projectValidated(project.getCustomer(), project.getServiceType().getName(), project.getId());
     }
 
@@ -181,9 +177,7 @@ public class ProjectService {
             .setReason(reason)
         );
         projectActionRepository.save(ProjectAction.invalidateProject(reason, text, support).setProject(project));
-        if (project.getCustomer().getMailSettings().isProjectLifecycle()) {
-            mailService.sendProjectStatusChanged(project, reason);
-        }
+        mailService.sendProjectStatusChanged(project, reason);
 
         wsNotificationService.projectInvalidated(project.getCustomer(), project.getServiceType().getName(), project.getId());
 

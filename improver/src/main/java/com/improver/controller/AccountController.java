@@ -20,8 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import static com.improver.application.properties.Path.*;
-import static com.improver.application.properties.Path.ICON;
-import static com.improver.application.properties.Path.NOTIFICATIONS;
 
 @Slf4j
 @Deprecated
@@ -94,12 +92,12 @@ public class AccountController {
 
     @SameUserAccess
     @GetMapping(ID_PATH_VARIABLE + NOTIFICATIONS)
-    public ResponseEntity<Customer.MailSettings> getNotificationSettings(@PathVariable long id) {
+    public ResponseEntity<Customer.NotificationSettings> getNotificationSettings(@PathVariable long id) {
 
         Customer existed = customerRepository.findById(id)
             .orElseThrow(NotFoundException::new);
 
-        Customer.MailSettings settings = existed.getMailSettings();
+        Customer.NotificationSettings settings = existed.getNotificationSettings();
 
         return new ResponseEntity<>(settings, HttpStatus.OK);
     }
@@ -107,11 +105,11 @@ public class AccountController {
 
     @SameUserAccess
     @PutMapping(ID_PATH_VARIABLE + NOTIFICATIONS)
-    public ResponseEntity<Void> updateNotificationSettings(@PathVariable long id, @RequestBody Customer.MailSettings settings) {
+    public ResponseEntity<Void> updateNotificationSettings(@PathVariable long id, @RequestBody Customer.NotificationSettings settings) {
 
         Customer existed = customerRepository.findById(id)
             .orElseThrow(NotFoundException::new);
-        customerRepository.save(existed.setMailSettings(settings));
+        customerRepository.save(existed.setNotificationSettings(settings));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

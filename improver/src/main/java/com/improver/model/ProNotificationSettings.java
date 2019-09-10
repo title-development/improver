@@ -14,36 +14,29 @@ public class ProNotificationSettings {
 
     // New Leads
     // Email notifications of new leads available for purchase
-    private boolean isNewLeads;
+    private boolean isReceiveNewLeads;
 
-    // Lead Receipts
-    // Email receipts for leads you manually purchase
-    private boolean isLeadReceipts;
-
-    // Customer Reviews
-    // Notifications when customers leave you reviews, etc..
-    private boolean isReceiveReviews;
-
-    // Suggestions and tips
-    // Receive personalized tips and suggestion to success on market
-    private boolean isReceiveSuggestions;
+    // Messages
+    // Receive emails about new chat messages
+    private boolean isReceiveMessages;
 
     // Marketing
     // Receive emails regarding updates and special offers from Home Improve
     private boolean isReceiveMarketing;
 
+    // Suggestions and tips
+    // Receive personalized tips and suggestion to success on market
+    private boolean isReceiveSuggestions;
 
     private boolean isQuickReply;
 
     @Size(max = 500)
     private String replyText;
 
-
     public ProNotificationSettings(CompanyConfig.NotificationSettings ns) {
-        this.isNewLeads = ns.isNewLeads();
-        this.isLeadReceipts = ns.isLeadReceipts();
-        this.isReceiveReviews = ns.isReceiveReviews();
-        this.isReceiveSuggestions = ns.isReceiveSuggestions();
+        this.isReceiveNewLeads = ns.isReceiveNewLeads();
+        this.isReceiveMessages = ns.isReceiveMessages();
         this.isReceiveMarketing = ns.isReceiveMarketing();
+        this.isReceiveSuggestions = ns.isReceiveSuggestions();
     }
 }
