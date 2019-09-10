@@ -29,8 +29,8 @@
            [cvSpinnerSize]="26"
            [cvSpinnerBackground]="true" [ngClass]="{'-active': tab.active}">
         <div class="no-data-row" *ngIf="tab.pageable?.totalElements == 0">
-          <span *ngIf="tab.latest">Here will be listed projects you work on</span>
-          <span *ngIf="!tab.latest">Here will be listed your closed projects</span>
+          <span *ngIf="tab.latest">Here you will find the projects you are working on</span>
+          <span *ngIf="!tab.latest">Here you will find your closed projects</span>
           <a cv-button-flat class="no-data-button" [routerLink]="['/pro/leads-search']">Find new projects</a>
         </div>
         <ng-container *ngIf="tab.pageable?.totalElements > 0">

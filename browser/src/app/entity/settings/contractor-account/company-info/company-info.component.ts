@@ -207,7 +207,7 @@ export class CompanyInfoComponent implements OnInit {
 
   openRemoveLicenseConfirm(licenseId) {
     let properties = {
-      title: 'Confirm removing of the license',
+      title: 'Confirm license removal',
       message: 'Are you sure that you want to delete this license?',
       OK: 'Confirm',
       CANCEL: 'Cancel'

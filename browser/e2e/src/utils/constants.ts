@@ -76,11 +76,11 @@ export const billingHints = {
 
 export const signUpProHints = {
   email: "We use this email to register your account and send a lead notification.",
-  companyLogo: "Add company logo or picture. Profiles with a picture bring up to 300% more customers.",
-  coverageCommon: "Coverage is the area you work and receive leads. Basic coverage has a circle shape with a center of your company address and radius of 10 miles. The zip codes that intersect with that radius will be selected.",
-  coverageRadius: "You can adjust the center of coverage as well as a radius by simply drag it.",
-  offeredServices: "Select services you offer and want to receive leads for. You can always change offered services in your account settings.",
-  businessCategories: "Services are grouped into Trades for easier configuration. Add the entire Trades or particular Services.",
+  companyLogo: "Add a company logo or picture. Profiles with a picture bring up to 300% more customers.",
+  coverageCommon: "Coverage is the area you work and receive leads. Basic coverage has a circle shape with a center of your company address and radius of 10 miles. The zip codes that intersect the coverage area will be selected.",
+  coverageRadius: "You can adjust the center of the coverage by clicking and dragging it elsewhere.",
+  offeredServices: "Select services you offer and want to receive leads for. You can always change offered services in your account settings later.",
+  businessCategories: "Services are grouped into Trades for easier configuration. Add the entire Trades or select particular Services.",
   checkService: "Please check any Service Type that applies to you"
 };
 

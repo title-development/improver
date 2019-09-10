@@ -288,7 +288,7 @@ export class ServicesSelectorComponent implements OnInit {
     }
 
     let properties = {
-      title: 'Are you sure that you want remove this Trade?',
+      title: 'Are you sure that you want to remove this Trade?',
       message: '',
       OK: 'Confirm',
       CANCEL: 'Cancel'

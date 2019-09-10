@@ -12,10 +12,10 @@
       <div class="col-sm-8 col-md-8 subscription-description-wrapper">
         <div class="card">
           <div class="subscription-description" [cvSpinner]="cardProcessing" [cvSpinnerSize]="30" [cvSpinnerBackground]="true">
-            <div class="title">Subscribe to faster purchase</div>
-            <div class="text">Subscription budget of <span
+            <div class="title">Subscribe for faster purchases</div>
+            <div class="text">A subscription budget of <span
               class="highlight">${{subscriptionActionsService.subscriptionAmount / 100}}</span> will be <span class="highlight">reserved</span> on your
-              balance for subscription leads. You will automatically receive leads from Home Improve up to your budget
+              balance for subscription leads. You will automatically receive leads from Home Improve up to your budgeted
               amount.
               <br/>Auto-billing will occur on the {{subscriptionActionsService.nextBillingDate | date:'d'}}th of every
               month.
@@ -26,7 +26,7 @@
 
 
         <div class="terms-block">
-          By making purchase you agree to our <a routerLink="/terms-of-use">Terms of Use</a> and <a
+          By making this purchase you agree to our <a routerLink="/terms-of-use">Terms of Use</a> and <a
           routerLink="/privacy-policy">Privacy Policy</a>
         </div>
       </div>
@@ -47,13 +47,16 @@
 
               <div class="with-card" *ngIf="paymentCards?.length > 0" >
                 <div class="enough-founds" *ngIf="mode == ModeEnum.NEW && subscriptionActionsService.subscriptionAmount <= billingService.billing.balance ">
-                  You have <span class="highlight">${{billingService.billing.balance / 100}}</span> on your balance and it won’t
-                  be changed until next month
+                  You have <span class="highlight">${{billingService.billing.balance / 100}}</span> on your balance and
+                  it won’t be changed until next month
                 </div>
                 <div class="not-enough-founds" *ngIf="mode == ModeEnum.NEW && subscriptionActionsService.subscriptionAmount > billingService.billing.balance ">
-                  You have <span class="highlight">${{billingService.billing.balance / 100}}</span> on your balance. In order to
-                  subscribe for monthly budget of <span class="highlight">${{subscriptionActionsService.subscriptionAmount / 100}}</span>
-                  your payment method will be charged for <span class="highlight">${{(subscriptionActionsService.subscriptionAmount - billingService.billing.balance) / 100}}</span>
+                  You have <span class="highlight">${{billingService.billing.balance / 100}}</span> in your balance. In
+                  order to subscribe to a monthly budget of <span
+                  class="highlight">${{subscriptionActionsService.subscriptionAmount / 100}}</span> you will be charged
+                  <span
+                    class="highlight">${{(subscriptionActionsService.subscriptionAmount - billingService.billing.balance) / 100}}</span>
+                  by your preferred payment method.
                 </div>
                 <div class="update" *ngIf="mode == ModeEnum.UPDATE" >
                   You are updating your subscription and will not be charged until your next billing date
@@ -102,8 +105,10 @@
       <div class="cancel-description">
         <img src="/assets/img/round-icons/cancel-subscription.png" alt="Cancel subscription">
         <div class="title">Unsubscribe from automatic leads</div>
-        <div class="body">You will cancel your Subscription. Your current plan will expire on
-          <span class="highlight">{{subscriptionActionsService.nextBillingDate | date:'longDate'}}</span> and you will receive leads and benefits up until that date</div>
+        <div class="body">This will cancel your Subscription. Your current plan will expire on
+          <span class="highlight">{{subscriptionActionsService.nextBillingDate | date:'longDate'}}</span> and you will
+          continue to receive leads and benefits until that date.
+        </div>
         <div class="question">Proceed to unsubscribe?</div>
         <div class="buttons-wrapper">
           <button cv-button-empty routerLink="/pro/settings/billing">Cancel</button>

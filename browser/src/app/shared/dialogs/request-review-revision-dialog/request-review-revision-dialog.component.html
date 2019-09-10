@@ -7,7 +7,8 @@
 <div class="content" [cvSpinner]="processing" [cvSpinnerSize]="40" [cvSpinnerBackground]="true"
      cvSpinnerBackgroundColor="white">
   <form action="" #form="ngForm" (ngSubmit)="form.valid && submit()">
-    <p>If for any reason you receive low rating review, you can ask customer to revise it. We'll send the customer an email that they have a Review revision request with the message you wrote.</p>
+    <p>If for any reason you receive low rating review, you can ask the customer to revise it. We'll send the customer
+      an email that they have a Review revision request with the message you wrote.</p>
     <p>Up to <b>{{review.publishDate | date:'longDate'}}</b> you can discuss with customer and fix outstanding problems if any.</p>
 
     <!--<p>You can only submit one request per review.</p>-->
@@ -31,10 +32,9 @@
 
 
     <p>Client cannot rate you lower than original review. If the client accepts your request, the revised review will be published on your profile.
-      If the client declines your request, or does not respond before <b>{{review.publishDate | date:'longDate'}}</b>, the original review will be published.
-      We'll let you know the client’s decision immediately by email.</p>
-
-    <p>Regardless of the outcome of your request, please respect the customer decision.</p>
+      If the client declines your request, or does not respond before <b>{{review.publishDate | date:'longDate'}}</b>,
+      the original review will be published. We'll let you know the client’s decision immediately by email.</p>
+    <p>Regardless of the outcome of your request, please respect the customer’s decision.</p>
 
     <div class="actions">
       <button cv-button-flat flatStyle="dark" (click)="close()" type="button">Cancel</button>

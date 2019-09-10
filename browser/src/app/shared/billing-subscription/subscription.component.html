@@ -3,7 +3,7 @@
   <div class="header">
     <div class="holder">
       <div class="subscribed" *ngIf="!subscription.active">
-        <h3>Subscribe to faster purchase</h3>
+        <h3>Subscribe for faster purchases</h3>
         <p>Receive a steady stream of leads with minimal effort and be eligible for discounted leads</p>
       </div>
       <div class="not-subscribed" *ngIf="subscription.active">
@@ -26,7 +26,7 @@
         <div class="col-sm-6">
 
           <p class="subscription-hint">
-            You only pay for the leads you received up to the amount you set.
+            You only pay for the leads you receive up to the amount you set.
             <br/>Please set the monthly limit you would like to spend on leads from Home Improve.
           </p>
 
@@ -133,7 +133,7 @@
       </div>
 
       <div class="hint-line" *ngIf="subscription.active && !subscription.autoContinue">You've canceled the subscription.
-        You still will receive automatic leads up to the end of current billing period.
+        You will continue to receive automatic leads until the end of the current billing period.
       </div>
 
       <div class="buttons-wrapper">
