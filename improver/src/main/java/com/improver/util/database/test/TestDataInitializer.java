@@ -299,7 +299,7 @@ public class TestDataInitializer {
             .setQuickReply(true)
             .setActivated(true)
             .setReplyText("Hi, we received your project request from Home Improve and would love to discuss this with you. " +
-                "Please let us know a convenient time for you. We look forward to connecting with you! Thanks, " +
+                "Please let us know a convenient time for you. We look forward to connecting with you!\n Thanks, " +
                 "Lory from Bravo inc!")
         );
 

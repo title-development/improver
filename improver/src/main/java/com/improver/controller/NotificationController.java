@@ -36,7 +36,8 @@ public class NotificationController {
     @Autowired private ProjectMessageRepository projectMessageRepository;
 
 
-    @PageableSwagger
+    // TODO: Remove this
+    @Deprecated
     @GetMapping(NOTIFICATIONS_PATH + "/unread/count")
     public ResponseEntity<Long> getUnread() {
         User user = userSecurityService.currentUser();
@@ -44,10 +45,11 @@ public class NotificationController {
         return new ResponseEntity<>(count, HttpStatus.OK);
     }
 
+    // TODO: Remove PageableSwagger and Pageable parameter
     @PageableSwagger
     @GetMapping(NOTIFICATIONS_PATH)
     public ResponseEntity<Page<Notification>> getAllNotifications(@PageableDefault(page = 0, size = 10) @SortDefault.SortDefaults({
-                                                                        @SortDefault(sort = "created", direction = Sort.Direction.DESC)}) Pageable pageable) {
+        @SortDefault(sort = "created", direction = Sort.Direction.DESC)}) Pageable pageable) {
         User user = userSecurityService.currentUser();
         Page<Notification> allByUser = notificationRepository.findAllByUser(user, pageable);
         return new ResponseEntity<>(allByUser, HttpStatus.OK);

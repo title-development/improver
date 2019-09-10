@@ -30,6 +30,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     SecurityProperties securityProperties;
 
+    private CaptchaFilter captchaFilter() {
+        return new CaptchaFilter.Builder()
+            .addMatcher(new AntPathRequestMatcher(LOGIN_PATH))
+            .addMatcher(new AntPathRequestMatcher(REGISTRATION_PATH + CUSTOMERS))
+            .addMatcher(new AntPathRequestMatcher(REGISTRATION_PATH + CONTRACTORS))
+            .build();
+    }
+
     private LoginFilter loginFilter() throws Exception {
         return new LoginFilter(LOGIN_PATH, authenticationManager(), userSecurityService, jwtUtil);
     }
@@ -98,10 +106,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, TRADES_PATH + "/**").permitAll()
             .anyRequest().permitAll()
             .and()
-            // We filter the api/login requests
-            .addFilterBefore(loginFilter(), AnonymousAuthenticationFilter.class)
             // And filter other requests to check the presence of JWT in header
             .addFilterBefore(jwtAuthenticationFilter(), AnonymousAuthenticationFilter.class)
+            .addFilterBefore(loginFilter(), JwtAuthenticationFilter.class)
+            .addFilterBefore(captchaFilter(), LoginFilter.class)
             .addFilterBefore(new LogoutFilter(LOGOUT_PATH), JwtAuthenticationFilter.class)
             .addFilterBefore(refreshAccessTokenFilter(), JwtAuthenticationFilter.class);
     }

@@ -1,4 +1,4 @@
-package com.improver.ws;
+package com.improver.controller;
 
 import com.improver.entity.ProjectMessage;
 import com.improver.entity.ProjectRequest;
@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.*;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
+
 import static com.improver.application.properties.Path.*;
 
 @Slf4j
@@ -16,12 +17,6 @@ import static com.improver.application.properties.Path.*;
 public class WsEndpointController {
 
     @Autowired private ChatService chatService;
-
-/*    @MessageExceptionHandler
-    @SendToUser(value="/queue/errors")
-    public String handleException(Throwable exception) {
-        return exception.getMessage();
-    }*/
 
 
     @SameUserAccess
