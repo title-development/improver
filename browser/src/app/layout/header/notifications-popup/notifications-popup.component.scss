@@ -108,13 +108,22 @@
       border-left: 4px solid transparent;
 
       .logo-wrapper {
+        display: flex;
+        justify-content: center;
         margin-right: 8px;
+        height: 50px;
+        width: 50px;
         div {
           height: 50px;
           width: 50px;
           background-size: cover;
           background-position: center;
           border-radius: 50%;
+          &.icon-present {
+            height: 36px;
+            width: 36px;
+            margin-top: 8px;
+          }
         }
       }
 

@@ -60,7 +60,7 @@
         <a class="app-menu-button xs-none sm-none" title="{{securityService.getLoginModel().name}}"
            *ngIf="securityService.isAuthenticated()" (click)="isMobMenuOpened = !isMobMenuOpened">
           <div class="account-icon"
-               [ngStyle]="securityService.getLoginModel().iconUrl && securityService.getLoginModel().iconUrl != '' && {'background-image':'url(' + securityService.getLoginModel().iconUrl + ')'} || securityService.getLoginModel().company && {'background-image':'url(/assets/img/company-logo-placeholder.png)'} || {'background-image':'url(/assets/img/customer-logo-placeholder.png)'}"></div>
+               [ngStyle]="securityService.getLoginModel().iconUrl && securityService.getLoginModel().iconUrl != '' && {'background-image':'url(' + securityService.getLoginModel().iconUrl + ')'} || securityService.getLoginModel().company && {'background-image':'url(/assets/img/company-logo-placeholder.png)'} || {'background-image':'url(/assets/img/user-logo-placeholder.png)'}"></div>
           <div class="user-name xs-none sm-none md-none" *ngIf="securityService.isAuthenticated()">
             {{securityService.getLoginModel().name | truncate:18: '...'}}
           </div>

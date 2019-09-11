@@ -20,7 +20,7 @@
   <p-column field="id" header="ID" [sortable]="true" *ngIf="selectedTableCols.includes('id')" [filter]="true"></p-column>
   <p-column field="iconUrl" header="Icon url" *ngIf="selectedTableCols.includes('iconUrl')">
     <ng-template pTemplate="body" let-row="rowData">
-      <div class="user-logo" [ngStyle]="row.iconUrl && row.iconUrl != '' && {'background-image':'url(' + row.iconUrl + ')'} || {'background-image':'url(/assets/img/customer-logo-placeholder.png)'}"></div>
+      <div class="user-logo" [ngStyle]="row.iconUrl && row.iconUrl != '' && {'background-image':'url(' + row.iconUrl + ')'} || {'background-image':'url(/assets/img/user-logo-placeholder.png)'}"></div>
     </ng-template>
   </p-column>
   <p-column field="firstName" header="First name" [sortable]="true" *ngIf="selectedTableCols.includes('firstName')" ></p-column>

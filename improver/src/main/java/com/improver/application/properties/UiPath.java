@@ -1,8 +1,6 @@
 package com.improver.application.properties;
 
-import static com.improver.application.properties.Path.PRO;
-import static com.improver.application.properties.Path.PROJECTS;
-import static com.improver.application.properties.Path.SLASH;
+import static com.improver.application.properties.Path.*;
 
 public final class UiPath {
 
@@ -15,7 +13,7 @@ public final class UiPath {
     public static final String DASHBOARD = "/dashboard";
     public static final String CUSTOMER_PROJECTS = UI_CUSTOMER_BASE_PATH + PROJECTS + SLASH;
     public static final String PRO_PROJECTS = PRO + PROJECTS + SLASH;
-    public static final String SYSTEM_NOTIFICATION_ICON = "/assets/img/home-improve-notification-icon.jpg";
+    public static final String SYSTEM_NOTIFICATION_ICON = "/assets/img/home-improve-notification-icon.png";
 
     private UiPath() {
     }
