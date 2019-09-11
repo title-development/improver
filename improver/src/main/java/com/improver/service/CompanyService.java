@@ -1,8 +1,10 @@
 package com.improver.service;
 
 import com.improver.entity.*;
-
-import com.improver.exception.*;
+import com.improver.exception.ConflictException;
+import com.improver.exception.InternalServerException;
+import com.improver.exception.NotFoundException;
+import com.improver.exception.ValidationException;
 import com.improver.model.CompanyInfo;
 import com.improver.model.in.registration.CompanyDetails;
 import com.improver.model.in.registration.CompanyRegistration;
@@ -12,7 +14,6 @@ import com.improver.repository.*;
 import com.improver.security.UserSecurityService;
 import com.improver.util.StaffActionLogger;
 import com.improver.util.mail.MailService;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,10 +21,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-
 import javax.transaction.Transactional;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.Collections;
+import java.util.Objects;
 
 import static com.improver.util.TextMessages.REPLY_TEXT_TEMPLATE;
 
@@ -78,10 +79,10 @@ public class CompanyService {
 
     public void updateCompanyInfo(Company existed, CompanyInfo info) {
         existed.setFounded(info.getFounded())
-            .setEmail(info.getEmail().toLowerCase())
+            .setEmail(info.getEmail() != null ? info.getEmail().toLowerCase() : "")
+            .setSiteUrl(info.getSiteUrl() != null ? info.getSiteUrl().toLowerCase() : "")
+            .setInternalPhone(info.getPhone())
             .setDescription(info.getDescription())
-            .setUri(info.getUriName())
-            .setSiteUrl(info.getSiteUrl())
             .setUpdated(ZonedDateTime.now());
         companyRepository.save(existed);
     }
