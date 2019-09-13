@@ -213,13 +213,12 @@
         <!--<button cv-button-flat class="view-invoice-button" (click)="viewInvoice()">View invoice</button>-->
 
         <div class="next-step-advice">
-          We notified {{lead.clientName}} about your request. Now is the best time to discuss project details with
-          client.
+          We notified {{lead.clientName}} about your request. Now is the best time to discuss project details.
         </div>
 
         <div class="after-bought-lead-actions">
           <button cv-button routerLink="/pro/leads-search">Find more leads</button>
-          <button cv-button [routerLink]="['/pro/projects', projectRequestId]">Discuss project</button>
+          <button cv-button [routerLink]="['/pro/projects', projectRequestId]">GO to project</button>
         </div>
 
       </div>

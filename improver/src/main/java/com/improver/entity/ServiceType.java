@@ -54,8 +54,8 @@ public class ServiceType {
     @Column(columnDefinition = CD_INTEGER)
     private int rating;
 
-    @Column(columnDefinition = "integer default 2050")
-    private int leadPrice = 2050;
+    @Column(columnDefinition = "integer default 999")
+    private int leadPrice = 999;
 
     public ServiceType(AdminServiceType adminServiceType, List<Trade> trades, String imageUrl) {
         this.name = adminServiceType.getName();

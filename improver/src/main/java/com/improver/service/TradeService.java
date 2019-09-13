@@ -10,11 +10,9 @@ import com.improver.model.out.TradeAndServices;
 import com.improver.repository.CompanyRepository;
 import com.improver.repository.ServiceTypeRepository;
 import com.improver.repository.TradeRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,10 +23,9 @@ import java.util.stream.Collectors;
 /**
  * @author Mykhailo Soltys
  */
+@Slf4j
 @Service
 public class TradeService {
-
-    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired private TradeRepository tradeRepository;
     @Autowired private ServiceTypeRepository serviceTypeRepository;
@@ -45,8 +42,8 @@ public class TradeService {
         return trades;
     }
 
-    public List<NameIdTuple> getServicesForTrade(long id) {
-        return serviceTypeRepository.getByTradeId(id);
+    public List<NameIdTuple> getActiveServicesForTrade(long id) {
+        return serviceTypeRepository.getActiveByTradeId(id);
     }
 
     public List<TradeAndServices> getAllTradesAndServices() {
@@ -55,7 +52,7 @@ public class TradeService {
             .map(NameIdTuple::getId)
             .collect(Collectors.toList());
 
-        List<NameIdParentTuple> services = serviceTypeRepository.getByTradeIds(tradeIds);
+        List<NameIdParentTuple> services = serviceTypeRepository.getActiveByTradeIds(tradeIds);
 
         return trades.stream()
             .map(trade -> {

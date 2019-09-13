@@ -138,7 +138,7 @@ public class CompanyConfigService {
         List<NameIdParentTuple> allServicesFromTrades;
         if (tradeIds.size() > 0) {
             selectedWithTrades = companyRepository.getSelectedByTrades(company.getId(), tradeIds);
-            allServicesFromTrades = serviceTypeRepository.getByTradeIds(tradeIds);
+            allServicesFromTrades = serviceTypeRepository.getActiveByTradeIds(tradeIds);
         } else {
             selectedWithTrades = Collections.emptyList();
             allServicesFromTrades = Collections.emptyList();

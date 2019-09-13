@@ -11,8 +11,6 @@ import com.improver.repository.ServiceTypeRepository;
 import com.improver.repository.TradeRepository;
 import com.improver.service.ServiceTypeService;
 import com.improver.service.TradeService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.CacheControl;
@@ -39,7 +37,6 @@ import static com.improver.application.properties.Path.TRADES;
 @RequestMapping(CATALOG_PATH)
 public class CatalogController {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
     @Autowired private TradeService tradeService;
     @Autowired private TradeRepository tradeRepository;
     @Autowired private ServiceTypeService serviceTypeService;
@@ -51,6 +48,7 @@ public class CatalogController {
      *
      * <b>Note</b> {@link CacheControl} is used to reduce REST API calls and improve performance.
      */
+    @Deprecated
     @GetMapping(SERVICES + POPULAR)
     public ResponseEntity<List<NameIdImageTuple>> getPopularServices(@RequestParam(defaultValue = "12") int size) {
 //        List<NameIdImageTuple> services = serviceTypeService.getPopularServices(size);
@@ -65,6 +63,7 @@ public class CatalogController {
     }
 
 
+    @Deprecated
     @GetMapping(SERVICES + "/recommended")
     public ResponseEntity<List<NameIdImageTuple>> getRecommendedServices(@RequestParam long userId, @RequestParam(defaultValue = "6") int size) {
         return getPopularServices(size);
@@ -112,7 +111,7 @@ public class CatalogController {
 
     @GetMapping(TRADES + ID_PATH_VARIABLE + SERVICES)
     public ResponseEntity<List<NameIdTuple>> getServices(@PathVariable long id) {
-        List<NameIdTuple> services = tradeService.getServicesForTrade(id);
+        List<NameIdTuple> services = tradeService.getActiveServicesForTrade(id);
         return new ResponseEntity<>(services, HttpStatus.OK);
     }
 

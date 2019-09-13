@@ -9,10 +9,8 @@ import com.improver.model.NameIdTuple;
 import com.improver.model.admin.AdminServiceType;
 import com.improver.model.out.NameIdImageTuple;
 import com.improver.repository.*;
-import com.improver.security.UserSecurityService;
 import com.improver.util.StaffActionLogger;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,10 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class ServiceTypeService {
-
-    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired private ServiceTypeRepository serviceTypeRepository;
     @Autowired private TradeRepository tradeRepository;
@@ -36,26 +33,19 @@ public class ServiceTypeService {
     @Autowired private CompanyRepository companyRepository;
     @Autowired private QuestionaryRepository questionaryRepository;
     @Autowired private StaffActionLogger staffActionLogger;
-    @Autowired private UserSecurityService userSecurityService;
 
-    /**
-     * Returns list with given <code>size</code> of most popular {@link NameIdImageTuple}
-     */
-    public List<NameIdImageTuple> getPopularServices(int size) {
-        return serviceTypeRepository.getPopularAsModels(PageRequest.of(0, size))
-            .getContent();
-    }
 
     /**
      * Returns list with given <code>size</code> of random {@link NameIdImageTuple} generated from {@link ServiceType}
      */
+    @Deprecated
     public List<NameIdImageTuple> getRandomAsModels(int size) {
         return serviceTypeRepository.getRandomWithImageAsModels(PageRequest.of(0, size))
             .getContent();
     }
 
     public List<NameIdTuple> getAllServicesModel() {
-        return serviceTypeRepository.getAllAsModels();
+        return serviceTypeRepository.getAllActiveAsModels();
     }
 
     /**
