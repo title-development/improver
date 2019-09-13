@@ -213,6 +213,11 @@ export class ContractorProjectShort {
   unreadMessages: number;
 }
 
+export class ReviewRequestOption {
+  available: number;
+  completed: number;
+}
+
 export class ContractorProject extends ContractorProjectShort {
   location: Location;
   startDate: string;

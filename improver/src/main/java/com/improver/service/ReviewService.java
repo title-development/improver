@@ -7,6 +7,7 @@ import com.improver.exception.NotFoundException;
 import com.improver.exception.ValidationException;
 import com.improver.model.out.CompanyReview;
 import com.improver.model.out.CompanyReviewRevision;
+import com.improver.model.out.ReviewRequestOption;
 import com.improver.repository.*;
 import com.improver.security.UserSecurityService;
 import com.improver.util.mail.MailService;
@@ -19,6 +20,9 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.ZonedDateTime;
+import java.util.List;
+
+import static com.improver.application.properties.BusinessProperties.MAX_REQUEST_REVIEWS;
 
 @Slf4j
 @Service
@@ -183,5 +187,11 @@ public class ReviewService {
 
     public void declineReviewRevision(Long reviewId) throws NotFoundException {
         updateReview(reviewId, null);
+    }
+
+    public ReviewRequestOption getReviewRequestOptions(Contractor pro) {
+        List<ReviewRequest> reviewRequests = reviewRequestRepository.getAllByCompanyId(pro.getCompany().getId());
+        int completed = (int) reviewRequests.stream().filter(ReviewRequest::isCompleted).count();
+       return new ReviewRequestOption().setCompleted(completed).setAvailable(MAX_REQUEST_REVIEWS - reviewRequests.size());
     }
 }

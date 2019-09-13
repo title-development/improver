@@ -44,4 +44,7 @@ public interface ReviewRequestRepository extends JpaRepository<ReviewRequest, Lo
         "AND rr.customerEmail = ?1 " +
         "AND rr.completed = false")
     List<ReviewRequest> getNotCompletedReviewRequests(String customerEmail, String companyId);
+
+    List<ReviewRequest> getAllByCompanyId(String id);
+
 }

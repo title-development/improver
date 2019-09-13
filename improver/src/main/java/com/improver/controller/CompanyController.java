@@ -1,16 +1,18 @@
 package com.improver.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.improver.entity.*;
+import com.improver.entity.Company;
+import com.improver.entity.CompanyAction;
 import com.improver.model.CompanyInfo;
 import com.improver.model.NameIdTuple;
 import com.improver.model.out.project.ProjectRequestShort;
+import com.improver.repository.CompanyRepository;
 import com.improver.security.UserSecurityService;
 import com.improver.security.annotation.CompanyMemberOrAdminAccess;
-import com.improver.service.*;
-import com.improver.repository.CompanyRepository;
-import com.improver.util.annotation.PageableSwagger;
 import com.improver.security.annotation.SupportAccess;
+import com.improver.service.AccountService;
+import com.improver.service.CompanyService;
+import com.improver.util.annotation.PageableSwagger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -57,7 +59,7 @@ public class CompanyController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    
+
     @PutMapping("/delete")
     public ResponseEntity<Void> delete(@RequestBody String password) {
         accountService.archiveAccountWithPassword(userSecurityService.currentPro(), password);
@@ -97,7 +99,6 @@ public class CompanyController {
         CompanyInfo company = companyService.getCompanyInfo(companyId);
         return new ResponseEntity<>(company, HttpStatus.OK);
     }
-
 
 
     @GetMapping(IS_EMAIL_FREE)

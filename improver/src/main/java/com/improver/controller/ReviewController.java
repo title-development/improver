@@ -4,16 +4,11 @@ import com.improver.entity.*;
 import com.improver.exception.NotFoundException;
 import com.improver.model.in.CustomerReview;
 import com.improver.model.in.ProRequestReview;
-import com.improver.model.out.CompanyReview;
-import com.improver.model.out.CompanyReviewRevision;
-import com.improver.model.out.ReviewRating;
-import com.improver.model.out.ReviewRevision;
+import com.improver.model.out.*;
 import com.improver.repository.CompanyRepository;
 import com.improver.repository.ReviewRepository;
 import com.improver.repository.ReviewRevisionRequestRepository;
 import com.improver.security.UserSecurityService;
-import com.improver.security.annotation.CompanyMember;
-import com.improver.security.annotation.CompanyMemberOrSupportAccess;
 import com.improver.service.ReviewRequestService;
 import com.improver.service.ReviewService;
 import com.improver.util.annotation.PageableSwagger;
@@ -61,12 +56,20 @@ public class ReviewController {
         return new ResponseEntity<>(reviews, HttpStatus.OK);
     }
 
-    @PostMapping(REVIEWS_PATH + "/request")
+    @PostMapping(REVIEWS_PATH + REQUEST)
     @PreAuthorize("hasRole('CONTRACTOR')")
     public ResponseEntity<Void> requestReview(@RequestBody @Valid ProRequestReview proRequestReview) {
         Contractor pro = userSecurityService.currentPro();
-        requestReviewService.notifyUsers(pro, proRequestReview);
+        requestReviewService.sendReviewRequestToUsers(pro, proRequestReview);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping(REVIEWS_PATH + REQUEST + OPTIONS)
+    @PreAuthorize("hasRole('CONTRACTOR')")
+    public ResponseEntity<ReviewRequestOption> getAvailableReviewRequest(){
+        Contractor pro = userSecurityService.currentPro();
+        ReviewRequestOption reviewRequestOption = reviewService.getReviewRequestOptions(pro);
+        return new ResponseEntity<>(reviewRequestOption, HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('CUSTOMER')")
@@ -78,21 +81,21 @@ public class ReviewController {
     }
 
     @PreAuthorize("hasRole('CUSTOMER')")
-    @PutMapping(REVIEWS_PATH + ID_PATH_VARIABLE + "/decline")
+    @PutMapping(REVIEWS_PATH + ID_PATH_VARIABLE + DECLINE)
     public ResponseEntity<Void> declineReviewRevision(@PathVariable long id) {
         reviewService.declineReviewRevision(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('CUSTOMER')")
-    @PutMapping(REVIEWS_PATH + ID_PATH_VARIABLE+ "/accept")
+    @PutMapping(REVIEWS_PATH + ID_PATH_VARIABLE+ ACCEPT)
     public ResponseEntity<Void> acceptReviewRevision(@PathVariable long id, @RequestBody CompanyReviewRevision review) {
         reviewService.updateReview(id, review);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @SupportAccess
-    @GetMapping(REVIEWS_PATH + ID_PATH_VARIABLE + "/revision")
+    @GetMapping(REVIEWS_PATH + ID_PATH_VARIABLE + REVISION)
     public ResponseEntity<ReviewRevision> getRevisionRequest(@PathVariable long id) {
         ReviewRevision reviewRevision = reviewRevisionRequestRepository.findByReviewId(id).orElseThrow(NotFoundException::new);
         return new ResponseEntity<>(reviewRevision, HttpStatus.OK);
@@ -103,7 +106,7 @@ public class ReviewController {
     //=========================================================================
 
     @PreAuthorize("hasRole('CONTRACTOR')")
-    @PostMapping(REVIEWS_PATH + ID_PATH_VARIABLE + "/revision")
+    @PostMapping(REVIEWS_PATH + ID_PATH_VARIABLE + REVISION)
     public ResponseEntity<Void> requestReviewRevision(@PathVariable Long id,
                                                       @RequestBody
                                                       @Size(min = REVIEW_MESSAGE_MIN_SIZE, max = REVIEW_MESSAGE_MAX_SIZE, message = "Message should be " + REVIEW_MESSAGE_MIN_SIZE + " to " + REVIEW_MESSAGE_MAX_SIZE + " characters long.")
@@ -128,7 +131,7 @@ public class ReviewController {
     }
 
     @PreAuthorize("hasRole('CUSTOMER')")
-    @GetMapping(COMPANIES_PATH + COMPANY_ID + REVIEWS + "/options")
+    @GetMapping(COMPANIES_PATH + COMPANY_ID + REVIEWS + OPTIONS)
     public ResponseEntity<Void> getReviewCapability(@PathVariable String companyId,
                                                     @RequestParam(defaultValue = "0") long projectRequestId,
                                                     @RequestParam(required = false) String reviewToken) {

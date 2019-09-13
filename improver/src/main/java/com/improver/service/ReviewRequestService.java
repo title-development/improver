@@ -1,7 +1,6 @@
 package com.improver.service;
 
 import com.improver.entity.*;
-import com.improver.exception.ConflictException;
 import com.improver.model.in.ProRequestReview;
 import com.improver.repository.*;
 import com.improver.util.mail.MailService;
@@ -42,11 +41,13 @@ public class ReviewRequestService {
         pattern = Pattern.compile(EMAIL_PATTERN);
     }
 
-    public void notifyUsers(Contractor pro, ProRequestReview requestReview) {
+    public void sendReviewRequestToUsers(Contractor pro, ProRequestReview requestReview) {
 
         Company company = pro.getCompany();
         CompanyConfig companyConfig = company.getCompanyConfig();
         List<String> emailRecipients = requestReview.getEmails().stream()
+            .distinct()
+            .map(String::toLowerCase)
             .filter(this::validateEmail)
             .collect(Collectors.toList());
         List<Customer> customers = customerRepository.findAllByEmailIn(emailRecipients);
@@ -64,7 +65,7 @@ public class ReviewRequestService {
                 List<ReviewRequest> requests = requestReviewRepository.getNotCompletedReviewRequests(email, company.getId());
                 if (!requests.isEmpty()) {
                     mailService.sendRequestReviewForNewUser(pro, requestReview.getSubject(), requestReview.getMessage(), email, requests.get(0).getReviewToken());
-                } else if (companyConfig.getAvailableReviewRequest() >= 0) {
+                } else if (companyConfig.getAvailableReviewRequest() > 0) {
                     ReviewRequest request = new ReviewRequest(email, company.getId());
                     requestReviewRepository.save(request);
                     mailService.sendRequestReviewForNewUser(pro, requestReview.getSubject(), requestReview.getMessage(), email, request.getReviewToken());
@@ -77,8 +78,6 @@ public class ReviewRequestService {
 
         //Notify existed users
         for (Customer customer : customers) {
-
-            // User without project requests
             // User don't have any project with company
             if (!requestReviewRepository.existsProjectRequestByCustomerAndCompany(customer.getId(), company.getId()) &&
                 // User didn't write any review for company
@@ -93,7 +92,7 @@ public class ReviewRequestService {
                     }
 
                 } else {
-                    if (companyConfig.getAvailableReviewRequest() >= 0) {
+                    if (companyConfig.getAvailableReviewRequest() > 0) {
                         ReviewRequest request = new ReviewRequest(customer.getEmail(), company.getId());
                         requestReviewRepository.save(request);
                         mailService.sendRequestReviewForNewUser(pro, requestReview.getSubject(), requestReview.getMessage(), customer.getEmail(), request.getReviewToken());

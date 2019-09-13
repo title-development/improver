@@ -3,9 +3,9 @@ import { MatDialogRef } from '@angular/material';
 import { ReviewService } from '../../../api/services/review.service';
 import { ProRequestReview } from '../../../api/models/ProRequestReview';
 import { PopUpMessageService } from '../../../util/pop-up-message.service';
-import { Company } from '../../../api/models/Company';
-import { CompanyService } from '../../../api/services/company.service';
 import { Messages } from '../../../util/messages';
+import {finalize} from "rxjs/operators";
+import {ReviewRequestOption} from "../../../model/data-model";
 
 @Component({
   selector: 'request-review-dialog',
@@ -18,17 +18,26 @@ export class RequestReviewDialogComponent implements OnInit {
   message: string = "I'm sending this to ask you if you can rate me on Home Improve. It only takes a few seconds, and would really help me.\r\n\r\nThank you\r\n";
   companyName: string;
   processing: boolean = false;
+  reviewRequestOption: ReviewRequestOption;
 
   constructor(public currentDialogRef: MatDialogRef<any>,
               private reviewService: ReviewService,
               public messages: Messages,
-              public popUpService: PopUpMessageService,
-              private companyConfig: CompanyService) {
-
+              public popUpService: PopUpMessageService) {
   }
 
   close() {
     this.currentDialogRef.close();
+  }
+
+
+  showReviewRequestOptions(){
+    this.processing = true;
+    this.reviewService.getReviewRequestOptions()
+      .pipe(finalize(() => this.processing = false)).subscribe(
+      options => this.reviewRequestOption = options,
+      err => console.log(err)
+    );
   }
 
   submit() {
@@ -47,7 +56,8 @@ export class RequestReviewDialogComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.message = this.message + this.companyName
+    this.showReviewRequestOptions();
+    this.message = this.message + this.companyName;
   }
 }
 

@@ -16,6 +16,7 @@ export class ReviewService {
   private reviewUrl = 'api/reviews';
   private reviews = 'reviews';
   private options = 'options';
+  private requestUrl = "request";
 
   constructor(private http: HttpClient) {
   }
@@ -23,6 +24,10 @@ export class ReviewService {
   getAllReviews(filters: any, pagination: Pagination): Observable<RestPage<Review>> {
     const params = toHttpParams({...filters, ...pagination});
     return this.http.get<RestPage<Review>>(`${this.reviewUrl}`, {params});
+  }
+
+  getReviewRequestOptions(): Observable<any>{
+    return this.http.get<any>(`${this.reviewUrl}/${this.requestUrl}/${this.options}`)
   }
 
   getReviewOptions(companyId: any, projectRequestId: string = '0', reviewToken?: string): Observable<any> {

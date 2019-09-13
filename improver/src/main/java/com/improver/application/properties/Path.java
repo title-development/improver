@@ -43,6 +43,10 @@ public final class Path {
     public static final String COVERAGE =              "/coverage";
     public static final String CONFIG =                "/config";
     public static final String REFERRAL =              "/referral";
+    public static final String REQUEST =               "/request";
+    public static final String REVISION =              "/revision";
+    public static final String DECLINE =               "/decline";
+    public static final String ACCEPT =                "/accept";
 
 
     public static final String LOGIN =               "/login";

@@ -31,7 +31,8 @@
                       name="reason"
                       #status="ngModel"
                       [(ngModel)]="validation.reason"
-                      [disabled]="validation.status == Project.Status.ACTIVE"></p-dropdown>
+                      [disabled]="validation.status == Project.Status.ACTIVE"
+                      required></p-dropdown>
         </div>
       </div>
 

@@ -7,10 +7,12 @@
 <div class="content" [cvSpinner]="processing" [cvSpinnerSize]="40" [cvSpinnerBackground]="true"
      cvSpinnerBackgroundColor="white">
   <form action="" #form="ngForm" (ngSubmit)="form.valid && submit()">
-    <p>For fast ramp up, you can ask clients from previous projects to rate you on Home Improve.</p>
-    <p>Send requests for review for up to 5 clients. Each client will receive a separate mail.</p>
 
-    <!--
+    <div *ngIf="reviewRequestOption && reviewRequestOption.available">
+    <p>For fast ramp up, you can ask clients from previous projects to rate you on Home Improve.</p>
+    <p>Send requests for review for up to {{reviewRequestOption.available}} clients. Each client will receive a separate mail.</p>
+
+      <!--
     <p><i>Requested: client1@gmail.com, client1@gmail.com, client1@gmail.com</i></p>
     <p>Send requests for review so customers can rate you. This is not a group letter, each client will receive separate mail.</p>
     <p>Enter up to 5 client comma-separated emails.</p>
@@ -27,7 +29,7 @@
         <span *ngIf="emailsEl.errors?.maxlength">{{messages.errors.default.maxlength}}</span>
       </cv-field-error>
     </cv-input-field>
-    <cv-input-field>
+    <cv-input-field >
       <cv-field-label>Subject</cv-field-label>
       <input minlength="10" maxlength="50" #subjectEl="ngModel" required cv-input type="text" name="subject" [(ngModel)]="subject" autocomplete="new-password">
       <cv-field-hint>{{subjectEl.value ? subjectEl.value.length : 0}}/50</cv-field-hint>
@@ -37,7 +39,7 @@
         <span *ngIf="subjectEl.errors?.maxlength">{{messages.errors.default.maxlength}}</span>
       </cv-field-error>
     </cv-input-field>
-    <cv-input-field>
+    <cv-input-field >
       <cv-field-label>Message</cv-field-label>
       <textarea #messageEl="ngModel" minlength="10" maxlength="255" required trim cv-input name="message" id=""
                 cols="30" rows="6" [(ngModel)]="message"></textarea>
@@ -52,5 +54,15 @@
       <button cv-button-flat flatStyle="dark" (click)="close()" type="button">Cancel</button>
       <button cv-button type="submit">Send</button>
     </div>
+    </div>
+
+    <div *ngIf="reviewRequestOption && !reviewRequestOption.available">
+      <p>You can ask clients for review when you complete the project. <br/>To request review on particular project please go to projects dashboard.</p>
+    <div class="actions">
+      <button cv-button-flat flatStyle="dark" (click)="close()" type="button">Ok</button>
+      <button cv-button type="button" routerLink="/pro/dashboard" (click)="close()">Dashboard</button>
+    </div>
+    </div>
+
   </form>
 </div>
