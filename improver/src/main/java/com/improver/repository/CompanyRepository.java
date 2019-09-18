@@ -56,11 +56,11 @@ public interface CompanyRepository extends JpaRepository<Company, String> {
     List<NameIdTuple> getOfferedTrades(String companyId);
 
     @Query("SELECT new com.improver.model.NameIdTuple(s.id, s.name) FROM com.improver.entity.ServiceType s" +
-        " INNER JOIN s.companies c ON c.id = ?1 WHERE s.id NOT IN ?2")
+        " INNER JOIN s.companies c ON c.id = ?1 WHERE s.active = true AND s.id NOT IN ?2")
     List<NameIdTuple> getOther(String companyId, List<Long> serviceIds);
 
     @Query("SELECT new com.improver.model.NameIdTuple(s.id, s.name) FROM com.improver.entity.ServiceType s" +
-        " INNER JOIN s.companies c ON c.id = ?1")
+        " INNER JOIN s.companies c ON c.id = ?1 WHERE s.active = true")
     List<NameIdTuple> getAll(String companyId);
 
     @Query("SELECT new com.improver.model.NameIdTuple(s.id, s.name) FROM com.improver.entity.Company c " +

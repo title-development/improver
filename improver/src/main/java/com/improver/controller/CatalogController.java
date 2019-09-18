@@ -58,7 +58,6 @@ public class CatalogController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok()
-            .cacheControl(CacheControl.maxAge(24, TimeUnit.HOURS))
             .body(services);
     }
 
@@ -97,7 +96,6 @@ public class CatalogController {
     public ResponseEntity<List<NameIdTuple>> getAllTradesModel() {
         List<NameIdTuple> trades = tradeService.getAllTradesModel();
         return ResponseEntity.ok()
-            .cacheControl(CacheControl.maxAge(24, TimeUnit.HOURS))
             .body(trades);
     }
 
@@ -124,7 +122,6 @@ public class CatalogController {
     public ResponseEntity<List<TradeAndServices>> getAllTradesAndServices() {
         List<TradeAndServices> trades = tradeService.getAllTradesAndServices();
         return ResponseEntity.ok()
-            .cacheControl(CacheControl.maxAge(24, TimeUnit.HOURS))
             .body(trades);
     }
 }

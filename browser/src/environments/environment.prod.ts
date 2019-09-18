@@ -5,6 +5,6 @@ export const environment = {
   facebookClientId: '679075905790840',
   googleClientId: '1096755394956-2fd0kap38led1ngk2aeinndsfb0rrcnb.apps.googleusercontent.com',
   googleAnalyticsTrackingId: 'UA-148193868-3',
-  hotJarTrackingId: 1490374,
+  hotJarTrackingId: 1490882,
   googleReCaptchaSiteKey: '6Lc777YUAAAAAFh8rjprTYyJkduY6pcrK-UHB8uh'
 };
