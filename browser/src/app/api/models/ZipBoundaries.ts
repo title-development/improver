@@ -1,11 +1,11 @@
 export interface ZipFeature {
+  id: any;
   geometry: ZipGeometry;
   properties: ZipProperties;
 }
 
 export class ZipProperties {
   city: string;
-  country: string;
   county: string;
   selected: boolean;
   disabled: boolean;

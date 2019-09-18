@@ -47,7 +47,7 @@ export class BasicModeService {
         )
         .subscribe((zipBoundaries: ZipBoundaries | null) => {
             if (zipBoundaries) {
-              this.gMapUtils.drawBoundaries(this.map, this.gMapUtils.markAreasZips(zipBoundaries, servedZipCodes));
+              this.gMapUtils.drawZipBoundaries(this.map, this.gMapUtils.markAreasZips(zipBoundaries, servedZipCodes));
               this.fetching.next(false);
             }
           }, err => {
@@ -70,7 +70,7 @@ export class BasicModeService {
       .subscribe((zipBoundaries: ZipBoundaries) => {
         applyStyleToMapLayers(this.map);
         this.gMapUtils.clearCoverageDataLayers(this.map);
-        this.gMapUtils.drawBoundaries(this.map, this.gMapUtils.markAreasZips(zipBoundaries, this.servedZipCodes));
+        this.gMapUtils.drawZipBoundaries(this.map, this.gMapUtils.markAreasZips(zipBoundaries, this.servedZipCodes));
         this.gMapUtils.fitMapToDataLayer(this.map);
         this.fetching.next(false);
         this.toUpdate.emit(zipBoundaries.features.map(feature => feature.properties.zip));

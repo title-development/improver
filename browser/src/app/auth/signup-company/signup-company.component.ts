@@ -2,7 +2,7 @@ import { ApplicationRef, Component } from '@angular/core';
 import { MapOptions } from '@agm/core/services/google-maps-types';
 import { defaultMapOptions } from '../../util/google-map-default-options';
 import { MatDialog, MatDialogRef } from '@angular/material';
-import { LoginModel, CompanyRegistration } from '../../model/security-model';
+import { CompanyRegistration, LoginModel } from '../../model/security-model';
 import { SecurityService } from '../security.service';
 import { Constants } from '../../util/constants';
 import { Messages } from '../../util/messages';
@@ -150,7 +150,7 @@ export class SignupCompanyComponent {
   }
 
   drawUnsupportedAreaUSA() {
-    this.gMapUtils.drawBoundaries(this.map, this.unsupportedArea);
+    this.gMapUtils.drawZipBoundaries(this.map, this.unsupportedArea);
   }
 
   onMapReady(map: google.maps.Map): void {

@@ -1,7 +1,7 @@
 import { EventEmitter, Injectable, OnDestroy } from '@angular/core';
 import { ZipBoundaries } from '../../../../../api/models/ZipBoundaries';
 import { CoverageConfig } from '../../../../../api/models/CoverageConfig';
-import { of, Subscription, BehaviorSubject, fromEventPattern } from 'rxjs';
+import { BehaviorSubject, fromEventPattern, of, Subscription } from 'rxjs';
 import { getErrorMessage } from '../../../../../util/functions';
 import { BoundariesService } from '../../../../../api/services/boundaries.service';
 import { SecurityService } from '../../../../../auth/security.service';
@@ -120,7 +120,7 @@ export class DetailModeService implements OnDestroy {
       }),
       tap((zipBoundaries: ZipBoundaries) => {
         if(zipBoundaries) {
-          this.gMapUtils.drawBoundaries(this.map, this.gMapUtils.zipsToDraw(this.map, zipBoundaries, this.configCoverage.zips, this.servedZipCodes));
+          this.gMapUtils.drawZipBoundaries(this.map, this.gMapUtils.zipsToDraw(this.map, zipBoundaries, this.configCoverage.zips, this.servedZipCodes));
         }
         this.fetching.next(false);
       })

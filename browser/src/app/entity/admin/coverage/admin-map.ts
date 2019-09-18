@@ -3,15 +3,15 @@ import { GoogleMapsAPIWrapper } from '@agm/core';
 import { BoundariesService } from '../../../api/services/boundaries.service';
 
 import { fromPromise } from 'rxjs-compat/observable/fromPromise';
-import { catchError, debounceTime, first, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { BehaviorSubject, fromEventPattern, Observable, of, Subject, Subscription } from 'rxjs';
+import { catchError, debounceTime, finalize, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { BehaviorSubject, fromEventPattern, of, Subject } from 'rxjs';
 import { applyStyleToMapLayers, GoogleMapUtilsService } from '../../../util/google-map.utils';
-import { ZipBoundaries } from '../../../api/models/ZipBoundaries';
 import { MediaQuery, MediaQueryService } from '../../../util/media-query.service';
 import { ZipInfoWindow } from '../../settings/contractor-account/service-area/services/detail-mode.service';
 import { getErrorMessage } from '../../../util/functions';
 import { PopUpMessageService } from '../../../util/pop-up-message.service';
 import { Constants } from '../../../util/constants';
+import { CountyBoundaries, CountyMapArea } from "../../../api/models/CountyBoundaries";
 
 @Component({
   selector: 'admin-map',
@@ -19,10 +19,13 @@ import { Constants } from '../../../util/constants';
   styles: []
 })
 export class AdminMap implements OnDestroy {
-  @Output() fetching: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  @Output() zips: EventEmitter<{ added: Array<string>, removed: Array<string> }> = new EventEmitter<{ added: Array<string>, removed: Array<string> }>();
+  @Output() loading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+  @Output() areas: EventEmitter<{ added: Array<CountyMapArea>, removed: Array<CountyMapArea> }> = new EventEmitter<{ added: Array<CountyMapArea>, removed: Array<CountyMapArea> }>();
   @Output() onInfoWindow: EventEmitter<ZipInfoWindow> = new EventEmitter<ZipInfoWindow>();
   @Output() hasChanges: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+  NEW_YORK_COORDINATES = { lat: 40.730610, lng: -73.935242 };
+
   mediaQuery: MediaQuery;
   infoWindow: ZipInfoWindow = {
     position: {lat: undefined, lng: undefined},
@@ -30,19 +33,19 @@ export class AdminMap implements OnDestroy {
     content: ''
   };
 
-  private _zipsHistory: { added: Array<string>, removed: Array<string> } = {
+  private _areaHistory: { added: Array<CountyMapArea>, removed: Array<CountyMapArea> } = {
     added: [],
     removed: []
   };
 
-  set zipsHistory(value: { added: Array<string>; removed: Array<string> }) {
-    this._zipsHistory = value;
-    this.zips.emit(value);
-    this.hasChanges.emit(!(this.zipsHistory.added.length == 0 && this.zipsHistory.removed.length == 0));
+  set areaHistory(value: { added: Array<CountyMapArea>; removed: Array<CountyMapArea> }) {
+    this._areaHistory = value;
+    this.areas.emit(value);
+    this.hasChanges.emit(!(this.areaHistory.added.length == 0 && this.areaHistory.removed.length == 0));
   }
 
-  get zipsHistory(): { added: Array<string>; removed: Array<string> } {
-    return this._zipsHistory;
+  get areaHistory(): { added: Array<CountyMapArea>; removed: Array<CountyMapArea> } {
+    return this._areaHistory;
   }
   coveredArea: Array<string>;
   private map;
@@ -64,20 +67,20 @@ export class AdminMap implements OnDestroy {
 
   init(coveredArea: Array<string>) {
     this.coveredArea = coveredArea;
-    this.fetching.next(true);
+    this.loading.next(true);
     fromPromise(this.googleMapsAPIWrapper.getNativeMap()).pipe(
       takeUntil(this.destroyed$),
+      finalize(() => this.loading.next(false)),
       switchMap(map => {
         this.map = map;
         applyStyleToMapLayers(map, true);
-
-        return this.boundariesService.getSplitZipBoundaries(this.coveredArea, this.constants.BOUNDARIES_SPILT_SIZE);
+        return this.boundariesService.getCountyBoundaries(this.coveredArea);
       }),
-      switchMap( (coverage: ZipBoundaries) => {
+      switchMap( (coverage: CountyBoundaries) => {
         this.gMapUtils.clearAllDataLayers(this.map);
         this.drawCoverage(coverage);
         this.addAreaListeners();
-        this.gMapUtils.fitMapToDataLayer(this.map);
+        // this.gMapUtils.fitMapToDataLayer(this.map);
         this.map.setZoom(9);
 
         return fromEventPattern(
@@ -90,40 +93,36 @@ export class AdminMap implements OnDestroy {
       }),
       debounceTime(200),
       switchMap(event => {
-        this.fetching.next(true);
         const southWest: string = [this.map.getBounds().getSouthWest().lat(), this.map.getBounds().getSouthWest().lng()].join();
         const northEast: string = [this.map.getBounds().getNorthEast().lat(), this.map.getBounds().getNorthEast().lng()].join();
 
-        return this.boundariesService.getZipCodesInBbox(northEast, southWest).pipe(
+        return this.boundariesService.getCountiesInBbox(northEast, southWest).pipe(
           catchError(err => {
-            this.fetching.next(false);
             this.popUpMessageService.showError('Unexpected error during map rendering');
             return of(null);
           }));
       }),
       catchError(err => {
-        this.fetching.next(false);
         this.popUpMessageService.showError(getErrorMessage(err));
-
         return of(null);
       }),
-      tap((zipBoundaries: ZipBoundaries) => {
-        this.gMapUtils.drawBoundaries(this.map, this.gMapUtils.zipsToDraw(this.map, zipBoundaries, this.coveredArea));
-        this.fetching.next(false);
+      tap((countyBoundaries: CountyBoundaries) => {
+        this.gMapUtils.drawCountyBoundaries(this.map, this.gMapUtils.countiesToDraw(this.map, countyBoundaries, this.coveredArea));
       })
     ).subscribe(() => {
-
     });
   }
 
   drawCoverage(coverage) {
-    this.gMapUtils.drawAreasZips(this.map, coverage);
-    this.gMapUtils.fitMapToCoverage(this.map);
+    this.gMapUtils.drawAreasCounties(this.map, coverage);
+    // this.gMapUtils.fitMapToCoverage(this.map);
   }
 
 
   private boundaryClickHandler = (event: google.maps.Data.MouseEvent) => {
-    this.addRemoveZip(event.feature.getProperty('zip'));
+    this.addRemovedArea(new CountyMapArea(event.feature.getId(),
+      event.feature.getProperty('name'),
+      event.feature.getProperty('state')));
     event.feature.setProperty('selected', !event.feature.getProperty('selected'));
     this.map.data.overrideStyle(event.feature, {
       strokeWeight: 2,
@@ -152,7 +151,7 @@ export class AdminMap implements OnDestroy {
     this.infoWindow = {
       trigger: true,
       position: {lat: bounds.getCenter().lat(), lng: bounds.getCenter().lng()},
-      content: event.feature.getProperty('zip')
+      content: event.feature.getProperty('name')
     };
     this.onInfoWindow.emit(this.infoWindow);
     if (this.mediaQuery.xs) {
@@ -173,24 +172,25 @@ export class AdminMap implements OnDestroy {
     }
   };
 
-  addRemoveZip(zip: string, undo: boolean = false): void {
-    if (zip) {
-      if (!this.coveredArea.includes(zip)) {
-        if (!this.zipsHistory.added.includes(zip)) {
-          this.zipsHistory.added = [...this.zipsHistory.added, zip];
+  addRemovedArea(area: CountyMapArea, undo: boolean = false): void {
+    console.log(area, this.coveredArea, this.areaHistory.added)
+    if (area) {
+      if (!this.coveredArea.includes(area.id)) {
+        if (this.areaHistory.added.every(e => e.id !== area.id)) {
+          this.areaHistory.added = [...this.areaHistory.added, area];
         } else {
-          this.zipsHistory.added = this.zipsHistory.added.filter(addedZip => addedZip !== zip);
-          undo && this.unSelectMapZip(zip);
+          this.areaHistory.added = this.areaHistory.added.filter(addedArea => addedArea.id !== area.id);
+          undo && this.unSelectMapArea(area);
         }
       } else {
-        if (!this.zipsHistory.removed.includes(zip)) {
-          this.zipsHistory.removed = [...this.zipsHistory.removed, zip];
+        if (this.areaHistory.removed.every(e => e.id !== area.id)) {
+          this.areaHistory.removed = [...this.areaHistory.removed, area];
         } else {
-          this.zipsHistory.removed = this.zipsHistory.removed.filter(removedZip => removedZip !== zip);
-          undo && this.selectMapZip(zip);
+          this.areaHistory.removed = this.areaHistory.removed.filter(removedArea => removedArea.id !== area.id);
+          undo && this.selectMapArea(area);
         }
       }
-      this.zipsHistory = this.zipsHistory;
+      this.areaHistory = this.areaHistory;
     }
   }
 
@@ -207,9 +207,9 @@ export class AdminMap implements OnDestroy {
     this.clickListener = this.map.data.addListener('click', this.boundaryClickHandler);
   }
 
-  selectMapZip(zip: string): void {
+  selectMapArea(area: CountyMapArea): void {
     this.map.data.forEach(feature => {
-      if (feature.getProperty('zip') === zip) {
+      if (feature.getId() === area.id) {
         feature.setProperty('selected', true);
         this.map.data.overrideStyle(feature, {
           strokeWeight: 2,
@@ -219,9 +219,9 @@ export class AdminMap implements OnDestroy {
     });
   }
 
-  private unSelectMapZip(zip: string): void {
+  private unSelectMapArea(area: CountyMapArea): void {
     this.map.data.forEach(feature => {
-      if (feature.getProperty('zip') === zip) {
+      if (feature.getId() === area.id) {
         feature.setProperty('selected', false);
         this.map.data.overrideStyle(feature, {
           strokeWeight: 1,
@@ -233,17 +233,17 @@ export class AdminMap implements OnDestroy {
 
   ngOnDestroy() {
     this.removeAreaListeners();
-    if (this.zipsHistory.added.length > 0) {
-      this.zipsHistory.added.forEach(zip => {
-        this.unSelectMapZip(zip);
+    if (this.areaHistory.added.length > 0) {
+      this.areaHistory.added.forEach(area => {
+        this.unSelectMapArea(area);
       });
     }
-    if (this.zipsHistory.removed.length > 0) {
-      this.zipsHistory.removed.forEach(zip => {
-        this.selectMapZip(zip);
+    if (this.areaHistory.removed.length > 0) {
+      this.areaHistory.removed.forEach(area => {
+        this.selectMapArea(area);
       });
     }
-    this.zipsHistory = {
+    this.areaHistory = {
       added: [],
       removed: []
     };
@@ -252,7 +252,7 @@ export class AdminMap implements OnDestroy {
   }
 
   refresh() {
-    this.zipsHistory = {added: [], removed: []};
+    this.areaHistory = {added: [], removed: []};
     this.hasChanges.emit(false);
   }
 }

@@ -1,15 +1,14 @@
-import { ApplicationRef, Component, ContentChild, ViewChild } from '@angular/core';
+import { ApplicationRef, Component, ViewChild } from '@angular/core';
 import { MapOptions } from '@agm/core/services/google-maps-types';
 import { defaultMapOptions } from '../../../util/google-map-default-options';
 import { ZipInfoWindow } from '../../settings/contractor-account/service-area/services/detail-mode.service';
 import { AdminMap } from './admin-map';
-import { NgForm } from '@angular/forms';
-import { ZipBoundaries, ZipFeature } from '../../../api/models/ZipBoundaries';
-import { SystemMessageType } from '../../../model/data-model';
 import { GoogleMapUtilsService } from '../../../util/google-map.utils';
 import { PopUpMessageService } from '../../../util/pop-up-message.service';
 import { BoundariesService } from '../../../api/services/boundaries.service';
 import { getErrorMessage } from '../../../util/functions';
+import { CountyMapArea } from "../../../api/models/CountyBoundaries";
+import { finalize } from "rxjs/operators";
 
 @Component({
   selector: 'admin-coverage',
@@ -18,10 +17,11 @@ import { getErrorMessage } from '../../../util/functions';
 })
 export class AdminCoverageComponent {
 
-  fetching: boolean = true;
+  MAP_MIN_ZOOM = 8;
+  loading: boolean = true;
   infoWindow: ZipInfoWindow;
   hasChanges: boolean = false;
-  zipsHistory: { added: Array<string>, removed: Array<string> } = {
+  areasHistory: { added: Array<CountyMapArea>, removed: Array<CountyMapArea> } = {
     added: [],
     removed: []
   };
@@ -37,8 +37,7 @@ export class AdminCoverageComponent {
       ]
     }
   ];
-  searchZip: string;
-  zipFormErrors: boolean;
+
   private map;
   private coveredArea;
 
@@ -48,9 +47,9 @@ export class AdminCoverageComponent {
               private gMapUtil: GoogleMapUtilsService,
               private popUpService: PopUpMessageService,
               private boundariesService: BoundariesService) {
-    this.boundariesService.getAllServedZips().subscribe((zips: Array<string>) => {
-      this.coveredArea = zips;
-      this.adminMap.init(zips);
+    this.boundariesService.getAllServedCounties().subscribe(areas => {
+      this.coveredArea = areas;
+      this.adminMap.init(areas);
     });
   }
 
@@ -59,8 +58,8 @@ export class AdminCoverageComponent {
     this.appRef.tick();
   }
 
-  updateZips(zips) {
-    this.zipsHistory = zips;
+  updateAreas(areas) {
+    this.areasHistory = areas;
     this.appRef.tick();
   }
 
@@ -68,21 +67,20 @@ export class AdminCoverageComponent {
     this.map = map;
   }
 
-  undo(zip: string): void {
-    this.adminMap.addRemoveZip(zip, true);
+  undo(county: CountyMapArea): void {
+    this.adminMap.addRemovedArea(county, true);
   }
 
   updateCoverage() {
-    //deleting
-    this.coveredArea = this.coveredArea.filter(zip => !this.zipsHistory.removed.some(removedZip => removedZip == zip));
-    //adding
-    this.coveredArea = [...this.coveredArea, ...this.zipsHistory.added];
-    if (this.coveredArea.length == 0) {
-      this.popUpService.showError('At least one zip should be selected!');
-      return;
-    }
-    this.gMapUtil.updateCoverageInStore(this.coveredArea, this.map);
-    this.boundariesService.updateServedZips(this.coveredArea).subscribe(res => {
+    this.loading = true;
+    this.boundariesService.updateServedCounties(this.areasHistory.added.map(a => a.id), this.areasHistory.removed.map(a => a.id))
+      .pipe(finalize(() => this.loading = false))
+      .subscribe(res => {
+      //  removing
+      this.coveredArea = this.coveredArea.filter(area => !this.areasHistory.removed.some(removedArea => removedArea.id == area));
+      //  adding
+      this.coveredArea = [...this.coveredArea, ...this.areasHistory.added.map(a => a.id)];
+      this.gMapUtil.updateCountyCoverageInStore(this.coveredArea, this.map);
       this.popUpService.showSuccess('Coverage area has been updated');
       this.refresh();
     }, err => {
@@ -90,56 +88,11 @@ export class AdminCoverageComponent {
     });
   }
 
-  validateZip(form: NgForm): void {
-    this.zipFormErrors = !form.valid;
-  }
-
-  searchZipCode(form: NgForm): void {
-    if (form.valid) {
-      this.zipFormErrors = false;
-      this.fetching = true;
-      if (!this.coveredArea.includes(this.searchZip.toString())) {
-        this.fetching = false;
-        this.popUpService.showWarning(`${this.searchZip} doesn't supported`);
-        return;
-      }
-      this.boundariesService.getZipBoundaries([this.searchZip]).subscribe(
-        (zipBoundaries: ZipBoundaries) => {
-          this.fetching = false;
-          if (zipBoundaries.features.length > 0) {
-            const center = this.gMapUtil.getPolygonBounds(zipBoundaries.features[0].geometry.coordinates).getCenter();
-            this.map.setCenter(center);
-            this.map.setZoom(13);
-            if (this.coveredArea.includes(this.searchZip) || this.zipsHistory.added.includes(this.searchZip)) {
-              this.popUpService.showWarning(`${this.searchZip} already in your coverage`);
-              this.gMapUtil.highlightZip(this.map, this.searchZip, 3000);
-            } else {
-              this.gMapUtil.drawBoundaries(this.map, zipBoundaries);
-              this.adminMap.addRemoveZip(this.searchZip);
-              this.gMapUtil.highlightZip(this.map, this.searchZip, 3000, () => {
-                this.adminMap.selectMapZip(this.searchZip);
-              });
-            }
-          } else {
-            this.popUpService.showMessage({
-              text: 'Zip does not found',
-              type: SystemMessageType.INFO,
-              timeout: 3000
-            });
-          }
-        },
-        err => {
-          console.log(err);
-          this.fetching = false;
-        });
-    }
-  }
-
   refresh(): void {
     this.adminMap.refresh();
-    this.boundariesService.getAllServedZips().subscribe((zips: Array<string>) => {
-      this.coveredArea = zips;
-      this.adminMap.coveredArea = zips;
+    this.boundariesService.getAllServedCounties().subscribe(areas => {
+      this.coveredArea = areas;
+      this.adminMap.coveredArea = areas;
     });
   }
 }

@@ -14,19 +14,6 @@
   flex-direction: column;
 }
 
-form {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 200px;
-  display: flex;
-  span {
-    position: absolute;
-    bottom: -13px;
-    font-size: 11px;
-    background-color: #fff;
-  }
-}
 agm-map {
   flex-grow: 1;
   display: flex;
@@ -39,7 +26,7 @@ agm-map {
   }
 }
 
-.history-zips {
+.history-areas {
   margin-top: 8px;
   display: flex;
   > div {
@@ -60,10 +47,9 @@ h5 {
   height: 200px;
 }
 
-.history-zip {
+.history-area {
   padding: 2px 0;
   font-size: 13px;
-  width: 140px;
   display: flex;
   .undo-button {
     cursor: pointer;

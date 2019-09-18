@@ -5,12 +5,14 @@ import { ZipBoundaries } from '../models/ZipBoundaries';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { chunk, getErrorMessage } from '../../util/functions';
 import { catchError, mergeMap, retry } from 'rxjs/operators';
+import { CountyBoundaries } from "../models/CountyBoundaries";
 
 @Injectable()
 export class BoundariesService {
 
   geoUrl = 'api/geo';
   zipsUrl = '/zips';
+  countiesUrl = '/counties';
   boundariesUrl = '/boundaries';
   searchUrl = '/search';
   bboxUrl = '/bbox';
@@ -24,9 +26,16 @@ export class BoundariesService {
     return this.http.get<Array<string>>(`${this.geoUrl}${this.coverageUrl}${this.zipsUrl}`);
   }
 
-  updateServedZips(zips: Array<string>): Observable<any> {
+  getAllServedCounties(): Observable<Array<string>> {
+    return this.http.get<Array<string>>(`${this.geoUrl}${this.coverageUrl}${this.countiesUrl}`);
+  }
 
+  updateServedZips(zips: Array<string>): Observable<any> {
     return this.http.put(`${this.geoUrl}${this.coverageUrl}${this.zipsUrl}`, zips);
+  }
+
+  updateServedCounties(added: Array<string>, removed: Array<string>): Observable<any> {
+    return this.http.put(`${this.geoUrl}${this.coverageUrl}${this.countiesUrl}`, {added: added, removed: removed});
   }
 
   getUnsupportedArea(): Observable<ZipBoundaries> {
@@ -61,6 +70,18 @@ export class BoundariesService {
       }));
   }
 
+  getCountiesInBbox(nw, sw): Observable<CountyBoundaries> {
+    const params = {
+      southWest: sw,
+      northEast: nw
+    };
+    return this.http.get<CountyBoundaries>(`${this.geoUrl}${this.countiesUrl}${this.searchUrl}${this.bboxUrl}${this.boundariesUrl}`, {params: params})
+      .pipe(catchError(err => {
+        console.error(getErrorMessage(err));
+        return throwError(err);
+      }));
+  }
+
   queryByRadius(latitude, longitude, radius): Observable<ZipBoundaries> {
     const params = new HttpParams()
       .set('latitude', latitude)
@@ -83,4 +104,12 @@ export class BoundariesService {
       catchError(err => of(null))
     );
   }
+
+  getCountyBoundaries(counties: ReadonlyArray<string>): Observable<CountyBoundaries> {
+    const params = {
+      counties: counties.join()
+    };
+    return this.http.get<CountyBoundaries>(`${this.geoUrl}${this.countiesUrl}${this.boundariesUrl}`, {params: params});
+  }
+
 }

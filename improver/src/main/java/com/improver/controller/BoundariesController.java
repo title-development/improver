@@ -2,6 +2,7 @@ package com.improver.controller;
 
 import com.improver.exception.InternalServerException;
 import com.improver.exception.ThirdPartyException;
+import com.improver.model.admin.in.ServedAreasUpdate;
 import com.improver.repository.ServedZipRepository;
 import com.improver.security.UserSecurityService;
 import com.improver.security.annotation.AdminAccess;
@@ -60,7 +61,7 @@ public class BoundariesController {
     @AdminAccess
     @PutMapping("/coverage/zips")
     public ResponseEntity<Void> updateServedZips(@RequestBody List<String> zips) {
-        coverageService.updateCoverage(zips, userSecurityService.currentAdmin());
+        coverageService.updateZipCodesCoverage(zips, userSecurityService.currentAdmin());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -75,6 +76,18 @@ public class BoundariesController {
         String result;
         try {
             result = boundariesService.getZipBoundaries(zipCodes);
+        } catch (ThirdPartyException e) {
+            log.error(GEO_API_ERROR, e);
+            throw new InternalServerException(e.getMessage());
+        }
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping("/counties/boundaries")
+    public ResponseEntity<String> getCountiesBoundaries(@RequestParam String[] counties) {
+        String result;
+        try {
+            result = boundariesService.getCountyBoundaries(counties);
         } catch (ThirdPartyException e) {
             log.error(GEO_API_ERROR, e);
             throw new InternalServerException(e.getMessage());
@@ -102,6 +115,36 @@ public class BoundariesController {
         } catch (ThirdPartyException e) {
             log.error(GEO_API_ERROR, e);
             throw new InternalServerException("Error in request to Mapreflex API. " + e.getMessage());
+        }
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping("/coverage/counties")
+    public ResponseEntity<List<String>> getAllServedCounties() {
+        List<String> allServedCounties = servedZipRepository.getAllServedCounties();
+        return new ResponseEntity<>(allServedCounties, HttpStatus.OK);
+    }
+
+    @AdminAccess
+    @PutMapping("/coverage/counties")
+    public ResponseEntity<Void> updateServedCounties(@RequestBody ServedAreasUpdate servedAreasUpdate) throws InterruptedException {
+        try {
+            coverageService.updateCountiesCoverage(servedAreasUpdate, userSecurityService.currentAdmin());
+        } catch (ThirdPartyException e) {
+            log.error(GEO_API_ERROR, e);
+            throw new InternalServerException("Error in request to Mapreflex API. " + e.getMessage());
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/counties/search/bbox/boundaries")
+    public ResponseEntity<String> searchCountiesInBbox(@RequestParam String southWest, @RequestParam String northEast) {
+        String result;
+        try {
+            result = boundariesService.searchCountiesInBbox(southWest, northEast);
+        } catch (ThirdPartyException e) {
+            log.error(GEO_API_ERROR, e);
+            throw new InternalServerException(e.getMessage());
         }
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

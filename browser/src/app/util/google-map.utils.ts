@@ -1,5 +1,4 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import LatLng = google.maps.LatLng;
 import { isNumber } from 'util';
 
 import { ZipBoundaries, ZipFeature } from '../api/models/ZipBoundaries';
@@ -7,6 +6,8 @@ import { InfoWindowInt } from '../entity/contractor/contractor-leads-search/inte
 import { MapMarkersStore } from './google-map-markers-store.service';
 import { boundaryDefaultStyle, boundaryHighlightStyle } from './google-map-default-options';
 import { Observable } from 'rxjs';
+import { CountyBoundaries, CountyFeature } from "../api/models/CountyBoundaries";
+import LatLng = google.maps.LatLng;
 import Feature = google.maps.Data.Feature;
 
 
@@ -14,6 +15,7 @@ import Feature = google.maps.Data.Feature;
 export class GoogleMapUtilsService {
   EARTH_RADIUS_KM = 6378.137;
   zipBoundariesStore = new Map<string, ZipFeature>();
+  countyBoundariesStore = new Map<string, CountyFeature>();
   companyMarker;
   private biggestArray = [];
   private companyMarkerInfoWindow;
@@ -100,7 +102,17 @@ export class GoogleMapUtilsService {
 
   }
 
-  updateCoverageInStore(selectedZips: Array<string>, map): void {
+  updateCountyCoverageInStore(selectedCounties: Array<string>, map): void {
+    Array.from(this.countyBoundariesStore.values()).forEach((feature: CountyFeature) => {
+      feature.properties.selected = selectedCounties.some(area => area == feature.id);
+    });
+    map.data.forEach(feature => {
+      const selected = selectedCounties.some(area => area == feature.getId());
+      feature.setProperty('selected', selected);
+    });
+  }
+
+  updateZipCoverageInStore(selectedZips: Array<string>, map): void {
     Array.from(this.zipBoundariesStore.values()).forEach((feature: ZipFeature) => {
       feature.properties.selected = selectedZips.some(zip => zip == feature.properties.zip);
     });
@@ -146,6 +158,41 @@ export class GoogleMapUtilsService {
   }
 
   /**
+   * @param {map} map Google map Object
+   * @param {CountyBoundaries} countyBoundaries
+   * @param {Array<string>} areas
+   * @param {Array<string>} servedCounties
+   * @returns {Array<ZipFeature>}
+   */
+  countiesToDraw(map, countyBoundaries: CountyBoundaries, areas: Array<string>, servedCounties: Array<string> = []): Array<CountyFeature> {
+    return countyBoundaries.features
+      .map((countyFeature: CountyFeature) => {
+        let drawnArea = false;
+        let isCountyCovered: boolean = servedCounties.includes(countyFeature.id);
+        let isCountyInArea: boolean = areas.includes(countyFeature.id);
+        map.data.forEach((feature: Feature) => {
+          if (feature.getId() == countyFeature.id) {
+            drawnArea = true;
+            return; // exit from loop if county already drawn
+          }
+        });
+        if (drawnArea) {
+          return;
+        }
+
+        if(servedCounties.length > 0 && !isCountyCovered) {
+          return
+        }
+
+        countyFeature.properties.selected = isCountyInArea;
+
+        return countyFeature;
+      })
+      //deleting undefined objects
+      .filter((countyFeature: CountyFeature) => !!countyFeature);
+  }
+
+  /**
    * Modify zip boundaries with 'selected' property to display served area
    * @param {ZipBoundaries} zipBoundaries all boundaries in map view
    * @param {Array<string>} servedZipCodes served zip codes array
@@ -169,6 +216,16 @@ export class GoogleMapUtilsService {
     map.data.addGeoJson(zipData, {
       idPropertyName: 'zip'
     });
+  }
+
+  /**
+   * Draws only service area counties
+   * @param {google.maps.Map} map
+   * @param {CountyBoundaries} coverage company service area boundaries
+   */
+  drawAreasCounties(map, coverage: CountyBoundaries | Array<CountyFeature>): void {
+    const countyData: CountyBoundaries = coverage instanceof Array ? new CountyBoundaries('FeatureCollection', coverage) : coverage;
+    countyData.features.map(feature => feature.properties.selected = true);
   }
 
   drawLeadsMarkers(map, leads, infoWindow: EventEmitter<InfoWindowInt>): Map<string, Array<ZipFeature>> {
@@ -197,14 +254,23 @@ export class GoogleMapUtilsService {
   }
 
   /**
-   *
+   * @param map
    * @param {ZipBoundaries | Array<ZipFeature>} zipBoundaries
    */
-  drawBoundaries(map, zipBoundaries: ZipBoundaries | Array<ZipFeature>): void {
+  drawZipBoundaries(map, zipBoundaries: ZipBoundaries | Array<ZipFeature>): void {
     const zipData: ZipBoundaries = zipBoundaries instanceof Array ? new ZipBoundaries('FeatureCollection', zipBoundaries) : zipBoundaries;
     map.data.addGeoJson(zipData, {
       idPropertyName: 'zip'
     });
+  }
+
+  /**
+   * @param map
+   * @param {CountyBoundaries | Array<CountyFeature>} countyBoundaries
+   */
+  drawCountyBoundaries(map, countyBoundaries: CountyBoundaries | Array<CountyFeature>): void {
+    const countyData: CountyBoundaries = countyBoundaries instanceof Array ? new CountyBoundaries('FeatureCollection', countyBoundaries) : countyBoundaries;
+    map.data.addGeoJson(countyData);
   }
 
   drawZipBoundary(map, zipFeature: ZipFeature): google.maps.LatLngBounds {

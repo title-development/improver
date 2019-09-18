@@ -30,4 +30,9 @@ public class ServedZip {
     public ServedZip(String zip) {
         this.zip = zip;
     }
+
+    public ServedZip(String zip, String county) {
+        this.zip = zip;
+        this.county = county;
+    }
 }

@@ -126,7 +126,7 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate, 
     this.map = map;
     this.boundariesService.getUnsupportedArea().subscribe(unsupportedArea => {
       this.unsupportedArea = unsupportedArea;
-      this.gMapUtils.drawBoundaries(this.map, this.unsupportedArea);
+      this.gMapUtils.drawZipBoundaries(this.map, this.unsupportedArea);
     });
 
   }
@@ -157,7 +157,7 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate, 
               const center = this.gMapUtil.getPolygonBounds(zipBoundaries.features[0].geometry.coordinates).getCenter();
               this.map.setCenter(center);
               this.unsaved = true;
-              this.gMapUtil.drawBoundaries(this.map, zipBoundaries);
+              this.gMapUtil.drawZipBoundaries(this.map, zipBoundaries);
               if (!this.configCoverage.manualMode) {
                 if (center instanceof google.maps.LatLng) {
                   this.center = center;
@@ -228,7 +228,7 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate, 
             if (this.configCoverage.zips.includes(this.searchZip) || this.zipsHistory.added.includes(this.searchZip)) {
               this.popUpService.showWarning(`${this.searchZip} already in your coverage`);
             } else {
-              this.gMapUtil.drawBoundaries(this.map, zipBoundaries);
+              this.gMapUtil.drawZipBoundaries(this.map, zipBoundaries);
               this.detailsMode.addRemoveZip(this.searchZip);
               this.gMapUtil.highlightZip(this.map, this.searchZip, 3000, () => {
                 this.detailsMode.selectMapZip(this.searchZip);
@@ -279,7 +279,7 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate, 
       this.popUpService.showError('At least one zip should be covered!');
       return;
     }
-    this.gMapUtils.updateCoverageInStore(this.configCoverage.zips, this.map);
+    this.gMapUtils.updateZipCoverageInStore(this.configCoverage.zips, this.map);
     this.companyService.updateCoverage(this.securityService.getLoginModel().company, this.configCoverage).subscribe(res => {
       this.unsaved = false;
       this.companyCenterZip = undefined;

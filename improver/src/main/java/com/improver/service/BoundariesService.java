@@ -1,8 +1,8 @@
 package com.improver.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.improver.exception.ThirdPartyException;
 import com.improver.application.properties.ThirdPartyApis;
+import com.improver.exception.ThirdPartyException;
 import com.improver.util.serializer.SerializationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.Header;
@@ -33,13 +33,14 @@ public class BoundariesService {
     private static final String BASE_URL = "https://mapreflex.herokuapp.com/api/us/v1";
     private static final String RADIUS_ZIP_SEARCH_URL = "/zipcodes/search/in-radius";
     private static final String ZIP_SEARCH_URL = "/zipcodes/by-ids";
+    private static final String ZIP_BY_COUNTY = "/zipcodes/by-counties";
+    private static final String COUNTY_SEARCH_URL = "/counties/by-ids";
     private static final String BBOX_ZIP_SEARCH_URL = "/zipcodes/search/in-bounding-box";
+    private static final String BBOX_COUNTY_SEARCH_URL = "/counties/search/in-bounding-box";
     private static final String PREPARING_REQUEST_ERROR_MESSAGE = "Error while preparing request URI to Mapreflex API. ";
 
-    @Autowired
-    private ThirdPartyApis thirdPartyApis;
+    @Autowired private ThirdPartyApis thirdPartyApis;
     private HttpClient client;
-
 
     @PostConstruct
     public void init() {
@@ -69,7 +70,6 @@ public class BoundariesService {
     }
 
 
-    // TODO: split into couple requests on UI side
     public String getZipBoundaries(String... zipCodes) throws ThirdPartyException {
         HttpUriRequest request;
         if (zipCodes.length > 200) {
@@ -88,6 +88,20 @@ public class BoundariesService {
     }
 
 
+    public String getCountyBoundaries(String... counties) throws ThirdPartyException {
+        HttpUriRequest request;
+        try {
+            URI uri = new URIBuilder(BASE_URL + COUNTY_SEARCH_URL)
+                .setParameter("ids", String.join(",", counties))
+                .setParameter("properties", "centroid,name,state")
+                .build();
+            request = RequestBuilder.get().setUri(uri).build();
+        } catch (URISyntaxException e) {
+            throw new ThirdPartyException(PREPARING_REQUEST_ERROR_MESSAGE + e.getMessage());
+        }
+        return makeRequestToMapreflex(request);
+    }
+
     public String searchZipCodesInRadius(String latitude, String longitude, String radius) throws ThirdPartyException {
         HttpUriRequest request;
         try {
@@ -104,6 +118,50 @@ public class BoundariesService {
         return makeRequestToMapreflex(request);
     }
 
+
+    public String searchCountiesInBbox(String southWest, String northEast) throws ThirdPartyException {
+        HttpUriRequest request;
+        try {
+            URI uri = new URIBuilder(BASE_URL + BBOX_COUNTY_SEARCH_URL)
+                .setParameter("southWest", southWest)
+                .setParameter("northEast", northEast)
+                .setParameter("properties", "name,centroid,state")
+                .build();
+            request = RequestBuilder.get().setUri(uri).build();
+        } catch (URISyntaxException e) {
+            throw new ThirdPartyException(PREPARING_REQUEST_ERROR_MESSAGE + e.getMessage());
+        }
+        return makeRequestToMapreflex(request);
+    }
+
+    public List<String> getZipCodesInRadius(double latitude, double longitude, int radius) throws ThirdPartyException {
+        String geoJson = searchZipCodesInRadius(String.valueOf(latitude), String.valueOf(longitude), String.valueOf(radius));
+        List<String> zipCodes = new ArrayList<>();
+        try {
+            JsonNode rootNode = SerializationUtil.mapper().readTree(geoJson);
+            rootNode.get("features").elements().forEachRemaining(feature ->
+                zipCodes.add(feature.get("properties").get("zip").asText()));
+            return zipCodes;
+        } catch (IOException e) {
+            throw new ThirdPartyException("Error parsing response from searchZipInRadius()", e);
+        }
+
+    }
+
+    public JsonNode getZipCodesByCounties(String ...countyIds) throws ThirdPartyException {
+        HttpUriRequest request;
+        try {
+            URI uri = new URIBuilder(BASE_URL + ZIP_BY_COUNTY)
+                .setParameter("countyIds", String.join(",", countyIds))
+                .setParameter("properties", "zip,centroid")
+                .build();
+            request = RequestBuilder.get().setUri(uri).build();
+        } catch (URISyntaxException e) {
+            throw new ThirdPartyException(PREPARING_REQUEST_ERROR_MESSAGE + e.getMessage());
+        }
+        String geoJson =  makeRequestToMapreflex(request);
+        return mapToJson(geoJson);
+    }
 
     private String makeRequestToMapreflex(HttpUriRequest request) throws ThirdPartyException {
         log.debug("Sending '" + request.getMethod() + "' request to URL : " + request.getURI());
@@ -135,19 +193,12 @@ public class BoundariesService {
         return result;
     }
 
-
-    public List<String> getZipCodesInRadius(double latitude, double longitude, int radius) throws ThirdPartyException {
-        String geoJson = searchZipCodesInRadius(String.valueOf(latitude), String.valueOf(longitude), String.valueOf(radius));
-        List<String> zipCodes = new ArrayList<>();
+    private JsonNode mapToJson(String geoJson) throws ThirdPartyException {
         try {
-            JsonNode rootNode = SerializationUtil.mapper().readTree(geoJson);
-            rootNode.get("features").elements().forEachRemaining(feature ->
-                zipCodes.add(feature.get("properties").get("zip").asText()));
-            return zipCodes;
+            return SerializationUtil.mapper().readTree(geoJson);
         } catch (IOException e) {
             throw new ThirdPartyException("Error parsing response from searchZipInRadius()", e);
         }
-
     }
 
 }

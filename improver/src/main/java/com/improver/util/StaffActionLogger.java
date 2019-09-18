@@ -107,7 +107,7 @@ public class StaffActionLogger {
     }
 
     public void logCoverageUpdate(Staff author, List<String> toAdd, List<String> toDelete){
-        String description = String.format("Service coverage is updated. Added: %s .Deleted: %s",
+        String description = String.format("Service coverage is updated. Added: %s. Deleted: %s",
             toAdd, toDelete);
         this.log(StaffAction.Action.COVERAGE_UPDATE,
             author,

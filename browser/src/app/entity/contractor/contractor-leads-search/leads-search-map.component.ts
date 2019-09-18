@@ -1,6 +1,5 @@
 import { ApplicationRef, Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
 import { GoogleMapsAPIWrapper } from '@agm/core';
-import { ErrorHandler } from '../../../util/error-handler';
 import { InfoWindowInt } from './intefaces/infoWindowInt';
 
 import { Lead, Pagination } from '../../../model/data-model';
@@ -93,7 +92,7 @@ export class LeadsSearchMapComponent implements OnDestroy {
         this.map = map;
         applyStyleToMapLayers(map, false);
         if (this.gMapUtils.zipBoundariesStore.size > 0) {
-          this.gMapUtils.drawBoundaries(this.map, Array.from(this.gMapUtils.zipBoundariesStore.values()));
+          this.gMapUtils.drawZipBoundaries(this.map, Array.from(this.gMapUtils.zipBoundariesStore.values()));
         }
         this.gMapUtils.drawCompanyMarker(this.map, new google.maps.LatLng(this.companyLocation.lat, this.companyLocation.lng));
         this.map.setCenter(new google.maps.LatLng(this.companyLocation.lat, this.companyLocation.lng));
@@ -122,7 +121,7 @@ export class LeadsSearchMapComponent implements OnDestroy {
         if (!zipBoundaries) {
           return of(null);
         }
-        this.gMapUtils.drawBoundaries(this.map, this.gMapUtils.zipsToDraw(this.map, zipBoundaries, this.areas));
+        this.gMapUtils.drawZipBoundaries(this.map, this.gMapUtils.zipsToDraw(this.map, zipBoundaries, this.areas));
 
         return this.leadService.getAll(true, this.pagination, zipBoundaries.features.map(feature => feature.properties.zip)).pipe(catchError(err => {
             this.popUpMessageService.showError('Error requesting leads');
@@ -160,7 +159,7 @@ export class LeadsSearchMapComponent implements OnDestroy {
       ),
       tap((data: { zipBoundaries: ZipBoundaries, outsizeAreaZips: Map<string, Array<ZipFeature>> }) => {
         if (typeof data == 'object' && data) {
-          this.gMapUtils.drawBoundaries(this.map, this.gMapUtils.zipsToDraw(this.map, data.zipBoundaries, this.areas));
+          this.gMapUtils.drawZipBoundaries(this.map, this.gMapUtils.zipsToDraw(this.map, data.zipBoundaries, this.areas));
           data.zipBoundaries.features.forEach((zipFeature: ZipFeature) => {
             const zipCenterLatLng = this.gMapUtils.getPolygonBounds(zipFeature.geometry.coordinates).getCenter();
             this.gMapUtils.createLeadMarker(this.map, zipFeature, zipCenterLatLng, data.outsizeAreaZips, this.showInfoWindow);
