@@ -105,6 +105,7 @@ import { MyTicketsComponent } from "./tickets/my/my-tickets.component";
 import { TicketEditDialogComponent } from "./tickets/ticket-edit-dialog/ticket-edit-dialog.component";
 import { StaffService } from "../../api/services/staff.service";
 import { StaffActionsComponent } from "./staff-actions/staff-actions.component";
+import { RecaptchaModule } from 'ng-recaptcha';
 
 
 
@@ -154,6 +155,7 @@ import { StaffActionsComponent } from "./staff-actions/staff-actions.component";
     SpinnerModule,
     AgmSharedModule,
     AgmSnazzyInfoWindowModule,
+    RecaptchaModule,
   ],
   declarations: [
     AdminComponent,

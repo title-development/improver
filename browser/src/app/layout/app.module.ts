@@ -90,6 +90,7 @@ import { MyStompService } from 'app/util/my-stomp.service';
 import { InternalServerErrorComponent } from '../entity/internal-server-error/internal-server-error.component';
 import { CustomRouteReuseStrategy } from '../util/router-reuse.strategy';
 import { TutorialsService } from '../api/services/tutorials.service';
+import { RECAPTCHA_SETTINGS, RecaptchaSettings } from 'ng-recaptcha';
 
 const rootRouting: ModuleWithProviders = RouterModule.forRoot([], {useHash: false});
 
@@ -228,6 +229,10 @@ export function getAuthServiceConfigs() {
       useClass: CustomRouteReuseStrategy
     },
     MyStompService,
+    {
+      provide: RECAPTCHA_SETTINGS,
+      useValue: { siteKey: environment.googleReCaptchaSiteKey } as RecaptchaSettings,
+    },
   ],
   bootstrap: [AppComponent]
 })

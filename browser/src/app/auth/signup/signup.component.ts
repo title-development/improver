@@ -1,17 +1,15 @@
-import { Component } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 
-import { SecurityService } from "../security.service";
-import { Constants } from "../../util/constants";
-import { Messages } from "app/util/messages";
+import { SecurityService } from '../security.service';
+import { Constants } from '../../util/constants';
+import { Messages } from 'app/util/messages';
 import { RegistrationService } from '../../api/services/registration.service';
-import { PopUpMessageService } from "../../util/pop-up-message.service";
-import { SystemMessageType } from "../../model/data-model";
-import { AuthService, FacebookLoginProvider, GoogleLoginProvider, SocialUser } from 'angularx-social-login';
-import { HttpResponse } from '@angular/common/http';
-import { LoginModel, RegistrationUserModel, RegistrationUserProps } from '../../model/security-model';
-import { getErrorMessage } from '../../util/functions';
-import { SocialConnectionsService } from '../social-connections.service';
+import { PopUpMessageService } from '../../util/pop-up-message.service';
+import { SystemMessageType } from '../../model/data-model';
+import { RegistrationUserModel, RegistrationUserProps } from '../../model/security-model';
+import { RecaptchaComponent } from 'ng-recaptcha';
+import { mergeMap, takeUntil, timeoutWith } from 'rxjs/operators';
+import { Subject, throwError } from 'rxjs';
 
 @Component({
   selector: 'login-page',
@@ -19,7 +17,7 @@ import { SocialConnectionsService } from '../social-connections.service';
   styleUrls: ['../shared/auth.scss']
 })
 
-export class SignupComponent {
+export class SignupComponent implements OnDestroy {
   //TODO: temporary values for testing
   // model = {
   //   email: "off.bk90@gmail.com",
@@ -31,12 +29,15 @@ export class SignupComponent {
   //   phone: "(123) 123-1231"
   // };
 
+  @ViewChild(RecaptchaComponent)
+  recaptcha: RecaptchaComponent;
 
   user: RegistrationUserModel = {
-    email: "",
-    password: "",
-    firstName: "",
-    lastName: "",
+    email: '',
+    password: '',
+    firstName: '',
+    lastName: '',
+    captcha: ''
   };
 
   registerProps: RegistrationUserProps = {
@@ -44,7 +45,7 @@ export class SignupComponent {
   };
 
   correctEmailModel = {
-    correctEmail: ""
+    correctEmail: ''
   };
 
   showMessage: boolean;
@@ -52,6 +53,8 @@ export class SignupComponent {
   messageText: string;
   step: number = 1;
   registrationProcessing = false;
+
+  private readonly destroyed$ = new Subject<void>();
 
   constructor(public securityService: SecurityService,
               public constants: Constants,
@@ -63,19 +66,31 @@ export class SignupComponent {
 
   registerCustomer() {
     this.registrationProcessing = true;
-    this.registrationService
-      .registerCustomer(this.user)
+    this.recaptcha.execute();
+    this.recaptcha.resolved.pipe(
+      timeoutWith(this.constants.ONE_MINUTE, throwError({error: {message: 'Timeout error please try again later'}})),
+      mergeMap((captcha: string | null) => {
+        if (!captcha) {
+          return throwError({error: {message: 'Captcha is expired please try again later'}});
+        }
+        this.user.captcha = captcha;
+        return this.registrationService
+          .registerCustomer(this.user);
+      }),
+      takeUntil(this.destroyed$),
+    )
       .subscribe(
         response => {
           this.registrationProcessing = false;
           this.step = 2;
         },
         err => {
+          this.recaptcha.reset();
           this.registrationProcessing = false;
           console.error(err);
           this.showMessage = true;
           this.messageText = err.message;
-          this.messageType = "ERROR";
+          this.messageType = 'ERROR';
         });
   }
 
@@ -84,8 +99,8 @@ export class SignupComponent {
       response => {
         this.popUpMessageService.showMessage({
           type: SystemMessageType.SUCCESS,
-          text: "A confirmation link has been resent to your email"
-        })
+          text: 'A confirmation link has been resent to your email'
+        });
       },
       err => {
         console.log(err);
@@ -95,11 +110,14 @@ export class SignupComponent {
   }
 
   changeConfirmationEmail() {
-    this.registrationService.changeActivationMail({oldValue: this.user.email, newValue: this.correctEmailModel.correctEmail}).subscribe(
+    this.registrationService.changeActivationMail({
+      oldValue: this.user.email,
+      newValue: this.correctEmailModel.correctEmail
+    }).subscribe(
       response => {
         this.popUpMessageService.showMessage({
           type: SystemMessageType.SUCCESS,
-          text: "A confirmation link has been to your corrected email"
+          text: 'A confirmation link has been sent to your corrected email'
         });
         this.user.email = this.correctEmailModel.correctEmail;
       },
@@ -108,6 +126,11 @@ export class SignupComponent {
         this.popUpMessageService.showError(JSON.parse(err.error).message);
       }
     );
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
   onMessageHide(event) {

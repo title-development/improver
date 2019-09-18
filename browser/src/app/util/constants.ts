@@ -21,6 +21,7 @@ export class Constants {
   states: any[];
   accreditations: any[];
   questionType: Array<any>;
+  readonly ONE_MINUTE = 1000 * 60 * 1;
 
   constructor(private tricksService: TricksService,) {
     this.patterns = {

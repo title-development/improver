@@ -30,6 +30,7 @@
         <span *ngIf="password.errors?.required">{{messages.errors.password.required}}</span>
       </div>
     </div>
+    <re-captcha [size]="'invisible'"></re-captcha>
 
     <div class="buttons">
       <button routerLink="/" class="back-link">Back to site</button>

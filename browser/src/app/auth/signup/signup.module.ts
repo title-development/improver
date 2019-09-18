@@ -10,6 +10,7 @@ import { CvButtonModule } from "../../theme/button/cv-button.module";
 import { CvInputFieldModule } from '../../theme/input-field/form-field.module';
 import { CvFieldsModule } from '../../theme/fields/cv-fields.module';
 import { SocialButtonsModule } from '../social-buttons/social-buttons.module';
+import { RecaptchaModule } from 'ng-recaptcha';
 
 const signupRouting: ModuleWithProviders = RouterModule.forChild([
   {
@@ -30,7 +31,8 @@ const signupRouting: ModuleWithProviders = RouterModule.forChild([
     CvButtonModule,
     CvIconModule,
     CvFieldsModule,
-    SocialButtonsModule
+    SocialButtonsModule,
+    RecaptchaModule
   ],
   declarations: [
     SignupComponent

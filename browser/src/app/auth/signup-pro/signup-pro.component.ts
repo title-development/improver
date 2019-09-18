@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 
 import { SecurityService } from '../security.service';
 import { Constants } from '../../util/constants';
@@ -10,9 +10,10 @@ import { PopUpMessageService } from '../../util/pop-up-message.service';
 import { HttpResponse } from '@angular/common/http';
 import { getErrorMessage } from '../../util/functions';
 import { MediaQuery, MediaQueryService } from '../../util/media-query.service';
-import { Subject } from 'rxjs';
+import { Subject, throwError } from 'rxjs';
 import { ActivatedRoute, Params } from '@angular/router';
-import { takeUntil } from 'rxjs/operators';
+import { mergeMap, takeUntil, timeoutWith } from 'rxjs/operators';
+import { RecaptchaComponent } from 'ng-recaptcha';
 
 
 @Component({
@@ -22,6 +23,9 @@ import { takeUntil } from 'rxjs/operators';
 })
 
 export class SignupProComponent implements OnDestroy {
+
+  @ViewChild(RecaptchaComponent)
+  recaptcha: RecaptchaComponent;
   agreeForSocialLogin: boolean = false;
   processing: boolean = false;
   showMessage: boolean = false;
@@ -33,7 +37,8 @@ export class SignupProComponent implements OnDestroy {
     lastName: '',
     phone: '',
     password: '',
-    referralCode: ''
+    referralCode: '',
+    captcha: ''
   };
 
   registerProps: RegistrationUserProps = {
@@ -63,23 +68,33 @@ export class SignupProComponent implements OnDestroy {
   }
 
   registerContractor(form) {
-    this.registrationService.registerContractor(this.user)
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe((response: HttpResponse<any>) => {
-        this.clearReferralCode();
-        this.securityService.loginUser(JSON.parse(response.body) as LoginModel, response.headers.get('authorization'), true)
-          .then((result) => {
-              if (result) {
-                this.popUpMessageService.showSuccess('Pro Account successfully created.');
-              }
-            }
-          );
-      }, err => {
-        if (err.status == 401) {
-          this.securityService.systemLogout();
+    this.recaptcha.execute();
+    this.recaptcha.resolved.pipe(
+      timeoutWith(this.constants.ONE_MINUTE, throwError({error: {message: 'Timeout error please try again later'}})),
+      mergeMap((captcha: string | null) => {
+        if (!captcha) {
+          return throwError({error: {message: 'Captcha is expired please try again later'}});
         }
-        this.popUpMessageService.showError(getErrorMessage(err));
-      });
+        this.user.captcha = captcha;
+        return this.registrationService.registerContractor(this.user);
+      }),
+      takeUntil(this.destroyed$),
+    ).subscribe((response: HttpResponse<any>) => {
+      this.clearReferralCode();
+      this.securityService.loginUser(JSON.parse(response.body) as LoginModel, response.headers.get('authorization'), true)
+        .then((result) => {
+            if (result) {
+              this.popUpMessageService.showSuccess('Pro Account successfully created.');
+            }
+          }
+        );
+    }, err => {
+      this.recaptcha.reset();
+      if (err.status == 401) {
+        this.securityService.systemLogout();
+      }
+      this.popUpMessageService.showError(getErrorMessage(err));
+    });
   }
 
   onMessageHide(event) {

@@ -30,7 +30,7 @@ export namespace Role {
   }
 }
 
-export class RegistrationUserModel {
+export class RegistrationUserModelBase {
   email: string;
   password?: string;
   firstName: string;
@@ -41,10 +41,13 @@ export class RegistrationUserModel {
   referralCode?: string;
 }
 
+export class RegistrationUserModel extends RegistrationUserModelBase {
+  captcha: string;
+}
+
 export class RegistrationUserProps {
   confirmPassword: string;
   agree?: boolean;
-  reCaptcha?: boolean;
 }
 
 export class CompanyInfoRegistration {

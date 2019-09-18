@@ -13,6 +13,7 @@ import { CvCheckboxModule } from "../../theme/checkbox/checkbox.module";
 import { CvSelectModule } from "../../theme/select/cv-select-module";
 import { AgmSharedModule } from "../../shared/agmShared.module";
 import { SocialButtonsModule } from '../social-buttons/social-buttons.module';
+import { RecaptchaModule } from 'ng-recaptcha';
 
 const signupProRouting: ModuleWithProviders = RouterModule.forChild([
   {
@@ -36,7 +37,8 @@ const signupProRouting: ModuleWithProviders = RouterModule.forChild([
     CvCheckboxModule,
     CvSelectModule,
     AgmSharedModule,
-    SocialButtonsModule
+    SocialButtonsModule,
+    RecaptchaModule
   ],
   declarations: [
     SignupProComponent

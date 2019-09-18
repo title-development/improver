@@ -20,6 +20,7 @@ public final class ErrorMessages {
     public static final String REQUEST_REVIEW_SUBJECT_SIZE_ERROR_MESSAGE = "Subject should be " + REVIEW_REQUEST_SUBJECT_MIN_SIZE + " to " + REVIEW_REQUEST_SUBJECT_MAX_SIZE + " characters long.";
     public static final String REQUEST_REVIEW_MESSAGE_SIZE_ERROR_MESSAGE = "Message should be " + REVIEW_REQUEST_MESSAGE_MIN_SIZE + " to " + REVIEW_REQUEST_MESSAGE_MAX_SIZE + " characters long.";
     public static final String ORDER_DESCRIPTION_SIZE_ERROR_MESSAGE = "Order description must be not more " + ORDER_DESCRIPTION_SIZE + " characters";
+    public static final String RE_CAPTCHA_VALIDATION_ERROR_MESSAGE = "You did not pass captcha";
 
 
     public static final String BAD_CREDENTIALS_MSG = "Email or password is incorrect";

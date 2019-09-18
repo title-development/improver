@@ -203,6 +203,7 @@
                             (showMessage)="showMessage = $event;"
                             (click)="agreeForSocialLogin = !registerProps.agree"
             ></social-buttons>
+            <re-captcha [size]="'invisible'"></re-captcha>
           </div>
         </div>
         <div class="row" *ngIf="!(mediaQuery.xs || mediaQuery.sm)">

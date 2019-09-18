@@ -41,6 +41,7 @@ export class AddUserComponent {
     this.reset();
   }
 
+
   reset(): void {
     this.form.resetForm();
   }

@@ -2,8 +2,12 @@ package com.improver.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.improver.entity.User;
+import com.improver.exception.AuthenticationRequiredException;
 import com.improver.model.out.LoginModel;
+import com.improver.model.recapcha.ReCaptchaResponse;
+import com.improver.service.ReCaptchaService;
 import com.improver.util.serializer.SerializationUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,22 +22,33 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
 
+import static com.improver.util.ErrorMessages.RE_CAPTCHA_VALIDATION_ERROR_MESSAGE;
+
 public class LoginFilter extends AbstractAuthenticationProcessingFilter {
 
     private UserSecurityService userSecurityService;
     private JwtUtil jwtUtil;
+    private ReCaptchaService reCaptchaService;
 
-    public LoginFilter(String url, AuthenticationManager authManager, UserSecurityService userSecurityService, JwtUtil jwtUtil1) {
+    public LoginFilter(String url, AuthenticationManager authManager, UserSecurityService userSecurityService, JwtUtil jwtUtil1, ReCaptchaService reCaptchaService) {
         super(new AntPathRequestMatcher(url));
         setAuthenticationManager(authManager);
         this.userSecurityService = userSecurityService;
         this.jwtUtil = jwtUtil1;
+        this.reCaptchaService = reCaptchaService;
         this.setAuthenticationFailureHandler(new LoginFailureHandler());
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse res) throws AuthenticationException, IOException, ServletException {
+        String userIp = req.getRemoteAddr();
         Credentials creds = new ObjectMapper().readValue(req.getInputStream(), Credentials.class);
+
+        ReCaptchaResponse reCaptchaResponse = reCaptchaService.validate(creds.getCaptcha(), userIp);
+        if(!reCaptchaResponse.isSuccess()) {
+            throw new AuthenticationRequiredException(RE_CAPTCHA_VALIDATION_ERROR_MESSAGE);
+        }
+
         return getAuthenticationManager().authenticate(
             new UsernamePasswordAuthenticationToken(
                 creds.getEmail().toLowerCase(),
@@ -54,6 +69,7 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
     private static class Credentials {
         private String email;
         private String password;
+        private String captcha;
 
         public String getEmail() {
             return email;
@@ -69,6 +85,14 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
 
         public void setPassword(String password) {
             this.password = password;
+        }
+
+        public String getCaptcha() {
+            return captcha;
+        }
+
+        public void setCaptcha(String captcha) {
+            this.captcha = captcha;
         }
     }
 }

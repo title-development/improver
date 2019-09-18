@@ -2,6 +2,7 @@ package com.improver.application.config;
 
 import com.improver.application.properties.SecurityProperties;
 import com.improver.security.*;
+import com.improver.service.ReCaptchaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,8 +28,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired UserSecurityService userSecurityService;
     @Autowired JwtUtil jwtUtil;
-    @Autowired
-    SecurityProperties securityProperties;
+    @Autowired SecurityProperties securityProperties;
+    @Autowired ReCaptchaService reCaptchaService;
 
     private CaptchaFilter captchaFilter() {
         return new CaptchaFilter.Builder()
@@ -39,7 +40,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     private LoginFilter loginFilter() throws Exception {
-        return new LoginFilter(LOGIN_PATH, authenticationManager(), userSecurityService, jwtUtil);
+        return new LoginFilter(LOGIN_PATH, authenticationManager(), userSecurityService, jwtUtil, reCaptchaService);
     }
 
     private JwtAuthenticationFilter jwtAuthenticationFilter() {

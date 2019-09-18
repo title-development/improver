@@ -3,17 +3,19 @@ package com.improver.controller;
 
 import com.improver.entity.Contractor;
 import com.improver.entity.User;
+import com.improver.exception.AuthenticationRequiredException;
 import com.improver.exception.BadRequestException;
 import com.improver.exception.ConflictException;
-import com.improver.exception.NotFoundException;
 import com.improver.exception.ValidationException;
 import com.improver.model.in.registration.CompanyRegistration;
 import com.improver.model.in.OldNewValue;
 import com.improver.model.in.registration.UserRegistration;
 import com.improver.model.out.LoginModel;
+import com.improver.model.recapcha.ReCaptchaResponse;
 import com.improver.repository.UserRepository;
 import com.improver.security.UserSecurityService;
 import com.improver.service.CompanyService;
+import com.improver.service.ReCaptchaService;
 import com.improver.service.UserService;
 import com.improver.util.mail.MailService;
 import lombok.extern.slf4j.Slf4j;
@@ -24,12 +26,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.Optional;
 import java.util.UUID;
 
 import static com.improver.application.properties.Path.*;
+import static com.improver.util.ErrorMessages.RE_CAPTCHA_VALIDATION_ERROR_MESSAGE;
 
 @Slf4j
 @RestController
@@ -40,6 +43,7 @@ public class RegistrationController {
     @Autowired private MailService mailService;
     @Autowired private CompanyService companyService;
     @Autowired private UserSecurityService userSecurityService;
+    @Autowired private ReCaptchaService reCaptchaService;
 
 
     @PreAuthorize("isAnonymous()")
@@ -80,8 +84,12 @@ public class RegistrationController {
 
     @PreAuthorize("isAnonymous()")
     @PostMapping(CUSTOMERS)
-    public ResponseEntity registerCustomer(@RequestBody @Valid UserRegistration customer) {
+    public ResponseEntity registerCustomer(@RequestBody @Valid UserRegistration customer, HttpServletRequest request) {
         log.info("Registration of customer = {}", customer.getEmail());
+        ReCaptchaResponse reCaptchaResponse = reCaptchaService.validate(customer.getCaptcha(), request.getRemoteAddr());
+        if(!reCaptchaResponse.isSuccess()) {
+            throw new AuthenticationRequiredException(RE_CAPTCHA_VALIDATION_ERROR_MESSAGE);
+        }
         userService.registerCustomer(customer);
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -89,8 +97,12 @@ public class RegistrationController {
 
     @PreAuthorize("isAnonymous()")
     @PostMapping(CONTRACTORS)
-    public ResponseEntity<LoginModel> registerContractor(@RequestBody @Valid UserRegistration registration, HttpServletResponse res) {
+    public ResponseEntity<LoginModel> registerContractor(@RequestBody @Valid UserRegistration registration, HttpServletResponse res, HttpServletRequest request) {
         log.info("Registration of PRO = {}", registration.getEmail());
+        ReCaptchaResponse reCaptchaResponse = reCaptchaService.validate(registration.getCaptcha(), request.getRemoteAddr());
+        if(!reCaptchaResponse.isSuccess()) {
+            throw new AuthenticationRequiredException(RE_CAPTCHA_VALIDATION_ERROR_MESSAGE);
+        }
         Contractor contractor = userService.registerContractor(registration);
         LoginModel loginModel = userSecurityService.performUserLogin(contractor, res);
         return new ResponseEntity<>(loginModel, HttpStatus.OK);

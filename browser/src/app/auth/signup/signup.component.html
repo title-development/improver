@@ -154,12 +154,12 @@
             <span>or</span>
           </div>
 
-          <social-buttons [processing]="processing"
+          <social-buttons [processing]="registrationProcessing"
                           (responseMessageType)="messageType = $event;"
                           (responseMessage)="messageText = $event;"
                           (showMessage)="showMessage = $event;"
           ></social-buttons>
-
+          <re-captcha [size]="'invisible'"></re-captcha>
         </form>
       </div>
 
