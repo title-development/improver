@@ -1,13 +1,8 @@
-import {
-  Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, Renderer2,
-} from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnInit, Output, Renderer2, } from '@angular/core';
 import { FileItem, FileLikeObject, FileUploader } from 'ng2-file-upload';
 import { ProjectService } from '../../api/services/project.service';
 import { FILE_MIME_TYPES, IMAGE_UPLOADER_QUERY_LIMIT, MAX_FILE_SIZE } from '../../util/file-parameters';
-import {
-  confirmDialogConfig,
-  customerGalleryDialogConfig,
-} from '../dialogs/dialogs.configs';
+import { confirmDialogConfig, customerGalleryDialogConfig, } from '../dialogs/dialogs.configs';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { PopUpMessageService } from '../../util/pop-up-message.service';
 import { SystemMessageType } from '../../model/data-model';
@@ -189,7 +184,12 @@ export class ImagesUploaderComponent implements OnInit {
     item['processing'] = false;
   }
 
-  uploadAllImages(): void {
+  uploadAllImages(url?: string): void {
+    if (url) {
+      let options = this.uploader.options;
+      options.url = url;
+      this.uploader.setOptions(options)
+    }
     this.uploader.uploadAll();
     this.uploader.onCompleteAll = () => {
       //uploading canceled item
@@ -314,4 +314,5 @@ export class ImagesUploaderComponent implements OnInit {
     }
     this.popupService.showError(text, 10000);
   }
+
 }

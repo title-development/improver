@@ -1,17 +1,16 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import {CompanyProfile, DemoProject, ServiceType} from "../../../model/data-model";
+import { Component, OnInit } from '@angular/core';
+import { CompanyProfile, DemoProject, ServiceType } from "../../../model/data-model";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Constants } from "../../../util/constants";
 import { Messages } from "../../../util/messages";
-import {DemoProjectService} from "../../../api/services/demo-project.service";
+import { DemoProjectService } from "../../../api/services/demo-project.service";
 import { SecurityService } from "../../../auth/security.service";
 import { ServiceTypeService } from "../../../api/services/service-type.service";
-import * as Swiper from 'swiper/dist/js/swiper.min.js';
 import { CompanyService } from "../../../api/services/company.service";
 import { PopUpMessageService } from "../../../util/pop-up-message.service";
 import { customerGalleryDialogConfig } from "../../../shared/dialogs/dialogs.configs";
 import { MatDialog, MatDialogRef } from "@angular/material";
-import { forkJoin ,  combineLatest } from "rxjs";
+import { combineLatest } from "rxjs";
 import { dialogsMap } from '../../../shared/dialogs/dialogs.state';
 import { getErrorMessage } from "../../../util/functions";
 

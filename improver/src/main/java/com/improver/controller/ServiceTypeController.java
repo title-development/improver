@@ -2,19 +2,15 @@ package com.improver.controller;
 
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.improver.entity.Admin;
-import com.improver.entity.Staff;
 import com.improver.model.NameIdTuple;
 import com.improver.model.admin.AdminServiceType;
 import com.improver.repository.ServiceTypeRepository;
 import com.improver.security.UserSecurityService;
+import com.improver.security.annotation.AdminAccess;
 import com.improver.security.annotation.StaffAccess;
 import com.improver.security.annotation.SupportAccess;
 import com.improver.service.ServiceTypeService;
 import com.improver.util.annotation.PageableSwagger;
-import com.improver.security.annotation.AdminAccess;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,17 +23,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-import static com.improver.application.properties.Path.ID_PATH_VARIABLE;
-import static com.improver.application.properties.Path.IS_NAME_FREE;
-import static com.improver.application.properties.Path.SERVICES_PATH;
+import static com.improver.application.properties.Path.*;
 import static com.improver.util.serializer.SerializationUtil.fromJson;
 
 
 @RestController
 @RequestMapping(SERVICES_PATH)
 public class ServiceTypeController {
-
-    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired private ServiceTypeService serviceTypeService;
     @Autowired private ServiceTypeRepository serviceTypeRepository;
@@ -76,7 +68,7 @@ public class ServiceTypeController {
     public ResponseEntity<Void> updatedServiceType(@PathVariable long id,
                                                    @RequestPart(value = "data") String data,
                                                    @RequestPart(value = "file", required = false) MultipartFile image) {
-        AdminServiceType adminServiceType = fromJson(new TypeReference<AdminServiceType>() {
+        AdminServiceType adminServiceType = fromJson(new TypeReference<>() {
         }, data);
         serviceTypeService.updateServiceType(id, adminServiceType, image, userSecurityService.currentAdmin());
 
@@ -87,7 +79,7 @@ public class ServiceTypeController {
     @PostMapping
     public ResponseEntity<Void> createServiceType(@RequestPart(value = "data") String data,
                                                   @RequestPart(value = "file", required = false) MultipartFile image) {
-        AdminServiceType adminServiceType = fromJson(new TypeReference<AdminServiceType>() {
+        AdminServiceType adminServiceType = fromJson(new TypeReference<>() {
         }, data);
         serviceTypeService.addServiceType(adminServiceType, image, userSecurityService.currentAdmin());
 

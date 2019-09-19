@@ -17,7 +17,7 @@ import { finalize } from "rxjs/operators";
 })
 export class AdminCoverageComponent {
 
-  MAP_MIN_ZOOM = 8;
+
   loading: boolean = true;
   infoWindow: ZipInfoWindow;
   hasChanges: boolean = false;

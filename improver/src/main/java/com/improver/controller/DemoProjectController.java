@@ -8,8 +8,6 @@ import com.improver.repository.DemoProjectRepository;
 import com.improver.service.DemoProjectService;
 import com.improver.service.ImageService;
 import groovy.util.logging.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,10 +25,8 @@ import static com.improver.application.properties.Path.*;
 @RequestMapping(COMPANIES_PATH + COMPANY_ID + "/profile/projects")
 public class DemoProjectController {
 
-    @Autowired
-    private DemoProjectService demoProjectService;
-    @Autowired
-    private DemoProjectRepository demoProjectRepository;
+    @Autowired private DemoProjectService demoProjectService;
+    @Autowired private DemoProjectRepository demoProjectRepository;
     @Autowired private ImageService imageService;
     @Autowired private CompanyRepository companyRepository;
 
@@ -42,18 +38,11 @@ public class DemoProjectController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> addDemoProject(@PathVariable String companyId, @RequestBody DemoProject demoProject) {
-        demoProjectService.addDemoProject(companyId, demoProject);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-
-    // TODO: Andriy Fix this : use base64 image save
-    @PostMapping("/presave")
-    public ResponseEntity<DemoProject> preSaveDemoProject(@PathVariable String companyId, @RequestBody DemoProject demoProject) {
-        DemoProject project = demoProjectService.preSaveProjectTemplate(companyId, demoProject);
+    public ResponseEntity<DemoProject> addDemoProject(@PathVariable String companyId, @RequestBody DemoProject demoProject) {
+        DemoProject project = demoProjectService.addDemoProject(companyId, demoProject);
         return new ResponseEntity<>(project, HttpStatus.OK);
     }
+
 
     @GetMapping(ID_PATH_VARIABLE)
     public ResponseEntity<DemoProject> getDemoProject(@PathVariable String companyId, @PathVariable long id) {
@@ -63,10 +52,10 @@ public class DemoProjectController {
 
 
     @PutMapping(ID_PATH_VARIABLE)
-    public ResponseEntity<Void> updateDemoProject(@PathVariable String companyId, @PathVariable long id,
+    public ResponseEntity<DemoProject> updateDemoProject(@PathVariable String companyId, @PathVariable long id,
                                                   @RequestBody DemoProject demoProject) {
-        demoProjectService.updateDemoProject(companyId, demoProject.setId(id));
-        return new ResponseEntity<>(HttpStatus.OK);
+        DemoProject project = demoProjectService.updateDemoProject(companyId, demoProject.setId(id));
+        return new ResponseEntity<>(project, HttpStatus.OK);
     }
 
     @DeleteMapping(ID_PATH_VARIABLE)
@@ -105,7 +94,7 @@ public class DemoProjectController {
                                                          @PathVariable long id,
                                                          @RequestParam String imageUrl) {
         DemoProject project = demoProjectService.getDemoProject(companyId, id);
-        String newCoverUrl = imageService.deleteProjectImage(imageUrl,project);
+        String newCoverUrl = imageService.deleteProjectImage(imageUrl, project);
         project.setCoverUrl(newCoverUrl);
         demoProjectRepository.save(project.setUpdated(ZonedDateTime.now()));
         return new ResponseEntity<>(HttpStatus.OK);

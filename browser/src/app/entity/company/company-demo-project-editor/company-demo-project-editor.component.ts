@@ -2,18 +2,18 @@ import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, NgForm } from '@angular/forms';
 
-import { DemoProject, ServiceType, SystemMessageType } from '../../../model/data-model';
+import { DemoProject, ServiceType } from '../../../model/data-model';
 import { ServiceTypeService } from '../../../api/services/service-type.service';
 import { DemoProjectService } from '../../../api/services/demo-project.service';
 import { SecurityService } from '../../../auth/security.service';
 import { Constants } from '../../../util/constants';
 import { Messages } from '../../../util/messages';
-import { Observable, forkJoin, combineLatest } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { PopUpMessageService } from '../../../util/pop-up-message.service';
 import { TricksService } from '../../../util/tricks.service';
 import { addDays, addYears, format } from 'date-fns';
 import { getErrorMessage } from '../../../util/functions';
-import { map, startWith } from 'rxjs/internal/operators';
+import { finalize, first, map, startWith } from 'rxjs/internal/operators';
 import { ImagesUploaderComponent } from '../../../shared/image-uploader/image-uploader.component';
 import { ComponentCanDeactivate } from '../../../auth/router-guards/pending-chanes.guard';
 import { FormHasChangesDirective } from '../../../directives/form-has-changes.directive';
@@ -48,7 +48,6 @@ export class CompanyDemoProjectEditorComponent implements OnInit, ComponentCanDe
   projectImages: any[] = [];
 
   allServiceTypes: ServiceType[];
-  project: DemoProject = new DemoProject();
   newMode: boolean = false;
   filteredStates = [];
   selectedControl = new FormControl();
@@ -81,20 +80,24 @@ export class CompanyDemoProjectEditorComponent implements OnInit, ComponentCanDe
       this.projectId = params['projectId'];
       this.newMode = params['mode'] != 'edit';
 
-      let requests = [
-        this.serviceTypeService.serviceTypes$,
-        this.demoProjectService.get(this.companyId, this.projectId),
-        this.demoProjectService.getImages(this.companyId, this.projectId),
+      let requests: any[] = [
+        this.serviceTypeService.serviceTypes$
       ];
 
+      if (!this.newMode) {
+        requests.push(this.demoProjectService.get(this.companyId, this.projectId));
+        requests.push(this.demoProjectService.getImages(this.companyId, this.projectId));
+      }
+
       combineLatest(requests).subscribe(result => {
+        console.log("combineLatest");
           this.allServiceTypes = result[0];
-          this.demoProject = result[1];
-          this.projectImages = result[2];
+          this.demoProject = result[1] ? result[1] as DemoProject : this.demoProject;
+          this.projectImages = result[2] ? result[2] : this.projectImages;
         },
         err => {
           console.log(err);
-          if (err.status == 404) {
+          if (err.status == 404 && !this.newMode) {
             this.router.navigate(['404']);
           } else {
             this.popUpMessageService.showError(getErrorMessage(err));
@@ -117,7 +120,6 @@ export class CompanyDemoProjectEditorComponent implements OnInit, ComponentCanDe
 
   canDeactivate(): boolean {
     const haveUnsavedImages: boolean = this.imageUploader && this.imageUploader.hasUnsavedImages();
-
     return !(haveUnsavedImages || this.formHasChanges);
   }
 
@@ -140,14 +142,6 @@ export class CompanyDemoProjectEditorComponent implements OnInit, ComponentCanDe
     });
   }
 
-  displayFn(item: any): string {
-    return item ? item.name : '';
-  }
-
-  trackByService(index: number, item: any) {
-    return item.id;
-  };
-
   getServiceTypes() {
     this.serviceTypeService.serviceTypes$
       .subscribe(
@@ -165,49 +159,34 @@ export class CompanyDemoProjectEditorComponent implements OnInit, ComponentCanDe
         });
   }
 
-  // TODO: Implement or remove this method
-  addProjectService() {
-    this.popUpMessageService.showMessage(this.popUpMessageService.METHOD_NOT_IMPLEMENTED);
-    throw new Error('Method not implemented.');
-  }
-
-  // TODO: Implement or remove this method
-  removeProjectService(service) {
-    this.popUpMessageService.showMessage(this.popUpMessageService.METHOD_NOT_IMPLEMENTED);
-    throw new Error('Method not implemented.');
-  }
-
   saveDemoProject(form: NgForm, formChanges: FormHasChangesDirective): void {
     formChanges.markAsNotChanged();
-    let observable;
     this.savingData = true;
-    if (this.imageUploader.hasUnsavedImages()) {
-      this.imageUploader.uploadAllImages();
-      observable = combineLatest(
-        this.demoProjectService.update(this.demoProject.id, this.demoProject),
-        this.imageUploader.uploadCompleted);
-    } else {
-      observable = this.demoProjectService.update(this.demoProject.id, this.demoProject);
-    }
-    observable.subscribe(
-      () => {
-        this.savingData = false;
-        this.popUpMessageService.showMessage({
-          text: 'Project is updated',
-          type: SystemMessageType.SUCCESS
-        });
-        this.router.navigate(['companies', this.companyId, 'projects', this.projectId, 'view']);
-      },
-      err => {
-        this.savingData = false;
-        this.popUpMessageService.showError(JSON.parse(err.error).message);
-      });
+
+    let request = this.newMode
+      ? this.demoProjectService.post(this.demoProject)
+      : this.demoProjectService.update(this.demoProject.id, this.demoProject);
+
+    request.pipe(finalize(() => this.savingData = false))
+      .subscribe(demoProject => {
+          this.demoProject = demoProject;
+          if (this.imageUploader.hasUnsavedImages()) {
+            this.imageUploader.uploadAllImages(`/api/companies/${this.companyId}/profile/projects/${this.demoProject.id}/images`);
+            this.imageUploader.uploadCompleted.pipe(first())
+              .subscribe(() => {
+                this.projectSaved()
+              })
+          } else {
+            this.projectSaved()
+          }
+        },
+        err => this.popUpMessageService.showError(getErrorMessage(err)));
   }
 
-  // TODO: Implementation
-  publishDemoProject() {
-    this.popUpMessageService.showMessage(this.popUpMessageService.METHOD_NOT_IMPLEMENTED);
-    throw new Error('Method not implemented.');
+  projectSaved() {
+    this.formHasChanges = false;
+    this.popUpMessageService.showSuccess('Project is updated');
+    this.router.navigate(['companies', this.companyId, 'projects', 'view', this.demoProject.id]);
   }
 
   deleteDemoProject(id) {

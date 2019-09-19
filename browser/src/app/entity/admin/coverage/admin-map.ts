@@ -3,7 +3,7 @@ import { GoogleMapsAPIWrapper } from '@agm/core';
 import { BoundariesService } from '../../../api/services/boundaries.service';
 
 import { fromPromise } from 'rxjs-compat/observable/fromPromise';
-import { catchError, debounceTime, finalize, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { catchError, debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { BehaviorSubject, fromEventPattern, of, Subject } from 'rxjs';
 import { applyStyleToMapLayers, GoogleMapUtilsService } from '../../../util/google-map.utils';
 import { MediaQuery, MediaQueryService } from '../../../util/media-query.service';
@@ -25,6 +25,7 @@ export class AdminMap implements OnDestroy {
   @Output() hasChanges: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   NEW_YORK_COORDINATES = { lat: 40.730610, lng: -73.935242 };
+  MAP_MIN_ZOOM = 7;
 
   mediaQuery: MediaQuery;
   infoWindow: ZipInfoWindow = {
@@ -81,7 +82,7 @@ export class AdminMap implements OnDestroy {
         this.drawCoverage(coverage);
         this.addAreaListeners();
         // this.gMapUtils.fitMapToDataLayer(this.map);
-        this.map.setZoom(9);
+        this.map.setZoom(this.MAP_MIN_ZOOM);
 
         return fromEventPattern(
           (handler) => {
@@ -105,11 +106,11 @@ export class AdminMap implements OnDestroy {
       catchError(err => {
         this.popUpMessageService.showError(getErrorMessage(err));
         return of(null);
-      }),
-      tap((countyBoundaries: CountyBoundaries) => {
-        this.gMapUtils.drawCountyBoundaries(this.map, this.gMapUtils.countiesToDraw(this.map, countyBoundaries, this.coveredArea));
       })
-    ).subscribe(() => {
+    ).subscribe((countyBoundaries: CountyBoundaries) => {
+      if (countyBoundaries) {
+        this.gMapUtils.drawCountyBoundaries(this.map, this.gMapUtils.countiesToDraw(this.map, countyBoundaries, this.coveredArea));
+      }
     });
   }
 

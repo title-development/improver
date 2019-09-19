@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, OnInit } from '@angular/core';
-import {DemoProject, Review} from "../../../../model/data-model";
-import {DemoProjectService} from "../../../../api/services/demo-project.service";
+import { Component, Input, OnInit } from '@angular/core';
+import { DemoProject, Review } from "../../../../model/data-model";
+import { DemoProjectService } from "../../../../api/services/demo-project.service";
 import { SecurityService } from "../../../../auth/security.service";
 import { Role } from "../../../../model/security-model";
 import { PopUpMessageService } from "../../../../util/pop-up-message.service";
@@ -68,21 +68,6 @@ export class DemoProjectsGalleryComponent implements OnInit {
 
   trackById(index, item: Review) {
     return item.id
-  }
-
-  preSaveDemoProject() {
-    this.preSavingProject = true;
-    this.demoProjectService.preSave(this.emptyDemoProject)
-      .subscribe(
-        demoProject => {
-          this.preSavingProject = false;
-          this.router.navigate(['/companies', this.companyId, 'projects', demoProject.id, 'add']);
-        },
-        err => {
-          console.log(err);
-          this.preSavingProject = false;
-          this.popUpMessageService.showError(err.error)
-        });
   }
 
   deleteDemoProjectConfirm(project: DemoProject) {

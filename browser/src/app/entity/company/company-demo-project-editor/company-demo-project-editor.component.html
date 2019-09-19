@@ -1,7 +1,7 @@
 <div class="company-gallery-project-wrapper">
   <div class="company-gallery-project">
 
-    <div class="main-block" *ngIf="demoProject.id" [cvSpinner]="!demoProject.id" [cvSpinnerSize]="32">
+    <div class="main-block" [cvSpinner]="false" [cvSpinnerSize]="32">
 
       <div class="gallery-project-card card">
 
@@ -156,7 +156,7 @@
           </div>
 
           <div class="row image-uploader-wrapper" *ngIf="projectImages">
-            <image-uploader [apiUrl]="'/api/companies/'+companyId+'/profile/projects/'+projectId+'/images'"
+            <image-uploader [apiUrl]="'/api/companies/' + companyId + '/profile/projects/' + demoProject.id + '/images'"
                             [showActionButtons]="false"
                             [projectView]="true"
                             [projectImages]="projectImages" title="Project photos"></image-uploader>
@@ -168,7 +168,7 @@
                       [routerLink]="'/companies/' + securityService.getLoginModel().company"
                       *ngIf="!newMode">Cancel
               </button>
-              <button cv-button-flat flatStyle="dark" (click)="deleteDemoProject(projectId)" *ngIf="newMode">Cancel
+              <button cv-button-flat flatStyle="dark" (click)="deleteDemoProject(demoProject.id)" *ngIf="newMode">Cancel
               </button>
             </div>
             <div class="right-buttons">

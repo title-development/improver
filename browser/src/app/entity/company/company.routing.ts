@@ -12,17 +12,17 @@ const routes: Routes = [
     loadChildren: './company-profile/company-profile.module#CompanyProfileModule'
   },
   {
-    path: ':companyId/projects/:projectId/view',
+    path: ':companyId/projects/view/:projectId',
     loadChildren: './company-demo-project-viewer/company-demo-project-viewer.module#CompanyDemoProjectViewerModule',
     canActivate: [AuthGuard]
   },
   {
-    path: ':companyId/projects/:projectId/:mode',
+    path: ':companyId/projects/:mode/:projectId',
     loadChildren: './company-demo-project-editor/company-demo-project-editor.module#CompanyDemoProjectEditorModule',
     canActivate: [AuthGuard, ContractorGuard]
   },
   {
-    path: ':companyId/projects/:projectId/:mode',
+    path: ':companyId/projects/:mode',
     loadChildren: './company-demo-project-editor/company-demo-project-editor.module#CompanyDemoProjectEditorModule',
     canActivate: [AuthGuard, ContractorGuard]
   }

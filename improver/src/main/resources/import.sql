@@ -1437,12 +1437,12 @@ INSERT INTO trades_service_types (trade_id, service_type_id) VALUES ((SELECT cur
 INSERT INTO service_types (name, lead_price, image_url) SELECT 'Radon Mitigation System Repair', 999, '' WHERE NOT EXISTS (SELECT name FROM service_types WHERE service_types.name = 'Radon Mitigation System Repair');
 INSERT INTO trades_service_types (trade_id, service_type_id) VALUES ((SELECT currval(pg_get_serial_sequence('trades','id'))), (SELECT id FROM service_types WHERE service_types.name = 'Radon Mitigation System Repair'));
 INSERT INTO trades (name) VALUES ('Real Estate Photographer');
-INSERT INTO service_types (name, lead_price, image_url) SELECT 'Commercial', 999, '' WHERE NOT EXISTS (SELECT name FROM service_types WHERE service_types.name = 'Commercial');
-INSERT INTO trades_service_types (trade_id, service_type_id) VALUES ((SELECT currval(pg_get_serial_sequence('trades','id'))), (SELECT id FROM service_types WHERE service_types.name = 'Commercial'));
-INSERT INTO service_types (name, lead_price, image_url) SELECT 'House', 999, '' WHERE NOT EXISTS (SELECT name FROM service_types WHERE service_types.name = 'House');
-INSERT INTO trades_service_types (trade_id, service_type_id) VALUES ((SELECT currval(pg_get_serial_sequence('trades','id'))), (SELECT id FROM service_types WHERE service_types.name = 'House'));
-INSERT INTO service_types (name, lead_price, image_url) SELECT 'Residential', 999, '' WHERE NOT EXISTS (SELECT name FROM service_types WHERE service_types.name = 'Residential');
-INSERT INTO trades_service_types (trade_id, service_type_id) VALUES ((SELECT currval(pg_get_serial_sequence('trades','id'))), (SELECT id FROM service_types WHERE service_types.name = 'Residential'));
+INSERT INTO service_types (name, lead_price, image_url) SELECT 'Commercial Photography', 999, '' WHERE NOT EXISTS (SELECT name FROM service_types WHERE service_types.name = 'Commercial Photography');
+INSERT INTO trades_service_types (trade_id, service_type_id) VALUES ((SELECT currval(pg_get_serial_sequence('trades','id'))), (SELECT id FROM service_types WHERE service_types.name = 'Commercial Photography'));
+INSERT INTO service_types (name, lead_price, image_url) SELECT 'House Photography', 999, '' WHERE NOT EXISTS (SELECT name FROM service_types WHERE service_types.name = 'House Photography');
+INSERT INTO trades_service_types (trade_id, service_type_id) VALUES ((SELECT currval(pg_get_serial_sequence('trades','id'))), (SELECT id FROM service_types WHERE service_types.name = 'House Photography'));
+INSERT INTO service_types (name, lead_price, image_url) SELECT 'Residential Photography', 999, '' WHERE NOT EXISTS (SELECT name FROM service_types WHERE service_types.name = 'Residential Photography');
+INSERT INTO trades_service_types (trade_id, service_type_id) VALUES ((SELECT currval(pg_get_serial_sequence('trades','id'))), (SELECT id FROM service_types WHERE service_types.name = 'Residential Photography'));
 INSERT INTO service_types (name, lead_price, image_url) SELECT 'Apartment Photography', 999, '' WHERE NOT EXISTS (SELECT name FROM service_types WHERE service_types.name = 'Apartment Photography');
 INSERT INTO trades_service_types (trade_id, service_type_id) VALUES ((SELECT currval(pg_get_serial_sequence('trades','id'))), (SELECT id FROM service_types WHERE service_types.name = 'Apartment Photography'));
 INSERT INTO trades (name) VALUES ('Real Estate Services');

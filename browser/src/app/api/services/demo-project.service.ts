@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import {DemoProject} from '../../model/data-model';
+import { DemoProject } from '../../model/data-model';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { SecurityService } from '../../auth/security.service';
-
 
 
 @Injectable()
@@ -22,16 +21,12 @@ export class DemoProjectService {
     return this.http.get<DemoProject[]>(`${this.companyUrl}/${companyId}/profile/projects`);
   }
 
-  post(demoProject): Observable<any> {
-    return this.http.post(`${this.companyUrl}/${this.securityService.getLoginModel().company}/profile/projects`, demoProject, {responseType: 'text'});
+  post(demoProject): Observable<DemoProject> {
+    return this.http.post<DemoProject>(`${this.companyUrl}/${this.securityService.getLoginModel().company}/profile/projects`, demoProject);
   }
 
-  preSave(demoProject): Observable<DemoProject> {
-    return this.http.post<DemoProject>(`${this.companyUrl}/${this.securityService.getLoginModel().company}/profile/projects/presave`, demoProject);
-  }
-
-  update(id, demoProject): Observable<any> {
-    return this.http.put(`${this.companyUrl}/${this.securityService.getLoginModel().company}/profile/projects/${id}`, demoProject, {responseType: 'text'});
+  update(id, demoProject): Observable<DemoProject> {
+    return this.http.put<DemoProject>(`${this.companyUrl}/${this.securityService.getLoginModel().company}/profile/projects/${id}`, demoProject);
   }
 
   delete(id): Observable<any> {

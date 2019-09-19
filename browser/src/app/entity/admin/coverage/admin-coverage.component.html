@@ -6,8 +6,8 @@
 </div>
 <div class="map-holder">
   <agm-map class="sidenav-content map-wrapper"
-           [zoom]="mapOptions.zoom"
-           [minZoom]="MAP_MIN_ZOOM"
+           [zoom]="adminMap.MAP_MIN_ZOOM"
+           [minZoom]="adminMap.MAP_MIN_ZOOM"
            [styles]="mapStyles"
            [latitude]="this.adminMap.NEW_YORK_COORDINATES.lat"
            [longitude]="this.adminMap.NEW_YORK_COORDINATES.lng"

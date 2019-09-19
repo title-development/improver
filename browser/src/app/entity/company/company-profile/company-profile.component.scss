@@ -244,7 +244,7 @@ p {
     color: #a6a6a6;
     &:not(:last-child) {
       &:after {
-        content: ',';
+        content: ', ';
       }
     }
   }
