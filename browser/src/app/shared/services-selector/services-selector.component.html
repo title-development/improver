@@ -28,7 +28,6 @@
       <ng-template ngFor [ngForOf]="tradesAndServiceTypes?.trades" let-trade let-i="index" [ngForTrackBy]="trackById">
         <cv-collapse [title]="trade.name" [(collapsed)]="trade.collapsed"
                      (toggle)="$event && scrollHolder.scrollTo(collapse.elementRef, 500)" #collapse>
-          <span header-content class="primary-trade" *ngIf="i == 0"><span>Primary</span></span>
 
           <div content>
 
