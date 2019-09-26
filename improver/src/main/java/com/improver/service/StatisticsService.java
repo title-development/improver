@@ -82,7 +82,7 @@ public class StatisticsService {
             "WITH time_units AS (SELECT time_unit FROM generate_series(CURRENT_DATE - INTERVAL '%s', CURRENT_DATE, INTERVAL '%s') time_unit) " +
                 "SELECT (SELECT SUM(t.amount) FROM transactions AS t " +
                 "        WHERE date_trunc(?1, t.created) = date_trunc(?1, tu.time_unit) " +
-                "          AND t.type = 'REFUND' ) AS amount, date_trunc(?1, tu.time_unit) AS date, 'REFUNDED' AS type " +
+                "          AND t.type = 'RETURN' ) AS amount, date_trunc(?1, tu.time_unit) AS date, 'REFUNDED' AS type " +
                 "FROM time_units tu " +
                 "GROUP BY tu.time_unit ORDER BY tu.time_unit";
         refundQuery = String.format(refundQuery, interval + " " + periodName, "1 " + periodName);
@@ -159,7 +159,7 @@ public class StatisticsService {
             "WITH time_units AS (SELECT time_unit FROM generate_series(CURRENT_DATE - INTERVAL '%s', CURRENT_DATE, INTERVAL '%s') time_unit) " +
                 "SELECT (SELECT COUNT(t.id) FROM transactions AS t " +
                 "        WHERE date_trunc(?1, t.created) = date_trunc(?1, tu.time_unit) " +
-                "          AND t.type = 'REFUND') AS amount, date_trunc(?1, tu.time_unit) AS date, 'REFUNDED' AS type " +
+                "          AND t.type = 'RETURN') AS amount, date_trunc(?1, tu.time_unit) AS date, 'REFUNDED' AS type " +
                 "FROM time_units tu " +
                 "GROUP BY tu.time_unit ORDER BY tu.time_unit";
         refundLeadsQuery = String.format(refundLeadsQuery, interval + " " + periodName, "1 " + periodName);

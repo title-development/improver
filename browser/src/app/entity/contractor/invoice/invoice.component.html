@@ -28,7 +28,7 @@
           </div>
           <div class="price-block">
             <div class="property">
-              <div class="label" *ngIf="transaction.detail.type != TransactionType.REFUND">Price:</div>
+              <div class="label" *ngIf="transaction.detail.type != TransactionType.RETURN">Price:</div>
               <div class="label" *ngIf="transaction.detail.type == TransactionType.REPLENISHMENT || transaction.detail.type == TransactionType.BONUS">Amount:</div>
               <div class="value">{{transaction.detail.price / 100 | currency}}</div>
             </div>

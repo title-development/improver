@@ -9,6 +9,7 @@ import com.improver.model.CompanyInfo;
 import com.improver.model.in.registration.CompanyDetails;
 import com.improver.model.in.registration.CompanyRegistration;
 import com.improver.model.out.CompanyProfile;
+import com.improver.model.out.billing.TransactionModel;
 import com.improver.model.out.project.ProjectRequestShort;
 import com.improver.repository.*;
 import com.improver.security.UserSecurityService;
@@ -58,8 +59,9 @@ public class CompanyService {
 
 
 
-    public Page<Transaction> getTransactions(String companyId, Pageable pageable) {
-        return transactionRepository.findByCompanyId(companyId, pageable);
+    public Page<TransactionModel> getTransactions(String companyId, Pageable pageable, boolean adminView) {
+        return transactionRepository.findByCompanyId(companyId, pageable)
+            .map(transaction -> new TransactionModel(transaction, adminView));
 
     }
 

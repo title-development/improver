@@ -11,7 +11,6 @@
          [ngClass]="{'user-name' : securityService.hasRole(Role.CUSTOMER) || securityService.hasRole(Role.ADMIN) || securityService.hasRole(Role.SUPPORT),'company-name' : securityService.hasRole(Role.CONTRACTOR)}">
       {{securityService.getLoginModel().name}}
     </div>
-    <!--<a *ngIf="!securityService.isAuthenticated()" class="name" routerLink="/">HOME IMPROVE</a>-->
 
     <img class="menu-logo" src="../../../assets/img/logo.png" *ngIf="!securityService.isAuthenticated()">
 
@@ -20,21 +19,17 @@
 
   <div class="menu-body" [ngClass]="{'anonymous': !securityService.isAuthenticated() || securityService.hasRole(Role.ADMIN) || securityService.hasRole(Role.SUPPORT)}">
     <div class="user-role" *ngIf="securityService.isAuthenticated() && securityService.hasRole(Role.CUSTOMER)">
-      <!--<h4 *ngIf="(mediaQuery.xs || mediaQuery.sm)">Private</h4>-->
       <div class="user-role-child md-none lg-none xlg-none">
         <a routerLink="/my/projects" (click)="close()">My Projects</a>
       </div>
-      <h4 *ngIf="(mediaQuery.xs || mediaQuery.sm)">Settings</h4>
       <a routerLink="/my/settings/account" (click)="close()">Account</a>
       <a routerLink="/my/settings/notifications" (click)="close()">Notifications</a>
     </div>
     <div class="user-role" *ngIf="securityService.isAuthenticated() && securityService.hasRole(Role.CONTRACTOR)">
-      <!--<h4 *ngIf="(mediaQuery.xs || mediaQuery.sm)">Private</h4>-->
       <div class="user-role-child md-none lg-none xlg-none">
         <a routerLink="/pro/dashboard" (click)="close()">Dashboard</a>
         <a [routerLink]="'/companies/' + securityService.getLoginModel().company" (click)="close()">Profile</a>
       </div>
-      <h4 *ngIf="(mediaQuery.xs || mediaQuery.sm)">Settings</h4>
       <a routerLink="/pro/settings/account" (click)="close()">Account</a>
       <a routerLink="/pro/settings/info" (click)="close()">Company</a>
       <a routerLink="/pro/settings/services" (click)="close()">Services</a>
@@ -50,24 +45,29 @@
     </div>
 
     <div class="user-role" *ngIf="!securityService.isAuthenticated() && ( securityService.hasRole(Role.ANONYMOUS) || securityService.hasRole(Role.INCOMPLETE_PRO))">
-      <button class="join-as-pro-button" routerLink="/become-pro" (click)="close()">Become a Pro</button>
-      <div class="buttons-wrapper">
-        <a routerLink="/login" (click)="close()">
-          <i class="imp-icon-login"></i>
-          <span>LOG IN</span>
-        </a>
-        <a routerLink="/signup" (click)="close()">
-          <i class="imp-icon-signup"></i>
-          <span>SIGN UP</span>
-        </a>
-      </div>
+<!-- TODO: remove CSS for next -->
+<!--      <button class="join-as-pro-button" routerLink="/become-pro" (click)="close()">Become a Pro</button>-->
+<!--      <div class="buttons-wrapper">-->
+<!--        <a routerLink="/login" (click)="close()">-->
+<!--          <i class="imp-icon-login"></i>-->
+<!--          <span>LOG IN</span>-->
+<!--        </a>-->
+<!--        <a routerLink="/signup" (click)="close()">-->
+<!--          <i class="imp-icon-signup"></i>-->
+<!--          <span>SIGN UP</span>-->
+<!--        </a>-->
+<!--      </div>-->
+        <a routerLink="/login" (click)="close()">Log in</a>
+        <a routerLink="/signup" (click)="close()">Sign up</a>
+        <div class="menu-footer">
+          <a routerLink="/become-pro" (click)="close()">Become a Pro</a>
+        </div>
     </div>
   </div>
   <div class="menu-footer" *ngIf="securityService.isAuthenticated()">
     <a (click)="logout()">
       <span>Log out</span>
       <i class="imp-icon-signout"></i>
-      <!--<img class="logout-icon -desktop" src="../../../../assets/img/logout-icon.png">-->
     </a>
   </div>
 </div>

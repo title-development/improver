@@ -175,7 +175,7 @@ export class RefundsInreviewComponent {
   submitRefundAction(): void {
     this.refundService.actions(this.selected.id, this.refundAction, this.refundActionComment)
       .subscribe(res => {
-        this.popUpMessageService.showSuccess(`Refund request has been ${capitalize(this.refundAction)}${this.refundAction == RefundAction.Action.APPROVE ? 'd' : 'ed'}`);
+        this.popUpMessageService.showSuccess(`Return credit request has been ${capitalize(this.refundAction)}${this.refundAction == RefundAction.Action.APPROVE ? 'd' : 'ed'}`);
         this.refundActionDialog = false;
         this.refundActionComment = '';
         if (this.dataTable.expandedRows) {

@@ -1,4 +1,4 @@
-package com.improver.model.out;
+package com.improver.model.out.review;
 
 import com.improver.entity.Company;
 import com.improver.entity.Review;

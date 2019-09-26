@@ -1,4 +1,4 @@
-package com.improver.model.out;
+package com.improver.model.out.billing;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;

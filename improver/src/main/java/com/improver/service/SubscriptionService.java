@@ -32,8 +32,7 @@ public class SubscriptionService {
     @Autowired private MailService mailService;
     @Autowired private TransactionRepository transactionRepository;
     @Autowired private LeadService leadService;
-    @Autowired
-    private BusinessProperties businessProperties;
+    @Autowired private BusinessProperties businessProperties;
 
 
     public Billing subscribe(Contractor contractor, Company company, int budget, int timeZoneOffset) {
@@ -45,7 +44,7 @@ public class SubscriptionService {
             log.info("New Subscription");
             newWithBudget(budget, subscription);
             if(billing.getBalance() < budget){
-                paymentService.replenishForSubscription(company, contractor, budget - billing.getBalance(), budget);
+                paymentService.autoChargeForSubscription(company, budget - billing.getBalance(), budget);
             } else {
                 logBalanceSubscription(company, budget);
             }

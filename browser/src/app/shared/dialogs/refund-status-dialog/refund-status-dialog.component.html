@@ -7,7 +7,7 @@
 
       <div class="header-content">
 
-        <div class="title">Refund status</div>
+        <div class="title">Return status</div>
 
       </div>
 
@@ -22,35 +22,35 @@
         <div class="wrapper">
           <div class="refund-status-wrapper">
             <div *ngIf="refundResult.status == refundStatus.IN_REVIEW">
-              Your refund request is in review
+              Your return credit request is in review
             </div>
             <div
               *ngIf="refundResult.status == refundStatus.APPROVED || refundResult.status == refundStatus.AUTO_APPROVED">
-              Your refund request is approved
+              Your return credit request is approved
             </div>
             <div
               *ngIf="refundResult.status == refundStatus.REJECTED || refundResult.status == refundStatus.AUTO_REJECTED">
-              Your refund request is rejected
+              Your return credit request is rejected
             </div>
           </div>
           <div class="refund-comment-wrapper">
 
             <div *ngIf="refundResult.status == refundStatus.IN_REVIEW">
-              <span>Refund request applies to manual check</span>
+              <span>Return credit request applies to manual check</span>
               <span> on
               <div>{{refundResult.created | date:'mediumDate'}}</div>
               </span>
             </div>
 
             <div *ngIf="refundResult.status == refundStatus.REJECTED || refundResult.status == refundStatus.AUTO_REJECTED">
-              <span>Refund request is rejected according to Home Improve <a [routerLink]="['/terms-of-use']" (click)="close()">Lead Return Credit Policy</a></span>
+              <span>Return credit request is rejected according to Home Improve <a [routerLink]="['/terms-of-use']" (click)="close()">Lead Return Credit Policy</a></span>
             </div>
 
           </div>
           <div class="contact-message" *ngIf="refundResult.status == refundStatus.IN_REVIEW">We will contact you as soon
             as possible
           </div>
-          <div class="time-hint" *ngIf="refundResult.status == refundStatus.IN_REVIEW">Maximum refund request processing
+          <div class="time-hint" *ngIf="refundResult.status == refundStatus.IN_REVIEW">Maximum return credit request processing
             period is 14 working days
           </div>
         </div>

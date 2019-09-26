@@ -1,9 +1,10 @@
-package com.improver.model.out;
+package com.improver.model.out.review;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.improver.entity.Company;
 import com.improver.entity.Review;
 import com.improver.model.CompanyInfo;
+import com.improver.model.out.UserModel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

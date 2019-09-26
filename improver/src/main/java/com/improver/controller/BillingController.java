@@ -4,10 +4,13 @@ import com.improver.entity.*;
 import com.improver.exception.NotFoundException;
 import com.improver.exception.ValidationException;
 import com.improver.model.out.*;
+import com.improver.model.out.billing.PaymentCard;
+import com.improver.model.out.billing.Receipt;
+import com.improver.model.out.billing.SubscriptionInfo;
+import com.improver.model.out.billing.TransactionModel;
 import com.improver.repository.TransactionRepository;
 import com.improver.security.UserSecurityService;
 import com.improver.security.annotation.AdminAccess;
-import com.improver.security.annotation.CompanyMember;
 import com.improver.service.*;
 import com.improver.model.in.StripeToken;
 import com.improver.repository.BillRepository;
@@ -25,7 +28,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import static com.improver.application.properties.BusinessProperties.MIN_SUBSCRIPTION;
 import static com.improver.application.properties.Path.*;
@@ -107,12 +109,12 @@ public class BillingController {
     @CompanyMemberOrSupportAccess
     @PageableSwagger
     @GetMapping(TRANSACTIONS)
-    public ResponseEntity<Page<Transaction>> getCompanyTransactions(@PathVariable String companyId,
-                                                                    @PageableDefault(sort = "created", direction = Sort.Direction.DESC) Pageable pageRequest) {
+    public ResponseEntity<Page<TransactionModel>> getCompanyTransactions(@PathVariable String companyId,
+                                                                         @PageableDefault(sort = "created", direction = Sort.Direction.DESC) Pageable pageRequest) {
 
         Company company = companyRepository.findById(companyId)
             .orElseThrow(NotFoundException::new);
-        Page<Transaction> transactionsPage = companyService.getTransactions(companyId, pageRequest);
+        Page<TransactionModel> transactionsPage = companyService.getTransactions(companyId, pageRequest, true);
         return new ResponseEntity<>(transactionsPage, HttpStatus.OK);
     }
 

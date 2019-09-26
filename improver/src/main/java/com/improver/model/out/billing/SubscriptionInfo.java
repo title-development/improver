@@ -1,4 +1,4 @@
-package com.improver.model.out;
+package com.improver.model.out.billing;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.improver.entity.Subscription;

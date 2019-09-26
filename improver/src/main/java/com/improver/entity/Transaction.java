@@ -1,7 +1,6 @@
 package com.improver.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.GenericGenerator;
@@ -18,8 +17,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.ZonedDateTime;
 
-import static com.improver.util.serializer.SerializationUtil.DATE_TIME_PATTERN;
-
 @Data
 @Entity(name = "transactions")
 @Accessors(chain = true)
@@ -31,7 +28,6 @@ public class Transaction {
     @Column(name = "id", nullable = false)
     private String id;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id", foreignKey = @ForeignKey(name = "transaction_company_fkey"))
     private Company company;
@@ -39,12 +35,10 @@ public class Transaction {
     @Enumerated(EnumType.STRING)
     private Type type;
 
-    @JsonFormat(pattern = DATE_TIME_PATTERN)
     private ZonedDateTime created = ZonedDateTime.now();
 
     private String comment;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "project_request_id", foreignKey = @ForeignKey(name = "transaction_project_request_fkey"))
     private ProjectRequest projectRequest;
@@ -76,30 +70,27 @@ public class Transaction {
         return chargeId != null;
     }
 
-    public boolean isOutcome() {
-        return type.equals(Type.PURCHASE);
-    }
 
-    public String getTitle() {
+    public String generateRecordTitle() {
         switch (type) {
-            case REFUND:
-                return "Credit Refund";
+            case RETURN:
+                return "Credit Return";
             case PURCHASE:
                 return isManualLead ? "Lead Purchase" : "Subscription Lead Purchase";
             case BONUS:
                 return "Bonus Credit";
             case SUBSCRIPTION:
-                return getDescription();
+                return generateDescription();
             case REPLENISHMENT:
-                return getDescription();
+                return generateDescription();
             default:
                 throw new IllegalArgumentException(type.toString());
         }
     }
 
-    public String getDescription() {
+    public String generateDescription() {
         switch (type) {
-            case REFUND:
+            case RETURN:
                 return service;
             case PURCHASE:
                 return service;
@@ -114,9 +105,9 @@ public class Transaction {
         }
     }
 
-    public String getDetails() {
+    public String generateDetails() {
         switch (type) {
-            case REFUND:
+            case RETURN:
                 return location.asText();
             case PURCHASE:
                 return location.asText();
@@ -174,13 +165,13 @@ public class Transaction {
 
     public static Transaction refund(ProjectRequest projectRequest, boolean isManualLead, int price, int balance, String comment) {
 
-        return new Transaction().setType(Type.REFUND)
+        return new Transaction().setType(Type.RETURN)
             .setCompany(projectRequest.getContractor().getCompany())
             .setService(projectRequest.getProject().getServiceType().getName())
             .setLocation(projectRequest.getProject().getLocation())
             .setProjectRequest(projectRequest)
             .setComment(comment)
-            .setPaymentMethod("Balance")
+            .setPaymentMethod(BALANCE_SOURCE)
             .setManualLead(isManualLead)
             .setAmount(price)
             .setBalance(balance);
@@ -194,7 +185,7 @@ public class Transaction {
         SUBSCRIPTION ("SUBSCRIPTION"),
         REPLENISHMENT ("REPLENISHMENT"),
         PURCHASE ("PURCHASE"),
-        REFUND ("REFUND");
+        RETURN ("RETURN");
 
         private final String value;
 

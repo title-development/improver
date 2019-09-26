@@ -28,8 +28,6 @@ public class ReCaptchaService {
         parameters.add("response", response);
         parameters.add("remoteip", userIp);
 
-        log.debug("Validating reCAPTCHA:\n    verification url: {}\n    verification parameters: {}", recaptchaVerifyUrl, parameters);
-
         try {
             ReCaptchaResponse result = restTemplate.postForEntity(recaptchaVerifyUrl, parameters, ReCaptchaResponse.class).getBody();
             log.debug("reCAPTCHA validation finished: {}", result);

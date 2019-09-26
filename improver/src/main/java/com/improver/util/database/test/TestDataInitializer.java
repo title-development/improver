@@ -82,7 +82,7 @@ public class TestDataInitializer {
     private static final String SUPPORT_DEMO_PASS = "supDOmeafavor2019";
 
     private static final String DEMO_PHONE = "923-123-1234";
-    private static final String REPLENISHMENT_DESCRIPTION_PART = "Payment card ending in ";
+    private static final String VISA_ENDING_IN_1132 = "Visa ending in 1132";
 
 
     private static final String CUST_1 = "user.improver@gmail.com";
@@ -572,7 +572,7 @@ public class TestDataInitializer {
 
         // 2 Replenishment
         bill.addToBalance(replenishment);
-        transactionRepository.save(Transaction.replenishmentFor(Transaction.Type.REPLENISHMENT, null, company, REPLENISHMENT_DESCRIPTION_PART + "0065", "test", replenishment, bill.getBalance())
+        transactionRepository.save(Transaction.replenishmentFor(Transaction.Type.REPLENISHMENT, null, company, VISA_ENDING_IN_1132, "test-4332123", replenishment, bill.getBalance())
             .setCreated(now.minusMonths(6).plusDays(3)));
 
         // 3 projects
@@ -604,7 +604,7 @@ public class TestDataInitializer {
                 toRefund.getProject().getLocation(),
                 toRefund.getProject().getLeadPrice(),
                 bill.getBalance())
-                .setType(Transaction.Type.REFUND)
+                .setType(Transaction.Type.RETURN)
                 .setCreated(now)
         );
         Transaction purchaseTransaction = transactionRepository.findByTypeAndCompanyAndProject(Transaction.Type.PURCHASE, company, toRefund.getId())

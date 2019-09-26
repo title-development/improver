@@ -3,7 +3,7 @@ package com.improver.util.mail;
 import com.improver.application.properties.BusinessProperties;
 import com.improver.entity.*;
 import com.improver.model.in.OrderDetails;
-import com.improver.model.out.PaymentCard;
+import com.improver.model.out.billing.PaymentCard;
 import com.improver.model.tmp.UnreadProjectMessageInfo;
 import com.improver.repository.AdminRepository;
 import com.improver.security.JwtUtil;
@@ -577,33 +577,33 @@ public class MailService {
 
     public void sendRefundRequestAccepted(Company company, String customer, String serviceType) {
         Context context = contextTemplate();
-        context.setVariable(TITLE, "Refund request accepted to review");
-        context.setVariable(BODY, String.format("Refund request for the project \"%s for %s\" is accepted to review." +
+        context.setVariable(TITLE, "Return credit request accepted to review");
+        context.setVariable(BODY, String.format("Return credit request for the project \"%s for %s\" is accepted to review." +
                 " We may contact you to clarify some details regarding this project." +
-                " You can track the status of your refund request in the PRO Dashboard.",
+                " You can track the status of your return credit request in the PRO Dashboard.",
             highlight(serviceType), highlight(customer)));
         context.setVariable(CONFIRM_URL, siteUrl + PRO + DASHBOARD);
         context.setVariable(CONFIRM_BTN_TEXT, "View in Dashboard");
-        mailClient.sendMail("Refund request in review", CONFIRMATION_TEMPLATE, context, MailHolder.MessageType.NOREPLY, getRecipients(company));
+        mailClient.sendMail("Return credit request in review", CONFIRMATION_TEMPLATE, context, MailHolder.MessageType.NOREPLY, getRecipients(company));
     }
 
 
     public void sendRefundRequestApproved(Company company, String customer, String serviceType) {
         Context context = contextTemplate();
-        context.setVariable(TITLE, "Refund request is approved");
-        context.setVariable(BODY, String.format("Refund request for the project \"%s for %s\" is approved." +
+        context.setVariable(TITLE, "Return credit request is approved");
+        context.setVariable(BODY, String.format("Return credit request for the project \"%s for %s\" is approved." +
                 " We will credit back the lead price to you internal balance at Home Improve",
             highlight(serviceType), highlight(customer)));
-        mailClient.sendMail("Refund request is approved", NOTICE_TEMPLATE, context, MailHolder.MessageType.NOREPLY, getRecipients(company));
+        mailClient.sendMail("Return credit request is approved", NOTICE_TEMPLATE, context, MailHolder.MessageType.NOREPLY, getRecipients(company));
     }
 
 
     public void sendRefundRequestRejected(Company company, String customer, String serviceType) {
         Context context = contextTemplate();
-        context.setVariable(TITLE, "Refund request is rejected");
-        context.setVariable(BODY, String.format("Refund request for the project \"%s for %s\" is rejected according to Home Improve's %s",
+        context.setVariable(TITLE, "Return credit request is rejected");
+        context.setVariable(BODY, String.format("Return credit request for the project \"%s for %s\" is rejected according to Home Improve's %s",
             highlight(serviceType), highlight(customer), wrapLink("Lead Return Credit Policy", siteUrl + TERMS_OF_USE_URL)));
-        mailClient.sendMail("Refund request is rejected", NOTICE_TEMPLATE, context, MailHolder.MessageType.NOREPLY, getRecipients(company));
+        mailClient.sendMail("Return credit request is rejected", NOTICE_TEMPLATE, context, MailHolder.MessageType.NOREPLY, getRecipients(company));
     }
 
     public void sendNewReviewReceivedMail(Company company, Review review) {

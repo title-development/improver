@@ -166,13 +166,13 @@
 
             <ng-container *ngSwitchCase="ProjectRequest.MessageEvent.REFUND_APPROVED">
               <ng-container *ngIf="securityService.hasRole(Role.CONTRACTOR)">
-                <span>Refund approved</span>
+                <span>Return credit approved</span>
               </ng-container>
             </ng-container>
 
             <ng-container *ngSwitchCase="ProjectRequest.MessageEvent.REFUND_REJECTED">
               <ng-container *ngIf="securityService.hasRole(Role.CONTRACTOR)">
-                <span>Refund rejected</span>
+                <span>Return credit rejected</span>
               </ng-container>
             </ng-container>
 

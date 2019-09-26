@@ -1,4 +1,4 @@
-package com.improver.model.out;
+package com.improver.model.out.review;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

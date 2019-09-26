@@ -1,4 +1,4 @@
-package com.improver.model.out;
+package com.improver.model.out.billing;
 
 
 import com.improver.entity.Location;
@@ -14,8 +14,8 @@ import java.util.List;
 @Accessors(chain = true)
 public class Receipt {
 
-    public static final String PURCHASE = "Purchase";
-    public static final String REFUND = "Refund";
+    public static final String PURCHASE_RECORD_TYPE = "Purchase";
+    public static final String RETURN_RECORD_TYPE = "Refund";
     public static final String PURCHASE_DESC = "Lead price";
     public static final String REFUND_DESC = "Credit returned to balance";
 
@@ -37,7 +37,6 @@ public class Receipt {
     //======= payment
     private String paymentMethod;
     private String code;
-    //private String billingInfo;
 
     //====== records
     private List<Record> records = new ArrayList<>();

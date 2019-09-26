@@ -31,10 +31,10 @@ import static java.time.ZonedDateTime.now;
 @Service
 public class RefundService {
 
-    private final static String REFUND_APPROVE_DEFAULT_MESSAGE = "Refund request approved";
-    private final static String REFUND_REJECT_DEFAULT_MESSAGE = "Refund request rejected";
-    private final static String REFUND_MANUAL_DEFAULT_MESSAGE = "Refund request applies to manual check";
-    private final static String AUTO_APPROVE_TRANSACTION_COMMENT = "Refund approved by System";
+    private final static String REFUND_APPROVE_DEFAULT_MESSAGE = "Return credit request approved";
+    private final static String REFUND_REJECT_DEFAULT_MESSAGE = "Return credit request rejected";
+    private final static String REFUND_MANUAL_DEFAULT_MESSAGE = "Return credit request applies to manual check";
+    private final static String AUTO_APPROVE_TRANSACTION_COMMENT = "Return credit request approved by the System";
 
     @Autowired private RefundRepository refundRepository;
     @Autowired private ProjectRequestRepository projectRequestRepository;
@@ -122,7 +122,7 @@ public class RefundService {
             refund.setComment(REFUND_APPROVE_DEFAULT_MESSAGE);
             refund.setStatus(AUTO_APPROVED);
         } else if (now().isAfter(projectRequest.getCreated().plusDays(DAYS_TO_ACCEPT_REFUND))) {
-            refund.setComment("The period of refund possibility by this project is over");
+            refund.setComment("The period of return credit request for this project is over");
             refund.setStatus(AUTO_REJECTED);
         } else {
             switch (refund.getOption()) {
@@ -292,14 +292,14 @@ public class RefundService {
         projectRequest.setStatus(newProjectRequestStatus).setUpdated(now()).setRefund(refund);
         projectRequestRepository.save(projectRequest);
 
-        log.info("Refund request submitted for projectRequest {}", projectRequest.getId());
+        log.info("Return credit request submitted for projectRequest {}", projectRequest.getId());
     }
 
     private void checkRefundability(ProjectRequest projectRequest) {
         if (ProjectRequest.Status.getArchived().contains(projectRequest.getStatus())) {
             throw new ValidationException("Project is already archived");
         } else if (projectRequest.getRefund() != null) {
-            throw new ValidationException("Refund request for this project is already submitted");
+            throw new ValidationException("Return credit request for this project is already submitted");
         }
     }
 

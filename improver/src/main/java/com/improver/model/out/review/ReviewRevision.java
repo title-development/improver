@@ -1,4 +1,4 @@
-package com.improver.model.out;
+package com.improver.model.out.review;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;

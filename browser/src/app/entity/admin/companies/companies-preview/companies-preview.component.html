@@ -155,7 +155,7 @@
               <p-column field="name" header="Name" sortField="s.name" [sortable]="true"></p-column>
             </p-dataTable>
           </p-accordionTab>
-          <p-accordionTab header="Billing">
+          <p-accordionTab header="Transactions">
             <p-dataTable *ngIf="accordionControls[1].active" [(first)]="accordionControls[0].first" [value]="transactionsPage.content"
                          sortMode="single"
                          selectionMode="single"
@@ -168,8 +168,11 @@
                          [responsive]="true">
               <p-column field="id" header="ID" [sortable]="true"></p-column>
               <p-column field="type" header="Type" [sortable]="true"></p-column>
-              <p-column field="purpose" header="Purpose" [sortable]="true"></p-column>
-              <p-column field="description" header="Description" [sortable]="true"></p-column>
+              <p-column field="description" header="Description" [sortable]="false">
+                <ng-template let-col let-row="rowData" pTemplate="body">
+                  {{row.description}}<br/>{{row.details}}
+                </ng-template>
+              </p-column>
               <p-column field="created" header="Created" [sortable]="true">
                 <ng-template let-col let-created="rowData" pTemplate="body">
                   {{created[col.field] | date: 'MMM d, y, h:mm a' }}
@@ -180,12 +183,13 @@
                   {{amount[col.field] / 100 | currency}}
                 </ng-template>
               </p-column>
-              <p-column field="balance" header="Balance" [sortable]="true">
+              <p-column field="balance" header="Balance" [sortable]="false">
                 <ng-template let-col let-balance="rowData" pTemplate="body">
                   {{balance[col.field] / 100 | currency}}
                 </ng-template>
               </p-column>
-              <p-column field="outcome" header="Outcome"></p-column>
+              <p-column field="comment" header="Comment" [sortable]="true"></p-column>
+              <p-column field="chargeId" header="chargeId" [sortable]="true"></p-column>
             </p-dataTable>
           </p-accordionTab>
           <p-accordionTab header="Project Requests">

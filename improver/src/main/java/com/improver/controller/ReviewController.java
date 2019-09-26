@@ -4,7 +4,7 @@ import com.improver.entity.*;
 import com.improver.exception.NotFoundException;
 import com.improver.model.in.CustomerReview;
 import com.improver.model.in.ProRequestReview;
-import com.improver.model.out.*;
+import com.improver.model.out.review.*;
 import com.improver.repository.CompanyRepository;
 import com.improver.repository.ReviewRepository;
 import com.improver.repository.ReviewRevisionRequestRepository;

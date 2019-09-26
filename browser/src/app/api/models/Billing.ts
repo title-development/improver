@@ -29,6 +29,7 @@ export namespace Billing {
     balance: number;
     outcome: boolean;
     manualLead: boolean;
+    comment: string;
   }
 
   export class Receipt {
@@ -57,7 +58,7 @@ export namespace Billing {
     BONUS = 'BONUS',
     REPLENISHMENT = 'REPLENISHMENT',
     PURCHASE = 'PURCHASE',
-    REFUND = 'REFUND',
+    RETURN = 'RETURN',
     SUBSCRIPTION = 'SUBSCRIPTION'
   }
 

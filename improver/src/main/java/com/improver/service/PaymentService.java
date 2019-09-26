@@ -5,7 +5,7 @@ import com.improver.entity.Company;
 import com.improver.entity.Contractor;
 import com.improver.entity.Transaction;
 import com.improver.exception.*;
-import com.improver.model.out.PaymentCard;
+import com.improver.model.out.billing.PaymentCard;
 import com.improver.repository.BillRepository;
 import com.improver.repository.ContractorRepository;
 import com.improver.repository.TransactionRepository;
@@ -71,25 +71,22 @@ public class PaymentService {
         if (amount <= 0) {
             throw new ValidationException("Amount should be greater then 0");
         }
-        Billing billing = addToBalance(company, contractor, amount, Transaction.Type.REPLENISHMENT, REPLENISHMENT_PURPOSE, null);
-        addReferredBonuses(company, contractor, amount);
+        Billing billing = addToBalance(company, amount, Transaction.Type.REPLENISHMENT, REPLENISHMENT_PURPOSE, null);
         wsNotificationService.updateBalance(company, billing);
         mailService.sendBalanceReplenished(company, amount);
+        addReferredBonusesIfNeeded(company, contractor, amount);
     }
 
     public Billing autoChargeForSubscription(Company company, int amount, int budget) {
-        Billing billing = addToBalance(company, null, amount, Transaction.Type.SUBSCRIPTION, "Subscription balance replenishment", "Charged " + SerializationUtil.formatUsd(amount) + " to fulfill subscription of $" + SerializationUtil.centsToUsd(amount));
+        Billing billing = addToBalance(company, amount, Transaction.Type.SUBSCRIPTION,
+            "Subscription balance replenishment",
+            "Charged " + SerializationUtil.formatUsd(amount) + " to fulfill subscription of $" + SerializationUtil.centsToUsd(budget));
         wsNotificationService.updateBalance(company, billing);
         return billing;
     }
 
-    public void replenishForSubscription(Company company, Contractor contractor, int amount, int budget) {
-        Billing billing = addToBalance(company, contractor, amount, Transaction.Type.SUBSCRIPTION, "Subscription balance replenishment", "Charged " + SerializationUtil.formatUsd(amount) + " to fulfill subscription of $" + SerializationUtil.centsToUsd(amount));
-        wsNotificationService.updateBalance(company, billing);
-    }
-
     @Transactional
-    public Billing addToBalance(Company company, Contractor contractor, int amount, Transaction.Type type, String purpose, String comment) {
+    public Billing addToBalance(Company company, int amount, Transaction.Type type, String purpose, String comment) {
 
         Billing billing = company.getBilling();
         Charge charge = charge(billing.getStripeId(), amount, purpose);
@@ -248,7 +245,7 @@ public class PaymentService {
         }
     }
 
-    private void addReferredBonuses(Company company, Contractor contractor, int amount) throws NotFoundException {
+    private void addReferredBonusesIfNeeded(Company company, Contractor contractor, int amount) throws NotFoundException {
         if (amount >= REFERRAL_BONUS_AMOUNT &&
             !contractor.isReferralBonusReceived() &&
             contractor.getReferredBy() != null &&

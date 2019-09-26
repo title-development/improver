@@ -33,7 +33,7 @@ export class ProjectsComponent implements OnDestroy {
               public projectActionService: ProjectActionService) {
     this.tabs = [
       {
-        label: 'Current',
+        label: 'In Progress',
         latest: true,
         active: true,
         pagination: new Pagination(0, this.maxItemPerPage),

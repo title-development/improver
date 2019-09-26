@@ -6,7 +6,7 @@ import com.improver.entity.ProjectRequest;
 import com.improver.exception.NotFoundException;
 import com.improver.exception.ValidationException;
 import com.improver.model.in.RefundRequest;
-import com.improver.model.out.Receipt;
+import com.improver.model.out.billing.Receipt;
 import com.improver.model.out.RefundQuestionary;
 import com.improver.model.out.RefundResult;
 import com.improver.model.out.project.ProjectRequestDetailed;

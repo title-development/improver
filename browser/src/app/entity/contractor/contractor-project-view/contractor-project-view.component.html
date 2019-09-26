@@ -7,8 +7,8 @@
       <mat-icon class="project-menu-button" [matMenuTriggerFor]="projectMenu">more_vert</mat-icon>
       <mat-menu class="project-menu" tabindex="-1"  #projectMenu="matMenu" yPosition="below" xPosition="before">
         <button mat-menu-item [routerLink]="['/pro/receipt/conn', project?.id]">View Receipt</button>
-        <button mat-menu-item (click)="openRequestRefundDialog(project)" *ngIf="project?.refundable">Request Refund</button>
-        <button mat-menu-item (click)="openRefundStatusDialog(project)" *ngIf="project?.refundRequested">Refund Status</button>
+        <button mat-menu-item (click)="openRequestRefundDialog(project)" *ngIf="project?.refundable">Return Credit</button>
+        <button mat-menu-item (click)="openRefundStatusDialog(project)" *ngIf="project?.refundRequested">Return Status</button>
         <button mat-menu-item (click)="projectActionService.leaveProject(project)" *ngIf="ProjectRequest.canBeLeft(project.status)">Leave</button>
         <button mat-menu-item (click)="projectActionService.closeProject(project)" *ngIf="ProjectRequest.canBeClosed(project.status)">Close</button>
         <button mat-menu-item *ngIf="mediaQuery.xs || mediaQuery.sm"

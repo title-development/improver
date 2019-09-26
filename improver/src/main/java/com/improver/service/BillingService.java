@@ -3,9 +3,8 @@ package com.improver.service;
 import com.improver.entity.*;
 import com.improver.exception.*;
 import com.improver.model.out.CompanyLeadsReport;
-import com.improver.model.out.Receipt;
+import com.improver.model.out.billing.Receipt;
 import com.improver.repository.*;
-import com.improver.security.UserSecurityService;
 import com.improver.util.StaffActionLogger;
 import com.improver.util.StringUtil;
 import com.improver.application.properties.ThirdPartyApis;
@@ -40,13 +39,9 @@ public class BillingService {
     @Autowired private BillingService self;
     @Autowired private BillRepository billRepository;
     @Autowired private TransactionRepository transactionRepository;
-    @Autowired
-    private WsNotificationService wsNotificationService;
-    @Autowired private CompanyRepository companyRepository;
+    @Autowired private WsNotificationService wsNotificationService;
     @Autowired private InvitationRepository invitationRepository;
     @Autowired private MailService mailService;
-    @Autowired private UserSecurityService userSecurityService;
-    @Autowired private StaffActionRepository staffActionRepository;
     @Autowired private ThirdPartyApis thirdPartyApis;
     @Autowired private StaffActionLogger staffActionLogger;
 
@@ -164,13 +159,13 @@ public class BillingService {
         int totalSpend = source.getAmount();
 
 
-        // 1 PURCHASE / REFUND
+        // 1 PURCHASE / RETURN
         if(Transaction.Type.PURCHASE.equals(source.getType()) && source.isRefunded()){
             transaction = source;
-            refund = transactionRepository.findByTypeAndCompanyAndProject(Transaction.Type.REFUND, company, projectRequest.getId())
-                .orElseThrow(() -> new ConflictException("No linked REFUND transaction found"));
+            refund = transactionRepository.findByTypeAndCompanyAndProject(Transaction.Type.RETURN, company, projectRequest.getId())
+                .orElseThrow(() -> new ConflictException("No linked RETURN transaction found"));
         }
-        else if(source.getType().equals(Transaction.Type.REFUND)) {
+        else if(source.getType().equals(Transaction.Type.RETURN)) {
             refund = source;
             transaction = transactionRepository.findByTypeAndCompanyAndProject(Transaction.Type.PURCHASE, company, projectRequest.getId())
                 .orElseThrow(() -> new ConflictException("No linked PURCHASE transaction found"));
@@ -185,15 +180,15 @@ public class BillingService {
                 .setService(transaction.getService())
                 .setCustomer(projectRequest.getProject().getCustomer().getDisplayName());
             if (refund != null) {
-                receipt.getRecords().add(new Receipt.Record(transaction.getCreated(), Receipt.PURCHASE, Receipt.PURCHASE_DESC, transaction.getAmount()));
-                receipt.getRecords().add(new Receipt.Record(refund.getCreated(), Receipt.REFUND, Receipt.REFUND_DESC, refund.getAmount()));
+                receipt.getRecords().add(new Receipt.Record(transaction.getCreated(), Receipt.PURCHASE_RECORD_TYPE, Receipt.PURCHASE_DESC, transaction.getAmount()));
+                receipt.getRecords().add(new Receipt.Record(refund.getCreated(), Receipt.RETURN_RECORD_TYPE, Receipt.REFUND_DESC, refund.getAmount()));
                 totalSpend -= refund.getAmount();
             }
         }
 
         // 3 General details
         String type = StringUtil.capitalize(transaction.getType().toString());
-        receipt.setDetail(new Receipt.Record(transaction.getCreated(), type, transaction.getTitle(), transaction.getAmount()))
+        receipt.setDetail(new Receipt.Record(transaction.getCreated(), type, transaction.generateRecordTitle(), transaction.getAmount()))
             .setId(transaction.getId())
             .setComments(transaction.getComment())
             .setInvoice(transaction.isCharge())

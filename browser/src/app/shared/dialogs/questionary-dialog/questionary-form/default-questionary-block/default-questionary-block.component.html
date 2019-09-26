@@ -236,7 +236,7 @@
 
   <div #defaultQuestion class="form-element-wrapper text-input-wrapper" [formGroupName]="'defaultQuestionaryGroup'"
        *ngIf="securityService.hasRole(Role.ANONYMOUS) && (questionaryControlService.currentQuestionIndex == questionaryControlService.questionaryLength + 3)">
-    <h2 class="question-title">Let's get acquainted?</h2>
+    <h2 class="question-title">Let's get acquainted</h2>
     <div class="text-input-group" [formGroupName]="'customerPersonalInfo'">
 
       <cv-input-field>

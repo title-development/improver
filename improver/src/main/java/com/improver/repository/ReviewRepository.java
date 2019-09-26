@@ -3,8 +3,8 @@ package com.improver.repository;
 import com.improver.entity.Company;
 import com.improver.entity.Customer;
 import com.improver.entity.Review;
-import com.improver.model.out.CompanyReview;
-import com.improver.model.out.CompanyReviewRevision;
+import com.improver.model.out.review.CompanyReview;
+import com.improver.model.out.review.CompanyReviewRevision;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,11 +21,11 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
         " WHERE r.isPublished = false AND r.publishDate < ?1")
     List<Review> getForPublishing(ZonedDateTime now);
 
-    @Query("SELECT new com.improver.model.out.CompanyReview(r)" +
+    @Query("SELECT new com.improver.model.out.review.CompanyReview(r)" +
         " FROM com.improver.entity.Review r WHERE r.company.id = ?1 AND (?2 in (SELECT id FROM com.improver.entity.Contractor contr WHERE contr.company.id = r.company.id) OR r.customer.id = ?2 OR r.isPublished = true)")
     Page<CompanyReview> getVisibleReviews(String companyId, long requesterId, ZonedDateTime now, Pageable pageable);
 
-    @Query("SELECT new com.improver.model.out.CompanyReview(r, c) " +
+    @Query("SELECT new com.improver.model.out.review.CompanyReview(r, c) " +
         "FROM com.improver.entity.Review r " +
         "INNER JOIN com.improver.entity.Company c ON c.id = r.company.id " +
         "WHERE (:id IS null OR r.id = :id) " +
@@ -33,7 +33,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
         "AND (:companyName IS null OR LOWER(c.name) LIKE CONCAT('%', LOWER(cast(:companyName as string)), '%'))")
     Page<CompanyReview> getAll(Long id, String customerName, String companyName, Pageable pageable);
 
-    @Query("SELECT new com.improver.model.out.CompanyReviewRevision(r, r.company, st.name, rr.comment)" +
+    @Query("SELECT new com.improver.model.out.review.CompanyReviewRevision(r, r.company, st.name, rr.comment)" +
         " FROM com.improver.entity.Review r" +
         " INNER JOIN com.improver.entity.ProjectRequest pr ON pr.review.id = r.id" +
         " INNER JOIN com.improver.entity.ReviewRevisionRequest rr ON rr.review.id = r.id" +
