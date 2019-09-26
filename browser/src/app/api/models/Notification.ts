@@ -11,6 +11,7 @@ export class Notification {
 export namespace Notification {
   export enum Type {
     BILLING = 'BILLING',
-    PLAIN = 'PLAIN'
+    PLAIN = 'PLAIN',
+    UNREAD_MESSAGES = 'UNREAD_MESSAGES'
   }
 }

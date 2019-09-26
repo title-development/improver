@@ -1,11 +1,10 @@
 package com.improver.controller;
 
 import com.improver.entity.Notification;
-import com.improver.entity.ProjectRequest;
 import com.improver.entity.User;
 import com.improver.repository.NotificationRepository;
-import com.improver.repository.ProjectMessageRepository;
 import com.improver.security.UserSecurityService;
+import com.improver.service.ChatService;
 import com.improver.util.annotation.PageableSwagger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +16,13 @@ import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static com.improver.application.properties.Path.*;
+import static com.improver.application.properties.Path.NOTIFICATIONS_PATH;
 
 /**
  * For test purposes only
@@ -31,10 +31,9 @@ import static com.improver.application.properties.Path.*;
 @Controller
 public class NotificationController {
 
+    @Autowired private ChatService chatService;
     @Autowired private NotificationRepository notificationRepository;
     @Autowired private UserSecurityService userSecurityService;
-    @Autowired private ProjectMessageRepository projectMessageRepository;
-
 
     // TODO: Remove this
     @Deprecated
@@ -55,18 +54,11 @@ public class NotificationController {
         return new ResponseEntity<>(allByUser, HttpStatus.OK);
     }
 
+    @Deprecated
     @GetMapping(NOTIFICATIONS_PATH + "/messages/unread")
     public ResponseEntity<List<Notification>> getAllUnreadMessages() {
         User user = userSecurityService.currentUser();
-        List<Notification> messages = new ArrayList<>();
-        if(user.getRole() == User.Role.CUSTOMER) {
-            messages = projectMessageRepository.getAllUnreadMessagesForCustomers(user.getId(),
-                ProjectRequest.Status.getActiveForCustomer());
-        } else if(user.getRole() == User.Role.CONTRACTOR) {
-            messages = projectMessageRepository.getAllUnreadMessagesForContractors(user.getId(),
-                ProjectRequest.Status.getActiveForCustomer());
-        }
-        return new ResponseEntity<>(messages, HttpStatus.OK);
+        return new ResponseEntity<>(chatService.getAllUnreadMessages(user.getId(), user.getRole()), HttpStatus.OK);
     }
 
     @PutMapping(NOTIFICATIONS_PATH + "/read")

@@ -1,6 +1,6 @@
 package com.improver.service;
 
-import com.improver.entity.Project;
+import com.improver.entity.Notification;
 import com.improver.entity.ProjectMessage;
 import com.improver.entity.ProjectRequest;
 import com.improver.entity.User;
@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.improver.entity.ProjectMessage.Event.IS_TYPING;
 import static com.improver.entity.ProjectMessage.Event.READ;
@@ -74,6 +76,18 @@ public class ChatService {
             throw new ConflictException("Conversation is closed");
         }
         return request;
+    }
+
+    public List<Notification> getAllUnreadMessages (Long userId, User.Role role) {
+        List<Notification> messages = new ArrayList<>();
+        if(role == User.Role.CUSTOMER) {
+            messages = projectMessageRepository.getAllUnreadMessagesForCustomers(userId,
+                ProjectRequest.Status.getActiveForCustomer());
+        } else if(role == User.Role.CONTRACTOR) {
+            messages = projectMessageRepository.getAllUnreadMessagesForContractors(userId,
+                ProjectRequest.Status.getActiveForCustomer());
+        }
+        return messages;
     }
 
     private void handleReadEvent(String sender, ZonedDateTime time, ProjectRequest projectRequest) {

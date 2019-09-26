@@ -5,6 +5,8 @@ import com.improver.util.serializer.SerializationUtil;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 @Data
 @RequiredArgsConstructor
 public class NotificationMessage {
@@ -18,6 +20,10 @@ public class NotificationMessage {
 
     public static NotificationMessage plain(Notification notification){
         return new NotificationMessage(Type.PLAIN, notification);
+    }
+
+    public static NotificationMessage unread(List<Notification> notifications){
+        return new NotificationMessage(Type.UNREAD_MESSAGES, notifications);
     }
 
     public String
@@ -39,7 +45,8 @@ public class NotificationMessage {
      */
     public enum Type {
         BILLING("BILLING"),
-        PLAIN ("PLAIN");
+        PLAIN ("PLAIN"),
+        UNREAD_MESSAGES("UNREAD_MESSAGES");
 
         private final String value;
 

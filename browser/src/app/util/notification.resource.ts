@@ -1,5 +1,5 @@
-import { Inject, Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { Notification } from '../api/models/Notification';
 import { NotificationService } from '../api/services/notification.service';
 import { SecurityService } from '../auth/security.service';
@@ -61,6 +61,12 @@ export class NotificationResource {
             this.billingService.billing = notification.body;
             this.billingService.onBillingUpdated.emit();
             break;
+          case Notification.Type.UNREAD_MESSAGES:
+            this.unreadMessagesCount = notification.body.length;
+            this.unreadMessages = notification.body;
+            this.unreadMessages$.next(this.unreadMessages);
+            this.unreadMessagesCount$.next(this.unreadMessagesCount);
+            break;
           default:
             console.warn('Unknown notification type');
         }
@@ -101,8 +107,8 @@ export class NotificationResource {
 
   private unreadNotificationEmitter(): void {
     const randDelay: number = Math.floor(Math.random() * (this.RAND_MAX_VALUE - this.RAND_MIN_VALUE) + this.RAND_MIN_VALUE);
-    this.getUnreadMessages();
-    this.unreadMessagesInterval = setInterval(() => this.getUnreadMessages(), this.INTERVAL_DELAY + randDelay);
+    this.publishUnreadMessagesRequest();
+    this.unreadMessagesInterval = setInterval(() => this.publishUnreadMessagesRequest(), this.INTERVAL_DELAY + randDelay);
   }
 
   private getUnreadMessages(): void {
@@ -112,6 +118,10 @@ export class NotificationResource {
       this.unreadMessages$.next(this.unreadMessages);
       this.unreadMessagesCount$.next(this.unreadMessagesCount);
     });
+  }
+
+  private publishUnreadMessagesRequest(): void {
+    this.myStompService.publish({destination: `/queue/users/${this.securityService.getLoginModel().id}/unread`}, );
   }
 
   private destroyUnreadMessagesFlow() {
