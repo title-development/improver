@@ -1,16 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material';
-import { FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
-import { ServiceType, Trade } from '../../model/data-model';
-import { ServiceTypeService } from '../../api/services/service-type.service';
-import { TradeService } from '../../api/services/trade.service';
-import { Constants } from '../../util/constants';
-import { QuestionaryControlService } from '../../util/questionary-control.service';
-import { ProjectActionService } from '../../util/project-action.service';
-import { MediaQueryService } from '../../util/media-query.service';
-import { markAsTouched } from '../../util/functions';
-import { Router } from '@angular/router';
-import { FindProfessionalService } from '../../util/find-professional.service';
+import {Component, OnInit} from '@angular/core';
+import {MatDialog} from '@angular/material';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {ServiceType, Trade} from '../../model/data-model';
+import {ServiceTypeService} from '../../api/services/service-type.service';
+import {TradeService} from '../../api/services/trade.service';
+import {Constants} from '../../util/constants';
+import {QuestionaryControlService} from '../../util/questionary-control.service';
+import {ProjectActionService} from '../../util/project-action.service';
+import {MediaQueryService} from '../../util/media-query.service';
+import {markAsTouched} from '../../util/functions';
+import {Router} from '@angular/router';
+import {FindProfessionalService} from '../../util/find-professional.service';
+import {PopUpMessageService} from "../../util/pop-up-message.service";
 
 @Component({
   selector: 'find-professionals',
@@ -21,6 +22,7 @@ import { FindProfessionalService } from '../../util/find-professional.service';
 export class FindProfessionalsComponent implements OnInit {
   mainSearchFormGroup: FormGroup;
   serviceTypeCtrl: FormControl;
+  suggestedServiceTypes: Array<ServiceType> = [];
   popularServiceTypes: Array<ServiceType> = [];
   filteredServiceTypes: Array<ServiceType> = [];
   serviceTypes: Array<ServiceType> = [];
@@ -47,6 +49,7 @@ export class FindProfessionalsComponent implements OnInit {
     this.mainSearchFormGroup = new FormGroup(group);
     this.serviceTypeCtrl = group.serviceTypeCtrl;
 
+    this.getSuggestedServiceTypes();
     this.getPopularServiceTypes();
     this.getPopularTrades();
     this.getServiceTypes();
@@ -76,15 +79,17 @@ export class FindProfessionalsComponent implements OnInit {
 
   }
 
+  getSuggestedServiceTypes() {
+    this.serviceTypeService.suggested$
+      .subscribe(
+        suggestedServiceTypes => this.suggestedServiceTypes = suggestedServiceTypes
+      );
+  }
+
   getPopularServiceTypes() {
     this.serviceTypeService.popular$
       .subscribe(
-        popularServiceTypes => {
-          this.popularServiceTypes = popularServiceTypes;
-        },
-        err => {
-          console.log(err);
-        }
+        popularServiceTypes => this.popularServiceTypes = popularServiceTypes
       );
   }
 
@@ -92,9 +97,6 @@ export class FindProfessionalsComponent implements OnInit {
     this.tradeService.popular$
       .subscribe(
         popularTrades => this.popularTrades = popularTrades,
-        err => {
-          console.log(err);
-        }
       );
   }
 

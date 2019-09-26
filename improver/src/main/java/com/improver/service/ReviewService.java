@@ -191,7 +191,10 @@ public class ReviewService {
 
     public ReviewRequestOption getReviewRequestOptions(Contractor pro) {
         List<ReviewRequest> reviewRequests = reviewRequestRepository.getAllByCompanyId(pro.getCompany().getId());
-        int completed = (int) reviewRequests.stream().filter(ReviewRequest::isCompleted).count();
-       return new ReviewRequestOption().setCompleted(completed).setAvailable(MAX_REQUEST_REVIEWS - reviewRequests.size());
+        int completed = (int) reviewRequests.stream()
+            .filter(ReviewRequest::isCompleted).count();
+        return new ReviewRequestOption()
+           .setCompleted(completed)
+           .setAvailable(MAX_REQUEST_REVIEWS - reviewRequests.size());
     }
 }

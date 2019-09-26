@@ -1,11 +1,10 @@
-import { throwError as observableThrowError, Observable, throwError, of, BehaviorSubject, ReplaySubject } from 'rxjs';
-import { Injectable } from '@angular/core';
-import { ServiceType, OfferedServiceType, Pagination } from '../../model/data-model';
-import { QuestionaryBlock } from '../../model/questionary-model';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { RestPage } from '../models/RestPage';
-import { AdminServiceType } from '../models/AdminServiceType';
-import { catchError, first, publishReplay, refCount, switchMap } from 'rxjs/internal/operators';
+import {Observable, ReplaySubject} from 'rxjs';
+import {Injectable} from '@angular/core';
+import {Pagination, ServiceType} from '../../model/data-model';
+import {QuestionaryBlock} from '../../model/questionary-model';
+import {HttpClient, HttpParams} from '@angular/common/http';
+import {RestPage} from '../models/RestPage';
+import {AdminServiceType} from '../models/AdminServiceType';
 
 @Injectable()
 export class ServiceTypeService {
@@ -13,9 +12,11 @@ export class ServiceTypeService {
   private serviceCatalogUrl = `${this.catalogUrl}/services`;
   private serviceTypesUrl = 'api/services';
   private _serviceTypes$: ReplaySubject<Array<ServiceType>> = new ReplaySubject<Array<ServiceType>>(1);
+  private _suggested$: ReplaySubject<Array<ServiceType>> = new ReplaySubject<Array<ServiceType>>(1);
   private _popular$: ReplaySubject<Array<ServiceType>> = new ReplaySubject<Array<ServiceType>>(1);
   private serviceTypeCached: boolean = false;
   private popularServiceTypeCached: boolean = false;
+  private suggestedServiceTypeCached: boolean = false;
 
   constructor(private http: HttpClient) {
   }
@@ -64,6 +65,12 @@ export class ServiceTypeService {
 
   }
 
+  getSuggested(size): Observable<Array<ServiceType>> {
+    const params = new HttpParams().set('size', size);
+
+    return this.http.get<Array<ServiceType>>(`${this.serviceCatalogUrl}/suggested`, {params});
+  }
+
   getPopular(size): Observable<Array<ServiceType>> {
     const params = new HttpParams().set('size', size);
 
@@ -93,22 +100,48 @@ export class ServiceTypeService {
     if (!this.serviceTypeCached) {
       this.serviceTypeCached = true;
       this.getAllAsModel().subscribe((serviceTypes: Array<ServiceType>) => {
+        if (!serviceTypes){
+          this.serviceTypeCached = false;
+        }
         this._serviceTypes$.next(serviceTypes);
       }, err => {
         this.serviceTypeCached = false;
+        console.log(err);
       });
     }
 
     return this._serviceTypes$;
   }
 
+  get suggested$(): ReplaySubject<Array<ServiceType>> {
+    if (!this.suggestedServiceTypeCached) {
+      this.suggestedServiceTypeCached = true;
+      this.getSuggested(16).subscribe((serviceType: Array<ServiceType>) => {
+        if (!serviceType){
+          this.suggestedServiceTypeCached = false;
+        }
+        this._suggested$.next(serviceType);
+      }, err => {
+        this.suggestedServiceTypeCached = false;
+        console.log(err);
+      });
+    }
+
+    return this._suggested$;
+  }
+
+
   get popular$(): ReplaySubject<Array<ServiceType>> {
     if (!this.popularServiceTypeCached) {
       this.popularServiceTypeCached = true;
       this.getPopular(16).subscribe((serviceType: Array<ServiceType>) => {
+        if (!serviceType){
+          this.popularServiceTypeCached = false;
+        }
         this._popular$.next(serviceType);
       }, err => {
         this.popularServiceTypeCached = false;
+        console.log(err);
       });
     }
 

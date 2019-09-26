@@ -17,4 +17,9 @@ public class NameIdImageTuple {
     private final String name;
     private final String image;
 
+    public NameIdImageTuple(long id, String name, String image, Long popularity) {
+        this.id = id;
+        this.name = name;
+        this.image = image;
+    }
 }

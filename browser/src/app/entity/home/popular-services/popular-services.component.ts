@@ -1,8 +1,6 @@
-import { Component } from '@angular/core';
-import { ServiceType } from '../../../model/data-model';
-import { ServiceTypeService } from '../../../api/services/service-type.service';
-import { ProjectActionService } from '../../../util/project-action.service';
-
+import {Component} from '@angular/core';
+import {ServiceType} from '../../../model/data-model';
+import {ServiceTypeService} from '../../../api/services/service-type.service';
 
 
 @Component({
@@ -11,12 +9,12 @@ import { ProjectActionService } from '../../../util/project-action.service';
   styleUrls: ['popular-services.component.scss']
 })
 export class PopularServicesComponent {
-  popularServiceTypes: Array<ServiceType> = [];
+  suggestedServiceTypes: Array<ServiceType> = [];
 
   constructor(private serviceTypesService: ServiceTypeService) {
 
-    this.serviceTypesService.popular$
+    this.serviceTypesService.suggested$
       .subscribe(
-        (serviceTypes: Array<ServiceType>) => this.popularServiceTypes = serviceTypes.slice(0, 8));
+        (serviceTypes: Array<ServiceType>) => this.suggestedServiceTypes = serviceTypes.slice(0, 8));
   }
 }

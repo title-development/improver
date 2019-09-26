@@ -16,22 +16,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-import static com.improver.application.properties.Path.CATALOG_PATH;
-import static com.improver.application.properties.Path.ID_PATH_VARIABLE;
-import static com.improver.application.properties.Path.POPULAR;
-import static com.improver.application.properties.Path.QUESTIONARY;
-import static com.improver.application.properties.Path.SERVICES;
-import static com.improver.application.properties.Path.TRADES;
+import static com.improver.application.properties.Path.*;
 
 @RestController
 @RequestMapping(CATALOG_PATH)
@@ -49,8 +39,8 @@ public class CatalogController {
      * <b>Note</b> {@link CacheControl} is used to reduce REST API calls and improve performance.
      */
     @Deprecated
-    @GetMapping(SERVICES + POPULAR)
-    public ResponseEntity<List<NameIdImageTuple>> getPopularServices(@RequestParam(defaultValue = "12") int size) {
+    @GetMapping(SERVICES + SUGGESTED)
+    public ResponseEntity<List<NameIdImageTuple>> getSuggestedServices(@RequestParam(defaultValue = "12") int size) {
 //        List<NameIdImageTuple> services = serviceTypeService.getPopularServices(size);
 //        TODO: Done for testing of images at home page. Will be removed later
         List<NameIdImageTuple> services = serviceTypeService.getRandomAsModels(size);
@@ -61,11 +51,17 @@ public class CatalogController {
             .body(services);
     }
 
+    @GetMapping(SERVICES + POPULAR)
+    public ResponseEntity<List<NameIdTuple>> getPopularServices(@RequestParam(defaultValue = "12") int size){
+        List<NameIdTuple> popularServices = serviceTypeRepository.getPopularServiceTypes(PageRequest.of(0, size)).getContent();
+        return new ResponseEntity<>(popularServices, HttpStatus.OK);
+    }
+
 
     @Deprecated
-    @GetMapping(SERVICES + "/recommended")
-    public ResponseEntity<List<NameIdImageTuple>> getRecommendedServices(@RequestParam long userId, @RequestParam(defaultValue = "6") int size) {
-        return getPopularServices(size);
+    @GetMapping(SERVICES + RECOMMENDED)
+    public ResponseEntity<List<NameIdImageTuple>> getRecommendedServices(@RequestParam(defaultValue = "6") int size) {
+        return getSuggestedServices(size);
     }
 
 

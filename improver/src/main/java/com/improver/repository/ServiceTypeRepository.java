@@ -4,8 +4,8 @@ import com.improver.entity.ServiceType;
 import com.improver.model.NameIdParentTuple;
 import com.improver.model.NameIdTuple;
 import com.improver.model.admin.AdminServiceType;
-import com.improver.model.out.NameIdImageTuple;
 import com.improver.model.admin.out.Record;
+import com.improver.model.out.NameIdImageTuple;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -99,4 +99,13 @@ public interface ServiceTypeRepository extends JpaRepository<ServiceType, Long> 
     List<Record> getTopServiceTypeByProjectSold(ZonedDateTime period, Pageable pageable);
 
     ServiceType findByProjectsProjectRequestsReviewId(long reviewId);
+
+
+    @Query("SELECT new com.improver.model.NameIdTuple(st.id, st.name, COUNT(p) AS popularity)  FROM com.improver.entity.ServiceType st " +
+        "LEFT JOIN st.projects p " +
+        "WHERE st.active = true " +
+        "GROUP BY st.id " +
+        "ORDER BY popularity DESC")
+    Page<NameIdTuple> getPopularServiceTypes(Pageable pageable);
+
 }

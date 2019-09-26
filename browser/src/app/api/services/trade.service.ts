@@ -1,10 +1,9 @@
-import { throwError as observableThrowError, Observable, BehaviorSubject, ReplaySubject } from 'rxjs';
-import { Injectable } from '@angular/core';
-import { OfferedServiceType, Pagination, ServiceType, Trade } from '../../model/data-model';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { RestPage } from '../models/RestPage';
-import { AdminTrade } from '../models/AdminTrade';
-import { first, publishReplay, refCount } from 'rxjs/internal/operators';
+import {Observable, ReplaySubject} from 'rxjs';
+import {Injectable} from '@angular/core';
+import {Pagination, ServiceType, Trade} from '../../model/data-model';
+import {HttpClient, HttpParams} from '@angular/common/http';
+import {RestPage} from '../models/RestPage';
+import {AdminTrade} from '../models/AdminTrade';
 
 
 @Injectable()
@@ -81,9 +80,13 @@ export class TradeService {
     if (!this.tradesCached) {
       this.tradesCached = true;
       this.getAllAsModel().subscribe((serviceTypes: Array<ServiceType>) => {
+        if (!serviceTypes){
+          this.tradesCached = false;
+        }
         this._trades$.next(serviceTypes);
       }, err => {
         this.tradesCached = false;
+        console.log(err);
       });
     }
 
@@ -94,9 +97,13 @@ export class TradeService {
     if (!this.popularTradesCached) {
       this.popularTradesCached = true;
       this.getPopular(16).subscribe((serviceTypes: Array<ServiceType>) => {
+        if (!serviceTypes){
+          this.popularTradesCached = false;
+        }
         this._popular$.next(serviceTypes);
       }, err => {
         this.popularTradesCached = false;
+        console.log(err);
       });
     }
 

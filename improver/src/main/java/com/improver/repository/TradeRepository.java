@@ -33,7 +33,13 @@ public interface TradeRepository extends JpaRepository<Trade, Long> {
     @Query("SELECT new com.improver.model.NameIdTuple(t.id, t.name) FROM com.improver.entity.Trade t ORDER BY t.name ASC")
     List<NameIdTuple> getAllAsModels();
 
-    @Query("SELECT new com.improver.model.out.NameIdImageTuple(t.id, t.name, t.imageUrl) FROM com.improver.entity.Trade t ORDER BY t.rating DESC")
+    @Query("SELECT new com.improver.model.out.NameIdImageTuple(t.id, t.name, t.imageUrl, COUNT(p) AS popularity) " +
+        "FROM com.improver.entity.Trade t " +
+        "LEFT JOIN t.serviceTypes st " +
+        "LEFT JOIN st.projects p " +
+        "WHERE st.active = true " +
+        "GROUP BY t.id " +
+        "ORDER BY popularity DESC")
     Page<NameIdImageTuple> getPopular(Pageable pageable);
 
     @Query("SELECT CASE WHEN count(t)> 0 THEN false ELSE true END FROM com.improver.entity.Trade t WHERE LOWER(t.name) = LOWER(?1)")
