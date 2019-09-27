@@ -21,7 +21,15 @@
             (ngSubmit)="accountForm.valid && registerContractor(accountForm)"
             novalidate>
 
-        <h3>Create Pro Account</h3>
+        <div class="row">
+          <h3 class="col-md-8 col-sm-12 col-xs-12">Create Pro Account</h3>
+          <div [ngClass]="{'invisible': mediaQuery.xs || mediaQuery.sm}" class="or-social col-md-4">
+            <div class="auth-social-hint">
+              <span>or continue with</span>
+            </div>
+          </div>
+        </div>
+
         <div class="row">
           <div class="col-md-8 col-sm-12 col-xs-12">
             <div class="row">
@@ -172,7 +180,10 @@
             </div>
           </div>
           <div class="col-md-4 col-sm-12 col-xs-12">
-            <span>or continue with</span>
+
+            <div class="auth-social-hint" [ngClass]="{'invisible': mediaQuery.md || mediaQuery.lg || mediaQuery.xlg}">
+              <span>or continue with</span>
+            </div>
             <social-buttons [preventLogin]="!registerProps.agree"
                             [processing]="processing"
                             [contractorRegistrationFlow]="true"
@@ -180,7 +191,8 @@
                             (responseMessageType)="messageType = $event;"
                             (responseMessage)="messageText = $event;"
                             (showMessage)="showMessage = $event;"
-                            (click)="agreeForSocialLogin = !registerProps.agree">
+                            (click)="agreeForSocialLogin = !registerProps.agree"
+                            [ngClass]="{'desktop': mediaQuery.md || mediaQuery.lg || mediaQuery.xlg}">
             </social-buttons>
             <div class="hint account-hint">
               <span>Create a PRO account and continue company registration whenever suits you.</span>

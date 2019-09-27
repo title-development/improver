@@ -462,6 +462,10 @@ questionary-form {
   pointer-events: none;
 }
 
+.invisible {
+  display: none;
+}
+
 .flex-spacer {
   flex-grow: 1;
 }

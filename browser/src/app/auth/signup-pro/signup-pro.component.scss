@@ -19,6 +19,10 @@ h3 {
   margin-top: 16px;
 }
 
+.or-social {
+  padding-top: 8px;
+}
+
 .step-wizard {
   display: flex;
   margin-bottom: 24px;
@@ -166,7 +170,9 @@ h3 {
 }
 
 social-buttons {
-  margin-top: 16px;
+  &:not(.desktop) {
+    margin-top: 16px;
+  }
 }
 
 cv-input-field {
@@ -187,3 +193,30 @@ cv-input-field {
     margin-left: auto;
   }
 }
+
+.auth-social-hint {
+  font-size: 14px;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.7);
+  width: 100%;
+  margin: 8px 0 12px;
+  position: relative;
+
+  &:before {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    height: 1px;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.38);
+  }
+
+  span {
+    position: relative;
+    background: $white;
+    padding: 0 10px;
+  }
+}
+

@@ -266,7 +266,7 @@
         font-size: 14px;
         font-weight: 500;
         text-align: left;
-        color: #191919;
+        color: $black-900;
         padding: 11px 15px !important;
         cursor: pointer;
 
@@ -295,7 +295,7 @@
       font-size: 14px;
       font-weight: 500;
       text-align: left;
-      color: #191919;
+      color: $black-900;
       padding: 11px 15px;
       cursor: pointer;
       width: 100%;
@@ -303,6 +303,23 @@
       &:hover, &:focus, &:active {
         background-color: $black-150;
       }
+    }
+  }
+}
+
+.unauthorized-menu {
+  a {
+    font-weight: 500!important;
+    color: $black-900!important;
+    padding: 11px 24px!important;
+    &:hover {
+      background-color: $black-100;
+    }
+  }
+  .menu-footer {
+    a {
+      font-weight: 500!important;
+      color: $primary-600!important;
     }
   }
 }

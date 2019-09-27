@@ -44,19 +44,7 @@
       <a routerLink="/admin" (click)="close()" style="padding: 0;">Admin Panel</a>
     </div>
 
-    <div class="user-role" *ngIf="!securityService.isAuthenticated() && ( securityService.hasRole(Role.ANONYMOUS) || securityService.hasRole(Role.INCOMPLETE_PRO))">
-<!-- TODO: remove CSS for next -->
-<!--      <button class="join-as-pro-button" routerLink="/become-pro" (click)="close()">Become a Pro</button>-->
-<!--      <div class="buttons-wrapper">-->
-<!--        <a routerLink="/login" (click)="close()">-->
-<!--          <i class="imp-icon-login"></i>-->
-<!--          <span>LOG IN</span>-->
-<!--        </a>-->
-<!--        <a routerLink="/signup" (click)="close()">-->
-<!--          <i class="imp-icon-signup"></i>-->
-<!--          <span>SIGN UP</span>-->
-<!--        </a>-->
-<!--      </div>-->
+    <div class="user-role unauthorized-menu" *ngIf="!securityService.isAuthenticated() && ( securityService.hasRole(Role.ANONYMOUS) || securityService.hasRole(Role.INCOMPLETE_PRO))">
         <a routerLink="/login" (click)="close()">Log in</a>
         <a routerLink="/signup" (click)="close()">Sign up</a>
         <div class="menu-footer">
