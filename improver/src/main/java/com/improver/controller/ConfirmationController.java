@@ -6,6 +6,7 @@ import com.improver.model.out.LoginModel;
 import com.improver.model.in.UserActivation;
 import com.improver.repository.UserRepository;
 import com.improver.security.UserSecurityService;
+import com.improver.service.LeadService;
 import com.improver.service.UserService;
 import com.improver.security.JwtUtil;
 import org.slf4j.Logger;
@@ -28,6 +29,7 @@ public class ConfirmationController {
     @Autowired private UserService userService;
     @Autowired private UserRepository userRepository;
     @Autowired private UserSecurityService userSecurityService;
+    @Autowired private LeadService leadService;
     @Autowired private JwtUtil jwtUtil;
 
 
@@ -36,6 +38,7 @@ public class ConfirmationController {
         String validationKey = jwtUtil.parseActivationJWT(userActivation.getToken(), null);
         userActivation.setToken(validationKey);
         User user = userService.activateUser(userActivation);
+        leadService.putCustomerProjectsToMarket(user);
 
         LoginModel loginModel = userSecurityService.performUserLogin(user, res);
         return new ResponseEntity<>(loginModel, HttpStatus.OK);

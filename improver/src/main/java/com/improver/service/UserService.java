@@ -194,6 +194,7 @@ public class UserService {
             log.info("Updating password for user={}", user.getEmail());
             user.setPassword(activation.getPassword());
         }
+
         user = userRepository.save(user);
         log.info("User confirmed email={}", user.getEmail());
         return user;

@@ -44,14 +44,20 @@ public class OrderService {
         customer = Optional.ofNullable(customer)
             .orElseGet(() -> getExistingOrRegister(order));
 
-        Project lead = saveProjectOrder(income.setCustomer(customer));
+        Project lead;
         if(customer.isActivated()) {
+            lead = saveProjectOrder(income.setCustomer(customer));
             mailService.sendOrderSubmitMail(customer, lead, order.getDetails());
         } else {
+            income.setLead(false);
+            lead = saveProjectOrder(income.setCustomer(customer));
             mailService.sendAutoRegistrationConfirmEmail(customer, lead, order.getDetails());
         }
 
-        leadService.matchLeadWithSubscribers(lead);
+        if (lead.isLead()){
+            leadService.matchLeadWithSubscribers(lead);
+        }
+
     }
 
     private Customer getExistingOrRegister(Order order) {
