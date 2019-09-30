@@ -13,16 +13,6 @@
   </div>
   <div class="tab-content">
     <div class="tab-content-wrapper">
-      <table class="xs-none sm-none tab-content-titles" cellspacing="0" cellpadding="0">
-        <tr>
-          <th width="5%"></th>
-          <th width="20%">Client name</th>
-          <th width="35%">Service type</th>
-          <th width="20%">Created</th>
-          <th width="10%">Status</th>
-          <th width="10%">Actions</th>
-        </tr>
-      </table>
       <div class="tab-content-list"
            *ngFor="let tab of tabs; let i = index;"
            [cvSpinner]="fetching"

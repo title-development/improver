@@ -5,8 +5,8 @@
         <dashboard-find-more-leads [leads]="leads"></dashboard-find-more-leads>
       </div>
     </div>
-    <div class="col-xs-12 col-md-12 col-lg-8">
-      <div class="row xs-column-reverse">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-8">
+      <div class="row reverse">
         <div [ngClass]="leads && leads.totalElements > 0 ? 'col-xs-12 col-sm-6' : 'col-xs-12 col-lg-6'">
           <div class="row">
             <div [ngClass]="leads && leads.totalElements > 0 ? 'col-xs-12' : 'col-xs-12 col-sm-6 col-lg-12'">
@@ -22,7 +22,7 @@
           </div>
         </div>
         <div [ngClass]="leads && leads.totalElements > 0 ? 'col-xs-12 col-sm-6' : 'col-xs-12 col-lg-6'">
-          <div class="row xs-column-reverse">
+          <div class="row reverse">
             <div [ngClass]="leads && leads.totalElements > 0 ? 'col-xs-12' : 'col-xs-12 col-sm-6 col-lg-12'">
               <div class="card">
                 <dashboard-pay-and-go

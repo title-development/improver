@@ -36,7 +36,7 @@ h4 {
   min-height: 28px;
   @include response(sm, md) {
     min-height: auto;
-    width: 150px;
+    width: 160px;
     padding-right: 15px;
   }
 }

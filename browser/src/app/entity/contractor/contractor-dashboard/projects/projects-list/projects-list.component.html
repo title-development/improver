@@ -1,25 +1,19 @@
 <table class="list-wrapper" cellpadding="0" cellspacing="0">
   <ng-template let-project let-last="last" ngFor [ngForOf]="list">
     <tr class="item">
-      <td width="5%" class="item-icon" [routerLink]="['/pro/projects', project.id]">
-        <img cv-hint="Manual lead" *ngIf="project.manual" src="assets/img/dashboard-project-purchase.svg" alt="Purchase">
-        <img cv-hint="Subscription lead" *ngIf="!project.manual" src="assets/img/dashboard-project-subscription.svg" alt="Subscription">
+      <td class="item-icon" [ngStyle]="project.customer.iconUrl && project.customer.iconUrl != '' && {'background-image':'url(' + project.customer.iconUrl + ')'} || {'background-image':'url(/assets/img/user-logo-placeholder.png)'}">
         <i class="notifications" *ngIf="project.unreadMessages > 0" title="{{unreadMessagesTittle(project.unreadMessages)}}">{{project.unreadMessages}}</i>
       </td>
-      <td width="20%" class="item-name" [routerLink]="['/pro/projects', project.id]">
-        <span>{{project.customer.name}}</span>
-        <span class="xs-none md-none lg-none xlg-none">{{project.serviceType}}</span>
+      <td width="50%" class="item-name" [routerLink]="['/pro/projects', project.id]">
+        <div>{{project.customer.name}}</div>
+        <div class="item-service">{{project.serviceType}}</div>
+        <div class="item-date xs-visible">{{project.created | date}}</div>
+        <div class="item-status xs-visible status {{project.status | toclassname }}">{{project.status | statustostring }}</div>
       </td>
-      <td width="35%" class="item-service" [routerLink]="['/pro/projects', project.id]">
-        <span class="sm-none">{{project.serviceType}}</span>
-        <span class="xs-none md-none lg-none xlg-none">{{project.created | date}}</span>
+      <td width="20%" class="item-date xs-none" [routerLink]="['/pro/projects', project.id]">
+        <span>{{project.created | date}}</span>
       </td>
-
-      <td width="20%" class="item-date" [routerLink]="['/pro/projects', project.id]">
-        <span class="sm-none">{{project.created | date}}</span>
-      </td>
-
-      <td width="10%" class="item-status" [routerLink]="['/pro/projects', project.id]">
+      <td width="25%" class="item-status xs-none" [routerLink]="['/pro/projects', project.id]">
         <div class="status {{project.status | toclassname }}">{{project.status |
           statustostring }}
         </div>
@@ -33,7 +27,6 @@
           <button mat-menu-item (click)="openRefundStatusDialog(project)" *ngIf="project.refundRequested">Return Status</button>
           <button mat-menu-item (click)="projectActionService.leaveProject(project)" *ngIf="ProjectRequest.canBeLeft(project.status)">Leave</button>
           <button mat-menu-item (click)="projectActionService.closeProject(project)" *ngIf="ProjectRequest.canBeClosed(project.status)">Close</button>
-
         </mat-menu>
       </td>
     </tr>
