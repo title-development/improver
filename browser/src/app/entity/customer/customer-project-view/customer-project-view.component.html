@@ -79,13 +79,8 @@
                           <img class="approve-icon" src="assets/icons/approve.svg" alt="" title="Approved by Home Improve">
                         </div>
                       </div>
-                      <div class="additional-info hired"
-                           *ngIf="projectRequest.status == ProjectRequest.hasExecutor(projectRequest.status)">
-                        You hired this Pro
-                      </div>
-                      <div class="additional-info" *ngIf="projectRequest.status == ProjectRequest.Status.ACTIVE">This
-                        Pro sent you project request
-                      </div>
+                      <div class="additional-info hired" *ngIf="ProjectRequest.hasExecutor(projectRequest.status)">You hired this Pro</div>
+                      <div class="additional-info" *ngIf="projectRequest.status == ProjectRequest.Status.ACTIVE">This Pro sent you project request</div>
                     </div>
                   </div>
                   <div class="projectRequest-right">
@@ -137,12 +132,8 @@
                           <img class="approve-icon" src="assets/icons/approve.svg" alt="" title="Approved by Home Improve">
                         </div>
                       </div>
-                      <div class="additional-info" *ngIf="projectRequest.status == ProjectRequest.Status.DECLINED">You
-                        declined this Pro
-                      </div>
-                      <div class="additional-info" *ngIf="ProjectRequest.proLeft(projectRequest.status)">
-                        This Pro left the project
-                      </div>
+                      <div class="additional-info" *ngIf="projectRequest.status == ProjectRequest.Status.DECLINED">You declined this Pro</div>
+                      <div class="additional-info" *ngIf="ProjectRequest.proLeft(projectRequest.status)">This Pro left the project</div>
                     </div>
                   </div>
                   <div class="projectRequest-right">
@@ -159,15 +150,8 @@
                     </button>
                     <mat-menu class="projectRequest-menu" #projectRequestMenu="matMenu" yPosition="below"
                               xPosition="before">
-                      <button mat-menu-item (click)="openProjectRequest(projectRequest)">Details
-                      </button>
+                      <button mat-menu-item (click)="openProjectRequest(projectRequest)">Details</button>
                       <a mat-menu-item [routerLink]="['/companies', projectRequest.company.id]">View company</a>
-                      <!--TODO: Remove action buttons after archiving-->
-                      <button mat-menu-item
-                              *ngIf="(projectRequest.status == ProjectRequest.Status.HIRED) && !Project.isArchived(project.status)">
-                        Dismiss
-                      </button>
-                      <!--<button mat-menu-item *ngIf="(projectRequest.status == ProjectRequest.Status.DECLINED) && !Project.isArchived(project.status)">Activate</button>-->
                       <button mat-menu-item
                               *ngIf="(projectRequest.status == ProjectRequest.Status.ACTIVE) && !Project.isArchived(project.status)"
                               (click)="projectActionService.hireCompanyConfirm(projectRequest)">Accept Offer

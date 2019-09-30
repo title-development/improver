@@ -2,9 +2,11 @@ package com.improver.controller;
 
 import com.improver.entity.ProjectMessage;
 import com.improver.entity.ProjectRequest;
+import com.improver.exception.AccessDeniedException;
 import com.improver.model.out.NotificationMessage;
 import com.improver.security.JwtPrincipal;
 import com.improver.security.SecurityHelper;
+import com.improver.security.UserSecurityService;
 import com.improver.security.annotation.SameUserAccess;
 import com.improver.service.ChatService;
 import lombok.extern.slf4j.Slf4j;
@@ -24,21 +26,25 @@ public class WsEndpointController {
 
     @Autowired private ChatService chatService;
     @Autowired private SecurityHelper securityHelper;
+    @Autowired private UserSecurityService userSecurityService;
 
-    @SameUserAccess
-    @SubscribeMapping(PATH_WS_USERS + ID_PATH_VARIABLE + NOTIFICATIONS)
+
+    @SubscribeMapping(WS_QUEUE_USERS + ID_PATH_VARIABLE + NOTIFICATIONS)
     public void subscribeToNotifications(@DestinationVariable long id) {
+        if (userSecurityService.currentUser().getId() != id) {
+            throw new AccessDeniedException();
+        }
         log.debug("User id={} subscribed for notifications", id);
     }
 
-    @MessageMapping({WS_QUEUE + USERS + ID_PATH_VARIABLE + UNREAD})
-    @SendTo(PATH_WS_USERS + ID_PATH_VARIABLE + NOTIFICATIONS)
+    @MessageMapping({WS_APP + USERS + ID_PATH_VARIABLE + UNREAD})
+    @SendTo(WS_QUEUE_USERS + ID_PATH_VARIABLE + NOTIFICATIONS)
     public NotificationMessage getAllUnreadMessages(@DestinationVariable long id) {
         JwtPrincipal jwtPrincipal = securityHelper.currentPrincipal();
         return NotificationMessage.unread(chatService.getAllUnreadMessages(id, jwtPrincipal.getRole()));
     }
 
-    @SubscribeMapping(WS_TOPIC + PROJECT_REQUESTS + ID_PATH_VARIABLE)
+    @SubscribeMapping(WS_TOPIC_PROJECT_REQUESTS + ID_PATH_VARIABLE)
     public void subscribeToChat(@DestinationVariable long id){
         // simply perform security check
         chatService.getWithSecurityCheck(id, true);
@@ -51,8 +57,8 @@ public class WsEndpointController {
      *  but with an additional prefix ("/topic" by default).
      *
      */
-    @MessageMapping(WS_QUEUE + PROJECT_REQUESTS + ID_PATH_VARIABLE)
-    @SendTo(WS_TOPIC + PROJECT_REQUESTS + ID_PATH_VARIABLE)
+    @MessageMapping(WS_APP + PROJECT_REQUESTS + ID_PATH_VARIABLE)
+    @SendTo(WS_TOPIC_PROJECT_REQUESTS + ID_PATH_VARIABLE)
     public ProjectMessage broadcastMessage(@Payload ProjectMessage message, @DestinationVariable long id) {
         return chatService.handleMessage(message, id);
     }

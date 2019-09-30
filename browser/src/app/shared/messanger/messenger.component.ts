@@ -193,7 +193,7 @@ export class MessengerComponent implements OnInit, OnDestroy {
   private sendMessage(message: string = '', type: ProjectRequest.MessageType, event: ProjectRequest.MessageEvent) {
     if (message && message.trim() == '') return;
     const newMessage = new ProjectMessage(this.securityService.getLoginModel().id, message, type, event);
-    this.myStompService.publish({destination: `/queue/project-requests/${this.projectRequestId}`, body: JSON.stringify(newMessage)}, );
+    this.myStompService.publish({destination: `/app/project-requests/${this.projectRequestId}`, body: JSON.stringify(newMessage)}, );
     //run adjust after synchronous function
     if (newMessage.event != this.ProjectRequest.MessageEvent.READ) {
       setTimeout(() => {

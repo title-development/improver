@@ -31,12 +31,10 @@ import static com.improver.application.properties.Path.NOTIFICATIONS_PATH;
 @Controller
 public class NotificationController {
 
-    @Autowired private ChatService chatService;
     @Autowired private NotificationRepository notificationRepository;
     @Autowired private UserSecurityService userSecurityService;
 
-    // TODO: Remove this
-    @Deprecated
+
     @GetMapping(NOTIFICATIONS_PATH + "/unread/count")
     public ResponseEntity<Long> getUnread() {
         User user = userSecurityService.currentUser();
@@ -44,7 +42,7 @@ public class NotificationController {
         return new ResponseEntity<>(count, HttpStatus.OK);
     }
 
-    // TODO: Remove PageableSwagger and Pageable parameter
+
     @PageableSwagger
     @GetMapping(NOTIFICATIONS_PATH)
     public ResponseEntity<Page<Notification>> getAllNotifications(@PageableDefault(page = 0, size = 10) @SortDefault.SortDefaults({
@@ -52,13 +50,6 @@ public class NotificationController {
         User user = userSecurityService.currentUser();
         Page<Notification> allByUser = notificationRepository.findAllByUser(user, pageable);
         return new ResponseEntity<>(allByUser, HttpStatus.OK);
-    }
-
-    @Deprecated
-    @GetMapping(NOTIFICATIONS_PATH + "/messages/unread")
-    public ResponseEntity<List<Notification>> getAllUnreadMessages() {
-        User user = userSecurityService.currentUser();
-        return new ResponseEntity<>(chatService.getAllUnreadMessages(user.getId(), user.getRole()), HttpStatus.OK);
     }
 
     @PutMapping(NOTIFICATIONS_PATH + "/read")

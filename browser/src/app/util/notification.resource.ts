@@ -76,7 +76,7 @@ export class NotificationResource {
 
   public getNotificationSubscription(userId: string): Observable<any> {
     if (!this.notificationsObservable) {
-      this.notificationsObservable = this.myStompService.watch(`/topic/users/${userId}/notifications`);
+      this.notificationsObservable = this.myStompService.watch(`/queue/users/${userId}/notifications`);
     }
     return this.notificationsObservable;
   }
@@ -111,17 +111,17 @@ export class NotificationResource {
     this.unreadMessagesInterval = setInterval(() => this.publishUnreadMessagesRequest(), this.INTERVAL_DELAY + randDelay);
   }
 
-  private getUnreadMessages(): void {
+/*  private getUnreadMessages(): void {
     this.notificationService.getUnreadMessages().pipe(first()).subscribe((notifications: Array<Notification>) => {
       this.unreadMessagesCount = notifications.length;
       this.unreadMessages = notifications;
       this.unreadMessages$.next(this.unreadMessages);
       this.unreadMessagesCount$.next(this.unreadMessagesCount);
     });
-  }
+  }*/
 
   private publishUnreadMessagesRequest(): void {
-    this.myStompService.publish({destination: `/queue/users/${this.securityService.getLoginModel().id}/unread`}, );
+    this.myStompService.publish({destination: `/app/users/${this.securityService.getLoginModel().id}/unread`}, );
   }
 
   private destroyUnreadMessagesFlow() {

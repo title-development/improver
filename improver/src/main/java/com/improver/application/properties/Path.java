@@ -115,15 +115,16 @@ public final class Path {
     public static final String REFRESH_ACCESS_TOKEN_PATH =  API_PATH_PREFIX + "/token/access";
     public static final String PRINCIPAL_PATH =             API_PATH_PREFIX + "/principal";
     public static final String HEATH_CHECK_PATH =           SLASH + "healthcheck";
-    public static final String REFRESH_COOKIE_PATH = REFRESH_ACCESS_TOKEN_PATH;
+    public static final String REFRESH_COOKIE_PATH =        REFRESH_ACCESS_TOKEN_PATH;
 
 
     /*  WebSocket */
     public static final String WEB_SOCKET_ENDPOINT =        "/ws";
     public static final String WS_TOPIC =                   "/topic";
     public static final String WS_QUEUE =                   "/queue";
-    public static final String PATH_WS_CONNECTIONS =        WS_TOPIC + PROJECT_REQUESTS;
-    public static final String PATH_WS_USERS =              WS_TOPIC + USERS;
+    public static final String WS_APP =                     "/app";
+    public static final String WS_TOPIC_PROJECT_REQUESTS =  WS_TOPIC + PROJECT_REQUESTS;
+    public static final String WS_QUEUE_USERS =             WS_QUEUE + USERS;
     public static final String UNREAD =                     "/unread";
 
     /* Resource paths */

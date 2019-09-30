@@ -19,11 +19,11 @@ public class WsNotificationService {
         String message = NotificationMessage.balance(billing.getBalance(), billing.getSubscription().isActive(),
             billing.getSubscription().getReserve()).toJson();
         company.getContractors().forEach(contractor ->
-            stompTemplate.convertAndSend(PATH_WS_USERS + SLASH + contractor.getId() + NOTIFICATIONS, message));
+            stompTemplate.convertAndSend(WS_QUEUE_USERS + SLASH + contractor.getId() + NOTIFICATIONS, message));
     }
 
     public void sendChatMessage(ProjectMessage message, long projectRequestId) {
-        stompTemplate.convertAndSend(PATH_WS_CONNECTIONS + SLASH + projectRequestId, message);
+        stompTemplate.convertAndSend(WS_TOPIC_PROJECT_REQUESTS + SLASH + projectRequestId, message);
     }
 
     public void newProjectRequest(User receiver, Company company, String serviceType, long projectId){
@@ -81,7 +81,7 @@ public class WsNotificationService {
     public void sendNotification(long userId, Notification notification) {
         notificationRepository.save(notification);
         String json = NotificationMessage.plain(notification).toJson();
-        stompTemplate.convertAndSend(PATH_WS_USERS + SLASH + userId + NOTIFICATIONS, json);
+        stompTemplate.convertAndSend(WS_QUEUE_USERS + SLASH + userId + NOTIFICATIONS, json);
     }
 
 }

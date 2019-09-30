@@ -2,15 +2,11 @@
   <div class="page-navigation" *ngIf="project">
     <a *ngIf="mediaQuery.xs || mediaQuery.sm" href="" routerLink="/pro/dashboard"><i class="imp-icon-arrow-left"></i></a>
     <a *ngIf="mediaQuery.md || mediaQuery.lg || mediaQuery.xlg" href="" routerLink="/pro/dashboard"><i class="imp-icon-angle-left"></i>Back to the dashboard</a>
-    <h3 [title]="project?.serviceType">{{project?.serviceType}}</h3>
+    <h4 *ngIf="mediaQuery.xs || mediaQuery.sm" [title]="project?.serviceType">{{project?.serviceType}}<br/>{{project?.customer.name}}</h4>
+    <h3 *ngIf="mediaQuery.md || mediaQuery.lg || mediaQuery.xlg" [title]="project?.serviceType">{{project?.serviceType}}</h3>
     <div class="more-button-wrapper" *ngIf="project">
       <mat-icon class="project-menu-button" [matMenuTriggerFor]="projectMenu">more_vert</mat-icon>
       <mat-menu class="project-menu" tabindex="-1"  #projectMenu="matMenu" yPosition="below" xPosition="before">
-        <button mat-menu-item [routerLink]="['/pro/receipt/conn', project?.id]">View Receipt</button>
-        <button mat-menu-item (click)="openRequestRefundDialog(project)" *ngIf="project?.refundable">Return Credit</button>
-        <button mat-menu-item (click)="openRefundStatusDialog(project)" *ngIf="project?.refundRequested">Return Status</button>
-        <button mat-menu-item (click)="projectActionService.leaveProject(project)" *ngIf="ProjectRequest.canBeLeft(project.status)">Leave</button>
-        <button mat-menu-item (click)="projectActionService.closeProject(project)" *ngIf="ProjectRequest.canBeClosed(project.status)">Close</button>
         <button mat-menu-item *ngIf="mediaQuery.xs || mediaQuery.sm"
                 (click)="toggleContractorInformation()">
           <ng-container *ngIf="showContractorInformation == 'hide'">
@@ -20,6 +16,11 @@
             Show Chat
           </ng-container>
         </button>
+        <button mat-menu-item [routerLink]="['/pro/receipt/conn', project?.id]">View Receipt</button>
+        <button mat-menu-item (click)="openRequestRefundDialog(project)" *ngIf="project?.refundable">Return Credit</button>
+        <button mat-menu-item (click)="openRefundStatusDialog(project)" *ngIf="project?.refundRequested">Return Status</button>
+        <button mat-menu-item (click)="projectActionService.leaveProject(project)" *ngIf="ProjectRequest.canBeLeft(project.status)">Leave</button>
+        <button mat-menu-item (click)="projectActionService.closeProject(project)" *ngIf="ProjectRequest.canBeClosed(project.status)">Close</button>
       </mat-menu>
     </div>
   </div>

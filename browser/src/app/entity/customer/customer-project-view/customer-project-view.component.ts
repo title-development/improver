@@ -151,11 +151,11 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy, Componen
   }
 
   isInactiveProsExist() {
-    return this.somePipe.transform(this.project.projectRequests, ProjectRequest.isInactive);
+    return this.somePipe.transform(this.project.projectRequests.map(p => p.status), ProjectRequest.isInactive);
   }
 
   isActiveProsExist() {
-    return this.somePipe.transform(this.project.projectRequests, ProjectRequest.isActive);
+    return this.somePipe.transform(this.project.projectRequests.map(p => p.status), ProjectRequest.isActive);
   }
 
   unreadMessagesTittle(count: number): string {
