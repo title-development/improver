@@ -292,7 +292,7 @@
         button {
           width: 100%;
 
-          @include response-to(xs) {
+          @include response(sm) {
             width: 50%;
           }
         }
@@ -522,29 +522,23 @@
     }
 
     .after-bought-lead-actions {
+      button {
+        width: 140px;
+      }
+
       padding-bottom: 24px;
       display: flex;
       align-content: space-between;
       justify-content: center;
+      align-items: center;
+      flex-direction: column;
 
-      button {
-        &:first-child {
-          margin-right: 8px;
-
-          @include response-to(xs) {
-            margin-right: 5px;
-          }
-        }
-
-        &:last-child {
-          margin-left: 8px;
-
-          @include response-to(xs) {
-            margin-left: 5px;
-          }
-        }
+      .in-line-text {
+        width: 240px;
       }
+
     }
+
   }
 }
 
@@ -608,3 +602,4 @@
     color: $primary-500;
   }
 }
+

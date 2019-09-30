@@ -588,3 +588,29 @@ input[type=range]::-moz-focus-outer {
 .ui-datatable .ui-datatable-data tr td {
   word-break: break-word;
 }
+
+.in-line-text {
+  font-size: 14px;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.38);
+  width: 100%;
+  margin: 8px 0 12px;
+  position: relative;
+
+  &:before {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    height: 1px;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.38);
+  }
+
+  span {
+    position: relative;
+    background: $white;
+    padding: 0 10px;
+  }
+}

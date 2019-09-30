@@ -59,7 +59,6 @@ export class LoginComponent implements OnDestroy {
       takeUntil(this.destroyed$),
     )
     .subscribe((response: HttpResponse<any>) => {
-        this.processing = false;
         this.securityService.loginUser(response.body as LoginModel, response.headers.get('authorization'), true);
       },
       err => {
