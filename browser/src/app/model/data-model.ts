@@ -319,7 +319,7 @@ export class CompanyProfile extends CompanyInfo {
 
 
 export class DemoProject {
-  id: number;
+  id?: number;
   name: string;
   images?: string[];
   coverUrl?: string;
