@@ -17,23 +17,19 @@ public class CompanyProfile extends CompanyInfo {
 
     private String backgroundUrl;
     private final int yearsInBusiness;
-    private final int medianProjectCost;
     private final boolean isOwner;
     private final int reviewCount;
     private final double rating;
     private final List<String> trades;
     private final List<NameIdTuple> services;
     private final List<String> licenses;
-    private final boolean isSubscribed;
     private final boolean isDeleted;
     private final boolean isApproved;
 
 
     public CompanyProfile(Company company, boolean isOwner) {
         super(company);
-        // rewrite phone
         this.backgroundUrl = company.getBackgroundUrl();
-        this.medianProjectCost = company.getMedianProjectCost();
         this.yearsInBusiness = LocalDate.now().getYear() - company.getFounded();
         this.rating = company.getRating();
         this.reviewCount = company.getReviewCount();
@@ -42,7 +38,6 @@ public class CompanyProfile extends CompanyInfo {
         this.trades = collectTrades(company);
         this.services = collectServices(company);
         this.licenses = collectLicenses(company);
-        this.isSubscribed = company.getBilling().getSubscription().isActive();
         this.isDeleted = company.isDeleted();
         this.isApproved = company.isApproved();
     }

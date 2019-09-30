@@ -1,9 +1,6 @@
 package com.improver.controller;
 
-import com.improver.entity.Company;
 import com.improver.entity.DemoProject;
-import com.improver.exception.NotFoundException;
-import com.improver.repository.CompanyRepository;
 import com.improver.repository.DemoProjectRepository;
 import com.improver.service.DemoProjectService;
 import com.improver.service.ImageService;
@@ -22,13 +19,12 @@ import static com.improver.application.properties.Path.*;
 
 @Slf4j
 @RestController
-@RequestMapping(COMPANIES_PATH + COMPANY_ID + "/profile/projects")
+@RequestMapping(COMPANIES_PATH + COMPANY_ID + DEMO_PROJECTS)
 public class DemoProjectController {
 
     @Autowired private DemoProjectService demoProjectService;
     @Autowired private DemoProjectRepository demoProjectRepository;
     @Autowired private ImageService imageService;
-    @Autowired private CompanyRepository companyRepository;
 
 
     @GetMapping
@@ -67,8 +63,6 @@ public class DemoProjectController {
 
     @GetMapping(ID_PATH_VARIABLE + IMAGES)
     public ResponseEntity<Collection<String>> getProjectPicturesUrls(@PathVariable String companyId, @PathVariable long id) {
-        Company company = companyRepository.findById(companyId)
-            .orElseThrow(NotFoundException::new);
         Collection<String> images = imageService.getDemoProjectImageUrls(id);
         return new ResponseEntity<>(images, HttpStatus.OK);
     }

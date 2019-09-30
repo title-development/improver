@@ -122,10 +122,6 @@ public class Company {
     private CompanyConfig companyConfig;
 
 
-    @Column(columnDefinition = CD_INTEGER)
-    private int medianProjectCost = 0;
-
-
     public Company setEmail(String email) {
         this.email = email.toLowerCase();
         return this;

@@ -12,7 +12,6 @@ export class Company {
   internalPhone?: any;
   licenses?: any;
   location?: Location;
-  medianProjectCost: number;
   deleted: boolean;
   name?: string;
   rating?: number;

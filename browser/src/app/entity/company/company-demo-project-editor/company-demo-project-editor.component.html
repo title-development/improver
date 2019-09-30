@@ -156,7 +156,7 @@
           </div>
 
           <div class="row image-uploader-wrapper" *ngIf="projectImages">
-            <image-uploader [apiUrl]="'/api/companies/' + companyId + '/profile/projects/' + demoProject.id + '/images'"
+            <image-uploader [apiUrl]="'/api/companies/' + companyId + '/demo-projects/' + demoProject.id + '/images'"
                             [showActionButtons]="false"
                             [projectView]="true"
                             [projectImages]="projectImages" title="Project photos"></image-uploader>

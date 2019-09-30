@@ -14,27 +14,27 @@ export class DemoProjectService {
   }
 
   get(companyId: any, projectId: any): Observable<DemoProject> {
-    return this.http.get<DemoProject>(`${this.companyUrl}/${companyId}/profile/projects/${projectId}`);
+    return this.http.get<DemoProject>(`${this.companyUrl}/${companyId}/demo-projects/${projectId}`);
   }
 
   getAll(companyId: any): Observable<DemoProject[]> {
-    return this.http.get<DemoProject[]>(`${this.companyUrl}/${companyId}/profile/projects`);
+    return this.http.get<DemoProject[]>(`${this.companyUrl}/${companyId}/demo-projects`);
   }
 
   post(demoProject): Observable<DemoProject> {
-    return this.http.post<DemoProject>(`${this.companyUrl}/${this.securityService.getLoginModel().company}/profile/projects`, demoProject);
+    return this.http.post<DemoProject>(`${this.companyUrl}/${this.securityService.getLoginModel().company}/demo-projects`, demoProject);
   }
 
   update(id, demoProject): Observable<DemoProject> {
-    return this.http.put<DemoProject>(`${this.companyUrl}/${this.securityService.getLoginModel().company}/profile/projects/${id}`, demoProject);
+    return this.http.put<DemoProject>(`${this.companyUrl}/${this.securityService.getLoginModel().company}/demo-projects/${id}`, demoProject);
   }
 
   delete(id): Observable<any> {
-    return this.http.delete(`${this.companyUrl}/${this.securityService.getLoginModel().company}/profile/projects/${id}`, {responseType: 'text'});
+    return this.http.delete(`${this.companyUrl}/${this.securityService.getLoginModel().company}/demo-projects/${id}`, {responseType: 'text'});
   }
 
   getImages(companyId, projectId) {
-    return this.http.get<any>(`${this.companyUrl}/${companyId}/profile/projects/${projectId}/images`);
+    return this.http.get<any>(`${this.companyUrl}/${companyId}/demo-projects/${projectId}/images`);
   }
 
 }

@@ -103,7 +103,6 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     Page<Project> findBy(Long id, String customerEmail, String serviceType, Project.Status status, Project.Reason reason, String location, Pageable pageRequest);
 
 
-    @Deprecated
     @Query("SELECT new com.improver.model.out.project.ProjectRequestDetailed(p, p.serviceType.name, p.customer, prjc, prjc.refund.id)" +
         " FROM com.improver.entity.Project p" +
         " INNER JOIN com.improver.entity.ProjectRequest prjc ON p.id = prjc.project.id " +

@@ -230,9 +230,8 @@ export class UserInfo {
   id: any;
   name: string;
   iconUrl: string;
-  phone: string;
-  pin: string;
   email: string;
+  phone: string;
 }
 
 export class CloseProjectVariant {
@@ -301,37 +300,31 @@ export class CompanyInfo {
   description: string;
   location: Location;
   phone: string;
-  pin: string;
   email: string;
   founded: string;
   siteUrl: string;
   licenses: any[];
   rating: number;
-  deleted: number;
+  deleted: boolean;
   approved: boolean;
   reviewCount: number;
 }
 
 export class CompanyProfile extends CompanyInfo {
-  pin: string;
-  medianProjectCost: number;
   yearsInBusiness: number;
   trades: string[];
   services: string[];
-  licenses: any[];
   owner: boolean;
-  subscribed: boolean;
 }
 
-// TODO: Fix model
+
 export class DemoProject {
-  id?: number;
-  name?: string;
-  image?: string;
+  id: number;
+  name: string;
   images?: string[];
   coverUrl?: string;
-  description?: string;
-  date?: string;
+  description: string;
+  date: string;
   price?: string;
   serviceTypes?: any[];
   location?: Location;

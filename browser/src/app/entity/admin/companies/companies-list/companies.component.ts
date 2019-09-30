@@ -130,7 +130,7 @@ export class CompaniesComponent {
       // fill columns
       this.tableColumns = [...this.selectedTableCols, ...Object.keys(companies.content[0])]
         .filter((elem, pos, arr) => arr.indexOf(elem) == pos) //remove duplicates
-        .filter(item => !(item == 'licenses' || item == 'reviewCount' || item == 'sumRating' || item == 'billing' || item == 'medianProjectCost'))
+        .filter(item => !(item == 'licenses' || item == 'reviewCount' || item == 'sumRating' || item == 'billing'))
         .map(key => {
             return {label: this.camelCaseHumanPipe.transform(key, true), value: key};
           }

@@ -171,7 +171,7 @@ export class CompanyDemoProjectEditorComponent implements OnInit, ComponentCanDe
       .subscribe(demoProject => {
           this.demoProject = demoProject;
           if (this.imageUploader.hasUnsavedImages()) {
-            this.imageUploader.uploadAllImages(`/api/companies/${this.companyId}/profile/projects/${this.demoProject.id}/images`);
+            this.imageUploader.uploadAllImages(`/api/companies/${this.companyId}/demo-projects/${this.demoProject.id}/images`);
             this.imageUploader.uploadCompleted.pipe(first())
               .subscribe(() => {
                 this.projectSaved()

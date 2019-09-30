@@ -61,6 +61,7 @@ public final class Path {
     public static final String POPULAR =             "/popular";
     public static final String RECOMMENDED =         "/recommended";
     public static final String SUGGESTED =           "/suggested";
+    public static final String DEMO_PROJECTS =       "/demo-projects";
     public static final String REFUND =              "/refund";
     public static final String CATALOG =             "/catalog";
     public static final String OPTIONS =             "/options";

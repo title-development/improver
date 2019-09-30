@@ -68,11 +68,6 @@
       {{data[col.field].balance / 100 | currency}}
     </ng-template>
   </p-column>
-  <p-column field="medianProjectCost" [sortable]="true" header="Median project cost" *ngIf="selectedTableCols.includes('medianProjectCost')">
-    <ng-template let-col let-data="rowData" pTemplate="body">
-      {{data[col.field] / 100 | currency}}
-    </ng-template>
-  </p-column>
   <p-column field="created" header="Created" [sortable]="true" *ngIf="selectedTableCols.includes('created')">
     <ng-template let-col let-data="rowData" pTemplate="body">
       {{data[col.field] | date: 'MMM d, y, h:mm a'}}

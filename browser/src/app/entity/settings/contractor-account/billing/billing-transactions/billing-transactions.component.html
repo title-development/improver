@@ -20,8 +20,8 @@
             <a class="transaction" fxLayout="row" fxLayoutAlign="center center"
                  [ngClass]="[isEven ? 'even-row' : 'odd-row', transaction.type | toclassname]" [routerLink] = "transaction.type != TransactionType.BONUS ? ['/pro/receipt/trans', transaction.id] : []">
               <div class="icon" fxFlex="10" fxLayoutAlign="center center">
-                <img title="Balance lead purchase" alt="Purchase" *ngIf="transaction.type == TransactionType.PURCHASE && transaction.manualLead && !transaction.charge" src="/assets/img/transaction-types/purchase.svg">
-                <img title="Card lead purchase" alt="Purchase" *ngIf="transaction.type == TransactionType.PURCHASE && transaction.manualLead && transaction.charge" src="assets/img/dashboard-project-purchase.blue.svg">
+                <img title="Pay & Go lead" alt="Purchase" *ngIf="transaction.type == TransactionType.PURCHASE && transaction.manualLead && !transaction.charge" src="/assets/img/transaction-types/purchase.svg">
+                <img title="Card purchase" alt="Purchase" *ngIf="transaction.type == TransactionType.PURCHASE && transaction.manualLead && transaction.charge" src="assets/img/dashboard-project-purchase.blue.svg">
                 <img title="Subscription lead" alt="Subscription" *ngIf="transaction.type == TransactionType.PURCHASE && !transaction.manualLead" src="assets/img/dashboard-project-subscription.blue.svg">
                 <img src="/assets/img/transaction-types/bonus.svg" *ngIf="transaction.type == TransactionType.BONUS">
                 <img src="/assets/img/transaction-types/refund.svg" *ngIf="transaction.type == TransactionType.RETURN">

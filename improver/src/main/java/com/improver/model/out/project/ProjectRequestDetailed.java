@@ -29,6 +29,7 @@ public class ProjectRequestDetailed extends ProjectRequestShort {
 
         super(project, serviceName, customer, projectRequest, refundId);
         this.customer.setId(customer.getId());
+        this.customer.setPhone(customer.getInternalPhone());
         this.location = project.getLocation();
         this.startDate = project.getStartDate();
         this.notes = project.getNotes();

@@ -148,14 +148,12 @@
             <div class="approve-text">Approved by Home Improve</div>
           </div>
 
-          <div class="phone-block" *ngIf="companyProfile.phone && companyProfile.pin">
+          <div class="phone-block" *ngIf="companyProfile.phone">
             <div class="phone-group">
-              <div class="label">Phone</div>
-              <div class="value">{{companyProfile.phone}}</div>
+              <div class="label">Phone number:</div>
             </div>
             <div class="phone-group">
-              <div class="label">Pin</div>
-              <div class="value">{{companyProfile.pin}}</div>
+              <div class="label">{{companyProfile.phone}}</div>
             </div>
           </div>
         </div>

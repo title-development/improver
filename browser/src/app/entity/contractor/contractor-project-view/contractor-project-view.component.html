@@ -56,7 +56,7 @@
                 <p>{{project.location.streetAddress}} <br>
                   {{project.location.city}}, {{project.location.state}} {{project.location.zip}}</p>
               </div>
-              <div class="group" *ngIf="project.customer.phone && project.customer.pin">
+              <div class="group" *ngIf="project.customer.phone">
                 <h4>Phone:</h4>
                 <p>{{project.customer.phone}}</p>
               </div>

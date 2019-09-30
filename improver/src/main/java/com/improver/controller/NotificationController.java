@@ -45,8 +45,8 @@ public class NotificationController {
 
     @PageableSwagger
     @GetMapping(NOTIFICATIONS_PATH)
-    public ResponseEntity<Page<Notification>> getAllNotifications(@PageableDefault(page = 0, size = 10) @SortDefault.SortDefaults({
-        @SortDefault(sort = "created", direction = Sort.Direction.DESC)}) Pageable pageable) {
+    public ResponseEntity<Page<Notification>> getAllNotifications(@PageableDefault(page = 0, size = 10)
+                  @SortDefault.SortDefaults({@SortDefault(sort = "created", direction = Sort.Direction.DESC)}) Pageable pageable) {
         User user = userSecurityService.currentUser();
         Page<Notification> allByUser = notificationRepository.findAllByUser(user, pageable);
         return new ResponseEntity<>(allByUser, HttpStatus.OK);
