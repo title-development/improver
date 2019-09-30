@@ -243,7 +243,7 @@ public class MailService {
         context.setVariable(USER_NAME, customer.getFirstName());
         context.setVariable(TITLE, "Your project has been submitted!");
         context.setVariable("serviceType", serviceType);
-        context.setVariable(BODY, "You've submitted  a project request for " + serviceType + ". If you didn't do this action, please ignore this mail.");
+        context.setVariable(BODY, "You've submitted  a project request for " + highlight(serviceType) + ". If you didn't do this action, please ignore this mail.");
         context.setVariable("message", "We've created a cabinet for you where you can track the status and manage your project request. To view your project request please proceed to Home Improve.");
         context.setVariable("projectDetails", details);
         context.setVariable(CONFIRM_URL, siteUrl + CONFIRM + PASSWORD + SLASH + jwtUtil.generateActivationJWT(customer.getValidationKey(), customer.getEmail()));

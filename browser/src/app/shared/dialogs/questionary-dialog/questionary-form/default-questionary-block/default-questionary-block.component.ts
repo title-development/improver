@@ -1,8 +1,5 @@
-import {
-  AfterContentInit, AfterViewInit, Component, ElementRef, Input, OnInit, QueryList, ViewChild,
-  ViewChildren
-} from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { Component, ElementRef, Input, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { QuestionaryBlock } from '../../../../../model/questionary-model';
 import { QuestionaryControlService } from '../../../../../util/questionary-control.service';
 import { ServiceType } from '../../../../../model/data-model';
@@ -13,7 +10,7 @@ import { MatDialog } from '@angular/material';
 import { Role } from '../../../../../model/security-model';
 import { SecurityService } from '../../../../../auth/security.service';
 import { ProjectService } from '../../../../../api/services/project.service';
-import { LocationAddress, ValidatedLocation } from '../../../../../api/models/LocationsValidation';
+import { ValidatedLocation } from '../../../../../api/models/LocationsValidation';
 import { LocationValidateService } from '../../../../../api/services/location-validate.service';
 import { PopUpMessageService } from '../../../../../util/pop-up-message.service';
 import { Router } from '@angular/router';
@@ -21,7 +18,7 @@ import { ProjectActionService } from '../../../../../util/project-action.service
 import { getErrorMessage, markAsTouched } from '../../../../../util/functions';
 import { CompanyService } from '../../../../../api/services/company.service';
 import { ErrorHandler } from '../../../../../util/error-handler';
-import { first } from "rxjs/internal/operators";
+import { finalize, first } from "rxjs/internal/operators";
 import { BoundariesService } from "../../../../../api/services/boundaries.service";
 import { UserService } from "../../../../../api/services/user.service";
 
@@ -70,7 +67,6 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
               private errorHandler: ErrorHandler) {
     this.constants = constants;
     this.messages = messages;
-    this.emailIsUnique = true;
     this.emailIsChecked = false;
     this.filteredStates = constants.states;
   }
@@ -108,7 +104,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
   }
 
 
-  onSubmit(name, handler: () => {} = undefined): void {
+  onSubmit(name?, handler: () => {} = undefined): void {
     if (name) {
       if (this.isValid(name)) {
         console.log('valid');
@@ -133,11 +129,11 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     this.emailIsUnique = true;
     this.emailIsChecked = false;
 
-    this.userService.isEmailFree(email).subscribe(() => {
-      this.emailIsChecked = true;
+    this.userService.isEmailFree(email)
+      .pipe(finalize(() => this.emailIsChecked = true))
+      .subscribe(() => {
     }, () => {
       this.emailIsUnique = false;
-      this.emailIsChecked = true;
       this.saveProjectToStorage();
     });
 
