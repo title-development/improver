@@ -180,9 +180,9 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     this.dialog.closeAll();
     if (this.securityService.isAuthenticated()) {
       this.router.navigate(['my','projects']);
-      this.popUpMessageService.showSuccess('Your <b>' + requestOrder.serviceName + '</b> project request is submitted successfully!');
+      this.popUpMessageService.showSuccess('Your <b>' + requestOrder.serviceName + '</b> request is submitted successfully!');
     } else {
-      this.popUpMessageService.showSuccess('Your <b>' + requestOrder.serviceName + '</b> project request is presaved successfully! Please check your email to verify your account');
+      this.popUpMessageService.showSuccess('Your <b>' + requestOrder.serviceName + '</b> request is saved. Please check your email.');
     }
   }
 

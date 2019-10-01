@@ -2,15 +2,15 @@
   <div class="billing-transactions-container">
 
     <div class="header">
-      Transactions History
+      Balance History
     </div>
 
     <div class="content">
       <div class="transactions-table">
         <div class="table-header" fxLayout="row">
           <div class="icon" fxFlex="10"></div>
-          <div class="action" fxFlex="16">Type</div>
-          <div class="date" fxFlex="14">Date</div>
+          <div class="action xs-none sm-none md-none" fxFlex="13">Type</div>
+          <div class="date" fxFlex="15">Date</div>
           <div class="description" fxFlex="">Description</div>
           <div class="amount" fxFlex="15">Amount</div>
           <div class="balance" fxFlex="15">Balance</div>
@@ -28,9 +28,9 @@
                 <img src="/assets/img/transaction-types/replenishment.svg" *ngIf="transaction.type == TransactionType.REPLENISHMENT">
                 <img src="/assets/img/transaction-types/subscription.svg" *ngIf="transaction.type == TransactionType.SUBSCRIPTION">
               </div>
-              <div class="action" fxFlex="16"  [ngClass]="transaction.type | toclassname">{{transaction.type}}</div>
-              <div class="date" fxFlex="14" [style.padding-right.px]="5">
-                <div>{{transaction.created | date:'mediumDate' }}</div>
+              <div class="action xs-none sm-none md-none" fxFlex="13"  [ngClass]="transaction.type | toclassname">{{transaction.type}}</div>
+              <div class="date" fxFlex="15" [style.padding-right.px]="5">
+                <div>{{transaction.created | date:'MM/dd/yy' }}</div>
                 <div>{{transaction.created | date:'shortTime' }}</div>
               </div>
 
@@ -39,8 +39,7 @@
                 <div>{{transaction.details}}</div>
               </div>
               <div class="amount" fxFlex="15">
-                <span *ngIf="transaction.type == TransactionType.PURCHASE && transaction.amount > 0">-</span>
-                <span *ngIf="transaction.type != TransactionType.PURCHASE || transaction.amount <= 0">&nbsp;</span>
+                <span *ngIf="transaction.outcome">-</span>
                 <span>{{transaction.amount / 100 | currency:'USD':'symbol'}}</span>
               </div>
               <div class="balance" fxFlex="15">{{transaction.balance / 100 | currency:'USD':'symbol'}}</div>

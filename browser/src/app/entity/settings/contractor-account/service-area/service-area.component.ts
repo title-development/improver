@@ -215,7 +215,7 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate, 
       this.mapContentIsLoading = true;
       if (!this.servedZipCodes.includes(this.searchZip.toString())) {
         this.mapContentIsLoading = false;
-        this.popUpService.showWarning(`${this.searchZip} doesn't supported`);
+        this.popUpService.showWarning(`${this.searchZip} not supported`);
         return;
       }
       this.boundariesService.getZipBoundaries([this.searchZip]).subscribe(

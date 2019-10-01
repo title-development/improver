@@ -4,11 +4,11 @@
     <div class="holder">
       <div class="subscribed" *ngIf="!subscription.active">
         <h3>Subscribe for faster purchases</h3>
-        <p>Receive a steady stream of leads with minimal effort and be eligible for discounted leads</p>
+        <p>Plan your workload and get a stream of leads</p>
       </div>
       <div class="not-subscribed" *ngIf="subscription.active">
         <h3>You have been subscribed</h3>
-        <p>Receive a steady stream of leads with minimal effort and be eligible for discounted leads</p>
+        <p>Plan your workload and get a stream of leads</p>
       </div>
     </div>
     <span *ngIf="subscription.budget > 0">{{subscription.budget / 100 | currency:'USD':'symbol'}}/month</span>
@@ -26,8 +26,8 @@
         <div class="col-sm-6">
 
           <p class="subscription-hint">
-            You only pay for the leads you receive up to the amount you set.
-            <br/>Please set the monthly limit you would like to spend on leads from Home Improve.
+            Please set the monthly limit you would like to spend on leads from Home Improve.
+            <br/>You only pay for the leads you receive up to the amount you set.
           </p>
 
           <div class="next-budget-holder">
