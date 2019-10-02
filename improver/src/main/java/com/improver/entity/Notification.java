@@ -93,7 +93,7 @@ public class Notification {
     public static Notification newSubscriptionLeadPurchase(User receiver, String client, long customerId, String serviceType, long projectRequestId){
         return new Notification().setUser(receiver)
             .setIcon(customerIconURL(customerId))
-            .setPayload(String.format("New subscription <b>%s</b> project for <b>%s</b>",  serviceType, client))
+            .setPayload(String.format("New subscription project <b>%s</b> for <b>%s</b>",  serviceType, client))
             .setLink(PRO_PROJECTS + projectRequestId);
     }
 

@@ -40,6 +40,7 @@
               </div>
               <div class="amount" fxFlex="15">
                 <span *ngIf="transaction.outcome">-</span>
+                <span *ngIf="!transaction.outcome">&nbsp;</span>
                 <span>{{transaction.amount / 100 | currency:'USD':'symbol'}}</span>
               </div>
               <div class="balance" fxFlex="15">{{transaction.balance / 100 | currency:'USD':'symbol'}}</div>

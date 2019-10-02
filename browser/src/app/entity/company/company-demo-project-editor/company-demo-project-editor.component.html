@@ -164,12 +164,7 @@
 
           <div class="buttons-wrapper">
             <div class="left-buttons">
-              <button cv-button-flat flatStyle="dark"
-                      [routerLink]="'/companies/' + securityService.getLoginModel().company"
-                      *ngIf="!newMode">Cancel
-              </button>
-              <button cv-button-flat flatStyle="dark" (click)="deleteDemoProject(demoProject.id)" *ngIf="newMode">Cancel
-              </button>
+              <button cv-button-flat flatStyle="dark" [routerLink]="'/companies/' + securityService.getLoginModel().company">Cancel</button>
             </div>
             <div class="right-buttons">
               <button cv-button [loading]="savingData" [disabled]="canDeactivate()" type="submit" *ngIf="newMode">Save</button>

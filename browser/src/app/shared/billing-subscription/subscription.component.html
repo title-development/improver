@@ -7,8 +7,8 @@
         <p>Plan your workload and get a stream of leads</p>
       </div>
       <div class="not-subscribed" *ngIf="subscription.active">
-        <h3>You have been subscribed</h3>
-        <p>Plan your workload and get a stream of leads</p>
+        <h3>You are subscribed</h3>
+        <p>Plan workload and adjust budget anytime</p>
       </div>
     </div>
     <span *ngIf="subscription.budget > 0">{{subscription.budget / 100 | currency:'USD':'symbol'}}/month</span>
