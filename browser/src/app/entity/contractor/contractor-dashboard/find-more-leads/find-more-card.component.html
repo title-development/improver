@@ -3,7 +3,7 @@
     <h3>
       <i>{{leads?.totalElements}} </i>
       <ng-container [ngPlural]="leads.numberOfElements">
-        <ng-template ngPluralCase="=0"></ng-template>
+        <ng-template ngPluralCase="=0">new lead</ng-template>
         <ng-template ngPluralCase="=1">new lead</ng-template>
         <ng-template ngPluralCase="few">new leads</ng-template>
         <ng-template ngPluralCase="other">new leads</ng-template>
@@ -28,9 +28,12 @@
     </div>
   </div>
   <div class="no-available-leads" *ngIf="leads && leads.numberOfElements == 0">
-    <div class="img-holder"></div>
-    <div class="footer">
-      <button cv-button [routerLink]="['/pro/leads-search']">Find more projects</button>
+    <div >
+      <div class="img-holder" *ngIf="!inlineMode"></div>
+      <span *ngIf="inlineMode" class="no-leads-text">Here you will find new leads matched to your preferences</span>
+      <div class="footer">
+        <button cv-button [routerLink]="['/pro/leads-search']">Find more leads</button>
+      </div>
     </div>
   </div>
 </div>

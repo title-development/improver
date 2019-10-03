@@ -3,7 +3,7 @@ import { Constants } from '../../util/constants';
 import { Observable } from 'rxjs';
 
 
-import { HttpClient, HttpResponse, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Lead, Pagination } from '../../model/data-model';
 import { RestPage } from '../models/RestPage';
 import { toHttpParams } from '../../util/functions';
@@ -18,16 +18,15 @@ export class LeadService {
   }
 
 
-  getAll(includeCoverage: boolean, pagination: Pagination, zipCodes: Array<string> = []): Observable<RestPage<Lead>> {
+  getAll(searchTerm: string, pagination: Pagination, zipCodes: Array<string> = []): Observable<RestPage<Lead>> {
     const params = toHttpParams(pagination)
-      .set('includeCoverage', includeCoverage.toString())
+      .set('searchTerm', searchTerm ? searchTerm : '')
       .set('zipCodes', zipCodes.join());
 
     return this.httpClient
       .get<RestPage<Lead>>(`${this.leadsUrl}`, {params}).pipe(
         map((leads: RestPage<Lead>) => {
           leads.content = leads.content.map((lead: Lead) => {
-            lead.inCoverage = includeCoverage;
             return lead;
           });
           return leads;

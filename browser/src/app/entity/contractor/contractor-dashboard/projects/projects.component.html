@@ -1,14 +1,18 @@
 <div class="projects-wrapper">
   <div class="tab-header">
     <div class="tab-labels">
-      <div class="tab-label" *ngFor="let tab of tabs; let i = index;" [ngClass]="{'-active': tab.active}"
-           (click)="getProjects(tab)">
-        {{tab.label}} <span>{{tab.pageable.totalElements ? '(' + tab.pageable.totalElements + ')' : ''}}</span>
-      </div>
+      <ng-template ngFor let-tab [ngForOf]="tabs" let-i="index">
+        <a *ngIf="!(i == 0 && (mediaQuery.lg || mediaQuery.xlg))" class="tab-label noselect" [ngClass]="{'-active': tab.active}"
+           routerLink="." [fragment]="tab.type | toclassname">
+          {{tab.label}} <span>{{tab.pageable.totalElements ? '(' + tab.pageable.totalElements + ')' : ''}}</span>
+        </a>
+      </ng-template>
     </div>
     <div class="tab-search">
-      <input cv-input trim [(ngModel)]="search" (ngModelChange)="filter()" type="text" placeholder="Type to search">
-      <mat-icon class="mat-19">search</mat-icon>
+      <input cv-input trim [(ngModel)]="searchTerm" (input)="filter()"
+             type="text" placeholder="Type to search">
+      <mat-icon class="mat-19" *ngIf="!searchTerm">search</mat-icon>
+      <mat-icon class="mat-19 clear" *ngIf="searchTerm" (click)="searchTerm = ''; filter()">close</mat-icon>
     </div>
   </div>
   <div class="tab-content">
@@ -18,19 +22,26 @@
            [cvSpinner]="fetching"
            [cvSpinnerSize]="26"
            [cvSpinnerBackground]="true" [ngClass]="{'-active': tab.active}">
-        <div class="no-data-row" *ngIf="tab.pageable?.totalElements == 0">
-          <span *ngIf="tab.latest">Here you will find the projects you are working on</span>
-          <span *ngIf="!tab.latest">Here you will find your closed projects</span>
-          <a cv-button-flat class="no-data-button" [routerLink]="['/pro/leads-search']">Find new projects</a>
+        <div class="no-data-row" *ngIf="tab.pageable?.numberOfElements == 0 && tab.type != TabType.NEW">
+          <span *ngIf="tab.type == TabType.IN_PROGRESS">Here you will find the projects you are working on</span>
+          <span *ngIf="tab.type == TabType.PREVIOUS">Here you will find your closed projects</span>
+          <div class="footer">
+            <a cv-button class="no-data-button" [routerLink]="['/pro/leads-search']">Find new projects</a>
+          </div>
         </div>
-        <ng-container *ngIf="tab.pageable?.totalElements > 0">
-          <projects-list [(list)]="tab.projects"></projects-list>
-          <button class="secondary-button"
-                  [cvSpinner]="showMoreFetching"
-                  [cvSpinnerSize]="24"
-                  [cvSpinnerBackground]="true"
-                  (click)="showMoreProjects(tab)"
-                  *ngIf="!tab.pageable.last">Show more</button>
+        <ng-container *ngIf="tab?.pageable?.numberOfElements > 0 || tab.type == TabType.NEW">
+          <div *ngIf="i > 0; else newLeads">
+            <projects-list [(list)]="tab.projects"></projects-list>
+            <button class="secondary-button"
+                    [cvSpinner]="showMoreFetching"
+                    [cvSpinnerSize]="24"
+                    [cvSpinnerBackground]="true"
+                    (click)="showMoreProjects(tab)"
+                    *ngIf="!tab.pageable.last">Show more</button>
+          </div>
+          <ng-template #newLeads>
+            <dashboard-find-more-leads [leads]="tab.pageable" [inlineMode]="true"></dashboard-find-more-leads>
+          </ng-template>
         </ng-container>
       </div>
     </div>

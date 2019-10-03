@@ -34,14 +34,9 @@ public class LeadController {
      */
     @GetMapping
     public ResponseEntity<Page<ShortLead>> getProLeads(@RequestParam(required = false) List<String> zipCodes,
-                                                       @RequestParam(required = false) boolean includeCoverage,
+                                                       @RequestParam(required = false) String searchTerm,
                                                        @PageableDefault(sort = "created", page = 0, size = 5, direction = Sort.Direction.DESC) Pageable pageRequest) {
-        Page<ShortLead> leads;
-        if (zipCodes.isEmpty() && !includeCoverage) {
-            leads = Page.empty(pageRequest);
-        } else {
-            leads = leadService.getLeads(userSecurityService.currentPro(), zipCodes, includeCoverage, true, pageRequest);
-        }
+        Page<ShortLead> leads = leadService.getLeads(userSecurityService.currentPro(), zipCodes, true, searchTerm, pageRequest);
         return new ResponseEntity<>(leads, HttpStatus.OK);
     }
 

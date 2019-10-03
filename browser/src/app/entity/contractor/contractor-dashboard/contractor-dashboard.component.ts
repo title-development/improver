@@ -34,7 +34,7 @@ export class ContractorDashboardComponent implements OnInit {
 
   getLeads(): void {
     const pagination: Pagination = new Pagination(0,5);
-    this.leadService.getAll(true, pagination).subscribe((leads: RestPage<Lead>) => {
+    this.leadService.getAll(null, pagination).subscribe((leads: RestPage<Lead>) => {
       this.leads = leads;
     });
   }

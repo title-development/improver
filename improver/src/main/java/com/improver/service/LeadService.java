@@ -8,8 +8,8 @@ import com.improver.exception.ValidationException;
 import com.improver.model.out.project.Lead;
 import com.improver.model.out.project.ShortLead;
 import com.improver.repository.*;
-import com.improver.util.serializer.SerializationUtil;
 import com.improver.util.mail.MailService;
+import com.improver.util.serializer.SerializationUtil;
 import com.improver.ws.WsNotificationService;
 import com.stripe.model.Card;
 import com.stripe.model.Charge;
@@ -17,7 +17,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -25,12 +28,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.LockModeType;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.springframework.util.CollectionUtils.isEmpty;
-import static org.springframework.util.CollectionUtils.lastElement;
 
 @Service
 public class LeadService {
@@ -55,17 +60,13 @@ public class LeadService {
     /**
      * @param zipCodesToInclude - additional zipCodes to include, may cross over with company coverage.
      */
-    public Page<ShortLead> getLeads(Contractor contractor, List<String> zipCodesToInclude, boolean includeCoverage, boolean eligibleForPurchase, Pageable pageable) {
+    public Page<ShortLead> getLeads(Contractor contractor, List<String> zipCodesToInclude, boolean eligibleForPurchase, String searchTerm, Pageable pageable) {
         Page<ShortLead> leads;
         List<Project.Status> statuses = eligibleForPurchase ? Project.Status.forPurchase() : Arrays.asList(Project.Status.values());
-        if (includeCoverage) {
-            if (isEmpty(zipCodesToInclude)) {
-                leads = projectRepository.getLeadsInCoverage(contractor.getCompany().getId(), statuses, pageable);
-            } else {
-                leads = projectRepository.getLeadsInZipCodesAndCoverage(contractor.getCompany().getId(), zipCodesToInclude, statuses, pageable);
-            }
+        if (isEmpty(zipCodesToInclude)) {
+            leads = projectRepository.getLeadsInCoverage(contractor.getCompany().getId(), statuses, searchTerm, pageable);
         } else {
-            leads = projectRepository.getLeadsExcludingCompanyCoverage(contractor.getCompany().getId(), zipCodesToInclude, statuses, pageable);
+            leads = projectRepository.getLeadsInZipCodesAndCoverage(contractor.getCompany().getId(), zipCodesToInclude, statuses, searchTerm, pageable);
         }
         return leads;
     }
@@ -87,7 +88,7 @@ public class LeadService {
         /**
          * #1  All services in coverage
          */
-        List<ShortLead> formCoverage = getLeads(contractor, Collections.emptyList(), true, true, null).stream()
+        List<ShortLead> formCoverage = getLeads(contractor, Collections.emptyList(), true, null, null).stream()
             .filter(lead -> lead.getId() != projectId)
             .collect(Collectors.toList());
         if (formCoverage.size() <= SIMILAR_PROJECT_COUNT) {

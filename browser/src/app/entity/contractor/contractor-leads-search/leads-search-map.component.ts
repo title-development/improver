@@ -74,7 +74,7 @@ export class LeadsSearchMapComponent implements OnDestroy {
 
   initMap(): void {
     this.pagination = new Pagination(0, 100);
-    this.leadService.getAll(true, this.pagination, []).pipe(first())
+    this.leadService.getAll(null, this.pagination, []).pipe(first())
       .subscribe((leads: RestPage<Lead>) => {
         this.updateLeads.emit(leads.content);
       });
@@ -123,7 +123,7 @@ export class LeadsSearchMapComponent implements OnDestroy {
         }
         this.gMapUtils.drawZipBoundaries(this.map, this.gMapUtils.zipsToDraw(this.map, zipBoundaries, this.areas));
 
-        return this.leadService.getAll(true, this.pagination, zipBoundaries.features.map(feature => feature.properties.zip)).pipe(catchError(err => {
+        return this.leadService.getAll(null, this.pagination, zipBoundaries.features.map(feature => feature.properties.zip)).pipe(catchError(err => {
             this.popUpMessageService.showError('Error requesting leads');
             this.mapIsLoading = false;
 

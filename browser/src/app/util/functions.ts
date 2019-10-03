@@ -148,17 +148,18 @@ export function enumToJson(enumeration: any, valueName: string = 'value', labelN
   return array;
 }
 
-export function reCalculatePageable<T>(oldPageable: RestPage<T>,
-                                       newPageable: RestPage<T>,
-                                       maxItemPerPage: number): RestPage<T> {
+export function reCalculatePageable(oldPageable: RestPage<any>,
+                                       newPageable: RestPage<any>,
+                                       maxItemPerPage: number): RestPage<any> {
   const items = newPageable.totalElements;
   const pages = Math.ceil(items / maxItemPerPage);
   const page = oldPageable.number > pages ? pages : oldPageable.number;
-  oldPageable.totalElements = items;
+  // oldPageable.totalElements = items;
+  oldPageable.numberOfElements = newPageable.numberOfElements;
   oldPageable.totalPages = pages;
   oldPageable.last = newPageable.last;
   oldPageable.number = page;
-
+  oldPageable.content = newPageable.content;
   return oldPageable;
 }
 

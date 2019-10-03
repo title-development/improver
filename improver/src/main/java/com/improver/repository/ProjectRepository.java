@@ -1,8 +1,8 @@
 package com.improver.repository;
 
 import com.improver.entity.Project;
-import com.improver.model.out.project.ProjectRequestShort;
 import com.improver.model.out.project.CustomerProjectShort;
+import com.improver.model.out.project.ProjectRequestShort;
 import com.improver.model.out.project.ShortLead;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,9 +39,10 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
         " WHERE p.isLead = true  AND p.status IN :statuses" +
         " AND p.id NOT IN (SELECT conn.project.id FROM com.improver.entity.ProjectRequest conn WHERE conn.contractor.id IN (SELECT contr.id FROM com.improver.entity.Contractor contr WHERE contr.company.id = :companyId))" +
         " AND p.serviceType.id IN (SELECT s.id FROM com.improver.entity.ServiceType s INNER JOIN s.companies c WHERE c.id = :companyId)" +
+        " AND (:search IS null OR (lower(p.serviceType.name) LIKE %:search% ))" +
         " AND (p.location.zip IN (SELECT a.zip FROM com.improver.entity.Area a WHERE a.company.id = :companyId)" +
         " OR p.location.zip IN :zipCodesToInclude)")
-    Page<ShortLead> getLeadsInZipCodesAndCoverage(String companyId, List<String> zipCodesToInclude, List<Project.Status> statuses, Pageable pageable);
+    Page<ShortLead> getLeadsInZipCodesAndCoverage(String companyId, List<String> zipCodesToInclude, List<Project.Status> statuses, String search, Pageable pageable);
 
 
     /**
@@ -52,8 +53,9 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
         " WHERE p.isLead = true  AND p.status IN :statuses" +
         " AND p.id NOT IN (SELECT conn.project.id FROM com.improver.entity.ProjectRequest conn WHERE conn.contractor.id IN (SELECT contr.id FROM com.improver.entity.Contractor contr WHERE contr.company.id = :companyId))" +
         " AND p.serviceType.id IN (SELECT s.id FROM com.improver.entity.ServiceType s INNER JOIN s.companies c WHERE c.id = :companyId)" +
+        " AND (:searchTerm IS null OR (lower(p.serviceType.name) LIKE %:searchTerm% ))" +
         " AND (p.location.zip IN (SELECT a.zip FROM com.improver.entity.Area a WHERE a.company.id = :companyId))")
-    Page<ShortLead> getLeadsInCoverage(String companyId, List<Project.Status> statuses, Pageable pageable);
+    Page<ShortLead> getLeadsInCoverage(String companyId, List<Project.Status> statuses, String searchTerm, Pageable pageable);
 
     /**
      * Returns Leads according to company services and coverage

@@ -11,5 +11,5 @@ import { RestPage } from '../../../../api/models/RestPage';
 })
 export class DashboardMapComponent {
   @Input() leads: RestPage<Lead>;
-
+  @Input() inlineMode: boolean;
 }

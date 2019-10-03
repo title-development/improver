@@ -10,8 +10,10 @@ import { ProjectActionService } from '../../../util/project-action.service';
 import { FindProfessionalService } from '../../../util/find-professional.service';
 import { Project } from '../../../api/models/Project';
 import { RestPage } from '../../../api/models/RestPage';
-import { reCalculatePageable } from '../../../util/functions';
+import { getErrorMessage, reCalculatePageable } from '../../../util/functions';
 import { ProjectRequest } from '../../../api/models/ProjectRequest';
+import { finalize, takeUntil } from "rxjs/operators";
+import { Subject } from "rxjs";
 
 interface Tab {
   label: string;
@@ -29,6 +31,7 @@ interface Tab {
 })
 
 export class CustomerDashboardComponent implements OnDestroy {
+  private readonly destroyed$ = new Subject<void>();
   Project = Project;
   ProjectStatus = Project.Status;
   ProjectRequest = ProjectRequest;
@@ -65,15 +68,14 @@ export class CustomerDashboardComponent implements OnDestroy {
               private serviceTypeService: ServiceTypeService) {
     this.getProjects(this.tabs[0]);
     this.getRecommendedServiceTypes();
-    this.onProjectsUpdate$ = this.projectActionService.onProjectsUpdate.subscribe(() => {
-      this.updateTab();
-    });
+    this.onProjectsUpdate$ = this.projectActionService.onProjectsUpdate
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(() => this.updateTab());
   }
 
   ngOnDestroy(): void {
-    if (this.onProjectsUpdate$) {
-      this.onProjectsUpdate$.unsubscribe();
-    }
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
     openProjectRequest(project: CustomerProjectShort) {
@@ -81,10 +83,7 @@ export class CustomerDashboardComponent implements OnDestroy {
       projectRequest => {
         this.projectActionService.openProjectRequest(projectRequest);
       },
-      err => {
-        console.log(err);
-        this.popUpMessageService.showError(JSON.parse(err.error).message);
-      }
+      err => this.popUpMessageService.showError(getErrorMessage(err))
     );
   }
 
@@ -96,34 +95,33 @@ export class CustomerDashboardComponent implements OnDestroy {
       forUpdate = new Pagination(0, tab.projects.length);
     }
     const pagination = forUpdate ? forUpdate : tab.pagination;
-    this.projectService.getAllForCustomer(tab.latest, pagination).subscribe(
+    this.projectService.getAllForCustomer(tab.latest, pagination)
+      .pipe(
+        takeUntil(this.destroyed$),
+        finalize(() => this.projectsProcessing = false)
+      )
+      .subscribe(
       (pageable: RestPage<CustomerProjectShort>) => {
-        this.projectsProcessing = false;
-        tab.pageable = forUpdate ? reCalculatePageable<CustomerProjectShort>(tab.pageable, pageable, this.maxItemPerPage) : pageable;
+        tab.pageable = forUpdate ? reCalculatePageable(tab.pageable, pageable, this.maxItemPerPage) : pageable;
         this.moveHiredContractorsToFirstPosition(pageable.content);
-        console.log(pageable.content);
         tab.projects = pageable.content;
       },
-      err => {
-        this.projectsProcessing = false;
-        console.log(err);
-      }
+        err => this.popUpMessageService.showError(getErrorMessage(err))
     );
   }
 
   showMoreProjects(tab: Tab) {
     this.projectService.getAllForCustomer(tab.latest, tab.pagination.nextPage())
-      .subscribe(
-        (pageable: RestPage<CustomerProjectShort>) => {
-          this.projectsProcessing = false;
+      .pipe(
+        takeUntil(this.destroyed$),
+        finalize(() => this.projectsProcessing = false)
+      )
+      .subscribe((pageable: RestPage<CustomerProjectShort>) => {
           tab.pageable = pageable;
           // this.moveHiredContractorsToFirstPosition(pageable.content);
           tab.projects = [...tab.projects, ...pageable.content];
         },
-        err => {
-          this.projectsProcessing = false;
-          console.log(err);
-        }
+        err => this.popUpMessageService.showError(getErrorMessage(err))
       );
   }
 
@@ -131,13 +129,13 @@ export class CustomerDashboardComponent implements OnDestroy {
   getRecommendedServiceTypes() {
     this.serviceTypeService
       .getRecommended(this.securityService.getLoginModel().id, 6)
+      .pipe(takeUntil(this.destroyed$))
       .subscribe(
         recommendedServiceTypes => {
           this.recommendedServiceTypes = recommendedServiceTypes;
         },
-        err => {
-          console.log(err);
-        });
+        err => this.popUpMessageService.showError(getErrorMessage(err))
+      )
   }
 
   restoreProject() {
@@ -166,8 +164,6 @@ export class CustomerDashboardComponent implements OnDestroy {
         ProjectRequest.hasExecutor(projectRequest.status));
       if (index < 0) continue;
       let hired = project.projectRequests[index];
-      console.log(index);
-      console.log(hired);
       project.projectRequests.splice(index,1);
       project.projectRequests.unshift(hired);
     }
