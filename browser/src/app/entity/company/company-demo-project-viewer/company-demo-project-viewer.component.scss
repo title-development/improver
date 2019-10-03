@@ -95,18 +95,6 @@
 
     }
 
-    .request-button-wrapper {
-      margin-left: auto;
-      display: flex;
-      justify-content: center;
-      flex-direction: column;
-      @include response-to(xs) {
-        margin-left: initial;
-        flex-direction: column;
-        align-items: center;
-      }
-    }
-
   }
 
 }

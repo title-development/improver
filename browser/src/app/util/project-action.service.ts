@@ -369,7 +369,6 @@ export class ProjectActionService {
   }
 
   leaveProject(project: ContractorProjectShort) {
-    // TODO: Check text
     let properties = {
       title: 'Are you sure want to leave <b>' + project.serviceType + '</b> project',
       message: 'By proceeding, a project will be closed for you, and no further guarantees regarding last would be provided.',

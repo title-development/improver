@@ -9,8 +9,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class ThirdPartyApis {
 
-    @Value("${account.google.auth.client.id}")
-    private String googleClientId;
     @Value("${account.shippo.private.key}")
     private String shippoPrivateKey;
     @Value("${account.google.auth.client.id}")

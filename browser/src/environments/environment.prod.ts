@@ -1,9 +1,9 @@
 export const environment = {
   production: true,
   stripePublicKey: "pk_test_lIXnMol9gIfdaSMLCyMpxKHM",
-  googleApiKey: "AIzaSyAwgKfPbBrEWNiqWHahe00BpLP8muDx0_c",
+  googleApiKey: "AIzaSyDfNN72z0TVjEQqKftpCkQttwVIH_CboZY",
   facebookClientId: '679075905790840',
-  googleClientId: '1096755394956-2fd0kap38led1ngk2aeinndsfb0rrcnb.apps.googleusercontent.com',
+  googleClientId: '1078841939849-an19r4o58srgq6cu9d86flt70darg1f4.apps.googleusercontent.com',
   googleAnalyticsTrackingId: 'UA-148193868-3',
   hotJarTrackingId: 1490882,
   googleReCaptchaSiteKey: '6Lc777YUAAAAAFh8rjprTYyJkduY6pcrK-UHB8uh'
