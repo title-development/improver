@@ -14,9 +14,13 @@ export class ReviewService {
 
   private companyUrl = 'api/companies';
   private reviewUrl = 'api/reviews';
-  private reviews = 'reviews';
-  private options = 'options';
-  private requestUrl = "request";
+  private projectRequestUrl = 'api/project-requests';
+  private reviews = '/reviews';
+  private options = '/options';
+  private request = '/request';
+  private revision = '/revision';
+  private accept = '/accept';
+  private decline = '/decline';
 
   constructor(private http: HttpClient) {
   }
@@ -27,7 +31,7 @@ export class ReviewService {
   }
 
   getReviewRequestOptions(): Observable<any>{
-    return this.http.get<any>(`${this.reviewUrl}/${this.requestUrl}/${this.options}`)
+    return this.http.get<any>(`${this.reviewUrl}${this.request}${this.options}`)
   }
 
   getReviewOptions(companyId: any, projectRequestId: string = '0', reviewToken?: string): Observable<any> {
@@ -36,7 +40,7 @@ export class ReviewService {
       .set('reviewToken', reviewToken);
 
     return this.http
-      .get(`${this.companyUrl}/${companyId}/${this.reviews}/${this.options}`, {
+      .get(`${this.companyUrl}/${companyId}${this.reviews}${this.options}`, {
         responseType: 'text',
         params: params
       });
@@ -45,7 +49,7 @@ export class ReviewService {
   getReviews(companyId: string, publishedOnly, pagination: Pagination): Observable<ReviewRating> {
     const params = toHttpParams(pagination);
 
-    return this.http.get<ReviewRating>(`${this.companyUrl}/${companyId}/${this.reviews}`, {params});
+    return this.http.get<ReviewRating>(`${this.companyUrl}/${companyId}${this.reviews}`, {params});
   }
 
   /**
@@ -68,15 +72,19 @@ export class ReviewService {
     }
 
     return this.http
-      .post(`${this.companyUrl}/${companyId}/${this.reviews}`, review, {params: params, responseType: 'text'});
+      .post(`${this.companyUrl}/${companyId}${this.reviews}`, review, {params: params, responseType: 'text'});
   }
 
   requestReview(requestReview: ProRequestReview): Observable<any> {
-    return this.http.post(`${this.reviewUrl}/request`, requestReview);
+    return this.http.post(`${this.reviewUrl}${this.request}`, requestReview);
+  }
+
+  requestProjectReview(projectRequestId: string): Observable<any> {
+    return this.http.post(`${this.projectRequestUrl}/${projectRequestId}${this.reviews}${this.request}`, {});
   }
 
   requestReviewRevision(reviewId, comment): Observable<any> {
-    return this.http.post(`${this.reviewUrl}/${reviewId}/revision`, comment);
+    return this.http.post(`${this.reviewUrl}/${reviewId}${this.revision}`, comment);
   }
 
   getReview(reviewId: number): Observable<Review> {
@@ -84,15 +92,15 @@ export class ReviewService {
   }
 
   updateReview(review: Review): Observable<any> {
-    return this.http.put(`${this.reviewUrl}/${review.id}/accept`, review);
+    return this.http.put(`${this.reviewUrl}/${review.id}${this.accept}`, review);
   }
 
   declineReviewRevision(reviewId: number): Observable<any> {
-    return this.http.put(`${this.reviewUrl}/${reviewId}/decline`, {});
+    return this.http.put(`${this.reviewUrl}/${reviewId}${this.decline}`, {});
   }
 
   getRevisionByReviewId(reviewId: number): Observable<ReviewRevisionRequest> {
-    return this.http.get<ReviewRevisionRequest>(`${this.reviewUrl}/${reviewId}/revision`);
+    return this.http.get<ReviewRevisionRequest>(`${this.reviewUrl}/${reviewId}${this.revision}`);
   }
 
 }

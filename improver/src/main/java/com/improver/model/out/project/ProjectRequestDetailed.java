@@ -25,9 +25,9 @@ public class ProjectRequestDetailed extends ProjectRequestShort {
     private Collection<String> images;
 
 
-    public ProjectRequestDetailed(Project project, String serviceName, Customer customer, ProjectRequest projectRequest, Long refundId) {
+    public ProjectRequestDetailed(Project project, String serviceName, Customer customer, ProjectRequest projectRequest, Long refundId, Long reviewId) {
 
-        super(project, serviceName, customer, projectRequest, refundId);
+        super(project, serviceName, customer, projectRequest, refundId, reviewId);
         this.customer.setId(customer.getId());
         this.customer.setPhone(customer.getInternalPhone());
         this.location = project.getLocation();

@@ -1,7 +1,7 @@
 <div class="add-review-form-block">
   <div class="add-review-wrapper">
     <div class="add-review-container">
-      <form class="review-post-form" *ngIf="ProjectRequest.hasExecutor(projectRequest.status) && !projectRequest.reviewed"
+      <form class="review-post-form" *ngIf="ProjectRequest.isHiredOrCompleted(projectRequest.status) && !projectRequest.reviewed"
             name="review-post-form"
             #reviewPostForm="ngForm"
             (ngSubmit)="isRated && addReview(reviewPostForm);"

@@ -369,22 +369,24 @@ public class MailService {
         context.setVariable(BODY, message);
         context.setVariable(CONFIRM_URL, siteUrl + COMPANIES + SLASH + pro.getCompany().getId() + "?review-token=" + token);
         context.setVariable(CONFIRM_BTN_TEXT, "Write a review");
-        mailClient.sendMail("Request review from " + pro.getCompany().getName(), CONFIRMATION_TEMPLATE, context, MailHolder.MessageType.NOREPLY, email);
+        mailClient.sendMail("Review " + pro.getCompany().getName(), CONFIRMATION_TEMPLATE, context, MailHolder.MessageType.NOREPLY, email);
     }
 
     /**
      * Send email with unreviewed project requests
      *
-     * @param pro     contractor that purchased lead
-     * @param subject Subject of email
-     * @param email   Recipient email
-     * @param message Message body
+     * @param company           company to review
+     * @param projectRequest    projectRequest to review
+     * @param email             Recipient email
      */
-    public void sendNewRequestReview(Contractor pro, String subject, String message, String email) {
+    public void sendNewRequestReview(Company company, ProjectRequest projectRequest, String email) {
         Context context = contextTemplate();
-        context.setVariable(TITLE, subject);
-        context.setVariable(BODY, message);
-        mailClient.sendMail("Request review from " + pro.getCompany().getName(), NOTICE_TEMPLATE, context, MailHolder.MessageType.NOREPLY, email);
+        String messageText = String.format("Could you please share your experience with %s on your recent project %s? It only takes a few seconds, and would really help us.", company.getName(), projectRequest.getProject().getServiceType().getName());
+        context.setVariable(TITLE, "How was your experience with " + company.getName());
+        context.setVariable(BODY, messageText);
+        context.setVariable(CONFIRM_URL, siteUrl + UI_CUSTOMER_BASE_PATH + PROJECTS + SLASH + projectRequest.getProject().getId() + "#" + projectRequest.getId());
+        context.setVariable(CONFIRM_BTN_TEXT, "Leave a review");
+        mailClient.sendMail("Review " + company.getName(), CONFIRMATION_TEMPLATE, context, MailHolder.MessageType.NOREPLY, email);
     }
 
     /**

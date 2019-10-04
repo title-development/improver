@@ -5,16 +5,14 @@ import com.improver.entity.Customer;
 import com.improver.entity.Project;
 import com.improver.entity.ProjectRequest;
 import com.improver.model.admin.out.AdminProjectRequest;
+import com.improver.model.out.project.CompanyProjectRequest;
 import com.improver.model.out.project.ProjectRequestDetailed;
 import com.improver.model.out.project.ProjectRequestShort;
-import com.improver.model.out.project.CompanyProjectRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-import javax.transaction.Transactional;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -72,18 +70,20 @@ public interface ProjectRequestRepository extends JpaRepository<ProjectRequest, 
     @Query("SELECT  pc FROM com.improver.entity.ProjectRequest pc WHERE pc.contractor.id =?1 ORDER BY pc.created ASC")
     List<ProjectRequest> findByContractorId(long contractorId);
 
-    @Query("SELECT new com.improver.model.out.project.ProjectRequestShort(p, p.serviceType.name, p.customer, c, c.refund.id)" +
-        " FROM com.improver.entity.ProjectRequest c" +
-        " INNER JOIN c.project p ON p.id = c.project.id" +
-        " WHERE c.contractor.id = :contractorId AND c.status IN :archived " +
+    @Query("SELECT new com.improver.model.out.project.ProjectRequestShort(p, p.serviceType.name, p.customer, pr, pr.refund.id, r.id)" +
+        " FROM com.improver.entity.ProjectRequest pr" +
+        " INNER JOIN pr.project p ON p.id = pr.project.id" +
+        " LEFT JOIN com.improver.entity.Review r ON pr.review.id = r.id " +
+        " WHERE pr.contractor.id = :contractorId AND pr.status IN :statuses " +
         " AND (:search IS null OR ( lower(p.customer.displayName) LIKE %:search% OR lower(p.serviceType.name) LIKE %:search% )) ")
-    Page<ProjectRequestShort> getForDashboard(long contractorId, List<ProjectRequest.Status> archived, String search, Pageable pageable);
+    Page<ProjectRequestShort> getForDashboard(long contractorId, List<ProjectRequest.Status> statuses, String search, Pageable pageable);
 
 
-    @Query("SELECT new com.improver.model.out.project.ProjectRequestDetailed(p, p.serviceType.name, p.customer, c, c.refund.id)" +
-        " FROM com.improver.entity.ProjectRequest c" +
-        " INNER JOIN com.improver.entity.Project p ON p.id = c.project.id" +
-        " WHERE c.id = ?1 AND c.contractor.id =?2")
+    @Query("SELECT new com.improver.model.out.project.ProjectRequestDetailed(p, p.serviceType.name, p.customer, pr, pr.refund.id, r.id)" +
+        " FROM com.improver.entity.ProjectRequest pr" +
+        " INNER JOIN com.improver.entity.Project p ON p.id = pr.project.id" +
+        " LEFT JOIN com.improver.entity.Review r ON pr.review.id = r.id " +
+        " WHERE pr.id = ?1 AND pr.contractor.id =?2")
     Optional<ProjectRequestDetailed> getDetailedForPro(long projectRequestId, long contractorId);
 
     List<ProjectRequest> findByContractorAndCreatedBetweenOrderByCreated(Contractor contractor, ZonedDateTime dateFrom, ZonedDateTime dateTo);

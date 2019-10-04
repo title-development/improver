@@ -5,12 +5,7 @@ import {
   customerProjectRequestDialogConfig,
   questionaryDialogConfig
 } from '../shared/dialogs/dialogs.configs';
-import {
-  CloseProjectRequest,
-  ContractorProjectShort,
-  CustomerProject,
-  ServiceType
-} from '../model/data-model';
+import { CloseProjectRequest, ContractorProjectShort, CustomerProject, ServiceType } from '../model/data-model';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { ProjectService } from '../api/services/project.service';
 import { PopUpMessageService } from './pop-up-message.service';
@@ -26,6 +21,8 @@ import { Role } from '../model/security-model';
 import { Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import { ReviewService } from "../api/services/review.service";
+import { ErrorHandler } from "./error-handler";
 
 @Injectable()
 export class ProjectActionService {
@@ -51,7 +48,9 @@ export class ProjectActionService {
               public projectRequestService: ProjectRequestService,
               public questionaryControlService: QuestionaryControlService,
               public boundariesService: BoundariesService,
-              private router: Router) {
+              private reviewService: ReviewService,
+              private router: Router,
+              private errorHandler: ErrorHandler) {
     //avoid duplicate project update event emitting
     this.onProjectsUpdate = this.projectUpdateSubject.pipe(debounceTime(this.DEBOUNCE_TIME))
   }
@@ -364,6 +363,37 @@ export class ProjectActionService {
       err => {
         console.log(err);
         this.popUpService.showError(JSON.parse(err.error).message);
+      }
+    );
+  }
+
+  sendRequestProjectReview(project: ContractorProjectShort) {
+    let properties = {
+        title: 'Request review',
+        message: 'We will send an email to ask the customer for a review of the current project.',
+        OK: 'Send',
+        CANCEL: 'Cancel'
+      };
+
+    this.confirmDialogRef = this.dialog.open(dialogsMap['confirm-dialog'], confirmDialogConfig);
+    this.confirmDialogRef
+      .afterClosed()
+      .subscribe(result => {
+        this.confirmDialogRef = null;
+      });
+    this.confirmDialogRef.componentInstance.properties = properties;
+    this.confirmDialogRef.componentInstance.onConfirm.subscribe(result => {
+        this.reviewService.requestProjectReview(project.id).subscribe(
+          response => {
+            this.popUpService.showSuccess('Request review has been sent');
+            this.projectUpdated();
+          },
+          err => {
+            this.errorHandler.conflict(err, getErrorMessage(err));
+            this.errorHandler.notFound(err, 'Unexpected error while requesting review');
+            this.dialog.closeAll();
+          }
+        )
       }
     );
   }

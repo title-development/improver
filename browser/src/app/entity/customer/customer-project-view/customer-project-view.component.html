@@ -79,7 +79,7 @@
                           <img class="approve-icon" src="assets/icons/approve.svg" alt="" title="Approved by Home Improve">
                         </div>
                       </div>
-                      <div class="additional-info hired" *ngIf="ProjectRequest.hasExecutor(projectRequest.status)">You hired this Pro</div>
+                      <div class="additional-info hired" *ngIf="ProjectRequest.isHiredOrCompleted(projectRequest.status)">You hired this Pro</div>
                       <div class="additional-info" *ngIf="projectRequest.status == ProjectRequest.Status.ACTIVE">This Pro sent you project request</div>
                     </div>
                   </div>

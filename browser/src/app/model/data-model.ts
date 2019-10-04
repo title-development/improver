@@ -210,6 +210,8 @@ export class ContractorProjectShort {
   manual: boolean;
   projectStatus: Project.Status;
   images: string[];
+  reviewRequested: boolean;
+  reviewed: boolean;
   unreadMessages: number;
 }
 

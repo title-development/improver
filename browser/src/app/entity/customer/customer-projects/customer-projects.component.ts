@@ -161,7 +161,7 @@ export class CustomerDashboardComponent implements OnDestroy {
     for (let project of projects) {
       if (project.projectRequests.length === 0) continue;
       let index = project.projectRequests.findIndex(projectRequest =>
-        ProjectRequest.hasExecutor(projectRequest.status));
+        ProjectRequest.isHiredOrCompleted(projectRequest.status));
       if (index < 0) continue;
       let hired = project.projectRequests[index];
       project.projectRequests.splice(index,1);

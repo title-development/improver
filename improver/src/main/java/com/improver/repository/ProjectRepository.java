@@ -105,10 +105,11 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     Page<Project> findBy(Long id, String customerEmail, String serviceType, Project.Status status, Project.Reason reason, String location, Pageable pageRequest);
 
 
-    @Query("SELECT new com.improver.model.out.project.ProjectRequestDetailed(p, p.serviceType.name, p.customer, prjc, prjc.refund.id)" +
+    @Query("SELECT new com.improver.model.out.project.ProjectRequestDetailed(p, p.serviceType.name, p.customer, pr, pr.refund.id, r.id )" +
         " FROM com.improver.entity.Project p" +
-        " INNER JOIN com.improver.entity.ProjectRequest prjc ON p.id = prjc.project.id " +
-        " INNER JOIN com.improver.entity.Contractor c ON c.id = prjc.contractor.id " +
+        " INNER JOIN com.improver.entity.ProjectRequest pr ON p.id = pr.project.id " +
+        " INNER JOIN com.improver.entity.Contractor c ON c.id = pr.contractor.id " +
+        " LEFT JOIN com.improver.entity.Review r ON pr.review.id = r.id " +
         " WHERE c.company.id = ?1")
     Page<ProjectRequestShort> getCompanyProjects(String companyId, Pageable pageable);
 

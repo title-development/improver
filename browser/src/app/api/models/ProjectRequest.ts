@@ -86,7 +86,7 @@ export namespace ProjectRequest {
     return !isActive(status)
   }
 
-  export function hasExecutor(status: ProjectRequest.Status) {
+  export function isHiredOrCompleted(status: ProjectRequest.Status) {
     return status === ProjectRequest.Status.HIRED
       || status === ProjectRequest.Status.COMPLETED
   }

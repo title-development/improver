@@ -12,6 +12,7 @@ import com.improver.security.UserSecurityService;
 import com.improver.service.ProjectRequestService;
 import com.improver.service.DocumentService;
 import com.improver.security.annotation.SupportAccess;
+import com.improver.service.ReviewRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -38,6 +39,7 @@ public class ProjectRequestController {
     @Autowired private ProjectRequestService projectRequestService;
     @Autowired private DocumentService fileService;
     @Autowired private UserSecurityService userSecurityService;
+    @Autowired ReviewRequestService requestReviewService;
 
     @SupportAccess
     @GetMapping
@@ -117,6 +119,14 @@ public class ProjectRequestController {
     public ResponseEntity<Void> leaveProject(@PathVariable long id, @RequestParam boolean leave) {
         ProjectRequest projectRequest = getForCurrentPro(id);
         projectRequestService.closeProject(projectRequest, ZonedDateTime.now(), leave);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping(ID_PATH_VARIABLE + REVIEWS + REQUEST)
+    @PreAuthorize("hasRole('CONTRACTOR')")
+    public ResponseEntity<Void> requestProjectReview(@PathVariable Long id){
+        Contractor pro = userSecurityService.currentPro();
+        requestReviewService.sendProjectReviewRequest(pro, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

@@ -2,8 +2,8 @@ package com.improver.model.out.project;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.improver.entity.Customer;
-import com.improver.entity.ProjectRequest;
 import com.improver.entity.Project;
+import com.improver.entity.ProjectRequest;
 import com.improver.model.out.UserModel;
 import lombok.Getter;
 
@@ -25,15 +25,19 @@ public class ProjectRequestShort {
     private ZonedDateTime updated;
     private ProjectRequest.Status status;
 
+    private boolean isReviewRequested;
+    private boolean isReviewed;
     private boolean isManual;
     private boolean isRefundRequested;
     private boolean isRefundable;
     private Long unreadMessages;
 
 
-    public ProjectRequestShort(Project project, String serviceName, Customer customer, ProjectRequest projectRequest, Long refundId){
+    public ProjectRequestShort(Project project, String serviceName, Customer customer, ProjectRequest projectRequest, Long refundId, Long reviewId){
         this.id = projectRequest.getId();
         this.projectId = project.getId();
+        this.isReviewRequested = projectRequest.isReviewRequested();
+        this.isReviewed = reviewId != null;
         this.customer = new UserModel(0, customer.getDisplayName(), customer.getIconUrl());
         this.serviceType = serviceName;
         this.projectStatus = project.getStatus();

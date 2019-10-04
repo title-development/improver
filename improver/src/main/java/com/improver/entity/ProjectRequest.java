@@ -44,6 +44,8 @@ public class ProjectRequest {
 
     private boolean isManual;
 
+    private boolean isReviewRequested = false;
+
     @OneToOne
     @JoinColumn(name = "refund_id", foreignKey = @ForeignKey(name = "project_request_refund_fkey"))
     private Refund refund;

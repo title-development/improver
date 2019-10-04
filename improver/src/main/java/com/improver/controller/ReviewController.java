@@ -60,9 +60,10 @@ public class ReviewController {
     @PreAuthorize("hasRole('CONTRACTOR')")
     public ResponseEntity<Void> requestReview(@RequestBody @Valid ProRequestReview proRequestReview) {
         Contractor pro = userSecurityService.currentPro();
-        requestReviewService.sendReviewRequestToUsers(pro, proRequestReview);
+        requestReviewService.sendCompanyReviewRequest(pro, proRequestReview);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
 
     @GetMapping(REVIEWS_PATH + REQUEST + OPTIONS)
     @PreAuthorize("hasRole('CONTRACTOR')")
