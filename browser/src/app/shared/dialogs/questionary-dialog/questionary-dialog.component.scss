@@ -3,7 +3,7 @@
 .dialog-content-wrapper {
   background: url(../../../../assets/img/start-screen-background.png) no-repeat;
   background-size: cover;
-
+  overflow-x: hidden;
 
   .dialog-content-container {
     background-color: rgba(0, 0, 0, 0.64);
