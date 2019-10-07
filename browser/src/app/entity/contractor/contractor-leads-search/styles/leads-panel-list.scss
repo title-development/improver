@@ -12,13 +12,15 @@
     font-weight: 400;
   }
   .search-field-holder {
+    display: flex;
     background-color: $black-200;
     width: 100%;
     padding: 12px 12px 8px;
     .field {
       position: relative;
+      flex: 1;
     }
-    mat-icon {
+    .search-icon {
       position: absolute;
       top: 8px;
       left: 6px;
@@ -26,6 +28,11 @@
       font-size: 21px;
       height: 21px;
       color: rgba(#000, .36);
+
+      &.clear {
+        cursor: pointer;
+      }
+
     }
     input {
       border-radius: 2px;

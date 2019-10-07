@@ -11,10 +11,23 @@ agm-map::ng-deep {
   }
 }
 
+.open-sidenav {
+  position: absolute;
+  z-index: 1;
+  box-shadow: elevation(2);
+  top: 0;
+  left: 0px;
+  background-color: #ffffff;
+  border: 1px solid whitesmoke;
+  padding: 10px 10px;
+  cursor: pointer;
+}
+
 .mat-sidenav-container {
   height: 100%;
   flex-grow: 1;
   font-weight: normal;
+  z-index: auto;
 
   @include response-to(xs) {}
   @include response(sm) {}
@@ -25,19 +38,18 @@ agm-map::ng-deep {
   }
 
   .mat-sidenav {
+    z-index: 2;
     padding: 0px 0px 2px 0px;
     width: 320px;
     overflow-y: visible;
     visibility: visible !important;
 
-    .toggle-sidenav {
-      position: absolute;
-      left: 320px;
-      top: 0;
-      background-color: $white;
-      border: 1px solid whitesmoke;
-      padding: 15px 0;
-      cursor: pointer
+    .close-sidenav {
+      display: flex;
+      align-items: center;
+      padding: 0px 8px;
+      margin-right: -8px;
+      cursor: pointer;
     }
 
     .loading-backdrop {
@@ -73,23 +85,17 @@ agm-map::ng-deep {
     top: 0px;
     right: 0;
     z-index: 1;
-    @include response(xs) {
+    @include response(xs, md) {
       left: 0;
     }
   }
 
 }
 
-
-
-
-.spinner-wrapper {
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 8px;
+mat-progress-bar {
+  position: absolute;
+  width: 100%;
   z-index: 9999;
-  height: 32px;
 }
 
 ::ng-deep .si-wrapper-top {

@@ -1,21 +1,20 @@
 <mat-sidenav-container>
   <mat-sidenav #sidenav [opened]="isSidebarOpen" [disableClose]="true" [mode]="'over'">
-    <ng-container *ngIf="mediaQuery?.xs">
-      <mat-icon class="toggle-sidenav" color="primary" (click)="sidenav.close()" *ngIf="sidenav.opened">
-        keyboard_arrow_left
-      </mat-icon>
-      <mat-icon class="toggle-sidenav" color="primary" (click)="sidenav.open()" *ngIf="!sidenav.opened">
-        keyboard_arrow_right
-      </mat-icon>
-    </ng-container>
     <div class="loading-backdrop" [ngClass]="{'loading': mapContentIsLoading}"></div>
 
     <div class="leads-panel" #leadsPanel>
       <div class="search-field-holder">
         <div class="field">
-          <mat-icon color="primary">search</mat-icon>
+          <mat-icon class="search-icon" color="primary" *ngIf="!search || search == ''">search</mat-icon>
+          <mat-icon class="search-icon clear" color="primary" *ngIf="search && search != ''" (click)="search = ''">close</mat-icon>
           <input type="text" placeholder="Type to search" [(ngModel)]="search"/>
         </div>
+        <ng-container *ngIf="mediaQuery?.xs || mediaQuery?.sm || mediaQuery?.md">
+          <mat-icon class="close-sidenav" color="primary" (click)="sidenav.close()" *ngIf="sidenav.opened" title="Hide">
+            keyboard_arrow_left
+          </mat-icon>
+        </ng-container>
+
       </div>
       <perfect-scrollbar class="leads-list" *ngIf="sortedLeads">
         <h4 *ngIf="!mapContentIsLoading && sortedLeads.length == 0">There are no new leads in selected area. You can discover new leads in neighbor areas using map tools.</h4>
@@ -147,9 +146,13 @@
 
 </mat-sidenav-container>
 
-<div [cvSpinner]="mapContentIsLoading" [cvSpinnerSize]="32" ></div>
+<ng-container *ngIf="mediaQuery?.xs || mediaQuery?.sm || mediaQuery?.md">
+  <mat-icon class="open-sidenav" color="primary" (click)="sidenav.open()" title="Search leads">
+    search
+  </mat-icon>
+</ng-container>
 
-
+<mat-progress-bar mode="indeterminate" *ngIf="mapContentIsLoading"></mat-progress-bar>
 
 
 

@@ -4,16 +4,14 @@ import { RouterModule } from '@angular/router';
 import { ContractorLeadsSearchComponent } from './contractor-leads-search.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule } from '@angular/forms';
-import {
-  DataLayerManager, GoogleMapsAPIWrapper, InfoWindowManager,
-  MarkerManager
-} from '@agm/core';
+import { DataLayerManager, GoogleMapsAPIWrapper, InfoWindowManager, MarkerManager } from '@agm/core';
 
 import {
   MatButtonModule,
   MatCardModule,
   MatIconModule,
   MatInputModule,
+  MatProgressBarModule,
   MatSidenavModule
 } from '@angular/material';
 import { AgmSnazzyInfoWindowModule } from '@agm/snazzy-info-window';
@@ -39,6 +37,7 @@ const contractorLeadsSearchRouting: ModuleWithProviders = RouterModule.forChild(
     MatInputModule,
     MatCardModule,
     MatSidenavModule,
+    MatProgressBarModule,
     contractorLeadsSearchRouting,
     FlexLayoutModule,
     FormsModule,

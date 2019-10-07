@@ -43,7 +43,8 @@
     .mobile-menu-button {
 
       i {
-        font-size: 21px;
+        font-size: 28px;
+        margin-right: 8px;
       }
 
       @include response-to(sm) {

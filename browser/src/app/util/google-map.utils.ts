@@ -371,6 +371,8 @@ export class GoogleMapUtilsService {
     this.markersStore.addMarker(marker);
     this.markersStore.setListener('mouseover', handler);
     marker.addListener('mouseover', handler);
+    this.markersStore.setListener('click', handler);
+    marker.addListener('click', handler);
   }
 
   distanceBetweenPoints(lat1, lon1, lat2, lon2) {

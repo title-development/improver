@@ -9,14 +9,16 @@ import { RatingComponent } from './rating-component/rating.component';
 import { PhoneHelpComponent } from './phone-help/phone-help.component';
 
 import {
-  MatMenuModule,
-  MatIconModule,
   MatButtonModule,
-  MatInputModule,
-  MatGridListModule,
-  MatTooltipModule,
+  MatCardModule,
+  MatCheckboxModule,
   MatDialogModule,
-  MatCardModule, MatCheckboxModule
+  MatGridListModule,
+  MatIconModule,
+  MatInputModule,
+  MatMenuModule,
+  MatProgressBarModule,
+  MatTooltipModule
 } from '@angular/material';
 
 import { ResponseMessageComponent } from './response-message/response-message.component';
@@ -61,6 +63,7 @@ import { CvRadioModule } from "../theme/radio/radio.module";
     MatGridListModule,
     MatTooltipModule,
     MatDialogModule,
+    MatProgressBarModule,
     FlexLayoutModule,
     PipesModule,
     MessengerModule,
@@ -107,6 +110,7 @@ import { CvRadioModule } from "../theme/radio/radio.module";
     MatInputModule,
     MatGridListModule,
     MatTooltipModule,
+    MatProgressBarModule,
     FlexLayoutModule,
     AccountNavComponent,
     RatingComponent,

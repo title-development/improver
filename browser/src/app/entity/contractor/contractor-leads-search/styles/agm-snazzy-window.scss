@@ -53,7 +53,7 @@
       transform: scale(1, 0);
       transform-origin: 0 100%;
       transition: transform 0ms ease;
-      max-height: 92px;
+      max-height: 96px;
       overflow: hidden;
       position: relative;
       perfect-scrollbar {
@@ -63,18 +63,22 @@
         top: 0;
         left: 0;
         .ps-content {
-          padding: 8px;
+          //padding: 8px 8px 4px;
+          margin: 4px 0px 8px;
+          display: flex;
+          flex-direction: column;
         }
       }
     }
     .item {
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      &:not(:last-child) {
-        margin-bottom: 4px;
-      }
+
       a {
+        display: block;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        padding: 10px 8px 0;
+        width: 100%;
         color: #757575;
         transition: color 150ms ease, opacity 0ms ease;
         opacity: 0;
@@ -84,6 +88,9 @@
         &:hover {
           color: $black-primary;
         }
+      }
+      &:last-child {
+        margin-bottom: 4px;
       }
     }
   }
@@ -101,9 +108,7 @@
     }
     span {
       background-color: $primary-500;
-      padding: 5px;
-      padding-top: 4px;
-      padding-right: 12px;
+      padding: 4px 12px 5px 5px;
       width: 100%;
     }
     i {

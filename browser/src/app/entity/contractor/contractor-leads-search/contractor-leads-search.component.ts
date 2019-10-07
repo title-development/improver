@@ -93,6 +93,7 @@ export class ContractorLeadsSearchComponent implements OnDestroy {
         data => {
           this.selectedLead = data;
           this.mapContentIsLoading = false;
+          this.mdSidebar.open();
         },
         err => {
           //Show info message if lead no available to buy

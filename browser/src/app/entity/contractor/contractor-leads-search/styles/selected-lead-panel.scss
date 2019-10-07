@@ -7,14 +7,20 @@ $border-color: rgba(0, 0, 0, 0.12);
 }
 
 .lead-panel {
+
+  @include response(xs, md) {
+    z-index: 100;
+    left: 0px;
+  }
+
   position: absolute;
   top: 0px;
   left: 320px;
   background-color: $white;
-  width: 330px;
+  width: 320px;
   height: 100%;
   transform: translateX(-100%);
-  transition: transform .3s ease;
+  transition: transform .2s ease;
   box-shadow: 4px 0 3px 0 rgba(0, 0, 0, 0.16);
   display: flex;
   flex-direction: column;
@@ -28,18 +34,17 @@ $border-color: rgba(0, 0, 0, 0.12);
   .close-panel {
     cursor: pointer;
     position: absolute;
-    right: -18px;
-    top: 12px;
-    width: 18px !important;
+    right: 0px;
+    top: 2px;
+    width: 36px !important;
     height: 36px !important;
     display: flex;
-    background-color: $white;
-    font-size: 16px;
+    background-color: #ffffff;
+    font-size: 20px;
     align-items: center;
     color: #757575;
-    transition: color .3s ease;
-    box-shadow: 4px 0 3px 0 rgba(0, 0, 0, 0.16);
-    border-radius: 0 2px 2px 0;
+    text-align: center;
+    justify-content: center;
     &:hover {
       color: $black;
     }
