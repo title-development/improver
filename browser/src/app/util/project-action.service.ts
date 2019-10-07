@@ -355,16 +355,31 @@ export class ProjectActionService {
   }
 
   closeProject(project: ContractorProjectShort) {
-    this.projectRequestService.closeProject(project.id, false).subscribe(
-      response => {
-        this.popUpService.showInfo('<b>' + project.serviceType + '</b>' + ' closed');
-        this.projectUpdated()
-      },
-      err => {
-        console.log(err);
-        this.popUpService.showError(JSON.parse(err.error).message);
-      }
-    );
+    let properties = {
+      title: 'Are you sure want to close <b>' + project.serviceType + '</b> project',
+      message: 'By proceeding, a project will be closed for you, and no further guarantees regarding last would be provided.',
+      OK: 'Close',
+      CANCEL: 'No'
+    };
+    this.confirmDialogRef = this.dialog.open(dialogsMap['confirm-dialog'], confirmDialogConfig);
+    this.confirmDialogRef
+      .afterClosed()
+      .subscribe(result => {
+        this.confirmDialogRef = null;
+      });
+    this.confirmDialogRef.componentInstance.properties = properties;
+    this.confirmDialogRef.componentInstance.onConfirm.subscribe( result => {
+      this.projectRequestService.closeProject(project.id, false).subscribe(
+        response => {
+          this.popUpService.showInfo('<b>' + project.serviceType + '</b>' + ' closed');
+          this.projectUpdated()
+        },
+        err => {
+          console.log(err);
+          this.popUpService.showError(JSON.parse(err.error).message);
+        }
+      );
+    })
   }
 
   sendRequestProjectReview(project: ContractorProjectShort) {
