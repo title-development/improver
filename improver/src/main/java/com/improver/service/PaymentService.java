@@ -11,7 +11,6 @@ import com.improver.repository.ContractorRepository;
 import com.improver.repository.TransactionRepository;
 import com.improver.util.mail.MailService;
 import com.improver.util.serializer.SerializationUtil;
-import com.improver.ws.WsNotificationService;
 import com.stripe.exception.*;
 import com.stripe.model.*;
 import org.slf4j.Logger;

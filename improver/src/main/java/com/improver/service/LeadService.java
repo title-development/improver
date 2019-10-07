@@ -10,7 +10,6 @@ import com.improver.model.out.project.ShortLead;
 import com.improver.repository.*;
 import com.improver.util.mail.MailService;
 import com.improver.util.serializer.SerializationUtil;
-import com.improver.ws.WsNotificationService;
 import com.stripe.model.Card;
 import com.stripe.model.Charge;
 import org.slf4j.Logger;

@@ -125,7 +125,9 @@ public final class Path {
     public static final String WS_QUEUE =                   "/queue";
     public static final String WS_APP =                     "/app";
     public static final String WS_TOPIC_PROJECT_REQUESTS =  WS_TOPIC + PROJECT_REQUESTS;
+    public static final String WS_APP_PROJECT_REQUESTS =    WS_APP + PROJECT_REQUESTS;
     public static final String WS_QUEUE_USERS =             WS_QUEUE + USERS;
+    public static final String WS_APP_USERS =               WS_APP + USERS;
     public static final String UNREAD =                     "/unread";
 
     /* Resource paths */

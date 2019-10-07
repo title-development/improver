@@ -8,7 +8,6 @@ import com.improver.model.out.RefundQuestionary;
 import com.improver.model.out.RefundResult;
 import com.improver.repository.*;
 import com.improver.util.mail.MailService;
-import com.improver.ws.WsNotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;

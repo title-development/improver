@@ -188,14 +188,6 @@ public class CompanyConfigService {
         List<ServiceType> companyServices = company.getServiceTypes();
         companyServices.removeIf(serviceType -> serviceType.getId() == toRemove.getId());
         List<Trade> tradesToRemove = Collections.emptyList();
-
-        //TODO: Misha finish this!!!
-        // Remove trade if there are no more selected services
-//        if (companyTrades.size() > 1){
-//            Collections.copy(tradesToRemove, companyTrades);
-//            tradesToRemove.retainAll(toRemove.getTrades());
-//        }
-
         companyTrades.removeAll(tradesToRemove);
         companyRepository.save(company.setServiceTypes(companyServices).setTrades(companyTrades));
     }

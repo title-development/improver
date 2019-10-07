@@ -14,7 +14,6 @@ import com.improver.repository.ProjectMessageRepository;
 import com.improver.repository.ProjectRepository;
 import com.improver.repository.ProjectRequestRepository;
 import com.improver.util.mail.MailService;
-import com.improver.ws.WsNotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

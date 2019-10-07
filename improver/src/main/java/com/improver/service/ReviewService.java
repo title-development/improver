@@ -11,7 +11,6 @@ import com.improver.model.out.review.ReviewRequestOption;
 import com.improver.repository.*;
 import com.improver.security.UserSecurityService;
 import com.improver.util.mail.MailService;
-import com.improver.ws.WsNotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

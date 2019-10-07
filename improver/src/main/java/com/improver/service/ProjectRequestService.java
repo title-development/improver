@@ -9,7 +9,6 @@ import com.improver.repository.ProjectRepository;
 import com.improver.repository.ProjectRequestRepository;
 import com.improver.util.StringUtil;
 import com.improver.util.mail.MailService;
-import com.improver.ws.WsNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

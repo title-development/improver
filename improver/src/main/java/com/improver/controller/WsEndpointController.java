@@ -11,10 +11,7 @@ import com.improver.security.annotation.SameUserAccess;
 import com.improver.service.ChatService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.handler.annotation.*;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 
@@ -37,7 +34,7 @@ public class WsEndpointController {
         log.debug("User id={} subscribed for notifications", id);
     }
 
-    @MessageMapping({WS_APP + USERS + ID_PATH_VARIABLE + UNREAD})
+    @MessageMapping({WS_APP_USERS + ID_PATH_VARIABLE + UNREAD})
     @SendTo(WS_QUEUE_USERS + ID_PATH_VARIABLE + NOTIFICATIONS)
     public NotificationMessage getAllUnreadMessages(@DestinationVariable long id) {
         JwtPrincipal jwtPrincipal = securityHelper.currentPrincipal();
@@ -57,7 +54,7 @@ public class WsEndpointController {
      *  but with an additional prefix ("/topic" by default).
      *
      */
-    @MessageMapping(WS_APP + PROJECT_REQUESTS + ID_PATH_VARIABLE)
+    @MessageMapping(WS_APP_PROJECT_REQUESTS + ID_PATH_VARIABLE)
     @SendTo(WS_TOPIC_PROJECT_REQUESTS + ID_PATH_VARIABLE)
     public ProjectMessage broadcastMessage(@Payload ProjectMessage message, @DestinationVariable long id) {
         return chatService.handleMessage(message, id);

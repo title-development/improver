@@ -3,8 +3,6 @@ package com.improver.ws.interceptors;
 import com.improver.security.JwtPrincipal;
 import com.improver.security.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.messaging.Message;
@@ -14,7 +12,6 @@ import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.*;
 import org.springframework.security.authentication.CredentialsExpiredException;
-import org.springframework.web.socket.CloseStatus;
 
 /**
  * Used for WS security.
@@ -31,6 +28,9 @@ public class WsSecurityInterceptor implements ChannelInterceptor {
 
     @Autowired private JwtUtil jwtUtil;
 
+    private static final String INVALID_TOKEN_ERROR = "403: Valid token required";
+    private static final String TOKEN_EXPIRED_ERROR = "401: Token expired";
+
     /**
      * Checks if WebSocket connection request contain JWT token in "authorization header".
      * Populate JWT principal to Spring Security context through {@link SimpMessageHeaderAccessor#setUser}.
@@ -42,7 +42,7 @@ public class WsSecurityInterceptor implements ChannelInterceptor {
             log.debug("Connection attempt to ws endpoint ");
             String authorization = accessor.getFirstNativeHeader("authorization");
             if(authorization == null || authorization.isEmpty()){
-                sendError(accessor, "Valid token required");
+                sendError(accessor, INVALID_TOKEN_ERROR);
                 return null;
             }
             String jwt = authorization.replace("Bearer ", "");
@@ -50,24 +50,27 @@ public class WsSecurityInterceptor implements ChannelInterceptor {
             try {
                 principal = jwtUtil.parseAccessToken(jwt);
             } catch (CredentialsExpiredException e){
-                sendError(accessor, "Expired");
+                sendError(accessor, TOKEN_EXPIRED_ERROR);
                 return null;
             } catch (Exception e){
-                sendError(accessor, "Valid token required");
+                sendError(accessor, INVALID_TOKEN_ERROR);
                 return null;
             }
-
             accessor.setUser(principal);
         }
         return message;
     }
 
 
+    /**
+     * Send error message in headers.message instead of body
+     *
+     */
     private void sendError(StompHeaderAccessor accessor, String message){
         String sessionId = accessor.getSessionId();
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.create(StompCommand.ERROR);
-        //headerAccessor.setMessage(message);
+        headerAccessor.setMessage(message);
         headerAccessor.setSessionId(sessionId);
-        clientOutboundChannel.send(MessageBuilder.createMessage(message.getBytes(), headerAccessor.getMessageHeaders()));
+        clientOutboundChannel.send(MessageBuilder.createMessage("".getBytes(), headerAccessor.getMessageHeaders()));
     }
 }

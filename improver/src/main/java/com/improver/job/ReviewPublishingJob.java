@@ -2,7 +2,7 @@ package com.improver.job;
 
 import com.improver.entity.Company;
 import com.improver.repository.ReviewRepository;
-import com.improver.ws.WsNotificationService;
+import com.improver.service.WsNotificationService;
 import com.improver.service.ReviewService;
 import com.improver.util.mail.MailService;
 import lombok.extern.slf4j.Slf4j;

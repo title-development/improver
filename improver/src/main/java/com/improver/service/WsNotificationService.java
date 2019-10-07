@@ -1,4 +1,4 @@
-package com.improver.ws;
+package com.improver.service;
 
 import com.improver.entity.*;
 import com.improver.model.out.NotificationMessage;

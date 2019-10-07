@@ -29,14 +29,19 @@ h3 {
 }
 
 h4 {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 400;
   margin: 0;
   color: $black-primary;
   min-height: 28px;
-  @include response(sm, md) {
+  @include response(sm) {
     min-height: auto;
     width: 160px;
+    padding-right: 15px;
+  }
+  @include response(md) {
+    min-height: auto;
+    width: 260px;
     padding-right: 15px;
   }
 }

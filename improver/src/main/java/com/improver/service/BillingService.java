@@ -9,7 +9,6 @@ import com.improver.util.StaffActionLogger;
 import com.improver.util.StringUtil;
 import com.improver.application.properties.ThirdPartyApis;
 import com.improver.util.mail.MailService;
-import com.improver.ws.WsNotificationService;
 import com.stripe.Stripe;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

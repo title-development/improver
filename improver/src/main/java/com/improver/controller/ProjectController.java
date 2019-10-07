@@ -45,8 +45,7 @@ public class ProjectController {
     @Autowired private ProjectRepository projectRepository;
     @Autowired private ImageService imageService;
     @Autowired private UserSecurityService userSecurityService;
-    @Autowired
-    private ProjectRequestRepository projectRequestRepository;
+    @Autowired private ProjectRequestRepository projectRequestRepository;
 
     @PreAuthorize("hasAnyRole('ANONYMOUS', 'CUSTOMER', 'ADMIN', 'SUPPORT')")
     @PostMapping
@@ -84,6 +83,7 @@ public class ProjectController {
     }
 
 
+    @Deprecated
     @SupportAccess
     @PutMapping(ID_PATH_VARIABLE + "/location")
     public ResponseEntity<Void> updateLocation(@PathVariable long id, @RequestBody Location location ){

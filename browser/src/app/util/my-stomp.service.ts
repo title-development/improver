@@ -4,6 +4,7 @@ import {SecurityService} from "../auth/security.service";
 import {RxStompState} from '@stomp/rx-stomp';
 import {IFrame} from '@stomp/stompjs';
 import {environment} from '../../environments/environment';
+import {PopUpMessageService} from "./pop-up-message.service";
 
 
 @Injectable()
@@ -25,10 +26,15 @@ export class MyStompService extends RxStompService {
     }
   };
 
+  private static readonly INVALID_TOKEN_ERROR = '403: Valid token required';
+  private static readonly TOKEN_EXPIRED_ERROR = '401: Token expired';
+  private static readonly ACCESS_DENIED_EXCEPTION_PART = 'AccessDeniedException';
+
 
 
   public constructor(private securityService: SecurityService,
-                     @Inject('Window') private window: Window) {
+                     @Inject('Window') private window: Window,
+                     private popUpService: PopUpMessageService,) {
     super();
     this.connectionState$.subscribe((state : RxStompState) => {
       if (state == RxStompState.CLOSED && this.initialized) {
@@ -36,14 +42,26 @@ export class MyStompService extends RxStompService {
       }
     });
     this.stompErrors$.subscribe((iframe: IFrame) => {
-      console.log(iframe);
-      let body;
+      let msg: string;
       if (typeof iframe === 'object') {
-        body = iframe.body;
+        if(iframe.command === 'ERROR') {
+          msg = iframe.headers['message'];
+        } else {
+          msg = iframe.body;
+        }
       }
-      if (body.startsWith('Valid token required')) {
+      if (msg.startsWith(MyStompService.TOKEN_EXPIRED_ERROR)){
+        this.reconnectAfter(100)
+      } else if (msg.startsWith(MyStompService.INVALID_TOKEN_ERROR) || msg.includes(MyStompService.ACCESS_DENIED_EXCEPTION_PART)) {
+        console.error(msg);
         this.shutDown();
+        this.popUpService.showError('Error connecting to message broker')
+      } else {
+        console.error(msg);
+        this.shutDown();
+        this.popUpService.showError('Unexpected error during connecting to message broker')
       }
+
     });
   }
 

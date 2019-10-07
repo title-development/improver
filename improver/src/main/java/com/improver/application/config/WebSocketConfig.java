@@ -10,16 +10,13 @@ import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.*;
 import org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean;
 
-import static com.improver.application.properties.Path.WEB_SOCKET_ENDPOINT;
-import static com.improver.application.properties.Path.WS_QUEUE;
-import static com.improver.application.properties.Path.WS_TOPIC;
+import static com.improver.application.properties.Path.*;
 
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    @Autowired
-    private SecurityProperties securityProperties;
+    @Autowired private SecurityProperties securityProperties;
 
     /**
      * Configuration of WebSocket server container
@@ -29,7 +26,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public ServletServerContainerFactoryBean servletServerContainerFactoryBean() {
         ServletServerContainerFactoryBean container = new ServletServerContainerFactoryBean();
         container.setMaxSessionIdleTimeout(securityProperties.wsConnectionIdleMillis());
-        //container.setMaxSessionIdleTimeout(55 * 1000L);
         return container;
     }
 
@@ -41,7 +37,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker(WS_TOPIC, WS_QUEUE); // TODO check this
+        config.setApplicationDestinationPrefixes(WS_APP)
+        .enableSimpleBroker(WS_TOPIC, WS_QUEUE);
     }
 
 
