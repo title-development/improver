@@ -73,6 +73,18 @@
 
     .header-right {
       flex-direction: row;
+
+      .lead-search-icon {
+        display: flex;
+        width: 50px;
+        height: 50px;
+        padding: 0px;
+        align-items: center;
+        justify-content: center;
+        min-width: 50px;
+      }
+
+
       @include response-to(sm) {
         flex-direction: row;
         position: static;

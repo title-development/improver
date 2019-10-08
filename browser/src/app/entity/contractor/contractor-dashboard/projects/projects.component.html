@@ -10,7 +10,7 @@
     </div>
     <div class="tab-search">
       <input cv-input trim [(ngModel)]="searchTerm" (input)="filter()"
-             type="text" placeholder="Type to search">
+             type="text" placeholder="Type to search...">
       <mat-icon class="mat-19" *ngIf="!searchTerm">search</mat-icon>
       <mat-icon class="mat-19 clear" *ngIf="searchTerm" (click)="searchTerm = ''; filter()">close</mat-icon>
     </div>

@@ -4,9 +4,9 @@
          [class.opened]="findProfessionalService.visibilityState | async"
          (click)="findProfessionalService.toggle();">
       <span class="xs-none sm-none">Find Professionals</span>
-      <button class="mobile-menu-button mat-button mat-primary md-none lg-none xlg-none">
+      <button class="mobile-menu-button mat-button md-none lg-none xlg-none">
         <span>
-          <i class="material-icons" *ngIf="!(findProfessionalService.visibilityState | async)">add</i>
+          <i class="material-icons" *ngIf="!(findProfessionalService.visibilityState | async)">search</i>
           <i class="material-icons" *ngIf="findProfessionalService.visibilityState | async">close</i>
         </span>
       </button>

@@ -1,7 +1,7 @@
-import { Component, EventEmitter, HostListener, Input, OnChanges, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { markAsTouched } from '../../util/functions';
 import { ServiceType } from '../../model/data-model';
-import { FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ProjectActionService } from '../../util/project-action.service';
 import { MatDialog } from '@angular/material';
 import { Constants } from '../../util/constants';
@@ -19,6 +19,7 @@ export class MainSearchBarComponent implements OnInit {
   @Input() service: string;
   @Input() zipCode: number;
   @Input() resetAfterFind: boolean = true;
+  @Input() mainButtonText: string = 'GET STARTED';
   @Output() notMatch: EventEmitter<any> = new EventEmitter<any>();
 
   mainSearchFormGroup: FormGroup;

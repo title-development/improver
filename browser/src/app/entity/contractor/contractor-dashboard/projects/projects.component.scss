@@ -62,10 +62,10 @@
     input {
       background-color: $black-150;
       font-size: 14px;
-      padding: 10px 50px 10px 16px;
+      padding: 10px 16px 10px 40px;
       border-radius: 2px;
       &::placeholder {
-        color: #9e9e9e !important;
+        color: $black-400 !important;
         display: block;
         font-size: 14px;
       }
@@ -78,8 +78,8 @@
       margin: 0;
       padding: 0;
       top: 7px;
-      right: 8px;
-      color: #757575;
+      left: 8px;
+      color: $black-500;
       &.clear {
         cursor: pointer;
       }

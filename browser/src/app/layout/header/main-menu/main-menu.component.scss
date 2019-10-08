@@ -93,7 +93,7 @@
   }
 
   .menu-body {
-    padding: 9px 24px;
+    padding: 8px 0px;
 
     &.anonymous {
       padding: 0px;
@@ -166,8 +166,7 @@
 
       h4, a {
         font-size: 12px;
-        padding-bottom: 8px;
-        padding-top: 8px;
+        padding: 8px 24px;
         text-align: left;
         text-transform: uppercase;
       }

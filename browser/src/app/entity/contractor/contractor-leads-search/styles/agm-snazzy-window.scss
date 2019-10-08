@@ -53,7 +53,7 @@
       transform: scale(1, 0);
       transform-origin: 0 100%;
       transition: transform 0ms ease;
-      max-height: 96px;
+      max-height: 100px;
       overflow: hidden;
       position: relative;
       perfect-scrollbar {
@@ -64,7 +64,7 @@
         left: 0;
         .ps-content {
           //padding: 8px 8px 4px;
-          margin: 4px 0px 8px;
+          margin: 4px 0px 4px;
           display: flex;
           flex-direction: column;
         }
@@ -77,12 +77,12 @@
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
-        padding: 10px 8px 0;
+        padding: 8px 8px 4px;
         width: 100%;
         color: #757575;
         transition: color 150ms ease, opacity 0ms ease;
         opacity: 0;
-        font-size: 10px;
+        font-size: 12px;
         line-height: 10px;
         font-weight: 400;
         &:hover {

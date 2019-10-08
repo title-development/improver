@@ -1,6 +1,9 @@
 <div class="container">
+
+  <h1 class="title">What service do you need?</h1>
+
   <div class="search-bar">
-    <main-search-bar [service]="service" [zipCode]="zipCode" [resetAfterFind]="false" (notMatch)="deepSearch($event)"></main-search-bar>
+    <main-search-bar [service]="service" [zipCode]="zipCode" [resetAfterFind]="false" (notMatch)="deepSearch($event)" mainButtonText="FIND"></main-search-bar>
   </div>
   <div class="results">
     <ng-container *ngIf="searchResults.length > 0">

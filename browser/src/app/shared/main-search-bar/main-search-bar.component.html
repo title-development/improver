@@ -17,7 +17,7 @@
     ></cv-select>
     <div class="error-holder" *ngIf="mainSearchFormGroup.get('serviceTypeCtrl').dirty || mainSearchFormGroup.get('serviceTypeCtrl').touched">
       <div *ngIf="mainSearchFormGroup.get('serviceTypeCtrl').errors?.required">
-        Please tell us what do you need.
+        Please tell us what do you need
       </div>
     </div>
 
@@ -35,7 +35,7 @@
 
   </div>
   <div class="submit-button-form-group">
-    <button type="submit">GET STARTED</button>
+    <button type="submit">{{mainButtonText}}</button>
   </div>
 
 </form>

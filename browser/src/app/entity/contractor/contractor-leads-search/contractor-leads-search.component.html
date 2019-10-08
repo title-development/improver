@@ -7,7 +7,7 @@
         <div class="field">
           <mat-icon class="search-icon" color="primary" *ngIf="!search || search == ''">search</mat-icon>
           <mat-icon class="search-icon clear" color="primary" *ngIf="search && search != ''" (click)="search = ''">close</mat-icon>
-          <input type="text" placeholder="Type to search" [(ngModel)]="search"/>
+          <input type="text" placeholder="Type to search..." [(ngModel)]="search"/>
         </div>
         <ng-container *ngIf="mediaQuery?.xs || mediaQuery?.sm || mediaQuery?.md">
           <mat-icon class="close-sidenav" color="primary" (click)="sidenav.close()" *ngIf="sidenav.opened" title="Hide">
@@ -120,7 +120,7 @@
       <ng-template>
         <div class="si-animation-holder" (mouseleave)="onCloseInfoWindow()"
              [ngClass]="{'-content-animate': infoWindowContentAnim }">
-          <div class="list" *ngIf="infoWindowData.leads" [style.height.px]="(infoWindowData.leads.length * 20) + 16">
+          <div class="list" *ngIf="infoWindowData.leads" [style.height.px]="(infoWindowData.leads.length * 22) + 12">
             <perfect-scrollbar>
               <div>
                 <div class="item" *ngFor="let lead of infoWindowData.leads" [title]="lead.serviceType">
@@ -148,7 +148,7 @@
 
 <ng-container *ngIf="mediaQuery?.xs || mediaQuery?.sm || mediaQuery?.md">
   <mat-icon class="open-sidenav" color="primary" (click)="sidenav.open()" title="Search leads">
-    search
+    keyboard_arrow_right
   </mat-icon>
 </ng-container>
 

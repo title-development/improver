@@ -42,6 +42,10 @@
         </div>
       </div>
 
+      <button class="menu-button lead-search-icon md-none lg-none xlg-none" mat-button color="accent" *ngIf="securityService.hasRole(Role.CONTRACTOR)" routerLink="/pro/leads-search">
+        <mat-icon class="mobile-menu-icon">search</mat-icon>
+      </button>
+
       <div class="md-none lg-none xlg-none">
         <find-professionals *ngIf="!securityService.hasRole(Role.CONTRACTOR)"></find-professionals>
       </div>
