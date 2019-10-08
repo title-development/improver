@@ -20,9 +20,9 @@ export class AccountService {
       .put(`${this.baseUrl}/${id}/update`, body, {observe: 'response', responseType: 'text'})
   }
 
-  changePassword(id: string, body: Object): Observable<HttpResponse<any>> {
+  changePassword(body: Object): Observable<HttpResponse<any>> {
     return this.http
-      .put(`${this.baseUrl}/${id}/password`, body, {observe: 'response', responseType: 'text'});
+      .put(`${this.baseUrl}/password`, body, {observe: 'response', responseType: 'text'});
   }
 
   changeEmail(id: number, email: string, password: string): Observable<HttpResponse<any>> {
@@ -34,13 +34,13 @@ export class AccountService {
       .put(`${this.baseUrl}/${id}/email`, params, {observe: 'response', responseType: 'text'});
   }
 
-  updateIconBase64(id: string, icon: string): Observable<HttpResponse<any>> {
+  updateIconBase64(icon: string): Observable<HttpResponse<any>> {
     return this.http
-      .post(`${this.baseUrl}/${id}/base64icon`, icon, {observe: 'response', responseType: 'text'})
+      .post(`${this.baseUrl}/base64icon`, icon, {observe: 'response', responseType: 'text'})
   }
 
-  deleteIcon(accountId: string): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/${accountId}/icon`);
+  deleteIcon(): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/icon`);
   }
 
 }

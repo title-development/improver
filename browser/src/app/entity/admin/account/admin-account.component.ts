@@ -54,7 +54,7 @@ export class AdminAccountComponent {
   }
 
   updateIcon(imageBase64: string): void {
-    this.accountService.updateIconBase64(this.securityService.getLoginModel().id, imageBase64).subscribe(res => {
+    this.accountService.updateIconBase64(imageBase64).subscribe(res => {
       this.popUpService.showSuccess(`Icon has been updated`);
       this.getCurrentUser();
       this.securityService.getCurrentUser();
@@ -79,14 +79,14 @@ export class AdminAccountComponent {
   changePassword(form: NgForm): void {
     const {password, newPassword} = this.oldNewPassword;
     const oldNewValue: OldNewValue = new OldNewValue(password, newPassword);
-    this.accountService.changePassword(this.user.id.toString(), oldNewValue).subscribe(res => {
+    this.accountService.changePassword(oldNewValue).subscribe(res => {
       this.popUpService.showSuccess(`Password has been updated`);
       form.resetForm();
     }, err => this.popUpService.showError(`Could not change password. ${getErrorMessage(err)}`));
   }
 
   deleteAccountImage(): void {
-    this.accountService.deleteIcon(this.securityService.getLoginModel().id).subscribe(
+    this.accountService.deleteIcon().subscribe(
       () => {
         this.popUpService.showSuccess('Account icon has been deleted');
         this.getCurrentUser();

@@ -6,7 +6,7 @@
     <div class="ui-grid-row ui-grid-field">
       <div class="ui-grid-col-2"><label for="icon">Icon</label></div>
       <div class="ui-grid-col-6">
-        <image-cropper confirmTitle="Delete company logo" id="icon" [image]="user.iconUrl"
+        <image-cropper id="icon" [image]="user.iconUrl"
                        (fileChange)="updateIcon($event)" (delete)="deleteAccountImage()"></image-cropper>
       </div>
     </div>

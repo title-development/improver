@@ -177,6 +177,16 @@ public class UserService {
     }
 
 
+    public void deleteIcon(User user) {
+        String imageUrl = user.getIconUrl();
+        if (imageUrl == null || imageUrl.isEmpty()) {
+            throw new NotFoundException();
+        }
+        imageService.silentDelete(imageUrl);
+        updateIcon(user, null);
+    }
+
+
     public User activateUser(UserActivation activation) {
         log.info(activation.toString());
         User user = userRepository.findByValidationKey(activation.getToken())

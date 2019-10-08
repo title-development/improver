@@ -163,7 +163,7 @@ export class PersonalInfoComponent implements OnDestroy {
     this.passwordUpdateProcessing = true;
     let oldNewValue: OldNewValue = {oldValue: this.oldNewPassword.password, newValue: this.oldNewPassword.newPassword};
     this.accountService
-      .changePassword(this.securityService.getLoginModel().id, oldNewValue)
+      .changePassword(oldNewValue)
       .subscribe(
         response => {
           this.popupService.showSuccess('Your password has been changed successfully!');
@@ -184,7 +184,7 @@ export class PersonalInfoComponent implements OnDestroy {
     this.photoDialogRef.componentInstance.onPhotoReady.pipe(
       switchMap(
         (base64: string) => {
-          return this.accountService.updateIconBase64(this.securityService.getLoginModel().id, base64);
+          return this.accountService.updateIconBase64(base64);
         }
       )
     ).subscribe(
@@ -199,7 +199,7 @@ export class PersonalInfoComponent implements OnDestroy {
   }
 
   deleteAccountImage(): void {
-    this.accountService.deleteIcon(this.securityService.getLoginModel().id).subscribe(
+    this.accountService.deleteIcon().subscribe(
       () => {
         this.setUserIconUrl(null);
         this.popupService.showSuccess('Account icon has been deleted');

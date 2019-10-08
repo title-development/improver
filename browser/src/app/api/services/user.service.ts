@@ -39,12 +39,12 @@ export class UserService {
   }
 
 
-  getNotificationSettings(userId: any): Observable<CustomerNotificationSettings> {
-    return this.http.get<CustomerNotificationSettings>(`${this.url}/${userId}${this.notificationsUrl}`);
+  getNotificationSettings(): Observable<CustomerNotificationSettings> {
+    return this.http.get<CustomerNotificationSettings>(`${this.url}${this.notificationsUrl}`);
   }
 
-  updateNotificationSettings(userId: any, notificationSettings: CustomerNotificationSettings) {
-    return this.http.put(`${this.url}/${userId}${this.notificationsUrl}`, notificationSettings);
+  updateNotificationSettings(notificationSettings: CustomerNotificationSettings) {
+    return this.http.put(`${this.url}${this.notificationsUrl}`, notificationSettings);
   }
 
   getAllContractors(filters: any, pagination: Pagination): Observable<RestPage<AdminContractor>> {

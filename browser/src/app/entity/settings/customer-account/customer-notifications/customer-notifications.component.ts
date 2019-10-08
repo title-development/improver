@@ -37,7 +37,7 @@ export class CustomerNotificationsComponent {
   }
 
   getNotificationSettings() {
-    this.userService.getNotificationSettings(this.securityService.getLoginModel().id).subscribe(
+    this.userService.getNotificationSettings().subscribe(
       notificationSettings => {
         this.notificationSettings = notificationSettings;
       },
@@ -48,7 +48,7 @@ export class CustomerNotificationsComponent {
   }
 
   updateNotificationSettings() {
-    this.userService.updateNotificationSettings(this.securityService.getLoginModel().id, this.notificationSettings).subscribe(
+    this.userService.updateNotificationSettings(this.notificationSettings).subscribe(
       responce => {
         this.popUpService.showSuccess("Your notification settings updated successfully")
       },
