@@ -1,5 +1,6 @@
 package com.improver.controller;
 
+import com.improver.entity.Customer;
 import com.improver.entity.User;
 import com.improver.exception.ConflictException;
 import com.improver.model.out.LoginModel;
@@ -38,7 +39,7 @@ public class ConfirmationController {
         String validationKey = jwtUtil.parseActivationJWT(userActivation.getToken(), null);
         userActivation.setToken(validationKey);
         User user = userService.activateUser(userActivation);
-        leadService.putCustomerProjectsToMarket(user);
+        leadService.putCustomerProjectsToMarket((Customer) user);
 
         LoginModel loginModel = userSecurityService.performUserLogin(user, res);
         return new ResponseEntity<>(loginModel, HttpStatus.OK);

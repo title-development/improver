@@ -40,6 +40,7 @@ public class UserService {
     @Autowired private MailService mailService;
     @Autowired private ImageService imageService;
     @Autowired private CompanyRepository companyRepository;
+    @Autowired private LeadService leadService;
     @Autowired private StaffRepository staffRepository;
     @Autowired private SocialConnectionRepository socialConnectionRepository;
     @Autowired private StaffActionLogger staffActionLogger;
@@ -269,7 +270,17 @@ public class UserService {
             .orElseThrow(() -> new ConflictException("Confirmation link is invalid"));
         user.setValidationKey(null);
         user.setPassword(activation.getPassword());
+        boolean activated = false;
+        if (!user.isActivated()){
+            user.setActivated(true);
+            activated = true;
+        }
+
         user = userRepository.save(user);
+
+        if (user instanceof Customer && activated){
+            leadService.putCustomerProjectsToMarket((Customer) user);
+        }
         log.info("User={} restored password", user.getEmail());
         return user;
     }

@@ -300,15 +300,13 @@ public class LeadService {
         return Collections.emptyList();
     }
 
-    public void putCustomerProjectsToMarket(User user) {
-        if (user.getRole().equals(User.Role.CUSTOMER)) {
-            List<Project> projects = projectRepository.findByCustomerIdAndIsLeadAndStatusIn(user.getId(), false, Project.Status.getActive());
+    public void putCustomerProjectsToMarket(Customer customer) {
+            List<Project> projects = projectRepository.findByCustomerIdAndIsLeadAndStatusIn(customer.getId(), false, Project.Status.getActive());
             projects.forEach(lead -> {
                 lead.setLead(true);
                 projectRepository.save(lead);
                 matchLeadWithSubscribers(lead);
             });
-        }
     }
 
 }
