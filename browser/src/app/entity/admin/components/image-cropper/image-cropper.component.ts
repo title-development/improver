@@ -153,9 +153,8 @@ export class ImageCropperComponent implements ControlValueAccessor, OnInit {
   removeImage(event: Event): void {
     this.confirmationService.confirm({
       header: this.confirmTitle,
-      message: `Do you want to delete image?`,
+      message: `Do you want to delete the icon?`,
       accept: () => {
-        this.fileChange.emit(null);
         this.delete.emit();
         this.image = null;
         this.onChange('')

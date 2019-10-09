@@ -37,8 +37,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.setApplicationDestinationPrefixes(WS_APP)
-        .enableSimpleBroker(WS_TOPIC, WS_QUEUE);
+        config
+            //.setApplicationDestinationPrefixes(WS_APP) // removes prefix from endpoint on the server-side
+            .enableSimpleBroker(WS_TOPIC, WS_QUEUE);
     }
 
 

@@ -144,7 +144,7 @@ public class Notification {
     public static Notification projectToValidation(User receiver, String serviceType, long projectId){
         return new Notification().setUser(receiver)
             .setIcon(SYSTEM_NOTIFICATION_ICON)
-            .setPayload(String.format("Your <b>%s</b> project has been sent to manual validation", serviceType))
+            .setPayload(String.format("Your <b>%s</b> project sent to validation", serviceType))
             .setLink(CUSTOMER_PROJECTS + projectId);
     }
 

@@ -356,7 +356,7 @@ export class ProjectActionService {
 
   closeProject(project: ContractorProjectShort) {
     let properties = {
-      title: 'Are you sure want to close <b>' + project.serviceType + '</b> project',
+      title: 'Are you sure want to close <b>' + project.serviceType + '</b> project?',
       message: 'By proceeding, a project will be closed for you, and no further guarantees regarding last would be provided.',
       OK: 'Close',
       CANCEL: 'No'
@@ -415,7 +415,7 @@ export class ProjectActionService {
 
   leaveProject(project: ContractorProjectShort) {
     let properties = {
-      title: 'Are you sure want to leave <b>' + project.serviceType + '</b> project',
+      title: 'Are you sure want to leave <b>' + project.serviceType + '</b> project?',
       message: 'By proceeding, a project will be closed for you, and no further guarantees regarding last would be provided.',
       OK: 'Leave',
       CANCEL: 'No'

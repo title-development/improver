@@ -105,7 +105,7 @@ export class PersonalInfoComponent implements OnDestroy {
         .updateAccount(this.securityService.getLoginModel().id, this.account)
         .subscribe(
           response => {
-            this.popupService.showSuccess('Profile is successfully updated!');
+            this.popupService.showSuccess('User details is updated!');
             this.securityService.getCurrentUser();
             Object.values(form.controls).forEach(control => {
               control.markAsPristine();

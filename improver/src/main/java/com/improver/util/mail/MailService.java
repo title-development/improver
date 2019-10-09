@@ -257,7 +257,7 @@ public class MailService {
         String serviceType = project.getServiceType().getName();
         context.setVariable(USER_NAME, customer.getFirstName());
         context.setVariable(TITLE, "Your project has been submitted!");
-        context.setVariable(BODY, "You've submitted  a project request for "
+        context.setVariable(BODY, "You've requested "
             + highlight(serviceType) +
             ". If you didn't do this action, please ignore this mail.");
         context.setVariable("projectDetails", details);
@@ -267,7 +267,7 @@ public class MailService {
     }
 
     /**
-     * Send email about new proposal form Contractor.
+     * Send email about new request form Contractor.
      *
      * @param company contractor that purchased lead
      * @param project project that is purchased
@@ -276,9 +276,9 @@ public class MailService {
         Customer customer = project.getCustomer();
         Context context = contextTemplate();
         context.setVariable(USER_NAME, customer.getFirstName());
-        context.setVariable(TITLE, "You have new Professional's request to your project");
-        context.setVariable(BODY, "New proposal from " +
-            highlight(company.getName()) + " about " +
+        context.setVariable(TITLE, "You have new project request");
+        context.setVariable(BODY, "New request from " +
+            highlight(company.getName()) + " on " +
             highlight(project.getServiceType().getName()));
         context.setVariable(CONFIRM_URL, siteUrl + CUSTOMER_PROJECTS + project.getId());
         context.setVariable(CONFIRM_BTN_TEXT, "View project");
@@ -314,7 +314,7 @@ public class MailService {
                 body.append(" invalidated.");
                 break;
             case VALIDATION:
-                body.append(" sent to manual validation.");
+                body.append(" sent to validation.");
                 break;
             case ACTIVE:
             case IN_PROGRESS:
@@ -369,7 +369,7 @@ public class MailService {
         context.setVariable(BODY, message);
         context.setVariable(CONFIRM_URL, siteUrl + COMPANIES + SLASH + pro.getCompany().getId() + "?review-token=" + token);
         context.setVariable(CONFIRM_BTN_TEXT, "Write a review");
-        mailClient.sendMail("Review " + pro.getCompany().getName(), CONFIRMATION_TEMPLATE, context, MailHolder.MessageType.NOREPLY, email);
+        mailClient.sendMail("Rate " + pro.getCompany().getName(), CONFIRMATION_TEMPLATE, context, MailHolder.MessageType.NOREPLY, email);
     }
 
     /**
@@ -382,11 +382,12 @@ public class MailService {
     public void sendNewRequestReview(Company company, ProjectRequest projectRequest, String email) {
         Context context = contextTemplate();
         String messageText = String.format("Could you please share your experience with %s on your recent project %s? It only takes a few seconds, and would really help us.", company.getName(), projectRequest.getProject().getServiceType().getName());
-        context.setVariable(TITLE, "How was your experience with " + company.getName());
+        context.setVariable(CONTENT_ALIGN, "left");
+        context.setVariable(TITLE, String.format("How was your experience with %s?", company.getName()));
         context.setVariable(BODY, messageText);
         context.setVariable(CONFIRM_URL, siteUrl + UI_CUSTOMER_BASE_PATH + PROJECTS + SLASH + projectRequest.getProject().getId() + "#" + projectRequest.getId());
         context.setVariable(CONFIRM_BTN_TEXT, "Leave a review");
-        mailClient.sendMail("Review " + company.getName(), CONFIRMATION_TEMPLATE, context, MailHolder.MessageType.NOREPLY, email);
+        mailClient.sendMail("Rate " + company.getName(), CONFIRMATION_TEMPLATE, context, MailHolder.MessageType.NOREPLY, email);
     }
 
     /**
@@ -423,7 +424,7 @@ public class MailService {
             highlight(project.getCustomer().getDisplayName()));
         context.setVariable(CONFIRM_URL, siteUrl + PRO_PROJECTS + projectRequest.getId());
         context.setVariable(CONFIRM_BTN_TEXT, "View project");
-        mailClient.sendMail("New lead by subscription", CONFIRMATION_TEMPLATE, context, MailHolder.MessageType.BILLING, getRecipients(company));
+        mailClient.sendMail("New subscription lead", CONFIRMATION_TEMPLATE, context, MailHolder.MessageType.BILLING, getRecipients(company));
     }
 
 
@@ -512,7 +513,7 @@ public class MailService {
         context.setVariable(BODY, "Your monthly subscription has expired on " + highlight(date) + ".");
         context.setVariable(CONFIRM_URL, siteUrl + BILLING_URL);
         context.setVariable(CONFIRM_BTN_TEXT, "Check billing");
-        mailClient.sendMail("Subscription for Home Improve expired", CONFIRMATION_TEMPLATE, context, MailHolder.MessageType.BILLING, getRecipients(company));
+        mailClient.sendMail("Subscription for Home Improve has expired", CONFIRMATION_TEMPLATE, context, MailHolder.MessageType.BILLING, getRecipients(company));
     }
 
     private String getLast4DigitsSilent(Company company) {
@@ -524,17 +525,19 @@ public class MailService {
 
     public void sendSubscriptionProlongation(Company company, int charged, int budget, ZonedDateTime nextBillingDate) {
         Context context = contextTemplate();
-        String subject = "Successful payment for Home Improve subscription";
+        String subject;
         String date = nextBillingDate.format(DateTimeFormatter.ISO_LOCAL_DATE);
         String last4digits = getLast4DigitsSilent(company);
 
         context.setVariable(TITLE, "Subscription is prolonged for next billing period");
         StringBuilder body = new StringBuilder("Thank you for being a member of Home Improve. ");
         if (charged > 0) {
+            subject = "Successful payment for Home Improve subscription";
             body.append("We successfully charged ").append(highlight(formatUsd(charged)))
                 .append(" to your credit card ending in ").append(last4digits)
                 .append(" to fulfill Subscription Budget of $").append(SerializationUtil.centsToUsd(budget));
         } else {
+            subject = "Subscription prolonged";
             body.append(" We reserved $").append(SerializationUtil.centsToUsd(budget)).append(" on balance for Subscription Budget of $").append(SerializationUtil.centsToUsd(budget));
         }
         body.append("<br/>");
@@ -663,10 +666,9 @@ public class MailService {
      * @param company current company
      */
     private String[] getRecipients(Company company) {
-        String[] emails = company.getContractors().stream()
+        return company.getContractors().stream()
             .map(User::getEmail)
             .toArray(String[]::new);
-        return emails;
     }
 
     public void sendBalanceReplenished(Company company, int amount) {
