@@ -1,17 +1,19 @@
-import {Component, OnInit} from '@angular/core';
-import {MatDialog} from '@angular/material';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {ServiceType, Trade} from '../../model/data-model';
-import {ServiceTypeService} from '../../api/services/service-type.service';
-import {TradeService} from '../../api/services/trade.service';
-import {Constants} from '../../util/constants';
-import {QuestionaryControlService} from '../../util/questionary-control.service';
-import {ProjectActionService} from '../../util/project-action.service';
-import {MediaQueryService} from '../../util/media-query.service';
-import {markAsTouched} from '../../util/functions';
-import {Router} from '@angular/router';
-import {FindProfessionalService} from '../../util/find-professional.service';
-import {PopUpMessageService} from "../../util/pop-up-message.service";
+import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ServiceType, Trade } from '../../model/data-model';
+import { ServiceTypeService } from '../../api/services/service-type.service';
+import { TradeService } from '../../api/services/trade.service';
+import { Constants } from '../../util/constants';
+import { QuestionaryControlService } from '../../util/questionary-control.service';
+import { ProjectActionService } from '../../util/project-action.service';
+import { MediaQueryService } from '../../util/media-query.service';
+import { getErrorMessage, markAsTouched } from '../../util/functions';
+import { Router } from '@angular/router';
+import { FindProfessionalService } from '../../util/find-professional.service';
+import { PopUpMessageService } from "../../util/pop-up-message.service";
+import { combineLatest } from "rxjs";
+import * as lunr from "lunr";
 
 @Component({
   selector: 'find-professionals',
@@ -28,15 +30,17 @@ export class FindProfessionalsComponent implements OnInit {
   serviceTypes: Array<ServiceType> = [];
   popularServiceSize: Number;
   popularTrades: Array<Trade> = [];
+  lunrIndex;
 
   constructor(private serviceTypeService: ServiceTypeService,
               private questionaryControlService: QuestionaryControlService,
               private tradeService: TradeService,
+              private router: Router,
+              private popUpService: PopUpMessageService,
               public dialog: MatDialog,
               public projectActionService: ProjectActionService,
               public constants: Constants,
               public media: MediaQueryService,
-              private router: Router,
               public findProfessionalService: FindProfessionalService) {
     let group: any = {};
 
@@ -50,7 +54,6 @@ export class FindProfessionalsComponent implements OnInit {
     this.serviceTypeCtrl = group.serviceTypeCtrl;
 
     this.getSuggestedServiceTypes();
-    this.getPopularServiceTypes();
     this.getPopularTrades();
     this.getServiceTypes();
 
@@ -66,12 +69,16 @@ export class FindProfessionalsComponent implements OnInit {
 
   autocompleteSearch(search): void {
     if (search) {
-      this.filteredServiceTypes = this.serviceTypes.filter(service => {
-        const regExp: RegExp = new RegExp(`\\b${search}`, 'gmi');
-        return regExp.test(service.name);
-      });
+      this.deepSearch(search);
     } else if (this.filteredServiceTypes.length > 0) {
-      this.filteredServiceTypes = this.serviceTypes;
+      this.filteredServiceTypes = this.popularServiceTypes;
+    }
+  }
+
+  deepSearch(search: string) {
+    if(this.lunrIndex) {
+      this.filteredServiceTypes = this.lunrIndex.search(`${search}*`)
+        .map(item => this.serviceTypes.find(service => item.ref == service.id));
     }
   }
 
@@ -83,13 +90,6 @@ export class FindProfessionalsComponent implements OnInit {
     this.serviceTypeService.suggested$
       .subscribe(
         suggestedServiceTypes => this.suggestedServiceTypes = suggestedServiceTypes
-      );
-  }
-
-  getPopularServiceTypes() {
-    this.serviceTypeService.popular$
-      .subscribe(
-        popularServiceTypes => this.popularServiceTypes = popularServiceTypes
       );
   }
 
@@ -135,21 +135,30 @@ export class FindProfessionalsComponent implements OnInit {
   }
 
   getServiceTypes(): void {
-    this.serviceTypeService.serviceTypes$
-      .subscribe(
-        (serviceTypes: Array<ServiceType>) => {
-          this.serviceTypes = this.filteredServiceTypes = serviceTypes;
-        },
-        err => {
-          console.log(err);
-        });
+    let requests = combineLatest(this.serviceTypeService.serviceTypes$, this.serviceTypeService.popular$);
+
+    requests.subscribe(
+      results => {
+        let serviceTypes = results[0];
+        let popularServiceTypes = results[1];
+        if (serviceTypes && serviceTypes.length > 0) {
+          this.lunrIndex = lunr(function () {
+            this.ref('id');
+            this.field('name');
+            serviceTypes.forEach(service => this.add(service));
+          });
+          this.serviceTypes = serviceTypes;
+          this.filteredServiceTypes = this.popularServiceTypes = popularServiceTypes;
+        }
+      },
+      err => this.popUpService.showError(getErrorMessage(err)));
   }
 
   selectTrackBy(index: number, item: ServiceType): number {
     return item.id;
   }
 
-  mouseleave(event: KeyboardEvent): void {
+  mouseleave(event: Event): void {
     Object.values(this.mainSearchFormGroup.controls).forEach(control => {
       if (!control.value) {
         control.reset();

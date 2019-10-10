@@ -19,8 +19,7 @@
               #form="ngForm"
               [formGroup]="mainSearchFormGroup"
               (ngSubmit)="searchServiceType(mainSearchFormGroup)"
-              (mouseleave)="mouseleave($event)"
-        >
+              (mouseleave)="mouseleave($event)">
           <div class="service-type-form-group">
             <cv-select class="main-search-service-input"
                        label="Find service or professionals"
@@ -34,8 +33,7 @@
                        [propagateEnterEvent]="true"
                        [dropdownBorder]="false"
                        (autocompleteSearch)="autocompleteSearch($event)"
-                       (onClose)="mouseleave($event)"
-            ></cv-select>
+                       (onClose)="mouseleave($event)"></cv-select>
 
             <div class="messages-block"
                  *ngIf="mainSearchFormGroup.get('serviceTypeCtrl').dirty || mainSearchFormGroup.get('serviceTypeCtrl').touched">

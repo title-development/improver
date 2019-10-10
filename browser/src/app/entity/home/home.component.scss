@@ -1,0 +1,7 @@
+@import "../../../improver-mixins.scss";
+
+main-guide {
+  @include response-to(sm) {
+    display: none;
+  }
+}

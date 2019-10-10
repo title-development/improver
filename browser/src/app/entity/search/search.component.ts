@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
-import { CompanyInfo, Pagination, ServiceType } from '../../model/data-model';
+import { CompanyInfo, ServiceType } from '../../model/data-model';
 import { CompanyService } from '../../api/services/company.service';
 import { Subscription } from 'rxjs';
 import { PopUpMessageService } from '../../util/pop-up-message.service';
@@ -8,6 +8,7 @@ import { RestPage } from '../../api/models/RestPage';
 import { ServiceTypeService } from '../../api/services/service-type.service';
 import { ProjectActionService } from '../../util/project-action.service';
 import * as lunr from 'lunr';
+import { getErrorMessage } from "../../util/functions";
 
 
 @Component({
@@ -31,13 +32,14 @@ export class SearchComponent implements OnInit, OnDestroy {
   private companyService$: Subscription;
   private lunrIndex;
   private serviceTypes: Array<ServiceType>;
+  popularServiceTypes: Array<ServiceType> = [];
 
   constructor(private activatedRoute: ActivatedRoute,
               private companyService: CompanyService,
               public projectActionService: ProjectActionService,
               private popUpService: PopUpMessageService,
               private serviceTypeService: ServiceTypeService) {
-
+    this.getPopularServices();
   }
 
   ngOnInit(): void {
@@ -48,13 +50,24 @@ export class SearchComponent implements OnInit, OnDestroy {
     });
   }
 
+  getPopularServices() {
+    this.serviceTypeService.popular$.subscribe(
+      popularServiceTypes => this.popularServiceTypes = popularServiceTypes,
+      err => this.popUpService.showError(getErrorMessage(err))
+    )
+  }
+
   deepSearch(data: { service: string, zip: string }) {
     this.zip = data.zip;
     this.search = data.service;
-    if(this.lunrIndex && this.search.length > 2) {
+    if (this.lunrIndex) {
       this.searchResults = this.lunrIndex.search(`${this.search}*`)
         .map(item => this.serviceTypes.find(service => item.ref == service.id))
         .filter((el, index) => index <= this.page * this.size);
+    }
+
+    if (this.searchResults.length == 0) {
+      this.searchResults = this.popularServiceTypes;
     }
   }
 

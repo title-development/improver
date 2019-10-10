@@ -1,14 +1,15 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { markAsTouched } from '../../util/functions';
+import { getErrorMessage, markAsTouched } from '../../util/functions';
 import { ServiceType } from '../../model/data-model';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ProjectActionService } from '../../util/project-action.service';
 import { MatDialog } from '@angular/material';
 import { Constants } from '../../util/constants';
 import { ServiceTypeService } from '../../api/services/service-type.service';
-
-
 import { Router } from '@angular/router';
+import * as lunr from "lunr";
+import { combineLatest } from "rxjs";
+import { PopUpMessageService } from "../../util/pop-up-message.service";
 
 @Component({
   selector: 'main-search-bar',
@@ -26,12 +27,15 @@ export class MainSearchBarComponent implements OnInit {
   serviceTypeCtrl: FormControl;
   filteredServiceTypes: Array<ServiceType> = [];
   serviceTypes: Array<ServiceType> = [];
+  popularServiceTypes: Array<ServiceType> = [];
+  private lunrIndex;
 
   constructor(public dialog: MatDialog,
               public projectActionService: ProjectActionService,
               public constants: Constants,
               private serviceTypeService: ServiceTypeService,
-              private router: Router) {
+              private router: Router,
+              private popUpService: PopUpMessageService) {
     this.getServiceTypes();
   }
 
@@ -46,14 +50,25 @@ export class MainSearchBarComponent implements OnInit {
   autocompleteSearch(search): void {
     setTimeout(() => {
       if (search) {
-        this.filteredServiceTypes = this.serviceTypes.filter(service => {
-          const regExp: RegExp = new RegExp(`\\b${search}`, 'gmi');
-          return regExp.test(service.name);
-        });
+        this.deepSearch(search);
       } else if (this.filteredServiceTypes.length > 0) {
-        this.filteredServiceTypes = this.serviceTypes;
+        this.filteredServiceTypes = this.popularServiceTypes;
       }
     }, 0);
+  }
+
+  searchByRegex(search: string) {
+    this.filteredServiceTypes = this.serviceTypes.filter(service => {
+      const regExp: RegExp = new RegExp(`\\b${search}`, 'gmi');
+      return regExp.test(service.name);
+    });
+  }
+
+  deepSearch(search: string) {
+    if(this.lunrIndex) {
+      this.filteredServiceTypes = this.lunrIndex.search(`${search}*`)
+        .map(item => this.serviceTypes.find(service => item.ref == service.id));
+    }
   }
 
   searchServiceType(form: FormGroup): void {
@@ -97,19 +112,26 @@ export class MainSearchBarComponent implements OnInit {
   }
 
   getServiceTypes(): void {
-    this.serviceTypeService.serviceTypes$
-      .subscribe(
-        (serviceTypes: Array<ServiceType>) => {
+    let requests = combineLatest(this.serviceTypeService.serviceTypes$, this.serviceTypeService.popular$);
+
+    requests.subscribe(
+        results => {
+          let serviceTypes = results[0];
+          let popularServiceTypes = results[1];
           if (serviceTypes && serviceTypes.length > 0) {
-            this.serviceTypes = this.filteredServiceTypes = serviceTypes;
+            this.lunrIndex = lunr(function () {
+              this.ref('id');
+              this.field('name');
+              serviceTypes.forEach(service => this.add(service));
+            });
+            this.serviceTypes = serviceTypes;
+            this.filteredServiceTypes = this.popularServiceTypes = popularServiceTypes;
             if (this.service && this.zipCode) {
               this.searchServiceType(this.mainSearchFormGroup);
             }
           }
         },
-        err => {
-          console.log(err);
-        });
+        err => this.popUpService.showError(getErrorMessage(err)));
   }
 
   selectTrackBy(index: number, item: ServiceType): number {

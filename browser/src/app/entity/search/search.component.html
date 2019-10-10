@@ -3,7 +3,7 @@
   <h1 class="title">What service do you need?</h1>
 
   <div class="search-bar">
-    <main-search-bar [service]="service" [zipCode]="zipCode" [resetAfterFind]="false" (notMatch)="deepSearch($event)" mainButtonText="FIND"></main-search-bar>
+    <main-search-bar [service]="service" [zipCode]="zipCode" [resetAfterFind]="false" (notMatch)="deepSearch($event)" mainButtonText="SEARCH"></main-search-bar>
   </div>
   <div class="results">
     <ng-container *ngIf="searchResults.length > 0">
@@ -12,7 +12,7 @@
             <a (click)="projectActionService.openQuestionary(service, zipCode)">{{service.name}}</a>
         </div>
       </ng-template>
-      <cv-button-empty class="load-more" *ngIf="searchResults.length > size * page" (click)="loadMore()">Load More</cv-button-empty>
+      <cv-button-flat class="load-more" *ngIf="searchResults.length > size * page" (click)="loadMore()">Show More</cv-button-flat>
     </ng-container>
     <div class="not-found" *ngIf="searchResults.length == 0">We could not find any services from your request</div>
   </div>

@@ -113,6 +113,7 @@
 
         @include response-to(sm) {
           max-width: 100%!important;
+          width: 90%;
         }
 
         @include response(xs) {

@@ -10,7 +10,7 @@
           <input type="text" placeholder="Type to search..." [(ngModel)]="search"/>
         </div>
         <ng-container *ngIf="mediaQuery?.xs || mediaQuery?.sm || mediaQuery?.md">
-          <mat-icon class="close-sidenav" color="primary" (click)="sidenav.close()" *ngIf="sidenav.opened" title="Hide">
+          <mat-icon class="close-sidenav" color="primary" (click)="sidenav.close()" *ngIf="sidenav.opened" title="Hide" cdkFocusIntial>
             keyboard_arrow_left
           </mat-icon>
         </ng-container>
