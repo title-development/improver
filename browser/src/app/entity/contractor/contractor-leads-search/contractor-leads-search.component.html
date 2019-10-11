@@ -1,5 +1,5 @@
 <mat-sidenav-container>
-  <mat-sidenav #sidenav [opened]="isSidebarOpen" [disableClose]="true" [mode]="'over'">
+  <mat-sidenav #sidenav [opened]="isSidebarOpen" [disableClose]="true" [mode]="'over'" [autoFocus]="false">
     <div class="loading-backdrop" [ngClass]="{'loading': mapContentIsLoading}"></div>
 
     <div class="leads-panel" #leadsPanel>
@@ -10,7 +10,7 @@
           <input type="text" placeholder="Type to search..." [(ngModel)]="search"/>
         </div>
         <ng-container *ngIf="mediaQuery?.xs || mediaQuery?.sm || mediaQuery?.md">
-          <mat-icon class="close-sidenav" color="primary" (click)="sidenav.close()" *ngIf="sidenav.opened" title="Hide" cdkFocusIntial>
+          <mat-icon class="close-sidenav" color="primary" (click)="sidenav.close()" *ngIf="sidenav.opened" title="Hide">
             keyboard_arrow_left
           </mat-icon>
         </ng-container>

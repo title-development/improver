@@ -14,6 +14,6 @@
       </ng-template>
       <cv-button-flat class="load-more" *ngIf="searchResults.length > size * page" (click)="loadMore()">Show More</cv-button-flat>
     </ng-container>
-    <div class="not-found" *ngIf="searchResults.length == 0">We could not find any services from your request</div>
+    <div class="not-found" *ngIf="searchResults.length == 0 && !loading">We could not find any services from your request</div>
   </div>
 </div>

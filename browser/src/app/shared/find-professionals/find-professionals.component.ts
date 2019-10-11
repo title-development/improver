@@ -69,7 +69,7 @@ export class FindProfessionalsComponent implements OnInit {
 
   autocompleteSearch(search): void {
     if (search) {
-      this.deepSearch(search);
+      this.deepSearch(search.trim());
     } else if (this.filteredServiceTypes.length > 0) {
       this.filteredServiceTypes = this.popularServiceTypes;
     }

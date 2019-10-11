@@ -23,6 +23,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   notFound: boolean;
   searchResults: Array<ServiceType> = [];
   pageable: RestPage<CompanyInfo> = new RestPage<CompanyInfo>();
+  loading = false;
 
   private page = 1;
   private size = 35;
@@ -86,16 +87,23 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   private indexServiceTypes() {
+    this.loading = true;
     if (!this.lunrIndex) {
-      this.serviceTypeService.serviceTypes$.subscribe((services: Array<ServiceType>) => {
-        this.serviceTypes = services;
-        this.lunrIndex = lunr(function () {
-          this.ref('id');
-          this.field('name');
-          services.forEach(service => this.add(service));
-        });
-        this.deepSearch({service: this.service, zip: this.zipCode});
-      });
+      this.serviceTypeService.serviceTypes$
+        .subscribe((services: Array<ServiceType>) => {
+            this.serviceTypes = services;
+            this.lunrIndex = lunr(function () {
+              this.ref('id');
+              this.field('name');
+              services.forEach(service => this.add(service));
+            });
+            this.deepSearch({service: this.service, zip: this.zipCode});
+            this.loading = false;
+          },
+          err => {
+            this.popUpService.showError(getErrorMessage(err));
+            this.loading = false
+          })
     }
   }
 }

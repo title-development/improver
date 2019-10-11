@@ -50,7 +50,7 @@ export class MainSearchBarComponent implements OnInit {
   autocompleteSearch(search): void {
     setTimeout(() => {
       if (search) {
-        this.deepSearch(search);
+        this.deepSearch(search.trim());
       } else if (this.filteredServiceTypes.length > 0) {
         this.filteredServiceTypes = this.popularServiceTypes;
       }
