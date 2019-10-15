@@ -129,4 +129,9 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     Optional<Project> findByIdAndCustomerId(Long id, Long customerId);
 
     List<Project> findByCustomerIdAndIsLeadAndStatusIn(long customerId, boolean isLead, List<Project.Status> statuses);
+
+    @Query(value = "SELECT zip FROM projects p " +
+        "WHERE p.customer_id = :customerId " +
+        "ORDER BY p.created DESC LIMIT 1", nativeQuery = true)
+    String findLastZipCodeByCustomerId(long customerId);
 }

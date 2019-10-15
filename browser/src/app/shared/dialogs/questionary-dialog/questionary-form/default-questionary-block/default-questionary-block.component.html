@@ -9,7 +9,8 @@
          [cvSpinnerBackground]="true">
       <cv-input-field>
         <cv-field-label>Zip</cv-field-label>
-        <input cv-input type="text"
+        <input [(ngModel)]="lastZipCode"
+               cv-input type="text"
                placeholder="Zip"
                name="zip"
                maxlength="5"

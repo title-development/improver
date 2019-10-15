@@ -1,4 +1,4 @@
-import { throwError as observableThrowError, Observable } from 'rxjs';
+import { throwError as observableThrowError, Observable, ReplaySubject } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { Account } from '../../model/data-model';
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
@@ -6,6 +6,9 @@ import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 @Injectable()
 export class AccountService {
   baseUrl = 'api/users';
+  private _lastZipCod$: ReplaySubject<string> = new ReplaySubject<string>(1);
+
+  private lastZipCached: boolean = false;
 
   constructor(private http: HttpClient) {
   }
@@ -37,6 +40,28 @@ export class AccountService {
   updateIconBase64(icon: string): Observable<HttpResponse<any>> {
     return this.http
       .post(`${this.baseUrl}/base64icon`, icon, {observe: 'response', responseType: 'text'})
+  }
+
+  get LastCustomerZipCode$(): ReplaySubject<string> {
+    if (!this.lastZipCached) {
+      this.lastZipCached = true;
+      this.getLastCustomerZipCode().subscribe(lastCustomerZipCode => {
+          if (!lastCustomerZipCode){
+            this.lastZipCached = false;
+          }
+          this._lastZipCod$.next(lastCustomerZipCode);
+        },
+        error => {
+          this.lastZipCached = false;
+          console.log(error);
+        });
+    }
+    return this._lastZipCod$;
+  }
+
+  getLastCustomerZipCode(): Observable<any>{
+    return this.http
+      .get(`${this.baseUrl}/last-zip`, {responseType: 'text'});
   }
 
   deleteIcon(): Observable<any> {

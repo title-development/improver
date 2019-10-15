@@ -1,3 +1,4 @@
+import { AccountService } from "../../api/services/account.service";
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -14,6 +15,7 @@ import { FindProfessionalService } from '../../util/find-professional.service';
 import { PopUpMessageService } from "../../util/pop-up-message.service";
 import { combineLatest } from "rxjs";
 import * as lunr from "lunr";
+import { SecurityService } from "../../auth/security.service";
 
 @Component({
   selector: 'find-professionals',
@@ -30,14 +32,17 @@ export class FindProfessionalsComponent implements OnInit {
   serviceTypes: Array<ServiceType> = [];
   popularServiceSize: Number;
   popularTrades: Array<Trade> = [];
+  lastZipCode: string;
   lunrIndex;
 
   constructor(private serviceTypeService: ServiceTypeService,
               private questionaryControlService: QuestionaryControlService,
               private tradeService: TradeService,
               private router: Router,
+              public securityService: SecurityService,
               private popUpService: PopUpMessageService,
               public dialog: MatDialog,
+              private accountService: AccountService,
               public projectActionService: ProjectActionService,
               public constants: Constants,
               public media: MediaQueryService,
@@ -56,6 +61,7 @@ export class FindProfessionalsComponent implements OnInit {
     this.getSuggestedServiceTypes();
     this.getPopularTrades();
     this.getServiceTypes();
+    this.getLastCustomerZipCode();
 
     this.media.screen.subscribe(media => {
       if (media.xs || media.sm) {
@@ -100,11 +106,22 @@ export class FindProfessionalsComponent implements OnInit {
       );
   }
 
+  getLastCustomerZipCode() {
+    if (this.securityService.isAuthenticated()) {
+      this.accountService.LastCustomerZipCode$
+        .subscribe(
+          zipCode => this.lastZipCode = zipCode
+        )
+    }
+  }
+
   searchServiceType(form: FormGroup) {
     if (this.mainSearchFormGroup.valid) {
       this.findProfessionalService.close();
       this.getQuestianary(this.serviceTypeCtrl.value);
-      form.reset();
+      form.reset({
+        zipCodeCtrl: this.lastZipCode
+      });
       Object.values(form.controls).forEach(control => control.markAsPristine());
     } else {
       markAsTouched(this.mainSearchFormGroup);

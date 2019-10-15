@@ -10,6 +10,8 @@ import { Router } from '@angular/router';
 import * as lunr from "lunr";
 import { combineLatest } from "rxjs";
 import { PopUpMessageService } from "../../util/pop-up-message.service";
+import { AccountService } from "../../api/services/account.service";
+import { SecurityService } from "../../auth/security.service";
 
 @Component({
   selector: 'main-search-bar',
@@ -29,14 +31,18 @@ export class MainSearchBarComponent implements OnInit {
   serviceTypes: Array<ServiceType> = [];
   popularServiceTypes: Array<ServiceType> = [];
   private lunrIndex;
+  lastZipCode: string;
 
   constructor(public dialog: MatDialog,
               public projectActionService: ProjectActionService,
               public constants: Constants,
+              public accountService: AccountService,
               private serviceTypeService: ServiceTypeService,
               private router: Router,
+              public securityService: SecurityService,
               private popUpService: PopUpMessageService) {
     this.getServiceTypes();
+    this.getLastCustomerZipCode();
   }
 
   ngOnInit(): void {
@@ -77,7 +83,9 @@ export class MainSearchBarComponent implements OnInit {
       if (serviceTypeCtrl.value) {
         this.getQuestianary(serviceTypeCtrl.value);
         if (this.resetAfterFind) {
-          form.reset();
+          form.reset({
+            zipCodeCtrl: this.lastZipCode
+          });
           Object.values(form.controls).forEach(control => control.markAsPristine());
         }
       }
@@ -132,6 +140,15 @@ export class MainSearchBarComponent implements OnInit {
           }
         },
         err => this.popUpService.showError(getErrorMessage(err)));
+  }
+
+  getLastCustomerZipCode() {
+    if (this.securityService.isAuthenticated()) {
+      this.accountService.LastCustomerZipCode$
+        .subscribe(
+          zipCode => this.lastZipCode = zipCode
+        )
+    }
   }
 
   selectTrackBy(index: number, item: ServiceType): number {

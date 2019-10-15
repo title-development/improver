@@ -21,6 +21,7 @@ import { ErrorHandler } from '../../../../../util/error-handler';
 import { finalize, first } from "rxjs/internal/operators";
 import { BoundariesService } from "../../../../../api/services/boundaries.service";
 import { UserService } from "../../../../../api/services/user.service";
+import { AccountService } from "../../../../../api/services/account.service";
 
 @Component({
   selector: 'default-questionary-block',
@@ -48,6 +49,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
   hideNextAction: boolean;
   disabledNextAction: boolean;
   postOrderProcessing = false;
+  lastZipCode: string;
 
   @ViewChildren('defaultQuestion') defaultQuestions: QueryList<ElementRef>;
 
@@ -60,6 +62,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
               public constants: Constants,
               public messages: Messages,
               public popUpMessageService: PopUpMessageService,
+              private accountService: AccountService,
               private router: Router,
               private locationValidate: LocationValidateService,
               private companyService: CompanyService,
@@ -69,6 +72,8 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     this.messages = messages;
     this.emailIsChecked = false;
     this.filteredStates = constants.states;
+
+    this.getLastCustomerZipCode();
   }
 
   ngOnInit(): void {
@@ -77,6 +82,15 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
 
   isValid(name) {
     return this.defaultQuestionaryForm.get(name).valid;
+  }
+
+  getLastCustomerZipCode() {
+    if (this.securityService.isAuthenticated()) {
+      this.accountService.LastCustomerZipCode$
+        .subscribe(
+          zipCode => this.lastZipCode = zipCode
+        )
+    }
   }
 
   nextQuestion(name, handler: () => {} = undefined) {

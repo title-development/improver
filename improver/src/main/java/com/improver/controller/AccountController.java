@@ -4,6 +4,7 @@ import com.improver.entity.Customer;
 import com.improver.entity.User;
 import com.improver.model.in.OldNewValue;
 import com.improver.repository.CustomerRepository;
+import com.improver.repository.ProjectRepository;
 import com.improver.repository.UserRepository;
 import com.improver.security.UserSecurityService;
 import com.improver.service.AccountService;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +31,7 @@ public class AccountController {
     @Autowired private ImageService imageService;
     @Autowired private CustomerRepository customerRepository;
     @Autowired private AccountService accountService;
+    @Autowired private ProjectRepository projectRepository;
 
 
     @PutMapping(PASSWORD)
@@ -74,6 +77,13 @@ public class AccountController {
         return new ResponseEntity<>(settings, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('CUSTOMER')")
+    @GetMapping("/last-zip")
+    public ResponseEntity<String> loadLastUsersProjectZipCode(){
+        Customer customer = userSecurityService.currentCustomer();
+        String zipCode = projectRepository.findLastZipCodeByCustomerId(customer.getId());
+        return new ResponseEntity<>(zipCode, HttpStatus.OK);
+    }
 
     @PutMapping(NOTIFICATIONS)
     public ResponseEntity<Void> updateNotificationSettings(@RequestBody Customer.NotificationSettings settings) {
