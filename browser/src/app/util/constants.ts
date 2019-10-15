@@ -16,7 +16,7 @@ export class Constants {
   readonly COVERAGE_RADIUS_STEP = 1;
   readonly MIN_COVERAGE_RADIUS = 5;
   readonly MAX_COVERAGE_RADIUS = 50;
-  readonly BOUNDARIES_SPILT_SIZE = 150;
+  readonly ZIPCODES_BATCH_SIZE = 500;
   patterns: any;
   projectStatuses: Array<any>;
   months: string[];

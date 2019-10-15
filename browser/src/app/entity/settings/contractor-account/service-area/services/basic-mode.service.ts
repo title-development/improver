@@ -100,7 +100,7 @@ export class BasicModeService implements OnDestroy {
 
   private getZipBoundaries(): void {
     this.gMapUtils.clearCoverageDataLayers(this.gMap);
-    this.boundariesService.getSplitZipBoundaries(this._coverageConfig.zips, this.constants.BOUNDARIES_SPILT_SIZE)
+    this.boundariesService.getSplitZipBoundaries(this._coverageConfig.zips, this.constants.ZIPCODES_BATCH_SIZE)
       .pipe(
         catchError((err) => {
           this.popUpService.showInternalServerError();
