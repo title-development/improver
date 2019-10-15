@@ -1,7 +1,6 @@
 import { ApplicationRef, Component, ViewChild } from '@angular/core';
 import { MapOptions } from '@agm/core/services/google-maps-types';
 import { defaultMapOptions } from '../../../util/google-map-default-options';
-import { ZipInfoWindow } from '../../settings/contractor-account/service-area/services/detail-mode.service';
 import { AdminMap } from './admin-map';
 import { GoogleMapUtilsService } from '../../../util/google-map.utils';
 import { PopUpMessageService } from '../../../util/pop-up-message.service';
@@ -9,6 +8,7 @@ import { BoundariesService } from '../../../api/services/boundaries.service';
 import { getErrorMessage } from '../../../util/functions';
 import { CountyMapArea } from "../../../api/models/CountyBoundaries";
 import { finalize } from "rxjs/operators";
+import { ZipInfoWindow } from '../../settings/contractor-account/service-area/interfaces/zip-info-window';
 
 @Component({
   selector: 'admin-coverage',

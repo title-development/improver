@@ -1,89 +1,140 @@
-import { EventEmitter, Injectable } from '@angular/core';
-import { ZipBoundaries } from '../../../../../api/models/ZipBoundaries';
-import { CoverageConfig } from '../../../../../api/models/CoverageConfig';
-import { applyStyleToMapLayers, GoogleMapUtilsService } from '../../../../../util/google-map.utils';
-import { BoundariesService } from '../../../../../api/services/boundaries.service';
-import { BehaviorSubject, of, Subject } from 'rxjs';
+import { EventEmitter, Injectable, OnDestroy } from '@angular/core';
+import { of, Subject } from 'rxjs';
+import { catchError, finalize, takeUntil } from 'rxjs/operators';
 import { CompanyCoverageConfig } from '../../../../../api/models/CompanyCoverageConfig';
-import { catchError, takeUntil } from 'rxjs/operators';
-import { PopUpMessageService } from '../../../../../util/pop-up-message.service';
+import { CoverageConfig } from '../../../../../api/models/CoverageConfig';
+import { ZipBoundaries } from '../../../../../api/models/ZipBoundaries';
+import { BoundariesService } from '../../../../../api/services/boundaries.service';
 import { Constants } from '../../../../../util/constants';
+import { applyStyleToMapLayers, GoogleMapUtilsService } from '../../../../../util/google-map.utils';
+import { PopUpMessageService } from '../../../../../util/pop-up-message.service';
+import { CircleService } from './circle.service';
+import { CoverageService } from './coverage.service';
 
 @Injectable()
-export class BasicModeService {
-  fetching: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  toUpdate: EventEmitter<Array<string>> = new EventEmitter<Array<string>>();
-  private map: google.maps.Map;
-  private servedZipCodes: Array<string>;
-  private configCoverage: CoverageConfig;
+export class BasicModeService implements OnDestroy {
+  get coverageConfig(): CoverageConfig {
+    const zips = this.newCoverageArea.filter((zip) => this.servedZipCodes.includes(zip));
+    const center = this.circleService.center;
+    const radius = this.circleService.radiusInMiles;
+    return new CoverageConfig(center.lat(), center.lng(), false, radius, zips);
+  }
+
+  private gMap: google.maps.Map;
+  private servedZipCodes: string[];
+  private _coverageConfig: CoverageConfig;
+  private newCoverageArea: string[];
   private readonly destroyed$ = new Subject<void>();
 
   constructor(private gMapUtils: GoogleMapUtilsService,
               private boundariesService: BoundariesService,
               private popUpService: PopUpMessageService,
-              private constants: Constants) {
+              private constants: Constants,
+              private circleService: CircleService,
+              private coverageService: CoverageService) {
 
   }
 
-  init(map: google.maps.Map, companyCoverageConfig: CompanyCoverageConfig, servedZipCodes: Array<string>): void {
-    this.servedZipCodes = servedZipCodes;
-    this.fetching.next(true);
-    this.map = map;
-    this.configCoverage = companyCoverageConfig.coverageConfig;
-    this.gMapUtils.clearCoverageDataLayers(this.map);
-
-    applyStyleToMapLayers(map);
-    this.gMapUtils.drawCompanyMarker(this.map, new google.maps.LatLng(companyCoverageConfig.companyLocation.lat, companyCoverageConfig.companyLocation.lng));
-    this.gMapUtils.createCompanyMarkerInfoWindow(this.map);
-    if (this.configCoverage.zips.length) {
-      this.boundariesService.getSplitZipBoundaries(this.configCoverage.zips, this.constants.BOUNDARIES_SPILT_SIZE)
-        .pipe(
-          takeUntil(this.destroyed$),
-          catchError(err => {
-            this.fetching.next(false);
-            this.popUpService.showInternalServerError();
-            return of(null);
-          })
-        )
-        .subscribe((zipBoundaries: ZipBoundaries | null) => {
-            if (zipBoundaries) {
-              this.gMapUtils.drawZipBoundaries(this.map, this.gMapUtils.markAreasZips(zipBoundaries, servedZipCodes));
-              this.fetching.next(false);
-            }
-          }, err => {
-            console.log(err);
-          },
-          () => this.gMapUtils.fitMapToDataLayer(this.map)
-        );
-    } else {
-      this.map.setCenter(new google.maps.LatLng(companyCoverageConfig.companyLocation.lat, companyCoverageConfig.companyLocation.lng));
-      this.fetching.next(false);
+  init(gMap: google.maps.Map, companyCoverageConfig: CompanyCoverageConfig, servedZipCodes: string[]): void {
+    this.coverageService.fetching$.next(true);
+    this.setState(gMap, servedZipCodes, companyCoverageConfig);
+    this.initCoverageCircle(gMap, companyCoverageConfig);
+    this.initMarkers(gMap, companyCoverageConfig.getCompanyLocationCenter());
+    applyStyleToMapLayers(gMap);
+    if (!this._coverageConfig.zips.length) {
+      this.gMap.setCenter(companyCoverageConfig.getCompanyLocationCenter());
+      this.coverageService.fetching$.next(false);
+      return;
     }
-
+    this.getZipBoundaries();
   }
 
   getZipsByRadius(center: google.maps.LatLng, radius: number): void {
-    this.fetching.next(true);
-    this.configCoverage.radius = radius;
-    this.boundariesService.queryByRadius(center.lat(), center.lng(), radius)
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe((zipBoundaries: ZipBoundaries) => {
-        applyStyleToMapLayers(this.map);
-        this.gMapUtils.clearCoverageDataLayers(this.map);
-        this.gMapUtils.drawZipBoundaries(this.map, this.gMapUtils.markAreasZips(zipBoundaries, this.servedZipCodes));
-        this.gMapUtils.fitMapToDataLayer(this.map);
-        this.fetching.next(false);
-        this.toUpdate.emit(zipBoundaries.features.map(feature => feature.properties.zip));
-      }, err => {
-        this.fetching.next(false);
-        console.log(err);
-      });
+    this.coverageService.fetching$.next(true);
+    this._coverageConfig.radius = radius;
+    this.circleService.update(radius, center);
+    this.gMapUtils.clearCoverageDataLayers(this.gMap);
+    this.boundariesService.queryByRadius(center.lat(), center.lng(), radius).pipe(
+      catchError((err) => {
+        this.popUpService.showInternalServerError();
+
+        return of(null);
+      }),
+      takeUntil(this.destroyed$),
+      finalize(() => this.coverageService.fetching$.next(false)),
+    ).subscribe((zipBoundaries: ZipBoundaries | null) => {
+      if (!zipBoundaries) {
+        return;
+      }
+      this.gMapUtils.drawZipBoundaries(this.gMap, this.gMapUtils.markAreasZips(zipBoundaries, this.servedZipCodes));
+      this.gMapUtils.fitMapToDataLayer(this.gMap);
+      this.newCoverageArea = zipBoundaries.features
+        .map((feature) => feature.properties.zip)
+        .filter(zipCode => this.servedZipCodes.includes(zipCode));
+      this.isHasUnsavedChanges();
+    }, (err) => {
+      console.log(err);
+    });
   }
 
-  destroy(): void {
+  destroyMode(): void {
     this.gMapUtils.removeCompanyMarker();
-    this.gMapUtils.removeCompanyMarkerInfoWindowListeners();
+    this.gMapUtils.removeCompanyMarkerInfoWindow();
+    this.circleService.clearCircle();
     this.destroyed$.next();
+  }
+
+  ngOnDestroy(): void {
+    this.destroyMode();
     this.destroyed$.complete();
+  }
+
+  private isHasUnsavedChanges(): void {
+    if (this.newCoverageArea.length > this._coverageConfig.zips.length) {
+      this.coverageService.unsavedChanges$.next(true);
+      return;
+    }
+    const changes = this._coverageConfig.zips.filter(zipCode => !this.newCoverageArea.includes(zipCode));
+    this.coverageService.unsavedChanges$.next(!!changes.length);
+  }
+
+  private getZipBoundaries(): void {
+    this.gMapUtils.clearCoverageDataLayers(this.gMap);
+    this.boundariesService.getSplitZipBoundaries(this._coverageConfig.zips, this.constants.BOUNDARIES_SPILT_SIZE)
+      .pipe(
+        catchError((err) => {
+          this.popUpService.showInternalServerError();
+
+          return of(null);
+        }),
+        takeUntil(this.destroyed$),
+        finalize(() => this.coverageService.fetching$.next(false)),
+      )
+      .subscribe((zipBoundaries: ZipBoundaries | null) => {
+          if (!zipBoundaries) {
+            return;
+          }
+          this.gMapUtils.drawZipBoundaries(this.gMap, this.gMapUtils.markAreasZips(zipBoundaries, this.servedZipCodes));
+        }, (err) => {
+          console.log(err);
+        },
+        () => this.gMapUtils.fitMapToDataLayer(this.gMap),
+      );
+  }
+
+  private initMarkers(gMap: google.maps.Map, center: google.maps.LatLng): void {
+    this.gMapUtils.drawCompanyMarker(gMap, center);
+    this.gMapUtils.createCompanyMarkerInfoWindow(gMap);
+  }
+
+  private initCoverageCircle(gMap: google.maps.Map, companyCoverageConfig: CompanyCoverageConfig): void {
+    this.circleService.clearCircle();
+    this.circleService.init(gMap, this._coverageConfig.radius, companyCoverageConfig.getCompanyCoverageCenter());
+  }
+
+  private setState(gMap: google.maps.Map, servedZipCodes: string[], companyCoverageConfig: CompanyCoverageConfig): void {
+    this.gMap = gMap;
+    this.servedZipCodes = servedZipCodes.slice();
+    this._coverageConfig = {...companyCoverageConfig.coverageConfig};
   }
 }

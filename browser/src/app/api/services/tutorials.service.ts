@@ -1,14 +1,14 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
-import { catchError, first, switchMap } from 'rxjs/operators';
-import { UserTutorial } from '../models/UserTutorial';
+import { catchError, first, mergeMap, switchMap } from 'rxjs/operators';
 import { SecurityService } from '../../auth/security.service';
+import { UserTutorial } from '../models/UserTutorial';
 
 @Injectable()
 export class TutorialsService {
-  tutorials$: BehaviorSubject<Array<string>> = new BehaviorSubject<Array<string>>(null);
-  private tutorialsState: Array<string>;
+  tutorials$: BehaviorSubject<string[] | null> = new BehaviorSubject<string[] | null>(null);
+  private tutorialsState: string[];
   private readonly apiUrl: string = 'api/tutorials';
 
   constructor(private http: HttpClient,
@@ -23,30 +23,37 @@ export class TutorialsService {
     });
   }
 
-  complete(tutorial: UserTutorial): void {
-    this.tutorialsState = this.tutorialsState.filter(item => item != tutorial.tutorial);
+  complete(tutorial: UserTutorial): Observable<unknown> {
+    this.tutorialsState = this.tutorialsState.filter((item) => item != tutorial.tutorial);
     this.tutorials$.next(this.tutorialsState);
-    this.http.post(this.apiUrl, tutorial).pipe(first()).subscribe(() => {
-    });
+
+    return this.http.post(this.apiUrl, tutorial);
   }
 
   getTutorials(): Observable<any> {
     if (!this.tutorialsState) {
       return this.http.get(this.apiUrl).pipe(
-        switchMap((tutorials: Array<string>) => {
+        mergeMap((tutorials: string[]) => {
           this.tutorialsState = tutorials;
           this.tutorials$.next(this.tutorialsState);
 
           return this.tutorials$;
         }),
-        catchError(err => {
+        catchError((err) => {
           console.log(err);
 
           return of(null);
-        })
+        }),
       );
     } else {
       return this.tutorials$;
+    }
+  }
+
+  showCoverageTutorial(): void {
+    if (!this.tutorialsState.includes(UserTutorial.Tutorial.COVERAGE)) {
+      this.tutorialsState.push(UserTutorial.Tutorial.COVERAGE);
+      this.tutorials$.next(this.tutorialsState);
     }
   }
 }

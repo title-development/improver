@@ -1,209 +1,254 @@
-import { EventEmitter, Injectable, OnDestroy } from '@angular/core';
-import { ZipBoundaries } from '../../../../../api/models/ZipBoundaries';
-import { CoverageConfig } from '../../../../../api/models/CoverageConfig';
-import { BehaviorSubject, fromEventPattern, of, Subscription } from 'rxjs';
-import { getErrorMessage } from '../../../../../util/functions';
-import { BoundariesService } from '../../../../../api/services/boundaries.service';
-import { SecurityService } from '../../../../../auth/security.service';
-import { CompanyService } from '../../../../../api/services/company.service';
-import { applyStyleToMapLayers, GoogleMapUtilsService } from '../../../../../util/google-map.utils';
-import { PopUpMessageService } from '../../../../../util/pop-up-message.service';
+import { Injectable, OnDestroy } from '@angular/core';
+import { fromEventPattern, of, Subject } from 'rxjs';
+import { NodeEventHandler } from 'rxjs/internal/observable/fromEvent';
+import { catchError, debounceTime, mergeMap, takeUntil } from 'rxjs/operators';
 import { CompanyCoverageConfig } from '../../../../../api/models/CompanyCoverageConfig';
+import { CoverageConfig } from '../../../../../api/models/CoverageConfig';
+import { ZipBoundaries } from '../../../../../api/models/ZipBoundaries';
+import { BoundariesService } from '../../../../../api/services/boundaries.service';
+import { CompanyService } from '../../../../../api/services/company.service';
+import { SecurityService } from '../../../../../auth/security.service';
+import { applyStyleToMapLayers, GoogleMapUtilsService } from '../../../../../util/google-map.utils';
 import { MediaQuery, MediaQueryService } from '../../../../../util/media-query.service';
-import { catchError, debounceTime, switchMap, takeWhile, tap } from 'rxjs/internal/operators';
-
-
-export class ZipInfoWindow {
-  trigger: boolean;
-  position: {
-    lat: any,
-    lng: any
-  };
-  content: string;
-}
+import { PopUpMessageService } from '../../../../../util/pop-up-message.service';
+import { IZipCodeProps } from '../interfaces/zip-code-props';
+import { ZipInfoWindow } from '../interfaces/zip-info-window';
+import { ZipHistory } from '../models/zip-history';
+import { CoverageService } from './coverage.service';
 
 @Injectable()
 export class DetailModeService implements OnDestroy {
-  fetching: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  zips: EventEmitter<{ added: Array<string>, removed: Array<string> }> = new EventEmitter<{ added: Array<string>, removed: Array<string> }>();
-  onInfoWindow: EventEmitter<ZipInfoWindow> = new EventEmitter<ZipInfoWindow>();
 
-  private _zipsHistory: { added: Array<string>, removed: Array<string> } = {
-    added: [],
-    removed: []
-  };
+  get coverageConfig(): CoverageConfig {
+    const zips = this._coverageConfig.zips
+      .filter((zip) => !this.zipsHistory.removed.some((removedZip) => removedZip == zip))
+      .concat(this.zipsHistory.added);
 
-  set zipsHistory(value: { added: Array<string>; removed: Array<string> }) {
-    this._zipsHistory = value;
-    this.zips.emit(value);
+    return new CoverageConfig(this._coverageConfig.centerLat, this._coverageConfig.centerLng, true, this._coverageConfig.radius, zips);
   }
 
-  get zipsHistory(): { added: Array<string>; removed: Array<string> } {
+  set zipsHistory(zipHistory: ZipHistory) {
+    this._zipsHistory = zipHistory;
+    this.coverageService.unsavedChanges$.next(zipHistory.isHasHistory());
+    this.zipHistoryChange$.next(zipHistory);
+  }
+
+  get zipsHistory(): ZipHistory {
     return this._zipsHistory;
   }
 
-  mediaQuery: MediaQuery;
-  infoWindow: ZipInfoWindow = {
+  zipHistoryChange$ = new Subject<ZipHistory>();
+  infoWindowChange$ = new Subject<ZipInfoWindow>();
+
+  private mediaQuery: MediaQuery;
+  private infoWindow: ZipInfoWindow = {
     position: {
       lat: undefined,
-      lng: undefined
+      lng: undefined,
     },
     trigger: false,
-    content: ''
+    content: '',
   };
-  private map: google.maps.Map;
-  private configCoverage: CoverageConfig;
-  private idle$: Subscription;
-  private boundaries$: Subscription;
-  private servedZipCodes: Array<string>;
+
+  private _zipsHistory: ZipHistory = new ZipHistory([], []);
+  private gMap: google.maps.Map;
+  private _coverageConfig: CoverageConfig;
+  private servedZipCodes: string[];
   private mouseOverListener;
   private mouseLeaveListener;
   private clickListener;
-  private mediaQuerySubscription$: Subscription;
-  private zipInfoWindow;
-  private subscribedMapIdle: boolean = true;
+  private readonly destroyed$ = new Subject<void>();
 
   constructor(private securityService: SecurityService,
               private boundariesService: BoundariesService,
               private companyService: CompanyService,
               private gMapUtils: GoogleMapUtilsService,
               private popUpMessageService: PopUpMessageService,
-              public mediaQueryService: MediaQueryService) {
+              private mediaQueryService: MediaQueryService,
+              private coverageService: CoverageService) {
   }
 
-  init(map: google.maps.Map, companyCoverageConfig: CompanyCoverageConfig, servedZipCodes: Array<string>): void {
-    this.servedZipCodes = servedZipCodes;
-    this.mediaQuerySubscription$ = this.mediaQueryService.screen.subscribe((mediaQuery: MediaQuery) => {
-      this.mediaQuery = mediaQuery;
-    });
-    this.fetching.next(true);
-    this.map = map;
-    this.configCoverage = companyCoverageConfig.coverageConfig;
-    this.gMapUtils.clearCoverageDataLayers(this.map);
-    applyStyleToMapLayers(map, true);
+  init(gMap: google.maps.Map, companyCoverageConfig: CompanyCoverageConfig, servedZipCodes: string[]): void {
+    this.coverageService.fetching$.next(true);
+    this.setState(servedZipCodes, gMap, companyCoverageConfig);
+    this.subscribeForMediaScreen();
     this.addAreaListeners();
-    this.gMapUtils.drawCompanyMarker(this.map, new google.maps.LatLng(companyCoverageConfig.companyLocation.lat, companyCoverageConfig.companyLocation.lng));
-    this.gMapUtils.createCompanyMarkerInfoWindow(this.map);
-    this.map.setZoom(10);
-    this.map.setCenter(new google.maps.LatLng(companyCoverageConfig.companyLocation.lat, companyCoverageConfig.companyLocation.lng));
+    this.initMarkers(companyCoverageConfig.getCompanyLocationCenter());
+    applyStyleToMapLayers(gMap, true);
+    this.gMap.setZoom(10);
+    this.gMap.setCenter(companyCoverageConfig.getCompanyLocationCenter());
+    this.getZipBoundaries(gMap);
+}
 
-    this.subscribedMapIdle = true;
+  destroyMode(): void {
+    this.destroyed$.next();
+    this.gMapUtils.removeCompanyMarker();
+    this.gMapUtils.removeCompanyMarkerInfoWindow();
+    this.removeAreaListeners();
+    if (this.zipsHistory.added.length) {
+      this.zipsHistory.added.forEach((zip) => {
+        this.unSelectMapZip(zip);
+      });
+    }
+    if (this.zipsHistory.removed.length) {
+      this.zipsHistory.removed.forEach((zip) => {
+        this.selectMapZip(zip);
+      });
+    }
+    this.clearZipHistory();
+  }
 
-    this.idle$ = fromEventPattern(
-      (handler) => {
-        return map.addListener('idle', (handler as any));
-      },
+  ngOnDestroy(): void {
+    this.destroyMode();
+    this.destroyed$.complete();
+  }
+
+  existInAddedHistory(zipCode: string): boolean {
+    return this.zipsHistory.added.includes(zipCode);
+  }
+
+  addZipCode(zipCodeProps: IZipCodeProps): void {
+    const zipCode = zipCodeProps.zipCode;
+    const coordinates = zipCodeProps.zipFeature.geometry.coordinates;
+    const center = this.gMapUtils.getPolygonBounds(coordinates).getCenter();
+
+    this.gMap.setCenter(center);
+    this.gMap.setZoom(13);
+    this.gMapUtils.drawZipBoundaries(this.gMap, [zipCodeProps.zipFeature]);
+    this.toggleZipCodeInHistory(zipCode);
+    this.gMapUtils.highlightZip(this.gMap, zipCode, 3000, () => {
+      this.selectMapZip(zipCode);
+    });
+  }
+
+  clearZipHistory(): void {
+    this.zipsHistory = new ZipHistory([], []);
+  }
+
+  toggleZipCodeInHistory(zip: string, undo: boolean = false): void {
+    let added = this.zipsHistory.added;
+    let removed = this.zipsHistory.removed;
+    if (!zip) {
+      return;
+    }
+    if (!this._coverageConfig.zips.includes(zip)) {
+      if (!this.zipsHistory.added.includes(zip)) {
+        added = [...this.zipsHistory.added, zip];
+      } else {
+        added = this.zipsHistory.added.filter((addedZip) => addedZip !== zip);
+        if (undo) {
+          this.unSelectMapZip(zip);
+        }
+      }
+    } else {
+      if (!this.zipsHistory.removed.includes(zip)) {
+        removed = [...this.zipsHistory.removed, zip];
+      } else {
+        removed = this.zipsHistory.removed.filter((removedZip) => removedZip !== zip);
+        if (undo) {
+          this.selectMapZip(zip);
+        }
+      }
+    }
+    this.zipsHistory = new ZipHistory(added, removed);
+  }
+
+  private selectMapZip(zip: string): void {
+    this.gMap.data.forEach((feature) => {
+      if (feature.getProperty('zip') === zip) {
+        feature.setProperty('selected', true);
+        this.gMap.data.overrideStyle(feature, {
+          strokeWeight: 2,
+          fillOpacity: 0.1,
+        });
+      }
+    });
+  }
+
+  private unSelectMapZip(zip: string): void {
+    this.gMap.data.forEach((feature) => {
+      if (feature.getProperty('zip') === zip) {
+        feature.setProperty('selected', false);
+        this.gMap.data.overrideStyle(feature, {
+          strokeWeight: 1,
+          fillOpacity: 0,
+        });
+      }
+    });
+  }
+
+  private getZipBoundaries(gMap: google.maps.Map): void {
+    this.gMapUtils.clearCoverageDataLayers(this.gMap);
+    fromEventPattern(
+      (handler: NodeEventHandler) => gMap.addListener('idle', handler),
       (handler, listener) => {
         google.maps.event.removeListener(listener);
-      }
+      },
     ).pipe(
-      takeWhile(() => this.subscribedMapIdle),
-      debounceTime(200),
-      switchMap(() => {
-        this.fetching.next(true);
-        const southWest: string = [this.map.getBounds().getSouthWest().lat(), this.map.getBounds().getSouthWest().lng()].join();
-        const northEast: string = [this.map.getBounds().getNorthEast().lat(), this.map.getBounds().getNorthEast().lng()].join();
+      debounceTime(300),
+      mergeMap(() => {
+        this.coverageService.fetching$.next(true);
+        const southWest: string = [this.gMap.getBounds().getSouthWest().lat(), this.gMap.getBounds().getSouthWest().lng()].join();
+        const northEast: string = [this.gMap.getBounds().getNorthEast().lat(), this.gMap.getBounds().getNorthEast().lng()].join();
 
         return this.boundariesService.getZipCodesInBbox(northEast, southWest).pipe(
-          catchError(err => {
-            this.fetching.next(false);
-            this.popUpMessageService.showError('Unexpected error during map rendering');
+          catchError((err) => {
+            this.popUpMessageService.showError('Unexpected error during gMap rendering');
 
             return of(null);
           }));
       }),
-      catchError(err => {
-        this.fetching.next(false);
-        this.popUpMessageService.showError(getErrorMessage(err));
-
-        return of(null);
-      }),
-      tap((zipBoundaries: ZipBoundaries) => {
-        if(zipBoundaries) {
-          this.gMapUtils.drawZipBoundaries(this.map, this.gMapUtils.zipsToDraw(this.map, zipBoundaries, this.configCoverage.zips, this.servedZipCodes));
-        }
-        this.fetching.next(false);
-      })
-    ).subscribe(() => {
+      takeUntil(this.destroyed$),
+    ).subscribe((zipBoundaries: ZipBoundaries | null) => {
+      if (!zipBoundaries) {
+        this.coverageService.fetching$.next(false);
+        return;
+      }
+      const zipFeatures = this.gMapUtils.zipsToDraw(this.gMap, zipBoundaries, this._coverageConfig.zips, this.servedZipCodes);
+      this.gMapUtils.drawZipBoundaries(this.gMap, zipFeatures);
+      this.coverageService.fetching$.next(false);
     });
   }
 
-  destroy(): void {
-    this.gMapUtils.removeCompanyMarker();
-    this.gMapUtils.removeCompanyMarkerInfoWindowListeners();
-    this.removeAreaListeners();
-    if (this.zipsHistory.added.length > 0) {
-      this.zipsHistory.added.forEach(zip => {
-        this.unSelectMapZip(zip);
+  private subscribeForMediaScreen(): void {
+    this.mediaQueryService.screen.asObservable()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((mediaQuery: MediaQuery) => {
+        this.mediaQuery = mediaQuery;
       });
-    }
-    if (this.zipsHistory.removed.length > 0) {
-      this.zipsHistory.removed.forEach(zip => {
-        this.selectMapZip(zip);
-      });
-    }
-    this.zipsHistory = {
-      added: [],
-      removed: []
-    };
-    if (this.boundaries$) {
-      this.boundaries$.unsubscribe();
-    }
-    if (this.mediaQuerySubscription$) {
-      this.mediaQuerySubscription$.unsubscribe();
-    }
-    if (this.idle$) {
-      this.idle$.unsubscribe();
-      this.subscribedMapIdle = false;
-    }
   }
 
-  ngOnDestroy(): void {
-    console.log('destroy');
+  private initMarkers(companyCenter: google.maps.LatLng): void {
+    this.gMapUtils.drawCompanyMarker(this.gMap, companyCenter);
+    this.gMapUtils.createCompanyMarkerInfoWindow(this.gMap);
   }
 
-  addRemoveZip(zip: string, undo: boolean = false): void {
-    if (zip) {
-      if (!this.configCoverage.zips.includes(zip)) {
-        if (!this.zipsHistory.added.includes(zip)) {
-          this.zipsHistory.added = [...this.zipsHistory.added, zip];
-        } else {
-          this.zipsHistory.added = this.zipsHistory.added.filter(addedZip => addedZip !== zip);
-          undo && this.unSelectMapZip(zip);
-        }
-      } else {
-        if (!this.zipsHistory.removed.includes(zip)) {
-          this.zipsHistory.removed = [...this.zipsHistory.removed, zip];
-        } else {
-          this.zipsHistory.removed = this.zipsHistory.removed.filter(removedZip => removedZip !== zip);
-          undo && this.selectMapZip(zip);
-        }
-      }
-      this.zipsHistory = this.zipsHistory;
-    }
+  private setState(servedZipCodes: string[], gMap: google.maps.Map, companyCoverageConfig: CompanyCoverageConfig) {
+    this.gMap = gMap;
+    this.servedZipCodes = servedZipCodes.slice();
+    this._coverageConfig = {...companyCoverageConfig.coverageConfig};
   }
 
   private boundaryClickHandler = (event: google.maps.Data.MouseEvent) => {
-    this.addRemoveZip(event.feature.getProperty('zip'));
+    this.toggleZipCodeInHistory(event.feature.getProperty('zip'));
     event.feature.setProperty('selected', !event.feature.getProperty('selected'));
-    this.map.data.overrideStyle(event.feature, {
+    this.gMap.data.overrideStyle(event.feature, {
       strokeWeight: 2,
       strokeOpacity: 0.5,
-      fillOpacity: 0.55
+      fillOpacity: 0.55,
     });
 
-    this.map.data.revertStyle();
-  };
+    this.gMap.data.revertStyle();
+  }
 
   private boundaryMouseLeaveHandler = (event: google.maps.Data.MouseEvent) => {
     this.infoWindow.trigger = false;
-    this.onInfoWindow.emit(this.infoWindow);
-    this.zipInfoWindow = null;
+    this.infoWindowChange$.next({...this.infoWindow});
     if (this.mediaQuery.xs) {
       return;
     }
-    this.map.data.revertStyle();
-  };
+    this.gMap.data.revertStyle();
+  }
 
   private boundaryMouseOverHandler = (event: google.maps.Data.MouseEvent) => {
     const bounds: google.maps.LatLngBounds = new google.maps.LatLngBounds();
@@ -213,82 +258,36 @@ export class DetailModeService implements OnDestroy {
     this.infoWindow = {
       trigger: true,
       position: {lat: bounds.getCenter().lat(), lng: bounds.getCenter().lng()},
-      content: event.feature.getProperty('zip')
+      content: event.feature.getProperty('zip'),
     };
-    this.onInfoWindow.emit(this.infoWindow);
+    this.infoWindowChange$.next({...this.infoWindow});
     if (this.mediaQuery.xs) {
       return;
     }
     if (event.feature.getProperty('selected')) {
-      this.map.data.overrideStyle(event.feature, {
+      this.gMap.data.overrideStyle(event.feature, {
         strokeWeight: 2,
         fillOpacity: 0.55,
-        strokeOpacity: 1
+        strokeOpacity: 1,
       });
     } else {
-      this.map.data.overrideStyle(event.feature, {
+      this.gMap.data.overrideStyle(event.feature, {
         strokeWeight: 2,
         fillOpacity: 0.55,
-        strokeOpacity: 1
+        strokeOpacity: 1,
       });
     }
-  };
+  }
 
   private addAreaListeners(): void {
-    this.mouseOverListener = this.map.data.addListener('mouseover', this.boundaryMouseOverHandler);
-    this.mouseLeaveListener = this.map.data.addListener('mouseout', this.boundaryMouseLeaveHandler);
-    this.clickListener = this.map.data.addListener('click', this.boundaryClickHandler);
+    this.mouseOverListener = this.gMap.data.addListener('mouseover', this.boundaryMouseOverHandler);
+    this.mouseLeaveListener = this.gMap.data.addListener('mouseout', this.boundaryMouseLeaveHandler);
+    this.clickListener = this.gMap.data.addListener('click', this.boundaryClickHandler);
   }
 
   private removeAreaListeners(): void {
     google.maps.event.removeListener(this.clickListener);
     google.maps.event.removeListener(this.mouseLeaveListener);
     google.maps.event.removeListener(this.mouseOverListener);
-  }
-
-  selectUnSelectZip(zip: string): void {
-    this.map.data.forEach(feature => {
-      if (feature.getProperty('zip') === zip) {
-        const selected = feature.getProperty('selected');
-        if (selected) {
-          feature.setProperty('selected', false);
-          this.map.data.overrideStyle(feature, {
-            strokeWeight: 1,
-            fillOpacity: 0
-          });
-        } else {
-          feature.setProperty('selected', true);
-          this.map.data.overrideStyle(feature, {
-            strokeWeight: 2,
-            fillOpacity: 0.1
-          });
-        }
-
-      }
-    });
-  }
-
-  selectMapZip(zip: string): void {
-    this.map.data.forEach(feature => {
-      if (feature.getProperty('zip') === zip) {
-        feature.setProperty('selected', true);
-        this.map.data.overrideStyle(feature, {
-          strokeWeight: 2,
-          fillOpacity: 0.1
-        });
-      }
-    });
-  }
-
-  private unSelectMapZip(zip: string): void {
-    this.map.data.forEach(feature => {
-      if (feature.getProperty('zip') === zip) {
-        feature.setProperty('selected', false);
-        this.map.data.overrideStyle(feature, {
-          strokeWeight: 1,
-          fillOpacity: 0
-        });
-      }
-    });
   }
 }

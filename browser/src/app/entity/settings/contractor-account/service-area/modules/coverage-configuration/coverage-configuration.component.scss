@@ -1,0 +1,79 @@
+@import "../../../../../../../improver-mixins";
+
+:host {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  background-color: $white;
+  z-index: 1;
+  width: 248px;
+  @include response-to(sm) {
+    left: 0;
+    top: 0;
+    right: 0;
+    width: auto;
+    text-align: center;
+    background-color: transparent;
+  }
+}
+
+.icon {
+  position: absolute;
+  top: 16px;
+  right: 10px;
+  cursor: pointer;
+}
+
+.back {
+  position: absolute;
+  color: #676767;
+  top: 26px;
+  left: 15px;
+  cursor: pointer;
+  @include response-from(md) {
+    display: none;
+  }
+}
+
+h4 {
+  padding: 16px 24px;
+  font-weight: 600;
+  color: $black-primary;
+  font-size: 16px;
+  margin: 0;
+  border-bottom: 1px solid $black-250;
+  @include response-to(sm) {
+    padding-top: 26px;
+    padding-bottom: 0;
+    border: none;
+    background-color: $white;
+  }
+}
+
+.holder {
+  padding: 16px 24px 24px;
+  position: relative;
+  @include response-to(sm) {
+    padding: 0;
+  }
+}
+
+.switch {
+  position: relative;
+  .prevent {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    pointer-events: all;
+  }
+  @include response-to(sm) {
+    padding-bottom: 20px;
+    background-color: $white;
+    padding-top: 14px;
+    margin-bottom: 5px;
+  }
+}

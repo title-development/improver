@@ -1,124 +1,30 @@
-<div class="config">
-  <i routerLink="/pro/settings" class="imp-icon-arrow-left back"></i>
-  <h4>Coverage configuration</h4>
-  <span class="icon -details" [ngClass]="{'-unsaved-changes': unsaved}">
-      <i class="imp-icon-info" (click)="showInfo()"></i>
-    </span>
-  <div class="holder" [cvSpinner]="!configCoverage || mapContentIsLoading" [cvSpinnerBackground]="true" [cvSpinnerSize]="24">
-    <ng-container *ngIf="configCoverage">
-      <div class="switch">
-        <div class="prevent" (click)="preventSwitch(switch, $event)" *ngIf="unsaved"></div>
-        <cv-switch #switch [ngModel]="!configCoverage.manualMode" onLabel="By Radius" offLabel="By Zip Codes" name="state"
-                   (changeState)="changeState(configCoverage)"></cv-switch>
-      </div>
-      <!--Manual-->
-      <ng-container *ngIf="configCoverage.manualMode">
-        <form #zipSearchForm="ngForm" (ngSubmit)="searchZipCode(zipSearchForm)">
-          <cv-input-field>
-            <cv-field-label>Zip code</cv-field-label>
-            <input type="text" class="find-zip" cv-input placeholder="e.g. 10022" numericMask required
-                   pattern=".{5,}" maxlength="5"
-                   #zipValue="ngModel" name="search" autocomplete="off" [(ngModel)]="searchZip"
-                   (ngModelChange)="validateZip(zipSearchForm)">
-            <button cv-button type="submit">Add</button>
-            <cv-field-error *ngIf="zipFormErrors">
-              <span *ngIf="zipValue.errors?.required">Zip code is required</span>
-              <span *ngIf="zipValue.errors?.pattern">Please enter a valid ZIP code</span>
-            </cv-field-error>
-          </cv-input-field>
-        </form>
-      </ng-container>
-      <!--Auto-->
-      <ng-container *ngIf="!configCoverage.manualMode">
-        <form action="">
-          <cv-input-field>
-            <cv-field-label>Center (zip code)</cv-field-label>
-            <input cv-input type="text" numericMask placeholder="e.g. 10022" name="compnay-zip-center"
-                   [(ngModel)]="companyCenterZip" pattern=".{5,}" maxlength="5"
-                   (ngModelChange)="companyCenterZipChange($event)">
-          </cv-input-field>
-          <cv-input-field>
-            <cv-field-label>Radius: {{radius}} miles</cv-field-label>
-            <input *ngIf="media.lg || media.xlg || media.md" type="range"  name="radius"
-                   [min]="MIN_COVERAGE_RADIUS"
-                   [max]="MAX_COVERAGE_RADIUS"
-                   [step]="COVERAGE_RADIUS_STEP"
-                   #rad="ngModel"
-                   [(ngModel)]="radius" class="cv-slider" (change)="radiusChange($event)"/>
-            <cv-select *ngIf="media.sm || media.xs" [label]="radius" (onSelect)="radiusChange($event)" [items]="miles" name="name"
-                       [(ngModel)]="radius"></cv-select>
-          </cv-input-field>
+<div class="loader" *ngIf="fetching$ | async" [cvSpinner]="true" [cvSpinnerSize]="32"></div>
 
-        </form>
-      </ng-container>
-    </ng-container>
-  </div>
-</div>
+<imp-coverage-configuration
+  [fetching]="fetching$ | async"
+  [isUnsavedChanges]="unsavedChanges$ | async"
+  [companyCoverageConfig]="companyCoverageConfig"
+  [servedZipCodes]="servedZipCodes"
+  (showTutorial)="onShowCoverageTutorial()"
+  (onCirclePropsChanged)="onCompanyCirclePropsChanged($event)"
+  (onZipCodeFound)="onZipCodeFound($event)"
+  (modeChange)="onModeChanged($event)"
+></imp-coverage-configuration>
 
-<div class="buttons">
-  <div class="info">
-    <span class="icon -history" title="History of updates" *ngIf="configCoverage?.manualMode">
-      <i class="imp-icon-clock" (click)="isHistoryShowed = !isHistoryShowed"></i>
-      <div class="area-change-history-block" [ngClass]="{'-showed': isHistoryShowed}">
-        <div class="header">Coverage area updates <i class="imp-icon-angle-double-right"
-                                                    (click)="isHistoryShowed = false"></i></div>
-        <perfect-scrollbar class="zip-codes-scrolling">
-          <div class="added-zip-codes-block">
-            <div class="added-header">Added zip codes ({{zipsHistory?.added.length}})</div>
-            <ng-template ngFor [ngForOf]="zipsHistory?.added" let-zip let-i="index">
-              <div class="history-zip" fxLayout="row" fxLayoutAlign="space-between center">
-                <div class="value">{{zip}}</div>
-                <div class="undo-button" (click)="undo(zip)">(UNDO)</div>
-              </div>
-            </ng-template>
-          </div>
-          <div class="removed-zip-codes-block">
-            <div class="added-header">Removed zip codes ({{zipsHistory?.removed.length}})</div>
-            <ng-template ngFor [ngForOf]="zipsHistory?.removed" let-zip let-i="index">
-              <div class="history-zip" fxLayout="row" fxLayoutAlign="space-between center">
-                <div class="value">{{zip}}</div>
-                <div class="undo-button" (click)="undo(zip)">(UNDO)</div>
-              </div>
-            </ng-template>
-          </div>
-        </perfect-scrollbar>
-      </div>
-    </span>
-  </div>
-  <span class="icon -zoom-controls" [ngClass]="{'-unsaved-changes': unsaved}">
-    <i class="zoom-in" (click)="zoomIn()"></i>
-    <i class="zoom-out" (click)="zoomOut()"></i>
-  </span>
-</div>
+<imp-coverage-sidebar
+  [isDetailMode]="isDetailMode"
+  [zipHistory]="zipsHistory"
+  [isUnsavedChanges]="unsavedChanges$ | async"
+  (undoHistory)="undo($event)"
+></imp-coverage-sidebar>
 
-<div class="tutorial-wrapper" [ngClass]="{'-opened': toggleInfo || ((tutorialService.tutorials$ | async) && (tutorialService.tutorials$ | async).includes(UserTutorial.Tutorial.COVERAGE))}">
-  <div class="tutorial">
-    <i class="imp-icon-map-pointer"></i>
-    <h4>Adjusting your Company coverage</h4>
-    <p>Coverage is the area you work and receive leads.</p>
-
-    <p>Radius configuration highlights a round area with your company in the center. The miles for the radius is
-      adjustable.</p>
-    <p>If you want more accurate coverage, choose 'By Zip Codes' where you can select individual zip codes.</p>
-    <a href="" (click)="completeTutorial($event)">Got it</a>
-  </div>
-</div>
-
-<div class="action-bar" [ngClass]="{'-showed': unsaved}">
-  <div class="container-wide">
-    <div class="row -no-mar">
-      <button cv-button-empty flatStyle="dark" routerLink="/pro/settings">Back</button>
-      <div class="spacer"></div>
-      <button cv-button-empty (click)="save()" [loading]="mapContentIsLoading" [spinnerColor]="'#14ABE3'" [disabled]="!unsaved">Save</button>
-    </div>
-  </div>
-</div>
+<imp-coverage-tutorial></imp-coverage-tutorial>
 
 <agm-map class="map-wrapper"
          [zoom]="mapOptions.zoom"
          (mapReady)="onMapReady($event)"
          [maxZoom]="mapOptions.maxZoom"
-         [minZoom]="minZoom"
+         [minZoom]="mapOptions.minZoom"
          [styles]="mapStyles"
          [streetViewControl]="false"
          [disableDefaultUI]="true"
@@ -131,8 +37,19 @@
                           [closeOnMapClick]="true"
                           [panOnOpen]="false">
     <ng-template>
-      <div class="si-zip-content">{{infoWindow?.content}}</div>
+      <div class="si-zip-content">{{ infoWindow?.content }}</div>
     </ng-template>
   </agm-snazzy-info-window>
 </agm-map>
-<div class="loader" *ngIf="mapContentIsLoading" [cvSpinner]="mapContentIsLoading" [cvSpinnerSize]="32"></div>
+
+<div class="action-bar" [ngClass]="{'-showed': unsavedChanges$ | async}">
+  <div class="container-wide">
+    <div class="row -no-mar">
+      <button cv-button-empty flatStyle="dark" (click)="reset()">Cancel</button>
+      <div class="spacer"></div>
+      <button cv-button-empty (click)="saveChanges()" [loading]="isSavingChanges" [spinnerColor]="'#14ABE3'"
+              [disabled]="!(unsavedChanges$ | async)">Save
+      </button>
+    </div>
+  </div>
+</div>

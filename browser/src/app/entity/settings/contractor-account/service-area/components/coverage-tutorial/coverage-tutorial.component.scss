@@ -1,0 +1,51 @@
+@import "../../../../../../../improver-mixins.scss";
+
+.tutorial-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(#000, .6);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .tutorial {
+    background-color: $white;
+    z-index: 1;
+    width: 374px;
+    padding: 25px 30px;
+    text-align: center;
+    @include response(xs) {
+      padding: 16px;
+    }
+    i {
+      font-size: 53px;
+      color: #b3e1c8;
+      &:before {
+        margin: 0;
+      }
+    }
+    h4 {
+      margin: 6px 0 15px;
+    }
+    p {
+      margin: 0;
+      font-size: 12px;
+      color: $black-600;
+      &:not(:last-child) {
+        margin-bottom: 15px;
+      }
+    }
+    a {
+      color: $primary-600;
+      font-size: 12px;
+      text-decoration: underline;
+      margin-top: 5px;
+      &:hover {
+        text-decoration: none;
+      }
+    }
+  }
+}

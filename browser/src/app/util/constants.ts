@@ -12,6 +12,10 @@ export class Constants {
   ADMIN_PROJECT_VALIDATION_COMMENT_MIN_SIZE: number = 10;
   ADMIN_PROJECT_VALIDATION_COMMENT_MAX_SIZE: number = 500;
   REFERRAL_BONUS_AMOUNT: number = 10000;
+  readonly METERS_IN_MILES = 1609.344;
+  readonly COVERAGE_RADIUS_STEP = 1;
+  readonly MIN_COVERAGE_RADIUS = 5;
+  readonly MAX_COVERAGE_RADIUS = 50;
   readonly BOUNDARIES_SPILT_SIZE = 150;
   patterns: any;
   projectStatuses: Array<any>;

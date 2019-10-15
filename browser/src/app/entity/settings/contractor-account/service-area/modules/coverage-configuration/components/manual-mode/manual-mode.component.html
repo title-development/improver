@@ -1,0 +1,14 @@
+<form #zipSearchForm="ngForm" (ngSubmit)="onSubmit(zipSearchForm)">
+  <cv-input-field>
+    <cv-field-label>Zip code</cv-field-label>
+    <input type="text" class="find-zip" cv-input placeholder="e.g. 10022" numericMask required
+           pattern=".{5,}" maxlength="5"
+           #zipValue="ngModel" name="search" autocomplete="off" [(ngModel)]="searchZipCode"
+           (ngModelChange)="validateZip(zipSearchForm)">
+    <button cv-button type="submit">Add</button>
+    <cv-field-error *ngIf="zipFormErrors">
+      <span *ngIf="zipValue.errors?.required">Zip code is required</span>
+      <span *ngIf="zipValue.errors?.pattern">Please enter a valid ZIP code</span>
+    </cv-field-error>
+  </cv-input-field>
+</form>

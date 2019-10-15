@@ -13,8 +13,8 @@ import { SystemMessageType } from '../../../model/data-model';
 import { SecurityService } from '../../../auth/security.service';
 import { Router } from '@angular/router';
 import { Observable, Subject, throwError } from 'rxjs';
-import { fromPromise } from 'rxjs-compat/observable/fromPromise';
 import { switchMap, takeUntil } from 'rxjs/operators';
+import { fromPromise } from 'rxjs/internal-compatibility';
 
 @Component({
   selector: 'contractor-registration-phone-request',

@@ -17,7 +17,7 @@ import { RestPage } from '../../../api/models/RestPage';
 import { CompanyCoverageConfig } from '../../../api/models/CompanyCoverageConfig';
 import { of, Subscription } from 'rxjs';
 import { catchError, debounceTime, first, map, mergeMap, switchMap, tap } from 'rxjs/internal/operators';
-import { fromPromise } from 'rxjs/internal/observable/fromPromise';
+import { fromPromise } from 'rxjs/internal-compatibility';
 
 
 @Component({

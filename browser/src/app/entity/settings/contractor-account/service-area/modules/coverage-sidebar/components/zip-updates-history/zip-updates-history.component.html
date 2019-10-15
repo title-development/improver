@@ -1,0 +1,29 @@
+<i class="icon imp-icon-clock" (click)="toggleHistory()"></i>
+
+<div class="area-change-history-block" [ngClass]="{'-showed': isHistoryShowed}">
+  <div class="header">Coverage area updates <i class="imp-icon-angle-double-right"
+                                               (click)="toggleHistory()"></i></div>
+  <perfect-scrollbar class="zip-codes-scrolling">
+    <div class="added-zip-codes-block">
+      <div class="added-header">Added zip codes ({{ zipHistory?.added.length }})</div>
+
+      <ng-template ngFor [ngForOf]="zipHistory?.added" let-zip let-i="index" [ngForTrackBy]="trackByFn">
+        <div class="history-zip" fxLayout="row" fxLayoutAlign="space-between center">
+          <div class="value">{{ zip }}</div>
+          <div class="undo-button" (click)="undoAction(zip)">(UNDO)</div>
+        </div>
+      </ng-template>
+    </div>
+
+    <div class="removed-zip-codes-block">
+      <div class="added-header">Removed zip codes ({{ zipHistory?.removed?.length }})</div>
+
+      <ng-template ngFor [ngForOf]="zipHistory?.removed" let-zip let-i="index" [ngForTrackBy]="trackByFn">
+        <div class="history-zip" fxLayout="row" fxLayoutAlign="space-between center">
+          <div class="value">{{ zip }}</div>
+          <div class="undo-button" (click)="undoAction(zip)">(UNDO)</div>
+        </div>
+      </ng-template>
+    </div>
+  </perfect-scrollbar>
+</div>

@@ -90,9 +90,9 @@ export class CompanyDemoProjectEditorComponent implements OnInit, ComponentCanDe
       }
 
       combineLatest(requests).subscribe(result => {
-          this.allServiceTypes = result[0];
+          this.allServiceTypes = result[0] as ServiceType[];
           this.demoProject = result[1] ? result[1] as DemoProject : this.demoProject;
-          this.projectImages = result[2] ? result[2] : this.projectImages;
+          this.projectImages = result[2] ? result[2] as any[] : this.projectImages;
         },
         err => {
           console.log(err);

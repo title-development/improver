@@ -1,14 +1,46 @@
 {
   "rulesDirectory": [
-    "node_modules/codelyzer"
+    "node_modules/vrsource-tslint-rules/rules",
+    "node_modules/tslint-eslint-rules/dist/rules",
+    "node_modules/codelyzer",
+    "node_modules/tslint-sonarts/lib/rules"
   ],
-  "extends": ["angular-tslint-rules"],
+  "extends": [
+    "rxjs-tslint-rules",
+    "tslint-angular",
+    "tslint:recommended",
+    "tslint-sonarts"
+  ],
   "rules":{
+    "member-ordering": [
+      true,
+      {
+        "order": [
+          "public-static-field",
+          "public-static-method",
+          "protected-static-field",
+          "protected-static-method",
+          "private-static-field",
+          "private-static-method",
+          "public-instance-field",
+          "protected-instance-field",
+          "private-instance-field",
+          "public-constructor",
+          "protected-constructor",
+          "private-constructor",
+          "public-instance-method",
+          "protected-instance-method",
+          "private-instance-method"
+        ],
+        "alphabetize": false
+      }
+    ],
+    "member-access": [true, "no-public"],
     "angular-whitespace": [true, "check-interpolation", "check-semicolon"],
     "banana-in-box": true,
     "templates-no-negated-async": true,
-    "directive-selector": [true, "attribute", ["ngx", "test"], "camelCase"],
-    "component-selector": [true, "element", ["ngx", "test"], "kebab-case"],
+    "directive-selector": [true, "attribute", ["imp"], "camelCase"],
+    "component-selector": [true, "element", ["imp"], "kebab-case"],
     "use-input-property-decorator": true,
     "use-output-property-decorator": true,
     "use-host-property-decorator": true,
@@ -16,6 +48,7 @@
     "no-attribute-parameter-decorator": true,
     "no-input-rename": true,
     "no-output-rename": true,
+    "no-null-keyword": false,
     "no-output-on-prefix": true,
     "no-forward-ref": true,
     "use-life-cycle-interface": true,
@@ -26,6 +59,44 @@
     "component-class-suffix": true,
     "directive-class-suffix": true,
     "pipe-impure": true,
-    "no-inferrable-types": false
+    "no-inferrable-types": false,
+    "no-duplicate-imports": true,
+    "object-literal-sort-keys": false,
+    "quotemark": false,
+
+    // vrsource-tslint-rules
+    "ext-variable-name": [
+      true,
+      ["class", "pascal"],
+      ["interface", "pascal", { "regex": "^I.*$" }],
+      ["parameter", "camel,pascal"],
+      ["property", "static", "camel"],
+      ["property", "private", "camel", "allow-leading-underscore"],
+      ["property", "protected", "camel", "allow-leading-underscore"],
+      ["variable", "local", "camel"],
+      ["variable", "const", "camel"],
+      ["variable", "camel"],
+      ["method", "private", "camel", "allow-leading-underscore"],
+      ["method", "protected", "camel", "allow-leading-underscore"],
+      ["function", "camel", "ban-keywords"],
+      ["default", "camel"]
+    ],
+    "max-params": [true, 4],
+    "prefer-case-blocks": true,
+    "prefer-literal": [true, "object", "function", "array"],
+
+    // tslint-sonarts
+    "mccabe-complexity": true,
+    "no-empty-nested-blocks": true,
+    "no-inconsistent-return": true,
+    "no-nested-incdec": true,
+
+    // rxjs
+    "rxjs-no-unsafe-takeuntil": {
+      "options": [{
+        "allow": ["count", "defaultIfEmpty", "endWith", "every", "finalize", "finally", "isEmpty", "last", "max", "min", "publish", "publishBehavior", "publishLast", "publishReplay", "reduce", "share", "shareReplay", "skipLast", "takeLast", "throwIfEmpty", "toArray"]
+      }],
+      "severity": "error"
+    }
   }
 }

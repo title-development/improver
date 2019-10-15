@@ -1,0 +1,60 @@
+@import "../../../../../../../../improver-mixins";
+
+cv-input-field {
+  &::ng-deep {
+    cv-field-label {
+      display: inline-block;
+      @include response-to(sm) {
+        background-color: $white;
+        padding: 1px 3px;
+        margin-left: 4px;
+        margin-bottom: 0;
+        border-top-right-radius: 2px;
+        border-top-left-radius: 2px;
+      }
+    }
+  }
+  &:not(:last-child) {
+    margin-bottom: 12px;
+  }
+}
+form {
+  @include response-to(sm) {
+    text-align: left;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+  cv-input-field {
+    cv-select {
+      background-color: $white;
+    }
+    @include response-to(sm) {
+      width: 50%;
+      max-width: 200px;
+      padding: 0 9px;
+    }
+    @include response(xs) {
+      width: 205px;
+      .cv-input {
+        font-size: 13px;
+      }
+    }
+    &::ng-deep {
+      cv-field-error {
+        @include response-to(sm) {
+          background-color: $white;
+        }
+      }
+    }
+  }
+}
+
+.cv-slider {
+  margin-bottom: 0;
+  margin-top: 8px;
+}
+
+.find-zip {
+  width: 0;
+}

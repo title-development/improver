@@ -1,0 +1,29 @@
+<i [routerLink]="'/pro/settings'" class="imp-icon-arrow-left back"></i>
+<h4>Coverage configuration</h4>
+<span class="icon"><i class="imp-icon-info" (click)="openTutorial()"></i></span>
+<div class="holder" [cvSpinner]="fetching" [cvSpinnerBackground]="true" [cvSpinnerSize]="24">
+  <ng-container *ngIf="companyCoverageConfig">
+    <div class="switch">
+      <div class="prevent" (click)="preventSwitch($event)" *ngIf="isUnsavedChanges"></div>
+
+      <cv-switch [ngModel]="!isManualMode" onLabel="By Radius" offLabel="By Zip Codes"
+                 name="state"
+                 (changeState)="modeStateChange($event)"></cv-switch>
+    </div>
+
+    <ng-container *ngIf="isManualMode; else basicMode">
+      <imp-manual-mode
+        (zipCodeFound)="zipCodeFound($event)"
+        [servedZipCodes]="servedZipCodes"
+      ></imp-manual-mode>
+    </ng-container>
+
+    <ng-template #basicMode>
+      <imp-basic-mode (circlePropsUpdated)="circlePropsUpdated($event)"
+                      [servedZipCodes]="servedZipCodes"
+                      [radius]="companyCoverageConfig.coverageConfig.radius"
+                      [center]="companyCoverageConfig.getCompanyCoverageCenter()"
+      ></imp-basic-mode>
+    </ng-template>
+  </ng-container>
+</div>

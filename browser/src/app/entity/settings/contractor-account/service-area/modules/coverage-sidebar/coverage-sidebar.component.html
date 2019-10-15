@@ -1,0 +1,6 @@
+<imp-zip-updates-history *ngIf="isDetailMode"
+                         [zipHistory]="zipHistory"
+                         (undo)="undo($event)"
+></imp-zip-updates-history>
+<span class="spacer"></span>
+<imp-map-controls [ngClass]="{'-unsaved-changes': isUnsavedChanges}" (onZoomIn)="zoomIn()" (onZoomOut)="zoomOut()"></imp-map-controls>

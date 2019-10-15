@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { from, Observable, of, throwError } from 'rxjs';
+import { asyncScheduler, from, Observable, of, throwError } from 'rxjs';
 
 import { ZipBoundaries } from '../models/ZipBoundaries';
 import { HttpClient, HttpParams } from '@angular/common/http';
@@ -49,9 +49,9 @@ export class BoundariesService {
   getSplitZipBoundaries(zips: ReadonlyArray<string>, splitSize: number | null = null): Observable<ZipBoundaries> {
     if (splitSize) {
       const splicedZips = chunk<string>(zips, splitSize);
-      return from(splicedZips)
+      return from(splicedZips, asyncScheduler)
         .pipe(
-          mergeMap(chunk => this.getZipBoundaries(chunk), splicedZips.length),
+          mergeMap(ch => this.getZipBoundaries(ch), splicedZips.length),
           retry(2)
         );
     }

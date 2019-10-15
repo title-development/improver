@@ -1,0 +1,70 @@
+@import "../../../../../../../../../improver-mixins";
+
+:host {
+  position: relative;
+  transform: translateY(0);
+  transition: transform .3s ease;
+  @include response-to(sm) {
+    display: none;
+  }
+  &.-unsaved-changes {
+    transform: translateY(-66px);
+  }
+}
+
+.icon {
+  &:first-child {
+    border-bottom: 1px solid #eaeaea;
+  }
+
+  &:after, &:before {
+    background-color: #a1a1a1;
+    transition: background-color .3s ease;
+  }
+
+  &:hover {
+    &:after, &:before {
+      background-color: #616161;
+    }
+  }
+}
+
+.zoom-in {
+  &:after {
+    content: '';
+    display: block;
+    width: 12px;
+    height: 2px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-top: -1px;
+    margin-left: -6px;
+  }
+
+  &:before {
+    content: '';
+    display: block;
+    position: absolute;
+    height: 12px;
+    width: 2px;
+    margin-left: -1px;
+    top: 50%;
+    left: 50%;
+    margin-top: -6px;
+  }
+}
+
+.zoom-out {
+  &:after {
+    content: '';
+    display: block;
+    width: 12px;
+    height: 2px;
+    position: absolute;
+    left: 50%;
+    top: 44%;
+    margin-top: -1px;
+    margin-left: -6px;
+  }
+}

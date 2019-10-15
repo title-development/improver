@@ -2,16 +2,16 @@ import { Component, EventEmitter, OnDestroy, Output } from '@angular/core';
 import { GoogleMapsAPIWrapper } from '@agm/core';
 import { BoundariesService } from '../../../api/services/boundaries.service';
 
-import { fromPromise } from 'rxjs-compat/observable/fromPromise';
 import { catchError, debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { BehaviorSubject, fromEventPattern, of, Subject } from 'rxjs';
 import { applyStyleToMapLayers, GoogleMapUtilsService } from '../../../util/google-map.utils';
 import { MediaQuery, MediaQueryService } from '../../../util/media-query.service';
-import { ZipInfoWindow } from '../../settings/contractor-account/service-area/services/detail-mode.service';
 import { getErrorMessage } from '../../../util/functions';
 import { PopUpMessageService } from '../../../util/pop-up-message.service';
 import { Constants } from '../../../util/constants';
 import { CountyBoundaries, CountyMapArea } from "../../../api/models/CountyBoundaries";
+import { ZipInfoWindow } from '../../settings/contractor-account/service-area/interfaces/zip-info-window';
+import { fromPromise } from 'rxjs/internal-compatibility';
 
 @Component({
   selector: 'admin-map',

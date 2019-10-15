@@ -1,0 +1,29 @@
+@import "../../../../../../../improver-mixins";
+
+:host {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  bottom: 12px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  @include response-to(sm) {
+    top: auto;
+    left: 12px;
+    right: auto;
+  }
+}
+
+.info {
+  span {
+    &:last-child {
+      margin-top: 12px;
+    }
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+}
