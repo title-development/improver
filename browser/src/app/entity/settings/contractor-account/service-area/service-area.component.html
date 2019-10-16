@@ -1,4 +1,4 @@
-<div class="loader" *ngIf="fetching$ | async" [cvSpinner]="true" [cvSpinnerSize]="32"></div>
+<mat-progress-bar mode="indeterminate" *ngIf="fetching$ | async"></mat-progress-bar>
 
 <imp-coverage-configuration
   [fetching]="fetching$ | async"

@@ -67,7 +67,7 @@ export class BasicModeService implements OnDestroy {
         return;
       }
       this.gMapUtils.drawZipBoundaries(this.gMap, this.gMapUtils.markAreasZips(zipBoundaries, this.servedZipCodes));
-      this.gMapUtils.fitMapToDataLayer(this.gMap);
+      this.gMap.setCenter(center);
       this.newCoverageArea = zipBoundaries.features
         .map((feature) => feature.properties.zip)
         .filter(zipCode => this.servedZipCodes.includes(zipCode));

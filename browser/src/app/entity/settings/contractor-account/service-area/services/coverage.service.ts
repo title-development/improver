@@ -31,6 +31,13 @@ export class CoverageService implements OnDestroy {
   }
 
   init(gMap: google.maps.Map): void {
+    // TODO: Andriy
+    // xs && circle - minZoom = 8
+    // xs && manual - minZoom = 9
+    // sm && circle - minZoom = 9
+    // sm && manual - minZoom = 10
+    // other - default
+    this.mapOptions.minZoom = 8;
     this.gMap = gMap;
   }
 

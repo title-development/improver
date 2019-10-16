@@ -42,41 +42,20 @@ agm-map::ng-deep {
   }
   .spacer {
     flex-grow: 1;
-    @include response-to(sm) {
-      display: none;
-    }
   }
   button {
     &::ng-deep {
       padding: 8px 31px;
-    }
-    @include response-to(sm) {
-      &:first-child {
-        display: none;
-      }
-    }
-  }
-}
-
-.loader {
-  position: fixed;
-  top: 24px;
-  right: 0;
-  left: 0;
-  z-index: 999;
-  @include response-to(sm) {
-    top: 0;
-    height: 50px;
-  }
-  &::ng-deep {
-    @include response-to(sm) {
-      .cv-spinner-holder {
-        background-color: #fff !important;
-      }
     }
   }
 }
 
 ::ng-deep .si-wrapper-top {
   pointer-events: none;
+}
+
+mat-progress-bar {
+  position: absolute;
+  width: 100%;
+  z-index: 9999;
 }
