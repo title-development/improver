@@ -3,7 +3,7 @@ import { GoogleMapsAPIWrapper } from '@agm/core';
 import { BoundariesService } from '../../../api/services/boundaries.service';
 
 import { catchError, debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
-import { BehaviorSubject, fromEventPattern, of, Subject } from 'rxjs';
+import { BehaviorSubject, from, fromEventPattern, of, Subject } from 'rxjs';
 import { applyStyleToMapLayers, GoogleMapUtilsService } from '../../../util/google-map.utils';
 import { MediaQuery, MediaQueryService } from '../../../util/media-query.service';
 import { getErrorMessage } from '../../../util/functions';
@@ -69,7 +69,7 @@ export class AdminMap implements OnDestroy {
   init(coveredArea: Array<string>) {
     this.coveredArea = coveredArea;
     this.loading.next(true);
-    fromPromise(this.googleMapsAPIWrapper.getNativeMap()).pipe(
+    from(this.googleMapsAPIWrapper.getNativeMap()).pipe(
       takeUntil(this.destroyed$),
       finalize(() => this.loading.next(false)),
       switchMap(map => {

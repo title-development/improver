@@ -15,9 +15,8 @@ import { PopUpMessageService } from '../../../util/pop-up-message.service';
 
 import { RestPage } from '../../../api/models/RestPage';
 import { CompanyCoverageConfig } from '../../../api/models/CompanyCoverageConfig';
-import { of, Subscription } from 'rxjs';
+import { from, of, Subscription } from 'rxjs';
 import { catchError, debounceTime, first, map, mergeMap, switchMap, tap } from 'rxjs/internal/operators';
-import { fromPromise } from 'rxjs/internal-compatibility';
 
 
 @Component({
@@ -86,7 +85,7 @@ export class LeadsSearchMapComponent implements OnDestroy {
           lng: companyCoverageConfig.companyLocation.lng
         };
 
-        return fromPromise(this.googleMapsAPIWrapper.getNativeMap());
+        return from(this.googleMapsAPIWrapper.getNativeMap());
       }),
       switchMap(map => {
         this.map = map;

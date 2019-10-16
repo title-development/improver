@@ -17,6 +17,7 @@ import { confirmDialogConfig } from '../dialogs/dialogs.configs';
 import { combineLatest, Subscription } from 'rxjs';
 import { ScrollHolderService } from '../../util/scroll-holder.service';
 import { MediaQuery, MediaQueryService } from '../../util/media-query.service';
+import { finalize } from "rxjs/operators";
 
 
 @Component({
@@ -36,6 +37,8 @@ export class ServicesSelectorComponent implements OnInit {
   };
   @Output()
   onUpdate: EventEmitter<any> = new EventEmitter<any>();
+  @Output()
+  onInitialized: EventEmitter<any> = new EventEmitter<any>();
   autocompleteData = [];
   filteredData: any;
   tradesControl: FormGroup;
@@ -150,6 +153,7 @@ export class ServicesSelectorComponent implements OnInit {
 
   getTradesAndServiceTypes() {
     combineLatest([this.tradeService.trades$, this.serviceTypeService.serviceTypes$])
+      .pipe(finalize(() => this.onInitialized.emit()))
       .subscribe(results => {
         this.allTrades = results[0];
         this.allServices = results[1];
@@ -184,7 +188,6 @@ export class ServicesSelectorComponent implements OnInit {
   }
 
   addService(service) {
-    console.log('addService');
     let serviceIndex = this.tradesAndServiceTypes.services.findIndex((obj => obj.id == service.id));
     if (serviceIndex < 0) {
       service.enabled = true;
@@ -234,7 +237,6 @@ export class ServicesSelectorComponent implements OnInit {
   }
 
   addTrade(trade) {
-    console.log('addTrade');
     let tradeIndex = this.tradesAndServiceTypes.trades.findIndex((obj => obj.id == trade.id));
     if (tradeIndex < 0) {
       this.tradeService.getServiceTypes(trade.id)
@@ -253,7 +255,6 @@ export class ServicesSelectorComponent implements OnInit {
               let serviceIndex = others.services.findIndex((obj => obj.id == service.id));
               if (serviceIndex < 0) continue;
               others.services.splice(serviceIndex, 1);
-              console.log(others);
             }
             this.tradesAndServiceTypes.trades.forEach(trade => trade.collapsed = false);
             trade.collapsed = true;
@@ -265,7 +266,6 @@ export class ServicesSelectorComponent implements OnInit {
             this.updateTradesAndServices();
           },
           err => {
-            console.log(err);
             this.popUpMessageService.showError(getErrorMessage(err));
           });
     } else {
@@ -274,7 +274,6 @@ export class ServicesSelectorComponent implements OnInit {
   }
 
   removeTrade(trade: Trade) {
-    console.log(trade);
 
     let othersIndex = this.tradesAndServiceTypes.trades.findIndex((obj => obj.id == 0));
     let minTradesCount = othersIndex < 0 ? 1 : 2;
@@ -323,7 +322,6 @@ export class ServicesSelectorComponent implements OnInit {
         this.updateTradesAndServices();
       },
       err => {
-        console.log(err);
         this.popUpMessageService.showError(getErrorMessage(err));
       }
     );

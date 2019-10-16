@@ -88,6 +88,15 @@ h3 {
         text-decoration: underline;
       }
     }
+
+    &::ng-deep {
+      .checkbox-label {
+        display: flex;
+        font-size: 14px;
+        align-items: flex-end;
+      }
+    }
+
   }
 }
 
@@ -220,3 +229,15 @@ cv-input-field {
   }
 }
 
+.captcha-reminder {
+  text-align: left;
+  margin-top: 8px;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.54);
+
+  a {
+    cursor: pointer;
+    color: $primary-500;
+  }
+
+}

@@ -68,11 +68,17 @@
                           (responseMessage)="messageText = $event;"
                           (showMessage)="showMessage = $event;"></social-buttons>
 
+          <div class="captcha-reminder">This site is protected by reCAPTCHA and the Google
+            <a href="https://policies.google.com/privacy">Privacy Policy</a> and
+            <a href="https://policies.google.com/terms">Terms of Service</a> apply.
+          </div>
+
           <div class="forgot-password-button" routerLink="/restore-password">Forgot password?</div>
           <div class="no-account-line">
             <div class="question">Don’t have an account?</div>
             <a class="no-account-button" routerLink="/signup">Sign up</a>
           </div>
+
           <re-captcha [size]="'invisible'"></re-captcha>
         </form>
 

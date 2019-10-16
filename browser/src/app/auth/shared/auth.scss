@@ -208,6 +208,20 @@
           }
         }
       }
+
+      .captcha-reminder {
+        text-align: center;
+        margin-bottom: 16px;
+        font-size: 12px;
+        color: rgba(0, 0, 0, 0.54);
+
+        a {
+          cursor: pointer;
+          color: $primary-500;
+        }
+
+      }
+
     }
 
     .footer {

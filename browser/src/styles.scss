@@ -618,3 +618,7 @@ input[type=range]::-moz-focus-outer {
 .dialog-content-wrapper {
   overflow-x: hidden;
 }
+
+.grecaptcha-badge {
+  visibility: hidden;
+}

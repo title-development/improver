@@ -12,6 +12,7 @@ import { defaultMapOptions, infoWindowDefaults } from '../../../util/google-map-
 import { getErrorMessage } from '../../../util/functions';
 import { takeUntil } from 'rxjs/operators';
 import { MediaQuery, MediaQueryService } from '../../../util/media-query.service';
+import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 
 @Component({
   selector: 'contractor-leads-search',
@@ -55,7 +56,20 @@ export class ContractorLeadsSearchComponent implements OnDestroy {
               private markersStore: MapMarkersStore,
               private dialog: MatDialog,
               private popUpMessageService: PopUpMessageService,
-              private appRef: ApplicationRef) {
+              private appRef: ApplicationRef,
+              private router: Router,
+              private activatedRoute : ActivatedRoute) {
+
+    router.events
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((val) => {
+      if(val instanceof NavigationEnd) {
+        if (!this.mdSidebar.opened) {
+          this.mdSidebar.open();
+        }
+      }
+    });
+
     this.mediaQueryService.screen
       .pipe(
         takeUntil(this.destroyed$)
@@ -67,12 +81,14 @@ export class ContractorLeadsSearchComponent implements OnDestroy {
   moveMapToLead(lead: Lead): void {
     const selectedMarker = this.getMarkerFromStore(lead);
     if (selectedMarker) {
+      let isMobile = this.mediaQuery.xs || this.mediaQuery.sm;
+      if (isMobile) {
+        this.mdSidebar.close()
+      }
       this.map.setCenter(new google.maps.LatLng(selectedMarker.position.lat(), selectedMarker.position.lng()));
-      this.map.panBy(this.getMapXOffset(), 0);
+      this.map.panBy(this.getMapXOffset(isMobile), 0);
       google.maps.event.trigger(selectedMarker, 'mouseover');
     }
-    // this.packMan.startAnimation(null, selectedMarker.position);
-
   }
 
   getMarkerFromStore(lead: Lead) {
@@ -181,9 +197,13 @@ export class ContractorLeadsSearchComponent implements OnDestroy {
    * Return negative number
    * @returns {number}
    */
-  private getMapXOffset(): number {
-    const sidebarWidth = this.mdSidebar._width;
+  private getMapXOffset(sideViewClosed: boolean = false): number {
     const leadsPanelWidth = this.leadsPanelEl.nativeElement.offsetWidth;
+
+    if(sideViewClosed) {
+      return 0
+    }
+
     if (this.selectedLead && leadsPanelWidth) {
       return (leadsPanelWidth / 2) * -1;
     } else {

@@ -57,6 +57,7 @@
     color: $black-secondary;
     padding-left: 24px;
     margin-bottom: 24px;
+    font-size: 12px;
     @include response-to(sm) {
       padding-left: 0px;
       text-align: center;

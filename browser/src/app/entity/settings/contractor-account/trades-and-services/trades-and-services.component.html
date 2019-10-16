@@ -13,18 +13,19 @@
       </div>
 
       <div [cvSpinner]="!tradesAndServiceTypes" [cvSpinnerSize]="24">
-        <div class="trades-and-services-card card" *ngIf="tradesAndServiceTypes">
+        <div class="trades-and-services-card card">
 
           <div class="card-content">
 
-            <services-selector *ngIf="tradesAndServiceTypes" [initialData]="tradesAndServiceTypes" (onUpdate)="onTradesAndServicesChange($event)">
-
+            <services-selector *ngIf="tradesAndServiceTypes" [initialData]="tradesAndServiceTypes"
+                               (onUpdate)="onTradesAndServicesChange($event)"
+                               (onInitialized)="selectorInitialized = true">
             </services-selector>
 
 
           </div>
 
-          <div class="buttons-block">
+          <div class="buttons-block" *ngIf="tradesAndServiceTypes && selectorInitialized">
             <!--<button cv-button-flat flatStyle="dark" >CANCEL</button>-->
             <button class="save-button" cv-button (click)="updateCompanyTradesAndServiceTypes()">SAVE</button>
           </div>

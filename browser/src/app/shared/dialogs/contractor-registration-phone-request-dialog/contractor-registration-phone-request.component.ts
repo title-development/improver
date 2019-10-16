@@ -12,9 +12,8 @@ import { getErrorMessage } from '../../../util/functions';
 import { SystemMessageType } from '../../../model/data-model';
 import { SecurityService } from '../../../auth/security.service';
 import { Router } from '@angular/router';
-import { Observable, Subject, throwError } from 'rxjs';
+import { from, Observable, Subject, throwError } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
-import { fromPromise } from 'rxjs/internal-compatibility';
 
 @Component({
   selector: 'contractor-registration-phone-request',
@@ -41,7 +40,6 @@ export class ContractorRegistrationPhoneRequestComponent implements OnDestroy {
               private dialog: MatDialog,
               private socialAuthService: AuthService
   ) {
-
   }
 
   registerUser(form: NgForm): void {
@@ -65,7 +63,7 @@ export class ContractorRegistrationPhoneRequestComponent implements OnDestroy {
       case SocialPlatform.FACEBOOK:
         return this.socialLoginService.proFacebookRegister(new PhoneSocialCredentials(this.socialUser.authToken, this.phone, this.referralCode));
       case SocialPlatform.GOOGLE:
-        return fromPromise<SocialUser>(this.socialAuthService.signIn(GoogleLoginProvider.PROVIDER_ID)).pipe(
+        return from(this.socialAuthService.signIn(GoogleLoginProvider.PROVIDER_ID)).pipe(
           switchMap((userData: SocialUser) => {
             if (userData && userData.id) {
               return this.socialLoginService.proGoogleApiRegister(new PhoneSocialCredentials(userData.idToken, this.phone, this.referralCode));

@@ -194,7 +194,7 @@
                             (click)="agreeForSocialLogin = !registerProps.agree"
                             [ngClass]="{'desktop': mediaQuery.md || mediaQuery.lg || mediaQuery.xlg}">
             </social-buttons>
-            <div class="hint account-hint">
+            <div class="hint account-hint" *ngIf="!(mediaQuery.xs || mediaQuery.sm)">
               <span>Create a PRO account and continue company registration whenever suits you.</span>
             </div>
 
@@ -235,6 +235,10 @@
               <span *ngIf="agreeEl.errors?.required">Please agree to all the terms and conditions</span>
             </cv-field-error>
           </div>
+        </div>
+        <div class="captcha-reminder">This site is protected by reCAPTCHA and the Google
+          <a href="https://policies.google.com/privacy">Privacy Policy</a> and
+          <a href="https://policies.google.com/terms">Terms of Service</a> apply.
         </div>
         <div class="footer">
           <button cv-button type="submit" class="button-next" [loading]="processing">Create Account
