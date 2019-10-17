@@ -12,11 +12,11 @@ export class ServiceTypeService {
   private serviceCatalogUrl = `${this.catalogUrl}/services`;
   private serviceTypesUrl = 'api/services';
   private _serviceTypes$: ReplaySubject<Array<ServiceType>> = new ReplaySubject<Array<ServiceType>>(1);
-  private _suggested$: ReplaySubject<Array<ServiceType>> = new ReplaySubject<Array<ServiceType>>(1);
-  private _popular$: ReplaySubject<Array<ServiceType>> = new ReplaySubject<Array<ServiceType>>(1);
+
+
   private serviceTypeCached: boolean = false;
-  private popularServiceTypeCached: boolean = false;
-  private suggestedServiceTypeCached: boolean = false;
+
+
 
   constructor(private http: HttpClient) {
   }
@@ -113,39 +113,6 @@ export class ServiceTypeService {
     return this._serviceTypes$;
   }
 
-  get suggested$(): ReplaySubject<Array<ServiceType>> {
-    if (!this.suggestedServiceTypeCached) {
-      this.suggestedServiceTypeCached = true;
-      this.getSuggested(16).subscribe((serviceType: Array<ServiceType>) => {
-        if (!serviceType){
-          this.suggestedServiceTypeCached = false;
-        }
-        this._suggested$.next(serviceType);
-      }, err => {
-        this.suggestedServiceTypeCached = false;
-        console.log(err);
-      });
-    }
 
-    return this._suggested$;
-  }
-
-
-  get popular$(): ReplaySubject<Array<ServiceType>> {
-    if (!this.popularServiceTypeCached) {
-      this.popularServiceTypeCached = true;
-      this.getPopular(16).subscribe((serviceType: Array<ServiceType>) => {
-        if (!serviceType){
-          this.popularServiceTypeCached = false;
-        }
-        this._popular$.next(serviceType);
-      }, err => {
-        this.popularServiceTypeCached = false;
-        console.log(err);
-      });
-    }
-
-    return this._popular$;
-  }
 
 }

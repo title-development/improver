@@ -9,6 +9,7 @@ import { ServiceTypeService } from '../../api/services/service-type.service';
 import { ProjectActionService } from '../../util/project-action.service';
 import * as lunr from 'lunr';
 import { getErrorMessage } from "../../util/functions";
+import { CustomerSuggestionService } from "../../api/services/customer-suggestion.service";
 
 
 @Component({
@@ -38,6 +39,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   constructor(private activatedRoute: ActivatedRoute,
               private companyService: CompanyService,
               public projectActionService: ProjectActionService,
+              public customerSuggestionService: CustomerSuggestionService,
               private popUpService: PopUpMessageService,
               private serviceTypeService: ServiceTypeService) {
     this.getPopularServices();
@@ -52,7 +54,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   getPopularServices() {
-    this.serviceTypeService.popular$.subscribe(
+    this.customerSuggestionService.popular$.subscribe(
       popularServiceTypes => this.popularServiceTypes = popularServiceTypes,
       err => this.popUpService.showError(getErrorMessage(err))
     )

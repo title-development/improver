@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { getErrorMessage, markAsTouched } from '../../util/functions';
 import { ServiceType } from '../../model/data-model';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -10,15 +10,16 @@ import { Router } from '@angular/router';
 import * as lunr from "lunr";
 import { combineLatest } from "rxjs";
 import { PopUpMessageService } from "../../util/pop-up-message.service";
-import { AccountService } from "../../api/services/account.service";
 import { SecurityService } from "../../auth/security.service";
+import { UserService } from "../../api/services/user.service";
+import { CustomerSuggestionService } from "../../api/services/customer-suggestion.service";
 
 @Component({
   selector: 'main-search-bar',
   templateUrl: './main-search-bar.component.html',
   styleUrls: ['./main-search-bar.component.scss']
 })
-export class MainSearchBarComponent implements OnInit {
+export class MainSearchBarComponent implements OnInit, OnChanges {
   @Input() service: string;
   @Input() zipCode: number;
   @Input() resetAfterFind: boolean = true;
@@ -27,22 +28,24 @@ export class MainSearchBarComponent implements OnInit {
 
   mainSearchFormGroup: FormGroup;
   serviceTypeCtrl: FormControl;
+  zipCodeCtrl: FormControl;
   filteredServiceTypes: Array<ServiceType> = [];
   serviceTypes: Array<ServiceType> = [];
   popularServiceTypes: Array<ServiceType> = [];
-  private lunrIndex;
   lastZipCode: string;
+  private lunrIndex;
+
 
   constructor(public dialog: MatDialog,
               public projectActionService: ProjectActionService,
               public constants: Constants,
-              public accountService: AccountService,
+              public userService: UserService,
+              public customerSuggestionService: CustomerSuggestionService,
               private serviceTypeService: ServiceTypeService,
               private router: Router,
-              public securityService: SecurityService,
+              private securityService: SecurityService,
               private popUpService: PopUpMessageService) {
     this.getServiceTypes();
-    this.getLastCustomerZipCode();
   }
 
   ngOnInit(): void {
@@ -51,6 +54,20 @@ export class MainSearchBarComponent implements OnInit {
     group.zipCodeCtrl = new FormControl(this.zipCode, Validators.compose([Validators.required, Validators.pattern(this.constants.patterns.zipcode)]));
     this.mainSearchFormGroup = new FormGroup(group);
     this.serviceTypeCtrl = group.serviceTypeCtrl;
+    this.zipCodeCtrl = group.zipCodeCtrl;
+
+    if (this.securityService.isAuthenticated() && !this.zipCode) {
+      this.getLastCustomerZipCode();
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.service && !changes.service.firstChange) {
+      this.serviceTypeCtrl.setValue(changes.service.currentValue);
+    }
+    if (changes.zipCode && !changes.zipCode.firstChange){
+      this.zipCodeCtrl.setValue(changes.zipCode.currentValue);
+    }
   }
 
   autocompleteSearch(search): void {
@@ -79,12 +96,13 @@ export class MainSearchBarComponent implements OnInit {
 
   searchServiceType(form: FormGroup): void {
     if (this.mainSearchFormGroup.valid) {
+      this.customerSuggestionService.saveUserSearchTerm(this.serviceTypeCtrl.value, this.zipCodeCtrl.value);
       const serviceTypeCtrl = this.mainSearchFormGroup.get('serviceTypeCtrl');
       if (serviceTypeCtrl.value) {
         this.getQuestianary(serviceTypeCtrl.value);
         if (this.resetAfterFind) {
           form.reset({
-            zipCodeCtrl: this.lastZipCode
+            zipCodeCtrl: localStorage.getItem('zipCode')? localStorage.getItem('zipCode'): this.lastZipCode
           });
           Object.values(form.controls).forEach(control => control.markAsPristine());
         }
@@ -120,7 +138,7 @@ export class MainSearchBarComponent implements OnInit {
   }
 
   getServiceTypes(): void {
-    let requests = combineLatest(this.serviceTypeService.serviceTypes$, this.serviceTypeService.popular$);
+    let requests = combineLatest(this.serviceTypeService.serviceTypes$, this.customerSuggestionService.popular$);
 
     requests.subscribe(
         results => {
@@ -143,12 +161,13 @@ export class MainSearchBarComponent implements OnInit {
   }
 
   getLastCustomerZipCode() {
-    if (this.securityService.isAuthenticated()) {
-      this.accountService.LastCustomerZipCode$
-        .subscribe(
-          zipCode => this.lastZipCode = zipCode
-        )
-    }
+    this.customerSuggestionService.LastCustomerZipCode$
+      .subscribe(
+        lastZipCode => {
+          this.lastZipCode = lastZipCode;
+          this.zipCodeCtrl.setValue(lastZipCode)
+        }
+      );
   }
 
   selectTrackBy(index: number, item: ServiceType): number {

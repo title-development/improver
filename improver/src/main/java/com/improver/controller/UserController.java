@@ -189,4 +189,12 @@ public class UserController {
         userService.expireCredentials(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @PostMapping("/searches")
+    public ResponseEntity<Void> userSearches(@RequestParam String zipCode,
+                                             @RequestParam String search){
+        User user = userSecurityService.currentUserOrNull();
+        userService.saveUserSearches(user, search, zipCode);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

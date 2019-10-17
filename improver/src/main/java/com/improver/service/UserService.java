@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +45,7 @@ public class UserService {
     @Autowired private StaffRepository staffRepository;
     @Autowired private SocialConnectionRepository socialConnectionRepository;
     @Autowired private StaffActionLogger staffActionLogger;
+    @Autowired private UserSearchRepository userSearchRepository;
 
 
     public User getByEmail(String email) {
@@ -400,4 +402,18 @@ public class UserService {
         }
         return userRepository.findBy(id, email, displayName, role, pageRequest);
     }
+
+
+    public void saveUserSearches(User user, String search, String zipCode) {
+        UserSearch userSearch = new UserSearch()
+            .setCreated(ZonedDateTime.now())
+            .setSearch(search)
+            .setZip(zipCode);
+
+        if (user != null){
+            userSearch.setUserId(String.valueOf(user.getId()));
+        }
+       userSearchRepository.save(userSearch);
+    }
+
 }

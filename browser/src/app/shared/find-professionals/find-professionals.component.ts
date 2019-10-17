@@ -1,4 +1,3 @@
-import { AccountService } from "../../api/services/account.service";
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -16,6 +15,9 @@ import { PopUpMessageService } from "../../util/pop-up-message.service";
 import { combineLatest } from "rxjs";
 import * as lunr from "lunr";
 import { SecurityService } from "../../auth/security.service";
+import { UserService } from "../../api/services/user.service";
+import { CustomerSuggestionService } from "../../api/services/customer-suggestion.service";
+
 
 @Component({
   selector: 'find-professionals',
@@ -26,6 +28,7 @@ import { SecurityService } from "../../auth/security.service";
 export class FindProfessionalsComponent implements OnInit {
   mainSearchFormGroup: FormGroup;
   serviceTypeCtrl: FormControl;
+  zipCodeCtrl: FormControl;
   suggestedServiceTypes: Array<ServiceType> = [];
   popularServiceTypes: Array<ServiceType> = [];
   filteredServiceTypes: Array<ServiceType> = [];
@@ -39,10 +42,11 @@ export class FindProfessionalsComponent implements OnInit {
               private questionaryControlService: QuestionaryControlService,
               private tradeService: TradeService,
               private router: Router,
-              public securityService: SecurityService,
+              private securityService: SecurityService,
               private popUpService: PopUpMessageService,
+              public customerSuggestionService: CustomerSuggestionService,
               public dialog: MatDialog,
-              private accountService: AccountService,
+              public userService: UserService,
               public projectActionService: ProjectActionService,
               public constants: Constants,
               public media: MediaQueryService,
@@ -57,11 +61,15 @@ export class FindProfessionalsComponent implements OnInit {
 
     this.mainSearchFormGroup = new FormGroup(group);
     this.serviceTypeCtrl = group.serviceTypeCtrl;
+    this.zipCodeCtrl = group.zipCodeCtrl;
 
     this.getSuggestedServiceTypes();
     this.getPopularTrades();
     this.getServiceTypes();
-    this.getLastCustomerZipCode();
+
+    if (this.securityService.isAuthenticated()) {
+      this.getLastCustomerZipCode();
+    }
 
     this.media.screen.subscribe(media => {
       if (media.xs || media.sm) {
@@ -93,7 +101,7 @@ export class FindProfessionalsComponent implements OnInit {
   }
 
   getSuggestedServiceTypes() {
-    this.serviceTypeService.suggested$
+    this.customerSuggestionService.suggested$
       .subscribe(
         suggestedServiceTypes => this.suggestedServiceTypes = suggestedServiceTypes
       );
@@ -107,20 +115,22 @@ export class FindProfessionalsComponent implements OnInit {
   }
 
   getLastCustomerZipCode() {
-    if (this.securityService.isAuthenticated()) {
-      this.accountService.LastCustomerZipCode$
-        .subscribe(
-          zipCode => this.lastZipCode = zipCode
-        )
-    }
+    this.customerSuggestionService.LastCustomerZipCode$
+      .subscribe(
+        lastZipCode => {
+          this.lastZipCode = lastZipCode;
+          this.zipCodeCtrl.setValue(lastZipCode)
+        }
+      );
   }
 
   searchServiceType(form: FormGroup) {
     if (this.mainSearchFormGroup.valid) {
       this.findProfessionalService.close();
+      this.customerSuggestionService.saveUserSearchTerm(this.serviceTypeCtrl.value, this.zipCodeCtrl.value);
       this.getQuestianary(this.serviceTypeCtrl.value);
       form.reset({
-        zipCodeCtrl: this.lastZipCode
+        zipCodeCtrl: localStorage.getItem('zipCode')? localStorage.getItem('zipCode'): this.lastZipCode
       });
       Object.values(form.controls).forEach(control => control.markAsPristine());
     } else {
@@ -152,7 +162,7 @@ export class FindProfessionalsComponent implements OnInit {
   }
 
   getServiceTypes(): void {
-    let requests = combineLatest(this.serviceTypeService.serviceTypes$, this.serviceTypeService.popular$);
+    let requests = combineLatest(this.serviceTypeService.serviceTypes$, this.customerSuggestionService.popular$);
 
     requests.subscribe(
       results => {

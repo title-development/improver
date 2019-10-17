@@ -22,6 +22,7 @@ import { finalize, first } from "rxjs/internal/operators";
 import { BoundariesService } from "../../../../../api/services/boundaries.service";
 import { UserService } from "../../../../../api/services/user.service";
 import { AccountService } from "../../../../../api/services/account.service";
+import { CustomerSuggestionService } from "../../../../../api/services/customer-suggestion.service";
 
 @Component({
   selector: 'default-questionary-block',
@@ -62,6 +63,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
               public constants: Constants,
               public messages: Messages,
               public popUpMessageService: PopUpMessageService,
+              public customerSuggestionService: CustomerSuggestionService,
               private accountService: AccountService,
               private router: Router,
               private locationValidate: LocationValidateService,
@@ -86,7 +88,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
 
   getLastCustomerZipCode() {
     if (this.securityService.isAuthenticated()) {
-      this.accountService.LastCustomerZipCode$
+      this.customerSuggestionService.LastCustomerZipCode$
         .subscribe(
           zipCode => this.lastZipCode = zipCode
         )
