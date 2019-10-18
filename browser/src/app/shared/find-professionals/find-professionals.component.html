@@ -45,12 +45,18 @@
           </div>
 
           <div class="zip-code-form-group">
-            <input type="text"
-                   class="main-search-zip-input"
-                   placeholder="Zip code"
-                   numericMask
-                   [formControlName]="'zipCodeCtrl'"
-                   maxlength="5"/>
+
+            <div class="main-search-zip-input-wrapper">
+              <mat-icon class="location-icon">room</mat-icon>
+
+              <input type="text"
+                     class="main-search-zip-input"
+                     placeholder="Zip code"
+                     numericMask
+                     [formControlName]="'zipCodeCtrl'"
+                     maxlength="5"/>
+
+            </div>
 
             <div class="messages-block"
                  *ngIf="mainSearchFormGroup.get('zipCodeCtrl').dirty || mainSearchFormGroup.get('zipCodeCtrl').touched">

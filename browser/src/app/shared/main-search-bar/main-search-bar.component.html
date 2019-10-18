@@ -23,7 +23,10 @@
 
   </div>
   <div class="zip-code-form-group">
-    <input [formControlName]="'zipCodeCtrl'" numericMask class="main-search-zip-input" type="text" placeholder="Zip code" maxlength="5">
+    <div class="main-search-zip-input-wrapper">
+      <mat-icon class="location-icon">room</mat-icon>
+      <input [formControlName]="'zipCodeCtrl'" class="main-search-zip-input" numericMask  type="text" placeholder="Zip code" maxlength="5">
+    </div>
     <div class="error-holder" *ngIf="mainSearchFormGroup.get('zipCodeCtrl').dirty || mainSearchFormGroup.get('zipCodeCtrl').touched">
       <div *ngIf="mainSearchFormGroup.get('zipCodeCtrl').errors?.required">
         Zip code is required

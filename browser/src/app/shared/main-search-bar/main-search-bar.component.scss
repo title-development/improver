@@ -31,7 +31,7 @@
     width: 100%;
   }
   @include response(xs){
-    border-bottom: 1px solid #d8d8d8;
+    border-bottom: 1px solid $black-300;
   }
 
   cv-select ::ng-deep {
@@ -50,7 +50,7 @@
 }
 
 .zip-code-form-group {
-  min-width: 94px;
+  min-width: 106px;
   width: 20%;
   position: relative;
 
@@ -59,27 +59,45 @@
 
   @include response(xs){
     width: 100%;
-    border-bottom: 1px solid #d8d8d8;
+    border-bottom: 1px solid $black-300;
   }
 
-  .main-search-zip-input {
-    width: 100%;
-    border: none;
-    border-left: solid 1px #e8e8e8;
-    height: 59px;
+  .main-search-zip-input-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-items: center;
+    align-items: center;
     padding: 0 15px;
-    font-size: 16px;
-    border-radius: 0;
+    background-color: white;
+    border-left: solid 1px $black-250;
 
-    @include response-to(sm) {
+    mat-icon {
+      margin-top: -5px;
+      font-size: 20px;
+      color: $black-250;
+      margin-right: 4px;
     }
 
-    @include response(xs){
+    .main-search-zip-input {
       width: 100%;
+      border: none;
+      height: 59px;
       font-size: 16px;
-      height: 45px;
+      border-radius: 0;
+
+      @include response-to(sm) {
+      }
+
+      @include response(xs){
+        width: 100%;
+        font-size: 16px;
+        height: 45px;
+      }
     }
+
   }
+
+
 }
 
 .submit-button-form-group {
