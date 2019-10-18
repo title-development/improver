@@ -17,6 +17,7 @@ import { RestPage } from '../../../api/models/RestPage';
 import { CompanyCoverageConfig } from '../../../api/models/CompanyCoverageConfig';
 import { from, of, Subscription } from 'rxjs';
 import { catchError, debounceTime, first, map, mergeMap, switchMap, tap } from 'rxjs/internal/operators';
+import { Constants } from "../../../util/constants";
 
 
 @Component({
@@ -66,6 +67,7 @@ export class LeadsSearchMapComponent implements OnDestroy {
               private googleMapsAPIWrapper: GoogleMapsAPIWrapper,
               private markersStore: MapMarkersStore,
               private popUpMessageService: PopUpMessageService,
+              private constants: Constants,
               private gMapUtils: GoogleMapUtilsService) {
 
     this.initMap();
@@ -73,7 +75,7 @@ export class LeadsSearchMapComponent implements OnDestroy {
 
   initMap(): void {
     this.pagination = new Pagination(0, 100);
-    this.leadService.getAll(null, this.pagination, []).pipe(first())
+    this.leadService.getAll(null, this.pagination).pipe(first())
       .subscribe((leads: RestPage<Lead>) => {
         this.updateLeads.emit(leads.content);
       });
@@ -104,12 +106,13 @@ export class LeadsSearchMapComponent implements OnDestroy {
         const southWest: string = [this.map.getBounds().getSouthWest().lat(), this.map.getBounds().getSouthWest().lng()].join();
         const northEast: string = [this.map.getBounds().getNorthEast().lat(), this.map.getBounds().getNorthEast().lng()].join();
 
-        return this.boundariesService.getZipCodesInBbox(northEast, southWest).pipe(
-          catchError(err => {
-            this.mapIsLoading = false;
-            this.popUpMessageService.showError('Unexpected error during map rendering');
-            return of(null);
-          }));
+        //TODO: Andriy, this should be loading first
+        return this.boundariesService.getSplitZipBoundaries(this.areas, this.constants.ZIPCODES_BATCH_SIZE).pipe(
+            catchError((err) => {
+              this.mapIsLoading = false;
+              this.popUpMessageService.showError('Unexpected error during map rendering');
+              return of(null);
+            }));
       }),
       catchError(err => {
         this.mapIsLoading = false;
@@ -122,7 +125,10 @@ export class LeadsSearchMapComponent implements OnDestroy {
         }
         this.gMapUtils.drawZipBoundaries(this.map, this.gMapUtils.zipsToDraw(this.map, zipBoundaries, this.areas));
 
-        return this.leadService.getAll(null, this.pagination, zipBoundaries.features.map(feature => feature.properties.zip)).pipe(catchError(err => {
+        //TODO: Andriy, this should be loading first
+        const southWest: string = [this.map.getBounds().getSouthWest().lat(), this.map.getBounds().getSouthWest().lng()].join();
+        const northEast: string = [this.map.getBounds().getNorthEast().lat(), this.map.getBounds().getNorthEast().lng()].join();
+        return this.leadService.getAllInBoundingBox(null, this.pagination, southWest, northEast).pipe(catchError(err => {
             this.popUpMessageService.showError('Error requesting leads');
             this.mapIsLoading = false;
 

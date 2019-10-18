@@ -2,6 +2,7 @@ package com.improver.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.improver.entity.Admin;
+import com.improver.entity.Centroid;
 import com.improver.entity.ServedZip;
 import com.improver.exception.ThirdPartyException;
 import com.improver.model.admin.in.ServedAreasUpdate;
@@ -57,7 +58,9 @@ public class CoverageService {
         AtomicReference<String> requestFailMessage = new AtomicReference<>();
         JsonNode zipCodesToDelete = boundariesService.getZipCodesByCounties(servedAreasUpdate.getRemoved().toArray(new String[0]));
         List<String> toDelete = new ArrayList<>();
-        zipCodesToDelete.get("features").forEach(f -> toDelete.add(f.get("id").asText()));
+        zipCodesToDelete.get("features")
+            .forEach(f -> toDelete.add(f.get("id").asText()));
+        servedZipRepository.deleteByZipIn(toDelete);
 
         Set<ServedZip> toAdd = new CopyOnWriteArraySet<>();
         List<Callable<AbstractMap.SimpleEntry<String, JsonNode>>> requests = new ArrayList<>();
@@ -81,17 +84,22 @@ public class CoverageService {
                 }
             })
             .filter(Objects::nonNull)
-            .forEach(entry -> {
-                String countyId = entry.getKey();
-                JsonNode zipCodesToAdd = entry.getValue();
-                zipCodesToAdd.get("features").forEach(f -> toAdd.add(new ServedZip(f.get("id").asText(), countyId)));
+            .forEach(zipCodesToAdd -> {
+                String countyId = zipCodesToAdd.getKey();
+                zipCodesToAdd.getValue().get("features")
+                    .forEach(feature -> {
+                        Iterator<JsonNode> coordinates = feature.get("properties").get("centroid").get("coordinates").elements();
+                        Centroid centroid = new Centroid().setLng(coordinates.next().asDouble())
+                            .setLat(coordinates.next().asDouble());
+                        toAdd.add(new ServedZip(feature.get("id").asText(), countyId, centroid));
+                    });
             });
 
         if (nonNull(requestFailMessage.get())) {
             throw new ThirdPartyException(requestFailMessage.get());
         }
 
-        servedZipRepository.deleteByZipIn(toDelete);
+
         servedZipRepository.saveAll(toAdd);
         staffActionLogger.logCoverageUpdate(currentAdmin, servedAreasUpdate.getRemoved(), servedAreasUpdate.getAdded());
     }

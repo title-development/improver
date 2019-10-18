@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ServedZipRepository extends JpaRepository<ServedZip, String> {
 
@@ -21,4 +22,5 @@ public interface ServedZipRepository extends JpaRepository<ServedZip, String> {
     @Query("SELECT DISTINCT sz.county FROM com.improver.entity.ServedZip sz ")
     List<String> getAllServedCounties();
 
+    Optional<ServedZip> findByZip(String zip);
 }

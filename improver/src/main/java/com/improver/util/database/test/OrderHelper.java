@@ -22,7 +22,7 @@ public class OrderHelper {
         details.add(new OrderDetails().setState("MO")
             .setCity("St.Louis")
             .setStreetAddress("231 S. Bemiston Ave.")
-            .setZip("07001")
+            .setZip("07059")
             .setNotes("I need high quality")
             .setStartExpectation(FLEXIBLE.toString()));
 
@@ -36,7 +36,7 @@ public class OrderHelper {
         details.add(new OrderDetails().setState("NY")
             .setCity("New York")
             .setStreetAddress("Gates Ave 26")
-            .setZip("07002")
+            .setZip("07456")
             .setNotes("must bee cheep")
             .setStartExpectation(IN_MONTH.toString()));
 
@@ -55,7 +55,7 @@ public class OrderHelper {
         details.add(new OrderDetails().setState("AZ")
             .setCity("Tucson")
             .setStreetAddress("799 E Dragram")
-            .setZip("07008")
+            .setZip("10965")
             .setNotes("")
             .setStartExpectation(FLEXIBLE.toString()));
 
@@ -104,7 +104,7 @@ public class OrderHelper {
         details.add(new OrderDetails().setState("NY")
             .setCity("New York")
             .setStreetAddress("Gates Ave 26")
-            .setZip("11733")
+            .setZip("10022")
             .setNotes("Hello World!")
             .setStartExpectation(IN_MONTH.toString()));
     }

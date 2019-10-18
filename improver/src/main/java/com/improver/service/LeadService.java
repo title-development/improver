@@ -27,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.LockModeType;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -44,8 +43,7 @@ public class LeadService {
 
     @Autowired private ProjectRepository projectRepository;
     @Autowired private TransactionRepository transactionRepository;
-    @Autowired
-    private WsNotificationService wsNotificationService;
+    @Autowired private WsNotificationService wsNotificationService;
     @Autowired private ProjectRequestService projectRequestService;
     @Autowired private BillRepository billRepository;
     @Autowired private PaymentService paymentService;
@@ -53,20 +51,24 @@ public class LeadService {
     @Autowired private ContractorRepository contractorRepository;
     @Autowired private CompanyRepository companyRepository;
     // Required for same instance Transactional method call
-    @Lazy
-    @Autowired private LeadService self;
+    @Lazy @Autowired private LeadService self;
 
     /**
-     * @param zipCodesToInclude - additional zipCodes to include, may cross over with company coverage.
+     *
+     * @param southWest coordinate of Bbox
+     * @param northEast coordinate of Bbox
      */
-    public Page<ShortLead> getLeads(Contractor contractor, List<String> zipCodesToInclude, boolean eligibleForPurchase, String searchTerm, Pageable pageable) {
+    public Page<ShortLead> getLeads(Contractor contractor, boolean eligibleForPurchase, String searchTerm, Pageable pageable, double[] southWest, double[] northEast) {
         Page<ShortLead> leads;
-        List<Project.Status> statuses = eligibleForPurchase ? Project.Status.forPurchase() : Arrays.asList(Project.Status.values());
-        if (isEmpty(zipCodesToInclude)) {
+        List<Project.Status> statuses = eligibleForPurchase ? Project.Status.forPurchase() : Project.Status.getActive();
+        if (southWest == null || southWest.length == 0 || northEast == null || northEast.length == 0) {
             leads = projectRepository.getLeadsInCoverage(contractor.getCompany().getId(), statuses, searchTerm, pageable);
         } else {
-            leads = projectRepository.getLeadsInZipCodesAndCoverage(contractor.getCompany().getId(), zipCodesToInclude, statuses, searchTerm, pageable);
+            leads = projectRepository.getLeadsInCoverageAndBbox(contractor.getCompany().getId(), statuses, searchTerm, northEast[0], northEast[1], southWest[0], southWest[1], pageable);
         }
+
+
+
         return leads;
     }
 
@@ -87,7 +89,7 @@ public class LeadService {
         /**
          * #1  All services in coverage
          */
-        List<ShortLead> formCoverage = getLeads(contractor, Collections.emptyList(), true, null, null).stream()
+        List<ShortLead> formCoverage = getLeads(contractor, true, null, null, new double[2], new double[2]).stream()
             .filter(lead -> lead.getId() != projectId)
             .collect(Collectors.toList());
         if (formCoverage.size() <= SIMILAR_PROJECT_COUNT) {

@@ -33,7 +33,7 @@ public class OrderService {
     @Autowired private UserService userService;
     @Autowired private CustomerRepository customerRepository;
     @Autowired private MailService mailService;
-    @Autowired private CompanyRepository companyRepository;
+    @Autowired private ServedZipRepository servedZipRepository;
     @Autowired private LeadService leadService;
     @Autowired private ProjectRepository projectRepository;
     @Autowired private ProjectActionRepository projectActionRepository;
@@ -120,8 +120,13 @@ public class OrderService {
             isSuitableForPurchase = false;
         }
 
+        Centroid centroid = servedZipRepository.findByZip(orderDetails.getLocation().getZip())
+            .orElseThrow(ValidationException::new)
+            .getCentroid();
+
 
         return new Project()
+            .setCentroid(centroid)
             .setLead(isSuitableForPurchase)
             .setServiceType(serviceType)
             .setLeadPrice(serviceType.getLeadPrice())

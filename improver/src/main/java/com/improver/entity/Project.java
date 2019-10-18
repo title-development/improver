@@ -39,6 +39,9 @@ public class Project implements ImageContainable {
     @Embedded
     private Location location;
 
+    @Embedded
+    private Centroid centroid;
+
     @Column(columnDefinition = "varchar(" + ORDER_DESCRIPTION_SIZE + ")")
     private String notes;
 

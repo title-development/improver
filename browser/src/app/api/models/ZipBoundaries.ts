@@ -12,6 +12,12 @@ export class ZipProperties {
   visible: boolean;
   state: string;
   zip: string;
+  centroid: Centroid;
+}
+
+export class Centroid {
+  type: string;
+  coordinates: Array<number>;
 }
 
 export class ZipGeometry {

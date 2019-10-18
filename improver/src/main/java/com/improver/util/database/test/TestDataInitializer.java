@@ -2,6 +2,7 @@ package com.improver.util.database.test;
 
 import com.improver.entity.*;
 import com.improver.exception.NotFoundException;
+import com.improver.exception.ValidationException;
 import com.improver.model.in.Order;
 import com.improver.model.in.OrderDetails;
 import com.improver.repository.*;
@@ -73,7 +74,7 @@ public class TestDataInitializer {
     @Autowired private RefundRepository refundRepository;
     @Autowired private UnavailabilityPeriodRepository unavailabilityPeriodRepository;
     @Autowired private TestPaymentAccountResolver testPaymentAccountResolver;
-    @Autowired private UserTutorialRepository userTutorialRepository;
+    @Autowired private ServedZipRepository servedZipRepository;
 
     private static final String TILE_INSTALLATION = "Tile Installation";
     private static final String ARCHITECTURAL_SERVICES = "Architectural Services";
@@ -182,6 +183,33 @@ public class TestDataInitializer {
         createProjectWithStatus(randomService(), cust1(), Arrays.asList(pro2(), pro3()), Arrays.asList(pro1(), pro5()), Project.Status.CANCELED, getRandomDate());
     }
 
+    private Project createLead(String serviceName, Customer customer) {
+        ServiceType serviceType = serviceTypeRepository.findByName(serviceName);
+        Order order = OrderHelper.generateFor(serviceName);
+        OrderDetails details = order.getDetails();
+        Centroid centroid = servedZipRepository.findByZip(details.getLocation().getZip())
+            .orElseThrow(ValidationException::new)
+            .getCentroid();
+        Project project = new Project()
+            .setCentroid(centroid)
+            .setLead(true)
+            .setLeadPrice(serviceType.getLeadPrice())
+            .setCustomer(customer)
+            .setServiceType(serviceType)
+            .setLocation(details.getLocation())
+            .setStartDate(details.getStartExpectation())
+            .setDetails(SerializationUtil.toJson(order.getQuestionary()))
+            .setNotes(order.getDetails().getNotes())
+            .setStatus(Project.Status.ACTIVE)
+            .setCreated(getFreshRandomDate());
+        return projectRepository.save(project);
+    }
+
+
+
+
+
+
     private Project createValidationLead(String serviceName, Customer customer, Project.Reason reason) {
         Project project = createLead(serviceName, customer);
         projectActionRepository.save(ProjectAction.systemComment("Possible duplication. Require Manual Support check")
@@ -210,25 +238,6 @@ public class TestDataInitializer {
         );
     }
 
-
-    private Project createLead(String serviceName, Customer customer) {
-        ServiceType serviceType = serviceTypeRepository.findByName(serviceName);
-        Order order = OrderHelper.generateFor(serviceName);
-        OrderDetails details = order.getDetails();
-
-        Project project = new Project()
-            .setLead(true)
-            .setLeadPrice(serviceType.getLeadPrice())
-            .setCustomer(customer)
-            .setServiceType(serviceType)
-            .setLocation(details.getLocation())
-            .setStartDate(details.getStartExpectation().toString())
-            .setDetails(SerializationUtil.toJson(order.getQuestionary()))
-            .setNotes(order.getDetails().getNotes())
-            .setStatus(Project.Status.ACTIVE)
-            .setCreated(getFreshRandomDate());
-        return projectRepository.save(project);
-    }
 
 
     private Project createProjectWithStatus(String serviceType, Customer customer, List<Contractor> actives, List<Contractor> canceled, Project.Status status, ZonedDateTime date) {

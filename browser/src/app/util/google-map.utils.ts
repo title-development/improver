@@ -209,9 +209,7 @@ export class GoogleMapUtilsService {
   drawAreasZips(gMap: google.maps.Map, coverage: ZipBoundaries | ZipFeature[]): void {
     const zipData: ZipBoundaries = coverage instanceof Array ? new ZipBoundaries('FeatureCollection', coverage) : coverage;
     zipData.features.map((feature) => feature.properties.selected = true);
-    gMap.data.addGeoJson(zipData, {
-      idPropertyName: 'zip',
-    });
+    gMap.data.addGeoJson(zipData);
   }
 
   /**
@@ -255,9 +253,7 @@ export class GoogleMapUtilsService {
    */
   drawZipBoundaries(gMap: google.maps.Map, zipBoundaries: ZipBoundaries | ZipFeature[]): void {
     const zipData: ZipBoundaries = zipBoundaries instanceof Array ? new ZipBoundaries('FeatureCollection', zipBoundaries) : zipBoundaries;
-    gMap.data.addGeoJson(zipData, {
-      idPropertyName: 'zip',
-    });
+    gMap.data.addGeoJson(zipData);
   }
 
   /**
@@ -272,9 +268,7 @@ export class GoogleMapUtilsService {
   drawZipBoundary(gMap: google.maps.Map, zipFeature: ZipFeature): google.maps.LatLngBounds {
     zipFeature.properties.selected = true;
     const zipData = new ZipBoundaries('FeatureCollection', [zipFeature]);
-    gMap.data.addGeoJson(zipData, {
-      idPropertyName: 'zip',
-    });
+    gMap.data.addGeoJson(zipData);
     return this.getPolygonBounds(zipFeature.geometry.coordinates);
   }
 

@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -18,8 +19,8 @@ public class ServedZip {
     @Column(updatable = false, length = 5)
     private String zip;
 
-    //@Column(updatable = false)
-    private String city;
+    @Embedded
+    private Centroid centroid;
 
     //@Column(updatable = false)
     private String county;
@@ -31,8 +32,9 @@ public class ServedZip {
         this.zip = zip;
     }
 
-    public ServedZip(String zip, String county) {
+    public ServedZip(String zip, String county, Centroid centroid) {
         this.zip = zip;
         this.county = county;
+        this.centroid = centroid;
     }
 }

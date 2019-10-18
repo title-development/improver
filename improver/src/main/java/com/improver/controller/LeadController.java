@@ -29,14 +29,15 @@ public class LeadController {
     @Autowired private UserSecurityService userSecurityService;
 
 
-    /**
-     * @param zipCodes - additional zipCodes to include, may cross over with company coverage.
-     */
+
     @GetMapping
-    public ResponseEntity<Page<ShortLead>> getProLeads(@RequestParam(required = false) List<String> zipCodes,
-                                                       @RequestParam(required = false) String searchTerm,
-                                                       @PageableDefault(sort = "created", page = 0, size = 5, direction = Sort.Direction.DESC) Pageable pageRequest) {
-        Page<ShortLead> leads = leadService.getLeads(userSecurityService.currentPro(), zipCodes, true, searchTerm, pageRequest);
+    public ResponseEntity<Page<ShortLead>> getProLeads(
+        @RequestParam (required = false) double[] southWest,
+        @RequestParam (required = false) double[] northEast,
+        @RequestParam(required = false) String searchTerm,
+        @PageableDefault(sort = "created", page = 0, size = 5, direction = Sort.Direction.DESC) Pageable pageRequest) {
+
+        Page<ShortLead> leads = leadService.getLeads(userSecurityService.currentPro(), true, searchTerm, pageRequest, southWest, northEast);
         return new ResponseEntity<>(leads, HttpStatus.OK);
     }
 
@@ -62,9 +63,6 @@ public class LeadController {
     @PostMapping(ID_PATH_VARIABLE + "/purchase")
     public ResponseEntity<Long> purchaseLead(@PathVariable long id, @RequestParam boolean fromCard) {
         Contractor contractor = userSecurityService.currentPro();
-        /*for (int i = 0; i<10; i++){
-            leadService.purchaseForTest(id, contractor, fromCard);
-        }*/
         long projectRequestId = leadService.manualLeadPurchase(id, contractor, fromCard);
         return new ResponseEntity<>(projectRequestId, HttpStatus.OK);
     }

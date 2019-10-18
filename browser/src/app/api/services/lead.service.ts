@@ -17,11 +17,15 @@ export class LeadService {
     this.constants = constants;
   }
 
+  getAll(searchTerm: string, pagination: Pagination): Observable<RestPage<Lead>> {
+    return this.getAllInBoundingBox(searchTerm, pagination, '','')
+  }
 
-  getAll(searchTerm: string, pagination: Pagination, zipCodes: Array<string> = []): Observable<RestPage<Lead>> {
+  getAllInBoundingBox(searchTerm: string, pagination: Pagination, southWest: string = '', northEast: string = ''): Observable<RestPage<Lead>> {
     const params = toHttpParams(pagination)
       .set('searchTerm', searchTerm ? searchTerm : '')
-      .set('zipCodes', zipCodes.join());
+      .set('southWest', southWest)
+      .set('northEast', northEast);
 
     return this.httpClient
       .get<RestPage<Lead>>(`${this.leadsUrl}`, {params}).pipe(
@@ -32,7 +36,6 @@ export class LeadService {
           return leads;
         })
       )
-
   }
 
   get(id): Observable<Lead> {

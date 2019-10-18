@@ -99,7 +99,7 @@ export class AdminMap implements OnDestroy {
 
         return this.boundariesService.getCountiesInBbox(northEast, southWest).pipe(
           catchError(err => {
-            this.popUpMessageService.showError('Unexpected error during map rendering');
+            this.popUpMessageService.showError(getErrorMessage(err));
             return of(null);
           }));
       }),

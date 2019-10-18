@@ -30,25 +30,23 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
 
 
     /**
-     * Returns Leads according to company services and coverage
+     * Returns Leads according to company services and coverage + in bounding-box coordinates
      *
-     * @param zipCodesToInclude - zip codes to include in search
      */
-    @Query("SELECT new com.improver.model.out.project.ShortLead(p.id, p.serviceType.name, p.location, p.created, p.leadPrice)" +
+    @Query("SELECT new com.improver.model.out.project.ShortLead(p.id, p.serviceType.name, p.location, p.created, p.leadPrice, p.centroid)" +
         " FROM com.improver.entity.Project p" +
         " WHERE p.isLead = true  AND p.status IN :statuses" +
         " AND p.id NOT IN (SELECT conn.project.id FROM com.improver.entity.ProjectRequest conn WHERE conn.contractor.id IN (SELECT contr.id FROM com.improver.entity.Contractor contr WHERE contr.company.id = :companyId))" +
         " AND p.serviceType.id IN (SELECT s.id FROM com.improver.entity.ServiceType s INNER JOIN s.companies c WHERE c.id = :companyId)" +
         " AND (:search IS null OR (lower(p.serviceType.name) LIKE %:search% ))" +
         " AND (p.location.zip IN (SELECT a.zip FROM com.improver.entity.Area a WHERE a.company.id = :companyId)" +
-        " OR p.location.zip IN :zipCodesToInclude)")
-    Page<ShortLead> getLeadsInZipCodesAndCoverage(String companyId, List<String> zipCodesToInclude, List<Project.Status> statuses, String search, Pageable pageable);
-
+        " OR (p.centroid.lat > :swLat AND p.centroid.lat < :neLat AND p.centroid.lng > :swLng AND p.centroid.lng < :neLng))")
+    Page<ShortLead> getLeadsInCoverageAndBbox(String companyId, List<Project.Status> statuses, String search, double neLat, double neLng, double swLat, double swLng, Pageable pageable);
 
     /**
      * Returns Leads according to company services and coverage
      */
-    @Query("SELECT new com.improver.model.out.project.ShortLead(p.id, p.serviceType.name, p.location, p.created, p.leadPrice)" +
+    @Query("SELECT new com.improver.model.out.project.ShortLead(p.id, p.serviceType.name, p.location, p.created, p.leadPrice, p.centroid)" +
         " FROM com.improver.entity.Project p" +
         " WHERE p.isLead = true  AND p.status IN :statuses" +
         " AND p.id NOT IN (SELECT conn.project.id FROM com.improver.entity.ProjectRequest conn WHERE conn.contractor.id IN (SELECT contr.id FROM com.improver.entity.Contractor contr WHERE contr.company.id = :companyId))" +
@@ -67,21 +65,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
         " AND (p.location.zip IN (SELECT a.zip FROM com.improver.entity.Area a WHERE a.company.id = :companyId))")
     Page<Project> getSuitableLeads(String companyId, List<Project.Status> statuses, int maxPrice, Pageable pageable);
 
-    /**
-     * Excludes leads from company coverage
-     *
-     * @param zipCodesToInclude - zip codes to include in search
-     */
-    @Deprecated
-    @Query("SELECT new com.improver.model.out.project.ShortLead(p.id, p.serviceType.name, p.location, p.created, p.leadPrice)" +
-        " FROM com.improver.entity.Project p" +
-        " WHERE p.isLead = true" +
-        " AND p.id NOT IN (SELECT conn.project.id FROM com.improver.entity.ProjectRequest conn WHERE conn.contractor.id IN (SELECT contr.id FROM com.improver.entity.Contractor contr WHERE contr.company.id = :companyId))" +
-        " AND p.serviceType.id IN (SELECT s.id FROM com.improver.entity.ServiceType s INNER JOIN s.companies c WHERE c.id = :companyId)" +
-        " AND p.location.zip IN :zipCodesToInclude" +
-        " AND p.location.zip NOT IN (SELECT a.zip FROM com.improver.entity.Area a WHERE a.company.id = :companyId)" +
-        " AND p.status IN :statuses")
-    Page<ShortLead> getLeadsExcludingCompanyCoverage(String companyId, List<String> zipCodesToInclude, List<Project.Status> statuses, Pageable pageable);
+
 
     //TODO remove this
     @Deprecated

@@ -13,6 +13,9 @@ import { getErrorMessage } from '../../../util/functions';
 import { takeUntil } from 'rxjs/operators';
 import { MediaQuery, MediaQueryService } from '../../../util/media-query.service';
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
+import { ZipBoundaries } from "../../../api/models/ZipBoundaries";
+import { BoundariesService } from "../../../api/services/boundaries.service";
+import { GoogleMapUtilsService } from "../../../util/google-map.utils";
 
 @Component({
   selector: 'contractor-leads-search',
@@ -58,7 +61,12 @@ export class ContractorLeadsSearchComponent implements OnDestroy {
               private popUpMessageService: PopUpMessageService,
               private appRef: ApplicationRef,
               private router: Router,
+              private boundariesService: BoundariesService,
+              private gMapUtils: GoogleMapUtilsService,
               private activatedRoute : ActivatedRoute) {
+
+    this.mapOptions.minZoom = 8;
+    this.mapOptions.zoom = 10;
 
     router.events
       .pipe(takeUntil(this.destroyed$))
@@ -132,6 +140,11 @@ export class ContractorLeadsSearchComponent implements OnDestroy {
   onMapReady(map): void {
     this.map = map;
     // this.packMan = new PackMan(map);
+    this.boundariesService.getUnsupportedArea()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((unsupportedArea: ZipBoundaries) =>
+        this.gMapUtils.drawZipBoundaries(this.map, unsupportedArea),
+      );
   }
 
   /**
