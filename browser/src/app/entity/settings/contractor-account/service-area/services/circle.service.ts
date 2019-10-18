@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject, combineLatest, fromEventPattern, iif, merge, Observable, Subject, zip } from 'rxjs';
+import { BehaviorSubject, combineLatest, EMPTY, fromEventPattern, merge, Observable, of, Subject, zip } from 'rxjs';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -9,7 +9,7 @@ import {
   skip,
   startWith,
   takeUntil,
-  tap
+  tap,
 } from 'rxjs/operators';
 import { Constants } from '../../../../../util/constants';
 import { GoogleMapUtilsService } from '../../../../../util/google-map.utils';
@@ -98,19 +98,52 @@ export class CircleService implements OnDestroy {
   }
 
   private onCircleCenterChanged() {
-    this.centerChanged$ =
-      merge(
-        fromEventPattern<google.maps.LatLng>(
-          (handler) => {
-            return google.maps.event.addListener(this.circle, 'dragend', (handler as any));
-          },
-          (handler, listener) => {
-            google.maps.event.removeListener(listener);
-          }),
-        this.circleChangeTrigger$,
+    const centerChangedEvent$ = fromEventPattern<number>(
+      (handler) => {
+        return google.maps.event.addListener(this.circle, 'center_changed', (handler as any));
+      },
+      (handler, listener) => {
+        google.maps.event.removeListener(listener);
+      }).pipe(mapTo('centerChanged'));
+    const dragEvent$ = fromEventPattern<number>(
+      (handler) => {
+        return google.maps.event.addListener(this.circle, 'drag', (handler as any));
+      },
+      (handler, listener) => {
+        google.maps.event.removeListener(listener);
+      }).pipe(mapTo('drag'));
+    const dragEndEvent$ = fromEventPattern<number>(
+      (handler) => {
+        return google.maps.event.addListener(this.circle, 'dragend', (handler as any));
+      },
+      (handler, listener) => {
+        google.maps.event.removeListener(listener);
+      }).pipe(mapTo('dragend'));
+
+    this.centerChanged$ = merge(
+      combineLatest([
+          dragEndEvent$.pipe(startWith(new Date()), map(() => new Date())),
+          zip(centerChangedEvent$, dragEvent$).pipe(startWith(new Date()), map(() => new Date())),
+          centerChangedEvent$.pipe(startWith(new Date()), map(() => new Date())),
+        ],
       ).pipe(
-        tap(() => console.log('err')),
-        debounceTime(300),
+        skip(1),
+        debounceTime(100),
+        mergeMap(([one, two, three]: [Date, Date, Date]) => {
+          if (one > two && one > three) {
+            return of('drag end');
+          } else if (three > two && three > one) {
+            return of('center control changed');
+          } else {
+            return EMPTY;
+          }
+        }),
+      ),
+
+      this.circleChangeTrigger$,
+    )
+      .pipe(
+        debounceTime(200),
         map(() => this.circle.getCenter()),
         distinctUntilChanged(),
       );
