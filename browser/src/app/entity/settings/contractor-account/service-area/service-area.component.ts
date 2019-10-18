@@ -159,7 +159,7 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate, 
   saveChanges(): void {
     const coverageConfig = this.isDetailMode ? this.detailsMode.coverageConfig : this.basicMode.coverageConfig;
     if (!coverageConfig.zips.length) {
-      this.popUpService.showError('At least one zip should be covered!');
+      this.popUpService.showError('At least one zip area should in coverage!');
       return;
     }
     this.updateCoverageConfig(coverageConfig);
