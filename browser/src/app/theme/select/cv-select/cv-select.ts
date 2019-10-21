@@ -1,15 +1,14 @@
 import {
-  AfterContentChecked,
-  AfterViewInit,
-  ChangeDetectionStrategy, ChangeDetectorRef,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
-  ComponentRef,
-  ElementRef, EmbeddedViewRef,
+  ElementRef,
+  EmbeddedViewRef,
   EventEmitter,
-  forwardRef, HostListener,
+  forwardRef,
   Inject,
   Input,
-  OnChanges, OnDestroy,
+  OnDestroy,
   OnInit,
   Optional,
   Output,
@@ -19,15 +18,13 @@ import {
   ViewChild
 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
-import { stringToCompare } from '../../../util/functions';
-import { BackdropType, OverlayRef } from '../../util/overlayRef';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, NgForm } from '@angular/forms';
+import { OverlayRef } from '../../util/overlayRef';
+import { ControlContainer, ControlValueAccessor, NG_VALUE_ACCESSOR, NgForm } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { distinctUntilChanged, first } from 'rxjs/operators';
+import { distinctUntilChanged } from 'rxjs/operators';
 import { animate, AnimationEvent, state, style, transition, trigger } from '@angular/animations';
 import { CvSelection } from '../../util/CvSelection';
 import { CdkVirtualForOf, CdkVirtualForOfContext } from '@angular/cdk/scrolling';
-import { createConsoleLogger } from '@angular-devkit/core/node';
 import { MediaQuery, MediaQueryService } from '../../../util/media-query.service';
 
 export const SELECT_VALUE_ACCESSOR: Provider = {
@@ -84,6 +81,7 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
   @Input() readonly: boolean;
   @Input() tags: boolean;
   @Input() autocomplete: boolean;
+  @Input() allowAnyValue: boolean = false;
   @Input() hint: string = 'Type something to search';
   @Input() trackBy: (index: number, item: any) => {};
   @Input() disableItemsMatch: boolean = false;
@@ -122,6 +120,7 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
               private renderer: Renderer2,
               public overlayRef: OverlayRef,
               @Optional() @SkipSelf() private form: NgForm,
+              @Optional() @SkipSelf() private controlContainer: ControlContainer,
               private changeDetectorRef: ChangeDetectorRef,
               private query: MediaQueryService) {
     super();
@@ -135,6 +134,13 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
       }
       this.mediaQuery = res;
     });
+
+    if (this.controlContainer && (this.controlContainer as NgForm).ngSubmit) {
+      (this.controlContainer as any).ngSubmit.subscribe(() => {
+        this.overlayRef.removeBackdrop();
+      })
+    }
+
   }
 
   writeValue(model: any | Array<any>): void {
@@ -329,7 +335,11 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
         }
         break;
       case 9: //tab
-        this.onEnter();
+        if (this.allowAnyValue) {
+          this.startClosingDropdown();
+        } else {
+          this.onEnter();
+        }
         break;
       default:
         break;

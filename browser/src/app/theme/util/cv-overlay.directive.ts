@@ -1,7 +1,6 @@
-import { ComponentRef, Directive, Input, OnChanges, TemplateRef, ViewContainerRef } from '@angular/core';
+import { ComponentRef, Directive, Input, OnChanges, TemplateRef } from '@angular/core';
 import { BackdropType, OverlayRef } from './overlayRef';
 import { CvHolder } from './cv-holder';
-import { TemplatePortal } from '@angular/cdk/portal';
 
 @Directive({
   selector: '[cv-overlay]'
@@ -23,7 +22,7 @@ export class CvOverlayDirective implements OnChanges {
     }
 
     if (changes && changes.open && changes.open.currentValue == false) {
-      this.destoy();
+      this.destroy();
     }
   }
 
@@ -33,7 +32,7 @@ export class CvOverlayDirective implements OnChanges {
     this.dropDownRef.instance.render(this.templateRef);
   }
 
-  private destoy() {
+  private destroy() {
     if (this.dropDownRef) {
       this.overlayRef.removeBackdrop();
       this.dropDownRef.destroy();
