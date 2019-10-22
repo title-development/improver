@@ -15,7 +15,7 @@ public class ThirdPartyApis {
     private String googleAuthClientId;
     @Value("${account.google.map.api.key}")
     private String googleApiKey;
-    @Value("${account.mapreflex.api.key}")
+    @Value("${account.rapidapi.api.key}")
     private String mapreflexApiKey;
     @Value("${account.stripe.secret.key}")
     private String stripeSecretKey;

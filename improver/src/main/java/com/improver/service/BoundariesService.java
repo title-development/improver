@@ -28,9 +28,7 @@ import java.util.List;
 @Service
 public class BoundariesService {
 
-    //private static final String BASE_URL = "https://www.mapreflex.com/api/us/v1";
-    //private static final String BASE_URL = "http://127.0.0.1:8033/api/us/v1";
-    private static final String BASE_URL = "https://mapreflex.herokuapp.com/api/us/v1";
+    private static final String BASE_URL = "https://mapreflex.p.rapidapi.com/api/us/v1";
     private static final String RADIUS_ZIP_SEARCH_URL = "/zipcodes/search/in-radius";
     private static final String ZIP_SEARCH_URL = "/zipcodes/by-ids";
     private static final String ZIP_BY_COUNTY = "/zipcodes/by-counties";
@@ -46,7 +44,8 @@ public class BoundariesService {
     public void init() {
         List<Header> headers = new ArrayList<>();
         headers.add(new BasicHeader("Accept", "application/json"));
-        headers.add(new BasicHeader("X-Mapreflex-Key", thirdPartyApis.getMapreflexApiKey()));
+        headers.add(new BasicHeader("x-rapidapi-host", "mapreflex.p.rapidapi.com"));
+        headers.add(new BasicHeader("x-rapidapi-key", thirdPartyApis.getMapreflexApiKey()));
         client = HttpClientBuilder
             .create()
             .setDefaultHeaders(headers)
