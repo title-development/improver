@@ -102,9 +102,13 @@
            [maxZoom]="mapOptions.maxZoom"
            [minZoom]="mapOptions.minZoom"
            [styles]="mapStyles"
+           [streetViewControl]="false"
+           [disableDefaultUI]="true"
+           [zoomControl]="false"
            (mapReady)="onMapReady($event)">
     <leads-search-map (showInfoWindow)="onShowInfoWindow($event)"
                       (updateLeads)="onLeadsUpdate($event)"
+                      (companyCoverageConfig)="onCompanyCoverageConfig($event)"
                       [(mapIsLoading)]="mapContentIsLoading"
                       [(areas)]="areas">
     </leads-search-map>
@@ -144,6 +148,10 @@
     </agm-snazzy-info-window>
   </agm-map>
 
+  <imp-gmap-sidebar [gMap]="map"
+                    [mapMinZoom]="mapOptions.minZoom"
+                    [mapMaxZoom]="mapOptions.maxZoom"
+                    [center]="companyCoverageConfig?.getCompanyLocationCenter()"></imp-gmap-sidebar>
 </mat-sidenav-container>
 
 <ng-container *ngIf="mediaQuery?.xs || mediaQuery?.sm || mediaQuery?.md">

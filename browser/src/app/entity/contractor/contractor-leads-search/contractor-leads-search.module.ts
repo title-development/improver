@@ -22,6 +22,7 @@ import { AgmSharedModule } from '../../../shared/agmShared.module';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { CvSpinnerModule } from '../../../theme/spinner/cv-spinner.module';
 import { CvButtonModule } from '../../../theme/button/cv-button.module';
+import { GoogleMapSidebarModule } from '../../../shared/google-map-sidebar/google-map-sidebar.module';
 
 const contractorLeadsSearchRouting: ModuleWithProviders = RouterModule.forChild([
   {
@@ -46,7 +47,8 @@ const contractorLeadsSearchRouting: ModuleWithProviders = RouterModule.forChild(
     AgmSharedModule,
     PerfectScrollbarModule,
     CvSpinnerModule,
-    CvButtonModule
+    CvButtonModule,
+    GoogleMapSidebarModule
   ],
   declarations: [
     ContractorLeadsSearchComponent,

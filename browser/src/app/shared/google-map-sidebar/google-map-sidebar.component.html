@@ -3,4 +3,5 @@
                          (undo)="undo($event)"
 ></imp-zip-updates-history>
 <span class="spacer"></span>
-<imp-map-controls [ngClass]="{'-unsaved-changes': isUnsavedChanges}" (onZoomIn)="zoomIn()" (onZoomOut)="zoomOut()"></imp-map-controls>
+<imp-map-controls [ngClass]="{'-unsaved-changes': isUnsavedChanges}" (onZoomIn)="zoomIn()" (onZoomOut)="zoomOut()"
+                  (centerMap)="centerMap()"></imp-map-controls>

@@ -1,4 +1,4 @@
-@import "../../../../../../../improver-mixins";
+@import "../../../improver-mixins";
 
 :host {
   position: absolute;
@@ -9,11 +9,6 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  @include response-to(sm) {
-    top: auto;
-    left: 12px;
-    right: auto;
-  }
 }
 
 .info {

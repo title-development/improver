@@ -11,12 +11,16 @@
   (modeChange)="onModeChanged($event)"
 ></imp-coverage-configuration>
 
-<imp-coverage-sidebar
+<imp-gmap-sidebar
+  [gMap]="gMap"
+  [mapMinZoom]="mapMinZoom"
+  [mapMaxZoom]="mapOptions.maxZoom"
   [isDetailMode]="isDetailMode"
   [zipHistory]="zipsHistory"
   [isUnsavedChanges]="unsavedChanges$ | async"
+  [center]="companyCoverageConfig?.getCompanyLocationCenter()"
   (undoHistory)="undo($event)"
-></imp-coverage-sidebar>
+></imp-gmap-sidebar>
 
 <imp-coverage-tutorial></imp-coverage-tutorial>
 

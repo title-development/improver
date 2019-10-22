@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { ZipHistory } from '../../../../models/zip-history';
+import { ZipHistory } from '../../../../entity/settings/contractor-account/service-area/models/zip-history';
 
 @Component({
   selector: 'imp-zip-updates-history',

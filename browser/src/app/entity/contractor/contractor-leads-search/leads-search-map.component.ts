@@ -31,6 +31,7 @@ export class LeadsSearchMapComponent implements OnDestroy {
   @Output() updateLeads: EventEmitter<Array<Lead>> = new EventEmitter<Array<Lead>>();
   @Output() mapIsLoadingChange: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() areasChange: EventEmitter<Array<string>> = new EventEmitter<Array<string>>();
+  @Output() companyCoverageConfig: EventEmitter<CompanyCoverageConfig> = new EventEmitter<CompanyCoverageConfig>();
 
   private map: any;
   private _areas: Array<string>;
@@ -82,6 +83,7 @@ export class LeadsSearchMapComponent implements OnDestroy {
     this.leadSearchEffect$ = this.companyService.getCoverageConfig(this.securityService.getLoginModel().company).pipe(
       switchMap((companyCoverageConfig: CompanyCoverageConfig) => {
         this.areas = companyCoverageConfig.coverageConfig.zips;
+        this.companyCoverageConfig.emit(new CompanyCoverageConfig(companyCoverageConfig.coverageConfig, companyCoverageConfig.companyLocation));
         this.companyLocation = {
           lat: companyCoverageConfig.companyLocation.lat,
           lng: companyCoverageConfig.companyLocation.lng

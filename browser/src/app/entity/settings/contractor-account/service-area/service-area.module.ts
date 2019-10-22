@@ -10,10 +10,10 @@ import { AgmSharedModule } from '../../../../shared/agmShared.module';
 import { SharedModule } from '../../../../shared/shared.module';
 import { MapMarkersStore } from '../../../../util/google-map-markers-store.service';
 import { MapTechnicaService } from '../../../../util/maptechnica.service';
-import { CoverageSidebarModule } from './modules/coverage-sidebar/coverage-sidebar.module';
 import { ServiceAreaComponent } from './service-area.component';
 import { CoverageConfigurationModule } from './modules/coverage-configuration/coverage-configuration.module';
 import { CoverageTutorialComponent } from './components/coverage-tutorial/coverage-tutorial.component';
+import { GoogleMapSidebarModule } from '../../../../shared/google-map-sidebar/google-map-sidebar.module';
 
 const routing: ModuleWithProviders = RouterModule.forChild([
   {
@@ -31,7 +31,7 @@ const routing: ModuleWithProviders = RouterModule.forChild([
     SharedModule,
     AgmSharedModule,
     AgmSnazzyInfoWindowModule,
-    CoverageSidebarModule,
+    GoogleMapSidebarModule,
     CoverageConfigurationModule,
   ],
   declarations: [

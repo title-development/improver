@@ -1,34 +1,35 @@
-import { ApplicationRef, Component, ElementRef, HostListener, OnDestroy, ViewChild } from '@angular/core';
-import { Subject } from 'rxjs';
 import { MapOptions } from '@agm/core/services/google-maps-types';
+import { ApplicationRef, Component, ElementRef, HostListener, OnDestroy, ViewChild } from '@angular/core';
 import { MatDialog, MatSidenav } from '@angular/material';
-import { InfoWindowInt } from './intefaces/infoWindowInt';
-import { PackMan } from './packman';
-import { Lead, SystemMessageType } from '../../../model/data-model';
-import { PopUpMessageService } from '../../../util/pop-up-message.service';
-import { LeadService } from '../../../api/services/lead.service';
-import { MapMarkersStore } from '../../../util/google-map-markers-store.service';
-import { defaultMapOptions, infoWindowDefaults } from '../../../util/google-map-default-options';
-import { getErrorMessage } from '../../../util/functions';
-import { takeUntil } from 'rxjs/operators';
-import { MediaQuery, MediaQueryService } from '../../../util/media-query.service';
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { ZipBoundaries } from "../../../api/models/ZipBoundaries";
 import { BoundariesService } from "../../../api/services/boundaries.service";
+import { LeadService } from '../../../api/services/lead.service';
+import { Lead, SystemMessageType } from '../../../model/data-model';
+import { getErrorMessage } from '../../../util/functions';
+import { defaultMapOptions, infoWindowDefaults } from '../../../util/google-map-default-options';
+import { MapMarkersStore } from '../../../util/google-map-markers-store.service';
 import { GoogleMapUtilsService } from "../../../util/google-map.utils";
+import { MediaQuery, MediaQueryService } from '../../../util/media-query.service';
+import { PopUpMessageService } from '../../../util/pop-up-message.service';
+import { InfoWindowInt } from './intefaces/infoWindowInt';
+import { PackMan } from './packman';
+import { CompanyCoverageConfig } from '../../../api/models/CompanyCoverageConfig';
 
 @Component({
   selector: 'contractor-leads-search',
   templateUrl: './contractor-leads-search.component.html',
-  styleUrls: ['./styles/contractor-leads-search.component.scss', './styles/leads-panel-list.scss', './styles/selected-lead-panel.scss']
+  styleUrls: ['./styles/contractor-leads-search.component.scss', './styles/leads-panel-list.scss', './styles/selected-lead-panel.scss'],
 })
 
 export class ContractorLeadsSearchComponent implements OnDestroy {
   mapContentIsLoading: boolean = true;
-  areas: Array<string> = [];
+  areas: string[] = [];
   search: string = '';
   isSidebarOpen: boolean = true;
-  sortedLeads: Array<Lead> = [];
+  sortedLeads: Lead[] = [];
   selectedLeadId: string = '';
   selectedLead: Lead = null;
   infoWindowData: InfoWindowInt = infoWindowDefaults;
@@ -37,20 +38,20 @@ export class ContractorLeadsSearchComponent implements OnDestroy {
   mapOptions: MapOptions = defaultMapOptions;
   mapStyles = [
     {
-      'featureType': 'road.highway',
-      'elementType': 'labels',
-      'stylers': [
+      featureType: 'road.highway',
+      elementType: 'labels',
+      stylers: [
         {
-          'visibility': 'off'
-        }
-      ]
-    }
+          visibility: 'off',
+        },
+      ],
+    },
   ];
+  mediaQuery: MediaQuery;
+  companyCoverageConfig: CompanyCoverageConfig;
   @ViewChild(MatSidenav) private mdSidebar: MatSidenav;
   @ViewChild('leadsPanel') private leadsPanelEl: ElementRef;
-  private packMan: PackMan;
-  private map;
-  mediaQuery: MediaQuery;
+  map;
 
   private readonly destroyed$ = new Subject<void>();
 
@@ -63,7 +64,7 @@ export class ContractorLeadsSearchComponent implements OnDestroy {
               private router: Router,
               private boundariesService: BoundariesService,
               private gMapUtils: GoogleMapUtilsService,
-              private activatedRoute : ActivatedRoute) {
+              private activatedRoute: ActivatedRoute) {
 
     this.mapOptions.minZoom = 8;
     this.mapOptions.zoom = 10;
@@ -71,7 +72,7 @@ export class ContractorLeadsSearchComponent implements OnDestroy {
     router.events
       .pipe(takeUntil(this.destroyed$))
       .subscribe((val) => {
-      if(val instanceof NavigationEnd) {
+      if (val instanceof NavigationEnd) {
         if (!this.mdSidebar.opened) {
           this.mdSidebar.open();
         }
@@ -80,7 +81,7 @@ export class ContractorLeadsSearchComponent implements OnDestroy {
 
     this.mediaQueryService.screen
       .pipe(
-        takeUntil(this.destroyed$)
+        takeUntil(this.destroyed$),
       ).subscribe((mediaQuery: MediaQuery) => {
       this.mediaQuery = mediaQuery;
     });
@@ -89,9 +90,9 @@ export class ContractorLeadsSearchComponent implements OnDestroy {
   moveMapToLead(lead: Lead): void {
     const selectedMarker = this.getMarkerFromStore(lead);
     if (selectedMarker) {
-      let isMobile = this.mediaQuery.xs || this.mediaQuery.sm;
+      const isMobile = this.mediaQuery.xs || this.mediaQuery.sm;
       if (isMobile) {
-        this.mdSidebar.close()
+        this.mdSidebar.close();
       }
       this.map.setCenter(new google.maps.LatLng(selectedMarker.position.lat(), selectedMarker.position.lng()));
       this.map.panBy(this.getMapXOffset(isMobile), 0);
@@ -107,27 +108,26 @@ export class ContractorLeadsSearchComponent implements OnDestroy {
 
   getLead(lead: Lead, index: number): void {
     if (!this.selectedLead || lead.id !== this.selectedLead.id) {
-      // this.packMan.clearPackMan();
       this.mapContentIsLoading = true;
       this.selectedLeadId = lead.id;
       this.leadService
         .get(lead.id)
         .pipe(takeUntil(this.destroyed$))
         .subscribe(
-        data => {
+        (data) => {
           this.selectedLead = data;
           this.mapContentIsLoading = false;
           this.mdSidebar.open();
         },
-        err => {
-          //Show info message if lead no available to buy
+        (err) => {
+          // Show info message if lead no available to buy
           if (err.status == 404) {
             this.sortedLeads.splice(index, 1);
             this.sortedLeads = this.sortedLeads.slice();
             this.popUpMessageService.showMessage({
               text: 'This lead is not available anymore',
               type: SystemMessageType.WARN,
-              timeout: 5000
+              timeout: 5000,
             });
           } else {
             this.popUpMessageService.showError(getErrorMessage(err));
@@ -139,7 +139,6 @@ export class ContractorLeadsSearchComponent implements OnDestroy {
 
   onMapReady(map): void {
     this.map = map;
-    // this.packMan = new PackMan(map);
     this.boundariesService.getUnsupportedArea()
       .pipe(takeUntil(this.destroyed$))
       .subscribe((unsupportedArea: ZipBoundaries) =>
@@ -151,7 +150,7 @@ export class ContractorLeadsSearchComponent implements OnDestroy {
    * Sorting leads
    * @param {Array<Lead>} leads
    */
-  onLeadsUpdate(leads: Array<Lead>): void {
+  onLeadsUpdate(leads: Lead[]): void {
     const inArea = [];
     const notInArea = [];
     leads.map((lead: Lead) => {
@@ -205,6 +204,10 @@ export class ContractorLeadsSearchComponent implements OnDestroy {
     this.destroyed$.complete();
   }
 
+  onCompanyCoverageConfig(coverageConfig: CompanyCoverageConfig): void {
+    this.companyCoverageConfig = coverageConfig;
+  }
+
   /**
    * Calculating offset when sidebar and leadsPaned is opened
    * Return negative number
@@ -213,8 +216,8 @@ export class ContractorLeadsSearchComponent implements OnDestroy {
   private getMapXOffset(sideViewClosed: boolean = false): number {
     const leadsPanelWidth = this.leadsPanelEl.nativeElement.offsetWidth;
 
-    if(sideViewClosed) {
-      return 0
+    if (sideViewClosed) {
+      return 0;
     }
 
     if (this.selectedLead && leadsPanelWidth) {

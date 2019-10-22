@@ -1,22 +1,32 @@
-@import "../../../../../../../../../improver-mixins";
+@import "../../../../../improver-mixins";
 
 :host {
   position: relative;
   transform: translateY(0);
   transition: transform .3s ease;
-  @include response-to(sm) {
-    display: none;
-  }
+
   &.-unsaved-changes {
     transform: translateY(-66px);
   }
 }
 
-.icon {
-  &:first-child {
-    border-bottom: 1px solid #eaeaea;
+.group {
+  .icon {
+    &:first-child {
+      border-bottom: 1px solid #eaeaea;
+    }
   }
+}
 
+.imp-icon-dot-circled {
+  color: #a1a1a1;
+
+  &:hover {
+    color: #616161;
+  }
+}
+
+.zoom-in, .zoom-out {
   &:after, &:before {
     background-color: #a1a1a1;
     transition: background-color .3s ease;

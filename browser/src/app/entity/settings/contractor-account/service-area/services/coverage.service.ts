@@ -41,22 +41,6 @@ export class CoverageService implements OnDestroy {
     this.gMap = gMap;
   }
 
-  zoomIn(): void {
-    const zoom = this.gMap.getZoom();
-    if (zoom >= this.mapOptions.maxZoom) {
-      return;
-    }
-    this.gMap.setZoom(zoom + 1);
-  }
-
-  zoomOut(): void {
-    const zoom = this.gMap.getZoom();
-    if (zoom <= this.mapOptions.minZoom) {
-      return;
-    }
-    this.gMap.setZoom(zoom - 1);
-  }
-
   ngOnDestroy(): void {
     this.unsavedChanges$.complete();
     this.fetching$.complete();

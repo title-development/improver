@@ -19,12 +19,22 @@ import { defaultMapOptions, mapStyle } from '../../../../util/google-map-default
 import { GoogleMapUtilsService } from '../../../../util/google-map.utils';
 import { PopUpMessageService } from '../../../../util/pop-up-message.service';
 
-import { finalize, mergeMap, publishReplay, refCount, repeatWhen, takeUntil, tap } from 'rxjs/internal/operators';
+import {
+  distinctUntilChanged,
+  finalize,
+  mergeMap,
+  publishReplay,
+  refCount,
+  repeatWhen,
+  takeUntil,
+  tap
+} from 'rxjs/internal/operators';
 import { CompanyCoverageConfig } from '../../../../api/models/CompanyCoverageConfig';
 import { ZipBoundaries } from '../../../../api/models/ZipBoundaries';
 import { TutorialsService } from '../../../../api/services/tutorials.service';
 import { ComponentCanDeactivate } from '../../../../auth/router-guards/pending-chanes.guard';
 import { getErrorMessage } from '../../../../util/functions';
+import { MediaQuery, MediaQueryService } from '../../../../util/media-query.service';
 import { ICircleProps } from './interfaces/circle-props';
 import { IZipCodeProps } from './interfaces/zip-code-props';
 import { ZipInfoWindow } from './interfaces/zip-info-window';
@@ -59,14 +69,40 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate, 
   companyCoverageConfig: CompanyCoverageConfig;
   fetching$: Observable<boolean>;
   unsavedChanges$: Observable<boolean>;
-  private unsavedChanges: boolean;
-  private gMap: google.maps.Map;
-  private readonly destroyed$ = new Subject<void>();
-  private readonly repeat$ = new Subject<void>();
+  mediaQuery: MediaQuery;
 
   get isDetailMode(): boolean {
     return this.companyCoverageConfig && this.companyCoverageConfig.coverageConfig.manualMode;
   }
+
+  get mapMinZoom(): number {
+    if (!this.mediaQuery) {
+      return defaultMapOptions.minZoom;
+    }
+
+    if (this.mediaQuery.sm && this.isDetailMode) {
+      return 10;
+    }
+
+    if (this.mediaQuery.sm && !this.isDetailMode) {
+      return 9;
+    }
+
+    if (this.mediaQuery.xs && this.isDetailMode) {
+      return 9;
+    }
+
+    if (this.mediaQuery.xs && !this.isDetailMode) {
+      return 8;
+    }
+
+    return defaultMapOptions.minZoom;
+  }
+
+  gMap: google.maps.Map;
+  private unsavedChanges: boolean;
+  private readonly destroyed$ = new Subject<void>();
+  private readonly repeat$ = new Subject<void>();
 
   constructor(private securityService: SecurityService,
               private boundariesService: BoundariesService,
@@ -78,7 +114,8 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate, 
               private detailsMode: DetailModeService,
               private cdRef: ChangeDetectorRef,
               private tutorialService: TutorialsService,
-              private coverageService: CoverageService) {
+              private coverageService: CoverageService,
+              private mediaQueryService: MediaQueryService) {
   }
 
   ngOnInit(): void {
@@ -91,6 +128,14 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate, 
       refCount(),
       tap((unsavedChanges) => this.unsavedChanges = unsavedChanges),
     );
+    this.mediaQueryService.screen
+      .pipe(
+        distinctUntilChanged(),
+        takeUntil(this.destroyed$),
+      ).subscribe((mediaQuery: MediaQuery) => {
+        console.log(mediaQuery);
+      this.mediaQuery = mediaQuery;
+    });
   }
 
   ngAfterViewInit(): void {
