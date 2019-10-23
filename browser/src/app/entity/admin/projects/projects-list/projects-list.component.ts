@@ -105,7 +105,7 @@ export class AdminProjectsComponent {
       if (projects.content.length > 0) {
         this.tableColumns = [...this.selectedTableCols, ...Object.keys(projects.content[0])]
           .filter((elem, pos, arr) => arr.indexOf(elem) == pos) //remove duplicates
-          .filter(item => !(item == 'details' || item == 'projectActions' || item == 'projectRequests'))
+          .filter(item => !(item == 'details' || item == 'projectActions' || item == 'projectRequests' || item == 'notes'))
           .map(key => {
               return {label: this.camelCaseHumanPipe.transform(key, true), value: key};
             }

@@ -35,33 +35,38 @@ import { UserService } from '../../api/services/user.service';
 import { MessageService } from 'primeng/components/common/messageservice';
 
 import {
-  InputSwitchModule,
-  InputTextModule,
-  DropdownModule,
-  DataTableModule,
-  SharedModule,
-  ContextMenuModule,
-  ConfirmDialogModule,
-  ConfirmationService,
-  GrowlModule,
-  DialogModule,
+  AccordionModule,
   ButtonModule,
-  MenuModule,
-  TieredMenuModule,
+  CalendarModule,
   CardModule,
   ChartModule,
-  ProgressSpinnerModule,
-  FileUploadModule,
-  SelectButtonModule,
-  PaginatorModule,
-  OverlayPanelModule,
   ChipsModule,
-  AccordionModule,
+  ConfirmationService,
+  ConfirmDialogModule,
+  ContextMenuModule,
+  DataTableModule,
+  DialogModule,
+  DropdownModule,
+  FileUploadModule,
+  GrowlModule,
+  InputSwitchModule,
+  InputTextModule,
+  KeyFilterModule,
+  MenuModule,
+  MessageModule,
+  MessagesModule,
+  OverlayPanelModule,
+  PaginatorModule,
   PanelModule,
+  ProgressSpinnerModule,
+  RadioButtonModule,
+  SelectButtonModule,
+  SharedModule,
+  SliderModule,
+  SpinnerModule,
   SplitButtonModule,
-  CalendarModule,
   TabViewModule,
-  KeyFilterModule, SliderModule, RadioButtonModule, MessagesModule, MessageModule, SpinnerModule
+  TieredMenuModule
 } from 'primeng/primeng';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { QuestionPreviewComponent } from './components/question-preview/question-preview.component';
@@ -106,7 +111,8 @@ import { TicketEditDialogComponent } from "./tickets/ticket-edit-dialog/ticket-e
 import { StaffService } from "../../api/services/staff.service";
 import { StaffActionsComponent } from "./staff-actions/staff-actions.component";
 import { RecaptchaModule } from 'ng-recaptcha';
-
+import { ProjectCancelComponent } from "./components/project-cancel/project-cancel.component";
+import { ProjectCompleteComponent } from "./components/project-complete/project-complete.component";
 
 
 @NgModule({
@@ -188,6 +194,8 @@ import { RecaptchaModule } from 'ng-recaptcha';
     ServicesListComponent,
     ServicesEditComponent,
     LocationValidationComponent,
+    ProjectCancelComponent,
+    ProjectCompleteComponent,
     ContractorsComponent,
     CustomersListComponent,
     ProjectRequestsComponent,

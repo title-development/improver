@@ -11,6 +11,7 @@ export class Project {
   updated: string;
   status: Project.Status;
   reason: Project.Reason;
+  reasonDescription: string;
   projectActions: ProjectAction;
   freePositions: number;
   lead: boolean;
@@ -36,7 +37,7 @@ export namespace Project {
     OTHER = 'Other, please specify',
 
     DUPLICATED = 'DUPLICATED',
-    INVALID_PROJECT = 'INVALID_PROJECT',
+    OUTDATED = 'OUTDATED',
     INVALID_LOCATION = 'INVALID_LOCATION',
     INVALID_USER = 'INVALID_USER',
     INVALID_SERVICE = 'INVALID_SERVICE'
@@ -44,7 +45,7 @@ export namespace Project {
 
   export enum SystemReason {
     DUPLICATED = 'DUPLICATED',
-    INVALID_PROJECT = 'INVALID_PROJECT',
+    OUTDATED = 'OUTDATED',
     INVALID_LOCATION = 'INVALID_LOCATION',
     INVALID_USER = 'INVALID_USER',
     INVALID_SERVICE = 'INVALID_SERVICE'

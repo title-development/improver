@@ -1,22 +1,25 @@
 package com.improver.controller;
 
-import com.improver.entity.*;
+import com.improver.entity.Customer;
+import com.improver.entity.Location;
+import com.improver.entity.Project;
+import com.improver.entity.User;
 import com.improver.exception.NotFoundException;
-import com.improver.exception.ValidationException;
-import com.improver.model.admin.out.AdminProject;
 import com.improver.model.admin.in.ValidationProjectRequest;
+import com.improver.model.admin.out.AdminProject;
 import com.improver.model.in.CloseProjectRequest;
-import com.improver.model.out.NameIdImageTuple;
-import com.improver.model.out.project.*;
 import com.improver.model.in.Order;
-import com.improver.repository.ProjectRequestRepository;
+import com.improver.model.out.project.CloseProjectQuestionary;
+import com.improver.model.out.project.CompanyProjectRequest;
 import com.improver.repository.ProjectRepository;
+import com.improver.repository.ProjectRequestRepository;
 import com.improver.security.UserSecurityService;
+import com.improver.security.annotation.SupportAccess;
+import com.improver.service.CustomerProjectService;
 import com.improver.service.ImageService;
 import com.improver.service.OrderService;
 import com.improver.service.ProjectService;
 import com.improver.util.annotation.PageableSwagger;
-import com.improver.security.annotation.SupportAccess;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -31,7 +34,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
 
 import static com.improver.application.properties.Path.*;
 
@@ -46,6 +50,7 @@ public class ProjectController {
     @Autowired private ImageService imageService;
     @Autowired private UserSecurityService userSecurityService;
     @Autowired private ProjectRequestRepository projectRequestRepository;
+    @Autowired private CustomerProjectService customerProjectService;
 
     @PreAuthorize("hasAnyRole('ANONYMOUS', 'CUSTOMER', 'ADMIN', 'SUPPORT')")
     @PostMapping
@@ -149,6 +154,24 @@ public class ProjectController {
         String newCoverUrl = imageService.deleteProjectImage(imageUrl, project);
         project.setCoverUrl(newCoverUrl);
         projectRepository.save(project.setUpdated(ZonedDateTime.now()));
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPPORT')")
+    @GetMapping(ID_PATH_VARIABLE + "/close")
+    public ResponseEntity<CloseProjectQuestionary> getCloseVariants(@PathVariable long id) {
+        Project project = projectRepository.findById(id)
+            .orElseThrow(NotFoundException::new);
+        CloseProjectQuestionary questionary = customerProjectService.getCloseVariants(project);
+        return new ResponseEntity<>(questionary, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPPORT')")
+    @PostMapping(ID_PATH_VARIABLE + "/close")
+    public ResponseEntity<Void> closeProject(@PathVariable long id, @RequestBody @Valid CloseProjectRequest request) {
+        Project project = projectRepository.findById(id)
+            .orElseThrow(NotFoundException::new);
+        customerProjectService.closeProject(project, request);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

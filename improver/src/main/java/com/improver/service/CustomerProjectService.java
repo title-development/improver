@@ -77,7 +77,7 @@ public class CustomerProjectService {
 
     private List<NameIdImageTuple> getPotentialExecutors(Project project) {
         List<NameIdImageTuple> potentialExecutors = Collections.emptyList();
-        if (IN_PROGRESS.equals(project.getStatus())) {
+        if (IN_PROGRESS.equals(project.getStatus()) || VALIDATION.equals(project.getStatus())) {
             List<CompanyProjectRequest> projectRequests = projectRequestRepository.getShortProjectRequests(project.getId());
             boolean executorExist = projectRequests.stream()
                 .anyMatch(projectRequest -> projectRequest.getStatus().equals(ProjectRequest.Status.HIRED));
@@ -142,6 +142,8 @@ public class CustomerProjectService {
                     break;
 
                 case VALIDATION:
+                    break;
+
                 case ACTIVE:
                     if (request.getProjectRequestId() > 0) {
                         throw new ValidationException("Project status " + project.getStatus().toString() + " cannot have executors");
@@ -157,6 +159,7 @@ public class CustomerProjectService {
 
         projectRepository.save(project.setStatus(newStatus)
             .setReason(request.getReason())
+            .setReasonDescription(request.getComment())
             .setUpdated(time)
             .setLead(false));
     }

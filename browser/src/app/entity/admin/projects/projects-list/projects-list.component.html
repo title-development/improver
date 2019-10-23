@@ -56,6 +56,9 @@
       <div *ngIf="row.reason">{{row.reason}}</div>
     </ng-template>
   </p-column>
+  <p-column field="reasonDescription" header="Reason Desc" [sortable]="false" [filter]="false"
+            *ngIf="selectedTableCols.includes('reasonDescription')">
+  </p-column>
   <p-column field="location" header="Location" filterField="location" [sortable]="true" [filter]="true"
             *ngIf="selectedTableCols.includes('location')">
     <ng-template let-col let-row="rowData" pTemplate="body">

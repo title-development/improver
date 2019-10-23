@@ -33,6 +33,8 @@ export class AdminProjectsValidationComponent {
   displayChangeOwnerDialog: boolean = false;
   displayValidationDialog: boolean = false;
   displayCommentDialog: boolean = false;
+  displayCancelDialog: boolean = false;
+  displayCompleteDialog: boolean = false;
   projectValidation: Project.ValidationRequest = {};
   tableColumns: Array<SelectItem> = [];
   selectedTableCols: Array<string> = [
@@ -90,7 +92,7 @@ export class AdminProjectsValidationComponent {
       },
       {
         label: 'Validate',
-        icon: 'fa fa-check-circle',
+        icon: 'fas fa-clipboard-check',
         command: () => this.validate(),
         visible: this.selectedProject && this.selectedProject.status == Project.Status.VALIDATION
       },
@@ -100,6 +102,19 @@ export class AdminProjectsValidationComponent {
         command: () => this.invalidate(),
         visible: this.selectedProject && this.selectedProject.status == Project.Status.VALIDATION,
         styleClass: 'danger-menu-button'
+      },
+      {
+        label: 'Cancel',
+        icon: 'fas fa-ban',
+        command: () => this.cancel(),
+        visible: this.selectedProject && this.selectedProject.status == Project.Status.VALIDATION,
+        styleClass: 'danger-menu-button'
+      },
+      {
+        label: 'Complete',
+        icon: 'fas fa-check-circle',
+        command: () => this.complete(),
+        visible: this.selectedProject && this.selectedProject.status == Project.Status.VALIDATION,
       }
     ]
   }
@@ -116,7 +131,7 @@ export class AdminProjectsValidationComponent {
       if (projects.content.length > 0) {
         this.tableColumns = [...this.selectedTableCols, ...Object.keys(projects.content[0])]
           .filter((elem, pos, arr) => arr.indexOf(elem) == pos) //remove duplicates
-          .filter(item => !(item == 'details' || item == 'projectActions' || item == 'projectRequests'))
+          .filter(item => !(item == 'details' || item == 'projectActions' || item == 'projectRequests' || item == 'notes'))
           .map(key => {
               return {label: this.camelCaseHumanPipe.transform(key, true), value: key};
             }
@@ -190,6 +205,14 @@ export class AdminProjectsValidationComponent {
       status: this.selectedProject.hasProjectRequests ? Project.Status.IN_PROGRESS : Project.Status.ACTIVE,
       reason: this.selectedProject.reason
     }
+  }
+
+  cancel() {
+    this.displayCancelDialog = true;
+  }
+
+  complete() {
+    this.displayCompleteDialog = true;
   }
 
   expandRow(selection: { originalEvent: MouseEvent, data: Project }): void {

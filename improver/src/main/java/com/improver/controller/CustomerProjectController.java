@@ -33,10 +33,8 @@ import static com.improver.application.properties.Path.*;
 public class CustomerProjectController {
 
     @Autowired private UserSecurityService userSecurityService;
-    @Autowired
-    private CustomerProjectService customerProjectService;
-    @Autowired
-    private ProjectRepository projectRepository;
+    @Autowired private CustomerProjectService customerProjectService;
+    @Autowired private ProjectRepository projectRepository;
 
 
     @GetMapping

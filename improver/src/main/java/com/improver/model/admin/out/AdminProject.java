@@ -33,6 +33,7 @@ public class AdminProject {
 
     private Project.Status status;
     private Project.Reason reason;
+    private String reasonDescription;
     private int leadPrice;
     private int freePositions;
     private boolean isLead;
@@ -53,6 +54,7 @@ public class AdminProject {
             .setUpdated(project.getUpdated())
             .setStatus(project.getStatus())
             .setReason(project.getReason())
+            .setReasonDescription(project.getReasonDescription())
             .setLeadPrice(project.getLeadPrice())
             .setFreePositions(project.getFreePositions())
             .setLead(project.isLead())

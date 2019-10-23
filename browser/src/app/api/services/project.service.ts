@@ -1,10 +1,14 @@
-import { EventEmitter, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Constants } from '../../util/constants';
 import { SecurityService } from '../../auth/security.service';
 import { Role } from '../../model/security-model';
 import {
-  ContractorProject, ContractorProjectShort, CustomerProject,
-  CustomerProjectShort, Pagination
+  CloseProjectVariant,
+  ContractorProject,
+  ContractorProjectShort,
+  CustomerProject,
+  CustomerProjectShort,
+  Pagination
 } from '../../model/data-model';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
@@ -16,8 +20,8 @@ import { RequestOrder } from '../../model/order-model';
 import { toHttpParams } from '../../util/functions';
 import { Billing } from '../models/Billing';
 import { Refund } from '../models/Refund';
-import Receipt = Billing.Receipt;
 import { map } from 'rxjs/internal/operators';
+import Receipt = Billing.Receipt;
 
 @Injectable()
 export class ProjectService {
@@ -34,7 +38,7 @@ export class ProjectService {
   constructor(private http: HttpClient,
               private constants: Constants,
               private securityService: SecurityService) {
-    this.constants = constants; 
+    this.constants = constants;
   }
 
   //todo this is ugly rework
@@ -125,14 +129,24 @@ export class ProjectService {
       .post(`${this.PROJECTS_PATH}`, project);
   }
 
-  getCloseProjectVariants(projectId): Observable<any> {
+  getCloseProjectVariants(projectId): Observable<CloseProjectVariant> {
     return this.http
-      .get(`${this.CUSTOMER_PROJECTS_PATH}/${projectId}/close`);
+      .get<CloseProjectVariant>(`${this.CUSTOMER_PROJECTS_PATH}/${projectId}/close`);
   }
 
   closeProject(projectId, body): Observable<any> {
     return this.http
       .post(`${this.CUSTOMER_PROJECTS_PATH}/${projectId}/close`, body);
+  }
+
+  getCloseProjectVariantsBySupport(projectId): Observable<CloseProjectVariant> {
+    return this.http
+      .get<CloseProjectVariant>(`${this.PROJECTS_PATH}/${projectId}/close`);
+  }
+
+  closeProjectBySupport(projectId, body): Observable<any> {
+    return this.http
+      .post(`${this.PROJECTS_PATH}/${projectId}/close`, body);
   }
 
   uploadImage(projectId, formData: FormData) {
