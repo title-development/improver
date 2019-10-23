@@ -45,6 +45,14 @@ export class AccountService {
       .get(`${this.baseUrl}/last-zip`, {responseType: 'text'});
   }
 
+  getRecentSearches(size: any): Observable<Array<string>> {
+    const params = new HttpParams();
+    params.set('size', size);
+
+    return this.http
+      .get<Array<string>>(`${this.baseUrl}/searches`, { params });
+  }
+
   saveSearchTerm(search: string, zipCode: string){
     const params = new HttpParams()
       .set('search', search)

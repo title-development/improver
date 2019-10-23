@@ -5,10 +5,12 @@ import { Role } from '../../model/security-model';
 import { NotificationResource } from '../../util/notification.resource';
 import { BillingService } from '../../api/services/billing.service';
 import { SecurityService } from '../../auth/security.service';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Subject } from 'rxjs';
 import { ProjectService } from '../../api/services/project.service';
 import { dialogsMap } from '../../shared/dialogs/dialogs.state';
 import { ScrollHolderService } from '../../util/scroll-holder.service';
+import { MediaQuery, MediaQueryService } from "../../util/media-query.service";
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'layout-header',
@@ -22,13 +24,18 @@ export class HeaderComponent {
   isMobMenuOpened: boolean = false;
   isNotificationsPopupOpened: boolean = false;
   private dialogRef: MatDialogRef<any>;
+  private readonly destroyed$ = new Subject<void>();
+  public mediaQuery: MediaQuery;
 
   constructor(private dialog: MatDialog,
               public billingService: BillingService,
               public notificationResource: NotificationResource,
               public projectService: ProjectService,
               public securityService: SecurityService,
+              public mediaQueryService: MediaQueryService,
               private scrollHolder: ScrollHolderService) {
+
+    this.subscribeForMediaScreen();
 
     this.securityService.onUserInit.subscribe(() => {
       this.postUnsavedOrder();
@@ -37,6 +44,13 @@ export class HeaderComponent {
   }
 
 
+  subscribeForMediaScreen(): void {
+    this.mediaQueryService.screen.asObservable()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((mediaQuery: MediaQuery) => {
+        this.mediaQuery = mediaQuery;
+      });
+  }
 
   toggleMenu(): void {
     this.isMobMenuOpened = !this.isMobMenuOpened;

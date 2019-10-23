@@ -17,6 +17,8 @@ import * as lunr from "lunr";
 import { SecurityService } from "../../auth/security.service";
 import { UserService } from "../../api/services/user.service";
 import { CustomerSuggestionService } from "../../api/services/customer-suggestion.service";
+import { takeUntil } from "rxjs/operators";
+import { Role } from "../../model/security-model";
 
 
 @Component({
@@ -35,6 +37,7 @@ export class FindProfessionalsComponent implements OnInit {
   serviceTypes: Array<ServiceType> = [];
   popularServiceSize: Number;
   popularTrades: Array<Trade> = [];
+  recentSearches: Array<string> = [];
   lastZipCode: string;
   lunrIndex;
 
@@ -67,9 +70,15 @@ export class FindProfessionalsComponent implements OnInit {
     this.getPopularTrades();
     this.getServiceTypes();
 
-    if (this.securityService.isAuthenticated()) {
-      this.getLastCustomerZipCode();
-    }
+    this.zipCodeCtrl.setValue(localStorage.getItem('zipCode'));
+
+    securityService.onUserInit
+      .pipe(takeUntil(securityService.onLogout))
+      .subscribe(() => {
+        this.getRecentSearches();
+        this.getLastCustomerZipCode();
+      }
+    );
 
     this.media.screen.subscribe(media => {
       if (media.xs || media.sm) {
@@ -100,6 +109,16 @@ export class FindProfessionalsComponent implements OnInit {
 
   }
 
+
+  getRecentSearches(){
+    if (this.securityService.hasRole(Role.CUSTOMER)) {
+      this.customerSuggestionService.recentSearches$
+        .subscribe(
+          recentSearches => this.recentSearches = recentSearches
+        )
+    }
+  }
+
   getSuggestedServiceTypes() {
     this.customerSuggestionService.suggested$
       .subscribe(
@@ -115,19 +134,33 @@ export class FindProfessionalsComponent implements OnInit {
   }
 
   getLastCustomerZipCode() {
-    this.customerSuggestionService.LastCustomerZipCode$
-      .subscribe(
-        lastZipCode => {
-          this.lastZipCode = lastZipCode;
-          this.zipCodeCtrl.setValue(lastZipCode)
-        }
-      );
+    if (this.securityService.hasRole(Role.CUSTOMER) || this.securityService.hasRole(Role.ANONYMOUS)) {
+      this.customerSuggestionService.lastCustomerZipCode$
+        .subscribe(
+          lastZipCode => {
+            this.lastZipCode = lastZipCode;
+            this.zipCodeCtrl.setValue(lastZipCode)
+          }
+        );
+    }
+  }
+
+  searchServiceTypeByRecentSearch(recentSearch: any){
+    this.findProfessionalService.close();
+    this.mainSearchFormGroup.setValue({
+      serviceTypeCtrl: recentSearch,
+      zipCodeCtrl: this.lastZipCode
+    });
+    if (this.lastZipCode){
+      this.searchServiceType(this.mainSearchFormGroup);
+    } else {
+      this.projectActionService.openQuestionary(recentSearch);
+    }
   }
 
   searchServiceType(form: FormGroup) {
     if (this.mainSearchFormGroup.valid) {
       this.findProfessionalService.close();
-      this.customerSuggestionService.saveUserSearchTerm(this.serviceTypeCtrl.value, this.zipCodeCtrl.value);
       this.getQuestianary(this.serviceTypeCtrl.value);
       form.reset({
         zipCodeCtrl: localStorage.getItem('zipCode')? localStorage.getItem('zipCode'): this.lastZipCode
@@ -138,18 +171,18 @@ export class FindProfessionalsComponent implements OnInit {
     }
   }
 
-  getQuestianary(serviceType: ServiceType | string): void {
+  getQuestianary(serviceType: string): void {
     const formData = this.mainSearchFormGroup.value;
-    if (typeof serviceType != 'string') {
-      this.find(serviceType, formData);
+    let searchString: string;
+    const filtered = this.serviceTypes.filter(item => item.name.toLowerCase() == serviceType.toLowerCase());
+    if (filtered.length > 0) {
+      this.find(filtered[0], formData);
+      searchString = filtered[0].name;
     } else {
-      const filtered = this.serviceTypes.filter(item => item.name.toLowerCase() == serviceType.toLowerCase());
-      if (filtered.length > 0) {
-        this.find(filtered[0], formData);
-      } else {
-        this.find(serviceType, formData);
-      }
+      this.find(serviceType, formData);
+      searchString = serviceType;
     }
+    this.customerSuggestionService.saveUserSearchTerm(searchString, this.zipCodeCtrl.value);
   }
 
   find(serviceType, formData): void {

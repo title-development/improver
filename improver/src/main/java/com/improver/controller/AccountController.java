@@ -9,6 +9,7 @@ import com.improver.repository.UserRepository;
 import com.improver.security.UserSecurityService;
 import com.improver.service.AccountService;
 import com.improver.service.ImageService;
+import com.improver.service.UserSearchService;
 import com.improver.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static com.improver.application.properties.Path.*;
 
@@ -32,6 +35,7 @@ public class AccountController {
     @Autowired private CustomerRepository customerRepository;
     @Autowired private AccountService accountService;
     @Autowired private ProjectRepository projectRepository;
+    @Autowired private UserSearchService userSearchService;
 
 
     @PutMapping(PASSWORD)
@@ -83,6 +87,21 @@ public class AccountController {
         Customer customer = userSecurityService.currentCustomer();
         String zipCode = projectRepository.findLastZipCodeByCustomerId(customer.getId());
         return new ResponseEntity<>(zipCode, HttpStatus.OK);
+    }
+
+    @PostMapping(SEARCHES)
+    public ResponseEntity<Void> userSearches(@RequestParam String zipCode,
+                                             @RequestParam String search){
+        User user = userSecurityService.currentUserOrNull();
+        userService.saveUserSearches(user, search, zipCode);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping(SEARCHES)
+    public ResponseEntity<List<String>> getRecentSearches(@RequestParam(defaultValue = "5") int size){
+        Customer existed = userSecurityService.currentCustomer();
+        List<String> recentSearches = userSearchService.getTopSearchesByCustomerId(existed.getId(), size);
+        return new ResponseEntity<>(recentSearches, HttpStatus.OK);
     }
 
     @PutMapping(NOTIFICATIONS)

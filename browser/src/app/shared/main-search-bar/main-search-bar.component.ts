@@ -13,6 +13,7 @@ import { PopUpMessageService } from "../../util/pop-up-message.service";
 import { SecurityService } from "../../auth/security.service";
 import { UserService } from "../../api/services/user.service";
 import { CustomerSuggestionService } from "../../api/services/customer-suggestion.service";
+import { Role } from "../../model/security-model";
 
 @Component({
   selector: 'main-search-bar',
@@ -56,9 +57,12 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
     this.serviceTypeCtrl = group.serviceTypeCtrl;
     this.zipCodeCtrl = group.zipCodeCtrl;
 
-    if (this.securityService.isAuthenticated() && !this.zipCode) {
-      this.getLastCustomerZipCode();
-    }
+    this.zipCodeCtrl.setValue(localStorage.getItem('zipCode'));
+
+    this.securityService.onUserInit.subscribe(() => {
+        this.getLastCustomerZipCode();
+      }
+    );
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -96,7 +100,6 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
 
   searchServiceType(form: FormGroup): void {
     if (this.mainSearchFormGroup.valid) {
-      this.customerSuggestionService.saveUserSearchTerm(this.serviceTypeCtrl.value, this.zipCodeCtrl.value);
       const serviceTypeCtrl = this.mainSearchFormGroup.get('serviceTypeCtrl');
       if (serviceTypeCtrl.value) {
         this.getQuestianary(serviceTypeCtrl.value);
@@ -113,18 +116,18 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
   }
 
 
-  getQuestianary(serviceType: ServiceType | string): void {
+  getQuestianary(serviceType: string): void {
     const formData = this.mainSearchFormGroup.value;
-    if (typeof serviceType != 'string') {
-      this.find(serviceType, formData);
+    let searchString: string;
+    const filtered = this.serviceTypes.filter(item => item.name.toLowerCase() == serviceType.toLowerCase());
+    if (filtered.length > 0) {
+      this.find(filtered[0], formData);
+      searchString = filtered[0].name;
     } else {
-      const filtered = this.serviceTypes.filter(item => item.name.toLowerCase() == serviceType.toLowerCase());
-      if (filtered.length > 0) {
-        this.find(filtered[0], formData);
-      } else {
-        this.find(serviceType, formData);
-      }
+      this.find(serviceType, formData);
+      searchString = serviceType;
     }
+    this.customerSuggestionService.saveUserSearchTerm(searchString, this.zipCodeCtrl.value);
   }
 
   find(serviceType, formData): void {
@@ -161,13 +164,15 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
   }
 
   getLastCustomerZipCode() {
-    this.customerSuggestionService.LastCustomerZipCode$
-      .subscribe(
-        lastZipCode => {
-          this.lastZipCode = lastZipCode;
-          this.zipCodeCtrl.setValue(lastZipCode)
-        }
-      );
+    if (this.securityService.hasRole(Role.CUSTOMER) || this.securityService.hasRole(Role.ANONYMOUS)) {
+      this.customerSuggestionService.lastCustomerZipCode$
+        .subscribe(
+          lastZipCode => {
+            this.lastZipCode = lastZipCode;
+            this.zipCodeCtrl.setValue(lastZipCode)
+          }
+        );
+    }
   }
 
   selectTrackBy(index: number, item: ServiceType): number {

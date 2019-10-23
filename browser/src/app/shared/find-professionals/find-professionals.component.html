@@ -81,8 +81,8 @@
         <div class="categories-wrapper noselect">
           <div class="category-wrapper">
             <div class="header">
-              <span class="name">Find by Service</span>
-              <a class="action" routerLink="/services" (click)="findProfessionalService.toggle()">more</a>
+              <span class="name">Popular Services</span>
+              <a class="action" routerLink="/services" (click)="findProfessionalService.toggle()">see all</a>
             </div>
 
             <div class="items row">
@@ -97,11 +97,27 @@
           </div>
         </div>
 
-        <div class="categories-wrapper noselect xs-none sm-none">
+        <div class="categories-wrapper noselect" *ngIf="recentSearches.length != 0">
           <div class="category-wrapper">
             <div class="header">
-              <span class="name">Find by Category</span>
-              <a class="action" routerLink="/services" (click)="findProfessionalService.toggle()">more</a>
+              <span class="name">Recent Searches</span>
+            </div>
+
+            <div class="items">
+              <div *ngFor="let recentSearch of recentSearches">
+                <div class="item">
+                  <a (click)="searchServiceTypeByRecentSearch(recentSearch)">{{recentSearch}}</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="categories-wrapper noselect xs-none sm-none" *ngIf="recentSearches.length == 0">
+          <div class="category-wrapper">
+            <div class="header">
+              <span class="name">Popular Category</span>
+              <a class="action" routerLink="/services" (click)="findProfessionalService.toggle()">see all</a>
             </div>
 
             <div class="items row">

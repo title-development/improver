@@ -53,6 +53,7 @@ public final class Path {
     public static final String LOGOUT =              "/logout";
     public static final String QUESTIONARY =         "/questionary";
     public static final String REGISTER =            "/register";
+    public static final String SEARCHES =            "/searches";
     public static final String CONFIRM =             "/confirm";
     public static final String ACTIVATION =          "/activation";
     public static final String EMAIL =               "/email";

@@ -75,7 +75,12 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     this.emailIsChecked = false;
     this.filteredStates = constants.states;
 
-    this.getLastCustomerZipCode();
+    this.lastZipCode = localStorage.getItem('zipCode');
+
+    this.securityService.onUserInit.subscribe(() => {
+        this.getLastCustomerZipCode();
+      }
+    );
   }
 
   ngOnInit(): void {
@@ -87,8 +92,8 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
   }
 
   getLastCustomerZipCode() {
-    if (this.securityService.isAuthenticated()) {
-      this.customerSuggestionService.LastCustomerZipCode$
+    if (this.securityService.hasRole(Role.CUSTOMER) || this.securityService.hasRole(Role.ANONYMOUS)) {
+      this.customerSuggestionService.lastCustomerZipCode$
         .subscribe(
           zipCode => this.lastZipCode = zipCode
         )

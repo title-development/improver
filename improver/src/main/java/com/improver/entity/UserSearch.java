@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.time.ZonedDateTime;
+import java.util.Objects;
 
 import static com.improver.util.serializer.SerializationUtil.DATE_TIME_PATTERN;
 
@@ -30,4 +31,16 @@ public class UserSearch {
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     protected ZonedDateTime created;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserSearch that = (UserSearch) o;
+        return search.equalsIgnoreCase(that.search);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(search.toLowerCase());
+    }
 }

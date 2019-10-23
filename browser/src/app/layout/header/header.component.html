@@ -8,7 +8,7 @@
       </button>
 
       <div class="nav navbar-nav navbar-left">
-        <div class="xs-none sm-none">
+        <div  *ngIf="mediaQuery.md || mediaQuery.lg || mediaQuery.xlg">
           <find-professionals *ngIf="!securityService.hasRole(Role.CONTRACTOR)"></find-professionals>
         </div>
 
@@ -46,7 +46,7 @@
         <mat-icon class="mobile-menu-icon">search</mat-icon>
       </button>
 
-      <div class="md-none lg-none xlg-none">
+      <div *ngIf="mediaQuery.xs || mediaQuery.sm">
         <find-professionals *ngIf="!securityService.hasRole(Role.CONTRACTOR)"></find-professionals>
       </div>
 
