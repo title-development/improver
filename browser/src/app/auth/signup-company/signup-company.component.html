@@ -8,7 +8,7 @@
         <span>Company <br>Profile</span>
       </div>
       <div class="step-icon -tree" [ngClass]="{'-active': step >= 2}">
-        <span>Coverage</span>
+        <span>Service <br>Area</span>
       </div>
       <div class="step-icon -four" [ngClass]="{'-active': step >= 3}">
         <span>Offered <br>Services</span>
@@ -258,14 +258,14 @@
 
     <div class="step -three -coverage" *ngIf="step == 2">
 
-      <div class="lead-preference-title">Coverage</div>
+      <div class="lead-preference-title">Service Area</div>
 
       <div class="row">
 
         <div class="col-md-8 col-sm-12 col-xs-12">
           <div class="description-block">
-            Coverage is the area you work and receive leads.
-            Basic coverage highlights a round area with radius of 10 miles and your company in the center. The zip
+            Service Area is the area you work and receive leads.
+            Basic area highlights a round area with radius of 10 miles and your company in the center. The zip
             codes that intersect with that area will be selected.
           </div>
         </div>
@@ -305,7 +305,7 @@
           </div>
 
           <div class="hint -arrow lead-preferences-hint">
-            You can adjust the center of the coverage by clicking and dragging it elsewhere.
+            You can adjust the center of the area by clicking and dragging it elsewhere.
           </div>
 
         </div>
@@ -330,7 +330,7 @@
 
     <div class="step -three -services" *ngIf="step == 3">
 
-      <div class="lead-preference-title">Offered services</div>
+      <div class="lead-preference-title">Offered Services</div>
 
       <form class="lead-preferences-form"
             name="lead-preferences-form"

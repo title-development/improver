@@ -272,7 +272,7 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate, 
       .subscribe((res) => {
         this.companyCoverageConfig.coverageConfig = coverageConfig;
         this.coverageService.unsavedChanges$.next(false);
-        this.popUpService.showSuccess('Coverage area has been updated');
+        this.popUpService.showSuccess('Service area has been updated');
         if (this.isDetailMode) {
           this.detailsMode.clearZipHistory();
         }

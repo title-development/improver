@@ -20,7 +20,7 @@
         <div class="links-wrapper xs-none sm-none"
              *ngIf="securityService.isAuthenticated() && securityService.hasRole(Role.CONTRACTOR)">
           <a class="link" routerLink="/pro/dashboard" routerLinkActive="active">Dashboard</a>
-          <a class="link" [routerLink]="'/companies/' + securityService.getLoginModel().company" routerLinkActive="active">Profile</a>
+          <a class="link" [routerLink]="'/pro/leads-search'" routerLinkActive="active">Find Projects</a>
         </div>
       </div>
       <!--Logo-->

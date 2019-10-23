@@ -1,12 +1,12 @@
 <div class="tutorial-wrapper" *ngIf="(tutorials$ | async) && (tutorials$ | async).includes(UserTutorial.Tutorial.COVERAGE)">
   <div class="tutorial">
     <i class="imp-icon-map-pointer"></i>
-    <h4>Adjusting your Company coverage</h4>
-    <p>Coverage is the area you work and receive leads.</p>
+    <h4>Adjusting your Service Area</h4>
+    <p>Service Area is the area you work and receive leads.</p>
 
     <p>Radius configuration highlights a round area with your company in the center. The miles for the radius is
       adjustable.</p>
-    <p>If you want more accurate coverage, choose 'By Zip Codes' where you can select individual zip codes.</p>
+    <p>If you want more accurate area, choose 'By Zip Codes' where you can select individual zip codes.</p>
     <a href="" (click)="completeTutorial($event)">Got it</a>
   </div>
 </div>

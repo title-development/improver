@@ -6,11 +6,11 @@
     </div>
     <div class="col-md-9 col-sm-12">
       <div class="account-top-line">
-        <div class="account-nav-title">Scheduling</div>
+        <div class="account-nav-title">Vacation Schedule</div>
       </div>
       <div [cvSpinner]="fetching" [cvSpinnerSize]="24">
         <div class="card" *ngIf="!fetching">
-          <p>Setup vacation, day-offs, or other blackout periods when you don't want Home Improve to send you leads.</p>
+          <p>Setup vacation, day-offs, or other blackout periods when you don't want Home Improve to send you new leads.</p>
           <div class="periods">
             <div class="period" *ngFor="let period of periods" (click)="addEdit(period)">
             <span class="range">

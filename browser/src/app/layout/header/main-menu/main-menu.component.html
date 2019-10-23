@@ -22,23 +22,23 @@
       <div class="user-role-child md-none lg-none xlg-none">
         <a routerLink="/my/projects" (click)="close()">My Projects</a>
       </div>
-      <a routerLink="/my/settings/account" (click)="close()">Account</a>
+      <a routerLink="/my/settings/account" (click)="close()">User Account</a>
       <a routerLink="/my/settings/notifications" (click)="close()">Notifications</a>
     </div>
     <div class="user-role" *ngIf="securityService.isAuthenticated() && securityService.hasRole(Role.CONTRACTOR)">
       <div class="user-role-child md-none lg-none xlg-none">
         <a routerLink="/pro/dashboard" (click)="close()">Dashboard</a>
-        <a [routerLink]="'/companies/' + securityService.getLoginModel().company" (click)="close()">Profile</a>
       </div>
-      <a routerLink="/pro/settings/account" (click)="close()">Account</a>
-      <a routerLink="/pro/settings/info" (click)="close()">Company</a>
-      <a routerLink="/pro/settings/services" (click)="close()">Services</a>
-      <a routerLink="/pro/settings/coverage" (click)="close()">Coverage</a>
+      <a routerLink="/pro/settings/account" (click)="close()">User Account</a>
+      <a [routerLink]="'/companies/' + securityService.getLoginModel().company" (click)="close()">Company Profile</a>
+      <a routerLink="/pro/settings/info" (click)="close()">Company Info</a>
+      <a routerLink="/pro/settings/services" (click)="close()">Provided Services</a>
+      <a routerLink="/pro/settings/coverage" (click)="close()">Service Area</a>
       <a routerLink="/pro/settings/billing" (click)="close()">Billing</a>
       <a (click)="close(); toggleReferralDialog()">Give {{constants.REFERRAL_BONUS_AMOUNT / 100 | currency:'USD':'symbol':'0.0-0'}}, Get {{constants.REFERRAL_BONUS_AMOUNT / 100 | currency:'USD':'symbol':'0.0-0'}}</a>
       <a routerLink="/pro/settings/notifications" (click)="close()">Notifications</a>
-      <a routerLink="/pro/settings/quick-reply" (click)="close()">Quick Reply</a>
-      <a routerLink="/pro/settings/scheduling-availability" (click)="close()">Scheduling</a>
+      <a routerLink="/pro/settings/quick-reply" (click)="close()">Auto Reply</a>
+      <a routerLink="/pro/settings/scheduling-availability" (click)="close()">Vacation Schedule</a>
     </div>
     <div class="user-role" *ngIf="securityService.isAuthenticated() && (securityService.hasRole(Role.ADMIN) || securityService.hasRole(Role.SUPPORT) || securityService.hasRole(Role.STAKEHOLDER))">
       <a routerLink="/admin" (click)="close()" style="padding: 0;">Admin Panel</a>

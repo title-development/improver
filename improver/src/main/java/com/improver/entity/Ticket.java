@@ -51,7 +51,7 @@ public class Ticket {
         // For CONTRACTOR ONLY
         REQUESTING_CREDIT ("Request a credit"),
         PROVIDED_SERVICES ("Adjusting services"),
-        COVERAGE_AREA ("Coverage configuration"),
+        COVERAGE_AREA ("Service area"),
         BILLING ("Billing and Subscription"),
         COMPANY_PROFILE ("Company profile"),
         // FOR ALL

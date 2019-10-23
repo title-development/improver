@@ -9,7 +9,7 @@
     <div class="col-md-9 col-sm-12">
 
       <div class="account-top-line">
-        <div class="account-nav-title">Quick reply</div>
+        <div class="account-nav-title">Auto Reply</div>
       </div>
 
       <div [cvSpinner]="fetching" [cvSpinnerSize]="24">
@@ -23,7 +23,7 @@
                 (ngSubmit)="quickReplyForm.valid && submitQuickReplayMessage(quickReplyForm)"
                 novalidate>
 
-            <!--<div class="title">Quick replay message</div>-->
+            <div class="title">Send a default message to new customer project requests you've submitted.</div>
 
             <cv-input-field>
               <cv-field-label>Message</cv-field-label>
@@ -62,7 +62,7 @@
                 Cancel
               </button>
               <button cv-button type="submit" [cvSpinner]="saveProcessing" [cvSpinnerSize]="16" [cvSpinnerBackground]="true">
-                Submit
+                Save
               </button>
             </div>
 

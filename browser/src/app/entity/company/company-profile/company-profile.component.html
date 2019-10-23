@@ -109,8 +109,7 @@
                    [zoom]="mapOptions.zoom"
                    [gestureHandling]="mediaQuery.xs ? 'cooperative': ''"
                    (mapReady)="onMapReady($event)">
-            <a *ngIf="editMode" class="update-service-areas-button" routerLink="/pro/settings/coverage">Update
-              service areas</a>
+            <a *ngIf="editMode" class="update-service-areas-button" routerLink="/pro/settings/coverage">Update service areas</a>
           </agm-map>
 
           <div class="details-list">

@@ -51,7 +51,7 @@
           <h2>{{selectedLead.serviceType}}</h2>
           <button cv-button
                   [routerLink]="'/pro/leads-purchase/' + selectedLead.id">
-            Purchase project for {{selectedLead.price/100 | currency:'USD':'symbol'}}
+            Purchase lead for {{selectedLead.price/100 | currency:'USD':'symbol'}}
           </button>
         </div>
         <div class="scroll-wrapper">

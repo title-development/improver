@@ -313,10 +313,10 @@ export class SignupCompanyComponent {
 
   submitServiceArea(form) {
     if (this.companyRegistration.coverage.radius < this.MIN_COVERAGE_RADIUS) {
-      this.popUpMessageService.showWarning('Coverage should be at least ' + this.MIN_COVERAGE_RADIUS + ' miles');
+      this.popUpMessageService.showWarning('Service area radius should be at least ' + this.MIN_COVERAGE_RADIUS + ' miles');
       return;
     } else if (this.companyRegistration.coverage.radius > this.MAX_COVERAGE_RADIUS) {
-      this.popUpMessageService.showWarning('Coverage shouldn\'t be bigger then ' + this.MAX_COVERAGE_RADIUS + ' miles');
+      this.popUpMessageService.showWarning('Service area radius shouldn\'t exceed ' + this.MAX_COVERAGE_RADIUS + ' miles');
       return;
     } else {
       this.step++;

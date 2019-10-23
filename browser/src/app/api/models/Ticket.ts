@@ -52,7 +52,7 @@ export namespace Ticket {
     PHONE_HELP_REQUEST = "Phone help request",
     REQUESTING_CREDIT = "Request a credit",
     PROVIDED_SERVICES = "Adjusting services",
-    COVERAGE_AREA = "Coverage configuration",
+    COVERAGE_AREA = "Service area",
     BILLING = "Billing and Subscription",
     COMPANY_PROFILE = "Company profile",
     FEEDBACK = "Leave feedback",

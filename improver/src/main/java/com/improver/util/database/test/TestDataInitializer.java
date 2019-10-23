@@ -308,8 +308,8 @@ public class TestDataInitializer {
             .setQuickReply(true)
             .setActivated(true)
             .setReplyText("Hi, we received your project request from Home Improve and would love to discuss this with you. " +
-                "Please let us know a convenient time for you. We look forward to connecting with you!\n Thanks, " +
-                "Lory from Bravo inc!")
+                "Please let us know a convenient time for you. We look forward to connecting with you.\nThanks, " +
+                "Lory from Bravo inc")
         );
 
         contractorRepository.save(new Contractor("James", "Brown", PRO_2, DEMO_PASS, DEMO_PHONE)
