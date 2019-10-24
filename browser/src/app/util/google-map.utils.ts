@@ -10,6 +10,7 @@ import { MapMarkersStore } from './google-map-markers-store.service';
 import LatLng = google.maps.LatLng;
 import Feature = google.maps.Data.Feature;
 import { GoogleMap } from '@agm/core/services/google-maps-types';
+import { Lead, ShortLead } from '../model/data-model';
 
 @Injectable()
 export class GoogleMapUtilsService {
@@ -49,6 +50,10 @@ export class GoogleMapUtilsService {
     }
 
     return this.biggestArray;
+  }
+
+  clearLeadsMarkers(): void {
+    this.markersStore.deleteMarkers();
   }
 
   clearAllDataLayers(gMap: google.maps.Map): void {
@@ -222,31 +227,6 @@ export class GoogleMapUtilsService {
     countyData.features.map((feature) => feature.properties.selected = true);
   }
 
-  drawLeadsMarkers(gMap: google.maps.Map, leads, infoWindow: EventEmitter<InfoWindowInt>): Map<string, ZipFeature[]> {
-    const zipCodesWithLeads = new Map<string, ZipFeature[]>();
-    const outsizeZips = new Map<string, ZipFeature[]>();
-    this.markersStore.deleteMarkers();
-    leads.forEach((lead) => {
-      const zip = lead.location.zip.toString();
-      if (!zipCodesWithLeads.has(zip)) {
-        zipCodesWithLeads.set(zip, [lead]);
-      } else {
-        zipCodesWithLeads.set(zip, [...zipCodesWithLeads.get(zip), lead]);
-      }
-    });
-    Array.from(zipCodesWithLeads.keys()).forEach((zip) => {
-      if (this.zipBoundariesStore.has(zip)) {
-        const zipFeature: ZipFeature = this.zipBoundariesStore.get(zip);
-        const zipCenterLatLng = this.getPolygonBounds(zipFeature.geometry.coordinates).getCenter();
-        this.createLeadMarker(gMap, zipFeature, zipCenterLatLng, zipCodesWithLeads, infoWindow);
-      } else {
-        outsizeZips.set(zip, zipCodesWithLeads.get(zip));
-      }
-    });
-
-    return outsizeZips;
-  }
-
   /**
    * @param {google.maps.Map} gMap
    * @param {ZipBoundaries | Array<ZipFeature>} zipBoundaries
@@ -335,21 +315,25 @@ export class GoogleMapUtilsService {
     });
   }
 
-  createLeadMarker(gMap: google.maps.Map, feature, zipCenterLatLng, zipCodesWithLeads, infoWindow: EventEmitter<InfoWindowInt>): void {
+  createLeadMarker(gMap: google.maps.Map,
+                   zipCode: string, center,
+                   leads: ShortLead[],
+                   inCoverage: boolean,
+                   infoWindow: EventEmitter<InfoWindowInt>): void {
     const svgIcon = {
-      url: '../../../../assets/img/marker.png',
+      url: inCoverage ? '../../../../assets/img/marker.png' : '../../../../assets/img/marker-gray.png',
       size: new google.maps.Size(36, 40),
       origin: new google.maps.Point(-1, -1),
       labelOrigin: new google.maps.Point(18, 20),
       anchor: new google.maps.Point(18, 40),
     };
     const marker = new google.maps.Marker({
-      position: zipCenterLatLng,
-      title: feature.properties.zip,
+      position: center,
+      title: zipCode,
       map: gMap,
       icon: svgIcon,
       label: {
-        text: zipCodesWithLeads.get(feature.properties.zip).length.toString(),
+        text: leads.length.toString(),
         color: '#ffffff',
         fontSize: '12px',
         fontFamily: 'Lato',
@@ -358,10 +342,11 @@ export class GoogleMapUtilsService {
     });
     const handler = () => {
       infoWindow.emit({
-        leadsAmount: zipCodesWithLeads.get(feature.properties.zip).length.toString(),
-        zip: feature.properties.zip.toString(),
-        leads: zipCodesWithLeads.get(feature.properties.zip.toString()),
-        latLng: {lat: zipCenterLatLng.lat(), lng: zipCenterLatLng.lng()},
+        leadsAmount: leads.length.toString(),
+        zip: zipCode,
+        leads: leads,
+        latLng: center,
+        inCoverage: inCoverage
       });
     };
     this.markersStore.addMarker(marker);

@@ -10,7 +10,9 @@
   border-radius: 14px;
   box-shadow: 4px 7px 21px 0 rgba(0, 0, 0, 0.35);
   background-color: $white;
-  margin-top: 8px;
+  &:not(:first-child) {
+    margin-top: 8px;
+  }
 }
 
 .icon {

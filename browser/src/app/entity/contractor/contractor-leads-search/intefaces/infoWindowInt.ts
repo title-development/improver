@@ -1,11 +1,12 @@
-import { Lead } from '../../../../model/data-model';
+import { ShortLead } from '../../../../model/data-model';
 
 export interface InfoWindowInt {
-  leads: Lead[],
+  leads: ShortLead[],
   zip: string,
   leadsAmount: string,
   latLng: {
     lat: number,
-    lng: number
-  }
+    lng: number,
+  },
+  inCoverage: boolean
 }

@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Lead, Pagination } from '../../model/data-model';
+import { Lead, Pagination, ShortLead } from '../../model/data-model';
 import { RestPage } from '../models/RestPage';
 import { toHttpParams } from '../../util/functions';
 import { map } from "rxjs/internal/operators";
@@ -17,20 +17,20 @@ export class LeadService {
     this.constants = constants;
   }
 
-  getAll(searchTerm: string, pagination: Pagination): Observable<RestPage<Lead>> {
+  getAll(searchTerm: string, pagination: Pagination): Observable<RestPage<ShortLead>> {
     return this.getAllInBoundingBox(searchTerm, pagination, '','')
   }
 
-  getAllInBoundingBox(searchTerm: string, pagination: Pagination, southWest: string = '', northEast: string = ''): Observable<RestPage<Lead>> {
+  getAllInBoundingBox(searchTerm: string, pagination: Pagination, southWest: string = '', northEast: string = ''): Observable<RestPage<ShortLead>> {
     const params = toHttpParams(pagination)
       .set('searchTerm', searchTerm ? searchTerm : '')
       .set('southWest', southWest)
       .set('northEast', northEast);
 
     return this.httpClient
-      .get<RestPage<Lead>>(`${this.leadsUrl}`, {params}).pipe(
-        map((leads: RestPage<Lead>) => {
-          leads.content = leads.content.map((lead: Lead) => {
+      .get<RestPage<ShortLead>>(`${this.leadsUrl}`, {params}).pipe(
+        map((leads: RestPage<ShortLead>) => {
+          leads.content = leads.content.map((lead: ShortLead) => {
             return lead;
           });
           return leads;

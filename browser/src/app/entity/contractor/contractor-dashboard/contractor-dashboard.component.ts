@@ -3,7 +3,7 @@ import { LeadService } from '../../../api/services/lead.service'
 import { SecurityService } from '../../../auth/security.service';
 import { LeadsReport } from '../../../api/models/LeadsReport';
 import { BillingService } from '../../../api/services/billing.service';
-import { Lead, Pagination } from '../../../model/data-model';
+import { Lead, Pagination, ShortLead } from '../../../model/data-model';
 import { RestPage } from '../../../api/models/RestPage';
 
 @Component({
@@ -13,7 +13,7 @@ import { RestPage } from '../../../api/models/RestPage';
 })
 
 export class ContractorDashboardComponent implements OnInit {
-  leads: RestPage<Lead>;
+  leads: RestPage<ShortLead>;
   leadsReport: LeadsReport;
   contractor = {
     id: null,
@@ -34,7 +34,7 @@ export class ContractorDashboardComponent implements OnInit {
 
   getLeads(): void {
     const pagination: Pagination = new Pagination(0,5);
-    this.leadService.getAll(null, pagination).subscribe((leads: RestPage<Lead>) => {
+    this.leadService.getAll(null, pagination).subscribe((leads: RestPage<ShortLead>) => {
       this.leads = leads;
     });
   }

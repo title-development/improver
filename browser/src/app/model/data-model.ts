@@ -1,6 +1,7 @@
 
 import { Project } from '../api/models/Project';
 import { ProjectRequest } from '../api/models/ProjectRequest';
+import { Centroid } from '../api/models/ZipBoundaries';
 
 /*************************************************
  ******************    Enums   *******************
@@ -343,6 +344,15 @@ export class Lead {
   startDate: string;
   inCoverage: boolean;
   details: ProjectDetail[];
+}
+
+export class ShortLead {
+  id: number;
+  created: string;
+  location: Location;
+  price: number;
+  serviceType: string;
+  centroid: Centroid;
 }
 
 export class GoogleMapMarker {

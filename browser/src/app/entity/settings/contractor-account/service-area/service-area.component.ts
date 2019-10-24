@@ -27,7 +27,7 @@ import {
   refCount,
   repeatWhen,
   takeUntil,
-  tap
+  tap,
 } from 'rxjs/internal/operators';
 import { CompanyCoverageConfig } from '../../../../api/models/CompanyCoverageConfig';
 import { ZipBoundaries } from '../../../../api/models/ZipBoundaries';
@@ -133,7 +133,6 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate, 
         distinctUntilChanged(),
         takeUntil(this.destroyed$),
       ).subscribe((mediaQuery: MediaQuery) => {
-        console.log(mediaQuery);
       this.mediaQuery = mediaQuery;
     });
   }

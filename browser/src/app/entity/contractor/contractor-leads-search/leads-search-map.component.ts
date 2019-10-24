@@ -1,44 +1,52 @@
-import { ApplicationRef, Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
 import { GoogleMapsAPIWrapper } from '@agm/core';
+import { ApplicationRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { InfoWindowInt } from './intefaces/infoWindowInt';
 
-import { Lead, Pagination } from '../../../model/data-model';
-import { SecurityService } from '../../../auth/security.service';
-import { CompanyService } from '../../../api/services/company.service';
 import { BoundariesService } from '../../../api/services/boundaries.service';
+import { CompanyService } from '../../../api/services/company.service';
 import { LeadService } from '../../../api/services/lead.service';
+import { SecurityService } from '../../../auth/security.service';
+import { Lead, Pagination, ShortLead } from '../../../model/data-model';
 import { MapMarkersStore } from '../../../util/google-map-markers-store.service';
 
-import { applyStyleToMapLayers, GoogleMapUtilsService } from '../../../util/google-map.utils';
 import { ZipBoundaries, ZipFeature } from '../../../api/models/ZipBoundaries';
+import { applyStyleToMapLayers, GoogleMapUtilsService } from '../../../util/google-map.utils';
 import { PopUpMessageService } from '../../../util/pop-up-message.service';
 
-import { RestPage } from '../../../api/models/RestPage';
+import { combineLatest, from, of, Subject, Subscription } from 'rxjs';
+import {
+  catchError,
+  debounceTime,
+  first,
+  map,
+  mergeMap,
+  publishReplay,
+  refCount,
+  switchMap, takeUntil,
+  tap,
+} from 'rxjs/internal/operators';
 import { CompanyCoverageConfig } from '../../../api/models/CompanyCoverageConfig';
-import { from, of, Subscription } from 'rxjs';
-import { catchError, debounceTime, first, map, mergeMap, switchMap, tap } from 'rxjs/internal/operators';
-import { Constants } from "../../../util/constants";
-
+import { RestPage } from '../../../api/models/RestPage';
+import { Constants } from '../../../util/constants';
 
 @Component({
-  selector: 'leads-search-map',
+  selector: 'imp-leads-search-map',
   template: '',
-  styles: []
+  styles: [],
 })
-export class LeadsSearchMapComponent implements OnDestroy {
+export class LeadsSearchMapComponent implements OnInit, OnDestroy {
 
   @Output() showInfoWindow: EventEmitter<InfoWindowInt> = new EventEmitter<InfoWindowInt>();
-  @Output() updateLeads: EventEmitter<Array<Lead>> = new EventEmitter<Array<Lead>>();
+  @Output() updateLeads: EventEmitter<ShortLead[]> = new EventEmitter<ShortLead[]>();
   @Output() mapIsLoadingChange: EventEmitter<boolean> = new EventEmitter<boolean>();
-  @Output() areasChange: EventEmitter<Array<string>> = new EventEmitter<Array<string>>();
+  @Output() areasChange: EventEmitter<string[]> = new EventEmitter<string[]>();
   @Output() companyCoverageConfig: EventEmitter<CompanyCoverageConfig> = new EventEmitter<CompanyCoverageConfig>();
 
-  private map: any;
-  private _areas: Array<string>;
+  private gMap: any;
+  private _areas: string[];
   private _mapIsLoading: boolean;
-  private leadSearchEffect$: Subscription;
   private companyLocation: { lat: number, lng: number };
-  private pagination: Pagination;
+  private pagination =  new Pagination(0, 100);
 
   @Input()
   get mapIsLoading(): boolean {
@@ -51,14 +59,16 @@ export class LeadsSearchMapComponent implements OnDestroy {
   }
 
   @Input()
-  get areas(): Array<string> {
+  get areas(): string[] {
     return this._areas;
   }
 
-  set areas(value: Array<string>) {
+  set areas(value: string[]) {
     this.areasChange.emit(value);
     this._areas = value;
   }
+
+  private readonly destroyed$ = new Subject<void>();
 
   constructor(private applicationRef: ApplicationRef,
               public securityService: SecurityService,
@@ -71,121 +81,137 @@ export class LeadsSearchMapComponent implements OnDestroy {
               private constants: Constants,
               private gMapUtils: GoogleMapUtilsService) {
 
+  }
+
+  ngOnInit(): void {
     this.initMap();
   }
 
   initMap(): void {
-    this.pagination = new Pagination(0, 100);
-    this.leadService.getAll(null, this.pagination).pipe(first())
-      .subscribe((leads: RestPage<Lead>) => {
-        this.updateLeads.emit(leads.content);
-      });
-    this.leadSearchEffect$ = this.companyService.getCoverageConfig(this.securityService.getLoginModel().company).pipe(
-      switchMap((companyCoverageConfig: CompanyCoverageConfig) => {
-        this.areas = companyCoverageConfig.coverageConfig.zips;
-        this.companyCoverageConfig.emit(new CompanyCoverageConfig(companyCoverageConfig.coverageConfig, companyCoverageConfig.companyLocation));
-        this.companyLocation = {
-          lat: companyCoverageConfig.companyLocation.lat,
-          lng: companyCoverageConfig.companyLocation.lng
-        };
+    this.leadService.getAll(null, this.pagination).pipe(
+      takeUntil(this.destroyed$),
+    ).subscribe((leads: RestPage<ShortLead>) => {
+      this.updateLeads.emit(leads.content);
+    });
 
-        return from(this.googleMapsAPIWrapper.getNativeMap());
+    const companyCoverageConfig$ = this.companyService.getCoverageConfig(this.securityService.getLoginModel().company)
+      .pipe(
+        publishReplay(1),
+        refCount(),
+        tap((companyCoverageConfig: CompanyCoverageConfig) => {
+          this.areas = companyCoverageConfig.coverageConfig.zips;
+          this.companyCoverageConfig.emit(new CompanyCoverageConfig(companyCoverageConfig.coverageConfig, companyCoverageConfig.companyLocation));
+          this.companyLocation = {
+            lat: companyCoverageConfig.companyLocation.lat,
+            lng: companyCoverageConfig.companyLocation.lng,
+          };
+        }),
+      );
+
+    const mapReady$ = from(this.googleMapsAPIWrapper.getNativeMap()).pipe(
+      publishReplay(1),
+      refCount(),
+      tap((gMap) => {
+        applyStyleToMapLayers(gMap, false);
+        this.gMap = gMap;
       }),
-      switchMap(map => {
-        this.map = map;
-        applyStyleToMapLayers(map, false);
-        if (this.gMapUtils.zipBoundariesStore.size > 0) {
-          this.gMapUtils.drawZipBoundaries(this.map, Array.from(this.gMapUtils.zipBoundariesStore.values()));
-        }
-        this.gMapUtils.drawCompanyMarker(this.map, new google.maps.LatLng(this.companyLocation.lat, this.companyLocation.lng));
-        this.map.setCenter(new google.maps.LatLng(this.companyLocation.lat, this.companyLocation.lng));
+    );
+
+    this.showCompanyCoverage(mapReady$, companyCoverageConfig$);
+
+    this.showLeadMarkers(mapReady$, companyCoverageConfig$);
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
+  }
+
+  private showLeadMarkers(mapReady$, companyCoverageConfig$) {
+    combineLatest([mapReady$, companyCoverageConfig$]).pipe(
+      mergeMap(() => {
+        const center = new google.maps.LatLng(this.companyLocation.lat, this.companyLocation.lng);
+        this.gMapUtils.drawCompanyMarker(this.gMap, center);
+        this.gMap.setCenter(center);
 
         return this.googleMapsAPIWrapper.subscribeToMapEvent('idle');
       }),
       debounceTime(200),
-      switchMap(() => {
+      mergeMap(() => {
         this.mapIsLoading = true;
-        const southWest: string = [this.map.getBounds().getSouthWest().lat(), this.map.getBounds().getSouthWest().lng()].join();
-        const northEast: string = [this.map.getBounds().getNorthEast().lat(), this.map.getBounds().getNorthEast().lng()].join();
+        const southWest: string = [this.gMap.getBounds().getSouthWest().lat(), this.gMap.getBounds().getSouthWest().lng()].join();
+        const northEast: string = [this.gMap.getBounds().getNorthEast().lat(), this.gMap.getBounds().getNorthEast().lng()].join();
 
-        //TODO: Andriy, this should be loading first
-        return this.boundariesService.getSplitZipBoundaries(this.areas, this.constants.ZIPCODES_BATCH_SIZE).pipe(
-            catchError((err) => {
+        return this.leadService.getAllInBoundingBox(null, this.pagination, southWest, northEast).pipe(
+          catchError((err) => {
+              this.popUpMessageService.showError('Error requesting leads');
               this.mapIsLoading = false;
-              this.popUpMessageService.showError('Unexpected error during map rendering');
+
               return of(null);
-            }));
+            },
+          ));
       }),
-      catchError(err => {
-        this.mapIsLoading = false;
-
-        return of(null);
-      }),
-      switchMap((zipBoundaries: ZipBoundaries | null) => {
-        if (!zipBoundaries) {
-          return of(null);
-        }
-        this.gMapUtils.drawZipBoundaries(this.map, this.gMapUtils.zipsToDraw(this.map, zipBoundaries, this.areas));
-
-        //TODO: Andriy, this should be loading first
-        const southWest: string = [this.map.getBounds().getSouthWest().lat(), this.map.getBounds().getSouthWest().lng()].join();
-        const northEast: string = [this.map.getBounds().getNorthEast().lat(), this.map.getBounds().getNorthEast().lng()].join();
-        return this.leadService.getAllInBoundingBox(null, this.pagination, southWest, northEast).pipe(catchError(err => {
-            this.popUpMessageService.showError('Error requesting leads');
-            this.mapIsLoading = false;
-
-            return of(null);
-          }
-        ));
-      }),
-      catchError(err => {
-        this.mapIsLoading = false;
-
-        return of(null);
-      }),
-      mergeMap((leads: RestPage<Lead> | null) => {
-          if (!leads) {
+      tap((leads: RestPage<ShortLead> | null) => {
+          if (!leads || !leads.content.length) {
             this.mapIsLoading = false;
             return of(null);
           }
-          this.updateLeads.emit(leads.content);
           this.mapIsLoading = false;
-          const outsizeAreaZips: Map<string, Array<ZipFeature>> = this.gMapUtils.drawLeadsMarkers(this.map, leads.content, this.showInfoWindow);
-          if (outsizeAreaZips.size > 0) {
-            return this.boundariesService
-              .getZipBoundaries(Array.from(outsizeAreaZips.keys())).pipe(
-                map((zipBoundaries: ZipBoundaries) => {
-                  return {zipBoundaries: zipBoundaries, outsizeAreaZips: outsizeAreaZips};
-                })
-              );
-
-          } else {
-            return of(null);
-          }
-        }
+          this.updateLeads.emit(leads.content);
+          const groupLeadsByZipCode = this.groupLeadsByZipCode(leads.content);
+          this.drawLeadMarkers(groupLeadsByZipCode);
+        },
       ),
-      tap((data: { zipBoundaries: ZipBoundaries, outsizeAreaZips: Map<string, Array<ZipFeature>> }) => {
-        if (typeof data == 'object' && data) {
-          this.gMapUtils.drawZipBoundaries(this.map, this.gMapUtils.zipsToDraw(this.map, data.zipBoundaries, this.areas));
-          data.zipBoundaries.features.forEach((zipFeature: ZipFeature) => {
-            const zipCenterLatLng = this.gMapUtils.getPolygonBounds(zipFeature.geometry.coordinates).getCenter();
-            this.gMapUtils.createLeadMarker(this.map, zipFeature, zipCenterLatLng, data.outsizeAreaZips, this.showInfoWindow);
-          });
-        }
-      })
+      takeUntil(this.destroyed$),
     ).subscribe(
-      res => {
+      (res) => {
       },
-      err => {
+      (err) => {
         console.log(err);
         this.mapIsLoading = false;
-      }
+      },
     );
-
-
   }
 
-  ngOnDestroy(): void {
-    this.leadSearchEffect$.unsubscribe();
+  private showCompanyCoverage(mapReady$, companyCoverageConfig$) {
+    combineLatest([mapReady$, companyCoverageConfig$]).pipe(
+      mergeMap(() => {
+        this.mapIsLoading = true;
+
+        return this.boundariesService.getSplitZipBoundaries(this.areas, this.constants.ZIPCODES_BATCH_SIZE).pipe(
+          catchError((err) => {
+            this.mapIsLoading = false;
+            this.popUpMessageService.showError('Unexpected error during gMap rendering');
+            return of(null);
+          }));
+      }),
+      takeUntil(this.destroyed$),
+    ).subscribe((zipBoundaries: ZipBoundaries | null) => {
+      this.gMapUtils.drawZipBoundaries(this.gMap, this.gMapUtils.zipsToDraw(this.gMap, zipBoundaries, this.areas));
+    });
+  }
+
+  private drawLeadMarkers(groupLeadsByZipCode: Map<string, ShortLead[]>) {
+    this.gMapUtils.clearLeadsMarkers();
+    Array.from(groupLeadsByZipCode.entries())
+      .forEach(([zipCode, leads]: [string, ShortLead[]]) => {
+        const centroid = leads[0].centroid;
+        const inCoverage = this.areas.includes(zipCode);
+        this.gMapUtils.createLeadMarker(this.gMap, zipCode, centroid, leads, inCoverage, this.showInfoWindow);
+      });
+  }
+
+  private groupLeadsByZipCode(leads: ShortLead[]): Map<string, ShortLead[]> {
+    const grouped = new Map<string, ShortLead[]>();
+    leads.forEach((lead) => {
+      const zipCode = lead.location.zip.toString();
+      if (!grouped.has(zipCode)) {
+        grouped.set(zipCode, [lead]);
+      } else {
+        grouped.set(zipCode, [...grouped.get(zipCode), lead]);
+      }
+    });
+
+    return grouped;
   }
 }

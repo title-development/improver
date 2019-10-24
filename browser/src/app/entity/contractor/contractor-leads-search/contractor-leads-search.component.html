@@ -106,12 +106,12 @@
            [disableDefaultUI]="true"
            [zoomControl]="false"
            (mapReady)="onMapReady($event)">
-    <leads-search-map (showInfoWindow)="onShowInfoWindow($event)"
+    <imp-leads-search-map (showInfoWindow)="onShowInfoWindow($event)"
                       (updateLeads)="onLeadsUpdate($event)"
                       (companyCoverageConfig)="onCompanyCoverageConfig($event)"
                       [(mapIsLoading)]="mapContentIsLoading"
                       [(areas)]="areas">
-    </leads-search-map>
+    </imp-leads-search-map>
     <agm-snazzy-info-window [isOpen]="infoWindowOpenTrig"
                             [latitude]="infoWindowData.latLng ? infoWindowData.latLng.lat : 40.730610"
                             [longitude]="infoWindowData.latLng ? infoWindowData.latLng.lng : -73.935242"
@@ -136,7 +136,7 @@
             </perfect-scrollbar>
           </div>
           <div class="si-footer">
-            <i></i><span [ngPlural]="infoWindowData.leadsAmount">
+            <i></i><span [ngClass]="{'-not-in-coverage': !infoWindowData.inCoverage}" [ngPlural]="infoWindowData.leadsAmount">
             available
             <ng-template ngPluralCase="=1">lead</ng-template>
             <ng-template ngPluralCase="other">leads</ng-template>
@@ -148,7 +148,7 @@
     </agm-snazzy-info-window>
   </agm-map>
 
-  <imp-gmap-sidebar [gMap]="map"
+  <imp-gmap-sidebar [gMap]="gMap"
                     [mapMinZoom]="mapOptions.minZoom"
                     [mapMaxZoom]="mapOptions.maxZoom"
                     [center]="companyCoverageConfig?.getCompanyLocationCenter()"></imp-gmap-sidebar>

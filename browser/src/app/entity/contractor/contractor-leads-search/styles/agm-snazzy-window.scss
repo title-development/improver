@@ -110,6 +110,9 @@
       background-color: $primary-500;
       padding: 4px 12px 5px 5px;
       width: 100%;
+      &.-not-in-coverage {
+        background-color: $black-500;
+      }
     }
     i {
       font-style: normal;

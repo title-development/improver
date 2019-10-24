@@ -44,7 +44,6 @@ export class GoogleMapSidebarComponent {
 
   zoomOut(): void {
     const zoom = this.gMap.getZoom();
-    console.log(zoom);
     if (zoom <= this.mapMinZoom) {
       return;
     }

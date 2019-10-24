@@ -44,8 +44,9 @@ export const infoWindowDefaults: InfoWindowInt = {
   leadsAmount: '1',
   latLng: {
     lat: 40.730610,
-    lng: -73.935242
-  }
+    lng: -73.935242,
+  },
+  inCoverage: true,
 };
 
 export const boundaryDefaultStyle: google.maps.FusionTablesPolygonOptions = {

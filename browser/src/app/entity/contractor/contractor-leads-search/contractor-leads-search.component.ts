@@ -7,7 +7,7 @@ import { takeUntil } from 'rxjs/operators';
 import { ZipBoundaries } from "../../../api/models/ZipBoundaries";
 import { BoundariesService } from "../../../api/services/boundaries.service";
 import { LeadService } from '../../../api/services/lead.service';
-import { Lead, SystemMessageType } from '../../../model/data-model';
+import { Lead, ShortLead, SystemMessageType } from '../../../model/data-model';
 import { getErrorMessage } from '../../../util/functions';
 import { defaultMapOptions, infoWindowDefaults } from '../../../util/google-map-default-options';
 import { MapMarkersStore } from '../../../util/google-map-markers-store.service';
@@ -15,7 +15,6 @@ import { GoogleMapUtilsService } from "../../../util/google-map.utils";
 import { MediaQuery, MediaQueryService } from '../../../util/media-query.service';
 import { PopUpMessageService } from '../../../util/pop-up-message.service';
 import { InfoWindowInt } from './intefaces/infoWindowInt';
-import { PackMan } from './packman';
 import { CompanyCoverageConfig } from '../../../api/models/CompanyCoverageConfig';
 
 @Component({
@@ -51,7 +50,7 @@ export class ContractorLeadsSearchComponent implements OnDestroy {
   companyCoverageConfig: CompanyCoverageConfig;
   @ViewChild(MatSidenav) private mdSidebar: MatSidenav;
   @ViewChild('leadsPanel') private leadsPanelEl: ElementRef;
-  map;
+  gMap;
 
   private readonly destroyed$ = new Subject<void>();
 
@@ -94,8 +93,8 @@ export class ContractorLeadsSearchComponent implements OnDestroy {
       if (isMobile) {
         this.mdSidebar.close();
       }
-      this.map.setCenter(new google.maps.LatLng(selectedMarker.position.lat(), selectedMarker.position.lng()));
-      this.map.panBy(this.getMapXOffset(isMobile), 0);
+      this.gMap.setCenter(new google.maps.LatLng(selectedMarker.position.lat(), selectedMarker.position.lng()));
+      this.gMap.panBy(this.getMapXOffset(isMobile), 0);
       google.maps.event.trigger(selectedMarker, 'mouseover');
     }
   }
@@ -137,12 +136,12 @@ export class ContractorLeadsSearchComponent implements OnDestroy {
     }
   }
 
-  onMapReady(map): void {
-    this.map = map;
+  onMapReady(gMap): void {
+    this.gMap = gMap;
     this.boundariesService.getUnsupportedArea()
       .pipe(takeUntil(this.destroyed$))
       .subscribe((unsupportedArea: ZipBoundaries) =>
-        this.gMapUtils.drawZipBoundaries(this.map, unsupportedArea),
+        this.gMapUtils.drawZipBoundaries(this.gMap, unsupportedArea),
       );
   }
 
@@ -150,10 +149,10 @@ export class ContractorLeadsSearchComponent implements OnDestroy {
    * Sorting leads
    * @param {Array<Lead>} leads
    */
-  onLeadsUpdate(leads: Lead[]): void {
+  onLeadsUpdate(leads: ShortLead[]): void {
     const inArea = [];
     const notInArea = [];
-    leads.map((lead: Lead) => {
+    leads.map((lead: ShortLead) => {
       if (this.areas.includes(lead.location.zip.toString())) {
         inArea.push(lead);
       } else {
