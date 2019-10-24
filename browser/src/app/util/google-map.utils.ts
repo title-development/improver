@@ -273,7 +273,7 @@ export class GoogleMapUtilsService {
       strokeOpacity: 0.5,
       strokeWeight: 1,
       fillColor: '#14ABE3',
-      fillOpacity: 0.3,
+      fillOpacity: 0.2,
       map: gMap,
       center,
       radius,
@@ -387,14 +387,14 @@ export class GoogleMapUtilsService {
 
 }
 
-export function applyStyleToMapLayers(gMap: google.maps.Map | GoogleMap, clickable: boolean = false) {
+export function applyStyleToMapLayers(gMap: google.maps.Map | GoogleMap, clickable: boolean = false, hideOutlines: boolean = false) {
   const areasStyleOptions = {
     strokeColor: '#8b8b8b',
     fillColor: '#14abe3',
   };
   (gMap as google.maps.Map).data.setStyle((feature) => {
     const selected = feature.getProperty('selected');
-    const fillOpacity = selected ? 0.20 : 0;
+    const fillOpacity = selected ? 0.22 : 0;
     const disabled = feature.getProperty('disabled');
 
     return {
@@ -403,7 +403,7 @@ export function applyStyleToMapLayers(gMap: google.maps.Map | GoogleMap, clickab
       strokeColor: areasStyleOptions.strokeColor,
       fillColor: disabled ? '#5b5b5b' : areasStyleOptions.fillColor,
       strokeWeight: disabled ? 0 : 1,
-      strokeOpacity: disabled ? 0.22 : 0.6,
+      strokeOpacity: hideOutlines || disabled ? 0 : 0.6,
       fillOpacity: disabled ? 0.22 : fillOpacity,
     };
   });

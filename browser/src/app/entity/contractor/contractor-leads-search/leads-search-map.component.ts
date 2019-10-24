@@ -112,7 +112,7 @@ export class LeadsSearchMapComponent implements OnInit, OnDestroy {
       publishReplay(1),
       refCount(),
       tap((gMap) => {
-        applyStyleToMapLayers(gMap, false);
+        applyStyleToMapLayers(gMap, false, true);
         this.gMap = gMap;
       }),
     );
