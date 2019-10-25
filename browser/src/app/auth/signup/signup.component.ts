@@ -48,11 +48,14 @@ export class SignupComponent implements OnDestroy {
     correctEmail: ''
   };
 
+  readonly confirmationResendBlockingTime: number = 15000;
   showMessage: boolean;
   messageType: string;
   messageText: string;
   step: number = 1;
   registrationProcessing = false;
+
+  isResendBlocked: boolean = false;
 
   private readonly destroyed$ = new Subject<void>();
 
@@ -94,19 +97,30 @@ export class SignupComponent implements OnDestroy {
         });
   }
 
+  setResendConfirmationTimeout(){
+      setTimeout(() => {
+        this.isResendBlocked = false;
+      }, this.confirmationResendBlockingTime);
+  }
+
   resendConfirmation() {
-    this.registrationService.resendActivationMail(null, this.user.email).subscribe(
-      response => {
-        this.popUpMessageService.showMessage({
-          type: SystemMessageType.SUCCESS,
-          text: 'A confirmation link has been resent to your email'
-        });
-      },
-      err => {
-        console.log(err);
-        this.popUpMessageService.showError(JSON.parse(err.error).message);
-      }
-    );
+    if (!this.isResendBlocked) {
+      this.setResendConfirmationTimeout();
+      this.isResendBlocked = true;
+      this.registrationService.resendActivationMail(null, this.user.email).subscribe(
+        response => {
+          this.popUpMessageService.showMessage({
+            type: SystemMessageType.SUCCESS,
+            text: 'A confirmation link has been resent to your email'
+          });
+        },
+        err => {
+          console.log(err);
+          this.isResendBlocked = false;
+          this.popUpMessageService.showError(JSON.parse(err.error).message);
+        }
+      );
+    }
   }
 
   changeConfirmationEmail() {

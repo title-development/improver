@@ -89,9 +89,12 @@ export class SignupCompanyComponent {
   };
 
   unsupportedArea: any;
+  readonly confirmationResendBlockingTime: number = 15000;
   private readonly NOT_ACTIVE_USER_KEY: string = 'NOT_ACTIVE_USER';
   private readonly destroyed$ = new Subject<void>();
   private cancelRegistrationDialogRef: MatDialogRef<any>;
+
+  isResendBlocked: boolean = false;
 
   constructor(public securityService: SecurityService,
               public constants: Constants,
@@ -354,25 +357,36 @@ export class SignupCompanyComponent {
 
   }
 
+  setResendConfirmationTimeout(){
+    setTimeout(() => {
+      this.isResendBlocked = false;
+    }, this.confirmationResendBlockingTime);
+  }
+
   resendConfirmation() {
-    const userId = sessionStorage.getItem(this.NOT_ACTIVE_USER_KEY);
-    if (userId) {
-      this.registrationService.resendActivationMail(userId)
-        .pipe(takeUntil(this.destroyed$))
-        .subscribe(
-          response => {
-            this.popUpMessageService.showMessage({
-              type: SystemMessageType.SUCCESS,
-              text: 'A confirmation link has been resent to your email'
-            });
-          },
-          err => {
-            console.log(err);
-            this.popUpMessageService.showError(JSON.parse(err.error).message);
-          }
-        );
-    } else {
-      this.popUpMessageService.showError('Resend activation to the email is not available anymore');
+    if (!this.isResendBlocked) {
+      this.setResendConfirmationTimeout();
+      this.isResendBlocked = true;
+      const userId = sessionStorage.getItem(this.NOT_ACTIVE_USER_KEY);
+      if (userId) {
+        this.registrationService.resendActivationMail(userId)
+          .pipe(takeUntil(this.destroyed$))
+          .subscribe(
+            response => {
+              this.popUpMessageService.showMessage({
+                type: SystemMessageType.SUCCESS,
+                text: 'A confirmation link has been resent to your email'
+              });
+            },
+            err => {
+              console.log(err);
+              this.isResendBlocked = false;
+              this.popUpMessageService.showError(JSON.parse(err.error).message);
+            }
+          );
+      } else {
+        this.popUpMessageService.showError('Resend activation to the email is not available anymore');
+      }
     }
   }
 

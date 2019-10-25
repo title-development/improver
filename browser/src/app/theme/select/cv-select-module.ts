@@ -11,10 +11,11 @@ import { FormsModule } from '@angular/forms';
 import { CvOverlayDirective } from '../util/cv-overlay.directive';
 import { CvHolder } from '../util/cv-holder';
 import {ScrollingModule} from '@angular/cdk/scrolling';
+import { SharedDirectivesModule } from "../../shared/shared-directives.module";
 
 
 @NgModule({
-  imports: [CommonModule, ScrollingModule, CvCheckboxModule, FormsModule, CvInputModule, CvInputFieldModule, CvIconModule],
+  imports: [CommonModule, ScrollingModule, CvCheckboxModule, FormsModule, CvInputModule, CvInputFieldModule, CvIconModule, SharedDirectivesModule],
   declarations: [CvSelectComponent, FilterByPipe, CvOverlayDirective, CvHolder],
   exports: [CvSelectComponent],
   entryComponents: [CvHolder],
