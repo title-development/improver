@@ -1,11 +1,14 @@
 @import "../../../../../improver-mixins";
 
-.icon {
-  font-size: 12px;
-  color: #a1a1a1;
+:host {
   @include response-to(sm) {
     display: none;
   }
+}
+
+.icon {
+  font-size: 12px;
+  color: #a1a1a1;
   &:hover {
     color: #616161;
   }
