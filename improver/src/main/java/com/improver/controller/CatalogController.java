@@ -34,7 +34,7 @@ public class CatalogController {
 
 
     /**
-     * Returns popular {@link ServiceType} list represented by list of {@link NameIdImageTuple}'s.
+     * Returns suggested {@link ServiceType} list represented by list of {@link NameIdImageTuple}'s.
      *
      * <b>Note</b> {@link CacheControl} is used to reduce REST API calls and improve performance.
      */
@@ -43,21 +43,26 @@ public class CatalogController {
     public ResponseEntity<List<NameIdImageTuple>> getSuggestedServices(@RequestParam(defaultValue = "12") int size) {
 //        List<NameIdImageTuple> services = serviceTypeService.getPopularServices(size);
 //        TODO: Done for testing of images at home page. Will be removed later
-        List<NameIdImageTuple> services = serviceTypeService.getRandomAsModels(size);
-        if (services.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return ResponseEntity.ok()
-            .body(services);
+        List<NameIdImageTuple> services = serviceTypeRepository.getRandomPopularServiceTypes(PageRequest.of(0, size)).getContent();
+        return ResponseEntity.ok().body(services);
     }
 
+    /**
+     * Returns popular {@link ServiceType} list represented by list of {@link NameIdImageTuple}'s.
+     *
+     * Used at Home Page and Find Professionals dropdown
+     */
     @GetMapping(SERVICES + POPULAR)
-    public ResponseEntity<List<NameIdTuple>> getPopularServices(@RequestParam(defaultValue = "12") int size){
-        List<NameIdTuple> popularServices = serviceTypeRepository.getPopularServiceTypes(PageRequest.of(0, size)).getContent();
+    public ResponseEntity<List<NameIdImageTuple>> getPopularServices(@RequestParam(defaultValue = "12") int size){
+        List<NameIdImageTuple> popularServices = serviceTypeRepository.getRandomPopularServiceTypes(PageRequest.of(0, size)).getContent();
         return new ResponseEntity<>(popularServices, HttpStatus.OK);
     }
 
-
+    /**
+     * Returns recommended {@link ServiceType} list represented by list of {@link NameIdImageTuple}'s.
+     *
+     * Used in Customer dashboard
+     */
     @Deprecated
     @GetMapping(SERVICES + RECOMMENDED)
     public ResponseEntity<List<NameIdImageTuple>> getRecommendedServices(@RequestParam(defaultValue = "6") int size) {

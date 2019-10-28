@@ -7,13 +7,11 @@ import com.improver.exception.ConflictException;
 import com.improver.exception.NotFoundException;
 import com.improver.model.NameIdTuple;
 import com.improver.model.admin.AdminServiceType;
-import com.improver.model.out.NameIdImageTuple;
 import com.improver.repository.*;
 import com.improver.util.StaffActionLogger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,15 +32,6 @@ public class ServiceTypeService {
     @Autowired private QuestionaryRepository questionaryRepository;
     @Autowired private StaffActionLogger staffActionLogger;
 
-
-    /**
-     * Returns list with given <code>size</code> of random {@link NameIdImageTuple} generated from {@link ServiceType}
-     */
-    @Deprecated
-    public List<NameIdImageTuple> getRandomAsModels(int size) {
-        return serviceTypeRepository.getRandomWithImageAsModels(PageRequest.of(0, size))
-            .getContent();
-    }
 
     public List<NameIdTuple> getAllServicesModel() {
         return serviceTypeRepository.getAllActiveAsModels();

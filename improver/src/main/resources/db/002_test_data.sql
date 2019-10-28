@@ -1,17 +1,3 @@
-UPDATE service_types SET rating = 100 WHERE name = 'Interior Design';
-UPDATE service_types SET rating = 100 WHERE name = 'Kitchen Remodeling';
-UPDATE service_types SET rating = 100 WHERE name = 'Carpet Cleaning';
-UPDATE service_types SET rating = 100 WHERE name = 'House Cleaning';
-UPDATE service_types SET rating = 100 WHERE name = 'Door Installation';
-UPDATE service_types SET rating = 100 WHERE name = 'General Contracting';
-UPDATE service_types SET rating = 100 WHERE name = 'Landscaping Design';
-UPDATE service_types SET rating = 100 WHERE name = 'Interior Painting';
-UPDATE service_types SET rating = 100 WHERE name = 'Roof Repair or Maintenance';
-UPDATE service_types SET rating = 100 WHERE name = 'Swimming Pool Cleaning';
-UPDATE service_types SET rating = 100 WHERE name = 'Roof Repair or Maintenance';
-UPDATE service_types SET rating = 100 WHERE name = 'Tile Installation';
-
-
 INSERT INTO companies (id, name, founded, email, state, city, street_address, zip, lat, lng, internal_phone, description)
 VALUES ('1', 'North America Development Group, LLC', 2010, 'test1@gmail.com', 'NY', 'New York',
         '509 Madison Ave Rm 2004', '10022', '40.7594361', '-73.9764019', '280-234-7878',

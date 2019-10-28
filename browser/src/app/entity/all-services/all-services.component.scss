@@ -56,6 +56,10 @@
           border-color: $primary-600;
         }
 
+        @include response-from(md) {
+          min-width: 600px;
+        }
+
       }
 
       .main-wrapper {
