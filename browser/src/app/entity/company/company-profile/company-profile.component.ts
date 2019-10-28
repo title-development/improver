@@ -1,7 +1,5 @@
-import {
-  Component, Inject, OnDestroy, OnInit, QueryList, Renderer2, ViewChild, ViewChildren
-} from '@angular/core';
-import { CompanyProfile, Location, SystemMessageType } from '../../../model/data-model';
+import { Component, Inject, OnDestroy, OnInit, QueryList, Renderer2, ViewChild, ViewChildren } from '@angular/core';
+import { CompanyProfile } from '../../../model/data-model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SecurityService } from '../../../auth/security.service';
 import { CompanyService } from '../../../api/services/company.service';
@@ -16,7 +14,7 @@ import { MatDialog, MatDialogRef } from '@angular/material';
 import { CompanyReviewsComponent } from './company-reviews/company-reviews.component';
 import { MediaQuery, MediaQueryService } from '../../../util/media-query.service';
 import { GoogleMapUtilsService } from '../../../util/google-map.utils';
-import { Subscription, Observable, fromEvent, of } from 'rxjs';
+import { fromEvent, Subject } from 'rxjs';
 import { defaultMapOptions } from '../../../util/google-map-default-options';
 import { dialogsMap } from '../../../shared/dialogs/dialogs.state';
 import { ReviewService } from '../../../api/services/review.service';
@@ -29,9 +27,9 @@ import { FILE_MIME_TYPES, MAX_FILE_SIZE } from '../../../util/file-parameters';
 import { ProjectRequest } from '../../../api/models/ProjectRequest';
 import { ErrorHandler } from '../../../util/error-handler';
 import { Company } from '../../../api/models/Company';
-import { createConsoleLogger } from '@angular-devkit/core/node';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { ScrollService } from '../../../util/scroll.service';
+import { CeoService } from "../../../util/ceo.service";
 
 @Component({
   selector: 'customer-profile-page',
@@ -39,6 +37,8 @@ import { ScrollService } from '../../../util/scroll.service';
   styleUrls: ['./company-profile.component.scss']
 })
 export class CompanyProfileComponent implements OnInit, OnDestroy {
+
+  private readonly destroyed$ = new Subject<void>();
 
   @ViewChild(CompanyReviewsComponent) companyReviewsComp: CompanyReviewsComponent;
   @ViewChildren(GlueBlockDirective) glueBoxDirectives: QueryList<GlueBlockDirective>;
@@ -58,9 +58,6 @@ export class CompanyProfileComponent implements OnInit, OnDestroy {
   mediaQuery: MediaQuery;
   backgroundProcessing = false;
   private hashFragment: string;
-  private routeParamsSubscription: Subscription;
-  private mediaQuerySubscription: Subscription;
-  private routerFragmentSubscription: Subscription;
   private licenseDialogRef: MatDialogRef<any>;
   private photoDialogRef: MatDialogRef<any>;
   private requestReviewDialogRef: MatDialogRef<any>;
@@ -79,13 +76,17 @@ export class CompanyProfileComponent implements OnInit, OnDestroy {
               public popupService: PopUpMessageService,
               public router: Router,
               private scrollService: ScrollService,
-              private errorHandler: ErrorHandler) {
+              private errorHandler: ErrorHandler,
+              private ceoService: CeoService) {
     this.route.queryParams.subscribe(params => {
       if (params['review-token']) {
         localStorage.setItem('review-token', params['review-token']);
       }
     });
-    this.routeParamsSubscription = this.route.params.subscribe(params => {
+
+    this.route.params
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(params => {
       if (params['companyId'].toString()) {
         this.companyId = params['companyId'].toString();
 
@@ -95,11 +96,15 @@ export class CompanyProfileComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.routerFragmentSubscription = this.route.fragment.subscribe(fragment => {
+    this.route.fragment
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(fragment => {
       this.hashFragment = fragment;
     });
 
-    this.mediaQuerySubscription = this.mediaQueryService.screen.subscribe((mediaQuery: MediaQuery) => {
+    this.mediaQueryService.screen
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((mediaQuery: MediaQuery) => {
       this.mediaQuery = mediaQuery;
       if (mediaQuery.xs || mediaQuery.sm) {
         this.boxGlue = false;
@@ -125,9 +130,9 @@ export class CompanyProfileComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.scrollHolder.removeEventListener('scroll', this.scrollHandler);
-    this.routeParamsSubscription.unsubscribe();
-    this.mediaQuerySubscription.unsubscribe();
-    this.routerFragmentSubscription.unsubscribe();
+    this.ceoService.reset();
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
   updateGlueBox(state: boolean): void {
@@ -147,6 +152,8 @@ export class CompanyProfileComponent implements OnInit, OnDestroy {
           if (this.companyProfile.deleted) {
             this.router.navigate(['404']);
             return;
+          } else {
+            this.ceoService.companyProfile(companyProfile)
           }
           if (this.hashFragment && this.hashFragment.length > 0) {
             setTimeout(() => {
