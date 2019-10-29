@@ -1,19 +1,19 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { getErrorMessage, markAsTouched } from '../../util/functions';
-import { ServiceType } from '../../model/data-model';
+import { ServiceType, Trade } from '../../model/data-model';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ProjectActionService } from '../../util/project-action.service';
 import { MatDialog } from '@angular/material';
 import { Constants } from '../../util/constants';
 import { ServiceTypeService } from '../../api/services/service-type.service';
 import { Router } from '@angular/router';
-import * as lunr from "lunr";
-import { combineLatest } from "rxjs";
 import { PopUpMessageService } from "../../util/pop-up-message.service";
 import { SecurityService } from "../../auth/security.service";
 import { UserService } from "../../api/services/user.service";
 import { CustomerSuggestionService } from "../../api/services/customer-suggestion.service";
 import { Role } from "../../model/security-model";
+import { TradeService } from "../../api/services/trade.service";
+import { UserSearchService } from "../../api/services/user-search.service";
 
 @Component({
   selector: 'main-search-bar',
@@ -34,7 +34,6 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
   serviceTypes: Array<ServiceType> = [];
   popularServiceTypes: Array<ServiceType> = [];
   lastZipCode: string;
-  private lunrIndex;
 
 
   constructor(public dialog: MatDialog,
@@ -42,11 +41,14 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
               public constants: Constants,
               public userService: UserService,
               public customerSuggestionService: CustomerSuggestionService,
+              public userSearchService: UserSearchService,
               private serviceTypeService: ServiceTypeService,
+              private tradeService: TradeService,
               private router: Router,
               private securityService: SecurityService,
               private popUpService: PopUpMessageService) {
-    this.getServiceTypes();
+
+    this.getPopularServiceTypes();
   }
 
   ngOnInit(): void {
@@ -77,7 +79,7 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
   autocompleteSearch(search): void {
     setTimeout(() => {
       if (search) {
-        this.deepSearch(search.trim());
+        this.filteredServiceTypes = this.userSearchService.getSearchResults(search.trim());
       } else if (this.filteredServiceTypes.length > 0) {
         this.filteredServiceTypes = this.popularServiceTypes;
       }
@@ -91,18 +93,11 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
     });
   }
 
-  deepSearch(search: string) {
-    if(this.lunrIndex) {
-      this.filteredServiceTypes = this.lunrIndex.search(`${search}*`)
-        .map(item => this.serviceTypes.find(service => item.ref == service.id));
-    }
-  }
-
   searchServiceType(form: FormGroup): void {
     if (this.mainSearchFormGroup.valid) {
       const serviceTypeCtrl = this.mainSearchFormGroup.get('serviceTypeCtrl');
       if (serviceTypeCtrl.value) {
-        this.getQuestianary(serviceTypeCtrl.value);
+        this.userSearchService.findServiceType(this.mainSearchFormGroup.value);
         if (this.resetAfterFind) {
           form.reset({
             zipCodeCtrl: localStorage.getItem('zipCode')? localStorage.getItem('zipCode'): this.lastZipCode
@@ -115,52 +110,11 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
     }
   }
 
-
-  getQuestianary(serviceType: string): void {
-    const formData = this.mainSearchFormGroup.value;
-    let searchString: string;
-    const filtered = this.serviceTypes.filter(item => item.name.toLowerCase() == serviceType.toLowerCase());
-    if (filtered.length > 0) {
-      this.find(filtered[0], formData);
-      searchString = filtered[0].name;
-    } else {
-      this.find(serviceType, formData);
-      searchString = serviceType;
-    }
-    this.customerSuggestionService.saveUserSearchTerm(searchString, this.zipCodeCtrl.value);
-  }
-
-  find(serviceType, formData): void {
-    if (serviceType.id) {
-      this.projectActionService.openQuestionary(serviceType, formData.zipCodeCtrl);
-    } else {
-      console.warn('Service type is not found. Redirecting to custom search.');
-      this.router.navigate(['search'], {queryParams: {service: formData.serviceTypeCtrl, zip: formData.zipCodeCtrl}});
-      this.notMatch.emit({service: serviceType, zip: formData.zipCodeCtrl});
-    }
-  }
-
-  getServiceTypes(): void {
-    let requests = combineLatest(this.serviceTypeService.serviceTypes$, this.customerSuggestionService.popular$);
-
-    requests.subscribe(
-        results => {
-          let serviceTypes = results[0];
-          let popularServiceTypes = results[1];
-          if (serviceTypes && serviceTypes.length > 0) {
-            this.lunrIndex = lunr(function () {
-              this.ref('id');
-              this.field('name');
-              serviceTypes.forEach(service => this.add(service));
-            });
-            this.serviceTypes = serviceTypes;
-            this.filteredServiceTypes = this.popularServiceTypes = popularServiceTypes;
-            if (this.service && this.zipCode) {
-              this.searchServiceType(this.mainSearchFormGroup);
-            }
-          }
-        },
-        err => this.popUpService.showError(getErrorMessage(err)));
+  getPopularServiceTypes() {
+    this.customerSuggestionService.popular$
+      .subscribe(
+        popularServiceTypes => this.popularServiceTypes = this.filteredServiceTypes = popularServiceTypes
+      );
   }
 
   getLastCustomerZipCode() {

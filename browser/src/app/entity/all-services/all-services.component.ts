@@ -3,6 +3,7 @@ import { ServiceType, Trade } from "../../model/data-model";
 import { ServiceTypeService } from "../../api/services/service-type.service";
 import { TradeService } from "../../api/services/trade.service";
 import { ProjectActionService } from "../../util/project-action.service";
+import { CustomerSuggestionService } from "../../api/services/customer-suggestion.service";
 
 @Component({
   selector: 'all-services-page',
@@ -16,6 +17,7 @@ export class AllServicesComponent implements OnInit {
 
   constructor(private serviceTypesService: ServiceTypeService,
               private tradeService: TradeService,
+              private customerSuggestionService: CustomerSuggestionService,
               public projectActionService: ProjectActionService) {
 
     this.getTrades();
@@ -26,7 +28,7 @@ export class AllServicesComponent implements OnInit {
   }
 
   getTrades() {
-    this.tradeService.getTradesWithServices().subscribe(
+    this.customerSuggestionService.tradesWithServices.subscribe(
       trades => {
         this.trades = trades;
         this.onFilter('');

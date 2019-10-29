@@ -12,13 +12,12 @@ import { getErrorMessage, markAsTouched } from '../../util/functions';
 import { Router } from '@angular/router';
 import { FindProfessionalService } from '../../util/find-professional.service';
 import { PopUpMessageService } from "../../util/pop-up-message.service";
-import { combineLatest } from "rxjs";
-import * as lunr from "lunr";
 import { SecurityService } from "../../auth/security.service";
 import { UserService } from "../../api/services/user.service";
 import { CustomerSuggestionService } from "../../api/services/customer-suggestion.service";
 import { takeUntil } from "rxjs/operators";
 import { Role } from "../../model/security-model";
+import { UserSearchService } from "../../api/services/user-search.service";
 
 
 @Component({
@@ -34,12 +33,10 @@ export class FindProfessionalsComponent implements OnInit {
   suggestedServiceTypes: Array<ServiceType> = [];
   popularServiceTypes: Array<ServiceType> = [];
   filteredServiceTypes: Array<ServiceType> = [];
-  serviceTypes: Array<ServiceType> = [];
   popularServiceSize: Number;
   popularTrades: Array<Trade> = [];
   recentSearches: Array<string> = [];
   lastZipCode: string;
-  lunrIndex;
 
   constructor(private serviceTypeService: ServiceTypeService,
               private questionaryControlService: QuestionaryControlService,
@@ -47,6 +44,7 @@ export class FindProfessionalsComponent implements OnInit {
               private router: Router,
               private securityService: SecurityService,
               private popUpService: PopUpMessageService,
+              public userSearchService: UserSearchService,
               public customerSuggestionService: CustomerSuggestionService,
               public dialog: MatDialog,
               public userService: UserService,
@@ -68,7 +66,7 @@ export class FindProfessionalsComponent implements OnInit {
 
     this.getSuggestedServiceTypes();
     this.getPopularTrades();
-    this.getServiceTypes();
+    this.getPopularServiceTypes();
 
     this.zipCodeCtrl.setValue(localStorage.getItem('zipCode'));
 
@@ -90,25 +88,18 @@ export class FindProfessionalsComponent implements OnInit {
     });
   }
 
-  autocompleteSearch(search): void {
-    if (search) {
-      this.deepSearch(search.trim());
-    } else if (this.filteredServiceTypes.length > 0) {
-      this.filteredServiceTypes = this.popularServiceTypes;
-    }
-  }
-
-  deepSearch(search: string) {
-    if(this.lunrIndex) {
-      this.filteredServiceTypes = this.lunrIndex.search(`${search}*`)
-        .map(item => this.serviceTypes.find(service => item.ref == service.id));
-    }
-  }
-
   ngOnInit() {
 
   }
 
+
+  autocompleteSearch(search): void {
+    if (search) {
+      this.filteredServiceTypes = this.userSearchService.getSearchResults(search.trim());
+    } else {
+      this.filteredServiceTypes = this.popularServiceTypes;
+    }
+  }
 
   getRecentSearches(){
     if (this.securityService.hasRole(Role.CUSTOMER)) {
@@ -123,6 +114,13 @@ export class FindProfessionalsComponent implements OnInit {
     this.customerSuggestionService.suggested$
       .subscribe(
         suggestedServiceTypes => this.suggestedServiceTypes = suggestedServiceTypes
+      );
+  }
+
+  getPopularServiceTypes() {
+    this.customerSuggestionService.popular$
+      .subscribe(
+        popularServiceTypes => this.popularServiceTypes = this.filteredServiceTypes = popularServiceTypes
       );
   }
 
@@ -161,7 +159,7 @@ export class FindProfessionalsComponent implements OnInit {
   searchServiceType(form: FormGroup) {
     if (this.mainSearchFormGroup.valid) {
       this.findProfessionalService.close();
-      this.getQuestianary(this.serviceTypeCtrl.value);
+      this.userSearchService.findServiceType(this.mainSearchFormGroup.value);
       form.reset({
         zipCodeCtrl: localStorage.getItem('zipCode')? localStorage.getItem('zipCode'): this.lastZipCode
       });
@@ -171,48 +169,6 @@ export class FindProfessionalsComponent implements OnInit {
     }
   }
 
-  getQuestianary(serviceType: string): void {
-    const formData = this.mainSearchFormGroup.value;
-    let searchString: string;
-    const filtered = this.serviceTypes.filter(item => item.name.toLowerCase() == serviceType.toLowerCase());
-    if (filtered.length > 0) {
-      this.find(filtered[0], formData);
-      searchString = filtered[0].name;
-    } else {
-      this.find(serviceType, formData);
-      searchString = serviceType;
-    }
-    this.customerSuggestionService.saveUserSearchTerm(searchString, this.zipCodeCtrl.value);
-  }
-
-  find(serviceType, formData): void {
-    if (serviceType.id) {
-      this.projectActionService.openQuestionary(serviceType, formData.zipCodeCtrl);
-    } else {
-      console.warn('Service type is not fount. Redirecting to custom search.');
-      this.router.navigate(['search'], {queryParams: {service: formData.serviceTypeCtrl, zip: formData.zipCodeCtrl}});
-    }
-  }
-
-  getServiceTypes(): void {
-    let requests = combineLatest(this.serviceTypeService.serviceTypes$, this.customerSuggestionService.popular$);
-
-    requests.subscribe(
-      results => {
-        let serviceTypes = results[0];
-        let popularServiceTypes = results[1];
-        if (serviceTypes && serviceTypes.length > 0) {
-          this.lunrIndex = lunr(function () {
-            this.ref('id');
-            this.field('name');
-            serviceTypes.forEach(service => this.add(service));
-          });
-          this.serviceTypes = serviceTypes;
-          this.filteredServiceTypes = this.popularServiceTypes = popularServiceTypes;
-        }
-      },
-      err => this.popUpService.showError(getErrorMessage(err)));
-  }
 
   selectTrackBy(index: number, item: ServiceType): number {
     return item.id;

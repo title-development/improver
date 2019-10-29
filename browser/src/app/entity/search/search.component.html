@@ -3,7 +3,7 @@
   <h1 class="title">What service do you need?</h1>
 
   <div class="search-bar">
-    <main-search-bar [service]="service" [zipCode]="zipCode" [resetAfterFind]="false" (notMatch)="deepSearch($event.service, $event.zip)" mainButtonText="SEARCH"></main-search-bar>
+    <main-search-bar [service]="service" [zipCode]="zipCode" [resetAfterFind]="false" (notMatch)="userSearchService.getSearchResults($event.service)" mainButtonText="SEARCH"></main-search-bar>
   </div>
   <div class="results">
     <ng-container *ngIf="searchResults.length > 0">

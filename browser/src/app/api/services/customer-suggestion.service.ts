@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { ReplaySubject } from "rxjs";
-import { ServiceType } from "../../model/data-model";
+import { ServiceType, Trade } from "../../model/data-model";
 import { AccountService } from "./account.service";
 import { ServiceTypeService } from "./service-type.service";
 import { tap } from "rxjs/operators";
 import { SecurityService } from "../../auth/security.service";
+import { TradeService } from "./trade.service";
 
 @Injectable({
   providedIn: 'root'
@@ -15,14 +16,17 @@ export class CustomerSuggestionService {
   private _popular$: ReplaySubject<Array<ServiceType>> = new ReplaySubject<Array<ServiceType>>(1);
   private _suggested$: ReplaySubject<Array<ServiceType>> = new ReplaySubject<Array<ServiceType>>(1);
   private _recentSearches$: ReplaySubject<Array<string>> = new ReplaySubject<Array<string>>(1);
+  private _tradeWithServices$: ReplaySubject<Array<Trade>> = new ReplaySubject<Array<Trade>>(1);
 
   private lastZipCached: boolean = false;
   private popularServiceTypeCached: boolean = false;
   private suggestedServiceTypeCached: boolean = false;
+  private tradeWithServicesCached: boolean = false;
 
   constructor(private accountService: AccountService,
               private securityService: SecurityService,
-              private serviceTypeService: ServiceTypeService){
+              private serviceTypeService: ServiceTypeService,
+              private tradeService: TradeService){
   }
 
 
@@ -41,6 +45,24 @@ export class CustomerSuggestionService {
     }
 
     return this._suggested$;
+  }
+
+  get tradesWithServices(): ReplaySubject<Array<Trade>>{
+    if (!this.tradeWithServicesCached){
+      this.tradeWithServicesCached = true;
+      this.tradeService.getTradesWithServices().subscribe(trade => {
+        if (!trade){
+          this.tradeWithServicesCached = false;
+        }
+        this._tradeWithServices$.next(trade);
+      },
+        error => {
+        this.tradeWithServicesCached = false;
+        console.log(error);
+        })
+    }
+
+    return this._tradeWithServices$;
   }
 
   get recentSearches$(): ReplaySubject<Array<string>> {

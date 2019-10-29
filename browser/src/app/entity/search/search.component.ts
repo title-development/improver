@@ -1,16 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { CompanyInfo, ServiceType } from '../../model/data-model';
+import { CompanyInfo, ServiceType, Trade } from '../../model/data-model';
 import { CompanyService } from '../../api/services/company.service';
-import { combineLatest, ReplaySubject, Subject } from 'rxjs';
+import { ReplaySubject, Subject } from 'rxjs';
 import { PopUpMessageService } from '../../util/pop-up-message.service';
 import { RestPage } from '../../api/models/RestPage';
-import { ServiceTypeService } from '../../api/services/service-type.service';
 import { ProjectActionService } from '../../util/project-action.service';
-import * as lunr from 'lunr';
 import { getErrorMessage } from "../../util/functions";
 import { CustomerSuggestionService } from "../../api/services/customer-suggestion.service";
-import { finalize, first, takeUntil } from "rxjs/operators";
+import { first, takeUntil } from "rxjs/operators";
+import { UserSearchService } from "../../api/services/user-search.service";
 
 
 @Component({
@@ -32,21 +31,17 @@ export class SearchComponent implements OnInit, OnDestroy {
   loading = false;
   private page = 1;
   private size = 35;
-  private searchTerm: string;
-  private zip: string;
-  private lunrIndex;
-  private serviceTypes: Array<ServiceType>;
   popularServiceTypes: Array<ServiceType> = [];
 
   constructor(private activatedRoute: ActivatedRoute,
               private router: Router,
               private companyService: CompanyService,
+              public userSearchService: UserSearchService,
               public projectActionService: ProjectActionService,
               public customerSuggestionService: CustomerSuggestionService,
-              private popUpService: PopUpMessageService,
-              private serviceTypeService: ServiceTypeService) {
+              private popUpService: PopUpMessageService) {
 
-    this.init();
+    this.getPopularServiceTypes();
 
     this.activatedRoute.queryParams
       .pipe(takeUntil(this.destroyed$))
@@ -67,54 +62,32 @@ export class SearchComponent implements OnInit, OnDestroy {
   retrieveParams(params: Params) {
     this.service = params['service'] ? params['service'] : '';
     this.zipCode = params['zip'] ? params['zip'] : '';
-    this.deepSearch(this.service, this.zipCode)
+    this.searchResults = this.userSearchService.getSearchResults(this.service)
+      .filter((el, index) => index <= this.page * this.size);
+    if (this.searchResults.length == 0) {
+      this.searchResults = this.popularServiceTypes;
+    }
   }
 
   ngOnInit(): void {
 
   }
 
-  init() {
+  getPopularServiceTypes() {
     this.loading = true;
-    let requests = combineLatest([this.customerSuggestionService.popular$, this.serviceTypeService.serviceTypes$])
-      .pipe(
-        first(),
-        finalize(() => this.loading = false)
-      )
-      .subscribe(result => {
-          this.popularServiceTypes = result[0];
-          let services = this.serviceTypes = result[1];
-          this.lunrIndex = lunr(function () {
-            this.ref('id');
-            this.field('name');
-            services.forEach(service => this.add(service));
-          });
+    this.customerSuggestionService.popular$.subscribe(
+        popularServiceTypes => {
+          this.popularServiceTypes = this.searchResults = popularServiceTypes;
           this.loading = false;
           this.initialized$.next();
           this.initialized$.complete();
-        },
-        err => this.popUpService.showError(getErrorMessage(err)))
-
-  }
-
-  deepSearch(searchTerm: string, zip: string) {
-    this.zip = zip;
-    this.searchTerm = searchTerm;
-    if (this.lunrIndex) {
-      this.searchResults = this.lunrIndex.search(`${this.searchTerm}*`)
-        .map(item => this.serviceTypes.find(service => item.ref == service.id))
-        .filter((el, index) => index <= this.page * this.size);
-    }
-
-    if (this.searchResults.length == 0) {
-      this.searchResults = this.popularServiceTypes;
-    }
+        }
+      );
   }
 
   loadMore(): void {
     this.page++;
-    this.searchResults = this.lunrIndex.search(`${this.searchTerm}*`)
-      .map(item => this.serviceTypes.find(service => item.ref == service.id))
+    this.searchResults = this.userSearchService.loadMore(this.service)
       .filter((el, index) => index <= this.page * this.size);
   }
 
