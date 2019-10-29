@@ -1,10 +1,21 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, Output, ViewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  Output,
+  ViewChild
+} from '@angular/core';
 import { Subject } from 'rxjs';
 import { CompanyCoverageConfig } from '../../../../../../api/models/CompanyCoverageConfig';
 import { CvSwitchComponent } from '../../../../../../theme/switch/switch.component';
 import { UNSAVED_CHANGES_MESSAGE } from '../../../../../../util/messages';
 import { ICircleProps } from '../../interfaces/circle-props';
 import { IZipCodeProps } from '../../interfaces/zip-code-props';
+import { takeUntil } from "rxjs/operators";
+import { MediaQuery, MediaQueryService } from "../../../../../../util/media-query.service";
 
 @Component({
   selector: 'imp-coverage-configuration',
@@ -26,8 +37,22 @@ export class CoverageConfigurationComponent implements OnDestroy {
 
   @ViewChild(CvSwitchComponent) cvSwitchComponent: CvSwitchComponent;
 
+  media: MediaQuery;
+
+  constructor(private mediaQueryService: MediaQueryService,
+              private changeDetectorRef: ChangeDetectorRef) {
+    this.mediaQueryService.screen.pipe(takeUntil(this.destroyed$)).subscribe((mediaQuery: MediaQuery) => {
+      this.media = mediaQuery;
+      this.changeDetectorRef.markForCheck();
+    });
+  }
+
   get isManualMode(): boolean {
     return this.companyCoverageConfig && this.companyCoverageConfig.coverageConfig.manualMode;
+  }
+
+  set isManualMode(value: boolean) {
+    this.modeStateChange(!value)
   }
 
   private readonly destroyed$ = new Subject<void>();

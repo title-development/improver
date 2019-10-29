@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ApplicationRef,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
@@ -10,19 +11,9 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { NgForm, NgModel } from '@angular/forms';
-import { combineLatest, Observable, of, Subject } from 'rxjs';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  finalize,
-  mergeMap,
-  publishReplay,
-  refCount,
-  skip,
-  startWith,
-  takeUntil,
-} from 'rxjs/operators';
+import { NgModel } from '@angular/forms';
+import { combineLatest, of, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, mergeMap, skip, startWith, takeUntil, } from 'rxjs/operators';
 import { ZipFeature } from '../../../../../../../../api/models/ZipBoundaries';
 import { Constants } from '../../../../../../../../util/constants';
 import { getErrorMessage } from '../../../../../../../../util/functions';
@@ -37,12 +28,13 @@ import { CoverageService } from '../../../../services/coverage.service';
   selector: 'imp-basic-mode',
   templateUrl: './basic-mode.component.html',
   styleUrls: ['../../styles/coverage-modes.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BasicModeComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() radius: number;
   @Input() center;
   @Input() servedZipCodes: string[];
+  @Input() loading: boolean = false;
 
   @Output() readonly circlePropsUpdated = new EventEmitter<ICircleProps>();
 
@@ -50,20 +42,26 @@ export class BasicModeComponent implements OnInit, OnDestroy, AfterViewInit {
   minCoverageRadius: number;
   maxCoverageRadius: number;
   miles: number[];
-  media$: Observable<MediaQuery>;
+  media: MediaQuery;
   zipCode: string;
 
   @ViewChild('zipCodeControl') private zipCodeControl: NgModel;
 
   private readonly destroyed$ = new Subject<void>();
 
-  constructor(private mediaQuery: MediaQueryService,
+  constructor(private mediaQueryService: MediaQueryService,
               private circleService: CircleService,
               private constants: Constants,
               private changeDetectorRef: ChangeDetectorRef,
+              private applicationRef: ApplicationRef,
               private coverageService: CoverageService,
               private popUpService: PopUpMessageService,
               private gMapUtil: GoogleMapUtilsService) {
+
+    this.mediaQueryService.screen.pipe(takeUntil(this.destroyed$)).subscribe((mediaQuery: MediaQuery) => {
+      this.media = mediaQuery;
+      this.changeDetectorRef.markForCheck();
+    });
 
   }
 
@@ -80,13 +78,7 @@ export class BasicModeComponent implements OnInit, OnDestroy, AfterViewInit {
       Array((this.maxCoverageRadius - this.minCoverageRadius) + 1).keys(),
     ).map((i) => this.minCoverageRadius + i);
 
-    this.media$ = this.mediaQuery.screen
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged(),
-        publishReplay(1),
-        refCount(),
-      );
+
   }
 
   ngAfterViewInit(): void {
@@ -103,7 +95,7 @@ export class BasicModeComponent implements OnInit, OnDestroy, AfterViewInit {
       return;
     }
     if (!this.servedZipCodes.includes(zipCode)) {
-      this.popUpService.showWarning(`${zipCode} doesn't supported`);
+      this.popUpService.showWarning(`Zip ${zipCode} not supported`);
       return;
     }
     zipCodeControl.reset();

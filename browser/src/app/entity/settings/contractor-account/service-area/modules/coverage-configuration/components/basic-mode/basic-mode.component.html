@@ -1,13 +1,13 @@
-<form #basicModeForm="ngForm">
-  <cv-input-field>
+<form #basicModeForm="ngForm" *ngIf="media">
+  <cv-input-field *ngIf="media.sm || media.md || media.lg || media.xlg">
     <cv-field-label>Center (zip code)</cv-field-label>
-    <input #zipCodeControl="ngModel" cv-input type="text" numericMask placeholder="e.g. 10022" name="company-zip-center"
-           [(ngModel)]="zipCode" pattern=".{5,}" maxlength="5" required/>
+    <input  #zipCodeControl="ngModel" cv-input type="text" numericMask placeholder="e.g. 10022" name="company-zip-center"
+           [(ngModel)]="zipCode" pattern=".{5,}" maxlength="5" required [disabled]="loading"/>
     <button cv-button size="small" type="submit" (click)="setCompanyCenter(zipCodeControl)">Set</button>
   </cv-input-field>
-  <cv-input-field *ngIf="media$ | async as media">
+  <cv-input-field >
     <cv-field-label>Radius: {{ radius | number }} miles</cv-field-label>
-    <input *ngIf=" media.lg || media.xlg || media.md"
+    <input
            type="range"
            name="radius"
            class="cv-slider"
@@ -17,15 +17,7 @@
            [max]="maxCoverageRadius"
            [step]="coverageRadiusStep"
            (change)="radiusChange(inputRadioControl)"
-           [(ngModel)]="radius"/>
-    <cv-select *ngIf="media.sm || media.xs"
-               name="name"
-               required
-               #selectRadioControl="ngModel"
-               [label]="radius"
-               [items]="miles"
-               [(ngModel)]="radius"
-               (onSelect)="radiusChange(selectRadioControl)"
-    ></cv-select>
+           [(ngModel)]="radius"
+           [disabled]="loading"/>
   </cv-input-field>
 </form>

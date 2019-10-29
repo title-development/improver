@@ -46,24 +46,27 @@ export class MediaQueryService {
       max: 9999
     }
   ];
+  private lastMedia = {};
 
   constructor(private ngZone: NgZone) {
     this.screen = new BehaviorSubject<MediaQuery>(this.getTheScreen());
     window.onresize = (e) => {
       ngZone.run(() => {
-        this.screen.next(this.getTheScreen());
+        let media = this.getTheScreen();
+        if (JSON.stringify(media) !== JSON.stringify(this.lastMedia)) {
+          this.screen.next(media);
+        }
       });
     };
   }
 
   private getTheScreen(): MediaQuery {
     this.windowWidth = window.innerWidth;
-    const resp: MediaQuery = {};
+    const media: MediaQuery = {};
     for (const screen of this.screens) {
-      resp[screen.name] = this.windowWidth >= screen.min && this.windowWidth <= screen.max;
+      media[screen.name] = this.windowWidth >= screen.min && this.windowWidth <= screen.max;
     }
-
-    return resp;
+    return media;
   }
 
 }

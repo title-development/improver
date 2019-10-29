@@ -5,7 +5,7 @@
            pattern=".{5,}" maxlength="5"
            #zipValue="ngModel" name="search" autocomplete="off" [(ngModel)]="searchZipCode"
            (ngModelChange)="validateZip(zipSearchForm)">
-    <button cv-button type="submit">Add</button>
+    <button cv-button type="submit" [disabled]="loading">Add</button>
     <cv-field-error *ngIf="zipFormErrors">
       <span *ngIf="zipValue.errors?.required">Zip code is required</span>
       <span *ngIf="zipValue.errors?.pattern">Please enter a valid ZIP code</span>

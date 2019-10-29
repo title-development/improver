@@ -4,7 +4,7 @@ cv-input-field {
   &::ng-deep {
     cv-field-label {
       display: inline-block;
-      @include response-to(sm) {
+      @include response-to(xs) {
         background-color: $white;
         padding: 1px 3px;
         margin-left: 4px;
@@ -16,10 +16,13 @@ cv-input-field {
   }
   &:not(:last-child) {
     margin-bottom: 12px;
+    @include response-to(xs) {
+      margin-bottom: 0px;
+    }
   }
 }
 form {
-  @include response-to(sm) {
+  @include response-to(xs) {
     text-align: left;
     display: flex;
     flex-direction: row;
@@ -29,10 +32,10 @@ form {
     cv-select {
       background-color: $white;
     }
-    @include response-to(sm) {
+    @include response-to(xs) {
       width: 50%;
       max-width: 200px;
-      padding: 0 9px;
+      padding: 0 9px 24px;
     }
     @include response(xs) {
       width: 205px;
@@ -42,7 +45,7 @@ form {
     }
     &::ng-deep {
       cv-field-error {
-        @include response-to(sm) {
+        @include response-to(xs) {
           background-color: $white;
         }
       }
@@ -52,9 +55,13 @@ form {
 
 .cv-slider {
   margin-bottom: 0;
-  margin-top: 8px;
+  margin-top: 0px;
+  @include response-to(xs) {
+    margin-top: 16px;
+  }
 }
 
 .find-zip {
   width: 0;
 }
+

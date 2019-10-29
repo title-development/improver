@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  Output
+} from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
@@ -15,18 +23,18 @@ import { IZipCodeProps } from '../../../../interfaces/zip-code-props';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ManualModeComponent implements OnDestroy {
-
   @Input() servedZipCodes: string[];
+  @Input() loading: boolean = false;
 
-  @Output()
-  readonly zipCodeFound = new EventEmitter<IZipCodeProps>();
+  @Output() readonly zipCodeFound = new EventEmitter<IZipCodeProps>();
 
   searchZipCode: string;
   zipFormErrors: boolean;
   private readonly destroyed$ = new Subject<void>();
 
   constructor(private coverageService: CoverageService,
-              private popUpService: PopUpMessageService) {
+              private popUpService: PopUpMessageService,
+              private changeDetectorRef: ChangeDetectorRef) {
   }
 
   ngOnDestroy(): void {
@@ -43,7 +51,7 @@ export class ManualModeComponent implements OnDestroy {
       return;
     }
     if (!this.servedZipCodes.includes(this.searchZipCode)) {
-      this.popUpService.showWarning(`${this.searchZipCode} doesn't supported`);
+      this.popUpService.showWarning(`Zip ${this.searchZipCode} not supported`);
       return;
     }
     this.zipFormErrors = false;
