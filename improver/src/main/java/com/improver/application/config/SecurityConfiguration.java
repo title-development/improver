@@ -31,16 +31,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired SecurityProperties securityProperties;
     @Autowired ReCaptchaService reCaptchaService;
 
-    private CaptchaFilter captchaFilter() {
-        return new CaptchaFilter.Builder()
-            .addMatcher(new AntPathRequestMatcher(LOGIN_PATH))
-            .addMatcher(new AntPathRequestMatcher(REGISTRATION_PATH + CUSTOMERS))
-            .addMatcher(new AntPathRequestMatcher(REGISTRATION_PATH + CONTRACTORS))
-            .build();
-    }
-
     private LoginFilter loginFilter() throws Exception {
-        return new LoginFilter(LOGIN_PATH, authenticationManager(), userSecurityService, jwtUtil, reCaptchaService);
+        return new LoginFilter(LOGIN_PATH, authenticationManager(), userSecurityService, reCaptchaService);
     }
 
     private JwtAuthenticationFilter jwtAuthenticationFilter() {
@@ -110,7 +102,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             // And filter other requests to check the presence of JWT in header
             .addFilterBefore(jwtAuthenticationFilter(), AnonymousAuthenticationFilter.class)
             .addFilterBefore(loginFilter(), JwtAuthenticationFilter.class)
-            .addFilterBefore(captchaFilter(), LoginFilter.class)
             .addFilterBefore(new LogoutFilter(LOGOUT_PATH), JwtAuthenticationFilter.class)
             .addFilterBefore(refreshAccessTokenFilter(), JwtAuthenticationFilter.class);
     }

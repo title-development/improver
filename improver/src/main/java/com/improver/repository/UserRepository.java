@@ -48,19 +48,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
                                     String displayName,
                                     Pageable pageable);
 
-    @Modifying
-    @Transactional
-    @Query("UPDATE com.improver.entity.User u SET u.lastLogin = ?2, u.refreshId = ?3 WHERE u.email = ?1")
-    User updateLastLoginByEmail(String email, ZonedDateTime dateTime, String refreshId);
 
     @Modifying
     @Transactional
     @Query("UPDATE com.improver.entity.User u SET u.password = ?2 WHERE u.email = ?1")
     void updatePasswordFor(String email, String newPassword);
 
-    @Query("SELECT  new com.improver.model.UserAccount(u.id, u.iconUrl, u.email, u.firstName, u.lastName, u.displayName, u.internalPhone, u.password) " +
-        "FROM com.improver.entity.User u WHERE u.id = ?1")
-    UserAccount getAccount(long id);
 
     @Query("SELECT  u.iconUrl FROM com.improver.entity.User u WHERE u.id = ?1")
     Optional<String> getIconUrl(long id);

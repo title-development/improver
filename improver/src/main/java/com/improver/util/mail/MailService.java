@@ -45,7 +45,7 @@ public class MailService {
     private static final String HOME_IMPROVE = "Home Improve";
 
     // Email Subjects
-    private static final String SBJ_CONFIRM_REGISTRATION = HOME_IMPROVE + " - Please confirm your registration";
+    private static final String SBJ_CONFIRM_REGISTRATION = " Сonfirm your registration";
 
     // Templates
     private static final String NOTICE_TEMPLATE = "user/notice";
@@ -149,12 +149,12 @@ public class MailService {
     public void sendEmailChanged(User user) {
         Context context = contextTemplate();
         context.setVariable(USER_NAME, user.getFirstName());
-        context.setVariable(TITLE, "Your email has been changed!");
-        context.setVariable(BODY, "Now you just need to confirm that we got your email right");
+        context.setVariable(TITLE, "You've requested an account email change");
+        context.setVariable(BODY, "Please confirm your new account email. If you didn't do this action, please ignore this mail.");
         String pageUrl = siteUrl + CONFIRM + EMAIL;
         context.setVariable(CONFIRM_URL, pageUrl + SLASH + jwtUtil.generateActivationJWT(user.getValidationKey(), user.getNewEmail()));
         context.setVariable(CONFIRM_BTN_TEXT, "Confirm");
-        mailClient.sendMail("Please confirm your new email", CONFIRMATION_TEMPLATE, context, MailHolder.MessageType.NOREPLY, user.getNewEmail());
+        mailClient.sendMail("Request to change account email", CONFIRMATION_TEMPLATE, context, MailHolder.MessageType.NOREPLY, user.getNewEmail());
     }
 
 
@@ -166,9 +166,10 @@ public class MailService {
     public void sendEmailChangedNotice(User user) {
         Context context = contextTemplate();
         context.setVariable(USER_NAME, user.getFirstName());
-        context.setVariable(TITLE, "Your email has been changed to " + highlight(user.getNewEmail()));
-        context.setVariable(BODY, "If you did not authorize this action please contact support immediately.");
-        mailClient.sendMail("Account email is changed", NOTICE_TEMPLATE, context, MailHolder.MessageType.NOREPLY, user.getEmail());
+        context.setVariable(TITLE, "You've requested an account email change to " + user.getNewEmail());
+        context.setVariable(BODY, "Please check " + user.getNewEmail() + " mailbox and click on the link provided to confirm your new account email." +
+            "<br/>If you did not authorize this action please contact support.");
+        mailClient.sendMail("Request to change account email", NOTICE_TEMPLATE, context, MailHolder.MessageType.NOREPLY, user.getEmail());
     }
 
 
@@ -241,13 +242,15 @@ public class MailService {
         Context context = contextTemplate();
         String serviceType = project.getServiceType().getName();
         context.setVariable(USER_NAME, customer.getFirstName());
-        context.setVariable(TITLE, "Your project has been submitted!");
+        context.setVariable(TITLE, "Thank you for choosing Home Improve!");
         context.setVariable("serviceType", serviceType);
-        context.setVariable(BODY, "You've submitted  a project request for " + highlight(serviceType) + ". If you didn't do this action, please ignore this mail.");
-        context.setVariable("message", "We've created a cabinet for you where you can track the status and manage your project request. To view your project request please proceed to Home Improve.");
+        context.setVariable(BODY, "You've requested request a " + highlight(serviceType));
         context.setVariable("projectDetails", details);
+        context.setVariable("message", "We've created a cabinet where you can manage your project and discuss details with Professionals. " +
+            "Please confirm you email so we can start searching the best Professionals for your project. "  +
+            "<br/>If you didn't do this action, please ignore this mail.");
         context.setVariable(CONFIRM_URL, siteUrl + CONFIRM + PASSWORD + SLASH + jwtUtil.generateActivationJWT(customer.getValidationKey(), customer.getEmail()));
-        context.setVariable(CONFIRM_BTN_TEXT, "Proceed to Home Improve");
+        context.setVariable(CONFIRM_BTN_TEXT, "Confirm");
         mailClient.sendMail(SBJ_CONFIRM_REGISTRATION, PROJECT_DETAILS_TEMPLATE, context, MailHolder.MessageType.NOREPLY, customer.getEmail());
     }
 
@@ -257,10 +260,10 @@ public class MailService {
         String serviceType = project.getServiceType().getName();
         context.setVariable(USER_NAME, customer.getFirstName());
         context.setVariable(TITLE, "Your project has been submitted!");
-        context.setVariable(BODY, "You've requested "
-            + highlight(serviceType) +
-            ". If you didn't do this action, please ignore this mail.");
+        context.setVariable(BODY, "You've requested a " + highlight(serviceType));
         context.setVariable("projectDetails", details);
+        context.setVariable("message", "We’re looking for the best Pros for your project. " +
+            "This usually takes a few minutes. To view your project request please proceed to Home Improve.");
         context.setVariable(CONFIRM_URL, siteUrl + CUSTOMER_PROJECTS + project.getId());
         context.setVariable(CONFIRM_BTN_TEXT, "View project");
         mailClient.sendMail("Your project has been submitted", PROJECT_DETAILS_TEMPLATE, context, MailHolder.MessageType.NOREPLY, customer.getEmail());

@@ -1,41 +1,56 @@
 package com.improver.controller;
 
-import com.improver.entity.Customer;
 import com.improver.entity.User;
+import com.improver.model.UserAccount;
+import com.improver.model.in.EmailPasswordTuple;
 import com.improver.model.in.OldNewValue;
-import com.improver.repository.CustomerRepository;
-import com.improver.repository.ProjectRepository;
-import com.improver.repository.UserRepository;
 import com.improver.security.UserSecurityService;
 import com.improver.service.AccountService;
 import com.improver.service.ImageService;
-import com.improver.service.UserSearchService;
 import com.improver.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import javax.validation.Valid;
 
 import static com.improver.application.properties.Path.*;
 
 @Slf4j
 @Controller
-@RequestMapping(USERS_PATH)
+@RequestMapping(ACCOUNT_PATH)
 public class AccountController {
 
     @Autowired private UserSecurityService userSecurityService;
     @Autowired private UserService userService;
-    @Autowired private UserRepository userRepository;
     @Autowired private ImageService imageService;
-    @Autowired private CustomerRepository customerRepository;
     @Autowired private AccountService accountService;
-    @Autowired private ProjectRepository projectRepository;
-    @Autowired private UserSearchService userSearchService;
+
+
+
+    @GetMapping
+    public ResponseEntity<UserAccount> getUserAccount() {
+        User user = userSecurityService.currentUser();
+        return new ResponseEntity<>(new UserAccount(user), HttpStatus.OK);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<Void> updateUserAccount(@RequestBody @Valid UserAccount user) {
+        User current = userSecurityService.currentUser();
+        accountService.updateAccount(current, user);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+    @PutMapping(EMAIL)
+    public ResponseEntity<Void> updateEmail(@RequestBody EmailPasswordTuple emailPasswordTuple) {
+        User user = userSecurityService.currentUser();
+        accountService.updateEmail(user, emailPasswordTuple);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
 
     @PutMapping(PASSWORD)
@@ -45,6 +60,7 @@ public class AccountController {
         log.info("update Password for userId: " + user.getId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
 
     @PutMapping("/delete")
     public ResponseEntity<Void> deleteMyAccount(@RequestBody(required = false) String password) {
@@ -67,55 +83,14 @@ public class AccountController {
     public ResponseEntity<Void> deleteIcon() {
         User user = userSecurityService.currentUser();
         userService.deleteIcon(user);
-
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping(NOTIFICATIONS)
-    public ResponseEntity<Customer.NotificationSettings> getNotificationSettings() {
 
-        Customer existed = userSecurityService.currentCustomer();
-
-        Customer.NotificationSettings settings = existed.getNotificationSettings();
-
-        return new ResponseEntity<>(settings, HttpStatus.OK);
-    }
-
-    @PreAuthorize("hasRole('CUSTOMER')")
-    @GetMapping("/last-zip")
-    public ResponseEntity<String> loadLastUsersProjectZipCode(){
-        Customer customer = userSecurityService.currentCustomer();
-        String zipCode = projectRepository.findLastZipCodeByCustomerId(customer.getId());
-        return new ResponseEntity<>(zipCode, HttpStatus.OK);
-    }
-
-    @PostMapping(SEARCHES)
-    public ResponseEntity<Void> userSearches(@RequestParam String zipCode,
-                                             @RequestParam String search){
-        User user = userSecurityService.currentUserOrNull();
-        userService.saveUserSearches(user, search, zipCode);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @GetMapping(SEARCHES)
-    public ResponseEntity<List<String>> getRecentSearches(@RequestParam(defaultValue = "5") int size){
-        Customer existed = userSecurityService.currentCustomer();
-        List<String> recentSearches = userSearchService.getTopSearchesByCustomerId(existed.getId(), size);
-        return new ResponseEntity<>(recentSearches, HttpStatus.OK);
-    }
-
-    @PutMapping(NOTIFICATIONS)
-    public ResponseEntity<Void> updateNotificationSettings(@RequestBody Customer.NotificationSettings settings) {
-
-        Customer existed = userSecurityService.currentCustomer();
-        customerRepository.save(existed.setNotificationSettings(settings));
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @PostMapping(EMAIL_PATH_VARIABLE + "/restorePasswordRequest")
-    public ResponseEntity<Void> restorePasswordRequest(@PathVariable String email) {
+    @PostMapping(EMAIL_PATH_VARIABLE + "/reset-password-request")
+    public ResponseEntity<Void> resetPasswordRequest(@PathVariable String email) {
         log.info("Sending restoring password link for " + email);
-        userService.restorePasswordRequest(email);
+        accountService.resetPasswordRequest(email);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

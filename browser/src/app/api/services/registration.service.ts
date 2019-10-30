@@ -15,7 +15,7 @@ export class RegistrationService {
   private contractorUrl: string = this.registrationUrl + '/contractors';
   private companyUrl: string = this.registrationUrl + '/companies';
   private resendEmailUrl = this.registrationUrl  + "/resend";
-  private changeEmailUrl = this.registrationUrl  + "/change";
+  private changeEmailUrl = this.registrationUrl  + "/email-change";
 
   constructor(private http: HttpClient) {
   }

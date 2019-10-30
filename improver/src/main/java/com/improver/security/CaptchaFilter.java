@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Deprecated
 @Slf4j
 public class CaptchaFilter extends GenericFilterBean {
 

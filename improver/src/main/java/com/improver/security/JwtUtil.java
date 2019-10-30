@@ -20,9 +20,7 @@ public class JwtUtil {
     public static final String BEARER_TOKEN_PREFIX = "Bearer ";
     public static final String AUTHORIZATION_HEADER_NAME = "Authorization";
     private static final String ROLE_CLAIM = "role";
-
-    @Autowired
-    private SecurityProperties securityProperties;
+    @Autowired private SecurityProperties securityProperties;
 
 
     String generateAccessJWT(String email, String role){
@@ -41,8 +39,7 @@ public class JwtUtil {
      * @throws CredentialsExpiredException - when token has been expired
      * @throws BadCredentialsException     - when token is malformed or not valid
      */
-    @Deprecated
-    //TODO : Misha change CredentialsExpiredException -> ExpiredJwtException. throw checked exceptions
+    //TODO : change CredentialsExpiredException -> ExpiredJwtException. throw checked exceptions
     public JwtPrincipal parseAccessToken(String token) throws CredentialsExpiredException, BadCredentialsException {
         if (token == null) {
             throw new BadCredentialsException("Token is NULL");
@@ -74,7 +71,7 @@ public class JwtUtil {
             .compact();
     }
 
-    public String parseActivationJWT(String token, String userEmail) {
+    public String parseActivationJWT(String token) {
         if (token == null) {
             throw new ValidationException("Token is missing");
         }

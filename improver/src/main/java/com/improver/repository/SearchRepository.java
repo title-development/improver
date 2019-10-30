@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface UserSearchRepository extends JpaRepository<UserSearch, Long> {
+public interface SearchRepository extends JpaRepository<UserSearch, Long> {
 
     @Query("SELECT us.search FROM com.improver.entity.UserSearch us " +
         "WHERE us.userId = :customerId " +

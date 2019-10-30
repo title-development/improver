@@ -7,7 +7,6 @@ import com.improver.model.out.LoginModel;
 import com.improver.model.recapcha.ReCaptchaResponse;
 import com.improver.service.ReCaptchaService;
 import com.improver.util.serializer.SerializationUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,14 +26,12 @@ import static com.improver.util.ErrorMessages.RE_CAPTCHA_VALIDATION_ERROR_MESSAG
 public class LoginFilter extends AbstractAuthenticationProcessingFilter {
 
     private UserSecurityService userSecurityService;
-    private JwtUtil jwtUtil;
     private ReCaptchaService reCaptchaService;
 
-    public LoginFilter(String url, AuthenticationManager authManager, UserSecurityService userSecurityService, JwtUtil jwtUtil1, ReCaptchaService reCaptchaService) {
+    public LoginFilter(String url, AuthenticationManager authManager, UserSecurityService userSecurityService, ReCaptchaService reCaptchaService) {
         super(new AntPathRequestMatcher(url));
         setAuthenticationManager(authManager);
         this.userSecurityService = userSecurityService;
-        this.jwtUtil = jwtUtil1;
         this.reCaptchaService = reCaptchaService;
         this.setAuthenticationFailureHandler(new LoginFailureHandler());
     }

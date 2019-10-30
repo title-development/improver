@@ -38,12 +38,11 @@ public class CatalogController {
      *
      * <b>Note</b> {@link CacheControl} is used to reduce REST API calls and improve performance.
      */
-    @Deprecated
     @GetMapping(SERVICES + SUGGESTED)
-    public ResponseEntity<List<NameIdImageTuple>> getSuggestedServices(@RequestParam(defaultValue = "12") int size) {
-//        List<NameIdImageTuple> services = serviceTypeService.getPopularServices(size);
-//        TODO: Done for testing of images at home page. Will be removed later
-        List<NameIdImageTuple> services = serviceTypeRepository.getRandomPopularServiceTypes(PageRequest.of(0, size)).getContent();
+    public ResponseEntity<List<NameIdImageTuple>> getSuggestedServices(@RequestParam(defaultValue = "8") int size) {
+        // TODO: Done for testing of images at home page. Will be removed later
+        List<NameIdImageTuple> services = serviceTypeRepository.getRandomPopularServiceTypes(PageRequest.of(0, size))
+            .getContent();
         return ResponseEntity.ok().body(services);
     }
 
@@ -53,8 +52,9 @@ public class CatalogController {
      * Used at Home Page and Find Professionals dropdown
      */
     @GetMapping(SERVICES + POPULAR)
-    public ResponseEntity<List<NameIdImageTuple>> getPopularServices(@RequestParam(defaultValue = "12") int size){
-        List<NameIdImageTuple> popularServices = serviceTypeRepository.getRandomPopularServiceTypes(PageRequest.of(0, size)).getContent();
+    public ResponseEntity<List<NameIdTuple>> getPopularServices(@RequestParam(defaultValue = "12") int size){
+        List<NameIdTuple> popularServices = serviceTypeRepository.getPopularServiceTypes(PageRequest.of(0, size))
+            .getContent();
         return new ResponseEntity<>(popularServices, HttpStatus.OK);
     }
 
@@ -63,7 +63,6 @@ public class CatalogController {
      *
      * Used in Customer dashboard
      */
-    @Deprecated
     @GetMapping(SERVICES + RECOMMENDED)
     public ResponseEntity<List<NameIdImageTuple>> getRecommendedServices(@RequestParam(defaultValue = "6") int size) {
         return getSuggestedServices(size);
@@ -82,7 +81,8 @@ public class CatalogController {
     public ResponseEntity<List<Question>> getQuestionary(@PathVariable long id) {
         ServiceType serviceType = serviceTypeRepository.findById(id)
             .orElseThrow(NotFoundException::new);
-        List<Question> questions = (serviceType.getQuestionary() != null) ? serviceType.getQuestionary().getQuestions()
+        List<Question> questions = (serviceType.getQuestionary() != null)
+            ? serviceType.getQuestionary().getQuestions()
             : Collections.emptyList();
         return new ResponseEntity<>(questions, HttpStatus.OK);
     }

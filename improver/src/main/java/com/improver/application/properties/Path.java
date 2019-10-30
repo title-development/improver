@@ -47,6 +47,7 @@ public final class Path {
     public static final String REVISION =              "/revision";
     public static final String DECLINE =               "/decline";
     public static final String ACCEPT =                "/accept";
+    public static final String ACCOUNT =               "/account";
 
 
     public static final String LOGIN =               "/login";
@@ -86,6 +87,7 @@ public final class Path {
     public static final String IMAGES_PATH =            API_PATH_PREFIX + IMAGES;
     public static final String DOCUMENTS_PATH =         API_PATH_PREFIX + DOCUMENTS;
     public static final String USERS_PATH =             API_PATH_PREFIX + USERS;
+    public static final String ACCOUNT_PATH =           API_PATH_PREFIX + ACCOUNT;
     public static final String CATALOG_PATH =           API_PATH_PREFIX + CATALOG;
     public static final String TRADES_PATH =            API_PATH_PREFIX + TRADES;
     public static final String SERVICES_PATH =          API_PATH_PREFIX + SERVICES;

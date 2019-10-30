@@ -13,7 +13,6 @@ import { RegistrationUserModel } from '../../model/security-model';
 export class UserService {
 
   private url = 'api/users';
-  private notificationsUrl = '/notifications';
 
   constructor(private http: HttpClient) {
   }
@@ -31,21 +30,6 @@ export class UserService {
     return this.http.put(`${this.url}/${userId}`, user, {responseType: 'text'});
   }
 
-  restorePasswordRequest(email: string) {
-    return this.http.post(`${this.url}/${email}/restorePasswordRequest`, null, {
-      observe: 'response',
-      responseType: 'text'
-    });
-  }
-
-
-  getNotificationSettings(): Observable<CustomerNotificationSettings> {
-    return this.http.get<CustomerNotificationSettings>(`${this.url}${this.notificationsUrl}`);
-  }
-
-  updateNotificationSettings(notificationSettings: CustomerNotificationSettings) {
-    return this.http.put(`${this.url}${this.notificationsUrl}`, notificationSettings);
-  }
 
   getAllContractors(filters: any, pagination: Pagination): Observable<RestPage<AdminContractor>> {
     const params = {...filters, ...pagination};
@@ -69,10 +53,6 @@ export class UserService {
 
   deleteAccount(userId: any): Observable<any> {
     return this.http.put(`${this.url}/${userId}/delete`, null);
-  }
-
-  deleteMyAccount(password: string): Observable<any> {
-    return this.http.put(`${this.url}/delete`, password);
   }
 
 

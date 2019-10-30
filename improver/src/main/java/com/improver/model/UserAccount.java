@@ -36,16 +36,6 @@ public class UserAccount {
 
     private boolean isNativeUser;
 
-    public UserAccount(long id, String iconUrl, String email, String firstName, String lastName, String displayName, String phone, String password) {
-        this.id = id;
-        this.iconUrl = iconUrl;
-        this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.displayName = displayName;
-        this.phone = phone;
-        this.isNativeUser = password != null && !password.isEmpty();
-    }
 
     public UserAccount(User user) {
         this.id = user.getId();

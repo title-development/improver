@@ -101,11 +101,11 @@ public class BoundariesService {
         return makeRequestToMapreflex(request);
     }
 
-    public String searchZipCodesInRadius(String latitude, String longitude, String radius) throws ThirdPartyException {
+    public String searchZipCodesInRadius(String latitude, String longitude, int radius) throws ThirdPartyException {
         HttpUriRequest request;
         try {
             URI uri = new URIBuilder(BASE_URL + RADIUS_ZIP_SEARCH_URL)
-                .setParameter("radius", radius)
+                .setParameter("radius", String.valueOf(radius))
                 .setParameter("latitude", latitude)
                 .setParameter("longitude", longitude)
                 .setParameter("properties", "zip,centroid")
@@ -134,7 +134,7 @@ public class BoundariesService {
     }
 
     public List<String> getZipCodesInRadius(double latitude, double longitude, int radius) throws ThirdPartyException {
-        String geoJson = searchZipCodesInRadius(String.valueOf(latitude), String.valueOf(longitude), String.valueOf(radius));
+        String geoJson = searchZipCodesInRadius(String.valueOf(latitude), String.valueOf(longitude), radius);
         List<String> zipCodes = new ArrayList<>();
         try {
             JsonNode rootNode = SerializationUtil.mapper().readTree(geoJson);

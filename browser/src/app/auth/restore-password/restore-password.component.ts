@@ -11,6 +11,7 @@ import { PopUpMessageService } from "../../util/pop-up-message.service";
 import { SystemMessageType } from "../../model/data-model";
 import { getErrorMessage } from "../../util/functions";
 import {ActivationService} from "../../api/services/activation.service";
+import {AccountService} from "../../api/services/account.service";
 
 
 @Component({
@@ -44,6 +45,7 @@ export class RestorePasswordComponent {
     public constants: Constants,
     public messages: Messages,
     public popUpMessageService: PopUpMessageService,
+    private accountService: AccountService,
     private route: ActivatedRoute) {
 
     this.sub = this.route.params.subscribe(params => {
@@ -56,7 +58,7 @@ export class RestorePasswordComponent {
   }
 
   restorePasswordRequest(form: NgForm) {
-    this.userService.restorePasswordRequest(this.credentials.email).subscribe(response => {
+    this.accountService.restorePasswordRequest(this.credentials.email).subscribe(response => {
       this.step = 2;
     }, err => {
       this.popUpMessageService.showError(err.statusText);

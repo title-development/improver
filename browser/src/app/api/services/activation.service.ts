@@ -9,8 +9,8 @@ export class ActivationService {
   private confirmUrl = "api/confirm";
   private activationUrl = "/activation";
   private emailUrl = "/email";
-  private passwordResetUrl = "/passwordReset";
-  private checkUrl = "/check";
+  private passwordResetUrl = "/password-reset";
+  private checkUrl = "/verify";
 
   constructor(private http: HttpClient) {
   }
@@ -23,7 +23,6 @@ export class ActivationService {
     return this.http.post<any>(`${this.confirmUrl}${this.emailUrl}`, activationCustomerModel, {observe: 'response'})
   }
 
-  //TODO: Taras: remove email usage
   confirmPasswordReset(credentials, token){
     let params = {
       token: token,
@@ -31,19 +30,6 @@ export class ActivationService {
     };
     return this.http.post(`${this.confirmUrl}${this.passwordResetUrl}`, params, {observe: 'response', responseType: 'text'});
   }
-
-
-  // TODO: This method in from User Service. Taras, email is redundant here !!!
-/*  restorePassword(credentials, token) {
-    let params = {
-      token: token,
-      password: credentials.password
-    };
-    return this.http.post(`${this.url}/${credentials.email}/restorePassword`, params, {
-      observe: 'response',
-      responseType: 'text'
-    });
-  }*/
 
 
   checkToken(activationCustomerModel:ActivationCustomerModel): Observable<any> {

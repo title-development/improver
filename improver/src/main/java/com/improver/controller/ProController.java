@@ -3,7 +3,6 @@ package com.improver.controller;
 import com.improver.exception.NotFoundException;
 import com.improver.model.QuickReply;
 import com.improver.repository.ContractorRepository;
-import com.improver.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +17,6 @@ import static com.improver.application.properties.Path.PROS_PATH;
 public class ProController {
 
     @Autowired private ContractorRepository contractorRepository;
-    @Autowired private UserService userService;
 
     @GetMapping(ID_PATH_VARIABLE + "/quickreply")
     public ResponseEntity<QuickReply> getQuickreply(@PathVariable("id") long contractorId) {

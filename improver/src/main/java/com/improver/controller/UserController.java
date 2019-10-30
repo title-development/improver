@@ -42,16 +42,34 @@ public class UserController {
     @Autowired private UserService userService;
     @Autowired private UserSecurityService userSecurityService;
     @Autowired private UserRepository userRepository;
-    @Autowired private CustomerRepository customerRepository;
-    @Autowired private ContractorRepository contractorRepository;
 
 
-    @SameUserOrAdminAccess
-    @GetMapping(ID_PATH_VARIABLE)
-    public ResponseEntity<UserAccount> getUserAccount(@PathVariable("id") long id) {
-        UserAccount userAccount = userRepository.getAccount(id);
-        return new ResponseEntity<>(userAccount, HttpStatus.OK);
+
+    @AdminAccess
+    @PutMapping(ID_PATH_VARIABLE)
+    public ResponseEntity<Void> updateUser(@PathVariable long id, @RequestBody User user) {
+        userService.updateUser(id, user, userSecurityService.currentAdminOrNull());
+        return new ResponseEntity<>(HttpStatus.OK);
     }
+
+
+    @Deprecated
+    @AdminAccess
+    @PutMapping(ID_PATH_VARIABLE + CUSTOMERS)
+    public ResponseEntity<Void> updateCustomer(@PathVariable long id, @RequestBody AdminContractor adminContractor) {
+        userService.updateAdminUser(id, adminContractor);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+    @Deprecated
+    @AdminAccess
+    @PutMapping(ID_PATH_VARIABLE + CONTRACTORS)
+    public ResponseEntity<Void> updateContractor(@PathVariable long id, @RequestBody AdminContractor adminContractor) {
+        userService.updateAdminUser(id, adminContractor);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 
 
     @SupportAccess
@@ -106,21 +124,7 @@ public class UserController {
     }
 
 
-    @AdminAccess
-    @PutMapping(ID_PATH_VARIABLE)
-    public ResponseEntity<Void> updateUser(@PathVariable long id, @RequestBody User user) {
-        userService.updateUser(id, user, userSecurityService.currentAdminOrNull());
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 
-
-    @SameUserAccess
-    @PutMapping(ID_PATH_VARIABLE + "/update")
-    public ResponseEntity<Void> updateUserAccount(@PathVariable long id,
-                                                  @RequestBody @Valid UserAccount user) {
-        userService.updateAccount(id, user);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 
 
 
@@ -130,64 +134,35 @@ public class UserController {
     }
 
 
-    //TODO: Andriy move check password inside service method
-    @SameUserAccess
-    @PutMapping(ID_PATH_VARIABLE + EMAIL)
-    public ResponseEntity<Void> updateEmail(@PathVariable long id, @RequestBody EmailPasswordTuple emailPasswordTuple) {
-        log.info("update Email for " + emailPasswordTuple.getEmail());
-        User user = userSecurityService.currentUser();
-        if (user.isNativeUser()) {
-            userService.checkPassword(emailPasswordTuple.getPassword());
-        }
-        userService.updateEmail(id, emailPasswordTuple.getEmail());
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-
-    @GetMapping(CONTRACTORS)
+    @SupportAccess
     @PageableSwagger
+    @GetMapping(CONTRACTORS)
     public ResponseEntity<Page<AdminContractor>> getAllContractors(
         @RequestParam(required = false) Long id,
         @RequestParam(required = false) String displayName,
         @RequestParam(required = false) String email,
         @RequestParam(required = false) String companyName,
         @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageRequest) {
+
         Page<AdminContractor> contractor = this.userService.getAllContractors(id, displayName, email, companyName, pageRequest);
         return new ResponseEntity<>(contractor, HttpStatus.OK);
     }
 
-    @AdminAccess
-    @PutMapping(ID_PATH_VARIABLE + CONTRACTORS)
-    public ResponseEntity<Void> updateContractor(@PathVariable long id, @RequestBody AdminContractor adminContractor) {
-        userService.updateAdminUser(id, adminContractor);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 
-    @GetMapping(CUSTOMERS)
+
+
+
+    @SupportAccess
     @PageableSwagger
+    @GetMapping(CUSTOMERS)
     public ResponseEntity<Page<User>> getAllCustomers(
         @RequestParam(required = false) Long id,
         @RequestParam(required = false) String displayName,
         @RequestParam(required = false) String email,
         @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageRequest) {
+
         Page<User> customers = this.userService.getAllCustomers(id, displayName, email, pageRequest);
         return new ResponseEntity<>(customers, HttpStatus.OK);
-    }
-
-
-    @AdminAccess
-    @PutMapping(ID_PATH_VARIABLE + CUSTOMERS)
-    public ResponseEntity<Void> updateCustomer(@PathVariable long id, @RequestBody AdminContractor adminContractor) {
-        userService.updateAdminUser(id, adminContractor);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-
-    @AdminAccess
-    @PostMapping(ID_PATH_VARIABLE + "/password-expire")
-    public ResponseEntity<Void> passwordExpire(@PathVariable long id) {
-        userService.expireCredentials(id);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

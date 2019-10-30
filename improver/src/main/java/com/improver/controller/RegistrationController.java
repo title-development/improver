@@ -47,7 +47,7 @@ public class RegistrationController {
 
 
     @PreAuthorize("isAnonymous()")
-    @PostMapping("/change") //TODO: Fix the URL
+    @PostMapping("/email-change")
     public ResponseEntity changeRegistrationEmail(@RequestBody OldNewValue oldNewEmail) {
         oldNewEmail.setNewValue(oldNewEmail.getNewValue().toLowerCase());
         oldNewEmail.setOldValue(oldNewEmail.getOldValue().toLowerCase());

@@ -28,7 +28,6 @@ export class CustomerNotificationsComponent {
               public messages: Messages,
               public route: ActivatedRoute,
               public securityService: SecurityService,
-              private userService: UserService,
               private accountService: AccountService,
               private popUpService: PopUpMessageService) {
 
@@ -37,7 +36,7 @@ export class CustomerNotificationsComponent {
   }
 
   getNotificationSettings() {
-    this.userService.getNotificationSettings().subscribe(
+    this.accountService.getNotificationSettings().subscribe(
       notificationSettings => {
         this.notificationSettings = notificationSettings;
       },
@@ -48,7 +47,7 @@ export class CustomerNotificationsComponent {
   }
 
   updateNotificationSettings() {
-    this.userService.updateNotificationSettings(this.notificationSettings).subscribe(
+    this.accountService.updateNotificationSettings(this.notificationSettings).subscribe(
       responce => {
         this.popUpService.showSuccess("Your notification settings updated successfully")
       },

@@ -299,7 +299,7 @@ export class SignupCompanyComponent {
   openZipUnsupportedDialog(zip) {
     let properties = {
       title: 'We are not serving ' + zip + ' yet.',
-      message: 'Just finish registration to be notified when we will be in your area',
+      message: "Home Improve doesn't support " + zip + " ZIP yet. Make sure you selected supported Service Area in the next step.",
       OK: 'OK',
       confirmOnly: true
     };

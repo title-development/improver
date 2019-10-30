@@ -2,19 +2,27 @@ package com.improver.service;
 
 import com.improver.entity.*;
 import com.improver.exception.AccessDeniedException;
+import com.improver.exception.ConflictException;
+import com.improver.exception.NotFoundException;
 import com.improver.exception.ValidationException;
+import com.improver.model.UserAccount;
 import com.improver.model.in.CloseProjectRequest;
-import com.improver.repository.ContractorRepository;
-import com.improver.repository.UserRepository;
+import com.improver.model.in.EmailPasswordTuple;
+import com.improver.model.in.UserActivation;
+import com.improver.repository.*;
+import com.improver.security.JwtUtil;
 import com.improver.util.StaffActionLogger;
 import com.improver.util.mail.MailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import static com.improver.model.in.CloseProjectRequest.Action.CANCEL;
 
@@ -31,7 +39,22 @@ public class AccountService {
     @Autowired private ProjectRequestService projectRequestService;
     @Autowired private StaffActionLogger staffActionLogger;
     @Autowired private UserRepository userRepository;
-    @Autowired private ContractorRepository contractorRepository;
+    @Autowired private LeadService leadService;
+    @Autowired private JwtUtil jwtUtil;
+
+
+    public void updateAccount(User existed, UserAccount account) {
+        existed.setFirstName(account.getFirstName())
+            .setLastName(account.getLastName())
+            .setInternalPhone(account.getPhone())
+            .setUpdated(ZonedDateTime.now());
+
+        if (account.getIconUrl() != null && !account.getIconUrl().equals(existed.getIconUrl()) && !account.getIconUrl().isEmpty()) {
+            String iconUrl = imageService.updateBase64Image(account.getIconUrl(), existed.getIconUrl());
+            existed.setIconUrl(iconUrl);
+        }
+        userRepository.save(existed);
+    }
 
 
     public void archiveAccountWithPassword(User user, String password) {
@@ -116,5 +139,112 @@ public class AccountService {
         if (currentAdmin != null) {
             staffActionLogger.logAccountDelete(currentAdmin, user);
         }
+    }
+
+
+    public void resetPasswordRequest(String email) {
+        User user;
+        try {
+            user = getUserWithCheck(email);
+        } catch (Exception e) {
+            log.info("Could not reset password for {}. {}", email, e.getMessage());
+            return;
+        }
+
+        user.setValidationKey(UUID.randomUUID().toString());
+        userRepository.save(user);
+        mailService.sendPasswordRestore(user);
+    }
+
+    //TODO: userSecurityService
+    @Deprecated
+    public User getUserWithCheck(String email) {
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(NotFoundException::new);
+        if (user.isBlocked()) {
+            throw new AccessDeniedException();
+        }
+        if (user.isDeleted()) {
+            throw new NotFoundException("User has been deleted");
+        }
+        return user;
+    }
+
+
+    public User activateUser(UserActivation activation) {
+        String validationKey = jwtUtil.parseActivationJWT(activation.getToken());
+        User user = userRepository.findByValidationKey(validationKey)
+            .orElseThrow(() -> new ConflictException("Confirmation link is invalid"));
+        if (user.isActivated()) {
+            log.error("User {} validation key={} already activated", user.getEmail(), validationKey);
+            // remove validationKey
+            userRepository.save(user.setValidationKey(null));
+            throw new ConflictException("Confirmation link is invalid");
+        }
+        user.setActivated(true);
+        user.setValidationKey(null);
+        if (activation.getPassword() != null) {
+            log.debug("Creating password for user={}", user.getEmail());
+            user.setPassword(activation.getPassword());
+        }
+        user = userRepository.save(user);
+        log.info("User confirmed email={}", user.getEmail());
+
+        // If Customer has a pending projects - put them into market
+        if (user instanceof Customer) {
+            leadService.putPendingOrdersToMarket((Customer) user);
+        }
+        return user;
+    }
+
+    @Transactional
+    public User confirmUserEmail(UserActivation activation) {
+        String validationKey = jwtUtil.parseActivationJWT(activation.getToken());
+        User user = userRepository.findByValidationKey(validationKey)
+            .orElseThrow(() -> new ConflictException("Confirmation link is invalid"));
+
+        user.setEmail(user.getNewEmail());
+        user.setNewEmail(null);
+        user.setValidationKey(null);
+        user = userRepository.save(user);
+        log.info("User confirmed email={}", user.getEmail());
+        return user;
+    }
+
+
+    @Transactional
+    public User resetPassword(UserActivation activation) {
+        String validationKey = jwtUtil.parseActivationJWT(activation.getToken());
+        User user = userRepository.findByValidationKey(validationKey)
+            .orElseThrow(() -> new ConflictException("Confirmation link is invalid"));
+        user.setValidationKey(null);
+        user.setPassword(activation.getPassword());
+        boolean activated = false;
+        if (!user.isActivated()){
+            user.setActivated(true);
+            activated = true;
+        }
+        user = userRepository.save(user);
+        log.info("User={} restored password", user.getEmail());
+        if (user instanceof Customer && activated){
+            leadService.putPendingOrdersToMarket((Customer) user);
+        }
+        return user;
+    }
+
+
+    @Transactional
+    public void updateEmail(User user, EmailPasswordTuple emailPasswordTuple) {
+        log.debug("Update email for " + emailPasswordTuple.getEmail());
+        if (user.isNativeUser()) {
+            if (!BCrypt.checkpw(emailPasswordTuple.getPassword(), user.getPassword())) {
+                throw new ValidationException("Incorrect password");
+            }
+        }
+        user.setNewEmail(emailPasswordTuple.getEmail());
+        user.setValidationKey(UUID.randomUUID().toString());
+        userRepository.save(user);
+        mailService.sendEmailChangedNotice(user);
+        mailService.sendEmailChanged(user);
     }
 }

@@ -153,6 +153,9 @@ public class UserSecurityService implements UserDetailsService {
 
 
     public LoginModel performUserLogin(User user, HttpServletResponse res, boolean isReauthentication) {
+        if (isReauthentication) {
+            log.debug("Re-authentication user=" + user.getEmail());
+        }
         //updateLastLogin
         User updated = userRepository.save(user.setLastLogin(ZonedDateTime.now()).setRefreshId(UUID.randomUUID().toString()));
         LoginModel loginModel = buildLoginModel(updated);

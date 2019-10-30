@@ -91,8 +91,7 @@ public class RefreshAccessTokenFilter extends GenericFilterBean {
 
             // 5. Re-authenticate or return access token
             if (isReauthenticate) {
-                logger.debug("Re-authentication user=" + user.getEmail());
-                userSecurityService.performUserLogin(user, response, true);
+                userSecurityService.performUserLogin(user, response, isReauthenticate);
                 return;
             }
             String jwt = userSecurityService.generateAccessToken(user);

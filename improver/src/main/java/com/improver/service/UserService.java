@@ -5,17 +5,13 @@ import com.improver.exception.*;
 import com.improver.model.UserAccount;
 import com.improver.model.admin.AdminContractor;
 import com.improver.model.in.OldNewValue;
-import com.improver.model.in.UserActivation;
 import com.improver.model.in.registration.StaffRegistration;
 import com.improver.model.in.registration.UserRegistration;
 import com.improver.model.socials.SocialUser;
 import com.improver.repository.*;
-import com.improver.security.JwtUtil;
-import com.improver.security.UserSecurityService;
 import com.improver.util.StaffActionLogger;
 import com.improver.util.mail.MailService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,24 +25,19 @@ import static com.improver.util.ErrorMessages.ERR_MSG_PASS_MINIMUM_REQUIREMENTS;
 import static com.improver.util.serializer.SerializationUtil.PASS_PATTERN;
 
 
+@Slf4j
 @Service
 public class UserService {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
-
-    @Autowired private UserSecurityService userSecurityService;
     @Autowired private UserRepository userRepository;
     @Autowired private ContractorRepository contractorRepository;
     @Autowired private CustomerRepository customerRepository;
     @Autowired private MailService mailService;
     @Autowired private ImageService imageService;
     @Autowired private CompanyRepository companyRepository;
-    @Autowired private LeadService leadService;
-    @Autowired private StaffRepository staffRepository;
     @Autowired private SocialConnectionRepository socialConnectionRepository;
     @Autowired private StaffActionLogger staffActionLogger;
-    @Autowired private UserSearchRepository userSearchRepository;
-    @Autowired private JwtUtil jwtUtil;
+    @Autowired private SearchRepository searchRepository;
 
 
     public User getByEmail(String email) {
@@ -54,19 +45,6 @@ public class UserService {
             .orElseThrow(NotFoundException::new);
     }
 
-    //TODO: userSecurityService
-    @Deprecated
-    public User getUserWithCheck(String email) {
-        User user = userRepository.findByEmail(email)
-            .orElseThrow(NotFoundException::new);
-        if (user.isBlocked()) {
-            throw new AccessDeniedException();
-        }
-        if (user.isDeleted()) {
-            throw new NotFoundException("User has been deleted");
-        }
-        return user;
-    }
 
 
     public void changeUserBlockedStatus(Long id, boolean blocked, Admin currentAdmin) {
@@ -101,13 +79,11 @@ public class UserService {
      */
     public Contractor registerContractor(UserRegistration registration) {
         String validationKey = UUID.randomUUID().toString();
-        Contractor contractor = contractorRepository.save(new Contractor(registration)
+        return contractorRepository.save(new Contractor(registration)
             .setReferredBy(registration.getReferralCode())
             .setValidationKey(validationKey)
             .setIncomplete(true)
         );
-
-        return contractor;
     }
 
     /**
@@ -191,121 +167,10 @@ public class UserService {
     }
 
 
-    public User activateUser(UserActivation activation) {
-        String validationKey = jwtUtil.parseActivationJWT(activation.getToken(), null);
-        User user = userRepository.findByValidationKey(validationKey)
-            .orElseThrow(() -> new ConflictException("Confirmation link is invalid"));
-        if (user.isActivated()) {
-            log.error("User {} validation key={} already activated", user.getEmail(), validationKey);
-            // remove validationKey
-            userRepository.save(user.setValidationKey(null));
-            throw new ConflictException("Confirmation link is invalid");
-        }
-        user.setActivated(true);
-        user.setValidationKey(null);
-        if (activation.getPassword() != null) {
-            log.debug("Updating password for user={}", user.getEmail());
-            user.setPassword(activation.getPassword());
-        }
-        user = userRepository.save(user);
-        log.info("User confirmed email={}", user.getEmail());
-
-        // If Customer has a pending projects - put them into market
-        if (user instanceof Customer) {
-            leadService.putPendingOrdersToMarket((Customer) user);
-        }
-        return user;
-    }
-
-    public User confirmUserEmail(UserActivation activation) {
-        log.info(activation.toString());
-        User user = userRepository.findByValidationKey(activation.getToken())
-            .orElseThrow(() -> new ConflictException("Confirmation link is invalid"));
-        user.setEmail(user.getNewEmail());
-        user.setNewEmail(null);
-        user.setValidationKey(null);
-        user = userRepository.save(user);
-        log.info("User confirmed email={}", user.getEmail());
-        return user;
-    }
-
-
     public boolean isEmailFree(String email) {
         return userRepository.isEmailFree(email);
     }
 
-
-    public void updateEmail(long id, String email) {
-        User user = userRepository.findById(id)
-            .orElseThrow(NotFoundException::new);
-        user.setNewEmail(email);
-        user.setValidationKey(UUID.randomUUID().toString());
-        userRepository.save(user);
-        mailService.sendEmailChangedNotice(user);
-        mailService.sendEmailChanged(user);
-    }
-
-
-    @Deprecated
-    public boolean checkPassword(String password) {
-        log.info("Checking password");
-        User user = userSecurityService.currentUser();
-        if (!BCrypt.checkpw(password, user.getPassword())) {
-            throw new ValidationException("Incorrect password");
-        }
-        return true;
-    }
-
-
-    public void restorePasswordRequest(String email) {
-        User user;
-        try {
-            user = getUserWithCheck(email);
-        } catch (Exception e) {
-            log.info("Could not reset password for {}. {}", email, e.getMessage());
-            return;
-        }
-
-        user.setValidationKey(UUID.randomUUID().toString());
-        userRepository.save(user);
-        mailService.sendPasswordRestore(user);
-    }
-
-    public User restorePassword(UserActivation activation) {
-        User user = userRepository.findByValidationKey(activation.getToken())
-            .orElseThrow(() -> new ConflictException("Confirmation link is invalid"));
-        user.setValidationKey(null);
-        user.setPassword(activation.getPassword());
-        boolean activated = false;
-        if (!user.isActivated()){
-            user.setActivated(true);
-            activated = true;
-        }
-
-        user = userRepository.save(user);
-
-        if (user instanceof Customer && activated){
-            leadService.putPendingOrdersToMarket((Customer) user);
-        }
-        log.info("User={} restored password", user.getEmail());
-        return user;
-    }
-
-    public void updateAccount(Long id, UserAccount account) {
-        User existed = userRepository.findById(id)
-            .orElseThrow(NotFoundException::new);
-
-        existed.setFirstName(account.getFirstName())
-            .setLastName(account.getLastName())
-            .setInternalPhone(account.getPhone())
-            .setUpdated(ZonedDateTime.now());
-
-        if (account.getIconUrl() != null && !account.getIconUrl().equals(existed.getIconUrl()) && !account.getIconUrl().isEmpty()) {
-            String iconUrl = imageService.updateBase64Image(account.getIconUrl(), existed.getIconUrl());
-            existed.setIconUrl(iconUrl);
-        }
-        userRepository.save(existed);
-    }
 
     public User resendConfirmationEmail(String email, Long userId) {
         User user = null;
@@ -393,11 +258,6 @@ public class UserService {
         mailService.sendRestoredAccount(user);
     }
 
-    public void expireCredentials(long id) {
-        Staff staff = staffRepository.findById(id)
-            .orElseThrow(NotFoundException::new);
-        staffRepository.save(staff.setCredentialExpired(true));
-    }
 
 
     public Page<User> findBy(Long id, String email, String displayName, User.Role role, Pageable pageRequest) {
@@ -417,7 +277,7 @@ public class UserService {
         if (user != null){
             userSearch.setUserId(String.valueOf(user.getId()));
         }
-       userSearchRepository.save(userSearch);
+       searchRepository.save(userSearch);
     }
 
 }

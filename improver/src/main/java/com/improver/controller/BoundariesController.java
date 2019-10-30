@@ -1,6 +1,5 @@
 package com.improver.controller;
 
-import com.improver.exception.InternalServerException;
 import com.improver.exception.ThirdPartyException;
 import com.improver.model.admin.in.ServedAreasUpdate;
 import com.improver.repository.ServedZipRepository;
@@ -8,9 +7,8 @@ import com.improver.security.UserSecurityService;
 import com.improver.security.annotation.AdminAccess;
 import com.improver.service.BoundariesService;
 import com.improver.service.CoverageService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -24,13 +22,10 @@ import java.util.List;
 
 import static com.improver.application.properties.Path.GEO_PATH;
 
+@Slf4j
 @RestController
 @RequestMapping(GEO_PATH)
 public class BoundariesController {
-
-    private final Logger log = LoggerFactory.getLogger(getClass());
-
-    private final String GEO_API_ERROR = "Error in request to Mapreflex API";
 
     @Autowired private BoundariesService boundariesService;
     @Autowired private ServedZipRepository servedZipRepository;
@@ -38,7 +33,7 @@ public class BoundariesController {
     @Autowired private CoverageService coverageService;
     @Autowired private UserSecurityService userSecurityService;
 
-    private String coverageGeometry;
+    private static String coverageGeometry;
 
     @PostConstruct
     public void init() throws IOException {
@@ -72,50 +67,28 @@ public class BoundariesController {
     }
 
     @GetMapping("/zips/boundaries")
-    public ResponseEntity<String> getZipCodesBoundaries(@RequestParam String[] zipCodes) {
-        String result;
-        try {
-            result = boundariesService.getZipBoundaries(zipCodes);
-        } catch (ThirdPartyException e) {
-            log.error(GEO_API_ERROR, e);
-            throw new InternalServerException(e.getMessage());
-        }
+    public ResponseEntity<String> getZipCodesBoundaries(@RequestParam String[] zipCodes) throws ThirdPartyException {
+        String result = boundariesService.getZipBoundaries(zipCodes);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @GetMapping("/counties/boundaries")
-    public ResponseEntity<String> getCountiesBoundaries(@RequestParam String[] counties) {
-        String result;
-        try {
-            result = boundariesService.getCountyBoundaries(counties);
-        } catch (ThirdPartyException e) {
-            log.error(GEO_API_ERROR, e);
-            throw new InternalServerException(e.getMessage());
-        }
+    public ResponseEntity<String> getCountiesBoundaries(@RequestParam String[] counties) throws ThirdPartyException {
+        String result = boundariesService.getCountyBoundaries(counties);
+
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @GetMapping("/zips/search/bbox/boundaries")
-    public ResponseEntity<String> searchZipCodesInBbox(@RequestParam String southWest, @RequestParam String northEast) {
-        String result;
-        try {
-            result = boundariesService.searchZipCodesInBbox(southWest, northEast);
-        } catch (ThirdPartyException e) {
-            log.error(GEO_API_ERROR, e);
-            throw new InternalServerException(e.getMessage());
-        }
+    public ResponseEntity<String> searchZipCodesInBbox(@RequestParam String southWest, @RequestParam String northEast) throws ThirdPartyException {
+        String result = boundariesService.searchZipCodesInBbox(southWest, northEast);
+
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @GetMapping("/zips/search/radius/boundaries")
-    public ResponseEntity<String> searchZipCodesInRadius(@RequestParam String latitude, @RequestParam String longitude, @RequestParam String radius) {
-        String result;
-        try {
-            result = boundariesService.searchZipCodesInRadius(latitude, longitude, radius);
-        } catch (ThirdPartyException e) {
-            log.error(GEO_API_ERROR, e);
-            throw new InternalServerException("Error in request to Mapreflex API. " + e.getMessage());
-        }
+    public ResponseEntity<String> searchZipCodesInRadius(@RequestParam String latitude, @RequestParam String longitude, @RequestParam int radius) throws ThirdPartyException {
+        String result = boundariesService.searchZipCodesInRadius(latitude, longitude, radius);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -127,25 +100,14 @@ public class BoundariesController {
 
     @AdminAccess
     @PutMapping("/coverage/counties")
-    public ResponseEntity<Void> updateServedCounties(@RequestBody ServedAreasUpdate servedAreasUpdate) throws InterruptedException {
-        try {
-            coverageService.updateCountiesCoverage(servedAreasUpdate, userSecurityService.currentAdmin());
-        } catch (ThirdPartyException e) {
-            log.error(GEO_API_ERROR, e);
-            throw new InternalServerException("Error in request to Mapreflex API. " + e.getMessage());
-        }
+    public ResponseEntity<Void> updateServedCounties(@RequestBody ServedAreasUpdate servedAreasUpdate) throws InterruptedException, ThirdPartyException {
+        coverageService.updateCountiesCoverage(servedAreasUpdate, userSecurityService.currentAdmin());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/counties/search/bbox/boundaries")
-    public ResponseEntity<String> searchCountiesInBbox(@RequestParam String southWest, @RequestParam String northEast) {
-        String result;
-        try {
-            result = boundariesService.searchCountiesInBbox(southWest, northEast);
-        } catch (ThirdPartyException e) {
-            log.error(GEO_API_ERROR, e);
-            throw new InternalServerException(e.getMessage());
-        }
+    public ResponseEntity<String> searchCountiesInBbox(@RequestParam String southWest, @RequestParam String northEast) throws ThirdPartyException {
+        String result = boundariesService.searchCountiesInBbox(southWest, northEast);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

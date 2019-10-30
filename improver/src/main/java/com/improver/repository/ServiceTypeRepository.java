@@ -110,7 +110,7 @@ public interface ServiceTypeRepository extends JpaRepository<ServiceType, Long> 
 
     @Query("SELECT new  com.improver.model.out.NameIdImageTuple(st.id, st.name, st.imageUrl) FROM com.improver.entity.ServiceType st " +
         "WHERE st.active = true " +
-        "AND st.rating > 0" +
+        "AND st.rating > 0 AND st.imageUrl <> '' AND st.imageUrl IS NOT NULL " +
         "ORDER BY RANDOM()")
     Page<NameIdImageTuple> getRandomPopularServiceTypes(Pageable pageable);
 

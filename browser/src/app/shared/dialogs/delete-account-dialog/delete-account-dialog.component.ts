@@ -9,6 +9,7 @@ import { getErrorMessage } from '../../../util/functions';
 import { NgForm } from '@angular/forms';
 import { Account } from '../../../model/data-model';
 import { Role } from '../../../model/security-model';
+import {AccountService} from "../../../api/services/account.service";
 
 @Component({
   selector: 'delete-account-dialog',
@@ -27,7 +28,8 @@ export class DeleteAccountDialogComponent {
               public constants: Constants,
               public messages: Messages,
               private userService: UserService,
-              private popupService: PopUpMessageService) {
+              private popupService: PopUpMessageService,
+              private accountService: AccountService) {
     this.basePath = this.securityService.hasRole(Role.CONTRACTOR) ? 'pro' : 'my'
   }
 
@@ -38,7 +40,7 @@ export class DeleteAccountDialogComponent {
   deleteAccount(form: NgForm): void {
     if (form.valid) {
       this.processing = true;
-      this.userService.deleteMyAccount(this.password).subscribe(
+      this.accountService.deleteMyAccount(this.password).subscribe(
         res => {
           this.processing = false;
           this.popupService.showSuccess('Your account has been deleted.');
