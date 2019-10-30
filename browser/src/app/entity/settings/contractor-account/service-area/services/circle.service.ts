@@ -158,11 +158,11 @@ export class CircleService implements OnDestroy {
         google.maps.event.removeListener(listener);
       })
       .pipe(
-        startWith(this.circle.getRadius()),
         map(() => this.circle.getRadius()),
-        map((radiusMeters) => this.mathRoundByCoverageStep(radiusMeters)),
-        skip(1),
-        tap((radiusMiles) => this.updateRadius(radiusMiles)),
+        distinctUntilChanged(),
+        map(radiusMeters => this.mathRoundByCoverageStep(radiusMeters)),
+        tap(radiusMiles => this.updateRadius(radiusMiles)),
+        distinctUntilChanged(),
       );
 
   }
@@ -182,6 +182,7 @@ export class CircleService implements OnDestroy {
   }
 
   private updateRadius(radiusInMiles: number): void {
+    console.log("updateRadius");
     const radiusInMeters = this.milesToMeters(radiusInMiles);
     this.circle.setRadius(radiusInMeters);
   }

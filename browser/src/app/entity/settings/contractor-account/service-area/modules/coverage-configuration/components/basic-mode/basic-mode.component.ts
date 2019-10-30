@@ -13,7 +13,7 @@ import {
 } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { combineLatest, of, Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, mergeMap, skip, startWith, takeUntil, } from 'rxjs/operators';
+import { mergeMap, skip, startWith, takeUntil, } from 'rxjs/operators';
 import { ZipFeature } from '../../../../../../../../api/models/ZipBoundaries';
 import { Constants } from '../../../../../../../../util/constants';
 import { getErrorMessage } from '../../../../../../../../util/functions';
@@ -140,8 +140,6 @@ export class BasicModeComponent implements OnInit, OnDestroy, AfterViewInit {
           ]);
         }),
         skip(1),
-        debounceTime(300),
-        distinctUntilChanged(),
         takeUntil(this.destroyed$),
       ).subscribe((data: [google.maps.LatLng, number] | null) => {
       if (!data) {

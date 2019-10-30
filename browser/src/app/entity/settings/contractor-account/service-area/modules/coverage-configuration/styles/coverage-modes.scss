@@ -59,6 +59,9 @@ form {
   @include response-to(xs) {
     margin-top: 16px;
   }
+  &:disabled {
+    opacity: 0.5;
+  }
 }
 
 .find-zip {

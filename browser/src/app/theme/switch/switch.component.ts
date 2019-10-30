@@ -1,6 +1,15 @@
-import { Component, EventEmitter, forwardRef, HostListener, Input, Output, Provider } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  forwardRef,
+  HostListener,
+  Input,
+  OnChanges,
+  Output,
+  Provider,
+  SimpleChanges
+} from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { CvCheckbox } from '../checkbox/cv-checkbox/cv-checkbox';
 
 export const SWITCH_VALUE_ACCESSOR: Provider = {
   provide: NG_VALUE_ACCESSOR,
@@ -14,7 +23,7 @@ export const SWITCH_VALUE_ACCESSOR: Provider = {
   styleUrls: ['./switch.component.scss'],
   providers: [SWITCH_VALUE_ACCESSOR]
 })
-export class CvSwitchComponent implements ControlValueAccessor {
+export class CvSwitchComponent implements ControlValueAccessor, OnChanges {
 
   @Input() disabled: boolean = false;
   @Input() onLabel: string = 'On';
@@ -28,6 +37,7 @@ export class CvSwitchComponent implements ControlValueAccessor {
 
   @HostListener('click', ['$event'])
   toggle(event: MouseEvent): void {
+    if (this.disabled) return;
     this.model = !this.model;
     this.onChange(this.model);
     this.changeState.emit(this.model);
@@ -55,5 +65,9 @@ export class CvSwitchComponent implements ControlValueAccessor {
   };
   private onChange = (_: any) => {
   };
+
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes);
+  }
 
 }
