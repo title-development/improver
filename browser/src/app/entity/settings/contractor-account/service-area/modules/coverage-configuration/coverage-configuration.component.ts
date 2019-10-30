@@ -58,7 +58,7 @@ export class CoverageConfigurationComponent implements OnDestroy {
   private readonly destroyed$ = new Subject<void>();
 
   preventSwitch(event: MouseEvent): void {
-    if (this.isUnsavedChanges) {
+    if (this.isUnsavedChanges && (this.media.xs || this.media.sm)) {
       if (!confirm(UNSAVED_CHANGES_MESSAGE)) {
         event.preventDefault();
         event.stopPropagation();

@@ -1,4 +1,4 @@
-import { EventEmitter, Injectable, OnDestroy } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { of, Subject } from 'rxjs';
 import { catchError, finalize, takeUntil } from 'rxjs/operators';
 import { CompanyCoverageConfig } from '../../../../../api/models/CompanyCoverageConfig';
@@ -52,7 +52,8 @@ export class BasicModeService implements OnDestroy {
   getZipsByRadius(center: google.maps.LatLng, radius: number): void {
     this.coverageService.fetching$.next(true);
     this._coverageConfig.radius = radius;
-    this.circleService.update(radius, center);
+    // TODO: Check this. Is it needed? It makes circular looping.
+    // this.circleService.update(radius, center);
     this.gMapUtils.clearCoverageDataLayers(this.gMap);
     this.boundariesService.queryByRadius(center.lat(), center.lng(), radius).pipe(
       catchError((err) => {

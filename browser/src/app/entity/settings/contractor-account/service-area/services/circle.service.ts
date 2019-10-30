@@ -15,6 +15,7 @@ import { Constants } from '../../../../../util/constants';
 import { GoogleMapUtilsService } from '../../../../../util/google-map.utils';
 import { CoverageService } from './coverage.service';
 
+
 @Injectable()
 export class CircleService implements OnDestroy {
   get radiusInMiles(): number | never {
@@ -43,7 +44,6 @@ export class CircleService implements OnDestroy {
   constructor(private constants: Constants,
               private gMapUtils: GoogleMapUtilsService,
               private coverageService: CoverageService) {
-
   }
 
   init(gMap: google.maps.Map, radiusInMiles: number, center: google.maps.LatLng): void {
@@ -159,13 +159,12 @@ export class CircleService implements OnDestroy {
       })
       .pipe(
         startWith(this.circle.getRadius()),
-        debounceTime(300),
         map(() => this.circle.getRadius()),
         map((radiusMeters) => this.mathRoundByCoverageStep(radiusMeters)),
-        distinctUntilChanged(),
         skip(1),
         tap((radiusMiles) => this.updateRadius(radiusMiles)),
       );
+
   }
 
   private milesToMeters(milesRadius: number): number {
@@ -177,14 +176,9 @@ export class CircleService implements OnDestroy {
   }
 
   private mathRoundByCoverageStep(radiusInMeters: number): number {
-    const radiusInMiles = this.metersToMiles(radiusInMeters);
-    if (radiusInMiles > this.constants.MAX_COVERAGE_RADIUS) {
-      return this.constants.MAX_COVERAGE_RADIUS;
-    }
-    if (radiusInMiles < this.constants.MIN_COVERAGE_RADIUS) {
-      return this.constants.MIN_COVERAGE_RADIUS;
-    }
-    return Math.round(radiusInMiles / this.constants.COVERAGE_RADIUS_STEP) * this.constants.COVERAGE_RADIUS_STEP;
+    const radiusInMiles: number = this.metersToMiles(radiusInMeters);
+    let radius = radiusInMiles.clamp(this.constants.MIN_COVERAGE_RADIUS, this.constants.MAX_COVERAGE_RADIUS);
+    return Math.ceil( radius / this.constants.COVERAGE_RADIUS_STEP) * this.constants.COVERAGE_RADIUS_STEP;
   }
 
   private updateRadius(radiusInMiles: number): void {

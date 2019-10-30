@@ -7,10 +7,10 @@ import { ZipBoundaries, ZipFeature } from '../api/models/ZipBoundaries';
 import { InfoWindowInt } from '../entity/contractor/contractor-leads-search/intefaces/infoWindowInt';
 import { boundaryDefaultStyle, boundaryHighlightStyle } from './google-map-default-options';
 import { MapMarkersStore } from './google-map-markers-store.service';
+import { GoogleMap } from '@agm/core/services/google-maps-types';
+import { ShortLead } from '../model/data-model';
 import LatLng = google.maps.LatLng;
 import Feature = google.maps.Data.Feature;
-import { GoogleMap } from '@agm/core/services/google-maps-types';
-import { Lead, ShortLead } from '../model/data-model';
 
 @Injectable()
 export class GoogleMapUtilsService {
@@ -80,6 +80,7 @@ export class GoogleMapUtilsService {
       position: latLng,
       map: gMap,
       icon: '../../../../assets/img/company-marker.png',
+      clickable: false
     });
   }
 

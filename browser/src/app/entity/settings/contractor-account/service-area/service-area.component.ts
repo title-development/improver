@@ -207,6 +207,10 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate, 
       return;
     }
     this.updateCoverageConfig(coverageConfig);
+    if (!this.isDetailMode) {
+      this.basicMode.getZipsByRadius(new google.maps.LatLng(this.basicMode.coverageConfig.centerLat, this.basicMode.coverageConfig.centerLng), this.basicMode.coverageConfig.radius)
+    }
+
   }
 
   ngOnDestroy(): void {

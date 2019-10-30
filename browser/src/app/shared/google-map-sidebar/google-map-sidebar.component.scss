@@ -11,10 +11,11 @@
   justify-content: space-between;
 
   @include response-to(sm) {
-    top: 100px;
+    top: initial;
   }
 
 }
+
 
 .info {
   span {
