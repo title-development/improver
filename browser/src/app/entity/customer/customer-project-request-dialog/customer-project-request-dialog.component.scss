@@ -259,7 +259,7 @@
 
 .content {
   display: flex;
-  flex-grow: 1;
+  height: 100%;
   @include response(xs) {
     overflow: hidden;
   }
@@ -269,6 +269,7 @@
     flex-direction: column;
     flex: 1;
     position: relative;
+    height: 100%;
     width: 100%;
   }
 
