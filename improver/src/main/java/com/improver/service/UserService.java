@@ -10,6 +10,7 @@ import com.improver.model.in.registration.StaffRegistration;
 import com.improver.model.in.registration.UserRegistration;
 import com.improver.model.socials.SocialUser;
 import com.improver.repository.*;
+import com.improver.security.JwtUtil;
 import com.improver.security.UserSecurityService;
 import com.improver.util.StaffActionLogger;
 import com.improver.util.mail.MailService;
@@ -18,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +46,7 @@ public class UserService {
     @Autowired private SocialConnectionRepository socialConnectionRepository;
     @Autowired private StaffActionLogger staffActionLogger;
     @Autowired private UserSearchRepository userSearchRepository;
+    @Autowired private JwtUtil jwtUtil;
 
 
     public User getByEmail(String email) {
@@ -191,25 +192,28 @@ public class UserService {
 
 
     public User activateUser(UserActivation activation) {
-        log.info(activation.toString());
-        User user = userRepository.findByValidationKey(activation.getToken())
+        String validationKey = jwtUtil.parseActivationJWT(activation.getToken(), null);
+        User user = userRepository.findByValidationKey(validationKey)
             .orElseThrow(() -> new ConflictException("Confirmation link is invalid"));
         if (user.isActivated()) {
-            log.error("User {} validation key={} already activated", user.getEmail(), activation.getToken());
+            log.error("User {} validation key={} already activated", user.getEmail(), validationKey);
             // remove validationKey
             userRepository.save(user.setValidationKey(null));
             throw new ConflictException("Confirmation link is invalid");
         }
-
         user.setActivated(true);
         user.setValidationKey(null);
         if (activation.getPassword() != null) {
-            log.info("Updating password for user={}", user.getEmail());
+            log.debug("Updating password for user={}", user.getEmail());
             user.setPassword(activation.getPassword());
         }
-
         user = userRepository.save(user);
         log.info("User confirmed email={}", user.getEmail());
+
+        // If Customer has a pending projects - put them into market
+        if (user instanceof Customer) {
+            leadService.putPendingOrdersToMarket((Customer) user);
+        }
         return user;
     }
 
@@ -281,7 +285,7 @@ public class UserService {
         user = userRepository.save(user);
 
         if (user instanceof Customer && activated){
-            leadService.putCustomerProjectsToMarket((Customer) user);
+            leadService.putPendingOrdersToMarket((Customer) user);
         }
         log.info("User={} restored password", user.getEmail());
         return user;

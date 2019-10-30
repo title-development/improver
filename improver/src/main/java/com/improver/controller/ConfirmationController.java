@@ -1,21 +1,20 @@
 package com.improver.controller;
 
-import com.improver.entity.Customer;
 import com.improver.entity.User;
 import com.improver.exception.ConflictException;
-import com.improver.model.out.LoginModel;
 import com.improver.model.in.UserActivation;
+import com.improver.model.out.LoginModel;
 import com.improver.repository.UserRepository;
-import com.improver.security.UserSecurityService;
-import com.improver.service.LeadService;
-import com.improver.service.UserService;
 import com.improver.security.JwtUtil;
+import com.improver.security.UserSecurityService;
+import com.improver.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -30,17 +29,12 @@ public class ConfirmationController {
     @Autowired private UserService userService;
     @Autowired private UserRepository userRepository;
     @Autowired private UserSecurityService userSecurityService;
-    @Autowired private LeadService leadService;
     @Autowired private JwtUtil jwtUtil;
 
 
     @PostMapping(ACTIVATION)
     public ResponseEntity<LoginModel> activateUser(@RequestBody @Valid UserActivation userActivation, HttpServletResponse res) {
-        String validationKey = jwtUtil.parseActivationJWT(userActivation.getToken(), null);
-        userActivation.setToken(validationKey);
         User user = userService.activateUser(userActivation);
-        leadService.putCustomerProjectsToMarket((Customer) user);
-
         LoginModel loginModel = userSecurityService.performUserLogin(user, res);
         return new ResponseEntity<>(loginModel, HttpStatus.OK);
     }

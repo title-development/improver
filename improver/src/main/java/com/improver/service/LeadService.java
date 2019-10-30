@@ -302,13 +302,14 @@ public class LeadService {
         return Collections.emptyList();
     }
 
-    public void putCustomerProjectsToMarket(Customer customer) {
-            List<Project> projects = projectRepository.findByCustomerIdAndIsLeadAndStatusIn(customer.getId(), false, Project.Status.getActive());
-            projects.forEach(lead -> {
-                lead.setLead(true);
-                projectRepository.save(lead);
-                matchLeadWithSubscribers(lead);
-            });
+
+    public void putPendingOrdersToMarket(Customer customer) {
+        List<Project> projects = projectRepository.findByCustomerIdAndIsLeadAndStatusIn(customer.getId(), false, Project.Status.getActive());
+        projects.forEach(lead -> {
+            lead.setLead(true);
+            projectRepository.save(lead);
+            matchLeadWithSubscribers(lead);
+        });
     }
 
 }
