@@ -42,6 +42,7 @@ public class WsSecurityInterceptor implements ChannelInterceptor {
             log.debug("Connection attempt to ws endpoint ");
             String authorization = accessor.getFirstNativeHeader("authorization");
             if(authorization == null || authorization.isEmpty()){
+                log.debug("WS | Authorization header is empty");
                 sendError(accessor, INVALID_TOKEN_ERROR);
                 return null;
             }
@@ -51,9 +52,11 @@ public class WsSecurityInterceptor implements ChannelInterceptor {
                 principal = jwtUtil.parseAccessToken(jwt);
             } catch (CredentialsExpiredException e){
                 sendError(accessor, TOKEN_EXPIRED_ERROR);
+                log.debug("WS | Token expired");
                 return null;
             } catch (Exception e){
                 sendError(accessor, INVALID_TOKEN_ERROR);
+                log.debug("WS | Invalid token");
                 return null;
             }
             accessor.setUser(principal);
