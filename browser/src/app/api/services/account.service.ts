@@ -75,10 +75,12 @@ export class AccountService {
       .get<Array<string>>(`${this.customersUrl}/searches`, { params });
   }
 
-  saveSearchTerm(search: string, zipCode: string){
+  saveSearchTerm(search: string, zipCode: string, isManual: boolean){
     const params = new HttpParams()
       .set('search', search)
-      .set('zipCode', zipCode);
+      .set('zipCode', zipCode)
+      .set('isManual', String(isManual));
+
     return this.http.post(`${this.customersUrl}/searches`, params);
   }
 

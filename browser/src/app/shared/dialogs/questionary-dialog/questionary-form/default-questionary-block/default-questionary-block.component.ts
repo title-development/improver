@@ -304,6 +304,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
         this.projectActionService.zipIsChecking = false;
         this.projectActionService.zipIsSupported = supported;
         if (supported) {
+          this.customerSuggestionService.saveUserSearchTerm(this.serviceType.name, this.defaultQuestionaryForm.get('projectLocation.zip').value, false);
           this.nextStep();
         }
       },

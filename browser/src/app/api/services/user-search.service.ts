@@ -102,22 +102,19 @@ export class UserSearchService {
   }
 
   findServiceType(formData): void {
-    let searchString: string;
     const filtered = this.allServiceTypes.filter(item => item.name.toLowerCase() == formData.serviceTypeCtrl.toLowerCase());
     if (filtered.length > 0) {
       this.chooseQuestionary(filtered[0], formData);
-      searchString = filtered[0].name;
     } else {
       this.chooseQuestionary(formData.serviceTypeCtrl, formData);
-      searchString = formData.serviceTypeCtrl;
     }
-    this.customerSuggestionService.saveUserSearchTerm(searchString, formData.zipCodeCtrl);
   }
 
   chooseQuestionary(serviceType, formData): void {
     if (serviceType.id) {
       this.projectActionService.openQuestionary(serviceType, formData.zipCodeCtrl);
     } else {
+      this.customerSuggestionService.saveUserSearchTerm(serviceType, formData.zipCodeCtrl, true);
       console.warn('Service type is not found. Redirecting to custom search.');
       this.router.navigate(['search'], {queryParams: {service: formData.serviceTypeCtrl, zip: formData.zipCodeCtrl}});
       this.notMatch.emit({service: serviceType, zip: formData.zipCodeCtrl});

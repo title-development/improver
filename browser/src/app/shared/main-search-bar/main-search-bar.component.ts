@@ -59,6 +59,8 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
     this.serviceTypeCtrl = group.serviceTypeCtrl;
     this.zipCodeCtrl = group.zipCodeCtrl;
 
+    this.customerSuggestionService.onZipChange.subscribe(zip=> this.zipCodeCtrl.setValue(zip));
+
     this.zipCodeCtrl.setValue(localStorage.getItem('zipCode'));
 
     this.securityService.onUserInit.subscribe(() => {

@@ -268,11 +268,12 @@ public class UserService {
     }
 
 
-    public void saveUserSearches(User user, String search, String zipCode) {
+    public void saveUserSearches(User user, String search, String zipCode, boolean isManual) {
         UserSearch userSearch = new UserSearch()
             .setCreated(ZonedDateTime.now())
             .setSearch(search)
-            .setZip(zipCode);
+            .setZip(zipCode)
+            .setManual(isManual);
 
         if (user != null){
             userSearch.setUserId(String.valueOf(user.getId()));

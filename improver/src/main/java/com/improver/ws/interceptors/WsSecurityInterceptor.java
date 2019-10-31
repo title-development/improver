@@ -39,10 +39,10 @@ public class WsSecurityInterceptor implements ChannelInterceptor {
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         final StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
         if (StompCommand.CONNECT.equals(accessor.getCommand())) {
-            log.debug("Connection attempt to ws endpoint ");
+            log.debug("WS: Connection attempt");
             String authorization = accessor.getFirstNativeHeader("authorization");
             if(authorization == null || authorization.isEmpty()){
-                log.debug("WS | Authorization header is empty");
+                log.debug("WS: Authorization header is empty");
                 sendError(accessor, INVALID_TOKEN_ERROR);
                 return null;
             }
@@ -52,13 +52,14 @@ public class WsSecurityInterceptor implements ChannelInterceptor {
                 principal = jwtUtil.parseAccessToken(jwt);
             } catch (CredentialsExpiredException e){
                 sendError(accessor, TOKEN_EXPIRED_ERROR);
-                log.debug("WS | Token expired");
+                log.debug("WS: Token expired");
                 return null;
             } catch (Exception e){
                 sendError(accessor, INVALID_TOKEN_ERROR);
-                log.debug("WS | Invalid token");
+                log.debug("WS: Invalid token");
                 return null;
             }
+            log.debug("WS | Connected");
             accessor.setUser(principal);
         }
         return message;

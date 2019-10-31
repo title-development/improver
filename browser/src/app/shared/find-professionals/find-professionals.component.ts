@@ -68,6 +68,8 @@ export class FindProfessionalsComponent implements OnInit {
     this.getPopularTrades();
     this.getPopularServiceTypes();
 
+    this.customerSuggestionService.onZipChange.subscribe(zip => this.zipCodeCtrl.setValue(zip));
+
     this.zipCodeCtrl.setValue(localStorage.getItem('zipCode'));
 
     securityService.onUserInit

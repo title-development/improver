@@ -28,6 +28,8 @@ public class UserSearch {
 
     private String search;
 
+    private boolean isManual;
+
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     protected ZonedDateTime created;
 

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable, Output } from '@angular/core';
 import { ReplaySubject } from "rxjs";
 import { ServiceType, Trade } from "../../model/data-model";
 import { AccountService } from "./account.service";
@@ -11,6 +11,8 @@ import { TradeService } from "./trade.service";
   providedIn: 'root'
 })
 export class CustomerSuggestionService {
+
+  @Output() onZipChange: EventEmitter<string> = new EventEmitter<string>();
 
   private _lastZipCode$: ReplaySubject<string> = new ReplaySubject<string>(1);
   private _popular$: ReplaySubject<Array<ServiceType>> = new ReplaySubject<Array<ServiceType>>(1);
@@ -108,14 +110,16 @@ export class CustomerSuggestionService {
     return this._popular$;
   }
 
-  saveUserSearchTerm(search: any, zipCode: any){
+  saveUserSearchTerm(search: any, zipCode: any, isManual: boolean){
+
     localStorage.setItem('zipCode', zipCode);
-    this.accountService.saveSearchTerm(search, zipCode).pipe(
+    this.accountService.saveSearchTerm(search, zipCode, isManual).pipe(
       tap(result => {
         if (this.securityService.isAuthenticated()){
           this.recentSearches$;
         }
       })
     ).subscribe();
+    this.onZipChange.emit(zipCode);
   }
 }

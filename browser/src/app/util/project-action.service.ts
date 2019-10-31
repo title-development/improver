@@ -23,6 +23,7 @@ import { Observable, Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { ReviewService } from "../api/services/review.service";
 import { ErrorHandler } from "./error-handler";
+import { CustomerSuggestionService } from "../api/services/customer-suggestion.service";
 
 @Injectable()
 export class ProjectActionService {
@@ -47,6 +48,7 @@ export class ProjectActionService {
               public popUpService: PopUpMessageService,
               public projectRequestService: ProjectRequestService,
               public questionaryControlService: QuestionaryControlService,
+              public customerSuggestionService: CustomerSuggestionService,
               public boundariesService: BoundariesService,
               private reviewService: ReviewService,
               private router: Router,
@@ -297,6 +299,7 @@ export class ProjectActionService {
               if (this.zipIsSupported) {
                 this.questionaryControlService.currentQuestionIndex++;
                 this.questionaryControlService.withZip = true;
+                this.customerSuggestionService.saveUserSearchTerm(serviceType.name, this.questionaryControlService.zip, true);
                 this.getQuestianary(serviceType);
               } else {
                 this.openZipNotSupportedModal(zip);

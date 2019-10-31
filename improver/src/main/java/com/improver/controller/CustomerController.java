@@ -42,9 +42,11 @@ public class CustomerController {
     }
 
     @PostMapping(SEARCHES)
-    public ResponseEntity<Void> saveCustomerSearch(@RequestParam String zipCode, @RequestParam String search){
+    public ResponseEntity<Void> saveCustomerSearch(@RequestParam String zipCode,
+                                                   @RequestParam String search,
+                                                   @RequestParam String isManual){
         User user = userSecurityService.currentUserOrNull();
-        userService.saveUserSearches(user, search, zipCode);
+        userService.saveUserSearches(user, search, zipCode, Boolean.parseBoolean(isManual));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

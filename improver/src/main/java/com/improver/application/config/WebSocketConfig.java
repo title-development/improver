@@ -1,6 +1,7 @@
 package com.improver.application.config;
 
 import com.improver.application.properties.SecurityProperties;
+import com.improver.ws.interceptors.LogWsHandlerDecorator;
 import com.improver.ws.interceptors.WsSecurityInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -61,7 +62,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
-        //registration.addDecoratorFactory(LogWsHandlerDecorator::new) // for debug purposes
+        registration.addDecoratorFactory(LogWsHandlerDecorator::new) // for debug purposes
         ;
     }
 
