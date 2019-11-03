@@ -124,39 +124,6 @@ public class ProjectController {
     }
 
 
-    @PreAuthorize("hasAnyRole('CUSTOMER', 'ADMIN', 'SUPPORT')")
-    @GetMapping(ID_PATH_VARIABLE + IMAGES)
-    public ResponseEntity<Collection<String>> getProjectPicturesUrls(@PathVariable long id) {
-        Collection<String> images = imageService.getProjectImageUrls(id);
-        return new ResponseEntity<>(images, HttpStatus.OK);
-    }
-
-
-    @Deprecated
-    //TODO: remove to CustomerProjectController
-    @PostMapping(ID_PATH_VARIABLE + IMAGES)
-    public ResponseEntity<Void> addProjectImage(@PathVariable long id, MultipartFile file) {
-        Project project = projectService.getProject(id);
-        String imageUrl = imageService.saveProjectImage(file, project);
-        // Set first picture as a cover
-        if (!project.hasCover()) {
-            project.setCoverUrl(imageUrl);
-        }
-        projectRepository.save(project.setUpdated(ZonedDateTime.now()));
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @Deprecated
-    //TODO: remove to CustomerProjectController
-    @DeleteMapping(ID_PATH_VARIABLE + IMAGES)
-    public ResponseEntity<String> deleteProjectImage(@PathVariable long id, @RequestParam String imageUrl) {
-        Project project = projectService.getProject(id);
-        String newCoverUrl = imageService.deleteProjectImage(imageUrl, project);
-        project.setCoverUrl(newCoverUrl);
-        projectRepository.save(project.setUpdated(ZonedDateTime.now()));
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPPORT')")
     @GetMapping(ID_PATH_VARIABLE + "/close")
     public ResponseEntity<CloseProjectQuestionary> getCloseVariants(@PathVariable long id) {

@@ -221,7 +221,7 @@
              *ngIf="project && (!project.isArchived() || project.images.length > 0 )">
           <image-uploader title="Photos"
                           [isArchived]="Project.isArchived(project.status)"
-                          [apiUrl]="'/api/projects/'+projectId+'/images'"
+                          [apiUrl]="'/api/customers/projects/'+projectId+'/images'"
                           [projectImages]="project.images"></image-uploader>
         </div>
       </div>
