@@ -21,21 +21,18 @@ public class LogWsHandlerDecorator extends WebSocketHandlerDecorator {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         log.debug("WS Connection Established | session=" + session.getId());
-/*        if (session.getPrincipal() == null){
-            session.close(CloseStatus.SESSION_NOT_RELIABLE);
-        }*/
         super.afterConnectionEstablished(session);
     }
 
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
-        log.debug("WS Message | session={}, message={}", session.getId(), message.getPayload());
+        //log.debug("WS Message | session={}, message={}", session.getId(), message.getPayload());
         super.handleMessage(session, message);
     }
 
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
-        log.error("WS Transport Error | session=" + session.getId(), exception);
+        log.error("WS Transport Error | session=" + session.getId());
         super.handleTransportError(session, exception);
     }
 

@@ -156,7 +156,6 @@ export class ServicesSelectorComponent implements OnInit {
       .subscribe(results => {
         this.allTrades = results[0];
         this.allServices = results[1];
-        this.onInitialized.emit();
 
         this.autocompleteData.push({
           label: 'Trades',

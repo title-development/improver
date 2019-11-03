@@ -18,14 +18,13 @@
           <div class="card-content">
 
             <services-selector *ngIf="tradesAndServiceTypes" [initialData]="tradesAndServiceTypes"
-                               (onUpdate)="onTradesAndServicesChange($event)"
-                               (onInitialized)="selectorInitialized = true">
+                               (onUpdate)="onTradesAndServicesChange($event)">
             </services-selector>
 
 
           </div>
 
-          <div class="buttons-block" *ngIf="tradesAndServiceTypes && selectorInitialized">
+          <div class="buttons-block" *ngIf="tradesAndServiceTypes">
             <!--<button cv-button-flat flatStyle="dark" >CANCEL</button>-->
             <button class="save-button" cv-button (click)="updateCompanyTradesAndServiceTypes()">SAVE</button>
           </div>

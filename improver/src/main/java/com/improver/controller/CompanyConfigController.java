@@ -135,44 +135,4 @@ public class CompanyConfigController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
-
-
-
-    @CompanyMemberOrSupportAccess
-    @PostMapping("/areas")
-    @Deprecated
-    public ResponseEntity<Void> addServiceArea(@PathVariable String companyId, @RequestBody List<String> zipCodes) {
-        if(true){
-            throw new RuntimeException("Deprecated method");
-        }
-        Company company = companyRepository.findById(companyId)
-            .orElseThrow(NotFoundException::new);
-        companyConfigService.addAreas(company, zipCodes);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @CompanyMemberOrSupportAccess
-    @DeleteMapping("/areas")
-    @Deprecated
-    public ResponseEntity<Void> removeServiceArea(@PathVariable String companyId, @RequestBody List<String> zipCodes) {
-        if(true){
-            throw new RuntimeException("Deprecated method");
-        }
-        companyConfigService.deleteZipCodesByCompanyId(companyId, zipCodes);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @CompanyMemberOrSupportAccess
-    @PutMapping("/areas")
-    @Deprecated
-    public ResponseEntity<Void> updateServiceArea(@PathVariable String companyId, @RequestParam List<String> toAdd, @RequestParam List<String> toRemove) {
-        if(true){
-            throw new RuntimeException("Deprecated method");
-        }
-        Company company = companyRepository.findById(companyId)
-            .orElseThrow(NotFoundException::new);
-        companyConfigService.updateAreas(company, toAdd, toRemove);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 }

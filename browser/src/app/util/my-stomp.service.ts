@@ -51,6 +51,7 @@ export class MyStompService extends RxStompService {
         }
       }
       if (msg.startsWith(MyStompService.TOKEN_EXPIRED_ERROR)){
+        console.log("token expired, reconnecting ...");
         this.reconnectAfter(100)
       } else if (msg.startsWith(MyStompService.INVALID_TOKEN_ERROR) || msg.includes(MyStompService.ACCESS_DENIED_EXCEPTION_PART)) {
         console.error(msg);

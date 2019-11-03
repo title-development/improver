@@ -32,15 +32,8 @@ public interface CompanyRepository extends JpaRepository<Company, String> {
 
     @Modifying
     @Transactional
-    @Query("UPDATE com.improver.entity.Company c SET c.name = ?2, c.description = ?3, c.email = ?4, c.founded = ?5 WHERE c.id = ?1")
-    void updateCompanyInfo(String companyId, String name, String description, String email, int founded);
-
-    @Modifying
-    @Transactional
     @Query("UPDATE com.improver.entity.Company c SET c.location.streetAddress = ?2, c.location.city = ?3,  c.location.state = ?4, c.location.zip = ?5, c.location.lat = ?6, c.location.lng = ?7  WHERE c.id = ?1")
     void updateCompanyLocation(String companyId, String streetAddress, String city, String state, String zip, double lat, double lng);
-
-
 
 
     @Query("SELECT c FROM com.improver.entity.Company c WHERE " +
@@ -74,8 +67,6 @@ public interface CompanyRepository extends JpaRepository<Company, String> {
         " ORDER BY s.name ASC")
     List<NameIdParentTuple> getSelectedByTrades(String companyId, List<Long> tradeIds);
 
-    @Query("SELECT a.zip FROM com.improver.entity.Area a WHERE a.company.id = ?1")
-    List<String> getCompanyAreas(String companyId);
 
     @Query("SELECT c FROM com.improver.entity.Company c" +
         " INNER JOIN c.billing b" +

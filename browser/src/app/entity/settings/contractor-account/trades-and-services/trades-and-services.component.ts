@@ -18,7 +18,6 @@ import { getErrorMessage } from '../../../../util/functions';
 export class TradesAndServicesComponent implements OnInit {
 
   tradesAndServiceTypes;
-  selectorInitialized = false;
 
   constructor(public constants: Constants,
               public route: ActivatedRoute,
