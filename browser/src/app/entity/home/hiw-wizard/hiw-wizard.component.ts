@@ -1,7 +1,8 @@
-import {Component, ElementRef, Inject, OnDestroy, OnInit, Renderer2} from '@angular/core';
+import { Component, ElementRef, Inject, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 
-import {Subscription} from "rxjs";
-import {MediaQueryService} from "../../../util/media-query.service";
+import { Subject } from "rxjs";
+import { MediaQuery, MediaQueryService } from "../../../util/media-query.service";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: 'hiw-wizard',
@@ -10,43 +11,34 @@ import {MediaQueryService} from "../../../util/media-query.service";
 })
 
 
-export class HiwWizardComponent implements OnInit , OnDestroy {
+export class HiwWizardComponent implements OnInit, OnDestroy {
+  private readonly destroyed$: Subject<void> = new Subject();
   step = 1;
-  private scrollHolder: Element = document.getElementsByClassName('scroll-holder')[0];
   wizardIcons;
-  scrollHandler = () => this.onScroll();
-  private mediaQuerySubscription: Subscription;
-  isMobileResolution: boolean;
+  mediaQuery: MediaQuery;
+  isMobile = false;
 
   constructor(private elementRef: ElementRef,
               @Inject('Window') private window: Window,
-              public mediaQuery: MediaQueryService,
+              public mediaQueryService: MediaQueryService,
               public renderer: Renderer2) {
 
-    this.scrollHolder.addEventListener('scroll', this.scrollHandler);
+    this.mediaQueryService.screen
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(mediaQuery => {
+        this.mediaQuery = mediaQuery;
+        this.isMobile = mediaQuery.xs || mediaQuery.md || mediaQuery.sm;
+      });
 
-    this.mediaQuerySubscription = this.mediaQuery.screen.subscribe(response => {
-      if(response.xs || response.sm || response.md) {
-        this.isMobileResolution = true;
-      }
-    });
   }
 
   ngOnInit() {
     this.wizardIcons = this.elementRef.nativeElement.getElementsByClassName('wizard-step-image-block');
   }
 
-  onScroll(): void {
-    if (this.isMobileResolution) {
-      for(let i=0;i<this.wizardIcons.length;i++) {
-        if(this.scrollHolder.scrollTop > this.scrollHolder.scrollTop + this.wizardIcons[i].getBoundingClientRect().top - 300) {
-          this.renderer.addClass(this.wizardIcons[i], 'active');
-        }
-      }
-    }
-  }
-
   ngOnDestroy(): void {
-    this.scrollHolder.removeEventListener('scroll', this.scrollHandler);
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 }
+

@@ -94,7 +94,7 @@
   }
 
   .menu-body {
-    padding: 8px 0px;
+    padding: 12px 0px 8px;
 
     &.anonymous {
       padding: 0px;
@@ -166,8 +166,8 @@
       }
 
       h4, a {
-        font-size: 12px;
-        padding: 8px 24px;
+        font-size: 13px;
+        padding: 12px 24px;
         text-align: left;
         text-transform: uppercase;
       }
@@ -207,9 +207,9 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-size: 12px;
+      font-size: 13px;
       letter-spacing: 0.2px;
-      padding: 8px 24px;
+      padding: 16px 24px;
       text-transform: uppercase;
       color: #565656;
       cursor: pointer;
@@ -232,6 +232,8 @@
   opacity: 0;
   z-index: 9999;
   .menu-body {
+    padding-top: 8px;
+    padding-bottom: 4px;
 
     &.anonymous {
       padding: 0;
@@ -309,12 +311,18 @@
 }
 
 .unauthorized-menu {
-  a {
-    font-weight: 500!important;
-    color: $black-900!important;
-    padding: 11px 24px!important;
-    &:hover {
-      background-color: $black-100;
+  .menu-body {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 0px 0px;
+
+    a {
+      font-weight: 500!important;
+      color: $black-900!important;
+      padding: 12px 24px!important;
+      &:hover {
+        background-color: $black-100;
+      }
     }
   }
   .menu-footer {

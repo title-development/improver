@@ -11,8 +11,9 @@ import { ProjectRequestService } from '../../../api/services/project-request.ser
 
 import { Project } from "../../../api/models/Project";
 import { ProjectRequest } from '../../../api/models/ProjectRequest';
-import { take } from "rxjs/internal/operators";
-import { Subscription } from 'rxjs';
+import { take, takeUntil } from "rxjs/internal/operators";
+import { Subject, Subscription } from 'rxjs';
+import { MediaQuery, MediaQueryService } from "../../../util/media-query.service";
 
 @Component({
   selector: 'customer-project-request-dialog',
@@ -21,9 +22,8 @@ import { Subscription } from 'rxjs';
 })
 
 export class CustomerProjectRequestDialogComponent implements OnInit, OnDestroy {
-
+  private readonly destroyed$: Subject<void> = new Subject();
   activeTab = 'MESSAGES';
-
   @ViewChild('reviewsScrollBar') reviewsScrollBar: PerfectScrollbarComponent;
   ProjectRequest = ProjectRequest;
   Project = Project;
@@ -35,6 +35,7 @@ export class CustomerProjectRequestDialogComponent implements OnInit, OnDestroy 
   onCompanyHire: EventEmitter<any>;
   onCompanyDecline: EventEmitter<any>;
   private onProjectsUpdate$: Subscription;
+  mediaQuery: MediaQuery;
 
   constructor(public currentDialogRef: MatDialogRef<any>,
               public dialog: MatDialog,
@@ -46,7 +47,12 @@ export class CustomerProjectRequestDialogComponent implements OnInit, OnDestroy 
               private router: Router,
               private elementRef: ElementRef,
               private renderer: Renderer2,
+              private mediaQueryService: MediaQueryService,
               @Inject('Window') private window: Window) {
+
+    this.mediaQueryService.screen
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(mediaQuery => this.mediaQuery = mediaQuery);
 
     this.router.events.pipe(
       take(1)
@@ -56,9 +62,9 @@ export class CustomerProjectRequestDialogComponent implements OnInit, OnDestroy 
       }
     });
 
-    this.onProjectsUpdate$ = this.projectActionService.onProjectsUpdate.subscribe(() => {
-      this.getProjectRequest(this.projectRequest.id);
-    });
+    this.projectActionService.onProjectsUpdate
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(() => this.getProjectRequest(this.projectRequest.id));
   }
 
   ngOnInit(): void {
@@ -66,9 +72,8 @@ export class CustomerProjectRequestDialogComponent implements OnInit, OnDestroy 
   }
 
   ngOnDestroy(): void {
-    if(this.onProjectsUpdate$) {
-      this.onProjectsUpdate$.unsubscribe();
-    }
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
   reviewSend(event): void {

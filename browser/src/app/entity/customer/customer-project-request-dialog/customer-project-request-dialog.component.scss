@@ -102,7 +102,7 @@
 
       @include response-to(xs) {
         margin-left: 0;
-        margin-top: 16px;
+        margin-top: 1px;
         align-items: center;
       }
 
@@ -282,6 +282,10 @@
     height: 47px;
     flex: none;
 
+    @include response-to(xs) {
+      height: 34px;
+    }
+
     .tab-name {
       cursor: pointer;
       display: flex;
@@ -296,6 +300,7 @@
       @include response-to(xs) {
         width: 33.333333%;
         justify-content: center;
+        height: 34px;
       }
 
       &.active {

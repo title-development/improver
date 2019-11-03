@@ -137,7 +137,7 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
 
     if (this.controlContainer && (this.controlContainer as NgForm).ngSubmit) {
       (this.controlContainer as any).ngSubmit.subscribe(() => {
-        this.overlayRef.removeBackdrop();
+        this.overlayRef.closeDropDown(this.overlayRef.getBackdrop());
       })
     }
 
@@ -148,7 +148,7 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
       this.autocompleteSearch.emit(model);
       this.init(model);
     } else {
-      this.resetSelection();
+      // this.resetSelection();
     }
   }
 
@@ -197,7 +197,7 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
     }
 
     this.autocompleteSearch.next(this.search);
-    if (!this.opened) {
+    if (!this.opened && !this.allowAnyValue) {
       this.openDropdown();
     }
   }
@@ -398,7 +398,7 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
     }
   }
 
-  private closeDropdown(event): void {
+  private closeDropdown(event?): void {
     this.onClose.emit(false);
     if (!this.disableItemsMatch) {
       if (this.items[this.highlightedItemIndex] && !this.tags) {

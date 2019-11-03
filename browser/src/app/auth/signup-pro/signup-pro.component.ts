@@ -62,9 +62,9 @@ export class SignupProComponent implements OnDestroy {
     this.route.queryParams.pipe(takeUntil(this.destroyed$)).subscribe((params: Params) => {
       this.user.referralCode = this.useReferralCode(params);
     });
-    this.mediaQueryService.screen.pipe(takeUntil(this.destroyed$)).subscribe((mediaQuery: MediaQuery) => {
-      this.mediaQuery = mediaQuery;
-    });
+    this.mediaQueryService.screen
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(mediaQuery => this.mediaQuery = mediaQuery);
   }
 
   registerContractor(form) {

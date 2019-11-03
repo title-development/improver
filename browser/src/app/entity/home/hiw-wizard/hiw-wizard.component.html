@@ -22,17 +22,17 @@
         <div class="wizard-step-border-bottom-fill"></div>
       </div>
 
-      <div class="arrow-wrapper" [ngClass]="{'animate': step == 2, 'hover': step > 1}" (mouseenter)="step = 1"
+      <div class="arrow-wrapper" [ngClass]="{'animate': step == 2, 'hover': step > 1 || isMobile}" (mouseenter)="step = 1"
            (mouseleave)="step = 1">
         <div class="line -top"></div>
         <div class="line -bottom"></div>
       </div>
 
-      <div class="wizard-step step-2" [ngClass]="{'animate': step == 2, 'hover': step >= 2}" (mouseleave)="step = 1"
+      <div class="wizard-step step-2" [ngClass]="{'animate': step == 2, 'hover': step >= 2 || isMobile}" (mouseleave)="step = 1"
            (mouseenter)="step = 2">
         <div class="wizard-step-content" fxLayoutAlign="center center" fxLayout="column">
           <div class="wizard-step-image-block" fxLayoutAlign="center center">
-            <img [src]="step >= 2 ? 'assets/img/hiw-wizard/hiw-wizard-step-2-filled.svg' : 'assets/img/hiw-wizard/hiw-wizard-step-2-empty.svg'" alt="">
+            <img [src]="step >= 2 || isMobile ? 'assets/img/hiw-wizard/hiw-wizard-step-2-filled.svg' : 'assets/img/hiw-wizard/hiw-wizard-step-2-empty.svg'" alt="">
           </div>
           <div class="wizard-step-text-block" fxLayoutAlign="center center" fxLayout="column">
             <div class="wizard-step-title">Review free quotes</div>
@@ -45,17 +45,17 @@
         <div class="wizard-step-border-bottom-fill"></div>
       </div>
 
-      <div class="arrow-wrapper" [ngClass]="{'animate': step >= 3, 'hover': step > 2}" (mouseenter)="step = 2"
+      <div class="arrow-wrapper" [ngClass]="{'animate': step >= 3, 'hover': step > 2 || isMobile}" (mouseenter)="step = 2"
            (mouseleave)="step = 1">
         <div class="line -top"></div>
         <div class="line -bottom"></div>
       </div>
 
-      <div class="wizard-step step-3" [ngClass]="{'animate': step == 3, 'hover': step >= 3}" (mouseleave)="step = 1"
+      <div class="wizard-step step-3" [ngClass]="{'animate': step == 3, 'hover': step >= 3 || isMobile}" (mouseleave)="step = 1"
            (mouseenter)="step = 3">
         <div class="wizard-step-content" fxLayoutAlign="center center" fxLayout="column">
           <div class="wizard-step-image-block" fxLayoutAlign="center center">
-            <img [src]="step >= 3 ? 'assets/img/hiw-wizard/hiw-wizard-step-3-filled.svg' : 'assets/img/hiw-wizard/hiw-wizard-step-3-empty.svg'" alt="">
+            <img [src]="step >= 3 || isMobile ? 'assets/img/hiw-wizard/hiw-wizard-step-3-filled.svg' : 'assets/img/hiw-wizard/hiw-wizard-step-3-empty.svg'" alt="">
           </div>
           <div class="wizard-step-text-block" fxLayoutAlign="center center" fxLayout="column">
             <div class="wizard-step-title">Hire the right Pro</div>
@@ -67,17 +67,17 @@
         <div class="wizard-step-border-bottom-fill"></div>
       </div>
 
-      <div class="arrow-wrapper" [ngClass]="{'animate': step >= 4, 'hover': step > 3}" (mouseenter)="step = 3"
+      <div class="arrow-wrapper" [ngClass]="{'animate': step >= 4, 'hover': step > 3 || isMobile}" (mouseenter)="step = 3"
            (mouseleave)="step = 1">
         <div class="line -top"></div>
         <div class="line -bottom"></div>
       </div>
 
-      <div class="wizard-step step-4" [ngClass]="{'animate': step == 4, 'hover': step >= 4}" (mouseleave)="step = 1"
+      <div class="wizard-step step-4" [ngClass]="{'animate': step == 4, 'hover': step >= 4 || isMobile}" (mouseleave)="step = 1"
            (mouseenter)="step = 4">
         <div class="wizard-step-content" fxLayoutAlign="center center" fxLayout="column">
           <div class="wizard-step-image-block" fxLayoutAlign="center center">
-            <img [src]="step >= 4 ? 'assets/img/hiw-wizard/hiw-wizard-step-4-filled.svg' : 'assets/img/hiw-wizard/hiw-wizard-step-4-empty.svg'" alt="">
+            <img [src]="step >= 4 || isMobile ? 'assets/img/hiw-wizard/hiw-wizard-step-4-filled.svg' : 'assets/img/hiw-wizard/hiw-wizard-step-4-empty.svg'" alt="">
           </div>
           <div class="wizard-step-text-block" fxLayoutAlign="center center" fxLayout="column">
             <div class="wizard-step-title">Enjoy done work</div>
@@ -90,3 +90,4 @@
     </div>
   </div>
 </div>
+

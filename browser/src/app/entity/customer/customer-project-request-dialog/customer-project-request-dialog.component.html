@@ -4,7 +4,7 @@
     <mat-icon class="close-modal" color="accent" (click)="close()">clear</mat-icon>
 
     <div class="header-content" *ngIf="companyProfile">
-      <a href="/companies/{{companyProfile.id}}" class="logo" [ngClass]="{'-archived': companyProfile.deleted}"
+      <a href="/companies/{{companyProfile.id}}" class="logo" [ngClass]="{'-archived': companyProfile.deleted}" *ngIf="!mediaQuery.xs"
          [ngStyle]="companyProfile.iconUrl && companyProfile.iconUrl != '' && !companyProfile.deleted ? {'background-image':'url(' + companyProfile.iconUrl + ')'} : {'background-image':'url(assets/img/company-logo-placeholder.png)'}">
         <span class="declined sm-none md-none" *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.DECLINED">
               Declined
@@ -15,8 +15,8 @@
       </a>
 
       <div class="info-block">
-        <a href="/companies/{{companyProfile.id}}" [ngClass]="{'-archived': companyProfile.deleted}" class="company-name">
-          {{companyProfile.name | truncate:26: '...'}}
+        <a href="/companies/{{companyProfile.id}}" [ngClass]="{'-archived': companyProfile.deleted}" class="company-name" [title]="companyProfile.name">
+          {{companyProfile.name | truncate:36: '...'}}
           <span class="declined xs-none" *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.DECLINED">
               Declined
             </span>
@@ -24,7 +24,7 @@
               Hired
             </span>
         </a>
-        <div class="rating">
+        <div class="rating" *ngIf="!mediaQuery.xs">
           <div class="company-rating">{{companyProfile.rating | number: '1.0-1'}}
           </div>
           <rating-component [rating]="companyProfile.rating" [starSize]="14" [readOnly]="true"></rating-component>
@@ -46,7 +46,7 @@
 
 
     <div class="buttons-block" *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.ACTIVE && !Project.isArchived(projectRequest.projectStatus)">
-      <div class="info-icon" (click)="openMessage = !openMessage">i</div>
+      <div class="info-icon" (click)="openMessage = !openMessage" *ngIf="!mediaQuery.xs">i</div>
       <button cv-button class="hire-company-button" (click)="hireCompany(projectRequest)">
         Accept Offer
       </button>

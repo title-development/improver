@@ -45,8 +45,10 @@
     </div>
 
     <div class="user-role unauthorized-menu" *ngIf="!securityService.isAuthenticated() && ( securityService.hasRole(Role.ANONYMOUS) || securityService.hasRole(Role.INCOMPLETE_PRO))">
-        <a routerLink="/login" (click)="close()">Log in</a>
-        <a routerLink="/signup" (click)="close()">Sign up</a>
+        <div class="menu-body">
+          <a routerLink="/login" (click)="close()">Log in</a>
+          <a routerLink="/signup" (click)="close()">Sign up</a>
+        </div>
         <div class="menu-footer">
           <a routerLink="/become-pro" (click)="close()">Become a Pro</a>
         </div>
