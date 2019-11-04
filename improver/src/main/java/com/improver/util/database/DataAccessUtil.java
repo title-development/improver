@@ -35,6 +35,7 @@ public final class DataAccessUtil {
     public static final int REVIEW_REQUEST_MESSAGE_MAX_SIZE = 255;
     public static final int REVIEW_MESSAGE_MIN_SIZE = 10;
     public static final int REVIEW_MESSAGE_MAX_SIZE = 1500;
+    public static final int USER_SEARCH_MAX_SIZE = 150;
 
     public static final int ADMIN_PROJECT_VALIDATION_COMMENT_MIN_SIZE = 10;
     public static final int ADMIN_PROJECT_VALIDATION_COMMENT_MAX_SIZE = 500;

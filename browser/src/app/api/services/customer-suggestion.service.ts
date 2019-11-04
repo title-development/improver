@@ -25,6 +25,8 @@ export class CustomerSuggestionService {
   private suggestedServiceTypeCached: boolean = false;
   private tradeWithServicesCached: boolean = false;
 
+  readonly maxSearchStringSize: number = 150;
+
   constructor(private accountService: AccountService,
               private securityService: SecurityService,
               private serviceTypeService: ServiceTypeService,
@@ -110,7 +112,10 @@ export class CustomerSuggestionService {
     return this._popular$;
   }
 
-  saveUserSearchTerm(search: any, zipCode: any, isManual: boolean){
+  saveUserSearchTerm(search: string, zipCode: string, isManual: boolean){
+    if (search.length > this.maxSearchStringSize){
+      search = search.substring(0, this.maxSearchStringSize);
+    }
 
     localStorage.setItem('zipCode', zipCode);
     this.accountService.saveSearchTerm(search, zipCode, isManual).pipe(

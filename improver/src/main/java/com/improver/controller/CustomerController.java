@@ -15,10 +15,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Size;
 import java.util.List;
 
 import static com.improver.application.properties.Path.*;
 import static com.improver.application.properties.Path.NOTIFICATIONS;
+import static com.improver.util.database.DataAccessUtil.USER_SEARCH_MAX_SIZE;
 
 @Slf4j
 @Controller
@@ -43,7 +45,7 @@ public class CustomerController {
 
     @PostMapping(SEARCHES)
     public ResponseEntity<Void> saveCustomerSearch(@RequestParam String zipCode,
-                                                   @RequestParam String search,
+                                                   @RequestParam @Size(max = USER_SEARCH_MAX_SIZE) String search,
                                                    @RequestParam String isManual){
         User user = userSecurityService.currentUserOrNull();
         userService.saveUserSearches(user, search, zipCode, Boolean.parseBoolean(isManual));

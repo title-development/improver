@@ -4,13 +4,11 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 
+import static com.improver.util.database.DataAccessUtil.USER_SEARCH_MAX_SIZE;
 import static com.improver.util.serializer.SerializationUtil.DATE_TIME_PATTERN;
 
 @Data
@@ -26,6 +24,7 @@ public class UserSearch {
 
     private String zip;
 
+    @Column(length = USER_SEARCH_MAX_SIZE)
     private String search;
 
     private boolean isManual;
