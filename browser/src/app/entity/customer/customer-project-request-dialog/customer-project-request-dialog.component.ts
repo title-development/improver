@@ -22,6 +22,8 @@ import { MediaQuery, MediaQueryService } from "../../../util/media-query.service
 })
 
 export class CustomerProjectRequestDialogComponent implements OnInit, OnDestroy {
+  private readonly COMPANY_NAME_TRUNCATE_DEFAULT = 50;
+  private readonly COMPANY_NAME_TRUNCATE_XS = 30;
   private readonly destroyed$: Subject<void> = new Subject();
   activeTab = 'MESSAGES';
   @ViewChild('reviewsScrollBar') reviewsScrollBar: PerfectScrollbarComponent;
@@ -36,6 +38,7 @@ export class CustomerProjectRequestDialogComponent implements OnInit, OnDestroy 
   onCompanyDecline: EventEmitter<any>;
   private onProjectsUpdate$: Subscription;
   mediaQuery: MediaQuery;
+  companyNameTruncate: number = this.COMPANY_NAME_TRUNCATE_DEFAULT;
 
   constructor(public currentDialogRef: MatDialogRef<any>,
               public dialog: MatDialog,
@@ -52,7 +55,10 @@ export class CustomerProjectRequestDialogComponent implements OnInit, OnDestroy 
 
     this.mediaQueryService.screen
       .pipe(takeUntil(this.destroyed$))
-      .subscribe(mediaQuery => this.mediaQuery = mediaQuery);
+      .subscribe(mediaQuery => {
+        this.mediaQuery = mediaQuery;
+        this.companyNameTruncate = mediaQuery.xs ? this.COMPANY_NAME_TRUNCATE_XS : this.COMPANY_NAME_TRUNCATE_DEFAULT
+      });
 
     this.router.events.pipe(
       take(1)

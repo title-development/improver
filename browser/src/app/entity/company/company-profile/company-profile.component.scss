@@ -205,7 +205,7 @@ p {
 
 .mobile-details {
   display: none;
-  padding-top: 72px;
+  padding-top: 56px;
   padding-bottom: 28px;
   background-color: #fff;
   @include response-to(sm) {
@@ -401,6 +401,7 @@ company-reviews {
   display: flex;
   @include response(xs) {
     max-width: 240px;
+    width: 240px;
     margin: 0 auto;
   }
   &:not(:last-child) {
@@ -411,15 +412,10 @@ company-reviews {
   }
   a {
     font-size: 14px;
-    color: $link-dark;
+    color: $primary-500;
     word-break: break-all;
     &[href^="tel:"] {
-      color: $link-dark;
-      @include response-from(sm) {
-        color: $black-primary;
-        pointer-events: none;
-
-      }
+      color: $primary-500;
     }
   }
   span {
@@ -487,7 +483,6 @@ company-reviews {
   }
   .licenses {
     @include response(xs) {
-      max-width: 220px;
       margin: 0 auto;
     }
     p {

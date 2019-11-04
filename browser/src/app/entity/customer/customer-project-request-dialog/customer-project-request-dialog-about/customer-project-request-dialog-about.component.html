@@ -1,9 +1,11 @@
 <perfect-scrollbar [disabled]="mediaQuery.sm || mediaQuery.xs">
   <div class="info-block details">
-    <div class="row">
-      <div class="" [ngClass]="companyProfile.licenses?.length > 0 ? 'col-xs-12 col-sm-6': 'col-xs-12'">
-        <h3>Professional information</h3>
-        <div class="prof-info" [ngClass]="companyProfile.licenses?.length > 0 ? '': 'no-licenses'">
+      <div>
+        <div class="about-title">
+          <h3>About</h3>
+          <a target="_blank" [routerLink]="['/companies', companyProfile.id]">see full profile</a>
+        </div>
+        <div class="prof-info">
           <div class="block">
             <i class="imp-icon-map-marker"></i>
             <div class="group">
@@ -22,18 +24,6 @@
             </div>
           </div>
           <div class="block">
-            <i class="imp-icon-globe"></i>
-            <div class="group">
-              <h4>Website:</h4>
-              <ng-container *ngIf="companyProfile.siteUrl">
-                <a [href]="companyProfile.siteUrl">{{companyProfile.siteUrl}}</a>
-              </ng-container>
-              <ng-container *ngIf="!companyProfile.siteUrl">
-                <a>none</a>
-              </ng-container>
-            </div>
-          </div>
-          <div class="block">
             <i class="imp-icon-building-2"></i>
             <div class="group">
               <h4>Years in business:</h4>
@@ -48,18 +38,9 @@
           </div>
         </div>
       </div>
-      <div class="col-xs-12 col-sm-6" *ngIf="companyProfile.licenses?.length > 0">
-        <div class="licenses">
-          <h3>Licenses</h3>
-          <ng-template ngFor let-license [ngForOf]="companyProfile.licenses">
-            <p [attr.title]="license">{{license | truncate:40: '...'}}</p>
-          </ng-template>
-        </div>
-      </div>
+
     </div>
-  </div>
   <div class="info-block about">
-    <h3>About</h3>
       <p class="textarea-formatting">{{companyProfile.description | truncate:truncateAboutInfo:'...'}}
         <span class="show-more-button" (click)="truncateAboutInfo = 10000;"
               *ngIf="companyProfile.description.length > 300 && truncateAboutInfo == 300">Show more <i

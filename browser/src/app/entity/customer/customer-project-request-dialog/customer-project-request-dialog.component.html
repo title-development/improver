@@ -4,7 +4,7 @@
     <mat-icon class="close-modal" color="accent" (click)="close()">clear</mat-icon>
 
     <div class="header-content" *ngIf="companyProfile">
-      <a href="/companies/{{companyProfile.id}}" class="logo" [ngClass]="{'-archived': companyProfile.deleted}" *ngIf="!mediaQuery.xs"
+      <div  class="logo" [ngClass]="{'-archived': companyProfile.deleted}"
          [ngStyle]="companyProfile.iconUrl && companyProfile.iconUrl != '' && !companyProfile.deleted ? {'background-image':'url(' + companyProfile.iconUrl + ')'} : {'background-image':'url(assets/img/company-logo-placeholder.png)'}">
         <span class="declined sm-none md-none" *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.DECLINED">
               Declined
@@ -12,19 +12,19 @@
         <span class="hired sm-none md-none" *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.HIRED">
               Hired
             </span>
-      </a>
+      </div>
 
       <div class="info-block">
-        <a href="/companies/{{companyProfile.id}}" [ngClass]="{'-archived': companyProfile.deleted}" class="company-name" [title]="companyProfile.name">
-          {{companyProfile.name | truncate:36: '...'}}
+        <div  [ngClass]="{'-archived': companyProfile.deleted}" class="company-name" [title]="companyProfile.name">
+          {{companyProfile.name | truncate:companyNameTruncate: '...'}}
           <span class="declined xs-none" *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.DECLINED">
               Declined
             </span>
           <span class="hired xs-none" *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.HIRED">
               Hired
             </span>
-        </a>
-        <div class="rating" *ngIf="!mediaQuery.xs">
+        </div>
+        <div class="rating">
           <div class="company-rating">{{companyProfile.rating | number: '1.0-1'}}
           </div>
           <rating-component [rating]="companyProfile.rating" [starSize]="14" [readOnly]="true"></rating-component>
@@ -123,17 +123,17 @@
     <div class="sidebar xs-none sm-none md-none" [cvSpinner]="!companyProfile" [cvSpinnerSize]="24">
         <mat-icon class="close-modal" color="accent" (click)="close()">clear</mat-icon>
       <div class="sidebar-information" *ngIf="companyProfile">
-        <a target="_blank" [routerLink]="['/companies', companyProfile.id]" class="logo" [ngClass]="{'-archived': companyProfile.deleted}"
-           [ngStyle]="companyProfile.iconUrl && companyProfile.iconUrl != '' && !companyProfile.deleted ? {'background-image':'url(' + companyProfile.iconUrl + ')'} : {'background-image':'url(assets/img/company-logo-placeholder.png)'}"></a>
+        <div class="logo" [ngClass]="{'-archived': companyProfile.deleted}"
+           [ngStyle]="companyProfile.iconUrl && companyProfile.iconUrl != '' && !companyProfile.deleted ? {'background-image':'url(' + companyProfile.iconUrl + ')'} : {'background-image':'url(assets/img/company-logo-placeholder.png)'}"></div>
         <div class="info-block">
-          <a target="_blank" [routerLink]="['/companies', companyProfile.id]" [ngClass]="{'-archived': companyProfile.deleted}" class="company-name">{{companyProfile.name}}
+          <div [ngClass]="{'-archived': companyProfile.deleted}" class="company-name">{{companyProfile.name}}
             <span class="declined" *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.DECLINED">
               Declined
             </span>
             <span class="hired" *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.HIRED">
               Hired
             </span>
-          </a>
+          </div>
 
           <div class="rating">
             <div class="company-rating">{{companyProfile.rating | number:'1.0-1'}}</div>
@@ -153,7 +153,7 @@
               <div class="label">Phone number:</div>
             </div>
             <div class="phone-group">
-              <div class="label">{{companyProfile.phone}}</div>
+              <a class="value" [href]="'tel:'+companyProfile.phone">{{companyProfile.phone}}</a>
             </div>
           </div>
         </div>

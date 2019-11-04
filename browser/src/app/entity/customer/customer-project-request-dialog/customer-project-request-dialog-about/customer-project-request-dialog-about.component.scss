@@ -18,9 +18,6 @@ h3 {
   font-weight: 600;
   color: $black-primary;
   margin-bottom: 18px;
-  @include response(xs) {
-    text-align: center;
-  }
 }
 
 h4 {
@@ -37,25 +34,26 @@ p {
 
 a {
   font-size: 14px;
-  color: $link-dark;
+  color: $primary-500;
   word-break: break-all;
   &[href^="tel:"] {
-    color: $link-dark;
-    @include response-from(sm) {
-      color: $black-primary;
-      pointer-events: none;
-
-    }
+    color: $primary-500;
   }
 }
 
 .info-block {
-  padding: 22px 25px;
-  @include response(xs) {
-    padding: 28px 15px;
+  padding: 24px 24px 0px;
+  &.about {
+    padding-top: 16px;
   }
-  &:not(:last-child) {
-    border-bottom: 1px solid $black-300;
+}
+
+.about-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-start;
+  a {
+    margin-left: 8px;
   }
 }
 
@@ -73,31 +71,11 @@ a {
     }
   }
   .prof-info {
-    @include response(xs) {
+    @include response(sm) {
       display: flex;
-      flex-wrap: wrap;
+      flex-direction: row;
       .block {
         width: 100%;
-      }
-    }
-    &.no-licenses {
-      display: flex;
-      flex-wrap: wrap;
-      max-width: 480px;
-      margin: 0 -12px;
-      @include response(xs) {
-        max-width: none;
-        margin: 0;
-        display: flex;
-        flex-wrap: wrap;
-      }
-      .block {
-        padding: 0 12px;
-        width: 50%;
-        @include response(xs) {
-          padding: 0;
-          width: 100%;
-        }
       }
     }
   }
@@ -114,9 +92,6 @@ a {
 .services {
   p {
     margin-bottom: 7px;
-    @include response(xs) {
-      text-align: center;
-    }
   }
   button {
     @include response(xs) {
@@ -164,8 +139,6 @@ a {
   align-items: flex-start;
   @include response(xs) {
     max-width: 220px;
-    margin-left: auto;
-    margin-right: auto;
   }
   &:not(:last-child) {
     margin-bottom: 12px;
@@ -191,4 +164,3 @@ a {
     font-size: 10px;
   }
 }
-

@@ -53,6 +53,15 @@
       </div>
       <div class="contacts">
         <div class="info-block">
+          <i class="imp-icon-building-2"></i>
+          <div class="group">
+            <h5>Founded</h5>
+            <p><span>{{companyProfile.founded}}</span> ({{companyProfile.yearsInBusiness}} years in
+              business)
+            </p>
+          </div>
+        </div>
+        <div class="info-block">
           <i class="imp-icon-map-marker"></i>
           <div class="group">
             <p>{{companyProfile.location?.streetAddress}}, <br> {{companyProfile.location?.city}},
@@ -126,47 +135,19 @@
 
               </div>
             </div>
-            <div class="info-group">
-              <div class="row">
-                <div class="col-sm-6 col-xs-12">
-                  <h4>Additional info <i *ngIf="editMode" routerLink="/pro/settings/info" class="imp-icon-pencil-2 pencil"></i></h4>
-                  <div class="info-block">
-                    <i class="imp-icon-globe"></i>
-                    <div class="group">
-                      <h5>Website:</h5>
-                      <ng-container *ngIf="companyProfile.siteUrl">
-                        <a [href]="companyProfile.siteUrl | addHtml">{{companyProfile.siteUrl}}</a>
-                      </ng-container>
-                      <ng-container *ngIf="!companyProfile.siteUrl">
-                        <a>none</a>
-                      </ng-container>
-                    </div>
-                  </div>
-                  <div class="info-block">
-                    <i class="imp-icon-building-2"></i>
-                    <div class="group">
-                      <h5>Founded</h5>
-                      <p><span>{{companyProfile.founded}}</span> ({{companyProfile.yearsInBusiness}} years in
-                        business)
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-sm-6 col-xs-12">
+            <div class="info-group" *ngIf="companyProfile.licenses.length > 0 || companyProfile?.owner">
                   <h4>Licenses <i *ngIf="editMode" routerLink="/pro/settings/info" class="imp-icon-pencil-2 pencil"></i></h4>
                   <div class="licenses">
                     <ng-container *ngIf="companyProfile && companyProfile.licenses.length > 0">
                       <ng-container *ngFor="let license of companyProfile.licenses">
-                        <p [attr.title]="license">{{license | truncate:30: '...'}}</p>
+                        <p [attr.title]="license">{{license | truncate:48: '...'}}</p>
                       </ng-container>
                     </ng-container>
-                    <ng-container *ngIf="companyProfile && companyProfile.licenses == 0">
+                    <ng-container *ngIf="companyProfile && companyProfile.licenses.length == 0">
                       <p>No added licenses</p>
                     </ng-container>
                     <div (click)="openLicenseDialog()" *ngIf="editMode" class="show-more-button">+ Add new license</div>
                   </div>
-                </div>
-              </div>
             </div>
             <div class="info-group">
               <h4>Services offered <i *ngIf="editMode" routerLink="/pro/settings/services" class="imp-icon-pencil-2 pencil"></i></h4>
@@ -237,11 +218,20 @@
                 </div>
               </div>
               <div class="card -space contacts">
-                <h4>Location <i *ngIf="editMode" routerLink="/pro/settings/info" class="imp-icon-pencil-2 pencil"></i></h4>
+                <h4>Professional info <i *ngIf="editMode" routerLink="/pro/settings/info" class="imp-icon-pencil-2 pencil"></i></h4>
+                <div class="info-block">
+                  <i class="imp-icon-building-2"></i>
+                  <div class="group">
+                    <h5>Founded</h5>
+                    <p><span>{{companyProfile.founded}}</span> ({{companyProfile.yearsInBusiness}} years in
+                      business)
+                    </p>
+                  </div>
+                </div>
                 <div class="info-block">
                   <i class="imp-icon-map-marker"></i>
                   <div class="group">
-                    <!--<h5>Location:</h5>-->
+                    <h5>Location:</h5>
                     <p>{{companyProfile.location?.streetAddress}}, {{companyProfile.location?.city}},
                       {{companyProfile.location?.state}}
                       {{companyProfile.location?.zip}}</p>
