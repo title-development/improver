@@ -3,47 +3,42 @@
   <div class="header lg-none xlg-none" *ngIf="showAddReviewForm == false">
     <mat-icon class="close-modal" color="accent" (click)="close()">clear</mat-icon>
 
-    <div class="header-content" *ngIf="companyProfile">
-      <div  class="logo" [ngClass]="{'-archived': companyProfile.deleted}"
-         [ngStyle]="companyProfile.iconUrl && companyProfile.iconUrl != '' && !companyProfile.deleted ? {'background-image':'url(' + companyProfile.iconUrl + ')'} : {'background-image':'url(assets/img/company-logo-placeholder.png)'}">
-        <span class="declined sm-none md-none" *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.DECLINED">
-              Declined
-            </span>
-        <span class="hired sm-none md-none" *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.HIRED">
-              Hired
-            </span>
-      </div>
-
-      <div class="info-block">
-        <div  [ngClass]="{'-archived': companyProfile.deleted}" class="company-name" [title]="companyProfile.name">
-          {{companyProfile.name | truncate:companyNameTruncate: '...'}}
-          <span class="declined xs-none" *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.DECLINED">
-              Declined
-            </span>
-          <span class="hired xs-none" *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.HIRED">
-              Hired
-            </span>
+    <div class="header-content-wrapper">
+      <div class="header-content" *ngIf="companyProfile">
+        <div  class="logo" [ngClass]="{'-archived': companyProfile.deleted}"
+              [ngStyle]="companyProfile.iconUrl && companyProfile.iconUrl != '' && !companyProfile.deleted ? {'background-image':'url(' + companyProfile.iconUrl + ')'} : {'background-image':'url(assets/img/company-logo-placeholder.png)'}">
         </div>
-        <div class="rating">
-          <div class="company-rating">{{companyProfile.rating | number: '1.0-1'}}
+
+        <div class="info-block">
+          <div  [ngClass]="{'-archived': companyProfile.deleted}" class="company-name" [title]="companyProfile.name">
+            {{companyProfile.name | truncate:companyNameTruncate: '...'}}
+            <span class="declined" *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.DECLINED">
+              Declined
+            </span>
+            <span class="hired" *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.HIRED">
+              Hired
+            </span>
           </div>
-          <rating-component [rating]="companyProfile.rating" [starSize]="14" [readOnly]="true"></rating-component>
-          <div class="company-reviews-count">({{companyProfile.reviewCount}})</div>
+          <div class="rating">
+            <div class="company-rating">{{companyProfile.rating | number: '1.0-1'}}
+            </div>
+            <rating-component [rating]="companyProfile.rating" [starSize]="14" [readOnly]="true"></rating-component>
+            <div class="company-reviews-count">({{companyProfile.reviewCount}})</div>
+          </div>
+          <div class="approve-mark" *ngIf="companyProfile.approved">
+            <img class="approve-icon" src="assets/icons/approve.svg">
+            <div class="approve-text">Approved by Home Improve</div>
+          </div>
         </div>
-        <div class="approve-mark" *ngIf="companyProfile.approved">
-          <img class="approve-icon" src="assets/icons/approve.svg">
-          <div class="approve-text">Approved by Home Improve</div>
-        </div>
-      </div>
 
-      <div class="add-review-button-container"
-           *ngIf="((projectRequest && projectRequest.status == ProjectRequest.Status.HIRED) || (projectRequest && projectRequest.status == ProjectRequest.Status.COMPLETED)) && !projectRequest.reviewed">
-        <button cv-button (click)="showAddReviewForm = true" class="add-review">
-          Leave review
-        </button>
+        <div class="add-review-button-container xs-none"
+             *ngIf="companyProfile && ((projectRequest && projectRequest.status == ProjectRequest.Status.HIRED) || (projectRequest && projectRequest.status == ProjectRequest.Status.COMPLETED)) && !projectRequest.reviewed">
+          <button cv-button (click)="showAddReviewForm = true" class="add-review">
+            Leave review
+          </button>
+        </div>
       </div>
     </div>
-
 
     <div class="buttons-block" *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.ACTIVE && !Project.isArchived(projectRequest.projectStatus)">
       <div class="info-icon" (click)="openMessage = !openMessage" *ngIf="!mediaQuery.xs">i</div>
@@ -51,8 +46,7 @@
         Accept Offer
       </button>
       <button cv-button class="decline-company-button" (click)="declineCompany(projectRequest)">
-        Decline
-
+        <span>Decline</span>
         <span class="message" *ngIf="openMessage">
           Don't want to receive request and messages from other professionals? Hire one and let others know.
         </span>
@@ -60,6 +54,13 @@
 
       <span class="back-drop" [ngClass]="{'active': openMessage}" (click)="openMessage = false"></span>
     </div>
+
+    <div class="buttons-block" *ngIf="mediaQuery.xs && ((projectRequest && projectRequest.status == ProjectRequest.Status.HIRED) || (projectRequest && projectRequest.status == ProjectRequest.Status.COMPLETED)) && !projectRequest.reviewed">
+      <button cv-button (click)="showAddReviewForm = true" class="add-review">
+        Leave review
+      </button>
+    </div>
+
   </div>
 
   <div class="content">
@@ -68,7 +69,7 @@
         <div class="tab-name" [ngClass]="{'active' : activeTab == 'MESSAGES'}"
              (click)=" activeTab = 'MESSAGES'">Chat
         </div>
-        <div class="tab-name" *ngIf="companyProfile" [ngClass]="{'active' : activeTab == 'OVERVIEW'}"
+        <div class="tab-name" [ngClass]="{'active' : activeTab == 'OVERVIEW'}"
              (click)=" activeTab = 'OVERVIEW';">Company
         </div>
         <div class="tab-name" [ngClass]="{'active' : activeTab == 'REVIEWS'}"
@@ -126,7 +127,8 @@
         <div class="logo" [ngClass]="{'-archived': companyProfile.deleted}"
            [ngStyle]="companyProfile.iconUrl && companyProfile.iconUrl != '' && !companyProfile.deleted ? {'background-image':'url(' + companyProfile.iconUrl + ')'} : {'background-image':'url(assets/img/company-logo-placeholder.png)'}"></div>
         <div class="info-block">
-          <div [ngClass]="{'-archived': companyProfile.deleted}" class="company-name">{{companyProfile.name}}
+          <div [ngClass]="{'-archived': companyProfile.deleted}" class="company-name">
+            <span class="name">{{companyProfile.name}}</span>
             <span class="declined" *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.DECLINED">
               Declined
             </span>

@@ -240,7 +240,7 @@
             @include response-to(xs) {
               flex-direction: column;
               align-items: center;
-              margin: 16px 0;
+              margin: 0 0 12px;
             }
           }
 
@@ -282,11 +282,6 @@
             background-position: center;
             position: relative;
             box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.24);
-
-            @include response-to(xs) {
-              width: 48px;
-              height: 48px;
-            }
 
             &.active {
               border-left: 3px solid transparent;
@@ -335,7 +330,6 @@
               left: 0;
               background-color: $green;
               border: 2px solid $white;
-              box-shadow: elevation();
               width: 12px;
               height: 12px;
               border-radius: 50%;
@@ -417,10 +411,6 @@
           .rating-block {
             display: flex;
             align-items: center;
-
-            @include response-to(xs) {
-              margin: 0 0 16px;
-            }
 
             .reviews-count {
               font-size: 14px;
