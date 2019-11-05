@@ -11,17 +11,15 @@ import java.util.Optional;
 
 public interface LicenseRepository extends JpaRepository<License, Long>{
 
-    List<License> findByCompanyIdOrderById(String companyId);
-
     @Query("SELECT new com.improver.model.CompanyLicense(l.id, l.number, l.accreditation, l.state, l.expired) FROM com.improver.entity.License l " +
         "WHERE l.company.id = ?1 ORDER BY l.accreditation ASC")
-    List<CompanyLicense> findByCompanyId(String companyId);
+    List<CompanyLicense> findByCompanyId(long companyId);
 
     @Query("SELECT new com.improver.model.CompanyLicense(l.id, l.number, l.accreditation, l.state, l.expired) FROM com.improver.entity.License l " +
         "WHERE l.id = ?1 AND l.company.id = ?2")
-    Optional<CompanyLicense> findByIdAndCompanyId(long licenseId, String companyId);
+    Optional<CompanyLicense> findByIdAndCompanyId(long licenseId, long companyId);
 
     @Transactional
-    void deleteByIdAndCompanyId(long id, String companyId);
+    void deleteByIdAndCompanyId(long id, long companyId);
 
 }

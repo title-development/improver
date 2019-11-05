@@ -49,7 +49,7 @@ public class BillingController {
 
     @CompanyMemberOrSupportAccess
     @GetMapping("/balance")
-    public ResponseEntity<Integer> getBalance(@PathVariable String companyId) {
+    public ResponseEntity<Integer> getBalance(@PathVariable long companyId) {
         Billing billing = billRepository.findByCompanyId(companyId)
             .orElseThrow(NotFoundException::new);
         return new ResponseEntity<>(billing.getBalance(), HttpStatus.OK);
@@ -58,7 +58,7 @@ public class BillingController {
 
     @AdminAccess
     @PostMapping("/bonus")
-    public ResponseEntity<Void> addBonus(@PathVariable String companyId, @RequestBody int amount) {
+    public ResponseEntity<Void> addBonus(@PathVariable long companyId, @RequestBody int amount) {
         Company company = companyRepository.findById(companyId)
             .orElseThrow(NotFoundException::new);
         billingService.addBonus(company, amount, null, userSecurityService.currentStaff());
@@ -68,7 +68,7 @@ public class BillingController {
 
     @CompanyMemberOrSupportAccess
     @GetMapping(SUBSCRIPTION)
-    public ResponseEntity<SubscriptionInfo> getSubscription(@PathVariable String companyId) {
+    public ResponseEntity<SubscriptionInfo> getSubscription(@PathVariable long companyId) {
         Billing billing = billRepository.findByCompanyId(companyId)
             .orElseThrow(NotFoundException::new);
 
@@ -84,7 +84,7 @@ public class BillingController {
 
     @CompanyMemberOrSupportAccess
     @PutMapping(SUBSCRIPTION)
-    public ResponseEntity<Subscription> subscribe(@PathVariable String companyId,
+    public ResponseEntity<Subscription> subscribe(@PathVariable long companyId,
                                                   @RequestParam int budget,
                                                   @RequestHeader int timeZoneOffset) {
         Company company = companyRepository.findById(companyId)
@@ -99,7 +99,7 @@ public class BillingController {
 
     @CompanyMemberOrSupportAccess
     @DeleteMapping(SUBSCRIPTION)
-    public ResponseEntity<Void> unsubscribe(@PathVariable String companyId, @RequestHeader int timeZoneOffset) {
+    public ResponseEntity<Void> unsubscribe(@PathVariable long companyId, @RequestHeader int timeZoneOffset) {
         Company company = companyRepository.findById(companyId)
             .orElseThrow(NotFoundException::new);
         subscriptionService.cancelSubscription(company, timeZoneOffset);
@@ -109,7 +109,7 @@ public class BillingController {
     @CompanyMemberOrSupportAccess
     @PageableSwagger
     @GetMapping(TRANSACTIONS)
-    public ResponseEntity<Page<TransactionModel>> getCompanyTransactions(@PathVariable String companyId,
+    public ResponseEntity<Page<TransactionModel>> getCompanyTransactions(@PathVariable long companyId,
                                                                          @PageableDefault(sort = "created", direction = Sort.Direction.DESC) Pageable pageRequest) {
 
         Company company = companyRepository.findById(companyId)
@@ -121,7 +121,7 @@ public class BillingController {
     @CompanyMemberOrSupportAccess
     @PageableSwagger
     @GetMapping(TRANSACTIONS + ID_PATH_VARIABLE)
-    public ResponseEntity<Receipt> getReceipt(@PathVariable String companyId, @PathVariable String id) {
+    public ResponseEntity<Receipt> getReceipt(@PathVariable long companyId, @PathVariable String id) {
         Company company = companyRepository.findById(companyId)
             .orElseThrow(NotFoundException::new);
         Receipt receipt = billingService.getReceipt(company, id);
@@ -131,7 +131,7 @@ public class BillingController {
 
     @CompanyMemberOrSupportAccess
     @PostMapping(CARDS)
-    public ResponseEntity<Void> addCard(@PathVariable String companyId, @RequestBody StripeToken stripeToken) {
+    public ResponseEntity<Void> addCard(@PathVariable long companyId, @RequestBody StripeToken stripeToken) {
         Company company = companyRepository.findById(companyId)
             .orElseThrow(NotFoundException::new);
         Contractor contractor = userSecurityService.currentPro();
@@ -142,7 +142,7 @@ public class BillingController {
 
     @CompanyMemberOrSupportAccess
     @GetMapping(CARDS)
-    public ResponseEntity<List<PaymentCard>> getCards(@PathVariable String companyId) {
+    public ResponseEntity<List<PaymentCard>> getCards(@PathVariable long companyId) {
         Company company = companyRepository.findById(companyId)
             .orElseThrow(NotFoundException::new);
         List<PaymentCard> cards = paymentService.getCards(company);
@@ -152,7 +152,7 @@ public class BillingController {
 
     @CompanyMemberOrSupportAccess
     @PostMapping(CARDS + "/default")
-    public ResponseEntity<Void> setDefaultCard(@PathVariable String companyId, @RequestBody String cardId) {
+    public ResponseEntity<Void> setDefaultCard(@PathVariable long companyId, @RequestBody String cardId) {
         Company company = companyRepository.findById(companyId)
             .orElseThrow(NotFoundException::new);
         paymentService.setDefaultCard(company, cardId);
@@ -162,7 +162,7 @@ public class BillingController {
 
     @CompanyMemberOrSupportAccess
     @DeleteMapping(CARDS + ID_PATH_VARIABLE)
-    public ResponseEntity<Void> deleteCard(@PathVariable String companyId, @PathVariable String id) {
+    public ResponseEntity<Void> deleteCard(@PathVariable long companyId, @PathVariable String id) {
         Company company = companyRepository.findById(companyId)
             .orElseThrow(ValidationException::new);
         paymentService.deleteCard(company, id);
@@ -172,7 +172,7 @@ public class BillingController {
 
     @CompanyMemberOrSupportAccess
     @GetMapping(LEADS + "/report")
-    public ResponseEntity<CompanyLeadsReport> getCompanyLeadsReport(@PathVariable String companyId) {
+    public ResponseEntity<CompanyLeadsReport> getCompanyLeadsReport(@PathVariable long companyId) {
         CompanyLeadsReport companyLeadsReport = billingService.getCompanyLeadsReport(companyId);
         return new ResponseEntity<>(companyLeadsReport, HttpStatus.OK);
     }

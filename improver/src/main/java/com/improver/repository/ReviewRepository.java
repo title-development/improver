@@ -23,7 +23,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     @Query("SELECT new com.improver.model.out.review.CompanyReview(r)" +
         " FROM com.improver.entity.Review r WHERE r.company.id = ?1 AND (?2 in (SELECT id FROM com.improver.entity.Contractor contr WHERE contr.company.id = r.company.id) OR r.customer.id = ?2 OR r.isPublished = true)")
-    Page<CompanyReview> getVisibleReviews(String companyId, long requesterId, ZonedDateTime now, Pageable pageable);
+    Page<CompanyReview> getVisibleReviews(long companyId, long requesterId, ZonedDateTime now, Pageable pageable);
 
     @Query("SELECT new com.improver.model.out.review.CompanyReview(r, c) " +
         "FROM com.improver.entity.Review r " +

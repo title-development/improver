@@ -22,21 +22,19 @@ import static com.improver.application.properties.Path.COMPANY_ID;
 @RequestMapping(COMPANIES_PATH)
 public class CompanyProfileController {
 
-    @Autowired
-    private CompanyService companyService;
-    @Autowired
-    private CompanyRepository companyRepository;
+    @Autowired private CompanyService companyService;
+    @Autowired private CompanyRepository companyRepository;
 
 
     @GetMapping(COMPANY_ID + "/profile")
-    public ResponseEntity<CompanyProfile> getCompanyProfile(@PathVariable String companyId) {
+    public ResponseEntity<CompanyProfile> getCompanyProfile(@PathVariable long companyId) {
         CompanyProfile company = companyService.getCompanyProfile(companyId);
         return new ResponseEntity<>(company, HttpStatus.OK);
     }
 
     @CompanyMemberOrSupportAccess
     @PutMapping(COMPANY_ID + "/main")
-    public ResponseEntity<Void> updateCompanyInfo(@PathVariable String companyId, @RequestBody CompanyInfo companyInfo) {
+    public ResponseEntity<Void> updateCompanyInfo(@PathVariable long companyId, @RequestBody CompanyInfo companyInfo) {
         Company company = companyRepository.findById(companyId)
             .orElseThrow(NotFoundException::new);
         companyService.updateCompanyInfo(company, companyInfo);
@@ -45,14 +43,14 @@ public class CompanyProfileController {
 
 
     @PostMapping(COMPANY_ID + "/logo")
-    public ResponseEntity<String> uploadLogoInBase64(@PathVariable String companyId, @RequestBody String imageInBase64) {
+    public ResponseEntity<String> uploadLogoInBase64(@PathVariable long companyId, @RequestBody String imageInBase64) {
         String imageUrl = companyService.updateLogo(companyId, imageInBase64);
 
         return new ResponseEntity<>(imageUrl, HttpStatus.OK);
     }
 
     @DeleteMapping(COMPANY_ID + "/logo")
-    public ResponseEntity<Void> deleteLogo(@PathVariable String companyId) {
+    public ResponseEntity<Void> deleteLogo(@PathVariable long companyId) {
         companyService.deleteLogo(companyId);
 
         return new ResponseEntity<>(HttpStatus.OK);
@@ -62,14 +60,14 @@ public class CompanyProfileController {
      * Accepts image as BASE64 encoded data like "data:image/jpeg;base64,/9j/4AAQ...yD=="
      */
     @PostMapping(COMPANY_ID + "/cover")
-    public ResponseEntity<String> uploadBackgroundInBase64(@PathVariable String companyId, @RequestBody String imageInBase64) {
+    public ResponseEntity<String> uploadBackgroundInBase64(@PathVariable long companyId, @RequestBody String imageInBase64) {
         String imageUrl = companyService.updateBackground(companyId, imageInBase64);
 
         return new ResponseEntity<>(imageUrl, HttpStatus.OK);
     }
 
     @DeleteMapping(COMPANY_ID + "/cover")
-    public ResponseEntity<Void> deleteCover(@PathVariable String companyId) {
+    public ResponseEntity<Void> deleteCover(@PathVariable long companyId) {
         companyService.deleteCover(companyId);
 
         return new ResponseEntity<>(HttpStatus.OK);

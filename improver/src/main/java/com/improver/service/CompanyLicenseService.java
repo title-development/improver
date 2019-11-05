@@ -15,7 +15,7 @@ public class CompanyLicenseService {
 
     @Autowired private LicenseRepository licenseRepository;
 
-    public List<CompanyLicense> getLicenses(String companyId) {
+    public List<CompanyLicense> getLicenses(long companyId) {
         return licenseRepository.findByCompanyId(companyId);
     }
 

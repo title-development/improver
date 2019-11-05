@@ -13,13 +13,13 @@ public class LoginModel {
     private final String iconUrl;
     private final String name;
     private final String role;
-    private final String company;
+    private final Long company;
     @JsonIgnore
     private final String refreshId;
     @JsonIgnore
     private final String email;
 
-    public LoginModel(long id, String iconUrl, String name, User.Role role, String company, String refreshId, String email) {
+    public LoginModel(long id, String iconUrl, String name, User.Role role, Long company, String refreshId, String email) {
         this.id = id;
         this.iconUrl = iconUrl;
         this.name = name;

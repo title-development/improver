@@ -22,14 +22,14 @@ public class UnavailabilityPeriodController {
     @Autowired private CompanyRepository companyRepository;
 
     @GetMapping(COMPANY_ID + UNAVAILABILITIES)
-    public ResponseEntity<List<UnavailabilityPeriod>> getUnavailabilityPeriod(@PathVariable String companyId) {
+    public ResponseEntity<List<UnavailabilityPeriod>> getUnavailabilityPeriod(@PathVariable long companyId) {
         Company company = companyRepository.findById(companyId).orElseThrow(NotFoundException::new);
         List<UnavailabilityPeriod> periods = unavailabilityPeriodService.getByCompany(company);
         return new ResponseEntity<>(periods, HttpStatus.OK);
     }
 
     @PostMapping(COMPANY_ID + UNAVAILABILITIES)
-    public ResponseEntity<Void> addUnavailabilityPeriod(@PathVariable String companyId, @RequestBody UnavailabilityPeriod unavailabilityPeriod) {
+    public ResponseEntity<Void> addUnavailabilityPeriod(@PathVariable long companyId, @RequestBody UnavailabilityPeriod unavailabilityPeriod) {
         Company company = companyRepository.findById(companyId).orElseThrow(NotFoundException::new);
         unavailabilityPeriodService.addUnavailabilityPeriod(company, unavailabilityPeriod);
         return new ResponseEntity<>(HttpStatus.OK);

@@ -361,23 +361,23 @@ public class TestDataInitializer {
         List<ServiceType> otherServices = serviceTypeRepository.findByNameContaining("Solar Panel");
         serviceTypes.addAll(otherServices);
 
-        Company firstCompany = updateCompany("1", PRO_1, 0, trades, serviceTypes, null);
+        Company firstCompany = updateCompany(1L, PRO_1, 0, trades, serviceTypes, null);
         List<String> zips = firstCompany.getAreas().stream()
             .map(area -> area.getZip())
             .collect(Collectors.toList());
-        updateCompany("2", PRO_2, 13300, trades, serviceTypes, zips);
-        updateCompany("3", PRO_3, 19000, trades, serviceTypes, zips);
-        updateCompany("4", PRO_4, 12000, trades, serviceTypes, zips);
-        updateCompany("5", PRO_5, 99900, trades, serviceTypes, zips);
+        updateCompany(2L, PRO_2, 13300, trades, serviceTypes, zips);
+        updateCompany(3L, PRO_3, 19000, trades, serviceTypes, zips);
+        updateCompany(4L, PRO_4, 12000, trades, serviceTypes, zips);
+        updateCompany(5L, PRO_5, 99900, trades, serviceTypes, zips);
     }
 
-    private Company updateCompany(String companyId, String contractorEmail, int balance, List<Trade> trades, List<ServiceType> serviceTypes, List<String> zips) {
+    private Company updateCompany(long companyId, String contractorEmail, int balance, List<Trade> trades, List<ServiceType> serviceTypes, List<String> zips) {
         Company company = companyRepository.findById(companyId)
             .orElseThrow(NotFoundException::new);
         companyRepository.save(company.setServiceTypes(serviceTypes)
             .setTrades(trades)
             .setIconUrl(saveImage("tmp/icons/company-icon-" + companyId + ".jpg"))
-            .setCreated(ZonedDateTime.now().minusMonths(Long.parseLong(companyId) - 1L))
+            .setCreated(ZonedDateTime.now().minusMonths(companyId - 1L))
         );
         companyConfigRepository.save(CompanyConfig.defaultSettings(company));
 
@@ -403,7 +403,7 @@ public class TestDataInitializer {
     }
 
     private void initUnavailabilityPeriods() {
-        Company company = companyRepository.getOne("1");
+        Company company = companyRepository.getOne(1L);
         LocalDate from = getRandomDate().toLocalDate();
         unavailabilityPeriodRepository.save(new UnavailabilityPeriod()
             .setCompany(company)

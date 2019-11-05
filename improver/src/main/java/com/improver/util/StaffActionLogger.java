@@ -17,7 +17,7 @@ public class StaffActionLogger {
         staffActionRepository.save(new StaffAction(action, author, description));
     }
 
-    public void logAddBonus(Staff author, String companyId, int amount){
+    public void logAddBonus(Staff author, long companyId, int amount){
         String description = String.format("Bonus for Company with id: %1$s. Amount: $%2$s.", companyId, amount / 100);
         this.log(StaffAction.Action.ADD_BONUS, author, description);
     }

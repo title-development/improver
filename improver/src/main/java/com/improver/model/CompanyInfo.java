@@ -11,7 +11,7 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 public class CompanyInfo {
 
-    protected String id;
+    protected long id;
     protected String uriName;
     protected String iconUrl;
     protected String name;

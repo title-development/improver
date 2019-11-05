@@ -53,15 +53,15 @@ public class WsNotificationService {
     }
 
 
-    public void reviewed(User receiver, Customer customer, String companyId){
+    public void reviewed(User receiver, Customer customer, long companyId){
         sendNotification(receiver.getId(), Notification.reviewed(receiver, customer.getDisplayName(), customer.getId(), companyId));
     }
 
-    public void reviewedNegative(User receiver, Customer customer, String companyId){
+    public void reviewedNegative(User receiver, Customer customer, long companyId){
         sendNotification(receiver.getId(), Notification.reviewedNegative(receiver, customer.getDisplayName(), customer.getId(), companyId));
     }
 
-    public void reviewPublished(User receiver, Customer customer, String companyId){
+    public void reviewPublished(User receiver, Customer customer, long companyId){
         sendNotification(receiver.getId(), Notification.reviewPublished(receiver, customer.getDisplayName(), customer.getId(), companyId));
     }
 

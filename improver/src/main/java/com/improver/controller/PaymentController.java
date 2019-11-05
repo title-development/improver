@@ -20,14 +20,12 @@ import static com.improver.application.properties.Path.*;
 @RequestMapping(COMPANIES_PATH + COMPANY_ID)
 public class PaymentController {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
-
     @Autowired private PaymentService paymentService;
     @Autowired private UserSecurityService userSecurityService;
     @Autowired private CompanyRepository companyRepository;
 
     @PostMapping(PAYMENTS)
-    public ResponseEntity<Void> charge(@PathVariable String companyId, @RequestBody int amount) {
+    public ResponseEntity<Void> charge(@PathVariable long companyId, @RequestBody int amount) {
         Contractor contractor = userSecurityService.currentPro();
         Company company = companyRepository.findById(companyId)
             .orElseThrow(NotFoundException::new);

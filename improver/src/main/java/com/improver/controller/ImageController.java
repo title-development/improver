@@ -34,7 +34,6 @@ public class ImageController {
     @Autowired private UserRepository userRepository;
 
 
-    //TODO: move IMAGES_PATH to controller RequestMapping
     @GetMapping(IMAGES_PATH + "/{name:.+}")
     public ResponseEntity<Resource> getImage(@PathVariable String name) {
         HttpHeaders headers = new HttpHeaders();
@@ -47,7 +46,7 @@ public class ImageController {
         return new ResponseEntity<>(new ByteArrayResource(media), headers, HttpStatus.OK);
     }
 
-    //TODO: move IMAGES_PATH to controller RequestMapping
+
     @GetMapping(IMAGES_PATH + "/projects/{name:.+}")
     public ResponseEntity<Resource> getProjectImage(@PathVariable String name) {
         HttpHeaders headers = new HttpHeaders();
@@ -60,7 +59,7 @@ public class ImageController {
 
     //This is called for Notification to display icons
     @GetMapping(COMPANIES_PATH + COMPANY_ID + ICON)
-    public ResponseEntity<Resource> getCompanyIcon(@PathVariable String companyId) {
+    public ResponseEntity<Resource> getCompanyIcon(@PathVariable long companyId) {
         String iconUrl = companyRepository.getIconUrl(companyId)
             .orElseThrow(NotFoundException::new);
         return getImageByURL(iconUrl);

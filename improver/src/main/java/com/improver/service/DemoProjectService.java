@@ -19,11 +19,11 @@ public class DemoProjectService {
     @Autowired private DemoProjectRepository demoProjectRepository;
 
 
-    public List<DemoProject> getDemoProjects(String companyId) {
+    public List<DemoProject> getDemoProjects(long companyId) {
         return demoProjectRepository.findByCompanyIdOrderByCreatedDesc(companyId);
     }
 
-    public DemoProject getDemoProject(String companyId, long projectId) {
+    public DemoProject getDemoProject(long companyId, long projectId) {
         DemoProject project = demoProjectRepository.findByCompanyIdAndId(companyId, projectId);
         if (project == null) {
             throw new NotFoundException();
@@ -31,13 +31,13 @@ public class DemoProjectService {
         return project;
     }
 
-    public DemoProject addDemoProject(String companyId, DemoProject demoProject) {
+    public DemoProject addDemoProject(long companyId, DemoProject demoProject) {
         Company company = companyRepository.findById(companyId)
             .orElseThrow(NotFoundException::new);
         return demoProjectRepository.save(demoProject.setCompany(company));
     }
 
-    public DemoProject updateDemoProject(String companyId, DemoProject demoProject) {
+    public DemoProject updateDemoProject(long companyId, DemoProject demoProject) {
         DemoProject old = demoProjectRepository.findByCompanyIdAndId(companyId, demoProject.getId());
         if (old == null) {
             throw new NotFoundException();
@@ -52,7 +52,7 @@ public class DemoProjectService {
     }
 
 
-    public void deleteDemoProject(String companyId, long projectId) {
+    public void deleteDemoProject(long companyId, long projectId) {
         demoProjectRepository.deleteByCompanyIdAndId(companyId, projectId);
     }
 }

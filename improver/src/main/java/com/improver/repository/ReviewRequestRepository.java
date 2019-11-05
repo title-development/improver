@@ -15,8 +15,8 @@ public interface ReviewRequestRepository extends JpaRepository<ReviewRequest, Lo
         "WHERE rr.companyId = ?2 " +
         "AND rr.customerEmail = ?1 " +
         "AND rr.completed = false")
-    boolean existsReviewRequestByCustomerEmailAndCompanyId(String customerEmail, String companyId);
+    boolean existsReviewRequestByCustomerEmailAndCompanyId(String customerEmail, long companyId);
 
-    List<ReviewRequest> getAllByCompanyId(String id);
+    List<ReviewRequest> getAllByCompanyId(long companyId);
 
 }

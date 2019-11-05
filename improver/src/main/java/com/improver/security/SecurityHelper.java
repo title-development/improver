@@ -20,7 +20,6 @@ public class SecurityHelper {
 
     @Autowired private UserRepository userRepository;
     @Autowired private CompanyRepository companyRepository;
-    @Autowired private ContractorRepository contractorRepository;
 
     public boolean isSameUser(@NotNull Authentication auth, String email, long id) {
         if ( id == 0 && email == null)
@@ -31,7 +30,7 @@ public class SecurityHelper {
         return principalEmail.equalsIgnoreCase(email) || user.getId() == id;
     }
 
-    public boolean isCompanyMember(@NotNull Authentication auth, String companyId, String companyUri) {
+    public boolean isCompanyMember(@NotNull Authentication auth, Long companyId, String companyUri) {
         if (companyId == null && companyUri == null)
             throw new IllegalArgumentException("Company ID/URI is missing. Incorrect annotation use.");
         String principalEmail = auth.getName().toLowerCase();

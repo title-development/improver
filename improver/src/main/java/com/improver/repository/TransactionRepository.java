@@ -14,19 +14,19 @@ import java.util.Optional;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 
-    Page<Transaction> findByCompanyId(String companyId, Pageable pageable);
+    Page<Transaction> findByCompanyId(long companyId, Pageable pageable);
 
     @Query("SELECT t FROM com.improver.entity.Transaction t WHERE t.type = 'PURCHASE' AND t.isRefunded = false" +
         " AND t.created >= :startDate AND t.created < :endDate" +
         " AND t.company.id = :companyId")
-    List<Transaction> findPurchasedByCompanyBetween(String companyId, ZonedDateTime startDate, ZonedDateTime endDate);
+    List<Transaction> findPurchasedByCompanyBetween(long companyId, ZonedDateTime startDate, ZonedDateTime endDate);
 
     @Query("SELECT COUNT (t) FROM com.improver.entity.Transaction t WHERE t.type = 'PURCHASE'" +
         " AND t.isManualLead = false" +
         " AND t.isRefunded = false" +
         " AND t.created >= :startDate AND t.created < :endDate" +
         " AND t.company.id = :companyId")
-    int countSubscriptionPurchasesForPeriod(String companyId, ZonedDateTime startDate, ZonedDateTime endDate);
+    int countSubscriptionPurchasesForPeriod(long companyId, ZonedDateTime startDate, ZonedDateTime endDate);
 
     Optional<Transaction> findByIdAndCompany(String transactionId, Company company);
 

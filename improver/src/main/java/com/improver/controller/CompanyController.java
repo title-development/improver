@@ -7,6 +7,7 @@ import com.improver.model.CompanyInfo;
 import com.improver.model.NameIdTuple;
 import com.improver.model.out.project.ProjectRequestShort;
 import com.improver.repository.CompanyRepository;
+import com.improver.repository.ServiceTypeRepository;
 import com.improver.security.UserSecurityService;
 import com.improver.security.annotation.CompanyMemberOrAdminAccess;
 import com.improver.security.annotation.SupportAccess;
@@ -36,11 +37,12 @@ public class CompanyController {
     @Autowired private CompanyRepository companyRepository;
     @Autowired private UserSecurityService userSecurityService;
     @Autowired private AccountService accountService;
+    @Autowired private ServiceTypeRepository serviceTypeRepository;
 
 
     @SupportAccess
     @GetMapping
-    public ResponseEntity<Page<Company>> getCompanies(@RequestParam(required = false) String id,
+    public ResponseEntity<Page<Company>> getCompanies(@RequestParam(required = false) Long id,
                                                       @PageableDefault(sort = "name", direction = Sort.Direction.DESC) Pageable pageRequest) {
 
         Page<Company> companies = companyService.getCompanies(id, pageRequest);
@@ -49,7 +51,7 @@ public class CompanyController {
 
     @CompanyMemberOrAdminAccess
     @PutMapping(COMPANY_ID)
-    public ResponseEntity<Void> update(@PathVariable String companyId,
+    public ResponseEntity<Void> update(@PathVariable long companyId,
                                        @RequestPart(value = "data") String data,
                                        @RequestPart(value = "icon", required = false) String base64icon,
                                        @RequestPart(value = "coverImage", required = false) MultipartFile coverImage) {
@@ -69,7 +71,7 @@ public class CompanyController {
     @SupportAccess
     @PageableSwagger
     @GetMapping(COMPANY_ID + "/logs")
-    public ResponseEntity<Page<CompanyAction>> getLogs(@PathVariable String companyId,
+    public ResponseEntity<Page<CompanyAction>> getLogs(@PathVariable long companyId,
                                                        @PageableDefault(sort = "created", direction = Sort.Direction.DESC) Pageable pageRequest) {
         Page<CompanyAction> companyLogs = this.companyService.getCompanyLogs(companyId, pageRequest);
         return new ResponseEntity<>(companyLogs, HttpStatus.OK);
@@ -78,7 +80,7 @@ public class CompanyController {
     @SupportAccess
     @PageableSwagger
     @GetMapping(COMPANY_ID + "/projects")
-    public ResponseEntity<Page<ProjectRequestShort>> getAllProjects(@PathVariable String companyId,
+    public ResponseEntity<Page<ProjectRequestShort>> getAllProjects(@PathVariable long companyId,
                                                                     @PageableDefault(sort = "created", direction = Sort.Direction.DESC) Pageable pageRequest) {
         Page<ProjectRequestShort> project = companyService.getAllProject(companyId, pageRequest);
         return new ResponseEntity<>(project, HttpStatus.OK);
@@ -87,15 +89,14 @@ public class CompanyController {
     @SupportAccess
     @PageableSwagger
     @GetMapping(COMPANY_ID + SERVICES)
-    public ResponseEntity<Page<NameIdTuple>> getCompanyServices(@PathVariable String companyId,
+    public ResponseEntity<Page<NameIdTuple>> getCompanyServices(@PathVariable long companyId,
                                                                 @PageableDefault(sort = "created", direction = Sort.Direction.DESC) Pageable pageRequest) {
-        Page<NameIdTuple> services = companyRepository.getCompanyServices(companyId, pageRequest);
-
+        Page<NameIdTuple> services = serviceTypeRepository.getCompanyServices(companyId, pageRequest);
         return new ResponseEntity<>(services, HttpStatus.OK);
     }
 
     @GetMapping(COMPANY_ID + "/info")
-    public ResponseEntity<CompanyInfo> getCompanyInfo(@PathVariable String companyId) {
+    public ResponseEntity<CompanyInfo> getCompanyInfo(@PathVariable long companyId) {
         CompanyInfo company = companyService.getCompanyInfo(companyId);
         return new ResponseEntity<>(company, HttpStatus.OK);
     }
@@ -113,7 +114,7 @@ public class CompanyController {
 
     @SupportAccess
     @PostMapping(COMPANY_ID + "/approve")
-    public ResponseEntity<Void> approve(@PathVariable String companyId, @RequestParam boolean approved) {
+    public ResponseEntity<Void> approve(@PathVariable long companyId, @RequestParam boolean approved) {
         companyRepository.approve(companyId, approved);
         return new ResponseEntity<>(HttpStatus.OK);
     }

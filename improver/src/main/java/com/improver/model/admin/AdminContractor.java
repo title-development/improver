@@ -3,6 +3,7 @@ package com.improver.model.admin;
 import com.improver.entity.Company;
 import com.improver.entity.Contractor;
 import com.improver.entity.User;
+import com.improver.model.NameIdTuple;
 import com.improver.model.NameUuidTuple;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AdminContractor extends User {
     private boolean quickReply;
-    private NameUuidTuple company;
+    private NameIdTuple company;
 
     public AdminContractor(Contractor contractor, Company company) {
         this.id = contractor.getId();
@@ -30,6 +31,6 @@ public class AdminContractor extends User {
         this.lastLogin = contractor.getLastLogin();
         this.updated = contractor.getUpdated();
         this.created = contractor.getCreated();
-        this.company = new NameUuidTuple(company.getId(), company.getName());
+        this.company = new NameIdTuple(company.getId(), company.getName());
     }
 }

@@ -9,11 +9,11 @@ import java.util.List;
 
 public interface DemoProjectRepository extends JpaRepository<DemoProject, Long> {
 
-    List<DemoProject> findByCompanyIdOrderByCreatedDesc(String companyId);
+    List<DemoProject> findByCompanyIdOrderByCreatedDesc(long companyId);
 
-    DemoProject findByCompanyIdAndId(String companyId, long id);
+    DemoProject findByCompanyIdAndId(long companyId, long id);
 
     @Modifying
     @Transactional
-    void deleteByCompanyIdAndId(String companyId, long id);
+    void deleteByCompanyIdAndId(long companyId, long id);
 }

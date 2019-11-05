@@ -48,7 +48,7 @@ public class CompanyService {
     @Autowired private StaffActionLogger staffActionLogger;
 
 
-    public CompanyProfile getCompanyProfile(String id) {
+    public CompanyProfile getCompanyProfile(long id) {
         Company company = companyRepository.findById(id)
             .orElseThrow(NotFoundException::new);
         Contractor current = userSecurityService.currentProOrNull();
@@ -59,22 +59,22 @@ public class CompanyService {
 
 
 
-    public Page<TransactionModel> getTransactions(String companyId, Pageable pageable, boolean adminView) {
+    public Page<TransactionModel> getTransactions(long companyId, Pageable pageable, boolean adminView) {
         return transactionRepository.findByCompanyId(companyId, pageable)
             .map(transaction -> new TransactionModel(transaction, adminView));
 
     }
 
-    public Page<ProjectRequestShort> getAllProject(String companyId, Pageable pageable) {
+    public Page<ProjectRequestShort> getAllProject(long companyId, Pageable pageable) {
         return projectRepository.getCompanyProjects(companyId, pageable);
     }
 
 
-    public Page<CompanyAction> getCompanyLogs(String companyId, Pageable pageable) {
-        return companyRepository.getCompaniesLogs(companyId, pageable);
+    public Page<CompanyAction> getCompanyLogs(long companyId, Pageable pageable) {
+        return companyRepository.getCompanyLogs(companyId, pageable);
     }
 
-    public CompanyInfo getCompanyInfo(String companyId) {
+    public CompanyInfo getCompanyInfo(long companyId) {
         return companyRepository.getCompanyInfo(companyId);
     }
 
@@ -91,7 +91,7 @@ public class CompanyService {
 
 
 
-    public void updateCompany(String companyId, Company company, String base64icon, MultipartFile coverImage, Admin currentAdmin) {
+    public void updateCompany(long companyId, Company company, String base64icon, MultipartFile coverImage, Admin currentAdmin) {
         Company existed = companyRepository.findById(companyId)
             .orElseThrow(NotFoundException::new);
         if (userSecurityService.currentUser().getRole() == User.Role.ADMIN || userSecurityService.currentUser().getRole() == User.Role.SUPPORT) {
@@ -119,14 +119,14 @@ public class CompanyService {
     }
 
 
-    public Page<Company> getCompanies(String id, Pageable pageable) {
+    public Page<Company> getCompanies(Long id, Pageable pageable) {
         return companyRepository.getAllBy(id, pageable);
     }
 
     /**
      * Updates backgroundUrl for user. Previous backgroundUrl removes form database
      */
-    public String updateBackground(String id, String imageInBase64) {
+    public String updateBackground(long id, String imageInBase64) {
         Company company = companyRepository.findById(id)
             .orElseThrow(NotFoundException::new);
         String backgroundUrl = company.getBackgroundUrl();
@@ -135,7 +135,7 @@ public class CompanyService {
         return imageUrl;
     }
 
-    public String updateLogo(String id, String imageInBase64) {
+    public String updateLogo(long id, String imageInBase64) {
         Company company = companyRepository.findById(id)
             .orElseThrow(NotFoundException::new);
         String logoUrl = company.getIconUrl();
@@ -144,7 +144,7 @@ public class CompanyService {
         return imageUrl;
     }
 
-    public void deleteLogo(String id) {
+    public void deleteLogo(long id) {
         Company company = companyRepository.findById(id)
             .orElseThrow(NotFoundException::new);
         String imageUrl = company.getIconUrl();
@@ -152,7 +152,7 @@ public class CompanyService {
         companyRepository.save(company.setIconUrl(null));
     }
 
-    public void deleteCover(String id) {
+    public void deleteCover(long id) {
         Company company = companyRepository.findById(id)
             .orElseThrow(NotFoundException::new);
         String coverUrl = company.getBackgroundUrl();

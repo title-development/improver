@@ -26,7 +26,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     @Query("SELECT p FROM com.improver.entity.Project p WHERE p.isLead = true AND p.id = :projectId AND p.id NOT IN " +
         "(SELECT conn.project.id FROM com.improver.entity.ProjectRequest conn " +
         "WHERE conn.contractor.id IN (SELECT contr.id FROM com.improver.entity.Contractor contr WHERE contr.company.id = :companyId))")
-    Optional<Project> getLeadNotPurchasedByCompany(long projectId, String companyId);
+    Optional<Project> getLeadNotPurchasedByCompany(long projectId, long companyId);
 
 
     /**
@@ -41,7 +41,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
         " AND (:search IS null OR (lower(p.serviceType.name) LIKE %:search% ))" +
         " AND (p.location.zip IN (SELECT a.zip FROM com.improver.entity.Area a WHERE a.company.id = :companyId)" +
         " OR (p.centroid.lat > :swLat AND p.centroid.lat < :neLat AND p.centroid.lng > :swLng AND p.centroid.lng < :neLng))")
-    Page<ShortLead> getLeadsInCoverageAndBbox(String companyId, List<Project.Status> statuses, String search, double neLat, double neLng, double swLat, double swLng, Pageable pageable);
+    Page<ShortLead> getLeadsInCoverageAndBbox(long companyId, List<Project.Status> statuses, String search, double neLat, double neLng, double swLat, double swLng, Pageable pageable);
 
     /**
      * Returns Leads according to company services and coverage
@@ -53,7 +53,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
         " AND p.serviceType.id IN (SELECT s.id FROM com.improver.entity.ServiceType s INNER JOIN s.companies c WHERE c.id = :companyId)" +
         " AND (:searchTerm IS null OR (lower(p.serviceType.name) LIKE %:searchTerm% ))" +
         " AND (p.location.zip IN (SELECT a.zip FROM com.improver.entity.Area a WHERE a.company.id = :companyId))")
-    Page<ShortLead> getLeadsInCoverage(String companyId, List<Project.Status> statuses, String searchTerm, Pageable pageable);
+    Page<ShortLead> getLeadsInCoverage(long companyId, List<Project.Status> statuses, String searchTerm, Pageable pageable);
 
     /**
      * Returns Leads according to company services and coverage
@@ -63,7 +63,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
         " AND p.id NOT IN (SELECT conn.project.id FROM com.improver.entity.ProjectRequest conn WHERE conn.contractor.id IN (SELECT contr.id FROM com.improver.entity.Contractor contr WHERE contr.company.id = :companyId))" +
         " AND p.serviceType.id IN (SELECT s.id FROM com.improver.entity.ServiceType s INNER JOIN s.companies c WHERE c.id = :companyId)" +
         " AND (p.location.zip IN (SELECT a.zip FROM com.improver.entity.Area a WHERE a.company.id = :companyId))")
-    Page<Project> getSuitableLeads(String companyId, List<Project.Status> statuses, int maxPrice, Pageable pageable);
+    Page<Project> getSuitableLeads(long companyId, List<Project.Status> statuses, int maxPrice, Pageable pageable);
 
 
 
@@ -95,7 +95,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
         " INNER JOIN com.improver.entity.Contractor c ON c.id = pr.contractor.id " +
         " LEFT JOIN com.improver.entity.Review r ON pr.review.id = r.id " +
         " WHERE c.company.id = ?1")
-    Page<ProjectRequestShort> getCompanyProjects(String companyId, Pageable pageable);
+    Page<ProjectRequestShort> getCompanyProjects(long companyId, Pageable pageable);
 
     @Query("SELECT p from com.improver.entity.Project p WHERE " +
         "p.id <> ?1 AND " +

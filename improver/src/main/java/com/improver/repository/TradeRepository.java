@@ -45,4 +45,10 @@ public interface TradeRepository extends JpaRepository<Trade, Long> {
     @Query("SELECT CASE WHEN count(t)> 0 THEN false ELSE true END FROM com.improver.entity.Trade t WHERE LOWER(t.name) = LOWER(?1)")
     boolean isTradeNameFree(String name);
 
+
+
+    @Query("SELECT new com.improver.model.NameIdTuple(t.id, t.name) FROM com.improver.entity.Trade t" +
+        " INNER JOIN t.companies c WHERE c.id = ?1 ORDER BY t.name ASC")
+    List<NameIdTuple> getCompanyTrades(long companyId);
+
 }

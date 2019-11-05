@@ -28,48 +28,48 @@ public class DemoProjectController {
 
 
     @GetMapping
-    public ResponseEntity<List<DemoProject>> getDemoProjects(@PathVariable String companyId) {
+    public ResponseEntity<List<DemoProject>> getDemoProjects(@PathVariable long companyId) {
         List<DemoProject> demoProjects = demoProjectService.getDemoProjects(companyId);
         return new ResponseEntity<>(demoProjects, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<DemoProject> addDemoProject(@PathVariable String companyId, @RequestBody DemoProject demoProject) {
+    public ResponseEntity<DemoProject> addDemoProject(@PathVariable long companyId, @RequestBody DemoProject demoProject) {
         DemoProject project = demoProjectService.addDemoProject(companyId, demoProject);
         return new ResponseEntity<>(project, HttpStatus.OK);
     }
 
 
     @GetMapping(ID_PATH_VARIABLE)
-    public ResponseEntity<DemoProject> getDemoProject(@PathVariable String companyId, @PathVariable long id) {
+    public ResponseEntity<DemoProject> getDemoProject(@PathVariable long companyId, @PathVariable long id) {
         DemoProject demoProject = demoProjectService.getDemoProject(companyId, id);
         return new ResponseEntity<>(demoProject, HttpStatus.OK);
     }
 
 
     @PutMapping(ID_PATH_VARIABLE)
-    public ResponseEntity<DemoProject> updateDemoProject(@PathVariable String companyId, @PathVariable long id,
+    public ResponseEntity<DemoProject> updateDemoProject(@PathVariable long companyId, @PathVariable long id,
                                                   @RequestBody DemoProject demoProject) {
         DemoProject project = demoProjectService.updateDemoProject(companyId, demoProject.setId(id));
         return new ResponseEntity<>(project, HttpStatus.OK);
     }
 
     @DeleteMapping(ID_PATH_VARIABLE)
-    public ResponseEntity<Void> deleteDemoProject(@PathVariable String companyId, @PathVariable long id) {
+    public ResponseEntity<Void> deleteDemoProject(@PathVariable long companyId, @PathVariable long id) {
         demoProjectService.deleteDemoProject(companyId, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
     @GetMapping(ID_PATH_VARIABLE + IMAGES)
-    public ResponseEntity<Collection<String>> getProjectPicturesUrls(@PathVariable String companyId, @PathVariable long id) {
+    public ResponseEntity<Collection<String>> getProjectPicturesUrls(@PathVariable long id) {
         Collection<String> images = imageService.getDemoProjectImageUrls(id);
         return new ResponseEntity<>(images, HttpStatus.OK);
     }
 
 
     @PostMapping(ID_PATH_VARIABLE + IMAGES)
-    public ResponseEntity<Void> addProjectImage(@PathVariable String companyId,
+    public ResponseEntity<Void> addProjectImage(@PathVariable long companyId,
                                                 @PathVariable long id,
                                                 MultipartFile file) {
         DemoProject project = demoProjectService.getDemoProject(companyId, id);
@@ -84,7 +84,7 @@ public class DemoProjectController {
 
 
     @DeleteMapping(ID_PATH_VARIABLE + IMAGES)
-    public ResponseEntity<String> deleteDemoProjectImage(@PathVariable String companyId,
+    public ResponseEntity<String> deleteDemoProjectImage(@PathVariable long companyId,
                                                          @PathVariable long id,
                                                          @RequestParam String imageUrl) {
         DemoProject project = demoProjectService.getDemoProject(companyId, id);

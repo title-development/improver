@@ -16,6 +16,6 @@ public interface BillRepository extends JpaRepository<Billing, Long> {
     @Query("SELECT b FROM com.improver.entity.Billing b WHERE b.subscription.active = true")
     List<Billing> findBySubscription();
 
-    Optional<Billing> findByCompanyId(String companyId);
+    Optional<Billing> findByCompanyId(long companyId);
 
 }

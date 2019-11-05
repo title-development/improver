@@ -114,4 +114,26 @@ public interface ServiceTypeRepository extends JpaRepository<ServiceType, Long> 
         "ORDER BY RANDOM()")
     Page<NameIdImageTuple> getRandomPopularServiceTypes(Pageable pageable);
 
+
+    // COMPANY SERVICES
+
+    @Query("SELECT new com.improver.model.NameIdParentTuple(s.id, s.name, t.id) FROM com.improver.entity.ServiceType s" +
+        " INNER JOIN s.trades t ON t.id IN ?2" +
+        " INNER JOIN s.companies c ON c.id = ?1" +
+        " ORDER BY s.name ASC")
+    List<NameIdParentTuple> getByCompanyAndTrades(long companyId, List<Long> tradeIds);
+
+    @Query("SELECT new com.improver.model.NameIdTuple(s.id, s.name) FROM com.improver.entity.ServiceType s" +
+        " INNER JOIN s.companies c ON c.id = ?1 WHERE s.active = true AND s.id NOT IN ?2")
+    List<NameIdTuple> getCompanyServicesExcept(long companyId, List<Long> serviceIds);
+
+    @Query("SELECT new com.improver.model.NameIdTuple(s.id, s.name) FROM com.improver.entity.ServiceType s" +
+        " INNER JOIN s.companies c ON c.id = ?1 WHERE s.active = true")
+    List<NameIdTuple> getAllCompanyServices(long companyId);
+
+    @Query("SELECT new com.improver.model.NameIdTuple(s.id, s.name) FROM com.improver.entity.Company c " +
+        "LEFT JOIN c.serviceTypes s " +
+        "WHERE c.id = :companyId")
+    Page<NameIdTuple> getCompanyServices(long companyId, Pageable pageable);
+
 }

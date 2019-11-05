@@ -83,7 +83,7 @@ public class BillingService {
         }
     }
 
-    public CompanyLeadsReport getCompanyLeadsReport(String companyId) {
+    public CompanyLeadsReport getCompanyLeadsReport(long companyId) {
         Billing billing = billRepository.findByCompanyId(companyId)
             .orElseThrow(NotFoundException::new);
         ZonedDateTime now = ZonedDateTime.now();

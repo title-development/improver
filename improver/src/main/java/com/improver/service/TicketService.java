@@ -25,7 +25,7 @@ public class TicketService {
     @Autowired private UserSecurityService userSecurityService;
     @Autowired private UserRepository userRepository;
 
-    // TODO: Add email notification for Staff leader that new ticket is received
+
     public void add(Ticket ticket) {
         if (!Ticket.Subject.getForUsers().contains(ticket.getSubject())) {
             throw new ValidationException("Subject '" + ticket.getSubject() + "' is not allowed");

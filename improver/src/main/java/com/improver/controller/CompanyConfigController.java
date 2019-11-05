@@ -52,7 +52,7 @@ public class CompanyConfigController {
 
     @CompanyMemberOrAdminAccess
     @PutMapping(LOCATIONS)
-    public ResponseEntity<Void> updateCompanyLocation(@PathVariable String companyId, @RequestBody ExtendedLocation location) {
+    public ResponseEntity<Void> updateCompanyLocation(@PathVariable long companyId, @RequestBody ExtendedLocation location) {
         Company company = companyRepository.findById(companyId)
             .orElseThrow(NotFoundException::new);
         companyConfigService.updateCompanyLocation(company, location.withOutCoordinates(), userSecurityService.currentAdminOrNull());
@@ -61,7 +61,7 @@ public class CompanyConfigController {
 
     @CompanyMemberOrSupportAccess
     @GetMapping(NOTIFICATIONS)
-    public ResponseEntity<ProNotificationSettings> getNotificationSettings(@PathVariable String companyId) {
+    public ResponseEntity<ProNotificationSettings> getNotificationSettings(@PathVariable long companyId) {
 
         Company company = companyRepository.findById(companyId)
             .orElseThrow(NotFoundException::new);
@@ -73,7 +73,7 @@ public class CompanyConfigController {
 
     @CompanyMemberOrSupportAccess
     @PutMapping(NOTIFICATIONS)
-    public ResponseEntity<Void> updateNotificationSettings(@PathVariable String companyId,
+    public ResponseEntity<Void> updateNotificationSettings(@PathVariable long companyId,
                                                            @RequestBody ProNotificationSettings notificationSettings) {
 
         Company company = companyRepository.findById(companyId)
@@ -86,7 +86,7 @@ public class CompanyConfigController {
 
     @CompanyMemberOrSupportAccess
     @GetMapping(COVERAGE)
-    public ResponseEntity<CompanyCoverageConfig> getCoverageConfig(@PathVariable String companyId) {
+    public ResponseEntity<CompanyCoverageConfig> getCoverageConfig(@PathVariable long companyId) {
 
         Company company = companyRepository.findById(companyId)
             .orElseThrow(NotFoundException::new);
@@ -99,7 +99,7 @@ public class CompanyConfigController {
 
     @CompanyMemberOrSupportAccess
     @PutMapping(COVERAGE)
-    public ResponseEntity<Void> updateCoverageConfig(@PathVariable String companyId,
+    public ResponseEntity<Void> updateCoverageConfig(@PathVariable long companyId,
                                                      @RequestBody CompanyConfig.CoverageConfig coverageConfig) {
 
         Company company = companyRepository.findById(companyId)
@@ -118,7 +118,7 @@ public class CompanyConfigController {
 
     @CompanyMemberOrSupportAccess
     @GetMapping(SERVICES)
-    public ResponseEntity<TradesServicesCollection> getCompanyTradesAndServices(@PathVariable String companyId) {
+    public ResponseEntity<TradesServicesCollection> getCompanyTradesAndServices(@PathVariable long companyId) {
         Company company = companyRepository.findById(companyId)
             .orElseThrow(NotFoundException::new);
         TradesServicesCollection companyTradesServicesCollection = companyConfigService.getCompanyTradesServicesCollection(company);
@@ -127,7 +127,7 @@ public class CompanyConfigController {
 
     @CompanyMemberOrSupportAccess
     @PutMapping(SERVICES)
-    public ResponseEntity<Void> updateCompanyTradesAndServices(@PathVariable String companyId,
+    public ResponseEntity<Void> updateCompanyTradesAndServices(@PathVariable long companyId,
                                                                @RequestBody TradesServicesCollection tradesServicesCollection) {
         Company company = companyRepository.findById(companyId)
             .orElseThrow(NotFoundException::new);

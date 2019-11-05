@@ -16,11 +16,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Deprecated
 @Slf4j
-public class CaptchaFilter extends GenericFilterBean {
+public class RequestMatcherFilterBase extends GenericFilterBean {
 
     public static class Builder {
         private List<RequestMatcher> matchers = new ArrayList<>();
@@ -36,16 +35,16 @@ public class CaptchaFilter extends GenericFilterBean {
             return this;
         }
 
-        public CaptchaFilter build() {
+        public RequestMatcherFilterBase build() {
             List<RequestMatcher> all = new ArrayList<>();
             all.add(new OrRequestMatcher(this.matchers));
             all.addAll(this.skipMatchers);
-            return new CaptchaFilter(new AndRequestMatcher(all));
+            return new RequestMatcherFilterBase(new AndRequestMatcher(all));
 
         }
     }
 
-    private CaptchaFilter(RequestMatcher requestMatcher) {
+    private RequestMatcherFilterBase(RequestMatcher requestMatcher) {
         this.requestMatcher = requestMatcher;
     }
 
@@ -58,8 +57,7 @@ public class CaptchaFilter extends GenericFilterBean {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
         if (requestMatcher.matches(request)) {
-            // TODO: insert captcha logic here
-            log.debug("CaptchaFilter: " + request.getMethod() + " " + request.getRequestURI() + Optional.ofNullable(request.getQueryString()).map(q -> "?" + q).orElse(""));
+
         }
         filterChain.doFilter(servletRequest, servletResponse);
     }

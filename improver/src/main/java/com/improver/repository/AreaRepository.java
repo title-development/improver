@@ -24,12 +24,12 @@ public interface AreaRepository extends JpaRepository<Area, Long> {
     }
 
     @Query("SELECT a.zip FROM com.improver.entity.Area a WHERE a.company.id = ?1")
-    List<String> getZipCodesByCompanyId(String companyId);
+    List<String> getZipCodesByCompanyId(long companyId);
 
     @Transactional
     @Modifying
     @Query("DELETE FROM com.improver.entity.Area a WHERE a.company.id = ?1 AND a.zip IN ?2")
-    void deleteZipCodesByCompanyId(String companyId, List<String> zipCodes);
+    void deleteZipCodesByCompanyId(long companyId, List<String> zipCodes);
 
     @Transactional
     @Modifying

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.improver.model.in.registration.CompanyDetails;
 import lombok.Data;
 import lombok.experimental.Accessors;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.validation.constraints.Email;
 
@@ -22,9 +21,8 @@ import static com.improver.util.serializer.SerializationUtil.PHONE_PATTERN_STRIN
 public class Company {
 
     @Id
-    @GeneratedValue(generator = UUID_GENERATOR_NAME)
-    @GenericGenerator(name = UUID_GENERATOR_NAME, strategy = UUID_NAME)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String uri;
 
@@ -41,9 +39,11 @@ public class Company {
     @Embedded
     private ExtendedLocation location;
 
+    @Deprecated
     @Email
     private String email;
 
+    @Deprecated
     @Pattern(regexp = PHONE_PATTERN_STRING)
     private String internalPhone;
 

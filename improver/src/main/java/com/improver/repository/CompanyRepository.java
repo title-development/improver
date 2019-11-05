@@ -20,53 +20,29 @@ import java.util.List;
 import java.util.Optional;
 
 
-public interface CompanyRepository extends JpaRepository<Company, String> {
+public interface CompanyRepository extends JpaRepository<Company, Long> {
 
     @Query("SELECT new com.improver.model.CompanyInfo(c)" +
         " FROM com.improver.entity.Company c WHERE c.id = ?1")
-    CompanyInfo getCompanyInfo(String companyId);
+    CompanyInfo getCompanyInfo(long companyId);
 
     @Query("SELECT c from com.improver.entity.CompanyAction c WHERE " +
         "c.company.id = ?1")
-    Page<CompanyAction> getCompaniesLogs(String companyId, Pageable pageable);
+    Page<CompanyAction> getCompanyLogs(long companyId, Pageable pageable);
 
     @Modifying
     @Transactional
     @Query("UPDATE com.improver.entity.Company c SET c.location.streetAddress = ?2, c.location.city = ?3,  c.location.state = ?4, c.location.zip = ?5, c.location.lat = ?6, c.location.lng = ?7  WHERE c.id = ?1")
-    void updateCompanyLocation(String companyId, String streetAddress, String city, String state, String zip, double lat, double lng);
+    void updateCompanyLocation(long companyId, String streetAddress, String city, String state, String zip, double lat, double lng);
 
 
     @Query("SELECT c FROM com.improver.entity.Company c WHERE " +
         "(:id IS null OR c.id = :id) ")
-    Page<Company> getAllBy(String id, Pageable pageable);
+    Page<Company> getAllBy(Long id, Pageable pageable);
 
     boolean existsByServiceTypesId(long id);
 
     boolean existsByTradesId(long id);
-
-    @Query("SELECT new com.improver.model.NameIdTuple(t.id, t.name) FROM com.improver.entity.Trade t" +
-        " INNER JOIN t.companies c WHERE c.id = ?1 ORDER BY t.name ASC")
-    List<NameIdTuple> getOfferedTrades(String companyId);
-
-    @Query("SELECT new com.improver.model.NameIdTuple(s.id, s.name) FROM com.improver.entity.ServiceType s" +
-        " INNER JOIN s.companies c ON c.id = ?1 WHERE s.active = true AND s.id NOT IN ?2")
-    List<NameIdTuple> getOther(String companyId, List<Long> serviceIds);
-
-    @Query("SELECT new com.improver.model.NameIdTuple(s.id, s.name) FROM com.improver.entity.ServiceType s" +
-        " INNER JOIN s.companies c ON c.id = ?1 WHERE s.active = true")
-    List<NameIdTuple> getAll(String companyId);
-
-    @Query("SELECT new com.improver.model.NameIdTuple(s.id, s.name) FROM com.improver.entity.Company c " +
-        "LEFT JOIN c.serviceTypes s " +
-        "WHERE c.id = :companyId")
-    Page<NameIdTuple> getCompanyServices(String companyId, Pageable pageable);
-
-    @Query("SELECT new com.improver.model.NameIdParentTuple(s.id, s.name, t.id) FROM com.improver.entity.ServiceType s" +
-        " INNER JOIN s.trades t ON t.id IN ?2" +
-        " INNER JOIN s.companies c ON c.id = ?1" +
-        " ORDER BY s.name ASC")
-    List<NameIdParentTuple> getSelectedByTrades(String companyId, List<Long> tradeIds);
-
 
     @Query("SELECT c FROM com.improver.entity.Company c" +
         " INNER JOIN c.billing b" +
@@ -88,12 +64,12 @@ public interface CompanyRepository extends JpaRepository<Company, String> {
     Optional<Company> findByContractorEmail(String contractorEmail);
 
     @Query("SELECT c.iconUrl FROM com.improver.entity.Company c WHERE c.id = ?1")
-    Optional<String> getIconUrl(String companyId);
+    Optional<String> getIconUrl(long companyId);
 
     @Modifying
     @Transactional
     @Query("UPDATE com.improver.entity.Company c SET isApproved = ?2 WHERE c.id = ?1")
-    void approve(String companyId, boolean approved);
+    void approve(long companyId, boolean approved);
 
     @Query("SELECT new com.improver.model.admin.out.Record(c.rating, c.name, 'RATING') FROM com.improver.entity.Company c " +
         "WHERE c.created > :period " +

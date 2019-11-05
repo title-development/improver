@@ -128,7 +128,7 @@ public class CompanyConfigService {
 
     public TradesServicesCollection getCompanyTradesServicesCollection(Company company) {
         // 1. Trades
-        List<NameIdTuple> offeredTrades = companyRepository.getOfferedTrades(company.getId());
+        List<NameIdTuple> offeredTrades = tradeRepository.getCompanyTrades(company.getId());
         List<Long> tradeIds = offeredTrades.stream()
             .map(NameIdTuple::getId)
             .collect(Collectors.toList());
@@ -136,8 +136,8 @@ public class CompanyConfigService {
         // 2. Services with Trades
         List<NameIdParentTuple> selectedWithTrades;
         List<NameIdParentTuple> allServicesFromTrades;
-        if (tradeIds.size() > 0) {
-            selectedWithTrades = companyRepository.getSelectedByTrades(company.getId(), tradeIds);
+        if (!tradeIds.isEmpty()) {
+            selectedWithTrades = serviceTypeRepository.getByCompanyAndTrades(company.getId(), tradeIds);
             allServicesFromTrades = serviceTypeRepository.getActiveByTradeIds(tradeIds);
         } else {
             selectedWithTrades = Collections.emptyList();
@@ -155,13 +155,13 @@ public class CompanyConfigService {
         List<Long> serviceIds = selectedWithTrades.stream()
             .map(NameIdParentTuple::getId)
             .collect(Collectors.toList());
-        List<NameIdTuple> other;
+        List<NameIdTuple> otherServices;
         if (serviceIds.isEmpty()) {
-            other = companyRepository.getAll(company.getId());
+            otherServices = serviceTypeRepository.getAllCompanyServices(company.getId());
         } else {
-            other = companyRepository.getOther(company.getId(), serviceIds);
+            otherServices = serviceTypeRepository.getCompanyServicesExcept(company.getId(), serviceIds);
         }
-        other.forEach(service -> offeredServices.add(new OfferedService(service.getId(), service.getName(), true, 0)));
+        otherServices.forEach(service -> offeredServices.add(new OfferedService(service.getId(), service.getName(), true, 0)));
 
         offeredServices.sort(Comparator.comparing(OfferedService::getName));
         return new TradesServicesCollection()
@@ -205,30 +205,4 @@ public class CompanyConfigService {
         log.debug("Company={} Coverage: Added={}; Removed={}", company.getId(), toAdd, toRemove);
     }
 
-
-    @Deprecated
-    public void updateAreas(Company company, List<String> toAdd, List<String> toRemove) {
-        List<String> existed = areaRepository.getZipCodesByCompanyId(company.getId());
-        toAdd.removeAll(toRemove);
-        toAdd.removeAll(existed);
-
-        areaRepository.updateAreasForCompany(company, toAdd, toRemove);
-        log.debug("Company={} Coverage: Added={} ; Removed={}", company.getId(), toAdd, toRemove);
-    }
-
-    @Deprecated
-    public void addAreas(Company company, List<String> zipCodes) {
-        if (zipCodes.size() > 1) {
-            List<String> existed = areaRepository.getZipCodesByCompanyId(company.getId());
-            zipCodes.removeAll(existed);
-        }
-        List<Area> areas = zipCodes.stream().map(zip -> new Area().setZip(zip).setCompany(company))
-            .collect(Collectors.toList());
-        areaRepository.saveAll(areas);
-    }
-
-    @Deprecated
-    public void deleteZipCodesByCompanyId(String companyId, List<String> zipCodes) {
-        areaRepository.deleteZipCodesByCompanyId(companyId, zipCodes);
-    }
 }

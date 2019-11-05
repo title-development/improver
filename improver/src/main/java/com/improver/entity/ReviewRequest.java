@@ -17,7 +17,7 @@ public class ReviewRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private String companyId;
+    private Long companyId;
 
     private String reviewToken;
 
@@ -25,7 +25,7 @@ public class ReviewRequest {
 
     private boolean completed = false;
 
-    public ReviewRequest(String customerEmail, String companyId) {
+    public ReviewRequest(String customerEmail, Long companyId) {
         this.customerEmail = customerEmail;
         this.companyId = companyId;
         this.reviewToken = UUID.randomUUID().toString();

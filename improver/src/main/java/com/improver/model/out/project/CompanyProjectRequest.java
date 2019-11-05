@@ -49,7 +49,7 @@ public class CompanyProjectRequest {
 
     @Getter
     public static class CompanyModel{
-        private String id;
+        private long id;
         private String name;
         private String iconUrl;
         private double rating;
@@ -58,7 +58,7 @@ public class CompanyProjectRequest {
         private boolean isApproved;
 
 
-        public CompanyModel(String id, String name, String iconUrl, double rating, int reviewCount, int founded, boolean isApproved) {
+        public CompanyModel(long id, String name, String iconUrl, double rating, int reviewCount, int founded, boolean isApproved) {
             this.id = id;
             this.name = name;
             this.iconUrl = iconUrl;

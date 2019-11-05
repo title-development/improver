@@ -1,16 +1,16 @@
-INSERT INTO companies (id, name, founded, email, state, city, street_address, zip, lat, lng, internal_phone, description)
-VALUES ('1', 'North America Development Group, LLC', 2010, 'test1@gmail.com', 'NY', 'New York',
+INSERT INTO companies (name, founded, email, state, city, street_address, zip, lat, lng, internal_phone, description)
+VALUES ('North America Development Group, LLC', 2010, 'test1@gmail.com', 'NY', 'New York',
         '509 Madison Ave Rm 2004', '10022', '40.7594361', '-73.9764019', '280-234-7878',
         'Our company was established in 2012 in New-York city. The company works in 3 states: New-York, Connecticut and New-Jersey. Our specialties include the following but are not limited to: masonry, block/CMU, thin brick/modular brick, limestone manufactory/installation, natural stone/manufactured stone veneer, hardcoat stucco (2 coat stucco), pavers/Belgian block. We are doing shop tickets (manufacture) and shop drawing (installation) for our projects');
-INSERT INTO companies (id, name, founded, email, state, city, street_address, zip, lat, lng, internal_phone, description)
-VALUES ('2', 'Total Home Service, LLC', 2005, 'test2@gmail.com', 'NJ', 'Jersey City', '93 Fairview Ave', '07304', '40.7233233', '-74.0748161', '200-111-7660', 'We are best Company ever');
-INSERT INTO companies (id, name, founded, email, state, city, street_address, zip, lat, lng, internal_phone, description)
-VALUES ('3', 'Diamond One Constructions', 2009, 'test3@gmail.com', 'NY', 'New York', '400 Madison Ave Rm 2000', '10021',
+INSERT INTO companies (name, founded, email, state, city, street_address, zip, lat, lng, internal_phone, description)
+VALUES ('Total Home Service, LLC', 2005, 'test2@gmail.com', 'NJ', 'Jersey City', '93 Fairview Ave', '07304', '40.7233233', '-74.0748161', '200-111-7660', 'We are best Company ever');
+INSERT INTO companies (name, founded, email, state, city, street_address, zip, lat, lng, internal_phone, description)
+VALUES ('Diamond One Constructions', 2009, 'test3@gmail.com', 'NY', 'New York', '400 Madison Ave Rm 2000', '10021',
         '40.7562408', '-73.9792458', '300-111-7660', 'We are best Company ever');
-INSERT INTO companies (id, name, founded, email, state, city, street_address, zip, lat, lng, internal_phone, description)
-VALUES ('4', 'Medina Christians LTD', 2015, 'test4@gmail.com', 'NY', 'New York', '509 Madison Ave Rm 192', '10020', '40.7594361', '-73.9764019', '400-111-7660', 'We are best Company ever');
-INSERT INTO companies (id, name, founded, email, state, city, street_address, zip, lat, lng, internal_phone, description)
-VALUES ('5', 'Example Company', 2013, 'test5@gmail.com', 'NY', 'New York', '509 Madison Ave Rm 333', '10019', '40.7594361', '-73.9764019', '600-111-7660', 'We are best Company ever');
+INSERT INTO companies (name, founded, email, state, city, street_address, zip, lat, lng, internal_phone, description)
+VALUES ('Medina Christians LTD', 2015, 'test4@gmail.com', 'NY', 'New York', '509 Madison Ave Rm 192', '10020', '40.7594361', '-73.9764019', '400-111-7660', 'We are best Company ever');
+INSERT INTO companies (name, founded, email, state, city, street_address, zip, lat, lng, internal_phone, description)
+VALUES ('Example Company', 2013, 'test5@gmail.com', 'NY', 'New York', '509 Madison Ave Rm 333', '10019', '40.7594361', '-73.9764019', '600-111-7660', 'We are best Company ever');
 
 
 INSERT INTO areas (zip, company_id) VALUES ('07001', 1);

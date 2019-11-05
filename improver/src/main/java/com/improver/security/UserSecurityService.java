@@ -218,7 +218,7 @@ public class UserSecurityService implements UserDetailsService {
     private LoginModel buildLoginModel(User user) {
         String displayName = user.getDisplayName();
         String iconUrl = user.getIconUrl();
-        String companyId = null;
+        Long companyId = null;
         User.Role role = user.getRole();
         if (CONTRACTOR.equals(role)) {
             Company company = ((Contractor) user).getCompany();

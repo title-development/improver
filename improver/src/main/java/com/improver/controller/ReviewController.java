@@ -122,7 +122,7 @@ public class ReviewController {
 
     @PageableSwagger
     @GetMapping(COMPANIES_PATH + COMPANY_ID + REVIEWS)
-    public ResponseEntity<ReviewRating> getCompanyReviews(@PathVariable String companyId, @RequestParam(defaultValue = "false") boolean publishedOnly,
+    public ResponseEntity<ReviewRating> getCompanyReviews(@PathVariable long companyId, @RequestParam(defaultValue = "false") boolean publishedOnly,
                                                           @PageableDefault(sort = "created", direction = Sort.Direction.DESC) Pageable pageRequest) {
         Company company = companyRepository.findById(companyId)
             .orElseThrow(NotFoundException::new);
@@ -133,7 +133,7 @@ public class ReviewController {
 
     @PreAuthorize("hasRole('CUSTOMER')")
     @GetMapping(COMPANIES_PATH + COMPANY_ID + REVIEWS + OPTIONS)
-    public ResponseEntity<Void> getReviewCapability(@PathVariable String companyId,
+    public ResponseEntity<Void> getReviewCapability(@PathVariable long companyId,
                                                     @RequestParam(defaultValue = "0") long projectRequestId,
                                                     @RequestParam(required = false) String reviewToken) {
 
@@ -144,7 +144,7 @@ public class ReviewController {
 
     @PreAuthorize("hasRole('CUSTOMER')")
     @PostMapping(COMPANIES_PATH + COMPANY_ID + REVIEWS)
-    public ResponseEntity<Void> addReview(@PathVariable String companyId,
+    public ResponseEntity<Void> addReview(@PathVariable long companyId,
                                           @RequestParam(defaultValue = "0") long projectRequestId,
                                           @RequestParam(required = false) String reviewToken,
                                           @RequestBody @Valid CustomerReview review) {

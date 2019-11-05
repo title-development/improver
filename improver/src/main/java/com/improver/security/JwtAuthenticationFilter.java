@@ -68,7 +68,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
         if (requestMatcher.matches(request)) {
-            log.debug(request.getMethod() + " " + request.getRequestURI() + Optional.ofNullable(request.getQueryString()).map(q -> "?" + q).orElse(""));
+            //log.debug(request.getMethod() + " " + request.getRequestURI() + Optional.ofNullable(request.getQueryString()).map(q -> "?" + q).orElse(""));
             Authentication authentication;
             try {
                 authentication = attemptAuthentication(request, response);

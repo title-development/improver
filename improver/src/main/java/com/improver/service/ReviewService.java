@@ -31,8 +31,7 @@ public class ReviewService {
     @Autowired private ReviewRepository reviewRepository;
     @Autowired private ProjectRequestRepository projectRequestRepository;
     @Autowired private MailService mailService;
-    @Autowired
-    private WsNotificationService wsNotificationService;
+    @Autowired private WsNotificationService wsNotificationService;
     @Autowired private ReviewRequestRepository reviewRequestRepository;
     @Autowired private UserSecurityService userSecurityService;
     @Autowired private ReviewRevisionRequestRepository reviewRevisionRequestRepository;
@@ -42,7 +41,7 @@ public class ReviewService {
         return reviewRepository.getAll(id, customerName, companyName, pageable);
     }
 
-    public Page<CompanyReview> getReviews(String companyId, boolean publishedOnly, Pageable pageable) {
+    public Page<CompanyReview> getReviews(long companyId, boolean publishedOnly, Pageable pageable) {
         User user = userSecurityService.currentUserOrNull();
         long requesterId = 0;
 
@@ -114,7 +113,7 @@ public class ReviewService {
         companyRepository.save(company.setReviewCount(reviewCount).setRating(rating).setSumRating(sumRating));
     }
 
-    public Review checkReview(long projectRequestId, Customer customer, String companyId, String reviewToken) throws NotFoundException, ValidationException, ConflictException {
+    public Review checkReview(long projectRequestId, Customer customer, Long companyId, String reviewToken) throws NotFoundException, ValidationException, ConflictException {
         Company company = companyRepository.findById(companyId)
             .orElseThrow(NotFoundException::new);
         ProjectRequest projectRequest = null;
