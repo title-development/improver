@@ -264,10 +264,6 @@ export class CompanyInfoComponent implements OnInit {
       });
   }
 
-  deleteCompany(): void {
-    this.dialog.open(dialogsMap['delete-company-dialog'], completeProjectDialogConfig);
-  }
-
   private setCompanyIconUrl(iconUrl: string) {
     this.companyInfo.iconUrl = iconUrl;
     // update loginModel icon

@@ -210,8 +210,12 @@ export class PersonalInfoComponent implements OnDestroy {
 
   deleteAccount(event: MouseEvent): void {
     event.stopPropagation();
-    this.deleteAccountDialogRef = this.dialog.open(dialogsMap['delete-account-dialog'], completeProjectDialogConfig);
-    this.deleteAccountDialogRef.componentInstance.account = this.account;
+    if (this.securityService.hasRole(Role.CONTRACTOR)) {
+      this.dialog.open(dialogsMap['delete-company-dialog'], completeProjectDialogConfig);
+    } else {
+      this.deleteAccountDialogRef = this.dialog.open(dialogsMap['delete-account-dialog'], completeProjectDialogConfig);
+      this.deleteAccountDialogRef.componentInstance.account = this.account;
+  }
   }
 
   connectSocial(socialPlatform: string) {

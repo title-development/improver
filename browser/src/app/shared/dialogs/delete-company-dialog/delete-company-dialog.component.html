@@ -2,7 +2,7 @@
   <div class="dialog-content-container">
     <div class="header">
       <mat-icon class="close-modal" color="accent" (click)="close()">clear</mat-icon>
-      <div class="header-content">Delete Company</div>
+      <div class="header-content">Delete PRO account</div>
     </div>
     <form #form="ngForm"
           (ngSubmit)="deleteCompany(form)">
@@ -16,10 +16,10 @@
                                                                                  (click)="close()">Notification
             settings</a>".</li>
           <li>If you want to change your email address, name or phone number, you can do it in your "<a
-            href="" [routerLink]="['pro', 'settings','account']" (click)="close()">Account settings</a>".
+            href="" [routerLink]="['pro', 'settings','account']" (click)="close()">User account settings</a>".
           </li>
         </ul>
-        <p>Are you sure want to delete your Company account? This action cannot be reversed, so make sure you want to do
+        <p>Are you sure want to delete your PRO account? This action cannot be reversed, so make sure you want to do
           this.</p>
         <cv-input-field>
           <cv-field-label>Confirm the deletion with your password</cv-field-label>
