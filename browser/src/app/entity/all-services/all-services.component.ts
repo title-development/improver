@@ -28,7 +28,7 @@ export class AllServicesComponent implements OnInit {
   }
 
   getTrades() {
-    this.customerSuggestionService.tradesWithServices.subscribe(
+    this.customerSuggestionService.getTradesWithServices$().subscribe(
       trades => {
         this.trades = trades;
         this.onFilter('');

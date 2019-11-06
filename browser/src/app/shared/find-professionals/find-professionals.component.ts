@@ -105,7 +105,7 @@ export class FindProfessionalsComponent implements OnInit {
 
   getRecentSearches(){
     if (this.securityService.hasRole(Role.CUSTOMER)) {
-      this.customerSuggestionService.recentSearches$
+      this.customerSuggestionService.getCustomerRecentSearches$()
         .subscribe(
           recentSearches => this.recentSearches = recentSearches
         )

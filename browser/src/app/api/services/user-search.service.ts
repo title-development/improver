@@ -72,7 +72,7 @@ export class UserSearchService {
   }
 
   createTradeIndexes(): void {
-    this.customerSuggestionService.tradesWithServices.subscribe(
+    this.customerSuggestionService.getTradesWithServices$().subscribe(
       trades => {
         if (trades && trades.length >0){
           this.tradeIndexes = lunr( function () {

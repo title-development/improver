@@ -51,7 +51,7 @@ export class CustomerSuggestionService {
     return this._suggested$;
   }
 
-  get tradesWithServices(): ReplaySubject<Array<Trade>>{
+  getTradesWithServices$(): ReplaySubject<Array<Trade>>{
     if (!this.tradeWithServicesCached){
       this.tradeWithServicesCached = true;
       this.tradeService.getTradesWithServices().subscribe(trade => {
@@ -69,7 +69,7 @@ export class CustomerSuggestionService {
     return this._tradeWithServices$;
   }
 
-  get recentSearches$(): ReplaySubject<Array<string>> {
+  getCustomerRecentSearches$(): ReplaySubject<Array<string>> {
       this.accountService.getRecentSearches(5).subscribe(
         (recentSearch: Array<string>) => this._recentSearches$.next(recentSearch),
         err => console.log(err)
@@ -121,7 +121,7 @@ export class CustomerSuggestionService {
     this.accountService.saveSearchTerm(search, zipCode, isManual).pipe(
       tap(result => {
         if (this.securityService.isAuthenticated()){
-          this.recentSearches$;
+          this.getCustomerRecentSearches$();
         }
       })
     ).subscribe();
