@@ -8,7 +8,7 @@
       </button>
 
       <div class="nav navbar-nav navbar-left">
-        <div class="find-professionals-wrapper" *ngIf="securityService.hasRole(Role.CUSTOMER)">
+        <div class="find-professionals-wrapper" *ngIf="securityService.hasRole(Role.CUSTOMER) || !securityService.isAuthenticated() && (!mediaQuery.xs && !mediaQuery.sm)">
           <find-professionals></find-professionals>
         </div>
 

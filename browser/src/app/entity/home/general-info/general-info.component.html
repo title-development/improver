@@ -9,7 +9,7 @@
 
     <div class="col-xs-12 col-md-6">
       <div class="general-info-part-header">Testimonials</div>
-      <div class="general-info-part-content carousel">
+      <div class="general-info-part-content carousel" (swiperight)="setCurrentIndex(currentIndex - 1)" (swipeleft)="setCurrentIndex(currentIndex + 1)">
 
         <div class="dots-wrapper noselect">
           <div class="wrapper">

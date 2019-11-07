@@ -21,22 +21,33 @@ export const defaultMapOptions: MapOptions = {
 
 export const mapStyle = [
   {
-    'stylers': [
+    "featureType": "landscape.natural",
+    "elementType": "geometry.fill",
+    "stylers": [
       {
-        'saturation': 0
+        "saturation": -60
       }
     ]
   },
   {
-    'featureType': 'road.highway',
-    'elementType': 'labels',
-    'stylers': [
+    "featureType": "poi.park",
+    "elementType": "geometry.fill",
+    "stylers": [
       {
-        'visibility': 'off'
+        "saturation": -60
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "labels",
+    "stylers": [
+      {
+        "visibility": "off"
       }
     ]
   }
-];
+]
 
 export const infoWindowDefaults: InfoWindowInt = {
   zip: '07002',

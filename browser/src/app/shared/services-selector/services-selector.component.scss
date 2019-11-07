@@ -90,7 +90,10 @@
 
             ::ng-deep ul {
 
+
               li {
+                margin-bottom: 8px;
+                margin-right: 8px;
                 display: inline-block;
                 cursor: pointer;
                 .service-type {
@@ -98,8 +101,7 @@
                   border-radius: 2px;
                   background-color: #efefef;
                   padding: 8px;
-                  margin-bottom: 8px;
-                  margin-right: 8px;
+
 
                   &.-highlight {
                     position: relative;

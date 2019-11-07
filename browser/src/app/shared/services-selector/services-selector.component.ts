@@ -1,7 +1,4 @@
-import {
-  ApplicationRef, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output,
-  SimpleChanges
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, NgForm } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { Constants } from '../../util/constants';
@@ -14,10 +11,8 @@ import { getErrorMessage } from '../../util/functions';
 import { Trade } from '../../model/data-model';
 import { dialogsMap } from '../dialogs/dialogs.state';
 import { confirmDialogConfig } from '../dialogs/dialogs.configs';
-import { combineLatest, Subscription } from 'rxjs';
+import { combineLatest, ReplaySubject } from 'rxjs';
 import { ScrollHolderService } from '../../util/scroll-holder.service';
-import { MediaQuery, MediaQueryService } from '../../util/media-query.service';
-import { finalize } from "rxjs/operators";
 
 
 @Component({
@@ -38,7 +33,7 @@ export class ServicesSelectorComponent implements OnInit {
   @Output()
   onUpdate: EventEmitter<any> = new EventEmitter<any>();
   @Output()
-  onInitialized: EventEmitter<any> = new EventEmitter<any>();
+  onInitialized: ReplaySubject<any> = new ReplaySubject<any>(1);
   autocompleteData = [];
   filteredData: any;
   tradesControl: FormGroup;
@@ -156,7 +151,7 @@ export class ServicesSelectorComponent implements OnInit {
       .subscribe(results => {
         this.allTrades = results[0];
         this.allServices = results[1];
-
+        this.onInitialized.next();
         this.autocompleteData.push({
           label: 'Trades',
           content: this.allTrades
@@ -364,6 +359,5 @@ export class ServicesSelectorComponent implements OnInit {
     }
     this.onUpdate.emit(tradesAndServiceTypes);
   }
-
 
 }

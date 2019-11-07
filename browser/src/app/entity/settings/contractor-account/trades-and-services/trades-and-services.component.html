@@ -6,7 +6,7 @@
       <account-nav></account-nav>
     </div>
 
-    <div class="col-md-9 col-sm-12">
+    <div class="content-wrapper col-md-9 col-sm-12">
 
       <div class="account-top-line">
         <div class="account-nav-title">Provided Services</div>
@@ -18,13 +18,14 @@
           <div class="card-content">
 
             <services-selector *ngIf="tradesAndServiceTypes" [initialData]="tradesAndServiceTypes"
+                               (onInitialized)="selectorInitialized = true"
                                (onUpdate)="onTradesAndServicesChange($event)">
             </services-selector>
 
 
           </div>
 
-          <div class="buttons-block" *ngIf="tradesAndServiceTypes">
+          <div class="buttons-block" *ngIf="tradesAndServiceTypes && selectorInitialized">
             <!--<button cv-button-flat flatStyle="dark" >CANCEL</button>-->
             <button class="save-button" cv-button (click)="updateCompanyTradesAndServiceTypes()">SAVE</button>
           </div>

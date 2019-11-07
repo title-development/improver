@@ -40,3 +40,9 @@
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
   margin-bottom: 24px;
 }
+
+.content-wrapper {
+  @include response-to(sm) {
+    width: 100%;
+  }
+}

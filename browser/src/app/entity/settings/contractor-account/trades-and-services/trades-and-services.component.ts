@@ -1,13 +1,15 @@
-import { ApplicationRef, Component, EventEmitter, OnInit } from '@angular/core';
+import { ApplicationRef, Component, HostListener, OnInit } from '@angular/core';
 import { SecurityService } from '../../../../auth/security.service';
 import { Constants } from '../../../../util/constants';
 import { ActivatedRoute } from '@angular/router';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog } from '@angular/material';
 import { TradeService } from '../../../../api/services/trade.service';
 import { ServiceTypeService } from '../../../../api/services/service-type.service';
 import { CompanyService } from '../../../../api/services/company.service';
 import { PopUpMessageService } from '../../../../util/pop-up-message.service';
 import { getErrorMessage } from '../../../../util/functions';
+import { ComponentCanDeactivate } from "../../../../auth/router-guards/pending-chanes.guard";
+import { Observable } from "rxjs";
 
 @Component({
   selector: 'trades-and-services',
@@ -15,9 +17,11 @@ import { getErrorMessage } from '../../../../util/functions';
   styleUrls: ['./trades-and-services.component.scss']
 })
 
-export class TradesAndServicesComponent implements OnInit {
+export class TradesAndServicesComponent implements OnInit, ComponentCanDeactivate {
 
   tradesAndServiceTypes;
+  selectorInitialized = false;
+  unsavedChanges = false;
 
   constructor(public constants: Constants,
               public route: ActivatedRoute,
@@ -51,7 +55,7 @@ export class TradesAndServicesComponent implements OnInit {
 
   onTradesAndServicesChange(tradesAndServiceTypes) {
     this.tradesAndServiceTypes = tradesAndServiceTypes;
-    console.log(this.tradesAndServiceTypes);
+    this.unsavedChanges = true;
   }
 
   updateCompanyTradesAndServiceTypes() {
@@ -59,14 +63,22 @@ export class TradesAndServicesComponent implements OnInit {
       this.popUpMessageService.showWarning('You should have at least one Service');
       return;
     }
-    this.companyService.updateCompanyTradesAndServiceTypes(this.securityService.getLoginModel().company, this.tradesAndServiceTypes).subscribe(
-      response => {
+    this.companyService.updateCompanyTradesAndServiceTypes(this.securityService.getLoginModel().company, this.tradesAndServiceTypes)
+      .subscribe(
+      () => {
+        this.unsavedChanges = false;
         this.popUpMessageService.showSuccess('Your Trade and Services configuration is updated');
-      },
-      err => {
-        console.log(err);
-        this.popUpMessageService.showError(getErrorMessage(err));
       });
+  }
+
+  canDeactivate(): Observable<boolean> | boolean {
+    return !this.unsavedChanges;
+  }
+
+  @HostListener('window:beforeunload', ['$event']) unloadNotification(event): any {
+    if (!this.canDeactivate()) {
+      return false;
+    }
   }
 
 }

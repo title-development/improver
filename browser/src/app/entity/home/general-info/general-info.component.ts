@@ -8,20 +8,6 @@ enum Position { Visible = "Visible", FromLeft = "FromLeft", FromRight = "FromRig
 @Component({
   selector: 'general-info',
   templateUrl: 'general-info.component.html',
-  // animations: [
-  //   trigger(
-  //     'carouselAnimation', [
-  //       transition(':enter', [
-  //         style({transform: 'translateX(-100%)', opacity: 0}),
-  //         animate('500ms', style({transform: 'translateX(0)', opacity: 1}))
-  //       ]),
-  //       transition(':leave', [
-  //         style({transform: 'translateX(0)', opacity: 1}),
-  //         animate('500ms', style({transform: 'translateX(100%)', opacity: 0}))
-  //       ])
-  //     ]
-  //   )
-  // ],
   animations: [
     trigger(
       'carouselAnimation', [
@@ -33,19 +19,19 @@ enum Position { Visible = "Visible", FromLeft = "FromLeft", FromRight = "FromRig
         state('Invisible', style({display: "none"})),
         transition('* => ToRight', [
           style({transform: 'translateX(0)', opacity: 1}),
-          animate('500ms', style({transform: 'translateX(100%)', opacity: 0}))
+          animate('300ms', style({transform: 'translateX(100%)', opacity: 0}))
         ]),
         transition('* => FromLeft', [
           style({transform: 'translateX(-100%)', opacity: 0}),
-          animate('500ms', style({transform: 'translateX(0)', opacity: 1}))
+          animate('300ms', style({transform: 'translateX(0)', opacity: 1}))
         ]),
         transition('* => ToLeft', [
           style({transform: 'translateX(0)', opacity: 1}),
-          animate('500ms', style({transform: 'translateX(-100%)', opacity: 0}))
+          animate('300ms', style({transform: 'translateX(-100%)', opacity: 0}))
         ]),
         transition('* => FromRight', [
           style({transform: 'translateX(100%)', opacity: 0}),
-          animate('500ms', style({transform: 'translateX(0)', opacity: 1}))
+          animate('300ms', style({transform: 'translateX(0)', opacity: 1}))
         ]),
         transition('* => Visible', [
           style({ opacity: 0}),
@@ -152,6 +138,11 @@ export class GeneralInfoComponent {
   }
 
   setCurrentIndex(index) {
+    if (index >= this.testimonials.length) {
+      index = 0
+    } else if (index < 0) {
+      index = this.testimonials.length - 1
+    }
     this.positions[this.currentIndex] = this.Position.Invisible;
     this.currentIndex = index;
     this.positions[this.currentIndex] = this.Position.Visible;

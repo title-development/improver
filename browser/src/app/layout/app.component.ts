@@ -8,7 +8,9 @@ import { SwUpdate } from '@angular/service-worker';
 import { NavigationEnd, Router } from '@angular/router';
 import { GoogleAnalyticsService } from '../util/google-analytics.service';
 import { HotJarService } from '../util/hotjar.service';
+import 'hammerjs';
 import '../../../extend';
+
 
 @Component({
   selector: 'app-root',
