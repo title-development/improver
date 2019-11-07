@@ -44,6 +44,15 @@
       justify-content: space-between;
     }
 
+    .lead-search-icon {
+      display: flex;
+      width: 50px;
+      height: 50px;
+      align-items: center;
+      justify-content: center;
+      min-width: 50px;
+    }
+
     .header-left {
       @include response-to(sm) {
         flex-direction: row;
@@ -73,17 +82,6 @@
 
     .header-right {
       flex-direction: row;
-
-      .lead-search-icon {
-        display: flex;
-        width: 50px;
-        height: 50px;
-        padding: 0px;
-        align-items: center;
-        justify-content: center;
-        min-width: 50px;
-      }
-
 
       @include response-to(sm) {
         flex-direction: row;
@@ -188,26 +186,31 @@
         display: flex;
         align-items: center;
 
-        @include response(md) {
-          padding: 0;
+        @include response-to(md) {
+          padding: 0px;
+          width: 50px;
         }
 
-        @include response-to(sm) {
-          margin-right: 15px;
-          padding: 0px;
+        &.account-menu {
+          height: 50px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
 
         .account-icon {
-          width: 36px;
-          height: 36px;
+          width: 40px;
+          height: 40px;
           border-radius: 36px;
           background-size: cover;
           background-position: center;
-          //border: 1px solid $black-300;
+          border: 1px solid $black-300;
 
-          @include response-to(sm) {
-            margin-right: 0;
+          &.mobile {
+            width: 32px;
+            height: 32px;
           }
+
         }
 
         .user-name {
@@ -246,9 +249,9 @@
         letter-spacing: 1.4px;
         color: #363636;
         background: url(../../../assets/img/logo.png) no-repeat center center;
-        background-size: contain;
-        width: 130px;
-        height: 32px;
+        background-size: 100px 32px;
+        width: 120px;
+        height: 50px;
 
         @include response-to(sm) {
           padding: 0;
@@ -340,4 +343,8 @@
   @include response-from(md) {
     position: relative;
   }
+}
+
+.find-professionals-wrapper {
+  z-index: 1;
 }

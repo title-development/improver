@@ -5,7 +5,7 @@
     <div class="logo" *ngIf="securityService.isAuthenticated()"
          [ngStyle]="securityService.getLoginModel().iconUrl && securityService.getLoginModel().iconUrl != '' && {'background-image':'url(' + securityService.getLoginModel().iconUrl + ')'} ||
                                             securityService.hasRole(Role.CUSTOMER) && {'background-image':'url(/assets/img/user-logo-placeholder.png)'} ||
-                                            securityService.hasRole(Role.CONTRACTOR) && {'background-image':'url(/assets/img/contractor-logo-placeholder.png)'}">
+                                            securityService.hasRole(Role.CONTRACTOR) && {'background-image':'url(/assets/img/company-logo-placeholder.png)'}">
     </div>
     <div *ngIf="securityService.isAuthenticated()"
          [ngClass]="{'user-name' : securityService.hasRole(Role.CUSTOMER) || securityService.hasRole(Role.ADMIN) || securityService.hasRole(Role.SUPPORT),'company-name' : securityService.hasRole(Role.CONTRACTOR)}">
@@ -23,7 +23,7 @@
         <a routerLink="/my/projects" (click)="close()">My Projects</a>
       </div>
       <a routerLink="/my/settings/account" (click)="close()">User Account</a>
-      <a routerLink="/my/settings/notifications" (click)="close()">Notifications</a>
+      <a routerLink="/my/settings/notifications" (click)="close()">Notification Settings</a>
     </div>
     <div class="user-role" *ngIf="securityService.isAuthenticated() && securityService.hasRole(Role.CONTRACTOR)">
       <div class="user-role-child md-none lg-none xlg-none">
@@ -36,7 +36,7 @@
       <a routerLink="/pro/settings/coverage" (click)="close()">Service Area</a>
       <a routerLink="/pro/settings/billing" (click)="close()">Billing</a>
       <a (click)="close(); toggleReferralDialog()">Give {{constants.REFERRAL_BONUS_AMOUNT / 100 | currency:'USD':'symbol':'0.0-0'}}, Get {{constants.REFERRAL_BONUS_AMOUNT / 100 | currency:'USD':'symbol':'0.0-0'}}</a>
-      <a routerLink="/pro/settings/notifications" (click)="close()">Notifications</a>
+      <a routerLink="/pro/settings/notifications" (click)="close()">Notification Settings</a>
       <a routerLink="/pro/settings/quick-reply" (click)="close()">Auto Reply</a>
       <a routerLink="/pro/settings/scheduling-availability" (click)="close()">Vacation Schedule</a>
     </div>
