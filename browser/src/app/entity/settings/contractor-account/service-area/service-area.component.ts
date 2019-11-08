@@ -79,23 +79,18 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate, 
     if (!this.mediaQuery) {
       return defaultMapOptions.minZoom;
     }
-
     if (this.mediaQuery.sm && this.isDetailMode) {
       return 10;
     }
-
     if (this.mediaQuery.sm && !this.isDetailMode) {
       return 9;
     }
-
     if (this.mediaQuery.xs && this.isDetailMode) {
       return 9;
     }
-
     if (this.mediaQuery.xs && !this.isDetailMode) {
       return 8;
     }
-
     return defaultMapOptions.minZoom;
   }
 

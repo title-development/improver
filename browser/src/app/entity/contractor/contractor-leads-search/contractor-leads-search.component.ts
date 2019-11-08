@@ -9,7 +9,7 @@ import { BoundariesService } from "../../../api/services/boundaries.service";
 import { LeadService } from '../../../api/services/lead.service';
 import { Lead, ShortLead, SystemMessageType } from '../../../model/data-model';
 import { getErrorMessage } from '../../../util/functions';
-import { defaultMapOptions, infoWindowDefaults } from '../../../util/google-map-default-options';
+import { defaultMapOptions, infoWindowDefaults, mapStyle } from '../../../util/google-map-default-options';
 import { MapMarkersStore } from '../../../util/google-map-markers-store.service';
 import { GoogleMapUtilsService } from "../../../util/google-map.utils";
 import { MediaQuery, MediaQueryService } from '../../../util/media-query.service';
@@ -35,17 +35,7 @@ export class ContractorLeadsSearchComponent implements OnDestroy {
   infoWindowOpenTrig: boolean = false;
   infoWindowContentAnim: boolean;
   mapOptions: MapOptions = defaultMapOptions;
-  mapStyles = [
-    {
-      featureType: 'road.highway',
-      elementType: 'labels',
-      stylers: [
-        {
-          visibility: 'off',
-        },
-      ],
-    },
-  ];
+  mapStyles = mapStyle;
   mediaQuery: MediaQuery;
   companyCoverageConfig: CompanyCoverageConfig;
   @ViewChild(MatSidenav) private mdSidebar: MatSidenav;
@@ -84,6 +74,23 @@ export class ContractorLeadsSearchComponent implements OnDestroy {
       ).subscribe((mediaQuery: MediaQuery) => {
       this.mediaQuery = mediaQuery;
     });
+  }
+
+
+  get defaultZoom(): number {
+    if (!this.mediaQuery) {
+      return defaultMapOptions.minZoom;
+    }
+    if (this.mediaQuery.xs) {
+      return 8;
+    }
+    if (this.mediaQuery.sm || this.mediaQuery.md) {
+      return 9;
+    }
+    if (this.mediaQuery.lg || this.mediaQuery.xlg) {
+      return 10;
+    }
+    return 10;
   }
 
   moveMapToLead(lead: Lead): void {

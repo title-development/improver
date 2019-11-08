@@ -25,7 +25,7 @@ export const mapStyle = [
     "elementType": "geometry.fill",
     "stylers": [
       {
-        "saturation": -60
+        "saturation": -40
       }
     ]
   },
@@ -34,7 +34,7 @@ export const mapStyle = [
     "elementType": "geometry.fill",
     "stylers": [
       {
-        "saturation": -60
+        "saturation": -40
       }
     ]
   },
