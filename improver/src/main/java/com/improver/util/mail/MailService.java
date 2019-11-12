@@ -211,27 +211,30 @@ public class MailService {
     }
 
     public void sendUnreadMessageNotificationEmails(String email, List<UnreadProjectMessageInfo> unreadProjectMessageInfos, boolean isForCustomers) {
-        Context context = contextTemplate();
-        String title = "You have new messages";
-        StringBuilder body = new StringBuilder();
-        if (isForCustomers) {
-            body.append("You have new messages from Pros on your recent projects: <br>");
-            unreadProjectMessageInfos.forEach(message ->
-                body.append(String.format("In %1$s project <br>",
-                    highlight(message.getServiceTypeName()))));
-            context.setVariable(CONFIRM_URL, siteUrl + CUSTOMER_PROJECTS);
-        } else {
-            body.append("You have new messages from Clients in your recent projects: <br>");
-            unreadProjectMessageInfos.forEach(message ->
-                body.append(String.format("From %1$s in %2$s project <br>",
-                    highlight(message.getClientName()),
-                    highlight(message.getServiceTypeName()))));
-            context.setVariable(CONFIRM_URL, siteUrl + PRO + DASHBOARD);
+        for (UnreadProjectMessageInfo message: unreadProjectMessageInfos){
+            String userProjectRequestPath;
+            Context context = contextTemplate();
+            String title = "You have new messages";
+            StringBuilder body = new StringBuilder();
+            if (isForCustomers) {
+                userProjectRequestPath = siteUrl + CUSTOMER_PROJECTS + message.getProjectId() + "#" + message.getProjectRequestId();
+                    body.append(String.format("You have new messages from %1$s in %2$s project <br>",
+                        highlight(message.getCompanyName()),
+                        highlight(message.getServiceTypeName())));
+                context.setVariable(CONFIRM_URL, userProjectRequestPath);
+            } else {
+                userProjectRequestPath = siteUrl + PRO_PROJECTS + message.getProjectRequestId();
+                    body.append(String.format("You have new messages from %1$s in %2$s project <br>",
+                        highlight(message.getClientName()),
+                        highlight(message.getServiceTypeName())));
+                context.setVariable(CONFIRM_URL, userProjectRequestPath);
+            }
+            context.setVariable(TITLE, title);
+            context.setVariable(BODY, body);
+            context.setVariable(CONFIRM_BTN_TEXT, "View Conversation");
+            mailClient.sendMail("You have new messages", CONFIRMATION_TEMPLATE, context, MailHolder.MessageType.NOREPLY, email);
         }
-        context.setVariable(TITLE, title);
-        context.setVariable(BODY, body);
-        context.setVariable(CONFIRM_BTN_TEXT, "View at Home Improve");
-        mailClient.sendMail("You have new messages", CONFIRMATION_TEMPLATE, context, MailHolder.MessageType.NOREPLY, email);
+
     }
 
     /********************************************************************************************************
