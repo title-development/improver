@@ -17,6 +17,12 @@
 
   }
 
+  .row {
+    @include response-to(sm) {
+      flex-direction: column-reverse !important;
+    }
+  }
+
   .card {
     background-color: #ffffff;
     box-shadow: 0px 1px 2px 0 rgba(0, 0, 0, 0.16);
@@ -25,6 +31,9 @@
 
   .charge-card-wrapper {
     margin: 0px auto auto;
+    @include response-to(xs) {
+      margin: 0;
+    }
   }
 
   .subscription-description-wrapper {
@@ -120,7 +129,6 @@
         font-weight: 600;
         color: $black-primary;
       }
-      border-bottom: 1px solid $black-200;
     }
 
     .payment-method-block {
@@ -159,9 +167,13 @@
 
   }
 
-  .confirm-button {
-    width: 100%;
-
+  .confirm-button-content {
+    display: flex;
+    justify-content: center;
+    padding: 0px 16px 16px;
+    .confirm-button {
+      width: 100%;
+    }
   }
 
   .cancel-description {

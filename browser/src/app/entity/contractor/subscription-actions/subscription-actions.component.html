@@ -82,17 +82,21 @@
               </div>
             </div>
           </div>
+
+          <div class="confirm-button-content">
+          <button cv-button class="confirm-button" *ngIf="paymentCards?.length == 0" [disabled]="cardProcessing"
+                  (click)="openAddPaymentCard()">Add card
+          </button>
+
+          <button cv-button class="confirm-button" *ngIf="paymentCards?.length > 0 && !subscriptionProcessing" [disabled]="cardProcessing"
+                  (click)="confirmSubscription()">
+            <span *ngIf="mode == ModeEnum.NEW">Confirm subscription</span>
+            <span *ngIf="mode == ModeEnum.UPDATE">Update subscription</span>
+          </button>
+          </div>
         </div>
 
-        <button cv-button class="confirm-button" *ngIf="paymentCards?.length == 0" [disabled]="cardProcessing"
-                (click)="openAddPaymentCard()">Add card
-        </button>
 
-        <button cv-button class="confirm-button" *ngIf="paymentCards?.length > 0 && !subscriptionProcessing" [disabled]="cardProcessing"
-                (click)="confirmSubscription()">
-          <span *ngIf="mode == ModeEnum.NEW">Confirm subscription</span>
-          <span *ngIf="mode == ModeEnum.UPDATE">Update subscription</span>
-        </button>
 
       </div>
     </div>

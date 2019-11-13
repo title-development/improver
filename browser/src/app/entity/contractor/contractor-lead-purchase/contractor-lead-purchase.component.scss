@@ -1,8 +1,8 @@
 @import "../../../../improver-mixins.scss";
 
 .contractor-lead-purchase-content {
-  @include response-to(xs) {
-    flex-direction: column !important;
+  @include response-to(sm) {
+    flex-direction: column-reverse !important;
   }
 
 }
