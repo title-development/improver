@@ -17,8 +17,8 @@ export class TrimDirective implements ControlValueAccessor {
   private spacesRegExp = new RegExp('(?:(?![\\n\\r])\\s){2,}', 'g');
   private newLinesRegExp = new RegExp('[\n\r]{3,}', 'g');
 
-  constructor(private renderer: Renderer2, private elementRef: ElementRef) {
-
+  constructor(private renderer: Renderer2,
+              private elementRef: ElementRef) {
   }
 
   onTouched: () => void;
@@ -60,22 +60,19 @@ export class TrimDirective implements ControlValueAccessor {
       element.focus();
       //setCursor position after formatting
       element.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
-    } else {
-      this.writeValue(formattedString);
-      this.onChange(formattedString);
-      this.onTouched();
     }
   }
 
   @HostListener('blur', ['$event.type', '$event.target.value'])
   onBlur(event: string, string: string): void {
-    let formattedString = string.trim()
-      .replace(this.newLinesRegExp, '\n\r')
-      .replace(this.spacesRegExp, ' ');
-    this.writeValue(formattedString);
-    this.onChange(formattedString);
-    this.onTouched();
-
+    if (this.spacesRegExp.test(string) || this.newLinesRegExp.test(string)) {
+      let formattedString = string.trim()
+        .replace(this.newLinesRegExp, '\n\r')
+        .replace(this.spacesRegExp, ' ');
+      this.writeValue(formattedString);
+      this.onChange(formattedString);
+      this.onTouched();
+    }
   }
 
 }
