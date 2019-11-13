@@ -8,7 +8,7 @@ import { ServiceTypeService } from '../../../../api/services/service-type.servic
 import { CompanyService } from '../../../../api/services/company.service';
 import { PopUpMessageService } from '../../../../util/pop-up-message.service';
 import { getErrorMessage } from '../../../../util/functions';
-import { ComponentCanDeactivate } from "../../../../auth/router-guards/pending-chanes.guard";
+import { ComponentCanDeactivate } from "../../../../auth/router-guards/component-can-deactivate.guard";
 import { Observable } from "rxjs";
 
 @Component({

@@ -11,6 +11,7 @@ import { Subscription } from 'rxjs';
 import * as Swiper from 'swiper/dist/js/swiper.min';
 import { ProjectRequest } from '../../../api/models/ProjectRequest';
 import { ProjectActionService } from '../../../util/project-action.service';
+import { NavigationHelper } from "../../../util/navigation-helper";
 
 @Component({
   selector: 'contractor-project-view',
@@ -57,6 +58,7 @@ export class ContractorProjectViewComponent implements OnDestroy, AfterViewInit 
   constructor(private route: ActivatedRoute,
               private projectService: ProjectService,
               public projectActionService: ProjectActionService,
+              private navigationHelper: NavigationHelper,
               public router: Router,
               public dialog: MatDialog,
               public mediaQueryService: MediaQueryService) {

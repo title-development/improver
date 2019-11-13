@@ -1,7 +1,7 @@
 <div class="container -top-space">
   <div class="page-navigation" *ngIf="project">
-    <a *ngIf="mediaQuery.xs || mediaQuery.sm" href="" routerLink="/pro/dashboard"><i class="imp-icon-arrow-left"></i></a>
-    <a *ngIf="mediaQuery.md || mediaQuery.lg || mediaQuery.xlg" href="" routerLink="/pro/dashboard"><i class="imp-icon-angle-left"></i>Back to the dashboard</a>
+    <a *ngIf="mediaQuery.xs || mediaQuery.sm" (click)="navigationHelper.back('/pro/dashboard')"><i class="imp-icon-arrow-left"></i></a>
+    <a *ngIf="mediaQuery.md || mediaQuery.lg || mediaQuery.xlg" (click)="navigationHelper.back('/pro/dashboard')"><i class="imp-icon-angle-left"></i>Back to the dashboard</a>
     <h4 *ngIf="mediaQuery.xs || mediaQuery.sm" [title]="project?.serviceType">{{project?.serviceType}}<br/>{{project?.customer.name}}</h4>
     <h3 *ngIf="mediaQuery.md || mediaQuery.lg || mediaQuery.xlg" [title]="project?.serviceType">{{project?.serviceType}}</h3>
     <div class="more-button-wrapper" *ngIf="project">

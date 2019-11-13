@@ -8,11 +8,11 @@ import { ProjectRequestService } from '../../../api/services/project-request.ser
 import { ProjectActionService } from '../../../util/project-action.service';
 import { Project } from '../../../api/models/Project';
 import { ProjectRequest } from '../../../api/models/ProjectRequest';
-import { getErrorMessage } from '../../../util/functions';
 import { SomePipe } from 'angular-pipes';
 import { Subscription } from 'rxjs';
-import { ComponentCanDeactivate } from '../../../auth/router-guards/pending-chanes.guard';
+import { ComponentCanDeactivate } from '../../../auth/router-guards/component-can-deactivate.guard';
 import { ImagesUploaderComponent } from '../../../shared/image-uploader/image-uploader.component';
+import { NavigationHelper } from "../../../util/navigation-helper";
 
 @Component({
   selector: 'customer-project-view',
@@ -39,16 +39,18 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy, Componen
               public projectActionService: ProjectActionService,
               public projectRequestService: ProjectRequestService,
               public router: Router,
-              public somePipe: SomePipe) {
-    this.route.params.subscribe(params => {
-        if (parseInt(params['id'])) {
-          this.projectId = parseInt(params['id']);
+              public somePipe: SomePipe,
+              public navigationHelper: NavigationHelper) {
 
+    this.route.params.subscribe(params => {
+        if (!this.project && parseInt(params['id'])) {
+          this.projectId = parseInt(params['id']);
           this.getProject();
         } else {
           this.router.navigate(['404']);
         }
       }
+
     );
 
     this.onProjectsUpdate$ = this.projectActionService.onProjectsUpdate.subscribe(() => {
@@ -58,12 +60,7 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy, Componen
     });
     this.onProjectDialogClose$ = this.projectActionService.onCloseProjectRequestDialog.subscribe(() => {
       this.projectDialogOpened = false;
-      if (this.hashFragment) {
-        //navigate and refresh component
-        this.router.navigate([]); //clear hash fragment from url (projects/22#21 => projects/22)
-      } else {
-        this.getProject();
-      }
+      this.navigationHelper.removeHash();
     });
   }
 
@@ -77,7 +74,6 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy, Componen
   @HostListener('window:beforeunload', ['$event'])
   unloadNotification(event): any {
     if (!this.canDeactivate()) {
-
       return false;
     }
   }
@@ -92,17 +88,7 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy, Componen
   }
 
   openProjectRequest(projectRequest: ProjectRequest) {
-    projectRequest.unreadMessages = 0; // Mutation for optimistic UI
-    this.projectRequestService.getProjectRequest(projectRequest.id).subscribe(
-      projectRequest => {
-        this.projectDialogOpened = true;
-        this.projectActionService.openProjectRequest(projectRequest);
-      },
-      err => {
-        this.projectDialogOpened = false;
-        this.popUpMessageService.showError(getErrorMessage(err));
-      }
-    );
+    this.router.navigate([], {fragment: projectRequest.id.toString()})
   }
 
   openProjectRequestByUrlFragment(projectRequestId: string) {
@@ -113,7 +99,7 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy, Componen
       },
       err => {
         this.projectDialogOpened = false;
-        this.router.navigate([this.router.url.split('#')[0]]);
+        this.navigationHelper.removeHash()
       }
     );
   }
@@ -123,8 +109,7 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy, Componen
       .getForCustomer(this.projectId)
       .subscribe(
         (project: CustomerProject) => {
-          this.project = project;
-          this.projectActionService.project = this.project;
+          this.projectActionService.project = this.project = project;
           this.getProjectRequest();
           if (this.projectActionService.projectRequestDialogRef) {
             this.projectActionService.projectRequestDialogRef.componentInstance.projectRequest =

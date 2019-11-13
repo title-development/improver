@@ -78,7 +78,7 @@ import { environment } from '../../environments/environment';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { FindProfessionalService } from '../util/find-professional.service';
 import { SubscriptionActionsService } from '../entity/contractor/subscription-actions/subscription-actions.service';
-import { PendingChangesGuard } from '../auth/router-guards/pending-chanes.guard';
+import { ComponentCanDeactivateGuard } from '../auth/router-guards/component-can-deactivate.guard';
 import { ScrollHolderService } from '../util/scroll-holder.service';
 import { NotificationService } from '../api/services/notification.service';
 import { TicketService } from '../api/services/ticket.service';
@@ -197,7 +197,7 @@ export function getAuthServiceConfigs() {
     MediaQueryService,
     ErrorHandler,
     SubscriptionActionsService,
-    PendingChangesGuard,
+    ComponentCanDeactivateGuard,
     ScrollHolderService,
     SocialConnectionsService,
     TutorialsService,

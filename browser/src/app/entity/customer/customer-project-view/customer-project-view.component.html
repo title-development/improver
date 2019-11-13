@@ -63,7 +63,7 @@
               </div>
 
               <ng-template ngFor let-projectRequest [ngForOf]="project.projectRequests" let-i="index">
-                <div class="projectRequest"
+                <a class="projectRequest"
                      (click)="openProjectRequest(projectRequest)"
                      *ngIf="ProjectRequest.isActive(projectRequest.status)">
                   <div class="projectRequest-left">
@@ -109,7 +109,7 @@
                       </button>
                     </mat-menu>
                   </div>
-                </div>
+                </a>
               </ng-template>
 
               <div class="decline-line" *ngIf="!project.isArchived() && isInactiveProsExist() && isActiveProsExist()">

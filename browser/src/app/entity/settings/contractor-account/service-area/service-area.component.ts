@@ -32,7 +32,7 @@ import {
 import { CompanyCoverageConfig } from '../../../../api/models/CompanyCoverageConfig';
 import { ZipBoundaries } from '../../../../api/models/ZipBoundaries';
 import { TutorialsService } from '../../../../api/services/tutorials.service';
-import { ComponentCanDeactivate } from '../../../../auth/router-guards/pending-chanes.guard';
+import { ComponentCanDeactivate } from '../../../../auth/router-guards/component-can-deactivate.guard';
 import { getErrorMessage } from '../../../../util/functions';
 import { MediaQuery, MediaQueryService } from '../../../../util/media-query.service';
 import { ICircleProps } from './interfaces/circle-props';

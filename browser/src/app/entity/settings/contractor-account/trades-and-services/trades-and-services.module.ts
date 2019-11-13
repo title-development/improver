@@ -22,13 +22,13 @@ import { LayoutModule } from "../../../../layout/layout.module";
 import { CvCollapseModule } from "../../../../theme/collapse/cv-collapse.module";
 import { CvSelectModule } from "../../../../theme/select/cv-select-module";
 import { CvCheckboxModule } from "../../../../theme/checkbox/checkbox.module";
-import { PendingChangesGuard } from "../../../../auth/router-guards/pending-chanes.guard";
+import { ComponentCanDeactivateGuard } from "../../../../auth/router-guards/component-can-deactivate.guard";
 
 const routing: ModuleWithProviders = RouterModule.forChild([
   {
     path: '',
     component: TradesAndServicesComponent,
-    canDeactivate: [PendingChangesGuard]
+    canDeactivate: [ComponentCanDeactivateGuard]
   }
 ]);
 

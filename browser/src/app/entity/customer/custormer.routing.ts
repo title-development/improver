@@ -3,7 +3,7 @@ import { ModuleWithProviders } from '@angular/core';
 
 const routes: Routes = [
   { path: '', redirectTo: 'projects', pathMatch: 'full'},
-  { path: 'projects/:id', data: {reuse: false}, loadChildren: './customer-project-view/customer-project-view.module#CustomerProjectViewModule' },
+  { path: 'projects/:id', data: {reuse: true}, loadChildren: './customer-project-view/customer-project-view.module#CustomerProjectViewModule' },
   { path: 'projects', loadChildren: './customer-projects/customer-projects.module#CustomerProjectsModule' },
 ];
 

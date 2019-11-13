@@ -7,9 +7,8 @@ export interface ComponentCanDeactivate {
 }
 
 @Injectable()
-export class PendingChangesGuard implements CanDeactivate<ComponentCanDeactivate> {
+export class ComponentCanDeactivateGuard implements CanDeactivate<ComponentCanDeactivate> {
   constructor() {
-
   }
 
   canDeactivate(component: ComponentCanDeactivate): boolean | Observable<boolean> {

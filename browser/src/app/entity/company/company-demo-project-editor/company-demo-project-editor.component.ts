@@ -15,7 +15,7 @@ import { addDays, addYears, format } from 'date-fns';
 import { getErrorMessage } from '../../../util/functions';
 import { finalize, first, map, startWith } from 'rxjs/internal/operators';
 import { ImagesUploaderComponent } from '../../../shared/image-uploader/image-uploader.component';
-import { ComponentCanDeactivate } from '../../../auth/router-guards/pending-chanes.guard';
+import { ComponentCanDeactivate } from '../../../auth/router-guards/component-can-deactivate.guard';
 import { FormHasChangesDirective } from '../../../directives/form-has-changes.directive';
 
 

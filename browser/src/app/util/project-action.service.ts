@@ -24,6 +24,7 @@ import { debounceTime } from 'rxjs/operators';
 import { ReviewService } from "../api/services/review.service";
 import { ErrorHandler } from "./error-handler";
 import { CustomerSuggestionService } from "../api/services/customer-suggestion.service";
+import { NavigationHelper } from "./navigation-helper";
 
 @Injectable()
 export class ProjectActionService {
@@ -52,7 +53,8 @@ export class ProjectActionService {
               public boundariesService: BoundariesService,
               private reviewService: ReviewService,
               private router: Router,
-              private errorHandler: ErrorHandler) {
+              private errorHandler: ErrorHandler,
+              private navigationHelper: NavigationHelper) {
     //avoid duplicate project update event emitting
     this.onProjectsUpdate = this.projectUpdateSubject.pipe(debounceTime(this.DEBOUNCE_TIME))
   }
@@ -65,6 +67,7 @@ export class ProjectActionService {
       .subscribe(result => {
         this.onCloseProjectRequestDialog.emit();
         this.projectRequestDialogRef = null;
+        this.navigationHelper.removeHash();
       });
 
     this.projectRequestDialogRef.componentInstance.projectRequest = projectRequest;

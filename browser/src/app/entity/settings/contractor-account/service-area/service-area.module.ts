@@ -5,7 +5,7 @@ import { ModuleWithProviders, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { BoundariesService } from '../../../../api/services/boundaries.service';
-import { PendingChangesGuard } from '../../../../auth/router-guards/pending-chanes.guard';
+import { ComponentCanDeactivateGuard } from '../../../../auth/router-guards/component-can-deactivate.guard';
 import { AgmSharedModule } from '../../../../shared/agmShared.module';
 import { SharedModule } from '../../../../shared/shared.module';
 import { MapMarkersStore } from '../../../../util/google-map-markers-store.service';
@@ -19,7 +19,7 @@ const routing: ModuleWithProviders = RouterModule.forChild([
   {
     path: '',
     component: ServiceAreaComponent,
-    canDeactivate: [PendingChangesGuard],
+    canDeactivate: [ComponentCanDeactivateGuard],
   },
 ]);
 

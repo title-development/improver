@@ -14,6 +14,7 @@ import { ProjectRequest } from '../../../api/models/ProjectRequest';
 import { take, takeUntil } from "rxjs/internal/operators";
 import { Subject, Subscription } from 'rxjs';
 import { MediaQuery, MediaQueryService } from "../../../util/media-query.service";
+import { NavigationHelper } from "../../../util/navigation-helper";
 
 @Component({
   selector: 'customer-project-request-dialog',
@@ -51,6 +52,7 @@ export class CustomerProjectRequestDialogComponent implements OnInit, OnDestroy 
               private elementRef: ElementRef,
               private renderer: Renderer2,
               private mediaQueryService: MediaQueryService,
+              private navigationHelper: NavigationHelper,
               @Inject('Window') private window: Window) {
 
     this.mediaQueryService.screen
@@ -71,6 +73,8 @@ export class CustomerProjectRequestDialogComponent implements OnInit, OnDestroy 
     this.projectActionService.onProjectsUpdate
       .pipe(takeUntil(this.destroyed$))
       .subscribe(() => this.getProjectRequest(this.projectRequest.id));
+
+    this.navigationHelper.preventNativeBackButton();
   }
 
   ngOnInit(): void {
