@@ -47,7 +47,7 @@ export class ConfirmationComponent implements OnDestroy {
               private dialog: MatDialog) {
 
     if (this.securityService.isAuthenticated()) {
-      this.securityService.systemLogout();
+      this.securityService.logoutFrontend();
     }
 
     this.route.params.pipe(takeUntil(this.destroyed$)).subscribe(params => {

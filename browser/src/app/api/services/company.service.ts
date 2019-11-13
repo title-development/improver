@@ -157,10 +157,6 @@ export class CompanyService {
     return this.http.post(`${this.companyUrl}/${companyId}/projects`, order, {params});
   }
 
-  isEmailFree(email: string): Observable<any> {
-    return this.http
-      .get(`${this.companyUrl}/isEmailFree?email=${email}`, {observe: 'response', responseType: 'text'});
-  }
 
   isNameFree(name: string): Observable<any> {
     return this.http

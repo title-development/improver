@@ -56,7 +56,7 @@ export class TokenInterceptor implements HttpInterceptor {
                           return throwError(err);
                         }
 
-                        this.securityService.systemLogout();
+                        this.securityService.logoutFrontend();
                         this.securityService.returnUrl = this.router.url;
                         this.dialog.closeAll();
                         this.overlayRef.removeBackdrop();

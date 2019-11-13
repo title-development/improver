@@ -348,7 +348,7 @@ export class SignupCompanyComponent {
           } else {
             this.step++;
             this.storeUserIdIsSessionStorage(this.securityService.getLoginModel().id);
-            this.securityService.systemLogout();
+            this.securityService.logoutFrontend();
           }
         }, err => {
           this.popUpMessageService.showError(getErrorMessage(err));
@@ -407,7 +407,7 @@ export class SignupCompanyComponent {
     this.cancelRegistrationDialogRef.componentInstance.properties = properties;
     this.cancelRegistrationDialogRef.componentInstance.onConfirm.subscribe(
       () => {
-        this.securityService.systemLogout();
+        this.securityService.logoutFrontend();
         this.router.navigate(['/become-pro']);
       },
       err => {

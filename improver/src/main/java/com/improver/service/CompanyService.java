@@ -51,9 +51,10 @@ public class CompanyService {
     public CompanyProfile getCompanyProfile(long id) {
         Company company = companyRepository.findById(id)
             .orElseThrow(NotFoundException::new);
+        Contractor owner = company.getContractors().get(0);
         Contractor current = userSecurityService.currentProOrNull();
-        boolean isOwner = current != null && Objects.equals(current.getCompany().getId(), id);
-        return new CompanyProfile(company, isOwner);
+        boolean isOwner = current != null && Objects.equals(owner.getId(), current.getId());
+        return new CompanyProfile(company, owner, isOwner);
     }
 
 
@@ -81,9 +82,7 @@ public class CompanyService {
 
     public void updateCompanyInfo(Company existed, CompanyInfo info) {
         existed.setFounded(info.getFounded())
-            .setEmail(info.getEmail() != null ? info.getEmail().toLowerCase() : "")
             .setSiteUrl(info.getSiteUrl() != null ? info.getSiteUrl().toLowerCase() : "")
-            .setInternalPhone(info.getPhone())
             .setDescription(info.getDescription())
             .setUpdated(ZonedDateTime.now());
         companyRepository.save(existed);
@@ -99,9 +98,7 @@ public class CompanyService {
             existed.setFounded(company.getFounded());
         }
         existed.setDescription(company.getDescription());
-        existed.setUri(company.getUri());
         existed.setSiteUrl(company.getSiteUrl());
-        existed.setEmail(company.getEmail().toLowerCase());
         String iconUrl = imageService.updateBase64Image(base64icon, existed.getIconUrl());
         existed.setIconUrl(iconUrl);
         if (coverImage != null) {
@@ -160,9 +157,6 @@ public class CompanyService {
         companyRepository.save(company.setBackgroundUrl(null));
     }
 
-    public boolean isEmailFree(String email) {
-        return companyRepository.isEmailFree(email);
-    }
 
 
     public void archiveCompany(Company company) {

@@ -102,11 +102,6 @@ public class CompanyController {
     }
 
 
-    @GetMapping(IS_EMAIL_FREE)
-    public ResponseEntity<Void> isEmailFree(@RequestParam("email") String email) {
-        return new ResponseEntity<>(companyService.isEmailFree(email) ? HttpStatus.OK : HttpStatus.CONFLICT);
-    }
-
     @GetMapping(IS_NAME_FREE)
     public ResponseEntity<Void> isNameFree(@RequestParam("name") String name) {
         return new ResponseEntity<>(companyRepository.isNameFree(name) ? HttpStatus.OK : HttpStatus.CONFLICT);

@@ -53,8 +53,6 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
         " AND NOT EXISTS (SELECT up FROM c.unavailabilityPeriods up WHERE :currentDate BETWEEN up.fromDate AND up.tillDate)")
     List<Company> getEligibleForSubscriptionLead(ServiceType serviceType, String zip, int leadPrice, LocalDate currentDate);
 
-    @Query("SELECT CASE WHEN count(c)> 0 THEN false ELSE true END FROM com.improver.entity.Company c WHERE c.email = ?1")
-    boolean isEmailFree(String email);
 
     @Query("SELECT CASE WHEN count(c)> 0 THEN false ELSE true END FROM com.improver.entity.Company c WHERE LOWER(c.name) = LOWER(?1)")
     boolean isNameFree(String name);

@@ -88,7 +88,7 @@ export class SocialButtonsComponent {
       this.googleFetching = false;
       this.facebookFetching = false;
       if (err.status == 401) {
-        this.securityService.systemLogout();
+        this.securityService.logoutFrontend();
         this.responseMessage.emit(getErrorMessage(err));
       } else {
         this.responseMessage.emit(getErrorMessage(err));

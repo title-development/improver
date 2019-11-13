@@ -68,7 +68,7 @@ export class SecurityService {
     try {
       return JSON.parse(user);
     } catch (e) {
-      this.systemLogout();
+      this.logoutFrontend();
       return null;
     }
 
@@ -146,17 +146,17 @@ export class SecurityService {
 
 
   public logout(): void {
+    this.logoutFrontend();
     this.returnUrl = '';
     this.logoutBackend();
-    this.systemLogout();
     this.dialog.closeAll();
     this.overlayRef.removeBackdrop();
     this.router.navigate(['/']);
   }
 
 
-  public systemLogout() {
-    this.eraseToken();
+  public logoutFrontend() {
+    localStorage.removeItem(SecurityService.TOKEN_STORAGE_KEY);
     localStorage.removeItem(SecurityService.USER_STORAGE_KEY);
     this.window.removeEventListener('storage', this.localStorageHandler, false);
     this.onLogout.emit();
@@ -178,11 +178,6 @@ export class SecurityService {
 
   private setTokenHeader(tokenHeader: string) {
     localStorage.setItem(SecurityService.TOKEN_STORAGE_KEY, tokenHeader);
-  }
-
-
-  private eraseToken() {
-    localStorage.removeItem(SecurityService.TOKEN_STORAGE_KEY);
   }
 
   public isTokenExpired(): boolean {

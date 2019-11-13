@@ -91,7 +91,7 @@ export class SignupProComponent implements OnDestroy {
     }, err => {
       this.recaptcha.reset();
       if (err.status == 401) {
-        this.securityService.systemLogout();
+        this.securityService.logoutFrontend();
       }
       this.popUpMessageService.showError(getErrorMessage(err));
     });

@@ -11,7 +11,6 @@ import { CurrencyMask } from '../directives/currency-mask.directive';
 import { DateMask } from '../directives/date-mask.directive';
 import { PositiveNumericDirective } from '../directives/positive-numeric.directive';
 import { GlueBlockDirective } from '../directives/glue-block.directive';
-import { CompanyEmailUniqueValidator } from "../validators/company-email-unique-validator.directive";
 import { MultipleEmailValidatorDirective } from '../validators/multiple-email-validator.directive';
 import { CompanyNameUniqueValidator } from "../validators/company-name-unique-validator.directive";
 import { TrimDirective } from '../directives/trim.directive';
@@ -31,7 +30,6 @@ import { FormHasChangesDirective } from '../directives/form-has-changes.directiv
     ExpDateMask,
     CurrencyMask,
     EmailUniqueValidator,
-    CompanyEmailUniqueValidator,
     CompanyNameUniqueValidator,
     ImagePreviewDirective,
     PositiveNumericDirective,
@@ -51,7 +49,6 @@ import { FormHasChangesDirective } from '../directives/form-has-changes.directiv
     ExpDateMask,
     CurrencyMask,
     EmailUniqueValidator,
-    CompanyEmailUniqueValidator,
     CompanyNameUniqueValidator,
     ImagePreviewDirective,
     PositiveNumericDirective,

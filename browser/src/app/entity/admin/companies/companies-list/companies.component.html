@@ -31,8 +31,7 @@
       <span class="word-break">{{data[col.field]}}</span>
     </ng-template>
   </p-column>
-  <p-column field="email" header="Email" [sortable]="true" *ngIf="selectedTableCols.includes('email')"></p-column>
-  <p-column field="uri" header="Uri" [sortable]="true" *ngIf="selectedTableCols.includes('uri')"></p-column>
+  <!--<p-column field="uri" header="Uri" [sortable]="true" *ngIf="selectedTableCols.includes('uri')"></p-column>-->
   <p-column field="founded" header="Founded" [sortable]="true" *ngIf="selectedTableCols.includes('founded')"></p-column>
   <p-column field="iconUrl" header="Icon Url" [sortable]="true" *ngIf="selectedTableCols.includes('iconUrl')">
     <ng-template pTemplate="body" let-col let-data="rowData">
@@ -130,12 +129,6 @@
                                         min="1940" max="3000"/>
       </div>
     </div>
-    <div class="ui-grid-row ui-grid-field">
-      <div class="ui-grid-col-4"><label for="uri">Uri</label></div>
-      <div class="ui-grid-col-8"><input pInputText type="text" id="uri" [(ngModel)]="selectedCompany.uri"
-                                        [disabled]="!securityService.hasRole(Role.ADMIN)"
-                                        maxlength="255"/></div>
-    </div>
     <div class="ui-grid-row ">
       <div class="ui-grid-col-4"><label for="siteUrl">Site url</label></div>
       <div class="ui-grid-col-8">
@@ -155,12 +148,6 @@
       <div class="ui-grid-col-8"><input pInputText type="text" id="internalPhone"
                                         [(ngModel)]="selectedCompany.internalPhone" maxlength="255"
                                         [disabled]="!securityService.hasRole(Role.ADMIN)"/></div>
-    </div>
-    <div class="ui-grid-row">
-      <div class="ui-grid-col-4"><label for="email">Email</label></div>
-      <div class="ui-grid-col-8"><input pInputText id="email" [(ngModel)]="selectedCompany.email" maxlength="255"
-                                        [disabled]="!securityService.hasRole(Role.ADMIN)"/>
-      </div>
     </div>
   </div>
   <p-footer>

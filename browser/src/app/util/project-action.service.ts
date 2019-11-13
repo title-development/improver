@@ -438,7 +438,7 @@ export class ProjectActionService {
       () => {
         this.projectRequestService.closeProject(project.id, true).subscribe(
           response => {
-            this.popUpService.showInfo('You leaved <b>' + project.serviceType + '</b>' + ' project');
+            this.popUpService.showInfo('You left <b>' + project.serviceType + '</b>' + ' project');
             this.projectUpdated();
           },
           err => {

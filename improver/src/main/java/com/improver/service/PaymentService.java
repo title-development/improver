@@ -138,7 +138,8 @@ public class PaymentService {
      *
      * @param token obtained via Stripe.js
      */
-    public void addCard(Company company, String token) throws ConflictException {
+    public void addCard(Contractor contractor, String token) throws ConflictException {
+        Company company = contractor.getCompany();
         Billing bill = company.getBilling();
         List<PaymentCard> cards = getCards(company);
         if (cards.size() >= MAX_AVAILABLE_CARDS_COUNT) {
@@ -149,7 +150,7 @@ public class PaymentService {
             Map<String, Object> customerParams = new HashMap<>();
             customerParams.put("source", token);
             if (bill.getStripeId() == null) {
-                customerParams.put("email", company.getEmail());
+                customerParams.put("email", contractor.getEmail());
                 stripeCustomer = com.stripe.model.Customer.create(customerParams);
                 bill.setStripeId(stripeCustomer.getId());
                 billRepository.save(bill);

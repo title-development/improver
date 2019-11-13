@@ -42,7 +42,7 @@ export class AccessDeniedInterceptor implements HttpInterceptor {
                   const state: RouterState = this.router.routerState;
                   const snapshot: RouterStateSnapshot = state.snapshot;
                   const securityService: SecurityService = this.injector.get(SecurityService);
-                  securityService.systemLogout();
+                  securityService.logoutFrontend();
                   if (notLoginPage(snapshot.url)) {
                     securityService.returnUrl = snapshot.url;
                     this.router.navigate(['login']);

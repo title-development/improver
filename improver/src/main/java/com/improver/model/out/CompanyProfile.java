@@ -15,7 +15,8 @@ import java.util.stream.Collectors;
 @Getter
 public class CompanyProfile extends CompanyInfo {
 
-    private String backgroundUrl;
+    private final String phone;
+    private final String backgroundUrl;
     private final int yearsInBusiness;
     private final boolean isOwner;
     private final int reviewCount;
@@ -27,8 +28,9 @@ public class CompanyProfile extends CompanyInfo {
     private final boolean isApproved;
 
 
-    public CompanyProfile(Company company, boolean isOwner) {
+    public CompanyProfile(Company company, Contractor contractor, boolean isOwner) {
         super(company);
+        this.phone = contractor.getInternalPhone();
         this.backgroundUrl = company.getBackgroundUrl();
         this.yearsInBusiness = LocalDate.now().getYear() - company.getFounded();
         this.rating = company.getRating();

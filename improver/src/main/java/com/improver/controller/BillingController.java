@@ -132,10 +132,8 @@ public class BillingController {
     @CompanyMemberOrSupportAccess
     @PostMapping(CARDS)
     public ResponseEntity<Void> addCard(@PathVariable long companyId, @RequestBody StripeToken stripeToken) {
-        Company company = companyRepository.findById(companyId)
-            .orElseThrow(NotFoundException::new);
         Contractor contractor = userSecurityService.currentPro();
-        paymentService.addCard(company, stripeToken.getId());
+        paymentService.addCard(contractor, stripeToken.getId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

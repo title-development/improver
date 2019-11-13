@@ -65,7 +65,7 @@ export class LoginComponent implements OnDestroy {
         this.recaptcha.reset();
         this.processing = false;
         if (err.status == 401) {
-          this.securityService.systemLogout();
+          this.securityService.logoutFrontend();
           this.messageText = getErrorMessage(err);
         } else {
           this.messageText = getErrorMessage(err);

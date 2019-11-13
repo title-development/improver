@@ -24,6 +24,7 @@ public class Company {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Deprecated
     private String uri;
 
     @Column(nullable = false, unique = true)
@@ -38,14 +39,6 @@ public class Company {
 
     @Embedded
     private ExtendedLocation location;
-
-    @Deprecated
-    @Email
-    private String email;
-
-    @Deprecated
-    @Pattern(regexp = PHONE_PATTERN_STRING)
-    private String internalPhone;
 
     private int founded;
 
@@ -123,10 +116,6 @@ public class Company {
     private CompanyConfig companyConfig;
 
 
-    public Company setEmail(String email) {
-        this.email = email.toLowerCase();
-        return this;
-    }
 
     public static Company of(CompanyDetails details, String iconUrl, ZonedDateTime created){
         return new Company().setName(details.getName())
@@ -139,17 +128,5 @@ public class Company {
             .setUpdated(created);
     }
 
-
-    public Company update(Company source) {
-        return this.setName(source.getName())
-            .setUri(source.getUri())
-            .setIconUrl(source.getIconUrl())
-            .setBackgroundUrl(source.getBackgroundUrl())
-            .setDescription(source.getDescription())
-            .setLocation(source.getLocation())
-            .setEmail(source.getEmail())
-            .setInternalPhone(source.getInternalPhone())
-            .setFounded(source.getFounded());
-    }
 
 }
