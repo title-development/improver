@@ -94,12 +94,11 @@
     opacity: 1;
     transition: 0.3s;
     border-radius: 64px;
-    border: solid 2px transparent;
+    border: solid 1px $black-250;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
     position: relative;
-    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.24);
 
     @include response-to(xs) {
       width: 48px;

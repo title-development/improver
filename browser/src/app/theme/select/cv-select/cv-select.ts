@@ -20,8 +20,8 @@ import {
 import { DOCUMENT } from '@angular/common';
 import { OverlayRef } from '../../util/overlayRef';
 import { ControlContainer, ControlValueAccessor, NG_VALUE_ACCESSOR, NgForm } from '@angular/forms';
-import { Subscription } from 'rxjs';
-import { distinctUntilChanged } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { animate, AnimationEvent, state, style, transition, trigger } from '@angular/animations';
 import { CvSelection } from '../../util/CvSelection';
 import { CdkVirtualForOf, CdkVirtualForOfContext } from '@angular/cdk/scrolling';
@@ -92,6 +92,8 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
   @ViewChild('targetElement') targetElement: ElementRef;
   @ViewChild('itemsHolder') itemsHolder: ElementRef;
 
+  private readonly destroyed$ = new Subject<void>();
+
   disabled: boolean;
   selectedItemsCount: number = 0;
   search: string | number;
@@ -114,7 +116,6 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
   private itemPerHost: number;
 
   mediaQuery: MediaQuery;
-  private mediaWatcher$: Subscription;
 
   constructor(@Inject(DOCUMENT) private document: any,
               private renderer: Renderer2,
@@ -124,7 +125,8 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
               private changeDetectorRef: ChangeDetectorRef,
               private query: MediaQueryService) {
     super();
-    this.mediaWatcher$ = this.query.screen.pipe(
+    this.query.screen.pipe(
+      takeUntil(this.destroyed$),
       distinctUntilChanged()
     ).subscribe((res: MediaQuery) => {
       if(res.xs) {
@@ -148,7 +150,7 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
       this.autocompleteSearch.emit(model);
       this.init(model);
     } else {
-      // this.resetSelection();
+      this.resetSelection();
     }
   }
 
@@ -169,9 +171,8 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
   }
 
   ngOnDestroy(): void {
-    if(this.mediaWatcher$) {
-      this.mediaWatcher$.unsubscribe();
-    }
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
   isSelected(model: any): boolean {
@@ -373,7 +374,7 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
     }
   }
 
-  private resetSelection(): void {
+  public resetSelection(): void {
     this.selectedLabel = this.search = '';
     this.selectedItemsCount = 0;
     this.clearSelection();

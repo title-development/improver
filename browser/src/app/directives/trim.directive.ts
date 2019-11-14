@@ -14,11 +14,12 @@ const TRIM_VALUE_ACCESSOR = {
 })
 export class TrimDirective implements ControlValueAccessor {
 
+  private previousValue;
   private spacesRegExp = new RegExp('(?:(?![\\n\\r])\\s){2,}', 'g');
   private newLinesRegExp = new RegExp('[\n\r]{3,}', 'g');
 
-  constructor(private renderer: Renderer2,
-              private elementRef: ElementRef) {
+  constructor(private renderer: Renderer2, private elementRef: ElementRef) {
+
   }
 
   onTouched: () => void;
@@ -36,45 +37,47 @@ export class TrimDirective implements ControlValueAccessor {
   }
 
   writeValue(value: any): void {
-    if (value !== undefined && value !== null) {
+    if (value) {
       this.renderer.setProperty(
         this.elementRef.nativeElement,
         'value',
         value
       );
+
+      this.onTouched();
+      this.onChange(value);
+      this.previousValue = value;
     }
   }
 
   @HostListener('focus', ['$event.target', '$event.target.value'])
   @HostListener('keyup', ['$event.target', '$event.target.value'])
   onKeyUp(element: HTMLInputElement, string: string) {
+    if (string == this.previousValue) return;
     let cursorPosition: number = element.selectionStart;
     let formattedString = string;
     if (this.spacesRegExp.test(string) || this.newLinesRegExp.test(string)) {
-      formattedString = formattedString
-        .replace(this.spacesRegExp, ' ')
-        .replace(this.newLinesRegExp, '\n\r');
+      formattedString = this.formatString(formattedString);
       this.writeValue(formattedString);
-      this.onChange(formattedString);
-      this.onTouched();
       element.focus();
       //setCursor position after formatting
       element.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
     } else {
       this.writeValue(formattedString);
-      this.onChange(formattedString);
-      this.onTouched();
     }
   }
 
-  @HostListener('blur', ['$event.type', '$event.target.value'])
+  @HostListener('blur', ['$event', '$event.target.value'])
   onBlur(event: string, string: string): void {
-    let formattedString = string.trim()
-      .replace(this.newLinesRegExp, '\n\r')
-      .replace(this.spacesRegExp, ' ');
+    if (string == this.previousValue) return;
+    let formattedString = this.formatString(string.trim());
     this.writeValue(formattedString);
-    this.onChange(formattedString);
-    this.onTouched();
+  }
+
+  formatString(value: string) {
+    return value.trimLeft()
+      .replace(this.spacesRegExp, ' ')
+      .replace(this.newLinesRegExp, '\n\r');
   }
 
 }

@@ -164,9 +164,7 @@ export class ServicesSelectorComponent implements OnInit {
 
   }
 
-  addItem(form: NgForm
-  ) {
-    console.log('addItem');
+  addItem(form: NgForm) {
     if (!this.model.addingItem || this.model.addingItem == '') {
       return;
     }
