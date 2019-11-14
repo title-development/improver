@@ -1,7 +1,6 @@
 package com.improver.repository;
 
 import com.improver.entity.User;
-import com.improver.model.UserAccount;
 import com.improver.model.admin.AdminContractor;
 import com.improver.model.admin.out.Record;
 import org.springframework.data.domain.Page;
@@ -11,7 +10,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import javax.transaction.Transactional;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -86,8 +84,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = "SELECT * FROM (SELECT unnest(string_to_array(:emails, ',')) as email) " +
         " as tmp_table WHERE email NOT IN (SELECT email FROM users) AND email NOT IN (SELECT email FROM invitations)", nativeQuery = true)
     String[] checkAvailableToInviteEmails(String emails);
-
-//    @Query(value = "SELECT 'off.bk@bk.ru' IN :emails", nativeQuery = true)
-//    List<String> checkAvailableToInviteEmails(Set<String> emails);
 
 }

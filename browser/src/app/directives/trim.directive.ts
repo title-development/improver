@@ -60,19 +60,21 @@ export class TrimDirective implements ControlValueAccessor {
       element.focus();
       //setCursor position after formatting
       element.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
+    } else {
+      this.writeValue(formattedString);
+      this.onChange(formattedString);
+      this.onTouched();
     }
   }
 
   @HostListener('blur', ['$event.type', '$event.target.value'])
   onBlur(event: string, string: string): void {
-    if (this.spacesRegExp.test(string) || this.newLinesRegExp.test(string)) {
-      let formattedString = string.trim()
-        .replace(this.newLinesRegExp, '\n\r')
-        .replace(this.spacesRegExp, ' ');
-      this.writeValue(formattedString);
-      this.onChange(formattedString);
-      this.onTouched();
-    }
+    let formattedString = string.trim()
+      .replace(this.newLinesRegExp, '\n\r')
+      .replace(this.spacesRegExp, ' ');
+    this.writeValue(formattedString);
+    this.onChange(formattedString);
+    this.onTouched();
   }
 
 }
