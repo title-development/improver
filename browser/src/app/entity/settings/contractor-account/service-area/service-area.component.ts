@@ -27,7 +27,6 @@ import {
   refCount,
   repeatWhen,
   takeUntil,
-  tap,
 } from 'rxjs/internal/operators';
 import { CompanyCoverageConfig } from '../../../../api/models/CompanyCoverageConfig';
 import { ZipBoundaries } from '../../../../api/models/ZipBoundaries';
@@ -95,7 +94,8 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate, 
   }
 
   gMap: google.maps.Map;
-  private unsavedChanges: boolean;
+  public fetching: boolean;
+  public unsavedChanges: boolean;
   private readonly destroyed$ = new Subject<void>();
   private readonly repeat$ = new Subject<void>();
 
@@ -116,12 +116,11 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate, 
   ngOnInit(): void {
     this.fetching$ = this.coverageService.fetching$.asObservable().pipe(
       publishReplay(1),
-      refCount(),
+      refCount()
     );
     this.unsavedChanges$ = this.coverageService.unsavedChanges$.asObservable().pipe(
       publishReplay(1),
-      refCount(),
-      tap((unsavedChanges) => this.unsavedChanges = unsavedChanges),
+      refCount()
     );
     this.mediaQueryService.screen
       .pipe(
@@ -129,6 +128,15 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate, 
         takeUntil(this.destroyed$),
       ).subscribe((mediaQuery: MediaQuery) => {
       this.mediaQuery = mediaQuery;
+    });
+
+    this.fetching$.subscribe(fetching => {
+      this.fetching = fetching;
+      this.cdRef.detectChanges();
+    });
+    this.unsavedChanges$.subscribe(unsavedChanges => {
+      this.unsavedChanges = unsavedChanges;
+      this.cdRef.detectChanges();
     });
   }
 
@@ -203,9 +211,10 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate, 
     }
     this.updateCoverageConfig(coverageConfig);
     if (!this.isDetailMode) {
-      this.basicMode.getZipsByRadius(new google.maps.LatLng(this.basicMode.coverageConfig.centerLat, this.basicMode.coverageConfig.centerLng), this.basicMode.coverageConfig.radius)
+      this.basicMode.getZipsByRadius(new google.maps.LatLng(this.basicMode.coverageConfig.centerLat,
+        this.basicMode.coverageConfig.centerLng),
+        this.basicMode.coverageConfig.radius)
     }
-
   }
 
   ngOnDestroy(): void {

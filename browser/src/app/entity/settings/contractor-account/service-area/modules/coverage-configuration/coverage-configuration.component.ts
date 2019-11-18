@@ -16,6 +16,7 @@ import { ICircleProps } from '../../interfaces/circle-props';
 import { IZipCodeProps } from '../../interfaces/zip-code-props';
 import { takeUntil } from "rxjs/operators";
 import { MediaQuery, MediaQueryService } from "../../../../../../util/media-query.service";
+import { CoverageService } from "../../services/coverage.service";
 
 @Component({
   selector: 'imp-coverage-configuration',
@@ -27,8 +28,8 @@ export class CoverageConfigurationComponent implements OnDestroy {
 
   @Input() companyCoverageConfig: CompanyCoverageConfig;
   @Input() servedZipCodes: string[];
-  @Input() fetching: boolean;
-  @Input() isUnsavedChanges: boolean;
+  fetching: boolean;
+  hasUnsavedChanges: boolean;
 
   @Output() readonly showTutorial = new EventEmitter<void>();
   @Output() readonly onCirclePropsChanged = new EventEmitter<ICircleProps>();
@@ -39,10 +40,23 @@ export class CoverageConfigurationComponent implements OnDestroy {
 
   media: MediaQuery;
 
+  preventModeChange: boolean = false;
+
   constructor(private mediaQueryService: MediaQueryService,
-              private changeDetectorRef: ChangeDetectorRef) {
+              private changeDetectorRef: ChangeDetectorRef,
+              private coverageService: CoverageService) {
     this.mediaQueryService.screen.pipe(takeUntil(this.destroyed$)).subscribe((mediaQuery: MediaQuery) => {
       this.media = mediaQuery;
+      this.changeDetectorRef.markForCheck();
+    });
+
+    this.coverageService.fetching$.pipe(takeUntil(this.destroyed$)).subscribe(fetching => {
+      this.fetching = fetching;
+      this.changeDetectorRef.markForCheck();
+    });
+    this.coverageService.unsavedChanges$.pipe(takeUntil(this.destroyed$)).subscribe(hasUnsavedChanges => {
+      this.hasUnsavedChanges = hasUnsavedChanges;
+      this.preventModeChange = hasUnsavedChanges;
       this.changeDetectorRef.markForCheck();
     });
   }
@@ -58,15 +72,18 @@ export class CoverageConfigurationComponent implements OnDestroy {
   private readonly destroyed$ = new Subject<void>();
 
   preventSwitch(event: MouseEvent): void {
-    if (this.isUnsavedChanges && (this.media.xs || this.media.sm)) {
+    if (this.preventModeChange) {
       if (!confirm(UNSAVED_CHANGES_MESSAGE)) {
         event.preventDefault();
         event.stopPropagation();
       } else {
-        this.isUnsavedChanges = false;
-        this.cvSwitchComponent.toggle(event);
+        if (this.cvSwitchComponent && !this.media.xs) {
+          this.cvSwitchComponent.toggle(event);
+        }
+        this.preventModeChange = false;
       }
     }
+    this.changeDetectorRef.detectChanges();
   }
 
   ngOnDestroy(): void {
@@ -89,4 +106,5 @@ export class CoverageConfigurationComponent implements OnDestroy {
   zipCodeFound(zipCodeProps: IZipCodeProps): void {
     this.onZipCodeFound.emit(zipCodeProps);
   }
+
 }

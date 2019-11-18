@@ -153,3 +153,12 @@ h4 {
 ::ng-deep.custom-select-panel.mat-select-panel {
   border-radius: 0px;
 }
+
+
+::ng-deep mat-select {
+  &.mat-select-disabled {
+    .mat-select-value {
+      color: $black-400 !important;
+    }
+  }
+}

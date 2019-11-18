@@ -185,7 +185,7 @@ export class DetailModeService implements OnDestroy {
         google.maps.event.removeListener(listener);
       },
     ).pipe(
-      debounceTime(300),
+      debounceTime(100),
       mergeMap(() => {
         this.coverageService.fetching$.next(true);
         const southWest: string = [this.gMap.getBounds().getSouthWest().lat(), this.gMap.getBounds().getSouthWest().lng()].join();

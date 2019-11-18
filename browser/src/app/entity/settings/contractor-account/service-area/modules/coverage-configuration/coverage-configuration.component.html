@@ -6,7 +6,7 @@
       <h4>Service Area</h4>
 
       <div class="switch">
-        <div class="prevent" (click)="preventSwitch($event)" *ngIf="isUnsavedChanges"></div>
+        <div class="prevent" (click)="preventSwitch($event)" *ngIf="preventModeChange"></div>
 
         <cv-switch *ngIf="media.sm || media.md || media.lg || media.xlg"
           [ngModel]="!isManualMode" onLabel="By Radius" offLabel="Manual"

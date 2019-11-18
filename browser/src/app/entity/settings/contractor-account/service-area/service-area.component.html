@@ -1,8 +1,6 @@
-<mat-progress-bar mode="indeterminate" *ngIf="fetching$ | async"></mat-progress-bar>
+<mat-progress-bar mode="indeterminate" *ngIf="fetching"></mat-progress-bar>
 
 <imp-coverage-configuration
-  [fetching]="fetching$ | async"
-  [isUnsavedChanges]="unsavedChanges$ | async"
   [companyCoverageConfig]="companyCoverageConfig"
   [servedZipCodes]="servedZipCodes"
   (showTutorial)="onShowCoverageTutorial()"

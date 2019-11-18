@@ -129,6 +129,7 @@ export class CircleService implements OnDestroy {
       ).pipe(
         skip(1),
         debounceTime(100),
+        tap(() => this.coverageService.fetching$.next(true)),
         mergeMap(([one, two, three]: [Date, Date, Date]) => {
           if (one > two && one > three) {
             return of('drag end');

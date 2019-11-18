@@ -91,7 +91,7 @@ export class BasicModeService implements OnDestroy {
   }
 
   private isHasUnsavedChanges(): void {
-    if (this.newCoverageArea.length > this._coverageConfig.zips.length) {
+    if (this.newCoverageArea.length != this._coverageConfig.zips.length) {
       this.coverageService.unsavedChanges$.next(true);
       return;
     }
