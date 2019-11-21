@@ -145,6 +145,11 @@ image-uploader ::ng-deep {
     font-size: 14px;
     line-height: 16px;
     color: #212121;
+    top: -1px;
+  }
+
+  ::ng-deep.cv-input {
+    vertical-align: text-top !important;
   }
 
   .project-price {

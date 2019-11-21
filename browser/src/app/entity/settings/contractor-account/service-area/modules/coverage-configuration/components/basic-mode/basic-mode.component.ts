@@ -152,4 +152,5 @@ export class BasicModeComponent implements OnInit, OnDestroy, AfterViewInit {
       this.changeDetectorRef.detectChanges();
     });
   }
+
 }

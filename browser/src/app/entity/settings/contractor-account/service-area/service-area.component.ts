@@ -107,7 +107,7 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate, 
               private popUpMessageService: PopUpMessageService,
               private basicMode: BasicModeService,
               private detailsMode: DetailModeService,
-              private cdRef: ChangeDetectorRef,
+              private changeDetectionRef: ChangeDetectorRef,
               private tutorialService: TutorialsService,
               private coverageService: CoverageService,
               private mediaQueryService: MediaQueryService) {
@@ -132,11 +132,15 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate, 
 
     this.fetching$.subscribe(fetching => {
       this.fetching = fetching;
-      this.cdRef.detectChanges();
+      if (!this.changeDetectionRef['destroyed']) {
+        this.changeDetectionRef.detectChanges();
+      }
     });
     this.unsavedChanges$.subscribe(unsavedChanges => {
       this.unsavedChanges = unsavedChanges;
-      this.cdRef.detectChanges();
+      if (!this.changeDetectionRef['destroyed']) {
+        this.changeDetectionRef.detectChanges();
+      }
     });
   }
 
@@ -257,15 +261,15 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate, 
       takeUntil(this.destroyed$),
     ).subscribe((zipInfoWindow: ZipInfoWindow) => {
       this.infoWindow = zipInfoWindow;
-      this.cdRef.markForCheck();
-      this.cdRef.detectChanges();
+      this.changeDetectionRef.markForCheck();
+      this.changeDetectionRef.detectChanges();
     });
     this.detailsMode.zipHistoryChange$.pipe(
       takeUntil(this.destroyed$),
     ).subscribe((zipHistory: ZipHistory) => {
       this.zipsHistory = zipHistory;
-      this.cdRef.markForCheck();
-      this.cdRef.detectChanges();
+      this.changeDetectionRef.markForCheck();
+      this.changeDetectionRef.detectChanges();
     });
   }
 
@@ -277,14 +281,15 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate, 
         finalize(() => this.isSavingChanges = false),
       )
       .subscribe((res) => {
+        if (this.isDetailMode) {
+          this.detailsMode.clearZipHistory();
+        } else {
+          this.basicMode.setCoverageConfig(coverageConfig)
+        }
         this.companyCoverageConfig.coverageConfig = coverageConfig;
         this.coverageService.unsavedChanges$.next(false);
         this.popUpService.showSuccess('Service area has been updated');
-        if (this.isDetailMode) {
-          this.detailsMode.clearZipHistory();
-        }
       }, (err) => {
-        this.isSavingChanges = false;
         this.popUpMessageService.showError(getErrorMessage(err));
       });
   }

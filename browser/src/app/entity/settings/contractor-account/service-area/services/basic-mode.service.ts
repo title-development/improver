@@ -51,7 +51,7 @@ export class BasicModeService implements OnDestroy {
 
   getZipsByRadius(center: google.maps.LatLng, radius: number): void {
     this.coverageService.fetching$.next(true);
-    this._coverageConfig.radius = radius;
+    this._coverageConfig.radius = radius = Math.round(radius);
     // TODO: Check this. Is it needed? It makes circular looping.
     // this.circleService.update(radius, center);
     this.gMapUtils.clearCoverageDataLayers(this.gMap);
@@ -138,4 +138,9 @@ export class BasicModeService implements OnDestroy {
     this.servedZipCodes = servedZipCodes.slice();
     this._coverageConfig = {...companyCoverageConfig.coverageConfig};
   }
+
+  public setCoverageConfig(coverageConfig: CoverageConfig) {
+    this._coverageConfig = coverageConfig;
+  }
+
 }

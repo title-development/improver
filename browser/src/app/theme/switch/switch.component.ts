@@ -1,14 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  forwardRef,
-  HostListener,
-  Input,
-  OnChanges,
-  Output,
-  Provider,
-  SimpleChanges
-} from '@angular/core';
+import { Component, EventEmitter, forwardRef, HostListener, Input, Output, Provider } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 export const SWITCH_VALUE_ACCESSOR: Provider = {
@@ -23,7 +13,7 @@ export const SWITCH_VALUE_ACCESSOR: Provider = {
   styleUrls: ['./switch.component.scss'],
   providers: [SWITCH_VALUE_ACCESSOR]
 })
-export class CvSwitchComponent implements ControlValueAccessor, OnChanges {
+export class CvSwitchComponent implements ControlValueAccessor {
 
   @Input() disabled: boolean = false;
   @Input() onLabel: string = 'On';
@@ -65,9 +55,5 @@ export class CvSwitchComponent implements ControlValueAccessor, OnChanges {
   };
   private onChange = (_: any) => {
   };
-
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
-  }
 
 }

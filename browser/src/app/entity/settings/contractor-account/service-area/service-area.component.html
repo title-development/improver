@@ -44,13 +44,13 @@
   </agm-snazzy-info-window>
 </agm-map>
 
-<div class="action-bar" [ngClass]="{'-showed': unsavedChanges$ | async}">
+<div class="action-bar" [ngClass]="{'-showed': unsavedChanges}">
   <div class="container-wide">
     <div class="row -no-mar">
       <button cv-button-empty flatStyle="dark" (click)="reset()">Cancel</button>
       <div class="spacer"></div>
       <button cv-button-empty (click)="saveChanges()" [loading]="isSavingChanges" [spinnerColor]="'#14ABE3'"
-              [disabled]="!(unsavedChanges$ | async)">Save
+              [disabled]="!unsavedChanges || fetching">Save
       </button>
     </div>
   </div>

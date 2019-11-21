@@ -1,6 +1,12 @@
 import {
-  ApplicationRef, ComponentFactoryResolver, ComponentRef, EmbeddedViewRef, Inject, Injectable, Injector, NgZone,
-  OnDestroy, Optional,
+  ApplicationRef,
+  ComponentFactoryResolver,
+  ComponentRef,
+  Inject,
+  Injectable,
+  Injector,
+  NgZone,
+  Optional,
   Renderer2
 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
@@ -133,7 +139,9 @@ export class OverlayRef {
   }
 
   closeDropDown(elem: HTMLElement): void {
-    this.componentRef.destroy();
+    if (this.componentRef) {
+      this.componentRef.destroy();
+    }
     this.targetElement = null;
     if (elem && elem.parentNode) {
       elem.parentNode.removeChild(elem);

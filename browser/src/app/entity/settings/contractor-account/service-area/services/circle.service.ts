@@ -129,7 +129,6 @@ export class CircleService implements OnDestroy {
       ).pipe(
         skip(1),
         debounceTime(100),
-        tap(() => this.coverageService.fetching$.next(true)),
         mergeMap(([one, two, three]: [Date, Date, Date]) => {
           if (one > two && one > three) {
             return of('drag end');
@@ -183,7 +182,6 @@ export class CircleService implements OnDestroy {
   }
 
   private updateRadius(radiusInMiles: number): void {
-    console.log("updateRadius");
     const radiusInMeters = this.milesToMeters(radiusInMiles);
     this.circle.setRadius(radiusInMeters);
   }
