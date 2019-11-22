@@ -296,7 +296,7 @@ p {
   }
 }
 
-.request-quote, .rating-block {
+.rating-block {
   button {
     width: 100%;
   }
@@ -307,7 +307,7 @@ p {
     padding: 25px 12px;
     text-align: center;
     button {
-      width: auto;
+      width: 207px;
     }
   }
   .rating-wrapper {
@@ -337,8 +337,11 @@ p {
 
 .approved-mark-block {
   .approve-mark {
+    justify-content: center;
     display: flex;
     align-items: center;
+    margin-top: -6px;
+    margin-bottom: 18px;
     .approve-icon {
       margin-right: 8px;
     }
@@ -346,13 +349,12 @@ p {
       font-weight: 500;
       font-size: 11px;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.3px;
       color: $green-450;
     }
   }
   &.mobile {
     justify-content: center;
-    margin-bottom: 36px;
     margin-top: 8px;
     .approve-mark {
       justify-content: center;

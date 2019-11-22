@@ -29,11 +29,11 @@
               <h4>In business:</h4>
               <p *ngIf="companyProfile.yearsInBusiness > 0">{{companyProfile.yearsInBusiness}}
                 <ng-container [ngPlural]="companyProfile.yearsInBusiness">
-                  <ng-template ngPluralCase="=0">less then year</ng-template>
                   <ng-template ngPluralCase="=1">year</ng-template>
                   <ng-template ngPluralCase="other">years</ng-template>
                 </ng-container>
               </p>
+              <p *ngIf="companyProfile.yearsInBusiness <= 0">less then year</p>
             </div>
           </div>
         </div>

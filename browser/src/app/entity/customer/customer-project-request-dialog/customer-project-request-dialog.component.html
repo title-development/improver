@@ -12,22 +12,14 @@
         <div class="info-block">
           <div  [ngClass]="{'-archived': companyProfile.deleted}" class="company-name" [title]="companyProfile.name">
             {{companyProfile.name | truncate:companyNameTruncate: '...'}}
-            <span class="declined" *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.DECLINED">
-              Declined
-            </span>
-            <span class="hired" *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.HIRED">
-              Hired
-            </span>
+            <span class="declined" *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.DECLINED">Declined</span>
+            <span class="hired" *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.HIRED">Hired</span>
           </div>
           <div class="rating">
             <div class="company-rating">{{companyProfile.rating | number: '1.0-1'}}
             </div>
             <rating-component [rating]="companyProfile.rating" [starSize]="14" [readOnly]="true"></rating-component>
             <div class="company-reviews-count">({{companyProfile.reviewCount}})</div>
-          </div>
-          <div class="approve-mark" *ngIf="companyProfile.approved">
-            <img class="approve-icon" src="assets/icons/approve.svg">
-            <div class="approve-text">Approved by Home Improve</div>
           </div>
         </div>
 
@@ -129,12 +121,8 @@
         <div class="info-block">
           <div [ngClass]="{'-archived': companyProfile.deleted}" class="company-name">
             <span class="name">{{companyProfile.name}}</span>
-            <span class="declined" *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.DECLINED">
-              Declined
-            </span>
-            <span class="hired" *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.HIRED">
-              Hired
-            </span>
+            <span class="declined" *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.DECLINED">Declined</span>
+            <span class="hired" *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.HIRED">Hired</span>
           </div>
 
           <div class="rating">

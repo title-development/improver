@@ -56,8 +56,12 @@
           <i class="imp-icon-building-2"></i>
           <div class="group">
             <h5>Founded</h5>
-            <p><span>{{companyProfile.founded}}</span> ({{companyProfile.yearsInBusiness}} years in
-              business)
+            <p><span>{{companyProfile.founded}}</span>
+              <ng-container [ngPlural]="companyProfile.yearsInBusiness">
+                <ng-template ngPluralCase="=0"> (less then year in business)</ng-template>
+                <ng-template ngPluralCase="=1"> (1 year in business)</ng-template>
+                <ng-template ngPluralCase="other"> ({{companyProfile.yearsInBusiness}} years in business)</ng-template>
+              </ng-container>
             </p>
           </div>
         </div>
@@ -77,8 +81,6 @@
           <!--</div>-->
         <!--</div>-->
       </div>
-      <!--TODO: Temporary hide before MVP-->
-      <!--<button *ngIf="!companyProfile.owner" cv-button>Request quote</button>-->
     </div>
   </div>
 </div>
@@ -96,18 +98,22 @@
                                 [starSize]="24"></rating-component>
               <div class="rating">{{companyProfile.rating | number:'1.0-1'}}</div>
             </div>
+
+            <div class="approved-mark-block mobile md-none lg-none xlg-none" *ngIf="companyProfile.approved">
+              <div class="approve-mark">
+                <img class="approve-icon" src="assets/icons/approve.svg" alt="">
+                <div class="approve-text">Approved by Home Improve</div>
+
+              </div>
+            </div>
+
             <button cv-button-empty (click)="requestReview()" *ngIf="editMode">Request review</button>
             <button cv-button-empty [disabled]="isReviewSend"
                     (click)="openDialogAddReview(companyProfile)" *ngIf="!editMode">Write review
             </button>
           </div>
 
-          <div class="approved-mark-block mobile md-none lg-none xlg-none" *ngIf="companyProfile.approved">
-            <div class="approve-mark">
-              <img class="approve-icon" src="assets/icons/approve.svg" alt="">
-              <div class="approve-text">Approved by Home Improve</div>
-            </div>
-          </div>
+
 
           <agm-map class="company-location-map"
                    [streetViewControl]="false"
@@ -180,51 +186,42 @@
         <div class="glue-holder" [cvGlue]="boxGlue" [cvGlueParent]="container" [headerHeight]="50" [offset]="24">
           <div class="secondary-block row" *ngIf="companyProfile">
             <div class="col-md-12">
-              <!--TODO: Temporary hide before MVP-->
-              <!--<div class="card -space request-quote" *ngIf="!companyProfile?.owner">-->
-                <!--<h4>{{companyProfile.name}}</h4>-->
-                <!--<button cv-button>Request quote</button>-->
-              <!--</div>-->
+
             </div>
             <div class="col-md-12">
               <div class="card -space rating-block">
                 <h4>Company rating</h4>
-
-                <!--<div class="approved-mark-block" *ngIf="companyProfile.approved">-->
-                  <!--<div class="approve-mark">-->
-                    <!--<img class="approve-icon" src="assets/icons/approve.svg" alt="">-->
-                    <!--<div class="approve-text">Approved by Home Improve</div>-->
-                  <!--</div>-->
-                <!--</div>-->
-
                 <div class="rating-wrapper">
                   <rating-component [rating]="companyProfile.rating" [readOnly]="true"
                                     [starSize]="24"></rating-component>
                   <div class="rating">{{companyProfile.rating | number:'1.0-1'}}</div>
                 </div>
 
-
+                <div class="approved-mark-block" *ngIf="companyProfile.approved">
+                  <div class="approve-mark">
+                    <img class="approve-icon" src="assets/icons/approve.svg" alt="">
+                    <div class="approve-text">Approved by Home Improve</div>
+                  </div>
+                </div>
 
                 <button cv-button-empty (click)="requestReview()" *ngIf="editMode">Request review</button>
                 <button cv-button-empty [disabled]="isReviewSend"
                         (click)="openDialogAddReview(companyProfile)" *ngIf="!editMode">Write review
                 </button>
+              </div>
 
-              </div>
-              <div class="card -space approved-mark-block" *ngIf="companyProfile.approved">
-                <div class="approve-mark" *ngIf="companyProfile.approved">
-                  <img class="approve-icon" src="assets/icons/approve.svg" alt="">
-                  <div class="approve-text">Approved by Home Improve</div>
-                </div>
-              </div>
               <div class="card -space contacts">
                 <h4>Professional info <i *ngIf="editMode" routerLink="/pro/settings/info" class="imp-icon-pencil-2 pencil"></i></h4>
                 <div class="info-block">
                   <i class="imp-icon-building-2"></i>
                   <div class="group">
                     <h5>Founded</h5>
-                    <p><span>{{companyProfile.founded}}</span> ({{companyProfile.yearsInBusiness}} years in
-                      business)
+                    <p><span>{{companyProfile.founded}}</span>
+                      <ng-container [ngPlural]="companyProfile.yearsInBusiness">
+                        <ng-template ngPluralCase="=0"> (less then year in business)</ng-template>
+                        <ng-template ngPluralCase="=1"> (1 year in business)</ng-template>
+                        <ng-template ngPluralCase="other"> ({{companyProfile.yearsInBusiness}} years in business)</ng-template>
+                      </ng-container>
                     </p>
                   </div>
                 </div>
