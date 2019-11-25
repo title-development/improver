@@ -9,36 +9,65 @@
          width="100%"
          style="max-width: 600px;">
     <tr>
-      <td align="center" style="font-family: 'Trebuchet MS', sans-serif">
+      <td  style="font-family: 'Trebuchet MS', sans-serif">
         <div
           style="background-color: #ffffff; width: 600px; color: #3d3d3d; box-shadow: 2px 4px 21px -8px rgba(0,0,0,0.8);
           font-size: 14px;">
-
           <div style="border: 1px solid #dedede; padding: 24px; margin-top: 36px; margin-bottom: 36px;">
 
-            <div style="font-size: 20px; margin-bottom: 24px">
+            <div style="text-align: center; font-size: 20px; margin-bottom: 24px">
               <span th:if="${userName != null}">Hi</span>
               <b th:if="${userName != null}" th:text="${userName + '.'}"></b>
               <span th:utext="${title}"></span>
             </div>
-            <div th:utext="${body}" th:style="${'font-size: 14px; margin-bottom: 24px; white-space: pre-line; text-align: ' + contentAlign}"></div>
+            <div th:utext="${body}" th:style="${'font-size: 14px; white-space: pre-line; text-align: ' + contentAlign}"></div>
 
-            <table style="margin-bottom: 24px; font-size: 14px">
+            <div th:if="${message != null}" th:utext="${message}" style="margin-bottom: 24px; text-align: center;"></div>
+
+            <table style="margin-bottom: 24px; font-size: 14px; text-align: left">
               <tr>
-                <td width="70px;" valign="top" style="font-weight: bold;">Location:</td>
-                <td th:text="${projectDetails.streetAddress + ', ' + projectDetails.city + ' ' + projectDetails.state}"></td>
+                <td align="left" style=" padding-bottom: 14px;">Project details</td>
+              </tr>
+
+              <tr>
+                <td align="left">
+                  <table style="font-size: 14px;"  th:each="quesionAnswer: ${answers}">
+                    <tr>
+                      <td style="font-weight: bold;" th:text="${quesionAnswer.name}"></td>
+                    </tr>
+                    <tr th:each="result: ${quesionAnswer.results} ">
+                      <td th:text="' - ' + ${result}"></td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+
+              <tr>
+                <td align="left">
+              <table style="font-size: 14px;">
+              <tr>
+                <td style="font-weight: bold;">Location:</td>
               </tr>
               <tr>
-                <td valign="top" style="font-weight: bold;">Start date:</td>
-                <td th:text="${projectDetails.startExpectation}"></td>
+                <td th:text="' - ' + ${projectDetails.streetAddress + ', ' + projectDetails.city + ' ' + projectDetails.state + ', ' + projectDetails.zip}"></td>
               </tr>
               <tr>
-                <td valign="top" style="font-weight: bold;">Notes:</td>
-                <td th:text="${projectDetails.notes}"></td>
+                <td style="font-weight: bold;">Start date:</td>
               </tr>
+              <tr>
+                <td th:text="' - ' + ${projectDetails.startExpectation}"></td>
+              </tr>
+              <tr>
+                <td style="font-weight: bold;">Notes:</td>
+              </tr>
+              <tr>
+                <td th:text="' - ' + ${projectDetails.notes}"></td>
+              </tr>
+              </table>
+                </td>
+              </tr>
+
             </table>
-
-            <div th:if="${message != null}" th:text="${message}" style="margin-bottom: 24px;"></div>
 
             <a
               style="display: block; background: #009ede; padding: 12px; text-align: center; border-radius: 2px;

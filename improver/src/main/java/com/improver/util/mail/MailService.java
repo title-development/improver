@@ -3,6 +3,7 @@ package com.improver.util.mail;
 import com.improver.application.properties.BusinessProperties;
 import com.improver.entity.*;
 import com.improver.model.in.OrderDetails;
+import com.improver.model.in.QuestionAnswer;
 import com.improver.model.out.billing.PaymentCard;
 import com.improver.model.tmp.UnreadProjectMessageInfo;
 import com.improver.repository.AdminRepository;
@@ -241,7 +242,7 @@ public class MailService {
      *                                                  CUSTOMER
      ********************************************************************************************************/
 
-    public void sendAutoRegistrationConfirmEmail(Customer customer, Project project, OrderDetails details) {
+    public void sendAutoRegistrationConfirmEmail(Customer customer, Project project, OrderDetails details, List<QuestionAnswer> answers, boolean showAnswers) {
         Context context = contextTemplate();
         String serviceType = project.getServiceType().getName();
         context.setVariable(USER_NAME, customer.getFirstName());
@@ -249,22 +250,28 @@ public class MailService {
         context.setVariable("serviceType", serviceType);
         context.setVariable(BODY, "You've requested request a " + highlight(serviceType));
         context.setVariable("projectDetails", details);
+        if (showAnswers){
+            context.setVariable("answers", answers);
+        }
         context.setVariable("message", "We've created a cabinet where you can manage your project and discuss details with Professionals. " +
             "Please confirm you email so we can start searching the best Professionals for your project. "  +
-            "<br/>If you didn't do this action, please ignore this mail.");
+            "<br/> If you didn't do this action, please ignore this mail.");
         context.setVariable(CONFIRM_URL, siteUrl + CONFIRM + PASSWORD + SLASH + jwtUtil.generateActivationJWT(customer.getValidationKey(), customer.getEmail()));
         context.setVariable(CONFIRM_BTN_TEXT, "Confirm");
         mailClient.sendMail(SBJ_CONFIRM_REGISTRATION, PROJECT_DETAILS_TEMPLATE, context, MailHolder.MessageType.NOREPLY, customer.getEmail());
     }
 
 
-    public void sendOrderSubmitMail(Customer customer, Project project, OrderDetails details) {
+    public void sendOrderSubmitMail(Customer customer, Project project, OrderDetails details, List<QuestionAnswer> answers, boolean showAnswers) {
         Context context = contextTemplate();
         String serviceType = project.getServiceType().getName();
         context.setVariable(USER_NAME, customer.getFirstName());
         context.setVariable(TITLE, "Your project has been submitted!");
-        context.setVariable(BODY, "You've requested a " + highlight(serviceType));
+        context.setVariable(BODY, "You've requested a " + highlight(serviceType) + ".");
         context.setVariable("projectDetails", details);
+        if (showAnswers){
+            context.setVariable("answers", answers);
+        }
         context.setVariable("message", "We’re looking for the best Pros for your project. " +
             "This usually takes a few minutes. To view your project request please proceed to Home Improve.");
         context.setVariable(CONFIRM_URL, siteUrl + CUSTOMER_PROJECTS + project.getId());
@@ -418,19 +425,26 @@ public class MailService {
     /**
      * Send purchase confirmation email to contractor.
      *
-     * @param company        contractor that purchased lead
-     * @param projectRequest projectRequest created after purchase
+     * @param company            contractor that purchased lead
+     * @param projectRequest     projectRequest created after purchase
+     * @param orderDetails       lead details from questionary forms
+     * @param answers            lead question answer from questionary form
+     * @param showAnswers        add answers to context
      */
-    public void sendLeadAutoPurchaseEmail(Company company, ProjectRequest projectRequest) {
+    public void sendLeadAutoPurchaseEmail(Company company, Project project, ProjectRequest projectRequest, OrderDetails orderDetails, List<QuestionAnswer> answers, boolean showAnswers) {
         Context context = contextTemplate();
-        Project project = projectRequest.getProject();
+        context.setVariable(USER_NAME, projectRequest.getContractor().getDisplayName());
         context.setVariable(TITLE, "You received new subscription lead");
         context.setVariable(BODY, highlight(project.getServiceType().getName()) +
             " request from " +
             highlight(project.getCustomer().getDisplayName()));
+        context.setVariable("projectDetails", orderDetails);
+        if (showAnswers){
+            context.setVariable("answers", answers);
+        }
         context.setVariable(CONFIRM_URL, siteUrl + PRO_PROJECTS + projectRequest.getId());
         context.setVariable(CONFIRM_BTN_TEXT, "View project");
-        mailClient.sendMail("New subscription lead", CONFIRMATION_TEMPLATE, context, MailHolder.MessageType.BILLING, getRecipients(company));
+        mailClient.sendMail("New subscription lead", PROJECT_DETAILS_TEMPLATE, context, MailHolder.MessageType.BILLING, getRecipients(company));
     }
 
 

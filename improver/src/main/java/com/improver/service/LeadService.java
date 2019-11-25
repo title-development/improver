@@ -1,10 +1,13 @@
 package com.improver.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.improver.entity.*;
 import com.improver.exception.ConflictException;
 import com.improver.exception.NotFoundException;
 import com.improver.exception.PaymentFailureException;
 import com.improver.exception.ValidationException;
+import com.improver.model.in.OrderDetails;
+import com.improver.model.in.QuestionAnswer;
 import com.improver.model.out.project.Lead;
 import com.improver.model.out.project.ShortLead;
 import com.improver.repository.*;
@@ -50,6 +53,7 @@ public class LeadService {
     @Autowired private MailService mailService;
     @Autowired private ContractorRepository contractorRepository;
     @Autowired private CompanyRepository companyRepository;
+    @Autowired private UserRepository userRepository;
     // Required for same instance Transactional method call
     @Lazy @Autowired private LeadService self;
 
@@ -137,17 +141,17 @@ public class LeadService {
     }
 
 
-    @Transactional
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
     public long manualLeadPurchase(long leadId, Contractor contractor, boolean fromCard) {
         Company company = contractor.getCompany();
         Project lead = projectRepository.getLeadNotPurchasedByCompany(leadId, company.getId())
             .orElseThrow(() -> new NotFoundException("Lead is no longer available"));
-        ProjectRequest projectRequest = purchaseLeadAndNotify(lead, 0, company, contractor, true, fromCard);
+        ProjectRequest projectRequest = self.purchaseLeadAndNotify(lead, 0, company, contractor, true, fromCard);
         return projectRequest.getId();
     }
 
-    private ProjectRequest purchaseLeadAndNotify(Project lead, int discount, Company company, Contractor assignment, boolean isManual, boolean fromCard) {
+    @Transactional
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    public ProjectRequest purchaseLeadAndNotify(Project lead, int discount, Company company, Contractor assignment, boolean isManual, boolean fromCard) {
         ProjectRequest projectRequest = self.purchaseLead(lead, discount, company, assignment, isManual, fromCard);
 
         String serviceType = lead.getServiceType().getName();
@@ -156,7 +160,15 @@ public class LeadService {
         if (isManual) {
             mailService.sendManualLeadPurchaseEmail(assignment, projectRequest);
         } else {
-            mailService.sendLeadAutoPurchaseEmail(company, projectRequest);
+            List <QuestionAnswer> questionAnswers = SerializationUtil.fromJson(new TypeReference<List<QuestionAnswer>>() {}, lead.getDetails());
+            OrderDetails orderDetails = new OrderDetails()
+                .setStartExpectation(lead.getStartDate())
+                .setNotes(lead.getNotes())
+                .setStreetAddress(lead.getLocation().getStreetAddress())
+                .setCity(lead.getLocation().getCity())
+                .setState(lead.getLocation().getState())
+                .setZip(lead.getLocation().getZip());
+            mailService.sendLeadAutoPurchaseEmail(company, lead, projectRequest, orderDetails, questionAnswers, true);
             wsNotificationService.newSubscriptionLeadPurchase(assignment, lead.getCustomer(), serviceType, projectRequest.getId());
         }
         mailService.sendNewProposalEmail(company, lead);

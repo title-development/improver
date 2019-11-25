@@ -1,5 +1,6 @@
 package com.improver.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.improver.entity.*;
 import com.improver.exception.*;
 import com.improver.exception.ValidationException;
@@ -45,13 +46,16 @@ public class OrderService {
             .orElseGet(() -> getExistingOrRegister(order));
 
         Project lead;
+        List<QuestionAnswer> questionAnswers;
         if(customer.isActivated()) {
             lead = saveProjectOrder(income.setCustomer(customer));
-            mailService.sendOrderSubmitMail(customer, lead, order.getDetails());
+            questionAnswers = SerializationUtil.fromJson(new TypeReference<List<QuestionAnswer>>() {}, lead.getDetails());
+            mailService.sendOrderSubmitMail(customer, lead, order.getDetails(), questionAnswers, true);
         } else {
             income.setLead(false);
             lead = saveProjectOrder(income.setCustomer(customer));
-            mailService.sendAutoRegistrationConfirmEmail(customer, lead, order.getDetails());
+            questionAnswers = SerializationUtil.fromJson(new TypeReference<List<QuestionAnswer>>() {}, lead.getDetails());
+            mailService.sendAutoRegistrationConfirmEmail(customer, lead, order.getDetails(), questionAnswers, true);
         }
 
         if (lead.isLead()){
@@ -124,7 +128,6 @@ public class OrderService {
             .orElseThrow(ValidationException::new)
             .getCentroid();
 
-
         return new Project()
             .setCentroid(centroid)
             .setLead(isSuitableForPurchase)
@@ -133,7 +136,7 @@ public class OrderService {
             .setLocation(orderDetails.getLocation())
             .setStartDate(orderDetails.getStartExpectation())
             .setNotes(orderDetails.getNotes())
-            .setDetails(SerializationUtil.toJson(order.getQuestionary()))
+            .setDetails(order.getQuestionary()!= null? SerializationUtil.toJson(order.getQuestionary()): null )
             .setStatus(status)
             .setCreated(ZonedDateTime.now())
             .addSystemComment(systemComment);

@@ -8,8 +8,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import static com.improver.util.ErrorMessages.ORDER_DESCRIPTION_SIZE_ERROR_MESSAGE;
-import static com.improver.util.database.DataAccessUtil.ORDER_DESCRIPTION_SIZE;
 import static com.improver.util.StringUtil.capitalize;
+import static com.improver.util.database.DataAccessUtil.ORDER_DESCRIPTION_SIZE;
 
 @Data
 @Accessors(chain = true)
@@ -41,7 +41,6 @@ public class OrderDetails {
 
     @NotNull
     private String zip;
-
 
     public OrderDetails setEmail(String email) {
         this.email = email.toLowerCase();

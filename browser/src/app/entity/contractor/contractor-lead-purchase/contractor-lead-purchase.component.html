@@ -76,8 +76,19 @@
           </div>
 
         </div>
+
+
       </div>
+
+      <div class="buttom-purchase-button md-none lg-none xlg-none sm-none">
+      <div class="purchase-buttons-wrapper" *ngIf="lead && paymentCards?.length >= 1">
+        <button cv-button (click)="purchaseLead()">Complete Purchase</button>
+      </div>
+      </div>
+
     </div>
+
+
 
     <div class="col-md-4 col-xs-12">
 
