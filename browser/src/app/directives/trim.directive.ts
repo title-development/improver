@@ -37,16 +37,12 @@ export class TrimDirective implements ControlValueAccessor {
   }
 
   writeValue(value: any): void {
-    if (value) {
+    if (value !== undefined && value !== null) {
       this.renderer.setProperty(
         this.elementRef.nativeElement,
         'value',
         value
       );
-
-      this.onTouched();
-      this.onChange(value);
-      this.previousValue = value;
     }
   }
 
@@ -58,12 +54,12 @@ export class TrimDirective implements ControlValueAccessor {
     let formattedString = string;
     if (this.spacesRegExp.test(string) || this.newLinesRegExp.test(string)) {
       formattedString = this.formatString(formattedString);
-      this.writeValue(formattedString);
+      this.setValue(formattedString);
       element.focus();
       //setCursor position after formatting
       element.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
     } else {
-      this.writeValue(formattedString);
+      this.setValue(formattedString);
     }
   }
 
@@ -71,13 +67,20 @@ export class TrimDirective implements ControlValueAccessor {
   onBlur(event: string, string: string): void {
     if (string == this.previousValue) return;
     let formattedString = this.formatString(string.trim());
-    this.writeValue(formattedString);
+    this.setValue(formattedString);
   }
 
-  formatString(value: string) {
+  private formatString(value: string) {
     return value.trimLeft()
       .replace(this.spacesRegExp, ' ')
       .replace(this.newLinesRegExp, '\n\r');
+  }
+
+  private setValue(value: any) {
+    this.writeValue(value);
+    this.onTouched();
+    this.onChange(value);
+    this.previousValue = value;
   }
 
 }

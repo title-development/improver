@@ -12,14 +12,20 @@ import com.improver.repository.TransactionRepository;
 import com.improver.util.mail.MailService;
 import com.improver.util.serializer.SerializationUtil;
 import com.stripe.exception.*;
-import com.stripe.model.*;
+import com.stripe.model.Card;
+import com.stripe.model.Charge;
+import com.stripe.model.ExternalAccount;
+import com.stripe.model.ExternalAccountCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.improver.application.properties.BusinessProperties.MAX_AVAILABLE_CARDS_COUNT;
@@ -122,7 +128,7 @@ public class PaymentService {
             chargeParams.put("description", description);
             charge = Charge.create(chargeParams);
         } catch (CardException e) {
-            throw new PaymentFailureException("Payment cannot be proceed due to card issue", e);
+            throw new PaymentFailureException("Payment cannot be proceed due to card issue. Please check your billing information and try again.", e);
         } catch (AuthenticationException | InvalidRequestException | APIConnectionException | APIException e) {
             throw new InternalServerException("Payment cannot be proceed due to connectivity issue. Try again in a while", e);
         }
