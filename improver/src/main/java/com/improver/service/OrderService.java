@@ -132,6 +132,7 @@ public class OrderService {
             .setCentroid(centroid)
             .setLead(isSuitableForPurchase)
             .setServiceType(serviceType)
+            .setServiceName(serviceType.getName())
             .setLeadPrice(serviceType.getLeadPrice())
             .setLocation(orderDetails.getLocation())
             .setStartDate(orderDetails.getStartExpectation())

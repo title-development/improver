@@ -15,9 +15,6 @@ public interface TradeRepository extends JpaRepository<Trade, Long> {
 
     List<Trade> findByIdIn(List<Long> ids);
 
-    List<Trade> findByNameIn(List<String> names);
-
-    List<Trade> findByNameContainingIgnoreCase(String namePart);
 
     @Query("SELECT new com.improver.model.admin.AdminTrade(t) FROM com.improver.entity.Trade t " +
         "WHERE (:id IS null OR t.id = :id) AND " +

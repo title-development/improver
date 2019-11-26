@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonRawValue;
 import com.improver.util.ImageContainable;
 import lombok.Data;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
@@ -28,10 +29,15 @@ public class Project implements ImageContainable {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Column(nullable = false)
+    private String serviceName;
+
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name="service_type_id",  foreignKey = @ForeignKey(name = "project_service_fkey"))
     private ServiceType serviceType;
 
+    @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="customer_id",  foreignKey = @ForeignKey(name = "project_customer_fkey"))
     private Customer customer;
@@ -57,11 +63,13 @@ public class Project implements ImageContainable {
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     private ZonedDateTime updated;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "project")
     private List<ProjectRequest> projectRequests;
 
     private String coverUrl;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "project")
     private Set<ProjectImage> images;
 
@@ -79,6 +87,7 @@ public class Project implements ImageContainable {
 
     private boolean isLead;
 
+    @ToString.Exclude
     @JsonIgnore
     @OneToMany(mappedBy = "project")
     private List<ProjectAction> projectActions;

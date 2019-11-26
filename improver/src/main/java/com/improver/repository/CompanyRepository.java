@@ -4,8 +4,6 @@ import com.improver.entity.Company;
 import com.improver.entity.CompanyAction;
 import com.improver.entity.ServiceType;
 import com.improver.model.CompanyInfo;
-import com.improver.model.NameIdParentTuple;
-import com.improver.model.NameIdTuple;
 import com.improver.model.admin.out.Record;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -53,6 +51,15 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
         " AND NOT EXISTS (SELECT up FROM c.unavailabilityPeriods up WHERE :currentDate BETWEEN up.fromDate AND up.tillDate)")
     List<Company> getEligibleForSubscriptionLead(ServiceType serviceType, String zip, int leadPrice, LocalDate currentDate);
 
+    @Query(value = "SELECT comp.id from contractors contr " +
+        " LEFT JOIN (SELECT pr.contractor_id AS contr_id, MAX(pr.created) AS latest FROM project_requests pr WHERE pr.is_manual = false GROUP BY pr.contractor_id) AS leads ON leads.contr_id = contr.id " +
+        " INNER JOIN companies comp on contr.company_id = comp.id " +
+        " WHERE comp.id IN :eligibleForSubs " +
+        " ORDER BY leads.latest ASC NULLS FIRST LIMIT :number", nativeQuery = true)
+    List<Long> getLastSubsPurchased(List<Long> eligibleForSubs, int number);
+
+    @Query("SELECT c FROM com.improver.entity.Company c WHERE c.id IN ?1")
+    List<Company> findByIds(List<Long> ids);
 
     @Query("SELECT CASE WHEN count(c)> 0 THEN false ELSE true END FROM com.improver.entity.Company c WHERE LOWER(c.name) = LOWER(?1)")
     boolean isNameFree(String name);

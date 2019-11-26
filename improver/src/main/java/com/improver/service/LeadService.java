@@ -153,8 +153,8 @@ public class LeadService {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     public ProjectRequest purchaseLeadAndNotify(Project lead, int discount, Company company, Contractor assignment, boolean isManual, boolean fromCard) {
         ProjectRequest projectRequest = self.purchaseLead(lead, discount, company, assignment, isManual, fromCard);
-
-        String serviceType = lead.getServiceType().getName();
+        wsNotificationService.updateBalance(company, company.getBilling());
+        String serviceType = lead.getServiceName();
         wsNotificationService.newProjectRequest(lead.getCustomer(), company, serviceType, lead.getId());
 
         if (isManual) {
@@ -179,7 +179,8 @@ public class LeadService {
     /**
      * This method NOT intended to be invoked directly!!!
      */
-    //@Transactional
+    @Transactional
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
     public ProjectRequest purchaseLead(Project lead, int discount, Company company, Contractor assignment, boolean isManual, boolean fromCard) {
         if (!lead.isLead()) {
             throw new ConflictException("Lead is no longer available");
@@ -198,7 +199,7 @@ public class LeadService {
         String paymentMethod = "Balance";
         int leadPrice = lead.getLeadPrice() - discount;
         Billing bill = company.getBilling();
-        String serviceType = lead.getServiceType().getName();
+        String serviceType = lead.getServiceName();
         String chargeId = null;
         if (fromCard) {
             Charge charge = chargeToCard(bill, leadPrice, serviceType);
@@ -209,8 +210,18 @@ public class LeadService {
             chargeToBalance(bill, leadPrice, isManual);
             billRepository.save(bill);
         }
+
         ProjectRequest projectRequest = projectRequestService.createProjectRequest(assignment, lead, leadPrice, isManual);
-        logLeadPurchaseTransaction(company, lead, projectRequest, leadPrice, paymentMethod, bill.getBalance(), isManual, chargeId);
+        transactionRepository.save(Transaction.purchase(company,
+            serviceType,
+            lead.getLocation(),
+            projectRequest,
+            leadPrice,
+            paymentMethod,
+            chargeId,
+            isManual,
+            bill.getBalance())
+        );
         return projectRequest;
     }
 
@@ -233,11 +244,12 @@ public class LeadService {
         List<Company> eligibleForSubs = companyRepository.getEligibleForSubscriptionLead(
             project.getServiceType(), project.getLocation().getZip(), project.getLeadPrice(), LocalDate.now());
         if (eligibleForSubs.size() <= limit) {
-
             return eligibleForSubs;
         }
-
-        return contractorRepository.getLastSubsPurchased(eligibleForSubs, PageRequest.of(0, limit));
+        List<Long> eligibleIds = eligibleForSubs.stream().map(Company::getId).collect(Collectors.toList());
+        // TODO: fix in the future. Hibernate exception when converting to Company entity
+        List<Long> ids = companyRepository.getLastSubsPurchased(eligibleIds, limit);
+        return ids.stream().map(id -> companyRepository.findById(id).get()).collect(Collectors.toList());
     }
 
 
@@ -276,25 +288,6 @@ public class LeadService {
             }
         }
         return bill;
-    }
-
-
-    @Deprecated
-    private void logLeadPurchaseTransaction(Company company, Project lead, ProjectRequest projectRequest, int price, String paymentMethod, int balance, boolean isManualLead, String chargeId) {
-        Billing billing = company.getBilling();
-        String serviceType = lead.getServiceType().getName();
-
-        transactionRepository.save(Transaction.purchase(company,
-            serviceType,
-            lead.getLocation(),
-            projectRequest,
-            price,
-            paymentMethod,
-            chargeId,
-            isManualLead,
-            balance)
-        );
-        wsNotificationService.updateBalance(company, billing);
     }
 
 

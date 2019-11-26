@@ -14,6 +14,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.ZonedDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -91,7 +92,7 @@ public interface ProjectRequestRepository extends JpaRepository<ProjectRequest, 
 
     List<ProjectRequest> findByStatusAndProjectId(ProjectRequest.Status status, long projectId);
 
-    List<ProjectRequest> findByStatusInAndProjectId(Iterable<ProjectRequest.Status> statuses, long projectId);
+    List<ProjectRequest> findByStatusInAndProjectId(Collection<ProjectRequest.Status> statuses, long projectId);
 
     @Query("SELECT pr FROM com.improver.entity.ProjectRequest pr " +
         "INNER JOIN com.improver.entity.Project p ON pr.project.id = p.id " +

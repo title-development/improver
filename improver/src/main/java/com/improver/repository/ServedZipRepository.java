@@ -5,13 +5,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 public interface ServedZipRepository extends JpaRepository<ServedZip, String> {
 
     @Transactional
-    void deleteByZipIn(Iterable zipCodes);
+    void deleteByZipIn(Collection<String> zipCodes);
 
     @Query("SELECT sz.zip FROM com.improver.entity.ServedZip sz ")
     List<String> getAllServedZips();

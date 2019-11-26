@@ -192,6 +192,7 @@ public class TestDataInitializer {
             .getCentroid();
         Project project = new Project()
             .setCentroid(centroid)
+            .setServiceName(serviceName)
             .setLead(true)
             .setLeadPrice(serviceType.getLeadPrice())
             .setCustomer(customer)

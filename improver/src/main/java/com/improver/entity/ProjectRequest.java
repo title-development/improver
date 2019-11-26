@@ -1,6 +1,7 @@
 package com.improver.entity;
 
 import lombok.Data;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
@@ -13,20 +14,24 @@ import java.util.Map;
 @Data
 @Accessors(chain = true)
 @Entity(name = "project_requests")
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"id", "contractor_id"}))
 public class ProjectRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @ToString.Exclude
     @ManyToOne(fetch= FetchType.LAZY)
     @JoinColumn(name="project_id",  foreignKey = @ForeignKey(name = "project_request_project_fkey"))
     private Project project;
 
+    @ToString.Exclude
     @ManyToOne(fetch= FetchType.LAZY)
     @JoinColumn(name="contractor_id",  foreignKey = @ForeignKey(name = "project_request_contractor_fkey"))
     private Contractor contractor;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "projectRequest")
     private List<ProjectMessage> projectMessages;
 
@@ -46,13 +51,16 @@ public class ProjectRequest {
 
     private boolean isReviewRequested = false;
 
+    @ToString.Exclude
     @OneToOne
     @JoinColumn(name = "refund_id", foreignKey = @ForeignKey(name = "project_request_refund_fkey"))
     private Refund refund;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "projectRequest")
     private List<Transaction> transactions;
 
+    @ToString.Exclude
     @OneToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "review_id", foreignKey = @ForeignKey(name = "project_request_review_fkey"))
     private Review review;

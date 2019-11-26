@@ -3,21 +3,19 @@ package com.improver.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.improver.model.in.registration.CompanyDetails;
 import lombok.Data;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.Email;
-
 import javax.persistence.*;
-import javax.validation.constraints.Pattern;
 import java.time.ZonedDateTime;
 import java.util.List;
 
 import static com.improver.util.database.DataAccessUtil.*;
-import static com.improver.util.serializer.SerializationUtil.PHONE_PATTERN_STRING;
 
 @Data
 @Accessors(chain = true)
 @Entity(name = "companies")
+//@Table(name = "companies")
 public class Company {
 
     @Id
@@ -56,14 +54,17 @@ public class Company {
     @Column(columnDefinition = CD_BOOLEAN)
     private boolean isApproved;
 
+    @ToString.Exclude
     @JsonIgnore
     @OneToMany(mappedBy = "company")
     private List<Contractor> contractors;
 
+    @ToString.Exclude
     @JsonIgnore
     @OneToMany(mappedBy = "company")
     private List<UnavailabilityPeriod> unavailabilityPeriods;
 
+    @ToString.Exclude
     @JsonIgnore
     @ManyToMany
     @JoinTable(name="company_service_types",
@@ -71,6 +72,7 @@ public class Company {
         inverseJoinColumns=@JoinColumn(name="service_type_id", referencedColumnName="id"))
     private List<ServiceType> serviceTypes;
 
+    @ToString.Exclude
     @JsonIgnore
     @ManyToMany
     @JoinTable(name="company_trades",
@@ -78,39 +80,49 @@ public class Company {
         inverseJoinColumns=@JoinColumn(name="trade_id", referencedColumnName="id"))
     private List<Trade> trades;
 
+    @ToString.Exclude
     @JsonIgnore
     @OneToMany(mappedBy = "company")
     private List<Area> areas;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "company")
     private List<License> licenses;
 
+    @ToString.Exclude
     @JsonIgnore
     @OneToMany(mappedBy = "company")
     private List<DemoProject> demoProjects;
 
+    @ToString.Exclude
     @JsonIgnore
     @OneToMany(mappedBy = "company")
     private List<Review> reviews;
 
+    @ToString.Exclude
     @JsonIgnore
     @OneToMany(mappedBy = "company")
     private List<Transaction> transactions;
 
+    @ToString.Exclude
     @OneToOne(mappedBy = "company", fetch = FetchType.LAZY)
     private Billing billing;
 
+    @ToString.Exclude
     @JsonIgnore
     @OneToMany(mappedBy = "company")
     private List<CompanyAction> actions;
 
+    //@Column(columnDefinition= "TIMESTAMP")
     private ZonedDateTime created;
 
+    //@Column(columnDefinition= "TIMESTAMP")
     private ZonedDateTime updated;
 
     @Column(columnDefinition = CD_BOOLEAN)
     private boolean isDeleted = false;
 
+    @ToString.Exclude
     @JsonIgnore
     @OneToOne(mappedBy = "company", fetch = FetchType.LAZY)
     private CompanyConfig companyConfig;
