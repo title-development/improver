@@ -7,7 +7,6 @@ import { BillingService } from '../api/services/billing.service';
 import { PopUpMessageService } from './pop-up-message.service';
 import { getErrorMessage } from './functions';
 import { MyStompService } from './my-stomp.service';
-import { first } from 'rxjs/operators';
 
 
 @Injectable()
@@ -100,7 +99,6 @@ export class NotificationResource {
   public read(index: number): void {
     this.unreadMessages.splice(index, 1);
     this.unreadMessagesCount = this.unreadMessagesCount - 1;
-    console.log(this.unreadMessagesCount);
     this.unreadMessages$.next(this.unreadMessages);
     this.unreadMessagesCount$.next(this.unreadMessagesCount);
   }

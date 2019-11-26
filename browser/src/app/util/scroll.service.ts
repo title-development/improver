@@ -1,6 +1,6 @@
-import { Injectable, Inject } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { createConsoleLogger } from '@angular-devkit/core/node';
+import { first } from "rxjs/operators";
 
 @Injectable()
 export class ScrollService {
@@ -39,8 +39,10 @@ export class ScrollService {
     if (url) {
       this.roter.navigate([url], {fragment: id});
     }
-    this.roter.events.subscribe((evt) => {
-      if (evt instanceof NavigationEnd && url == evt.url) {
+    this.roter.events
+      .pipe(first())
+      .subscribe(event => {
+      if (event instanceof NavigationEnd && url == event.url) {
         this.scrollToElementById(id);
       } else {
         return;

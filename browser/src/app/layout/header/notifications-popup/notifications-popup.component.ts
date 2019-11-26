@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -6,7 +7,8 @@ import {
   Input,
   OnChanges,
   OnDestroy,
-  Output, Renderer2
+  Output,
+  Renderer2
 } from '@angular/core';
 import { SecurityService } from '../../../auth/security.service';
 import { animate, state, style, transition, trigger } from '@angular/animations';
@@ -21,7 +23,7 @@ import { ScrollService } from '../../../util/scroll.service';
 import { Pagination } from "../../../model/data-model";
 import { getErrorMessage } from "../../../util/functions";
 import { PopUpMessageService } from "../../../util/pop-up-message.service";
-import { first, skip } from "rxjs/operators";
+import { finalize, first } from "rxjs/operators";
 
 @Component({
   selector: 'notifications-popup',
@@ -48,6 +50,7 @@ export class NotificationsPopupComponent implements OnChanges, OnDestroy {
   }
 
   @Output() toggleChange: EventEmitter<boolean> = new EventEmitter();
+
 
   Role = Role;
   animationState: string | 'inactive' | 'active';
@@ -78,7 +81,8 @@ export class NotificationsPopupComponent implements OnChanges, OnDestroy {
               public notificationResource: NotificationResource,
               private scrollService: ScrollService,
               private router: Router,
-              private popUpService: PopUpMessageService) {
+              private popUpService: PopUpMessageService,
+              private changeDetectorRef: ChangeDetectorRef) {
     this.mediaWatcher = this.query.screen.subscribe((media: MediaQuery) => {
       this.mediaQuery = media;
       this.animationState = (media.xs || media.sm) ? 'inactive-mobile' : 'inactive';
@@ -116,15 +120,16 @@ export class NotificationsPopupComponent implements OnChanges, OnDestroy {
 
   getNotifications(pagination: Pagination) {
     this.notificationsProcessing = true;
-    this.notificationService.getAll(pagination).subscribe(
+    this.notificationService.getAll(pagination)
+      .pipe(finalize(() => this.notificationsProcessing = false))
+      .subscribe(
       notifications => {
         this.notifications.push(...notifications.content);
         this.showMore = !notifications.last;
-        this.notificationsProcessing = false;
+        this.changeDetectorRef.detectChanges();
       },
       error => {
         this.popUpService.showError(getErrorMessage(error));
-        this.notificationsProcessing = false;
       }
     );
   }
@@ -207,6 +212,11 @@ export class NotificationsPopupComponent implements OnChanges, OnDestroy {
     item.id
   }
 
+  psYReachEnd(event: UIEvent) {
+    if (this.showMore) {
+      this.getNotifications(this.pagination.nextPage())
+    }
+  }
 }
 
 

@@ -1,4 +1,4 @@
-import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CustomerProject } from '../../../model/data-model';
 import { MatDialog } from '@angular/material';
@@ -30,6 +30,7 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy, Componen
   private hashFragment: string;
   private onProjectsUpdate$: Subscription;
   private onProjectDialogClose$: Subscription;
+  private projectRequestRouterParams$: Subscription;
   private projectDialogOpened: boolean = false;
 
   constructor(private route: ActivatedRoute,
@@ -40,14 +41,14 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy, Componen
               public projectRequestService: ProjectRequestService,
               public router: Router,
               public somePipe: SomePipe,
-              public navigationHelper: NavigationHelper) {
+              public navigationHelper: NavigationHelper,
+              private changeDetectorRef: ChangeDetectorRef) {
 
     this.route.params.subscribe(params => {
-        if (!this.project && parseInt(params['id'])) {
-          this.projectId = parseInt(params['id']);
+      let projectIdParam = parseInt(params['id']);
+        if (!this.project && projectIdParam || this.project && this.project.id != projectIdParam) {
+          this.projectId = projectIdParam;
           this.getProject();
-        } else {
-          this.router.navigate(['404']);
         }
       }
 
@@ -116,6 +117,7 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy, Componen
               project.projectRequests.find((item) =>
                 item.id == this.projectActionService.projectRequestDialogRef.componentInstance.projectRequest.id);
           }
+          this.changeDetectorRef.detectChanges();
         },
         err => {
           console.log(err);
@@ -127,12 +129,14 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy, Componen
   }
 
   getProjectRequest() {
-    this.route.fragment.subscribe((fragment: string) => {
-      this.hashFragment = fragment;
-      if (fragment) {
-        this.openProjectRequestByUrlFragment(fragment);
-      }
-    });
+    if (!this.projectRequestRouterParams$) {
+      this.projectRequestRouterParams$ = this.route.fragment.subscribe((fragment: string) => {
+        this.hashFragment = fragment;
+        if (fragment) {
+          this.openProjectRequestByUrlFragment(fragment);
+        }
+      });
+    }
   }
 
   isInactiveProsExist() {

@@ -10,7 +10,7 @@
   </div>
   <div class="popup-body">
     <ng-container ></ng-container>
-    <perfect-scrollbar [config]="psConfig" *ngIf="(notifications && notifications.length > 0) || (notificationResource.unreadMessagesCount$ | async) > 0 ">
+    <perfect-scrollbar [config]="psConfig" *ngIf="(notifications && notifications.length > 0) || (notificationResource.unreadMessagesCount$ | async) > 0 " (psYReachEnd)="psYReachEnd($event)">
     <!--message notification-->
     <ng-template ngFor [ngForOf]="notificationResource.unreadMessages$ | async" let-notification let-i="index" [ngForTrackBy]="trackBy">
       <a class="item" [ngClass]="{'new': !notification.read}" (click)="navigate(notification.link); notificationResource.read(i); close()">
@@ -55,9 +55,6 @@
     </div>
 
 
-  </div>
-  <div class="popup-footer">
-    <a cv-button-flat (click)="getNotifications(pagination.nextPage())" *ngIf="showMore">Show more</a>
   </div>
 
 </div>
