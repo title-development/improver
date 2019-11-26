@@ -162,13 +162,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
 
   saveProjectToStorage() {
     let requestOrder = RequestOrder.build(this.mainForm.getRawValue(), this.serviceType);
-    console.log(requestOrder);
-
     let unsavedProjects = {};
-    if (localStorage.getItem('unsavedProjects')) {
-      unsavedProjects = JSON.parse(localStorage.getItem('unsavedProjects'));
-    }
-
     let date = new Date().toISOString();
     unsavedProjects[date] = requestOrder;
     localStorage.setItem('unsavedProjects', JSON.stringify(unsavedProjects));
@@ -229,6 +223,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
   }
 
   validateLocation(formGroupName: string, callback: () => {}): void {
+    this.disabledNextAction = true;
     const location = this.defaultQuestionaryForm.get(formGroupName).value;
     this.processingAddressValidation = true;
     this.locationValidate.validateWithCoverage(location).pipe(
@@ -254,6 +249,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
           .pipe(first())
           .subscribe(res => {
               this.locationValidation = '';
+              this.disabledNextAction = false;
             }
           );
       }

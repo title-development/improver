@@ -124,7 +124,7 @@ export class ProjectService {
     return this.http.post(`${this.PROJECTS_PATH}`, order);
   }
 
-  postUnsavedProjects(project): Observable<any> {
+  postUnsavedProjects(project: RequestOrder): Observable<any> {
     return this.http
       .post(`${this.PROJECTS_PATH}`, project);
   }
