@@ -5,6 +5,7 @@ import {
   EventEmitter,
   Inject,
   Input,
+  NgZone,
   OnChanges,
   OnDestroy,
   Output,
@@ -82,7 +83,8 @@ export class NotificationsPopupComponent implements OnChanges, OnDestroy {
               private scrollService: ScrollService,
               private router: Router,
               private popUpService: PopUpMessageService,
-              private changeDetectorRef: ChangeDetectorRef) {
+              private changeDetectorRef: ChangeDetectorRef,
+              private ngZone: NgZone) {
     this.mediaWatcher = this.query.screen.subscribe((media: MediaQuery) => {
       this.mediaQuery = media;
       this.animationState = (media.xs || media.sm) ? 'inactive-mobile' : 'inactive';
@@ -201,11 +203,13 @@ export class NotificationsPopupComponent implements OnChanges, OnDestroy {
   navigate(url: string): void {
     let urlFragments : Array<string> = url.split("#");
     let hashFragment: string = urlFragments.pop();
-    if(urlFragments.length > 0) {
-      this.scrollService.navigateAndScrollToElementById(urlFragments[0], hashFragment)
-    } else {
-      this.router.navigate([url]);
-    }
+    this.ngZone.run(() => {
+      if(urlFragments.length > 0) {
+        this.scrollService.navigateAndScrollToElementById(urlFragments[0], hashFragment)
+      } else {
+        this.router.navigate([url])
+      }
+    })
   }
 
   trackBy(index, item) {

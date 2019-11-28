@@ -1,8 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
-import { WindowRef } from '@agm/core/utils/browser-globals';
 import * as Swiper from 'swiper/dist/js/swiper.min';
-
 
 @Component({
   selector: 'image-viewer',
@@ -19,7 +17,7 @@ export class ImageViewerComponent implements OnInit {
 
   public sliderContentIsLoading: boolean;
 
-  constructor(public currentDialogRef: MatDialogRef<any>, private winRef: WindowRef) {
+  constructor(public currentDialogRef: MatDialogRef<any>, @Inject('Window') private window: Window) {
     this.sliderContentIsLoading = true;
   }
 
@@ -53,7 +51,7 @@ export class ImageViewerComponent implements OnInit {
         this.galleryThumbs.params.control = this.galleryTop;
         this.galleryTop.slideTo(this.galleryActiveIndex);
 
-        if (this.winRef.getNativeWindow()._width >= 577) {
+        if (this.window.innerWidth >= 577) {
           this.galleryThumbs.slideTo(this.galleryActiveIndex);
         }
       });
