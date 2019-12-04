@@ -73,8 +73,6 @@ export class CustomerProjectRequestDialogComponent implements OnInit, OnDestroy 
     this.projectActionService.onProjectsUpdate
       .pipe(takeUntil(this.destroyed$))
       .subscribe(() => this.getProjectRequest(this.projectRequest.id));
-
-    this.navigationHelper.preventNativeBackButton();
   }
 
   ngOnInit(): void {

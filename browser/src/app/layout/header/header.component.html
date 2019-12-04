@@ -64,8 +64,8 @@
       </a>
 
       <div class="nav navbar-nav">
-        <a class="app-menu-button account-menu" title="{{securityService.getLoginModel().name}}" [routerLink]="(mediaQuery.xs || mediaQuery.sm) ? securityService.hasRole(Role.CUSTOMER) ? ['/my/settings/account'] : securityService.hasRole(Role.CONTRACTOR) ? ['/companies', securityService.getLoginModel().company] : [] : []"
-           *ngIf="securityService.isAuthenticated()" (click)="isMobMenuOpened = !isMobMenuOpened && !mediaQuery.xs && !mediaQuery.sm">
+        <a class="app-menu-button account-menu" title="{{securityService.getLoginModel().name}}"
+           *ngIf="securityService.isAuthenticated()" (click)="isMobMenuOpened = !isMobMenuOpened">
           <div class="account-icon" [ngClass]="{'mobile': mediaQuery.xs || mediaQuery.sm}"
                [ngStyle]="securityService.getLoginModel().iconUrl && securityService.getLoginModel().iconUrl != '' && {'background-image':'url(' + securityService.getLoginModel().iconUrl + ')'} || securityService.getLoginModel().company && {'background-image':'url(/assets/img/company-logo-placeholder.png)'} || {'background-image':'url(/assets/img/user-logo-placeholder.png)'}"></div>
           <div class="user-name xs-none sm-none md-none" *ngIf="securityService.isAuthenticated()">
