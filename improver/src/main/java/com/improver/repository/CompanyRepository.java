@@ -20,6 +20,9 @@ import java.util.Optional;
 
 public interface CompanyRepository extends JpaRepository<Company, Long> {
 
+    @Query("SELECT b.company FROM com.improver.entity.Billing b WHERE b.subscription.active = true AND b.subscription.nextBillingDate < :till")
+    List<Company> findSubscriptionCandidates(ZonedDateTime till);
+
     @Query("SELECT new com.improver.model.CompanyInfo(c)" +
         " FROM com.improver.entity.Company c WHERE c.id = ?1")
     CompanyInfo getCompanyInfo(long companyId);
@@ -57,9 +60,6 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
         " WHERE comp.id IN :eligibleForSubs " +
         " ORDER BY leads.latest ASC NULLS FIRST LIMIT :number", nativeQuery = true)
     List<Long> getLastSubsPurchased(List<Long> eligibleForSubs, int number);
-
-    @Query("SELECT c FROM com.improver.entity.Company c WHERE c.id IN ?1")
-    List<Company> findByIds(List<Long> ids);
 
     @Query("SELECT CASE WHEN count(c)> 0 THEN false ELSE true END FROM com.improver.entity.Company c WHERE LOWER(c.name) = LOWER(?1)")
     boolean isNameFree(String name);

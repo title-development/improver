@@ -43,7 +43,7 @@ public class BusinessProperties {
     }
 
     /**
-     * This is required for {@link com.improver.job.SubscriptionUpdateJob#updateSubscription()}
+     * This is required for {@link com.improver.job.SubscriptionBillingJob#updateSubscription()}
      */
     public ChronoUnit getSubsBillingDateTruncate() {
         if (Period.ofMonths(1).equals(getSubscriptionPeriod())) {

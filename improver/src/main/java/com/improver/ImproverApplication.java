@@ -16,8 +16,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication(scanBasePackages={"com.improver"})
 @EntityScan("com.improver.entity")
 @EnableJpaRepositories(basePackages= "com.improver.repository")
-@EnableScheduling
-@EnableAsync
 @EnableTransactionManagement
 public class ImproverApplication {
 

@@ -47,11 +47,10 @@ public interface ProjectMessageRepository extends JpaRepository<ProjectMessage, 
         "AND m.sender <> :senderId")
     Long getUnreadMessagesCount(String senderId, Long projectRequestId, List <ProjectRequest.Status> projectRequestStatuses);
 
-    @Query("SELECT new com.improver.entity.Notification(pr.id, st.name, c.name, p.id, c.id, max(pm.created)) " +
+    @Query("SELECT new com.improver.entity.Notification(pr.id, p.serviceName, c.name, p.id, c.id, max(pm.created)) " +
         "FROM com.improver.entity.ProjectMessage pm " +
         "INNER JOIN com.improver.entity.ProjectRequest pr ON pr.id = pm.projectRequest.id " +
         "INNER JOIN com.improver.entity.Project p ON p.id = pr.project.id " +
-        "INNER JOIN com.improver.entity.ServiceType st ON st.id = p.serviceType.id " +
         "INNER JOIN com.improver.entity.Customer cus ON p.customer.id = cus.id " +
         "INNER JOIN com.improver.entity.Contractor ctr ON ctr.id = pr.contractor.id " +
         "INNER JOIN com.improver.entity.Company c ON c.id = ctr.company.id " +
@@ -59,30 +58,28 @@ public interface ProjectMessageRepository extends JpaRepository<ProjectMessage, 
         "AND cus.id = :userId " +
         "AND pm.sender != cast(:userId as string) " +
         "AND pr.status IN :projectRequestStatuses " +
-        "GROUP BY pr.id, st.name, c.name, p.id, c.id " +
+        "GROUP BY pr.id, p.serviceName, c.name, p.id, c.id " +
         "ORDER BY max(pm.created) DESC")
     List<Notification> getAllUnreadMessagesForCustomers(Long userId, List <ProjectRequest.Status> projectRequestStatuses);
 
-    @Query("SELECT new com.improver.entity.Notification(pr.id, st.name, cus.displayName, cus.id, max(pm.created)) " +
+    @Query("SELECT new com.improver.entity.Notification(pr.id, p.serviceName, cus.displayName, cus.id, max(pm.created)) " +
         "FROM com.improver.entity.ProjectMessage pm " +
         "INNER JOIN com.improver.entity.ProjectRequest pr ON pr.id = pm.projectRequest.id " +
         "INNER JOIN com.improver.entity.Project p ON p.id = pr.project.id " +
-        "INNER JOIN com.improver.entity.ServiceType st ON st.id = p.serviceType.id " +
         "INNER JOIN com.improver.entity.Customer cus ON p.customer.id = cus.id " +
         "INNER JOIN com.improver.entity.Contractor ctr ON ctr.id = pr.contractor.id " +
         "WHERE pm.isRead = false " +
         "AND ctr.id = :userId " +
         "AND pm.sender != cast(:userId as string) " +
         "AND pr.status IN :projectRequestStatuses " +
-        "GROUP BY pr.id, st.name, cus.id, cus.displayName " +
+        "GROUP BY pr.id, p.serviceName, cus.id, cus.displayName " +
         "ORDER BY max(pm.created) DESC")
     List<Notification> getAllUnreadMessagesForContractors(Long userId, List <ProjectRequest.Status> projectRequestStatuses);
 
-    @Query("SELECT new com.improver.model.tmp.UnreadProjectMessageInfo(cus.email, st.name, p.id, pr.id, comp.name) " +
+    @Query("SELECT new com.improver.model.tmp.UnreadProjectMessageInfo(cus.email, p.serviceName, p.id, pr.id, comp.name) " +
         "FROM com.improver.entity.ProjectMessage pm " +
         "INNER JOIN com.improver.entity.ProjectRequest pr ON pr.id = pm.projectRequest.id " +
         "INNER JOIN com.improver.entity.Project p ON p.id = pr.project.id " +
-        "INNER JOIN com.improver.entity.ServiceType st ON st.id = p.serviceType.id " +
         "INNER JOIN com.improver.entity.Customer cus ON p.customer.id = cus.id " +
         "INNER JOIN com.improver.entity.Company comp ON pr.contractor.company.id = comp.id " +
         "WHERE cus.notificationSettings.isReceiveMessages = true " +
@@ -91,14 +88,13 @@ public interface ProjectMessageRepository extends JpaRepository<ProjectMessage, 
         "AND (pm.created BETWEEN :dateFrom AND :dateTo) " +
         "AND pm.sender != 'system' " +
         "AND pm.sender != cast(cus.id as string) " +
-        "GROUP BY p.id, cus.email, st.name, pr.id, comp.name")
+        "GROUP BY p.id, cus.email, p.serviceName, pr.id, comp.name")
     List<UnreadProjectMessageInfo> getCustomersWithUnreadMessagesByCreatedDateBetween(ZonedDateTime dateFrom, ZonedDateTime dateTo, List <ProjectRequest.Status> projectRequestStatuses);
 
-    @Query("SELECT new com.improver.model.tmp.UnreadProjectMessageInfo(ctr.email, st.name, pr.id, cus.displayName) " +
+    @Query("SELECT new com.improver.model.tmp.UnreadProjectMessageInfo(ctr.email, p.serviceName, pr.id, cus.displayName) " +
         "FROM com.improver.entity.ProjectMessage pm " +
         "INNER JOIN com.improver.entity.ProjectRequest pr ON pr.id = pm.projectRequest.id " +
         "INNER JOIN com.improver.entity.Project p ON p.id = pr.project.id " +
-        "INNER JOIN com.improver.entity.ServiceType st ON st.id = p.serviceType.id " +
         "INNER JOIN com.improver.entity.Customer cus ON p.customer.id = cus.id " +
         "INNER JOIN com.improver.entity.Contractor ctr ON ctr.id = pr.contractor.id " +
         "INNER JOIN com.improver.entity.Company cmp ON cmp.id = ctr.company.id " +
@@ -109,7 +105,7 @@ public interface ProjectMessageRepository extends JpaRepository<ProjectMessage, 
         "AND (pm.created BETWEEN :dateFrom AND :dateTo) " +
         "AND pm.sender != 'system' " +
         "AND pm.sender != cast(ctr.id as string) " +
-        "GROUP BY pr.id, ctr.email, cus.displayName, st.name")
+        "GROUP BY pr.id, ctr.email, cus.displayName, p.serviceName")
     List<UnreadProjectMessageInfo> getContractorsWithUnreadMessagesByCreatedDateBetween(ZonedDateTime dateFrom, ZonedDateTime dateTo, List <ProjectRequest.Status> projectRequestStatuses);
 
 }

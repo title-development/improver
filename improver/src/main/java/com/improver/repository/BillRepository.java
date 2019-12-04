@@ -13,9 +13,6 @@ import java.util.Optional;
 
 public interface BillRepository extends JpaRepository<Billing, Long> {
 
-    @Query("SELECT b FROM com.improver.entity.Billing b WHERE b.subscription.active = true")
-    List<Billing> findBySubscription();
-
     Optional<Billing> findByCompanyId(long companyId);
 
 }

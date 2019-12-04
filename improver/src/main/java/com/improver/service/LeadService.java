@@ -76,6 +76,14 @@ public class LeadService {
         return leads;
     }
 
+    @Async
+    public void sendSubscriptionLead(Company company){
+        Page<Project> page = getSuitableLeads(company, 1, company.getBilling().getSubscription().getReserve());
+        if(!page.getContent().isEmpty()){
+            subscriptionLeadPurchase(page.getContent().get(0), 0, company);
+        }
+    }
+
 
     public Page<Project> getSuitableLeads(Company company, int count, int maxPrice) {
         return projectRepository.getSuitableLeads(company.getId(), Project.Status.forPurchase(), maxPrice, PageRequest.of(0, count, Sort.by(Sort.Direction.DESC, "created")));
@@ -134,7 +142,7 @@ public class LeadService {
     }
 
 
-    public void subscriptionLeadPurchase(Project lead, int discount, Company company) {
+    private void subscriptionLeadPurchase(Project lead, int discount, Company company) {
         Contractor assignment = company.getContractors().get(0);
         log.info("Auto assigned contractor={} to lead={}", assignment.getEmail(), lead.getId());
         purchaseLeadAndNotify(lead, discount, company, assignment, false, false);
@@ -145,13 +153,12 @@ public class LeadService {
         Company company = contractor.getCompany();
         Project lead = projectRepository.getLeadNotPurchasedByCompany(leadId, company.getId())
             .orElseThrow(() -> new NotFoundException("Lead is no longer available"));
-        ProjectRequest projectRequest = self.purchaseLeadAndNotify(lead, 0, company, contractor, true, fromCard);
+        ProjectRequest projectRequest = purchaseLeadAndNotify(lead, 0, company, contractor, true, fromCard);
         return projectRequest.getId();
     }
 
-    @Transactional
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
-    public ProjectRequest purchaseLeadAndNotify(Project lead, int discount, Company company, Contractor assignment, boolean isManual, boolean fromCard) {
+
+    private ProjectRequest purchaseLeadAndNotify(Project lead, int discount, Company company, Contractor assignment, boolean isManual, boolean fromCard) {
         ProjectRequest projectRequest = self.purchaseLead(lead, discount, company, assignment, isManual, fromCard);
         wsNotificationService.updateBalance(company, company.getBilling());
         String serviceType = lead.getServiceName();
@@ -180,7 +187,6 @@ public class LeadService {
      * This method NOT intended to be invoked directly!!!
      */
     @Transactional
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
     public ProjectRequest purchaseLead(Project lead, int discount, Company company, Contractor assignment, boolean isManual, boolean fromCard) {
         if (!lead.isLead()) {
             throw new ConflictException("Lead is no longer available");
@@ -313,6 +319,7 @@ public class LeadService {
         projects.forEach(lead -> {
             lead.setLead(true);
             projectRepository.save(lead);
+            // will be executed in the same thread
             matchLeadWithSubscribers(lead);
         });
     }

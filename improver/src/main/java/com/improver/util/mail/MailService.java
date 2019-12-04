@@ -526,7 +526,7 @@ public class MailService {
         mailClient.sendMail("Subscription budget updated for Home Improve", CONFIRMATION_TEMPLATE, context, MailHolder.MessageType.BILLING, recipients);
     }
 
-    public void sendSubscriptionExpired(Company company) {
+    public void sendSubscriptionEnded(Company company) {
         Context context = contextTemplate();
         String date = ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
         context.setVariable(TITLE, "Subscription has expired");
@@ -549,7 +549,7 @@ public class MailService {
         String date = nextBillingDate.format(DateTimeFormatter.ISO_LOCAL_DATE);
         String last4digits = getLast4DigitsSilent(company);
 
-        context.setVariable(TITLE, "Subscription is prolonged for next billing period");
+        context.setVariable(TITLE, "Subscription is continued for next billing period");
         StringBuilder body = new StringBuilder("Thank you for being a member of Home Improve. ");
         if (charged > 0) {
             subject = "Successful payment for Home Improve subscription";
@@ -557,7 +557,7 @@ public class MailService {
                 .append(" to your credit card ending in ").append(last4digits)
                 .append(" to fulfill Subscription Budget of $").append(SerializationUtil.centsToUsd(budget));
         } else {
-            subject = "Subscription prolonged";
+            subject = "Subscription continued";
             body.append(" We reserved $").append(SerializationUtil.centsToUsd(budget)).append(" on balance for Subscription Budget of $").append(SerializationUtil.centsToUsd(budget));
         }
         body.append("<br/>");

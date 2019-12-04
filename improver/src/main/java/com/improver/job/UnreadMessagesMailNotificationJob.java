@@ -18,19 +18,17 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-public class UnreadMessagesMailNotificationJob {
+public class UnreadMessagesMailNotificationJob implements OnesPerNodeTask {
 
-    public static final int UNREAD_MESSAGES_MAIL_NOTIFICATION_LOCK = 60 * 1000 * 15;
-    public static final Duration UNREAD_MESSAGE_JOB_INTERVAL = Duration.ofMinutes(15);
-
+    private static final Duration UNREAD_MESSAGE_JOB_INTERVAL = Duration.ofMinutes(15);
     @Autowired private ProjectMessageRepository projectMessageRepository;
     @Autowired private MailService mailService;
 
 
-    @Scheduled(cron = "${unread.message.mail.notification.cron}")
-    @SchedulerLock(name = "unreadMessagesMailNotification", lockAtLeastFor = UNREAD_MESSAGES_MAIL_NOTIFICATION_LOCK, lockAtMostFor = UNREAD_MESSAGES_MAIL_NOTIFICATION_LOCK)
+    @Scheduled(cron = "${job.unread.messages.cron}")
+    @SchedulerLock(name = "unreadMessagesMailNotification", lockAtLeastFor = MAX_CLOCK_DIFF_BETWEEN_NODES, lockAtMostFor = MAX_TASK_DELAY)
     public void unreadMessagesMailNotification(){
-        log.info("Unread messages mail notification Job started");
+        log.info("Job | Unread messages mail notification Job started");
         ZonedDateTime now = ZonedDateTime.now();
 
         List<UnreadProjectMessageInfo> customersUnreadMessages = projectMessageRepository.getCustomersWithUnreadMessagesByCreatedDateBetween(
@@ -49,7 +47,7 @@ public class UnreadMessagesMailNotificationJob {
             .collect(Collectors.groupingBy(UnreadProjectMessageInfo::getRecipientEmail))
             .forEach((email, messages) -> mailService.sendUnreadMessageNotificationEmails(email, messages, false));
 
-        log.info("Unread messages mail notification Job ended");
+        log.info("Job | Unread messages mail notification Job ended");
     }
 
 }

@@ -2,10 +2,11 @@ package com.improver.job;
 
 import com.improver.application.properties.BusinessProperties;
 import com.improver.entity.Billing;
+import com.improver.entity.Company;
 import com.improver.repository.BillRepository;
+import com.improver.repository.CompanyRepository;
 import com.improver.service.SubscriptionService;
 import com.improver.util.mail.MailService;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.core.SchedulerLock;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,32 +14,38 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 
 @Slf4j
 @Component
-public class SubscriptionUpdateJob {
+public class SubscriptionBillingJob implements OnesPerNodeTask {
 
-    public static final int SUBSCRIPTION_UPDATE_LOCK = 60 * 1000;
-
+    public static final long MAX_SUBSCRIPTION_BILLING_JOB_DELAY = 120000; //2 mins
     @Autowired private BillRepository billRepository;
     @Autowired private MailService mailService;
     @Autowired private SubscriptionService subscriptionService;
     @Autowired private BusinessProperties businessProperties;
+    @Autowired private CompanyRepository companyRepository;
 
-    @Scheduled(cron = "${subscription.update.cron}")
-    @SchedulerLock(name = "updateSubscription", lockAtLeastFor = SUBSCRIPTION_UPDATE_LOCK, lockAtMostFor = SUBSCRIPTION_UPDATE_LOCK)
+
+
+    @Scheduled(cron = "${job.subscription.billing.cron}")
+    @SchedulerLock(name = "updateSubscription", lockAtLeastFor = MAX_CLOCK_DIFF_BETWEEN_NODES, lockAtMostFor = MAX_SUBSCRIPTION_BILLING_JOB_DELAY)
     public void updateSubscription(){
-        log.info("Subscription update Job started");
+        log.info("Job | Subscription billing Job started");
         ZonedDateTime now = ZonedDateTime.now();
-        List<Billing> bills = billRepository.findBySubscription();
-        bills.forEach(billing -> checkBill(billing, now));
-        log.info("Subscription update Job ended");
+        ZonedDateTime endOfDay = now.plus(1, ChronoUnit.DAYS).with(ChronoField.HOUR_OF_DAY, 0);
+        List<Company> companies = companyRepository.findSubscriptionCandidates(endOfDay);
+        companies.forEach(company -> checkBill(company, now));
+        log.info("Job | Subscription billing Job ended");
     }
 
 
-    private void checkBill(Billing billing, ZonedDateTime now){
+    private void checkBill(Company company, ZonedDateTime now){
+        Billing billing = company.getBilling();
         ZonedDateTime billingDate = billing.getSubscription().getNextBillingDate()
             .truncatedTo(businessProperties.getSubsBillingDateTruncate());
 
@@ -48,7 +55,7 @@ public class SubscriptionUpdateJob {
             } else {
                 billing.getSubscription().reset();
                 billRepository.save(billing);
-                mailService.sendSubscriptionExpired(billing.getCompany());
+                mailService.sendSubscriptionEnded(company);
             }
         }
     }

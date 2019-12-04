@@ -14,20 +14,18 @@ import java.time.ZonedDateTime;
 
 @Slf4j
 @Component
-public class ReviewPublishingJob {
-
-    public static final int REVIEW_PUBLISHING_LOCK = 60 * 1000;
+public class ReviewPublishingJob implements OnesPerNodeTask {
 
     @Autowired private ReviewRepository reviewRepository;
     @Autowired private ReviewService reviewService;
-    @Autowired
-    private WsNotificationService wsNotificationService;
+    @Autowired private WsNotificationService wsNotificationService;
     @Autowired private MailService mailService;
 
-    @Scheduled(cron = "${review.publishing.cron}")
-    @SchedulerLock(name = "publishReview", lockAtLeastFor = REVIEW_PUBLISHING_LOCK, lockAtMostFor = REVIEW_PUBLISHING_LOCK)
+
+    @Scheduled(cron = "${job.review.publish.cron}")
+    @SchedulerLock(name = "publishReview", lockAtLeastFor = MAX_CLOCK_DIFF_BETWEEN_NODES, lockAtMostFor = MAX_TASK_DELAY)
     public void publishReview(){
-        log.info("Review publishing Job started");
+        log.info("Job | Review publishing Job started");
         ZonedDateTime now = ZonedDateTime.now();
         reviewRepository.getForPublishing(now).forEach(review -> {
             Company company = review.getCompany();
@@ -38,7 +36,7 @@ public class ReviewPublishingJob {
             mailService.sendReviewPublishedMail(company, review);
             log.debug("Review " + review.getId() + " is published");
         });
-        log.info("Review publishing Job ended");
+        log.info("Job | Review publishing Job ended");
     }
 
 

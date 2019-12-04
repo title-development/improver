@@ -66,18 +66,10 @@ public class SubscriptionService {
 
         Billing updatedBilling = billRepository.save(billing.setSubscription(subscription));
         if (isNewSubscription) {
-            sendSubscriptionLead(company);
+            leadService.sendSubscriptionLead(company);
         }
         mailService.sendSubscriptionNotification(company, timeZoneOffset, isNewSubscription);
         return updatedBilling;
-    }
-
-    @Async
-    public void sendSubscriptionLead(Company company){
-        Page<Project> page = leadService.getSuitableLeads(company, 1, company.getBilling().getSubscription().getReserve());
-        if(!page.getContent().isEmpty()){
-            leadService.subscriptionLeadPurchase(page.getContent().get(0), 0, company);
-        }
     }
 
 
@@ -91,7 +83,7 @@ public class SubscriptionService {
 
         try {
             if(toCharge > 0) {
-                billing = paymentService.autoChargeForSubscription(billing.getCompany(), toCharge, budget);
+                billing = paymentService.autoChargeForSubscription(company, toCharge, budget);
                 comment = "Charged "+ SerializationUtil.formatUsd(budget) + " to card to fulfill Subscription Budget of $ " + SerializationUtil.centsToUsd(budget);
             } else {
                 comment = "Reserved "+ SerializationUtil.formatUsd(budget) + " on balance for Subscription Budget of $ " + SerializationUtil.centsToUsd(budget);
