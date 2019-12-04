@@ -1,10 +1,10 @@
 import {Observable, ReplaySubject} from 'rxjs';
 import {Injectable} from '@angular/core';
 import {Pagination, ServiceType} from '../../model/data-model';
-import {QuestionaryBlock} from '../../model/questionary-model';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {RestPage} from '../models/RestPage';
 import {AdminServiceType} from '../models/AdminServiceType';
+import { ServiceQuestionaryModel } from "../../model/service-questionary-model";
 
 @Injectable()
 export class ServiceTypeService {
@@ -60,8 +60,8 @@ export class ServiceTypeService {
     return this.http.get<Array<ServiceType>>(`${this.serviceCatalogUrl}`);
   }
 
-  getQuestionary(id: number): Observable<Array<QuestionaryBlock>> {
-    return this.http.get<Array<QuestionaryBlock>>(`${this.catalogUrl}/questionary/${id}`);
+  getQuestionary(id: number): Observable<ServiceQuestionaryModel> {
+    return this.http.get<ServiceQuestionaryModel>(`${this.catalogUrl}/questionary/${id}`);
 
   }
 

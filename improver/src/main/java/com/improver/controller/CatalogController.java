@@ -1,14 +1,14 @@
 package com.improver.controller;
 
-import com.improver.entity.Question;
 import com.improver.entity.ServiceType;
 import com.improver.entity.Trade;
-import com.improver.exception.NotFoundException;
 import com.improver.model.NameIdTuple;
+import com.improver.model.out.ServiceQuestionaryModel;
 import com.improver.model.out.NameIdImageTuple;
 import com.improver.model.out.TradeAndServices;
 import com.improver.repository.ServiceTypeRepository;
 import com.improver.repository.TradeRepository;
+import com.improver.service.QuestionaryService;
 import com.improver.service.ServiceTypeService;
 import com.improver.service.TradeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 
 import static com.improver.application.properties.Path.*;
@@ -31,7 +30,7 @@ public class CatalogController {
     @Autowired private TradeRepository tradeRepository;
     @Autowired private ServiceTypeService serviceTypeService;
     @Autowired private ServiceTypeRepository serviceTypeRepository;
-
+    @Autowired private QuestionaryService questionaryService;
 
     /**
      * Returns suggested {@link ServiceType} list represented by list of {@link NameIdImageTuple}'s.
@@ -78,12 +77,9 @@ public class CatalogController {
 
 
     @GetMapping(QUESTIONARY + ID_PATH_VARIABLE)
-    public ResponseEntity<List<Question>> getQuestionary(@PathVariable long id) {
-        ServiceType serviceType = serviceTypeRepository.findById(id)
-            .orElseThrow(NotFoundException::new);
-        List<Question> questions = (serviceType.getQuestionary() != null)
-            ? serviceType.getQuestionary().getQuestions()
-            : Collections.emptyList();
+    public ResponseEntity<ServiceQuestionaryModel> getQuestionary(@PathVariable long id) {
+        ServiceQuestionaryModel questions = questionaryService.getQuestionaryInfo(id);
+
         return new ResponseEntity<>(questions, HttpStatus.OK);
     }
 

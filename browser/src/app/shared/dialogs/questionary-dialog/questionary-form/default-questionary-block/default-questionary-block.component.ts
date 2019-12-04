@@ -103,7 +103,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
   nextQuestion(name, handler: () => {} = undefined) {
 
     if (this.isValid(name)) {
-      if (typeof handler != 'undefined') {
+      if (handler !== undefined) {
         handler.call(this, name, this.nextStep);
       } else {
         this.nextStep();
@@ -116,7 +116,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
   previousQuestion(handler: () => {} = undefined) {
     console.log('previousQuestion');
 
-    if (typeof handler != 'undefined') {
+    if (handler !== undefined) {
       handler.call(this);
     }
     if (this.questionaryControlService.currentQuestionIndex > -1) {
@@ -129,7 +129,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     if (name) {
       if (this.isValid(name)) {
         console.log('valid');
-        if (typeof handler != undefined) {
+        if (handler !== undefined) {
           handler.call(this, name, this.saveProject);
         } else {
           this.saveProject();
@@ -147,17 +147,18 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
   }
 
   checkEmail(email) {
-    this.emailIsUnique = true;
-    this.emailIsChecked = false;
+    if (email){
+      this.emailIsUnique = true;
+      this.emailIsChecked = false;
 
-    this.userService.isEmailFree(email)
-      .pipe(finalize(() => this.emailIsChecked = true))
-      .subscribe(() => {
-    }, () => {
-      this.emailIsUnique = false;
-      this.saveProjectToStorage();
-    });
-
+      this.userService.isEmailFree(email)
+        .pipe(finalize(() => this.emailIsChecked = true))
+        .subscribe(() => {
+        }, () => {
+          this.emailIsUnique = false;
+          this.saveProjectToStorage();
+        });
+    }
   }
 
   saveProjectToStorage() {
@@ -169,6 +170,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
   }
 
   saveProject(): void {
+    this.disabledNextAction = true;
     const requestOrder = RequestOrder.build(this.mainForm.getRawValue(), this.serviceType);
     this.postOrderProcessing = true;
     if (this.companyId) {
@@ -232,6 +234,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
       this.processingAddressValidation = false;
       if (validatedLocation.valid) {
         this.locationValidation = '';
+        this.disabledNextAction = false;
         callback.call(this);
       } else {
         if (validatedLocation.suggested) {
@@ -284,10 +287,12 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
       state: address.state,
       zip: address.zip
     });
-    if (!this.securityService.hasRole(Role.ANONYMOUS)) {
-      this.saveProject();
-    } else {
+    if (this.securityService.hasRole(Role.ANONYMOUS)) {
       this.nextStep();
+    } else if (this.securityService.hasRole(Role.CUSTOMER) && !this.questionaryControlService.customerHasPhone) {
+      this.nextStep();
+    } else {
+      this.saveProject();
     }
 
   }

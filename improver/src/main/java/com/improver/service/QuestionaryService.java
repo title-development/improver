@@ -6,11 +6,12 @@ import com.improver.exception.NotFoundException;
 import com.improver.model.NameIdParentTuple;
 import com.improver.model.NameIdTuple;
 import com.improver.model.admin.AdminQuestionary;
+import com.improver.model.out.ServiceQuestionaryModel;
 import com.improver.repository.AnswerRepository;
 import com.improver.repository.QuestionRepository;
 import com.improver.repository.QuestionaryRepository;
 import com.improver.repository.ServiceTypeRepository;
-import org.apache.commons.codec.binary.Base64;
+import com.improver.security.UserSecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +24,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class QuestionaryService {
+
+    @Autowired private UserSecurityService userSecurityService;
+    @Autowired CustomerProjectService customerProjectService;
     @Autowired QuestionaryRepository questionaryRepository;
     @Autowired ServiceTypeRepository serviceTypeRepository;
     @Autowired QuestionRepository questionRepository;
@@ -189,6 +193,18 @@ public class QuestionaryService {
             })
             .collect(Collectors.toList());
         answerRepository.deleteAll(toDelete);
+    }
+
+    public ServiceQuestionaryModel getQuestionaryInfo(Long serviceTypeId){
+        Customer customer = userSecurityService.currentCustomerOrNull();
+        ServiceType serviceType = serviceTypeRepository.findById(serviceTypeId)
+            .orElseThrow(NotFoundException::new);
+        List<Question> questions = (serviceType.getQuestionary() != null)
+            ? serviceType.getQuestionary().getQuestions()
+            : Collections.emptyList();
+        boolean customerHasPhone = customer != null && customer.getInternalPhone() != null;
+
+        return new ServiceQuestionaryModel(questions, customerHasPhone);
     }
 
 }

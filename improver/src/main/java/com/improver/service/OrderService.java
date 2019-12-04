@@ -45,6 +45,11 @@ public class OrderService {
         customer = Optional.ofNullable(customer)
             .orElseGet(() -> getExistingOrRegister(order));
 
+        if (customer.getInternalPhone() == null || customer.getInternalPhone().isEmpty()){
+            customer.setInternalPhone(order.getDetails().getPhone());
+            customerRepository.save(customer);
+        }
+
         Project lead;
         List<QuestionAnswer> questionAnswers;
         if(customer.isActivated()) {

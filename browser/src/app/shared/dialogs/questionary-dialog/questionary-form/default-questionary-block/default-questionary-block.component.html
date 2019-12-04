@@ -219,13 +219,14 @@
       <button class="questionary-previous-button" (click)="previousQuestion()" type="button"
               *ngIf="!hideNextAction && !postOrderProcessing">Back
       </button>
-      <button *ngIf="securityService.hasRole(Role.ANONYMOUS) && !hideNextAction && !postOrderProcessing"
+      <button *ngIf="(securityService.hasRole(Role.ANONYMOUS) && !hideNextAction && !postOrderProcessing) ||
+                     (securityService.hasRole(Role.CUSTOMER) && !hideNextAction && !postOrderProcessing && !questionaryControlService.customerHasPhone)"
               class="questionary-next-button"
               (click)="nextQuestion('projectLocation', validateLocation)" type="button"
               [disabled]="disabledNextAction">
         Next
       </button>
-      <button *ngIf="!securityService.hasRole(Role.ANONYMOUS) && !hideNextAction && !postOrderProcessing"
+      <button *ngIf="securityService.hasRole(Role.CUSTOMER) && !hideNextAction && !postOrderProcessing && questionaryControlService.customerHasPhone"
               class="questionary-next-button"
               (click)="onSubmit('projectLocation', validateLocation)" type="button" [disabled]="disabledNextAction">
         Submit
@@ -236,11 +237,13 @@
   </div>
 
   <div #defaultQuestion class="form-element-wrapper text-input-wrapper" [formGroupName]="'defaultQuestionaryGroup'"
-       *ngIf="securityService.hasRole(Role.ANONYMOUS) && (questionaryControlService.currentQuestionIndex == questionaryControlService.questionaryLength + 3)">
-    <h2 class="question-title">Let's get acquainted</h2>
+       *ngIf="(securityService.hasRole(Role.ANONYMOUS) && (questionaryControlService.currentQuestionIndex == questionaryControlService.questionaryLength + 3))
+              || (securityService.hasRole(Role.CUSTOMER) && (questionaryControlService.currentQuestionIndex == questionaryControlService.questionaryLength + 3))">
+    <h2 class="question-title" *ngIf="securityService.hasRole(Role.ANONYMOUS)">Let's get acquainted</h2>
+    <h2 class="question-title" *ngIf="securityService.hasRole(Role.CUSTOMER)">Please add your phone number</h2>
     <div class="text-input-group" [formGroupName]="'customerPersonalInfo'">
 
-      <cv-input-field>
+      <cv-input-field *ngIf="securityService.hasRole(Role.ANONYMOUS)">
         <cv-field-label>First name</cv-field-label>
         <input cv-input type="text"
                placeholder="First name"
@@ -258,7 +261,7 @@
         </cv-field-error>
       </cv-input-field>
 
-      <cv-input-field>
+      <cv-input-field *ngIf="securityService.hasRole(Role.ANONYMOUS)">
         <cv-field-label>Last name</cv-field-label>
         <input cv-input type="text"
                placeholder="Last name"
@@ -276,7 +279,7 @@
         </cv-field-error>
       </cv-input-field>
 
-      <cv-input-field>
+      <cv-input-field *ngIf="securityService.hasRole(Role.ANONYMOUS)">
         <cv-field-label>Email</cv-field-label>
         <input cv-input type="text"
                placeholder="Email"
@@ -293,7 +296,7 @@
         </cv-field-error>
       </cv-input-field>
 
-      <cv-input-field>p
+      <cv-input-field>
         <cv-field-label>Phone number</cv-field-label>
         <input cv-input type="text"
                placeholder="Phone number"
@@ -315,9 +318,15 @@
 
     <div class="questionary-dialog-footer">
       <button class="questionary-previous-button" (click)="previousQuestion()" type="button">Back</button>
-      <button class="questionary-next-button"
+      <button *ngIf="securityService.hasRole(Role.ANONYMOUS)" class="questionary-next-button"
               (click)="nextQuestion('customerPersonalInfo'); checkEmail(defaultQuestionaryForm.get('customerPersonalInfo.email').value)"
               type="button">Next
+      </button>
+
+      <button *ngIf="securityService.hasRole(Role.CUSTOMER) && !questionaryControlService.customerHasPhone"
+              class="questionary-next-button"
+              (click)="onSubmit('customerPersonalInfo')" type="button" [disabled]="disabledNextAction">
+        Submit
       </button>
     </div>
 

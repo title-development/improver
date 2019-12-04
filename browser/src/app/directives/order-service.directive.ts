@@ -22,6 +22,7 @@ export class OrderServiceDirective {
 
   }
 
+  //TODO: IMP-1493
   @HostListener('click', ['$event'])
   orderService(event: MouseEvent): void {
     switch (this.securityService.getRole()) {

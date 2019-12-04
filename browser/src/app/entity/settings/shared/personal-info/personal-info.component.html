@@ -138,7 +138,7 @@
                                  maxlength="14"
                                  phoneMask
                                  [pattern]="constants.patterns.phone"
-                                 [required]="securityService.hasRole(Role.CONTRACTOR)">
+                                 required>
                           <cv-field-error *ngIf="phone.dirty || phone.touched || personalInfoForm.submitted">
                             <span *ngIf="phone.errors?.required">
                                     {{messages.errors.phone.required}}

@@ -342,7 +342,7 @@ export class ProjectActionService {
     this.questionaryDialogRef.componentInstance.companyId = companyId;
     if (questionary && questionary.length > 0) {
       this.questionaryDialogRef.componentInstance.questionary = questionary;
-      this.questionaryControlService.updateQuestionaryTotalLength(questionary.length);
+      this.questionaryControlService.updateQuestionaryTotalLength(questionary.length, true);
     }
   };
 

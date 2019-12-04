@@ -11,6 +11,9 @@ import { ServiceTypeService } from '../../../api/services/service-type.service';
 import { AccountService } from '../../../api/services/account.service';
 import { ComponentCanDeactivate } from "../../../auth/router-guards/component-can-deactivate.guard";
 import { NavigationHelper } from "../../../util/navigation-helper";
+import { ServiceQuestionaryModel } from "../../../model/service-questionary-model";
+import { PopUpMessageService } from "../../../util/pop-up-message.service";
+import { getErrorMessage } from "../../../util/functions";
 
 @Component({
   selector: 'questionary-dialog',
@@ -32,6 +35,7 @@ export class QuestionaryDialogComponent implements OnInit, ComponentCanDeactivat
               public serviceTypeService: ServiceTypeService,
               public securityService: SecurityService,
               public questionaryControlService: QuestionaryControlService,
+              public popUpService: PopUpMessageService,
               public navigationHelper: NavigationHelper) {
 
     if (securityService.hasRole(Role.CUSTOMER)) {
@@ -62,17 +66,12 @@ export class QuestionaryDialogComponent implements OnInit, ComponentCanDeactivat
     this.questionaryControlService.questionaryIsLoading = true;
     this.serviceTypeService.getQuestionary(workId)
       .subscribe(
-        questionary => {
-          this.questionary = questionary;
-          this.questionaryControlService.updateQuestionaryTotalLength(this.questionary.length);
+        (questionary: ServiceQuestionaryModel )=> {
+          this.questionary = questionary.questions;
+          this.questionaryControlService.updateQuestionaryTotalLength(this.questionary.length, questionary.hasPhone);
         },
-        err => {
-          this.questionary = [];
-          console.warn("There is no specific questionary for this service");
-          this.questionaryControlService.updateQuestionaryTotalLength(0);
-        }, () => {
-
-        });
+        err => this.popUpService.showError(getErrorMessage(err))
+      );
   }
 
   close() {

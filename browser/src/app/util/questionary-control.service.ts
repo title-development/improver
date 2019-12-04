@@ -9,6 +9,7 @@ import { Role } from '../model/security-model';
 export class QuestionaryControlService {
 
   public DEFAULT_QUESTIONARY_LENGTH = 6;
+  public DEFOULT_QUESTIONARY_LENGTH_NOTEXIST_CUSTOMER_PHONE = 5;
   public DEFAULT_QUESTIONARY_LENGTH_CUSTOMER = 4;
 
   public defaultQuestionaryLength = this.DEFAULT_QUESTIONARY_LENGTH;
@@ -17,6 +18,7 @@ export class QuestionaryControlService {
   public questionaryIsLoading = false;
   public currentQuestionIndex = -1;
   public withZip: boolean = false;
+  public customerHasPhone: boolean = false;
   public questionaryLength = 0;
   public totalQuestionaryLength;
 
@@ -99,11 +101,14 @@ export class QuestionaryControlService {
 
   }
 
-  updateQuestionaryTotalLength(questionaryLength) {
+  updateQuestionaryTotalLength(questionaryLength, hasPhone) {
     this.questionaryLength = questionaryLength;
+    this.customerHasPhone = hasPhone;
 
-    if (this.securityService.hasRole(Role.CUSTOMER)) {
+    if (this.securityService.hasRole(Role.CUSTOMER) && hasPhone) {
       this.defaultQuestionaryLength = this.DEFAULT_QUESTIONARY_LENGTH_CUSTOMER;
+    } else if (this.securityService.hasRole(Role.CUSTOMER) && !hasPhone) {
+      this.defaultQuestionaryLength = this.DEFOULT_QUESTIONARY_LENGTH_NOTEXIST_CUSTOMER_PHONE;
     } else {
       this.defaultQuestionaryLength = this.DEFAULT_QUESTIONARY_LENGTH;
     }
