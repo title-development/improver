@@ -122,7 +122,9 @@ export class MessengerComponent implements OnInit, OnDestroy {
               this.messages.push(item);
             }
           });
-          this.sendReadEvent();
+          setTimeout(() => {
+            this.sendReadEvent();
+          }, this.READ_MESSAGES_DEBOUNCE_TIME)
         },
         err => {
           console.error(err);

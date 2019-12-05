@@ -62,6 +62,7 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy, Componen
     this.onProjectDialogClose$ = this.projectActionService.onCloseProjectRequestDialog.subscribe(() => {
       this.projectDialogOpened = false;
       this.navigationHelper.removeHash();
+      this.getProject();
     });
   }
 
@@ -133,6 +134,10 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy, Componen
       this.projectRequestRouterParams$ = this.route.fragment.subscribe((fragment: string) => {
         this.hashFragment = fragment;
         if (fragment) {
+          let projectRequestIndex = this.project.projectRequests.findIndex(pr => pr.id == fragment);
+          if (projectRequestIndex >= 0) {
+            this.project.projectRequests[projectRequestIndex].unreadMessages = 0;
+          }
           this.openProjectRequestByUrlFragment(fragment);
         }
       });
