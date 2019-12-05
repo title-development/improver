@@ -303,7 +303,7 @@ export class ProjectActionService {
                 this.questionaryControlService.currentQuestionIndex++;
                 this.questionaryControlService.withZip = true;
                 this.customerSuggestionService.saveUserSearchTerm(serviceType.name, this.questionaryControlService.zip, true);
-                this.getQuestianary(serviceType);
+                this.openQuestionaryModal(serviceType);
               } else {
                 this.openZipNotSupportedModal(zip);
                 this.questionaryControlService.resetQuestionaryForm();
@@ -315,7 +315,7 @@ export class ProjectActionService {
             }
           );
         } else {
-          this.getQuestianary(serviceType);
+          this.openQuestionaryModal(serviceType);
         }
         break;
       default:
@@ -324,12 +324,9 @@ export class ProjectActionService {
     }
   }
 
-  openQuestionaryForCompany(serviceType: ServiceType, companyId: string = ''): void {
-    this.getQuestianary(serviceType, companyId);
-  }
-
-  private openQuestionaryModal(serviceType, questionary, companyId: string = '') {
+  private openQuestionaryModal(serviceType) {
     this.dialog.closeAll();
+    this.questionaryControlService.serviceType = serviceType;
     this.questionaryDialogRef = this.dialog.open(dialogsMap['questionary-dialog'], questionaryDialogConfig);
     this.questionaryDialogRef
       .afterClosed()
@@ -339,26 +336,7 @@ export class ProjectActionService {
         this.questionaryDialogRef = null;
       });
     this.questionaryDialogRef.componentInstance.serviceType = serviceType;
-    this.questionaryDialogRef.componentInstance.companyId = companyId;
-    if (questionary && questionary.length > 0) {
-      this.questionaryDialogRef.componentInstance.questionary = questionary;
-      this.questionaryControlService.updateQuestionaryTotalLength(questionary.length, true);
-    }
   };
-
-  // TODO: Prevent double getQuestionary from server
-  getQuestianary(serviceType, companyId: string = ''): void {
-    this.questionaryControlService.serviceType = serviceType;
-    this.openQuestionaryModal(serviceType, null, companyId);
-    // TODO: Check consequences! Comment code and replace with function without questionary. Check consequences!
-    // this.serviceTypeService.getQuestionary(serviceType.id).subscribe(
-    //   (questionary: Array<QuestionaryBlock>) => {
-    //     this.openQuestionaryModal(serviceType, questionary, companyId)
-    //   },
-    //   err => {
-    //     this.popUpService.showError(getErrorMessage(err));
-    //   });
-  }
 
   closeProject(project: ContractorProjectShort) {
     let properties = {

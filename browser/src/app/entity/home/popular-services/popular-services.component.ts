@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {ServiceType} from '../../../model/data-model';
-import {ServiceTypeService} from '../../../api/services/service-type.service';
 import { CustomerSuggestionService } from "../../../api/services/customer-suggestion.service";
+import { ProjectActionService } from "../../../util/project-action.service";
 
 
 @Component({
@@ -12,7 +12,8 @@ import { CustomerSuggestionService } from "../../../api/services/customer-sugges
 export class PopularServicesComponent {
   suggestedServiceTypes: Array<ServiceType> = [];
 
-  constructor(private customerSuggestionService: CustomerSuggestionService,) {
+  constructor(private customerSuggestionService: CustomerSuggestionService,
+              public projectActionService: ProjectActionService) {
 
     this.customerSuggestionService.suggested$
       .subscribe(

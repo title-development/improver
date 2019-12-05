@@ -38,7 +38,6 @@ import { ServicesSelectorComponent } from "./services-selector/services-selector
 import { CvCheckboxModule } from "../theme/checkbox/checkbox.module";
 import { CvCollapseModule } from "../theme/collapse/cv-collapse.module";
 import { FindProfessionalsComponent } from "./find-professionals/find-professionals.component";
-import { OrderServiceDirective } from '../directives/order-service.directive';
 import { SharedDirectivesModule } from "./shared-directives.module";
 import { CvFieldsModule } from "../theme/fields/cv-fields.module";
 import { CvInputModule } from "../theme/input/cv-input.module";
@@ -89,7 +88,6 @@ import { CvRadioModule } from "../theme/radio/radio.module";
     ImagesUploaderComponent,
     CompanyReviewsComponent,
     CompanyReviewItemComponent,
-    OrderServiceDirective,
     MainSearchBarComponent,
     ServicesSelectorComponent,
     FindProfessionalsComponent,
@@ -131,7 +129,6 @@ import { CvRadioModule } from "../theme/radio/radio.module";
     CvInputModule,
     CvInputFieldModule,
     CvRadioModule,
-    OrderServiceDirective,
     MainSearchBarComponent,
     ServicesSelectorComponent,
     FindProfessionalsComponent,

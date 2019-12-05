@@ -583,6 +583,7 @@ input[type=range]::-moz-focus-outer {
 
 .textarea-formatting {
   white-space: pre-line;
+  word-break: break-word;
 }
 
 .ui-datatable .ui-datatable-data tr td {
