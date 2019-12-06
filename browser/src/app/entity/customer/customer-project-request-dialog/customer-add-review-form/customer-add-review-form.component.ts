@@ -66,7 +66,7 @@ export class CustomerAddReviewFormComponent implements OnInit {
   }
 
   addReview(reviewForm: NgForm) {
-    if (!this.projectRequest.reviewed)
+    if (!this.projectRequest.reviewed && reviewForm.valid) {
       this.reviewService.getReviewOptions(this.projectRequest.company.id, this.projectRequest.id).subscribe(
         (response: boolean) => {
           if (this.isRated) {
@@ -97,6 +97,7 @@ export class CustomerAddReviewFormComponent implements OnInit {
           this.popUpMessageService.showMessage({text: err.error.message, type: SystemMessageType.ERROR});
         }
       );
+    }
   }
 
   deactivateForm(){

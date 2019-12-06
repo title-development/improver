@@ -245,7 +245,9 @@
           flex-direction: column;
 
           .header {
+            position: relative;
             padding-bottom: 10px;
+            max-width: 185px;
 
             .name {
               font-size: 18px;
@@ -253,8 +255,10 @@
             }
 
             .action {
+              position: absolute;
+              top: 4px;
+              right: 0;
               font-size: 13px;
-              padding-left: 15px;
               color: #ffffff;
 
               &:hover {
