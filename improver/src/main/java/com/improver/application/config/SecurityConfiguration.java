@@ -102,7 +102,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             // And filter other requests to check the presence of JWT in header
             .addFilterBefore(jwtAuthenticationFilter(), AnonymousAuthenticationFilter.class)
             .addFilterBefore(loginFilter(), JwtAuthenticationFilter.class)
-            .addFilterBefore(new LogoutFilter(LOGOUT_PATH), JwtAuthenticationFilter.class)
+            .addFilterBefore(new LogoutFilter(LOGOUT_PATH, userSecurityService), JwtAuthenticationFilter.class)
             .addFilterBefore(refreshAccessTokenFilter(), JwtAuthenticationFilter.class);
     }
 

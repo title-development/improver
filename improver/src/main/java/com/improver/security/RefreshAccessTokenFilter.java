@@ -47,7 +47,7 @@ public class RefreshAccessTokenFilter extends GenericFilterBean {
         if(antPathRequestMatcher.matches(request)){
             // 1. Check cookies
             logger.debug("Refresh access call");
-            String refreshToken = CookieHelper.getRefreshTokenFromCookie(request);
+            String refreshToken = userSecurityService.getRefreshTokenFromCookie(request);
             if (refreshToken == null){
                 logger.debug("Refresh token is absent");
                 sendError(response, SC_UNAUTHORIZED, "Authentication is required");
@@ -58,7 +58,7 @@ public class RefreshAccessTokenFilter extends GenericFilterBean {
             User user = userSecurityService.findByRefreshId(refreshToken);
             if (user == null) {
                 logger.debug("Refresh token expired or invalid");
-                CookieHelper.eraseRefreshCookie(response);
+                userSecurityService.eraseRefreshCookie(response);
                 sendError(response, SC_UNAUTHORIZED, SESSION_TIMED_OUT_MSG);
                 return;
             }
@@ -73,7 +73,7 @@ public class RefreshAccessTokenFilter extends GenericFilterBean {
                     isReauthenticate = true;
                 } else {
                     logger.debug("Refresh token expired");
-                    CookieHelper.eraseRefreshCookie(response);
+                    userSecurityService.eraseRefreshCookie(response);
                     sendError(response, SC_UNAUTHORIZED, SESSION_TIMED_OUT_MSG);
                     return;
                 }

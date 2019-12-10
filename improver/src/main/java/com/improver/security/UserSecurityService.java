@@ -1,5 +1,6 @@
 package com.improver.security;
 
+import com.improver.application.properties.Environments;
 import com.improver.application.properties.SecurityProperties;
 import com.improver.entity.*;
 import com.improver.exception.AuthenticationRequiredException;
@@ -8,6 +9,7 @@ import com.improver.model.out.LoginModel;
 import com.improver.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.authentication.DisabledException;
@@ -20,11 +22,15 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.UUID;
 
+import static com.improver.application.properties.Path.REFRESH_COOKIE_PATH;
+import static com.improver.application.properties.SecurityProperties.REFRESH_COOKIE_NAME;
 import static com.improver.entity.User.Role.CONTRACTOR;
 import static com.improver.entity.User.Role.INCOMPLETE_PRO;
 import static com.improver.security.JwtUtil.AUTHORIZATION_HEADER_NAME;
@@ -42,6 +48,8 @@ public class UserSecurityService implements UserDetailsService {
     @Autowired private StaffRepository staffRepository;
     @Autowired private AdminRepository adminRepository;
     @Autowired private SecurityProperties securityProperties;
+    @Value("${spring.profiles.active:Unknown}") private String activeProfile;
+    @Value("${server.domain}") private String serverDomain;
 
     /**
      * Intended to be used by {@link LoginFilter}.
@@ -132,7 +140,7 @@ public class UserSecurityService implements UserDetailsService {
     }
 
     public void performLogout(User user, HttpServletResponse res) {
-        CookieHelper.eraseRefreshCookie(res);
+        eraseRefreshCookie(res);
     }
 
     /**
@@ -161,7 +169,7 @@ public class UserSecurityService implements UserDetailsService {
         LoginModel loginModel = buildLoginModel(updated);
         String jwt = generateAccessToken(updated);
         res.setHeader(AUTHORIZATION_HEADER_NAME, BEARER_TOKEN_PREFIX + jwt);
-        res.addCookie(CookieHelper.buildRefreshCookie(loginModel.getRefreshId(), securityProperties.maxUserSessionIdle()));
+        res.addCookie(buildRefreshCookie(loginModel.getRefreshId(), securityProperties.maxUserSessionIdle()));
 
         return loginModel;
     }
@@ -247,5 +255,52 @@ public class UserSecurityService implements UserDetailsService {
             role = INCOMPLETE_PRO;
         }
         return jwtUtil.generateAccessJWT(user.getEmail(), role.toString());
+    }
+
+
+
+    public Cookie buildRefreshCookie(String refreshToken, long refreshTokenExpiration) {
+        return newCookie(REFRESH_COOKIE_NAME, refreshToken, REFRESH_COOKIE_PATH, Math.toIntExact(refreshTokenExpiration / 1000));
+    }
+
+
+    public void eraseRefreshCookie(HttpServletResponse response) {
+        Cookie cookie = newCookie(REFRESH_COOKIE_NAME, null, REFRESH_COOKIE_PATH, 0);
+        response.addCookie(cookie);
+    }
+
+    public String getRefreshTokenFromCookie(HttpServletRequest request){
+        Cookie cookie = getCookie(request, REFRESH_COOKIE_NAME);
+        if(cookie == null) {
+            return null;
+        }
+        return cookie.getValue();
+    }
+
+
+
+    private Cookie getCookie(HttpServletRequest request, String name) {
+        if (request.getCookies() == null) {
+            return null;
+        }
+        for (int i = 0; i < request.getCookies().length; i++) {
+            if (request.getCookies()[i].getName().equals(name)) {
+                return request.getCookies()[i];
+            }
+        }
+        return null;
+    }
+
+
+    private Cookie newCookie(String name, String data, String path, int maxAge) {
+        Cookie cookie = new Cookie(name, data);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath(path);
+        cookie.setMaxAge(maxAge);
+        if (activeProfile.equals(Environments.PROD) || activeProfile.equals(Environments.STG) || activeProfile.equals(Environments.QA)){
+            cookie.setDomain(serverDomain);
+        }
+        return cookie;
     }
 }

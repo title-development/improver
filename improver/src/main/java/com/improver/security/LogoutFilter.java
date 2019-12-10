@@ -14,9 +14,11 @@ import java.io.IOException;
 public class LogoutFilter extends GenericFilterBean {
 
     private AntPathRequestMatcher antPathRequestMatcher;
+    private UserSecurityService userSecurityService;
 
-    public LogoutFilter(String url) {
+    public LogoutFilter(String url, UserSecurityService userSecurityService) {
         antPathRequestMatcher = new AntPathRequestMatcher(url);
+        this.userSecurityService = userSecurityService;
     }
 
     @Override
@@ -26,7 +28,7 @@ public class LogoutFilter extends GenericFilterBean {
 
         if(antPathRequestMatcher.matches(request)){
             logger.debug("Performing logout");
-            CookieHelper.eraseRefreshCookie(response);
+            userSecurityService.eraseRefreshCookie(response);
             return;
         }
 
