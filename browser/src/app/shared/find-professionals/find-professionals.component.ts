@@ -96,9 +96,13 @@ export class FindProfessionalsComponent implements OnInit {
 
 
   autocompleteSearch(search): void {
-    if (search) {
+    if (search && search.length > 1) {
       this.filteredServiceTypes = this.userSearchService.getSearchResults(search.trim());
     } else {
+      this.filteredServiceTypes = this.popularServiceTypes;
+    }
+
+    if (this.filteredServiceTypes.length == 0){
       this.filteredServiceTypes = this.popularServiceTypes;
     }
   }

@@ -1,12 +1,13 @@
 import { EventEmitter, Injectable, Output } from '@angular/core';
 import { ServiceType, Trade } from "../../model/data-model";
-import * as lunr from "lunr";
 import { getErrorMessage } from "../../util/functions";
 import { CustomerSuggestionService } from "./customer-suggestion.service";
 import { PopUpMessageService } from "../../util/pop-up-message.service";
 import { ServiceTypeService } from "./service-type.service";
 import { ProjectActionService } from "../../util/project-action.service";
 import { Router } from "@angular/router";
+import * as Fuse from "fuse.js";
+import { FuseOptions } from "fuse.js";
 
 @Injectable({
   providedIn: 'root'
@@ -18,10 +19,8 @@ export class UserSearchService {
   allServiceTypes: Array<ServiceType> = [];
   allTrades: Array<Trade> = [];
 
-  tradeIndexes: lunr.Index;
-  serviceTypeIndexes: lunr.Index;
-
-  readonly searchTermMinLength: number = 3;
+  tradeIndexes;
+  serviceTypeIndexes;
 
   constructor(public customerSuggestionService: CustomerSuggestionService,
               private serviceTypeService: ServiceTypeService,
@@ -32,37 +31,22 @@ export class UserSearchService {
     this.createServiceTypeIndexes();
   }
 
-  // * - wildcards is represented as an asterisk (*) and can appear anywhere in a search term
-  // ~ - fuzziness in chars is applied by appending a tilde
-  // ^ - in multi-term searches, a single term may be important than others
-  getSearchQuery(search: string): string{
-    if (search.length < this.searchTermMinLength){
-      // Give more priority to the words on the beginning of a sentence as others words
-      return `${search}*^10 ${search}^9`;
-    } else {
-      // Give more priority to the words on the beginning of a sentence as others words and
-      // lower priority to words with fuzziness in one character(~1) on the beginning of a sentence as others words
-      return `${search}*^10 ${search}^9 ${search}*~1^8 ${search}~1^7`
-    }
-  }
-
   getSearchResults(search: string): Array<ServiceType> {
     let searchResult: Array<ServiceType> = [];
     let filteredTrades: Array<Trade> = [];
-    let searchTerm: string = this.getSearchQuery(search);
 
     //Find indexed Service Types if Exists by search term
-    if(this.serviceTypeIndexes) {
-      searchResult = this.serviceTypeIndexes.search(searchTerm)
-        .map(item => this.allServiceTypes.find(service => item.ref == service.id.toString()));
+    if (this.serviceTypeIndexes) {
+      searchResult = this.serviceTypeIndexes.search(search)
+        .map(item => this.allServiceTypes.find(service => item.id == service.id.toString()));
     }
 
     // Service Types not exists get Service Types on indexed Trades by search term
-    if (searchResult.length == 0 && this.tradeIndexes){
-      filteredTrades = this.tradeIndexes.search(searchTerm)
-        .map(item => this.allTrades.find(trade => item.ref == trade.id.toString()));
+    if (searchResult.length == 0 && this.tradeIndexes) {
+      filteredTrades = this.tradeIndexes.search(search)
+        .map(item => this.allTrades.find(trade => item.id == trade.id.toString()));
       let services = [];
-      filteredTrades.forEach( trade => {
+      filteredTrades.forEach(trade => {
         trade.services.forEach(service => services.push(service));
       });
       searchResult = services;
@@ -71,15 +55,23 @@ export class UserSearchService {
     return searchResult;
   }
 
+
+  //  ------------------Fuse Options------------------
+  // A threshold of 0.0 requires a perfect match, a threshold of 1.0 would match anything.
+  // maxPatternLength:100   -   max characters length in search term 100
+  // minMatchCharLength:3 -   ignores the return of characters less than three in length
+  // keys               -   list of properties that will be searched
   createTradeIndexes(): void {
     this.customerSuggestionService.getTradesWithServices$().subscribe(
       trades => {
         if (trades && trades.length >0){
-          this.tradeIndexes = lunr( function () {
-            this.ref('id');
-            this.field('name');
-            trades.forEach(trade => this.add(trade));
-          });
+          let options: FuseOptions<Trade> = {
+            threshold: 0.5,
+            maxPatternLength: 100,
+            minMatchCharLength: 3,
+            keys: ['name']
+          };
+          this.tradeIndexes = new Fuse(trades, options);
           this.allTrades = trades;
         }
       },
@@ -90,11 +82,14 @@ export class UserSearchService {
     this.serviceTypeService.serviceTypes$.subscribe(
       serviceTypes => {
         if (serviceTypes && serviceTypes.length > 0) {
-          this.serviceTypeIndexes = lunr(function () {
-            this.ref('id');
-            this.field('name');
-            serviceTypes.forEach(service => this.add(service));
-          });
+          let options: FuseOptions<ServiceType> = {
+            threshold: 0.2,
+            maxPatternLength: 100,
+            minMatchCharLength: 3,
+            keys: ['name']
+          };
+          this.serviceTypeIndexes = new Fuse(serviceTypes, options);
+          console.log('serviceTypeIndexes', this.serviceTypeIndexes);
           this.allServiceTypes = serviceTypes;
         }
       },
@@ -122,7 +117,7 @@ export class UserSearchService {
   }
 
   loadMore(search: string): Array<ServiceType> {
-    return  this.serviceTypeIndexes.search(this.getSearchQuery(search))
+    return  this.serviceTypeIndexes.search(search)
       .map(item => this.allServiceTypes.find(service => item.ref == service.id.toString()));
   }
 
