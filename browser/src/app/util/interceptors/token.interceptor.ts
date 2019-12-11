@@ -46,7 +46,7 @@ export class TokenInterceptor implements HttpInterceptor {
             if ((<HttpErrorResponse>err).status == 401 && request.url.indexOf('api/login') == -1) {
               if (!this.isRefreshingToken) {
                 this.isRefreshingToken = true;
-                if (this.securityService.isUserExistInLocalStorage()) {
+                //if (this.securityService.isUserExistInLocalStorage()) {  // call /access if get /principal returned 401
                   return this.securityService.refreshAccessToken()
                     .pipe(
                       catchError(err => {
@@ -73,11 +73,11 @@ export class TokenInterceptor implements HttpInterceptor {
                         this.isRefreshingToken = false;
                       })
                     );
-                } else {
+/*                } else {
                   this.isRefreshingToken = false;
 
                   return throwError(err);
-                }
+                }*/
               } else {
                 /**
                  * process 401 error from securityService.refreshAccessToken()
