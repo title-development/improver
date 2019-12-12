@@ -32,6 +32,7 @@ export class CustomerProjectRequestDialogComponent implements OnInit, OnDestroy 
   Project = Project;
   companyProfile: CompanyProfile;
   showAddReviewForm: boolean = false;
+  isLeaveReviewButtonDisabled: boolean = false;
   openMessage: boolean = false;
   isReviewSend = false;
   projectRequest: ProjectRequest;
@@ -86,13 +87,19 @@ export class CustomerProjectRequestDialogComponent implements OnInit, OnDestroy 
 
   reviewSend(event): void {
     this.showAddReviewForm = false;
-    if (event) this.isReviewSend = event;
+    if (event){
+      this.isReviewSend = event;
+      this.isLeaveReviewButtonDisabled = true
+    } else {
+      this.isLeaveReviewButtonDisabled = false;
+    }
     this.activeTab = 'REVIEWS';
     this.getProjectRequest(this.projectRequest.id);
   }
 
   openAddReviewForm() {
     this.showAddReviewForm = true;
+    this.isLeaveReviewButtonDisabled = true;
   }
 
   hireCompany(projectRequest) {

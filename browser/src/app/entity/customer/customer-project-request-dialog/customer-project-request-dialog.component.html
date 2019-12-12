@@ -25,7 +25,7 @@
 
         <div class="add-review-button-container xs-none"
              *ngIf="companyProfile && ((projectRequest && projectRequest.status == ProjectRequest.Status.HIRED) || (projectRequest && projectRequest.status == ProjectRequest.Status.COMPLETED)) && !projectRequest.reviewed">
-          <button cv-button (click)="showAddReviewForm = true" class="add-review">
+          <button cv-button (click)="openAddReviewForm()" [disabled]="isLeaveReviewButtonDisabled" class="add-review">
             Leave review
           </button>
         </div>
@@ -48,7 +48,7 @@
     </div>
 
     <div class="buttons-block" *ngIf="mediaQuery.xs && ((projectRequest && projectRequest.status == ProjectRequest.Status.HIRED) || (projectRequest && projectRequest.status == ProjectRequest.Status.COMPLETED)) && !projectRequest.reviewed">
-      <button cv-button (click)="showAddReviewForm = true" class="add-review">
+      <button cv-button (click)="openAddReviewForm()" [disabled]="isLeaveReviewButtonDisabled" class="add-review">
         Leave review
       </button>
     </div>
@@ -157,7 +157,7 @@
         </div>
         <div class="add-review-button-container"
              *ngIf="((projectRequest && projectRequest.status == ProjectRequest.Status.HIRED) || (projectRequest && projectRequest.status == ProjectRequest.Status.COMPLETED)) && !projectRequest.reviewed">
-          <button cv-button (click)="showAddReviewForm = true" class="add-review">
+          <button cv-button (click)="openAddReviewForm()" class="add-review" [disabled]="isLeaveReviewButtonDisabled">
             Leave review
           </button>
         </div>

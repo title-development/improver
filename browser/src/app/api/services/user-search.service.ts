@@ -89,7 +89,6 @@ export class UserSearchService {
             keys: ['name']
           };
           this.serviceTypeIndexes = new Fuse(serviceTypes, options);
-          console.log('serviceTypeIndexes', this.serviceTypeIndexes);
           this.allServiceTypes = serviceTypes;
         }
       },

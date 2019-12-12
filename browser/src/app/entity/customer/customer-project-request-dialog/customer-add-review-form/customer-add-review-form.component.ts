@@ -46,6 +46,7 @@ export class CustomerAddReviewFormComponent implements OnInit {
   isRated = false;
   ProjectRequest = ProjectRequest;
   isReviewSend = false;
+  isSubmitButtonDisabled: boolean = false;
   @Output() onLoadReviews: EventEmitter<any> = new EventEmitter<any>();
 
   newReview: Review = {
@@ -67,6 +68,7 @@ export class CustomerAddReviewFormComponent implements OnInit {
 
   addReview(reviewForm: NgForm) {
     if (!this.projectRequest.reviewed && reviewForm.valid) {
+      this.isSubmitButtonDisabled = true;
       this.reviewService.getReviewOptions(this.projectRequest.company.id, this.projectRequest.id).subscribe(
         (response: boolean) => {
           if (this.isRated) {
@@ -86,7 +88,8 @@ export class CustomerAddReviewFormComponent implements OnInit {
                     this.onLoadReviews.emit(this.isReviewSend);
                   },
                   err => {
-                    console.log(err);
+                  this.isSubmitButtonDisabled = false;
+                  console.log(err);
                   }
                 );
             }

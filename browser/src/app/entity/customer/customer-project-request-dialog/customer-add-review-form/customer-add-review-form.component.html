@@ -45,7 +45,7 @@
             <button cv-button-flat flatStyle="dark" class="review-button" type="button" (click)="deactivateForm()">
               Cancel
             </button>
-            <button cv-button class="review-button" type="submit">
+            <button cv-button class="review-button" type="submit" [disabled]="isSubmitButtonDisabled">
               Submit
             </button>
           </div>
