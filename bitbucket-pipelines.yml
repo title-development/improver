@@ -25,7 +25,7 @@ clone:
 
 stepdefinitions:
 
-  - export-env-params: &params |
+  - export-app-params: &params |
       export AWS_DEFAULT_REGION=us-east-1 && USER=bitbucket && DOMAIN_NAME=homeimprove.com
       export APP_VERSION=$(egrep -o -m1 '<version>.*</version>' pom.xml | sed -E 's%</?version>%%g')
       aws s3 cp s3://improver/configs/$ENVIRONMENT/application-secured.properties application-secured.properties
@@ -33,6 +33,34 @@ stepdefinitions:
       eval $(cat application-secured.properties | grep spring\.datasource\.username | cut -d'=' -f2 | sed 's/^/export DB_USER_NAME=/')
       eval $(cat application-secured.properties | grep spring\.datasource\.password | cut -d'=' -f2 | sed 's/^/export DB_PASSWORD=/')
       rm application-secured.properties
+
+  - update-dev-cfn-ecs: &devCfnEcsDeploy |
+        export AWS_DEFAULT_REGION=us-east-1 && USER=bitbucket && DOMAIN_NAME=homeimprove.com
+        bash provisioning/scripts/update_cfn.sh ecs-$USER-$ENVIRONMENT-cluster $ENVIRONMENT $USER --template-body \
+        file://provisioning/aws/ecs.cfn.json \
+        "ParameterKey=AccountId,UsePreviousValue=true \
+                              ParameterKey=AlbHealthCheckPath,UsePreviousValue=true \
+                              ParameterKey=AsgDesiredSize,UsePreviousValue=true
+                              ParameterKey=CreateElasticLoadBalancer,UsePreviousValue=true \
+                              ParameterKey=DomainName,UsePreviousValue=true \
+                              ParameterKey=EcsClusterName,UsePreviousValue=true \
+                              ParameterKey=EcsEndpoint,UsePreviousValue=true \
+                              ParameterKey=EcsEnvironmentName,UsePreviousValue=true \
+                              ParameterKey=EcsInstanceType,UsePreviousValue=true \
+                              ParameterKey=EcsPort,UsePreviousValue=true \
+                              ParameterKey=ElbForTrustedOfficeOnly,UsePreviousValue=true \
+                              ParameterKey=ElbHttpPort,UsePreviousValue=true \
+                              ParameterKey=ElbHttpsPort,UsePreviousValue=true \
+                              ParameterKey=ElbSslCertificateArn,UsePreviousValue=true \
+                              ParameterKey=HostedZoneId,UsePreviousValue=true \
+                              ParameterKey=KeyName,UsePreviousValue=true \
+                              ParameterKey=S3Bucket,UsePreviousValue=true \
+                              ParameterKey=SubnetIds,UsePreviousValue=true \
+                              ParameterKey=SourceCidr,UsePreviousValue=true \
+                              ParameterKey=TrustedOfficeIp,UsePreviousValue=true \
+                              ParameterKey=VpcAvailabilityZones,UsePreviousValue=true \
+                              ParameterKey=Version,UsePreviousValue=true \
+                              ParameterKey=VpcId,UsePreviousValue=true"
 
   - update-cfn-ecs: &update-ecs-env |
         bash provisioning/scripts/update_cfn.sh ecs-$USER-$ENVIRONMENT-cluster $ENVIRONMENT $USER --template-url \
@@ -189,6 +217,12 @@ pipelines:
           script:
             - *params
             - *update-ecs-env
+
+    ops-redeploy-esc-cfn:
+        - step:
+              name: Apply cloudformation stack change set without app redeployment
+              script:
+                  - *devCfnEcsDeploy
 
     ops-redeploy-app-blue-green:
       - step: *deployApp

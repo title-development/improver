@@ -556,9 +556,16 @@
       "Properties": {
         "DefaultActions": [
           {
-            "Type": "forward",
-            "TargetGroupArn": {
-              "Ref": "EcsALBTargetGroup"
+            "Type": "redirect",
+            "RedirectConfig": {
+              "Protocol": "HTTPS",
+              "Port": {
+                "Ref": "ElbHttpsPort"
+              },
+              "Host": "www.#{host}",
+              "Path": "/#{path}",
+              "Query": "#{query}",
+              "StatusCode": "HTTP_301"
             }
           }
         ],
@@ -604,6 +611,47 @@
             }
           }
         ]
+      }
+    },
+    "EcsALBSecuredListenerRule": {
+      "Type": "AWS::ElasticLoadBalancingV2::ListenerRule",
+      "Properties": {
+        "Actions": [
+          {
+            "Type": "redirect",
+            "Order": 1,
+            "RedirectConfig": {
+              "Protocol": "HTTPS",
+              "Port": {
+                "Ref": "ElbHttpsPort"
+              },
+              "Host": "www.#{host}",
+              "Path": "/#{path}",
+              "Query": "#{query}",
+              "StatusCode": "HTTP_301"
+            }
+          }
+        ],
+        "ListenerArn": { "Ref": "EcsALBSecuredListener" },
+        "Conditions": [{
+          "Field": "host-header",
+          "Values": [
+            {
+              "Fn::Join": [
+                ".",
+                [
+                  {
+                    "Ref": "EcsEnvironmentName"
+                  },
+                  {
+                    "Ref": "DomainName"
+                  }
+                ]
+              ]
+            }
+          ]
+        }],
+        "Priority": 1
       }
     },
     "EcsSecondLevelDnsEntry": {

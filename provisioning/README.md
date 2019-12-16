@@ -24,7 +24,6 @@ To walk through environment creation/modification you need the following :
 3. [Push docker images into AWS ECR](#upload-docker-images-into-aws-ecr)
 4. [Deploy AWS VPC](#amazon-vpc-deployment)
 5. [Deploy AWS ECS](#amazon-elastic-container-service-deployment)
-6. [Configure ALB](#configure-aws-application-load-balancer)
 
 
 ### Configuration deployment into AWS S3
@@ -71,15 +70,6 @@ Run **ops-deploy-env** job of [bitbucket datapipeline](../bitbucket-pipelines.ym
 
 ### Amazon Elastic Container Service deployment
 Run **ops-deploy-app** job of [bitbucket datapipeline](../bitbucket-pipelines.yml) in bitbucket.
-
-### Configure AWS Application Load Balancer 
-We are using AWS Application Load Balancing that includes the capability to redirect HTTP requests to HTTPS requests. But [redirect rule is no supported](https://forums.aws.amazon.com/thread.jspa?threadID=286855) thought CloudFormation. And it is not possible though AWS CLI, where `modify-rule` [is not working with the actions for the default rule](https://docs.aws.amazon.com/cli/latest/reference/elbv2/modify-rule.html), which we have in fact. So a manual step is necessary to make HTTPS redirect through AWS console such as:
- - Login into AWS console
- - Click on "LOAD BALANCING"->"Load Balancers" on the left side of EC2 service page
- - Select appropriate for the current CFN loadbalancer and click on "Listeners" tab
- - Find a Listener ID with "HTTP : 80" text in it and under "Rules" tab click "View/edit rules" link
- - Click "Edit" button (pencil icon) and under "THEN" column change it to "Redirect to https://#{host}:443/#{path}?#{query} Status code:HTTP_302"
-
 
 ## Amazon Elastic Container Services CloudFormation quick start.
 
