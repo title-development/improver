@@ -26,8 +26,8 @@ export class MyStompService extends RxStompService {
     }
   };
 
-  private static readonly INVALID_TOKEN_ERROR = '403: Valid token required';
-  private static readonly TOKEN_EXPIRED_ERROR = '401: Token expired';
+  private static readonly INVALID_TOKEN_ERROR = '403 Valid token required';
+  private static readonly TOKEN_EXPIRED_ERROR = '401 Token expired';
   private static readonly ACCESS_DENIED_EXCEPTION_PART = 'AccessDeniedException';
 
 
@@ -56,7 +56,7 @@ export class MyStompService extends RxStompService {
       } else if (msg.startsWith(MyStompService.INVALID_TOKEN_ERROR) || msg.includes(MyStompService.ACCESS_DENIED_EXCEPTION_PART)) {
         console.error(msg);
         this.shutDown();
-        this.popUpService.showError('Error connecting to message broker')
+        this.popUpService.showError('Access Denied to message broker')
       } else {
         console.error(msg);
         this.shutDown();

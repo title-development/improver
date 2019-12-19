@@ -28,8 +28,8 @@ public class WsSecurityInterceptor implements ChannelInterceptor {
 
     @Autowired private JwtUtil jwtUtil;
 
-    private static final String INVALID_TOKEN_ERROR = "403: Valid token required";
-    private static final String TOKEN_EXPIRED_ERROR = "401: Token expired";
+    private static final String INVALID_TOKEN_ERROR = "403 Valid token required";
+    private static final String TOKEN_EXPIRED_ERROR = "401 Token expired";
 
     /**
      * Checks if WebSocket connection request contain JWT token in "authorization header".
