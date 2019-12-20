@@ -64,6 +64,7 @@ export class NotificationsPopupComponent implements OnChanges, OnDestroy {
 
   showMore = false;
   notifications: Notification [] = [];
+  unreadMessages: Notification [] = [];
   private pagination: Pagination = new Pagination(0, 5);
   notificationsProcessing = false;
   notificationsSubscription$;
@@ -93,6 +94,7 @@ export class NotificationsPopupComponent implements OnChanges, OnDestroy {
 
     this.getNotifications(this.pagination);
     this.subscribeOnUnreadNotifications();
+    this.getUnreadMessages();
 
     this.onReadSubscription$ = this.notificationService.onRead.subscribe(ids => this.markAsRead(ids));
 
@@ -118,6 +120,14 @@ export class NotificationsPopupComponent implements OnChanges, OnDestroy {
     } else {
       this.animationState = (this.mediaQuery.xs || this.mediaQuery.sm) ? 'inactive-mobile' : 'inactive';
     }
+  }
+
+  getUnreadMessages() {
+    this.notificationsProcessing = true;
+    this.notificationResource.unreadMessages$
+      .pipe(finalize(() => this.notificationsProcessing = false))
+      .subscribe(unreadMessages => this.unreadMessages = unreadMessages,
+        error => this.popUpService.showError(getErrorMessage(error)))
   }
 
   getNotifications(pagination: Pagination) {

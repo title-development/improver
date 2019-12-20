@@ -15,7 +15,7 @@
         <div class="meta">
           <h4>{{lead.serviceType}}</h4>
           <span>{{lead.location.city}}, {{lead.location.state}} {{lead.location.zip}}</span>
-          <span>{{lead.created | timeAgo}}</span>
+          <span>{{lead.created | timeAgo | async}}</span>
         </div>
         <div class="action">
           <span>{{lead.price/100 | currency:'USD':'symbol' }}</span>

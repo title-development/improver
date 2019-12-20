@@ -12,19 +12,19 @@
     <ng-container ></ng-container>
     <perfect-scrollbar [config]="psConfig" *ngIf="(notifications && notifications.length > 0) || (notificationResource.unreadMessagesCount$ | async) > 0 " (psYReachEnd)="psYReachEnd($event)">
     <!--message notification-->
-    <ng-template ngFor [ngForOf]="notificationResource.unreadMessages$ | async" let-notification let-i="index" [ngForTrackBy]="trackBy">
-      <a class="item" [ngClass]="{'new': !notification.read}" (click)="navigate(notification.link); notificationResource.read(i); close()">
+    <ng-template ngFor [ngForOf]="unreadMessages" let-unreadMessage let-i="index" [ngForTrackBy]="trackBy">
+      <a class="item" [ngClass]="{'new': !unreadMessage.read}" (click)="navigate(unreadMessage.link); notificationResource.read(i); close()">
 
         <div class="logo-wrapper">
-          <div [ngStyle]="notification.newMessage ? {'background-image': 'url(/assets/icons/message-notification.png)'} : notification.icon && notification.icon != '' && {'background-image':'url(' + notification.icon + '), url(/assets/img/home-improve-notification-icon.png)'}">
+          <div [ngStyle]="unreadMessage.newMessage ? {'background-image': 'url(/assets/icons/message-notification.png)'} : unreadMessage.icon && unreadMessage.icon != '' && {'background-image':'url(' + unreadMessage.icon + '), url(/assets/img/home-improve-notification-icon.png)'}">
           </div>
         </div>
 
         <div class="notification-body">
-          <div class="top-line" [innerHtml]="notification.payload"></div>
+          <div class="top-line" [innerHtml]="unreadMessage.payload"></div>
           <div class="bottom-line">
             <i class="imp-icon-clock-2"></i>
-            <span>{{notification.created | timeAgo}}</span>
+            <span>{{unreadMessage.created | timeAgo | async}}</span>
           </div>
         </div>
 
@@ -43,7 +43,7 @@
           <div class="top-line" [innerHtml]="notification.payload"></div>
           <div class="bottom-line">
             <i class="imp-icon-clock-2"></i>
-            <span>{{notification.created | timeAgo}}</span>
+            <span>{{notification.created | timeAgo | async}}</span>
           </div>
         </div>
 

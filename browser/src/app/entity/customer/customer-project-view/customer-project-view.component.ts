@@ -118,7 +118,9 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy, Componen
               project.projectRequests.find((item) =>
                 item.id == this.projectActionService.projectRequestDialogRef.componentInstance.projectRequest.id);
           }
-          this.changeDetectorRef.detectChanges();
+          if (!this.changeDetectorRef['destroyed']) {
+            this.changeDetectorRef.detectChanges();
+          }
         },
         err => {
           console.log(err);

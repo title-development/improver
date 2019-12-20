@@ -33,11 +33,11 @@
                 {{lead.location.state}}
                 {{lead.location.zip}}
               </span>
-              <div class="timestamp" *ngIf="!areas.includes(lead.location.zip)">{{lead.created | timeAgo}}</div>
+              <div class="timestamp" *ngIf="!areas.includes(lead.location.zip)">{{lead.created | timeAgo | async}}</div>
             </div>
             <div class="bottom-line" *ngIf="areas.includes(lead.location.zip)">
               <div class="in-area">In your area</div>
-              <div class="timestamp">{{lead.created | timeAgo}}</div>
+              <div class="timestamp">{{lead.created | timeAgo | async}}</div>
             </div>
           </div>
         </div>

@@ -97,7 +97,7 @@ export class CustomerAddReviewFormComponent implements OnInit {
         },
         err => {
           console.log(err);
-          this.popUpMessageService.showMessage({text: err.error.message, type: SystemMessageType.ERROR});
+          this.popUpMessageService.showMessage({text: JSON.parse(err.error).message, type: SystemMessageType.ERROR});
         }
       );
     }

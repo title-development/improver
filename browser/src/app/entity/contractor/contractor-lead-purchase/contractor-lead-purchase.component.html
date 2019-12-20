@@ -284,7 +284,7 @@
               <div class="bottom-line">
                 <div class="address">{{similar.location.city}}, {{similar.location.state}} {{similar.location.zip}}
                 </div>
-                <div class="time-ago">{{similar.created | timeAgo}}</div>
+                <div class="time-ago">{{similar.created | timeAgo | async}}</div>
               </div>
             </div>
           </div>
