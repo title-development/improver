@@ -9,7 +9,7 @@ import com.improver.model.UserAccount;
 import com.improver.model.in.CloseProjectRequest;
 import com.improver.model.in.EmailPasswordTuple;
 import com.improver.model.in.UserActivation;
-import com.improver.repository.*;
+import com.improver.repository.UserRepository;
 import com.improver.security.JwtUtil;
 import com.improver.util.StaffActionLogger;
 import com.improver.util.mail.MailService;
@@ -46,7 +46,6 @@ public class AccountService {
     public void updateAccount(User existed, UserAccount account) {
         existed.setFirstName(account.getFirstName())
             .setLastName(account.getLastName())
-            .setInternalPhone(account.getPhone())
             .setUpdated(ZonedDateTime.now());
 
         if (account.getIconUrl() != null && !account.getIconUrl().equals(existed.getIconUrl()) && !account.getIconUrl().isEmpty()) {
@@ -247,4 +246,12 @@ public class AccountService {
         mailService.sendEmailChangedNotice(user);
         mailService.sendEmailChanged(user);
     }
+
+    @Transactional
+    public void updatePhoneNumber(User user, String phoneNumber) {
+        log.debug("Update phone number for " + user.getEmail());
+        user.setInternalPhone(phoneNumber);
+        userRepository.save(user);
+    }
+
 }

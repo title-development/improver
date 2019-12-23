@@ -45,6 +45,7 @@ import { CvInputFieldModule } from "../theme/input-field/form-field.module";
 import { SubscriptionComponent } from './billing-subscription/subscription.component';
 import { CvIconModule } from '../theme/icon/cv-icon-module';
 import { CvRadioModule } from "../theme/radio/radio.module";
+import { PhoneValidationComponent } from "./phone-validation/phone-validation.component";
 
 @NgModule({
   imports: [
@@ -92,6 +93,7 @@ import { CvRadioModule } from "../theme/radio/radio.module";
     ServicesSelectorComponent,
     FindProfessionalsComponent,
     SubscriptionComponent,
+    PhoneValidationComponent
   ],
   exports: [
     CommonModule,
@@ -133,7 +135,8 @@ import { CvRadioModule } from "../theme/radio/radio.module";
     ServicesSelectorComponent,
     FindProfessionalsComponent,
     SharedDirectivesModule,
-    SubscriptionComponent
+    SubscriptionComponent,
+    PhoneValidationComponent
   ],
   providers: [
   ]

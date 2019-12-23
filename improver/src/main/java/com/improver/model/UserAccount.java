@@ -10,7 +10,6 @@ import javax.validation.constraints.Pattern;
 
 import static com.improver.util.ErrorMessages.NAME_PATTERN_ERROR_MESSAGE;
 import static com.improver.util.serializer.SerializationUtil.NAME_PATTERN_STRING;
-import static com.improver.util.serializer.SerializationUtil.PHONE_PATTERN_STRING;
 
 @Data
 @Accessors(chain = true)
@@ -31,7 +30,6 @@ public class UserAccount {
 
     private String displayName;
 
-    @Pattern(regexp = PHONE_PATTERN_STRING)
     private String phone;
 
     private boolean isNativeUser;

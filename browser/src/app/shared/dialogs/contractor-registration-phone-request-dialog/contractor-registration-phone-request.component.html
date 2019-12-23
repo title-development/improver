@@ -6,15 +6,19 @@
       <mat-icon class="close-modal" (click)="close()">clear</mat-icon>
 
       <div class="header-content" fxLayout="row" fxLayoutAlign="start end">
-        Additional Information
+        Phone Confirmation
       </div>
 
     </div>
 
     <div class="content">
+
+      <phone-validation *ngIf="validating" [phoneNumber]="phone" (onSuccess)="registerUser()"></phone-validation>
+
       <form name="account-form"
             #phoneUpdateForm="ngForm"
-            (ngSubmit)="phoneUpdateForm.valid && registerUser(phoneUpdateForm)"
+            (ngSubmit)="phoneUpdateForm.valid && validatePhone()"
+            *ngIf="!validating"
             novalidate>
         Dear <b>{{socialUser.name}}</b>, we can't get your phone number from the {{socialPlatform}}<br>
         Please enter a phone number for continue registration.

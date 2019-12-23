@@ -91,6 +91,7 @@ import { InternalServerErrorComponent } from '../entity/internal-server-error/in
 import { CustomRouteReuseStrategy } from '../util/router-reuse.strategy';
 import { TutorialsService } from '../api/services/tutorials.service';
 import { RECAPTCHA_SETTINGS, RecaptchaSettings } from 'ng-recaptcha';
+import { PhoneService } from "../api/services/phone.service";
 
 const rootRouting: ModuleWithProviders = RouterModule.forRoot([], {useHash: false});
 
@@ -201,6 +202,7 @@ export function getAuthServiceConfigs() {
     ScrollHolderService,
     SocialConnectionsService,
     TutorialsService,
+    PhoneService,
     {
       provide: AuthServiceConfig,
       useFactory: getAuthServiceConfigs

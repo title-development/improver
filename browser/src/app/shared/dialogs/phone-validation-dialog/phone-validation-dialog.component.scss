@@ -1,0 +1,31 @@
+@import "../../../../improver-mixins.scss";
+
+.dialog-content-wrapper {
+
+  .header {
+
+    .header-content {
+      padding: 16px 48px 16px 24px;
+      background-color: $black-100;
+      font-size: 20px;
+      font-weight: 600;
+      text-align: left;
+      color: $black-secondary;
+    }
+
+  }
+
+}
+
+
+::ng-deep .mat-dialog-container {
+  padding: 0px;
+}
+
+.close-modal {
+  position: relative;
+  right: 32px;
+  top: 32px;
+}
+
+

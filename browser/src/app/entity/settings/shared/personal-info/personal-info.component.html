@@ -46,28 +46,57 @@
                         <cv-input-field>
                           <cv-editable-input #email="ngModel"
                                              name="email"
-                                             [(ngModel)]="account.email"
+                                             [(ngModel)]="accountEmail"
                                              [emailUniqueValidator]="currentEmail"
                                              required
                                              trim
                                              pattern="{{constants.patterns.email}}"
-                                             (onSave)="changeEmailConfirm()">
+                                             (ngModelChange)="changeEmailConfirm($event)">
                             <input cv-input type="text" placeholder="Email">
                           </cv-editable-input>
                           <cv-field-error *ngIf="email.dirty || email.touched || personalInfoForm.submitted">
-                      <span *ngIf="email.errors?.required">
-                      {{messages.errors.email.required}}
-                      </span>
-                            <span *ngIf="email.errors?.pattern">
-                      {{messages.errors.email.pattern}}
-                      </span>
-                            <span *ngIf="email.errors?.emailUnique">
-                      {{messages.errors.email.emailUnique}}
-                      </span>
+                            <span *ngIf="email.errors?.required">
+                            {{messages.errors.email.required}}
+                            </span>
+                                  <span *ngIf="email.errors?.pattern">
+                            {{messages.errors.email.pattern}}
+                            </span>
+                                  <span *ngIf="email.errors?.emailUnique">
+                            {{messages.errors.email.emailUnique}}
+                            </span>
                           </cv-field-error>
                         </cv-input-field>
                       </div>
                     </div>
+
+                    <div class="row">
+
+                      <div class="col-xs-12">
+
+                        <cv-input-field>
+                          <cv-editable-input #phone="ngModel"
+                                             name="phone"
+                                             [(ngModel)]="accountPhone"
+                                             [pattern]="constants.patterns.phone"
+                                             trim
+                                             (ngModelChange)="changePhoneConfirm($event)">
+                            <input cv-input
+                                   type="text"
+                                   placeholder="Phone number"
+                                   phoneMask
+                                   maxlength="14">
+                          </cv-editable-input>
+                          <cv-field-error *ngIf="phone.dirty || phone.touched || personalInfoForm.submitted">
+                            <span *ngIf="phone.errors?.pattern">
+                                    {{messages.errors.phone.pattern}}
+                            </span>
+                          </cv-field-error>
+                        </cv-input-field>
+
+                      </div>
+
+                    </div>
+
                     <div class="row">
 
                       <div class="col-xs-12 col-sm-6">
@@ -125,41 +154,10 @@
 
                     </div>
 
-                    <div class="row">
+                    <div class="row" *ngIf="showEmailChangeMessage">
 
                       <div class="col-xs-12">
-
-                        <cv-input-field>
-                          <input cv-input type="text"
-                                 placeholder="Phone number"
-                                 #phone="ngModel"
-                                 name="phone"
-                                 [(ngModel)]="account.phone"
-                                 maxlength="14"
-                                 phoneMask
-                                 [pattern]="constants.patterns.phone"
-                                 required>
-                          <cv-field-error *ngIf="phone.dirty || phone.touched || personalInfoForm.submitted">
-                            <span *ngIf="phone.errors?.required">
-                                    {{messages.errors.phone.required}}
-                                  </span>
-                            <span *ngIf="phone.errors?.pattern">
-                                    {{messages.errors.phone.pattern}}
-                            </span>
-                            <span *ngIf="phone.errors?.allZeros">
-                                    {{messages.errors.phone.pattern}}
-                            </span>
-                          </cv-field-error>
-                        </cv-input-field>
-
-                      </div>
-
-                    </div>
-
-                    <div class="row" >
-
-                      <div class="col-xs-12">
-                        <response-message *ngIf="showEmailChangeMessage" [type]="SystemMessageType.SUCCESS"
+                        <response-message [type]="SystemMessageType.SUCCESS"
                                           message="A confirmation link has been sent to your new email address. Please check your email and click on the link provided to verify your new email. A notice has also been sent to your old email address"
                                           [paddingV]="12"
                                           [paddingH]="16"

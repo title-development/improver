@@ -20,13 +20,14 @@ import { SubscriptionDialogComponent } from './subscription-dialog/subscription-
 import { RequestReviewDialogComponent } from './request-review-dialog/request-review-dialog.component';
 import { DeleteAccountDialogComponent } from './delete-account-dialog/delete-account-dialog.component';
 import { DeleteCompanyDialogComponent } from './delete-company-dialog/delete-company-dialog.component';
-import {CustomerProjectRequestDialogAboutComponent} from '../../entity/customer/customer-project-request-dialog/customer-project-request-dialog-about/customer-project-request-dialog-about.component';
-import {CustomerProjectRequestDialogReviewsComponent} from '../../entity/customer/customer-project-request-dialog/customer-project-request-dialog-reviews/customer-project-request-dialog-reviews.component';
+import { CustomerProjectRequestDialogAboutComponent } from '../../entity/customer/customer-project-request-dialog/customer-project-request-dialog-about/customer-project-request-dialog-about.component';
+import { CustomerProjectRequestDialogReviewsComponent } from '../../entity/customer/customer-project-request-dialog/customer-project-request-dialog-reviews/customer-project-request-dialog-reviews.component';
 import { EmailConfirmDialogComponent } from './email-confirm-dialog/email-confirm-dialog.component';
 import { RequestReviewRevisionDialogComponent } from './request-review-revision-dialog/request-review-revision-dialog.component';
 import { ContractorRegistrationPhoneRequestComponent } from './contractor-registration-phone-request-dialog/contractor-registration-phone-request.component';
 import { ReferralDialogComponent } from './refreal-dialog/referral-dialog.component';
 import { InfoWindowDialogComponent } from './info-window-dialog';
+import { PhoneValidationDialogComponent } from "./phone-validation-dialog/phone-validation-dialog.component";
 
 export const dialogs = [
   QuestionaryDialogComponent,
@@ -58,6 +59,7 @@ export const dialogs = [
   ContractorRegistrationPhoneRequestComponent,
   ReferralDialogComponent,
   InfoWindowDialogComponent,
+  PhoneValidationDialogComponent
 ];
 
 export const dialogsMap = {
@@ -87,4 +89,5 @@ export const dialogsMap = {
   'contractor-registration-phone-request': ContractorRegistrationPhoneRequestComponent,
   'referral-dialog': ReferralDialogComponent,
   'info-window-dialog': InfoWindowDialogComponent,
+  'phone-validation-dialog': PhoneValidationDialogComponent
 };

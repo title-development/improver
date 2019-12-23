@@ -46,7 +46,10 @@ export class Constants {
 
       // (123) 456-7890
       // (100) 000-0000
-      phone: '^[2-9]\\d{2}-\\d{3}-\\d{4}$',
+      // USA phone pattern
+      // phone: '^[2-9]\\d{2}-\\d{3}-\\d{4}$',
+      // General phone pattern
+      phone: '^\\d{3}-\\d{3}-\\d{4}$',
 
       numeric: '^\\d*$', //only digits
 

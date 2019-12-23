@@ -192,3 +192,26 @@ export function chunk<T>(array: ReadonlyArray<T>, size: number): T[][] {
   }
   return chunked;
 }
+
+export function clone(src) {
+  return Object.assign({}, src);
+}
+
+export function removePhoneMask(s: string) {
+  return s.replace(/-/g, "");
+}
+
+export function applyPhoneMask(value): any {
+  value = value.toString().replace(/\D/g, '');
+  if (value.length == 0) {
+    return '';
+  } else if (value.length <= 3) {
+    return value.replace(/^(\d{0,3})/, '$1');
+  } else if (value.length <= 6) {
+    return value.replace(/^(\d{0,3})(\d{0,3})/, '$1-$2');
+  } else if (value.length <= 10) {
+    return value.replace(/^(\d{0,3})(\d{0,3})(.*)/, '$1-$2-$3');
+  } else {
+    return this.lastValue;
+  }
+}

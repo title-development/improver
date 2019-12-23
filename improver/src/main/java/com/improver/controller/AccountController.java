@@ -52,6 +52,13 @@ public class AccountController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PutMapping(PHONE)
+    public ResponseEntity<Void> updatePhoneNumber(@RequestBody String phoneNumber) {
+        User user = userSecurityService.currentUser();
+        accountService.updatePhoneNumber(user, phoneNumber);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 
     @PutMapping(PASSWORD)
     public ResponseEntity<Void> updatePassword(@RequestBody OldNewValue oldNewValue) {

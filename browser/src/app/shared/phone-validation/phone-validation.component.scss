@@ -1,0 +1,60 @@
+@import "../../../improver-mixins.scss";
+
+.wrapper {
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.92);
+  padding: 0px 24px;
+
+  .validate-phone-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  cv-input-field {
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+
+    ::ng-deep.input-holder {
+      width: 70px;
+    }
+
+    ::ng-deep.hint-holder {
+      padding-right: initial;
+    }
+
+  }
+
+  .message {
+    font-size: 13px;
+    line-height: 1.33;
+    text-align: center;
+    color: $black-600;
+    display: block;
+    margin-bottom: 12px;
+    margin-top: 16px;
+  }
+
+}
+
+.actions {
+  padding: 8px 0 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+  .no-message {
+    font-size: 14px;
+    margin-right: 24px;
+  }
+
+  button.confirm {
+    margin-left: auto;
+  }
+
+}

@@ -8,7 +8,8 @@ import { MatDialog, MatDialogRef } from '@angular/material';
 import {
   completeProjectDialogConfig,
   confirmDialogConfig,
-  personalPhotoDialogConfig
+  personalPhotoDialogConfig,
+  phoneValidationDialogConfig
 } from '../../../../shared/dialogs/dialogs.configs';
 import { AccountService } from '../../../../api/services/account.service';
 import { PopUpMessageService } from '../../../../util/pop-up-message.service';
@@ -16,7 +17,7 @@ import { enumToArrayList, TricksService } from '../../../../util/tricks.service'
 import { Role } from '../../../../model/security-model';
 import { dialogsMap } from '../../../../shared/dialogs/dialogs.state';
 import { NgForm } from '@angular/forms';
-import { capitalize, getErrorMessage } from '../../../../util/functions';
+import { applyPhoneMask, capitalize, getErrorMessage, removePhoneMask } from '../../../../util/functions';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { SocialConnectionsService } from '../../../../auth/social-connections.service';
 import { SocialConnection } from '../../../../api/models/SocialConnection';
@@ -33,12 +34,14 @@ import { from, Observable, Subject, throwError } from 'rxjs';
 export class PersonalInfoComponent implements OnDestroy {
 
   account: Account;
+  accountEmail: string;
+  accountPhone: string;
   confirmDialogRef: MatDialogRef<any>;
   photoDialogRef: MatDialogRef<any>;
   deleteAccountDialogRef: MatDialogRef<any>;
 
   currentEmail: string;
-  emailEditDisabled = true;
+  currentPhone: string;
 
   oldNewPassword = {
     password: '',
@@ -82,7 +85,8 @@ export class PersonalInfoComponent implements OnDestroy {
       .subscribe(
         account => {
           this.account = account;
-          this.currentEmail = account.email;
+          this.accountEmail = this.currentEmail = account.email;
+          this.accountPhone = this.account.phone = this.currentPhone = account.phone ? applyPhoneMask(account.phone) : "";
         },
         err => {
           console.log(err);
@@ -116,15 +120,10 @@ export class PersonalInfoComponent implements OnDestroy {
             this.popupService.showError(getErrorMessage(err));
           }
         );
-      if (this.currentEmail != this.account.email) {
-        this.account.email = this.currentEmail;
-        this.emailEditDisabled = true;
-        // this.changeEmailConfirm(true)
-      }
     }
   }
 
-  changeEmailConfirm() {
+  changeEmailConfirm(value) {
     if (this.currentEmail != this.account.email) {
       let properties = {
         title: 'Please confirm email change',
@@ -152,11 +151,29 @@ export class PersonalInfoComponent implements OnDestroy {
           this.account.email = this.currentEmail;
         }
       );
-
     }
+  }
 
-    this.emailEditDisabled = true;
-
+  changePhoneConfirm(value) {
+    if (this.currentPhone != this.account.phone) {
+      this.confirmDialogRef = this.dialog.open(dialogsMap['phone-validation-dialog'], phoneValidationDialogConfig);
+      this.confirmDialogRef
+        .afterClosed()
+        .subscribe(result => {
+          this.confirmDialogRef = null;
+        });
+      this.confirmDialogRef.componentInstance.phoneNumber = this.account.phone;
+      this.confirmDialogRef.componentInstance.onSuccess
+        .pipe(takeUntil(this.confirmDialogRef.afterClosed()))
+        .subscribe(() => {
+          this.accountService.changePhone(removePhoneMask(this.account.phone))
+            .subscribe(() => {
+                this.currentPhone = this.account.phone;
+                this.popupService.showSuccess("Your phone number updated successfully")
+              },
+              error => this.popupService.showError(getErrorMessage(error)));
+        });
+    }
   }
 
   changePassword(form: NgForm) {
@@ -290,4 +307,5 @@ export class PersonalInfoComponent implements OnDestroy {
       }
     }
   }
+
 }

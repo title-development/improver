@@ -3,7 +3,6 @@ import { AuthService, GoogleLoginProvider, SocialUser } from 'angularx-social-lo
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { Constants } from '../../../util/constants';
 import { Messages } from '../../../util/messages';
-import { NgForm } from '@angular/forms';
 import { SocialConnectionsService } from '../../../auth/social-connections.service';
 import { SocialPlatform } from '../../../auth/social-buttons/social-buttons.component';
 import { HttpResponse } from '@angular/common/http';
@@ -13,7 +12,8 @@ import { SystemMessageType } from '../../../model/data-model';
 import { SecurityService } from '../../../auth/security.service';
 import { Router } from '@angular/router';
 import { from, Observable, Subject, throwError } from 'rxjs';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { finalize, switchMap, takeUntil } from 'rxjs/operators';
+import { PopUpMessageService } from "../../../util/pop-up-message.service";
 
 @Component({
   selector: 'contractor-registration-phone-request',
@@ -29,6 +29,7 @@ export class ContractorRegistrationPhoneRequestComponent implements OnDestroy {
   messageType: string;
   messageText: string;
   processing: boolean = false;
+  validating: boolean = false;
   private readonly destroyed$ = new Subject<void>();
 
   constructor(public messages: Messages,
@@ -38,23 +39,25 @@ export class ContractorRegistrationPhoneRequestComponent implements OnDestroy {
               private socialLoginService: SocialConnectionsService,
               private router: Router,
               private dialog: MatDialog,
-              private socialAuthService: AuthService
-  ) {
+              private socialAuthService: AuthService,
+              private popUpService: PopUpMessageService) {
   }
 
-  registerUser(form: NgForm): void {
+  validatePhone() {
+    this.validating = true;
+
+  }
+
+  registerUser(): void {
     this.processing = true;
-    this.processRegister().pipe(takeUntil(this.destroyed$)).subscribe((response: HttpResponse<any>) => {
-      this.processing = false;
+    this.processRegister()
+      .pipe(takeUntil(this.destroyed$), finalize(() => this.processing = false))
+      .subscribe((response: HttpResponse<any>) => {
       this.dialog.closeAll();
       this.securityService.loginUser(response.body as LoginModel, response.headers.get('authorization'), true);
     }, err => {
-      this.processing = false;
-      if (getErrorMessage(err)) {
-        this.showError(getErrorMessage(err));
-      } else {
-        this.showError(err);
-      }
+      this.popUpService.showError(getErrorMessage(err));
+      this.currentDialogRef.close();
     });
   }
 

@@ -1,4 +1,4 @@
-import { throwError as observableThrowError, Observable, ReplaySubject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { Account } from '../../model/data-model';
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
@@ -39,6 +39,11 @@ export class AccountService {
       .put(`${this.accountUrl}/email`, params, {observe: 'response', responseType: 'text'});
   }
 
+  changePhone(phone: string): Observable<HttpResponse<any>> {
+    return this.http
+      .put(`${this.accountUrl}/phone`, phone, {observe: 'response', responseType: 'text'});
+  }
+
   updateIconBase64(icon: string): Observable<HttpResponse<any>> {
     return this.http
       .post(`${this.accountUrl}/base64icon`, icon, {observe: 'response', responseType: 'text'})
@@ -58,9 +63,6 @@ export class AccountService {
   deleteMyAccount(password: string): Observable<any> {
     return this.http.put(`${this.accountUrl}/delete`, password);
   }
-
-
-
 
   getLastCustomerZipCode(): Observable<any>{
     return this.http

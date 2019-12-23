@@ -2,16 +2,17 @@ package com.improver.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.improver.entity.*;
-import com.improver.exception.*;
+import com.improver.exception.InvalidAnswerException;
+import com.improver.exception.ThirdPartyException;
 import com.improver.exception.ValidationException;
+import com.improver.model.in.Order;
+import com.improver.model.in.OrderDetails;
+import com.improver.model.in.QuestionAnswer;
 import com.improver.model.in.registration.UserRegistration;
 import com.improver.model.out.ValidatedLocation;
-import com.improver.model.in.OrderDetails;
 import com.improver.repository.*;
-import com.improver.model.in.Order;
-import com.improver.model.in.QuestionAnswer;
-import com.improver.util.serializer.SerializationUtil;
 import com.improver.util.mail.MailService;
+import com.improver.util.serializer.SerializationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +46,7 @@ public class OrderService {
         customer = Optional.ofNullable(customer)
             .orElseGet(() -> getExistingOrRegister(order));
 
-        if (customer.getInternalPhone() == null || customer.getInternalPhone().isEmpty()){
+        if (order.getDetails().getPhone() != null){
             customer.setInternalPhone(order.getDetails().getPhone());
             customerRepository.save(customer);
         }

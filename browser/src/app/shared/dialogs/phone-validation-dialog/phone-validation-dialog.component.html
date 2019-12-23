@@ -1,0 +1,21 @@
+<div class="dialog-content-wrapper">
+  <div class="dialog-content-container">
+
+    <div class="header">
+
+      <mat-icon class="close-modal" color="accent" (click)="close()">clear</mat-icon>
+
+      <div class="header-content">Phone number verification</div>
+
+    </div>
+
+    <div class="content">
+
+      <phone-validation [phoneNumber]="phoneNumber" (onSuccess)="success()"></phone-validation>
+
+    </div>
+
+  </div>
+</div>
+
+

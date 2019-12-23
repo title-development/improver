@@ -58,6 +58,7 @@ public final class Path {
     public static final String CONFIRM =             "/confirm";
     public static final String ACTIVATION =          "/activation";
     public static final String EMAIL =               "/email";
+    public static final String PHONE =               "/phone";
     public static final String PASSWORD =            "/password";
     public static final String UI_RESTORE_PASSWORD = "/restore-password";
     public static final String POPULAR =             "/popular";

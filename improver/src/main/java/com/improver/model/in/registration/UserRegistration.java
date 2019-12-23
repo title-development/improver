@@ -8,8 +8,10 @@ import lombok.experimental.Accessors;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
 
-import static com.improver.util.ErrorMessages.*;
-import static com.improver.util.serializer.SerializationUtil.*;
+import static com.improver.util.ErrorMessages.ERR_MSG_PASS_MINIMUM_REQUIREMENTS;
+import static com.improver.util.ErrorMessages.NAME_PATTERN_ERROR_MESSAGE;
+import static com.improver.util.serializer.SerializationUtil.NAME_PATTERN_STRING;
+import static com.improver.util.serializer.SerializationUtil.PASS_PATTERN_STRING;
 
 @Data
 @AllArgsConstructor
@@ -29,7 +31,7 @@ public class UserRegistration {
     @Pattern(regexp = NAME_PATTERN_STRING, message = NAME_PATTERN_ERROR_MESSAGE)
     private String lastName;
 
-    @Pattern(regexp = PHONE_PATTERN_STRING, message = PHONE_PATTERN_ERROR_MESSAGE)
+//    @Pattern(regexp = PHONE_PATTERN_STRING, message = PHONE_PATTERN_ERROR_MESSAGE)
     private String phone;
 
     private String captcha;

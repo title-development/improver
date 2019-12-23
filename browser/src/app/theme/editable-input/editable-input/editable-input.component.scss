@@ -28,10 +28,12 @@ button {
   &.-cancel {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
+    min-width: 82px;
   }
 
   &.-edit {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
+    min-width: 82px;
   }
 }

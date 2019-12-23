@@ -18,7 +18,7 @@
       <form class="account-form"
             name="account-form"
             #accountForm="ngForm"
-            (ngSubmit)="accountForm.valid && registerContractor(accountForm)"
+            (ngSubmit)="accountForm.valid && submitContractorRegistration()"
             novalidate>
 
         <div class="row">
@@ -117,15 +117,15 @@
                          [pattern]="constants.patterns.phone"
                          required>
                   <cv-field-error *ngIf="phone.dirty || phone.touched || accountForm.submitted">
-                      <span *ngIf="phone.errors?.required">
-                        {{messages.errors.phone.required}}
-                      </span>
+                    <span *ngIf="phone.errors?.required">
+                      {{messages.errors.phone.required}}
+                    </span>
                     <span *ngIf="phone.errors?.pattern">
                         {{messages.errors.phone.pattern}}
                       </span>
                     <span *ngIf="phone.errors?.allZeros">
                         {{messages.errors.phone.pattern}}
-                      </span>
+                    </span>
                   </cv-field-error>
                 </cv-input-field>
               </div>

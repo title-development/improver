@@ -8,12 +8,15 @@ import { TricksService } from '../../util/tricks.service';
 import { LoginModel, RegistrationUserModel, RegistrationUserProps } from '../../model/security-model';
 import { PopUpMessageService } from '../../util/pop-up-message.service';
 import { HttpResponse } from '@angular/common/http';
-import { getErrorMessage } from '../../util/functions';
+import { clone, getErrorMessage, removePhoneMask } from '../../util/functions';
 import { MediaQuery, MediaQueryService } from '../../util/media-query.service';
 import { Subject, throwError } from 'rxjs';
 import { ActivatedRoute, Params } from '@angular/router';
-import { mergeMap, takeUntil, timeoutWith } from 'rxjs/operators';
+import { finalize, mergeMap, takeUntil, timeoutWith } from 'rxjs/operators';
 import { RecaptchaComponent } from 'ng-recaptcha';
+import { MatDialog, MatDialogRef } from "@angular/material";
+import { dialogsMap } from "../../shared/dialogs/dialogs.state";
+import { phoneValidationDialogConfig } from "../../shared/dialogs/dialogs.configs";
 
 
 @Component({
@@ -26,6 +29,7 @@ export class SignupProComponent implements OnDestroy {
 
   @ViewChild(RecaptchaComponent)
   recaptcha: RecaptchaComponent;
+  phoneValidationDialog: MatDialogRef<any>;
   agreeForSocialLogin: boolean = false;
   processing: boolean = false;
   showMessage: boolean = false;
@@ -57,7 +61,8 @@ export class SignupProComponent implements OnDestroy {
               public popUpMessageService: PopUpMessageService,
               public registrationService: RegistrationService,
               private mediaQueryService: MediaQueryService,
-              private route: ActivatedRoute
+              private route: ActivatedRoute,
+              private dialog: MatDialog,
   ) {
     this.route.queryParams.pipe(takeUntil(this.destroyed$)).subscribe((params: Params) => {
       this.user.referralCode = this.useReferralCode(params);
@@ -67,7 +72,12 @@ export class SignupProComponent implements OnDestroy {
       .subscribe(mediaQuery => this.mediaQuery = mediaQuery);
   }
 
-  registerContractor(form) {
+  submitContractorRegistration() {
+      this.openPhoneValidationDialog();
+  }
+
+  registerContractor() {
+    this.processing = true;
     this.recaptcha.execute();
     this.recaptcha.resolved.pipe(
       timeoutWith(this.constants.ONE_MINUTE, throwError({error: {message: 'Timeout error please try again later'}})),
@@ -76,9 +86,12 @@ export class SignupProComponent implements OnDestroy {
           return throwError({error: {message: 'Captcha is expired please try again later'}});
         }
         this.user.captcha = captcha;
-        return this.registrationService.registerContractor(this.user);
+        let registrationUserModel: RegistrationUserModel = clone(this.user);
+        registrationUserModel.phone = removePhoneMask(registrationUserModel.phone);
+        return this.registrationService.registerContractor(registrationUserModel);
       }),
       takeUntil(this.destroyed$),
+      finalize(() => this.processing = false)
     ).subscribe((response: HttpResponse<any>) => {
       this.clearReferralCode();
       this.securityService.loginUser(JSON.parse(response.body) as LoginModel, response.headers.get('authorization'), true)
@@ -121,4 +134,20 @@ export class SignupProComponent implements OnDestroy {
   private clearReferralCode(): void {
     sessionStorage.removeItem(this.REFERRAL_CODE_STORAGE_KEY);
   }
+
+  openPhoneValidationDialog() {
+    this.phoneValidationDialog = this.dialog.open(dialogsMap['phone-validation-dialog'], phoneValidationDialogConfig);
+    this.phoneValidationDialog
+      .afterClosed()
+      .subscribe(result => {
+        this.phoneValidationDialog = null;
+      });
+    this.phoneValidationDialog.componentInstance.phoneNumber = this.user.phone;
+    this.phoneValidationDialog.componentInstance.onSuccess
+      .pipe(takeUntil(this.phoneValidationDialog.afterClosed()))
+      .subscribe(() => {
+        this.registerContractor()
+      });
+  }
+
 }

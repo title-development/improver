@@ -1,0 +1,40 @@
+<div class="wrapper" [cvSpinner]="loading" [cvSpinnerSize]="24" [cvSpinnerBackground]="true">
+
+  <div class="message">Please enter verification code from text message</div>
+
+  <form class="validate-phone-form"
+        name="validate-phone-form"
+        #validatePhoneForm="ngForm"
+        novalidate>
+
+    <div class="row">
+
+      <div class="col-xs-12">
+
+        <cv-input-field>
+          <input cv-input class="code" minlength="4" maxlength="4"
+                 #code="ngModel"
+                 name="code"
+                 [(ngModel)]="phoneValidationConfirm.code"
+                 (ngModelChange)="onInput()"
+                 placeholder="xxxx"
+                 positiveNumeric
+                 required/>
+          <cv-field-error *ngIf="verificationCodeIsIncorrect">
+            <span>Verification code is incorrect</span>
+          </cv-field-error>
+        </cv-input-field>
+      </div>
+
+    </div>
+
+  </form>
+
+  <div class="actions" >
+    <span class="no-message">Did not received message?</span>
+    <button cv-button-flat [disabled]="resendDisabledSeconds > 0 || loading" (click)="numberValidationRequest()">Send again<span *ngIf="resendDisabledSeconds > 0">{{' (' + resendDisabledSeconds + ')'}}</span></button>
+  </div>
+
+</div>
+
+

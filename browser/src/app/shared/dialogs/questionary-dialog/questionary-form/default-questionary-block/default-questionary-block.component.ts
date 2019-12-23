@@ -44,13 +44,16 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
   locationValidation: string = '';
   validationMessage: string = '';
   processingAddressValidation: boolean;
+  processingPhoneValidation: boolean;
   originalAddress: any = {};
   suggestedAddress: any = {};
   locationInvalid: boolean;
+  phoneValid: boolean;
   hideNextAction: boolean;
   disabledNextAction: boolean;
   postOrderProcessing = false;
   lastZipCode: string;
+  nextStepFn: Function;
 
   @ViewChildren('defaultQuestion') defaultQuestions: QueryList<ElementRef>;
 
@@ -100,7 +103,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     }
   }
 
-  nextQuestion(name, handler: () => {} = undefined) {
+  nextQuestion(name, handler?: Function) {
 
     if (this.isValid(name)) {
       if (handler !== undefined) {
@@ -113,7 +116,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     }
   }
 
-  previousQuestion(handler: () => {} = undefined) {
+  previousQuestion(handler?: Function) {
     console.log('previousQuestion');
 
     if (handler !== undefined) {
@@ -125,10 +128,9 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
   }
 
 
-  onSubmit(name?, handler: () => {} = undefined): void {
+  onSubmit(name?, handler?: Function): void {
     if (name) {
       if (this.isValid(name)) {
-        console.log('valid');
         if (handler !== undefined) {
           handler.call(this, name, this.saveProject);
         } else {
@@ -224,7 +226,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     }
   }
 
-  validateLocation(formGroupName: string, callback: () => {}): void {
+  validateLocation(formGroupName: string, callback?: Function): void {
     this.disabledNextAction = true;
     const location = this.defaultQuestionaryForm.get(formGroupName).value;
     this.processingAddressValidation = true;
@@ -295,6 +297,20 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
       this.saveProject();
     }
 
+  }
+
+  validatePhone(formGroupName: string, callback?: Function) {
+    this.nextStepFn = callback;
+    this.disabledNextAction = true;
+    this.processingPhoneValidation = true;
+  }
+
+
+  onPhoneValidated() {
+    this.disabledNextAction = false;
+    this.processingPhoneValidation = false;
+    this.phoneValid = true;
+    this.nextStepFn.call(this,"customerPersonalInfo")
   }
 
   submitZip() {

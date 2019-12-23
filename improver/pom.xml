@@ -228,6 +228,11 @@
             <artifactId>shedlock-provider-jdbc</artifactId>
             <version>${shedlock.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.twilio.sdk</groupId>
+            <artifactId>twilio</artifactId>
+            <version>7.1.0</version>
+        </dependency>
 
 
         <!-- Swagger -->

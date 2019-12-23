@@ -82,7 +82,7 @@ public class TestDataInitializer {
     private static final String ADMIN_DEMO_PASS = "adDOmeafavor2019!";
     private static final String SUPPORT_DEMO_PASS = "supDOmeafavor2019";
 
-    private static final String DEMO_PHONE = "923-123-1234";
+    private static final String DEMO_PHONE = "9231231234";
     private static final String VISA_ENDING_IN_1132 = "Visa ending in 1132";
 
 

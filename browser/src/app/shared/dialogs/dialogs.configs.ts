@@ -180,3 +180,18 @@ export const unavailabilityPeriodDialogConfig: MatDialogConfig = {
     right: ''
   }
 };
+
+export const phoneValidationDialogConfig: MatDialogConfig = {
+  disableClose: true,
+  hasBackdrop: true,
+  autoFocus: false,
+  panelClass: 'dialog-fix-position',
+  width: '380px',
+  height: '',
+  position: {
+    top: '',
+    bottom: '',
+    left: '',
+    right: ''
+  }
+};
