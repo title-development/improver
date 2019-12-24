@@ -38,7 +38,7 @@ public class LogWsHandlerDecorator extends WebSocketHandlerDecorator {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
-        log.debug("WS Connection Closed | session={}, status={}" + session.getId(), closeStatus);
+        log.debug("WS Connection Closed | session={}, status={}", session.getId(), closeStatus);
         super.afterConnectionClosed(session, closeStatus);
     }
 }

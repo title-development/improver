@@ -1,4 +1,15 @@
-import { Component, ContentChild, forwardRef, Injector, Input, OnDestroy, OnInit, Provider } from '@angular/core';
+import {
+  Component,
+  ContentChild,
+  EventEmitter,
+  forwardRef,
+  Injector,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  Provider
+} from '@angular/core';
 import { CvInputComponent } from '../../input/cv-input/cv-input.component';
 import {
   AbstractControl,
@@ -33,6 +44,7 @@ export class EditableInputComponent implements ControlValueAccessor, Validator, 
   @Input() buttonEditLabel: string = 'Change';
   @Input() buttonSaveLabel: string = 'Save';
   @ContentChild(CvInputComponent) input: CvInputComponent;
+  @Output() onSave: EventEmitter<any> = new EventEmitter<any>();
 
   disabled: boolean = false;
   editMode: boolean = false;
@@ -110,8 +122,11 @@ export class EditableInputComponent implements ControlValueAccessor, Validator, 
       if (res == 'VALID') {
         this.editMode = false;
         this.input.disabled = true;
-        this.savedValue = this.value;
         this.validationStatusChanges$.unsubscribe();
+        setTimeout(() => {
+          this.onSave.emit(this.value);
+          this.savedValue = this.value;
+        }, 0)
       } else if (res == 'INVALID') {
         this.validationStatusChanges$.unsubscribe();
       }

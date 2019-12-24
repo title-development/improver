@@ -12,7 +12,7 @@ import { PopUpMessageService } from "../../util/pop-up-message.service";
 })
 export class PhoneValidationComponent implements OnInit {
 
-  RESEND_DISABLED_SECONDS_DEFAULT = 10;
+  RESEND_DISABLED_SECONDS_DEFAULT = 20;
 
   @Input() phoneNumber;
   @Output() onSuccess :EventEmitter<any> = new EventEmitter<boolean>();

@@ -51,7 +51,7 @@
                                              required
                                              trim
                                              pattern="{{constants.patterns.email}}"
-                                             (ngModelChange)="changeEmailConfirm($event)">
+                                             (onSave)="changeEmailConfirm($event)">
                             <input cv-input type="text" placeholder="Email">
                           </cv-editable-input>
                           <cv-field-error *ngIf="email.dirty || email.touched || personalInfoForm.submitted">
@@ -79,7 +79,7 @@
                                              [(ngModel)]="accountPhone"
                                              [pattern]="constants.patterns.phone"
                                              trim
-                                             (ngModelChange)="changePhoneConfirm($event)">
+                                             (onSave)="changePhoneConfirm($event)">
                             <input cv-input
                                    type="text"
                                    placeholder="Phone number"

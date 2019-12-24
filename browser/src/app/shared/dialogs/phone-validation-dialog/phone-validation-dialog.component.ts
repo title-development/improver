@@ -11,6 +11,7 @@ export class PhoneValidationDialogComponent implements OnInit {
 
   phoneNumber;
   onSuccess :EventEmitter<any> = new EventEmitter<boolean>();
+  onManualClose :EventEmitter<any> = new EventEmitter<any>();
 
   constructor(public currentDialogRef: MatDialogRef<any>,
               public dialog: MatDialog) {
@@ -19,12 +20,15 @@ export class PhoneValidationDialogComponent implements OnInit {
   ngOnInit() {
   }
 
-  close() {
+  close(isManual: boolean = true) {
     this.currentDialogRef.close();
+    if(isManual) {
+      this.onManualClose.emit()
+    }
   }
 
   success() {
-    this.close();
+    this.close(false);
     this.onSuccess.emit();
   }
 

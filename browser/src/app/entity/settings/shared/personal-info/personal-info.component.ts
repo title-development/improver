@@ -86,7 +86,7 @@ export class PersonalInfoComponent implements OnDestroy {
         account => {
           this.account = account;
           this.accountEmail = this.currentEmail = account.email;
-          this.accountPhone = this.account.phone = this.currentPhone = account.phone ? applyPhoneMask(account.phone) : "";
+          this.accountPhone = this.currentPhone = this.account.phone = account.phone ? applyPhoneMask(account.phone) : "";
         },
         err => {
           console.log(err);
@@ -124,7 +124,7 @@ export class PersonalInfoComponent implements OnDestroy {
   }
 
   changeEmailConfirm(value) {
-    if (this.currentEmail != this.account.email) {
+    if (this.currentEmail != this.accountEmail) {
       let properties = {
         title: 'Please confirm email change',
         message: '',
@@ -155,23 +155,30 @@ export class PersonalInfoComponent implements OnDestroy {
   }
 
   changePhoneConfirm(value) {
-    if (this.currentPhone != this.account.phone) {
+    if (this.currentPhone != this.accountPhone) {
       this.confirmDialogRef = this.dialog.open(dialogsMap['phone-validation-dialog'], phoneValidationDialogConfig);
       this.confirmDialogRef
         .afterClosed()
         .subscribe(result => {
           this.confirmDialogRef = null;
         });
-      this.confirmDialogRef.componentInstance.phoneNumber = this.account.phone;
+      let unmaskedPhone = removePhoneMask(this.accountPhone);
+      this.confirmDialogRef.componentInstance.phoneNumber = unmaskedPhone;
       this.confirmDialogRef.componentInstance.onSuccess
         .pipe(takeUntil(this.confirmDialogRef.afterClosed()))
         .subscribe(() => {
-          this.accountService.changePhone(removePhoneMask(this.account.phone))
+          this.accountService.changePhone(unmaskedPhone)
             .subscribe(() => {
-                this.currentPhone = this.account.phone;
+                this.currentPhone = this.accountPhone;
                 this.popupService.showSuccess("Your phone number updated successfully")
               },
               error => this.popupService.showError(getErrorMessage(error)));
+        });
+
+      this.confirmDialogRef.componentInstance.onManualClose
+        .pipe(takeUntil(this.confirmDialogRef.afterClosed()))
+        .subscribe(() => {
+          this.accountPhone = this.currentPhone;
         });
     }
   }
