@@ -1,4 +1,4 @@
-<form class="main-search-form" [formGroup]="mainSearchFormGroup" (ngSubmit)="searchServiceType(mainSearchFormGroup)" (mouseleave)="mouseleave($event)">
+<form *ngIf="!media.xs && !media.sm" class="main-search-form" [formGroup]="mainSearchFormGroup" (ngSubmit)="searchServiceType(mainSearchFormGroup)" (mouseleave)="mouseleave($event)">
   <div class="service-type-form-group">
     <cv-select class="main-search-service-input"
                [highlightErrors]="false"
@@ -39,6 +39,25 @@
 
   </div>
   <div class="submit-button-form-group">
+    <button type="submit">{{mainButtonText}}</button>
+  </div>
+
+</form>
+
+
+    <!--Mobile ( xs, sm ) version-->
+<form *ngIf="media.xs || media.sm" class="mobile-main-search-form" [formGroup]="mainSearchFormGroup"
+      (ngSubmit)="searchServiceType(mainSearchFormGroup)" (mouseleave)="mouseleave($event)">
+
+  <div class="mobile-service-type-form-group">
+    <input class="mobile-main-search-service-input"
+           [formControl]="serviceTypeCtrl"
+           type="text"
+           placeholder="Pipe, carpet, paint, etc."
+           (click)="openMobileSearchBar()">
+  </div>
+
+  <div class="mobile-submit-button-form-group" (click)="openMobileSearchBar()">
     <button type="submit">{{mainButtonText}}</button>
   </div>
 

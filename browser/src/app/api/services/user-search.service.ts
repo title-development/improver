@@ -1,4 +1,4 @@
-import { EventEmitter, Injectable, Output } from '@angular/core';
+import { EventEmitter, Injectable, Input, Output } from '@angular/core';
 import { ServiceType, Trade } from "../../model/data-model";
 import { getErrorMessage } from "../../util/functions";
 import { CustomerSuggestionService } from "./customer-suggestion.service";
@@ -15,6 +15,7 @@ import { FuseOptions } from "fuse.js";
 export class UserSearchService {
 
   @Output() notMatch: EventEmitter<any> = new EventEmitter<any>();
+  @Input() isMobileSearchActive: boolean;
 
   allServiceTypes: Array<ServiceType> = [];
   allTrades: Array<Trade> = [];
@@ -107,7 +108,7 @@ export class UserSearchService {
   chooseQuestionary(serviceType, formData): void {
     if (serviceType.id) {
       this.projectActionService.openQuestionary(serviceType, formData.zipCodeCtrl);
-    } else {
+    } else if (!this.isMobileSearchActive) {
       this.customerSuggestionService.saveUserSearchTerm(serviceType, formData.zipCodeCtrl, true);
       console.warn('Service type is not found. Redirecting to custom search.');
       this.router.navigate(['search'], {queryParams: {service: formData.serviceTypeCtrl, zip: formData.zipCodeCtrl}});

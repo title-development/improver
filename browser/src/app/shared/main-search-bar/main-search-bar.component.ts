@@ -1,6 +1,15 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { getErrorMessage, markAsTouched } from '../../util/functions';
-import { ServiceType, Trade } from '../../model/data-model';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges
+} from '@angular/core';
+import { markAsTouched } from '../../util/functions';
+import { ServiceType } from '../../model/data-model';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ProjectActionService } from '../../util/project-action.service';
 import { MatDialog } from '@angular/material';
@@ -14,6 +23,12 @@ import { CustomerSuggestionService } from "../../api/services/customer-suggestio
 import { Role } from "../../model/security-model";
 import { TradeService } from "../../api/services/trade.service";
 import { UserSearchService } from "../../api/services/user-search.service";
+import { dialogsMap } from "../dialogs/dialogs.state";
+import { MediaQuery, MediaQueryService } from "../../util/media-query.service";
+import { takeUntil } from "rxjs/operators";
+import { Subject } from "rxjs";
+import { mobileMainDialogBarConfig } from "../dialogs/dialogs.configs";
+import { MatDialogRef } from "@angular/material/dialog";
 
 @Component({
   selector: 'main-search-bar',
@@ -33,8 +48,10 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
   filteredServiceTypes: Array<ServiceType> = [];
   serviceTypes: Array<ServiceType> = [];
   popularServiceTypes: Array<ServiceType> = [];
+  mobileSearchDialogRef: MatDialogRef<any>;
   lastZipCode: string;
-
+  media: MediaQuery;
+  private readonly destroyed$ = new Subject<void>();
 
   constructor(public dialog: MatDialog,
               public projectActionService: ProjectActionService,
@@ -46,7 +63,19 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
               private tradeService: TradeService,
               private router: Router,
               private securityService: SecurityService,
-              private popUpService: PopUpMessageService) {
+              private mediaQueryService: MediaQueryService,
+              private changeDetectorRef: ChangeDetectorRef) {
+
+    this.mediaQueryService.screen.pipe(takeUntil(this.destroyed$)).subscribe((mediaQuery: MediaQuery) => {
+      this.media = mediaQuery;
+
+      if (this.media.xs || this.media.sm){
+        this.mainButtonText = 'FIND';
+      } else {
+        this.mainButtonText = 'GET STARTED';
+      }
+      this.changeDetectorRef.markForCheck();
+    });
 
     this.getPopularServiceTypes();
   }
@@ -96,6 +125,15 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
       const regExp: RegExp = new RegExp(`\\b${search}`, 'gmi');
       return regExp.test(service.name);
     });
+  }
+
+  openMobileSearchBar(){
+    this.dialog.closeAll();
+    this.mobileSearchDialogRef = this.dialog.open(dialogsMap['mobile-main-search-bar'], mobileMainDialogBarConfig );
+    this.mobileSearchDialogRef.afterClosed()
+      .subscribe(result => {
+        this.mobileSearchDialogRef = null;
+      });
   }
 
   searchServiceType(form: FormGroup): void {

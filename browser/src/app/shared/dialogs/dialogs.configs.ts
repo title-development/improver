@@ -16,6 +16,12 @@ export const questionaryDialogConfig: MatDialogConfig = {
   }
 };
 
+export const mobileMainDialogBarConfig: MatDialogConfig = {
+  disableClose: true,
+  hasBackdrop: true,
+  autoFocus: false
+};
+
 export const customerProjectRequestDialogConfig: MatDialogConfig = {
   disableClose: true,
   hasBackdrop: true,

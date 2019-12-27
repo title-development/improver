@@ -27,6 +27,7 @@ import { RequestReviewRevisionDialogComponent } from './request-review-revision-
 import { ContractorRegistrationPhoneRequestComponent } from './contractor-registration-phone-request-dialog/contractor-registration-phone-request.component';
 import { ReferralDialogComponent } from './refreal-dialog/referral-dialog.component';
 import { InfoWindowDialogComponent } from './info-window-dialog';
+import { MobileMainSearchBarComponent } from "../mobile-main-search-bar/mobile-main-search-bar.component";
 import { PhoneValidationDialogComponent } from "./phone-validation-dialog/phone-validation-dialog.component";
 
 export const dialogs = [
@@ -59,7 +60,8 @@ export const dialogs = [
   ContractorRegistrationPhoneRequestComponent,
   ReferralDialogComponent,
   InfoWindowDialogComponent,
-  PhoneValidationDialogComponent
+  PhoneValidationDialogComponent,
+  MobileMainSearchBarComponent
 ];
 
 export const dialogsMap = {
@@ -89,5 +91,6 @@ export const dialogsMap = {
   'contractor-registration-phone-request': ContractorRegistrationPhoneRequestComponent,
   'referral-dialog': ReferralDialogComponent,
   'info-window-dialog': InfoWindowDialogComponent,
-  'phone-validation-dialog': PhoneValidationDialogComponent
+  'phone-validation-dialog': PhoneValidationDialogComponent,
+  'mobile-main-search-bar': MobileMainSearchBarComponent
 };

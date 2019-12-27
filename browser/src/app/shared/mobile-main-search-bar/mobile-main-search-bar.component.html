@@ -1,0 +1,58 @@
+<div class="mobile-search-content-wrapper">
+  <div class="mobile-search-content-container">
+    <div class="mobile-search-header">
+      <p class="header-text">What service do you need?</p>
+      <mat-icon class="close-modal" color="accent" (click)="close()">clear</mat-icon>
+    </div>
+
+    <form class="main-search-form" [formGroup]="mainSearchFormGroup" (ngSubmit)="searchServiceType()"
+          (mouseleave)="mouseleave($event)">
+
+      <div class="zip-code-form-group">
+        <div class="main-search-zip-input-wrapper">
+          <mat-icon class="location-icon">room</mat-icon>
+          <input #zipCode [formControl]='zipCodeCtrl' class="main-search-zip-input" numericMask type="text"
+                 placeholder="Zip code" maxlength="5">
+        </div>
+        <div class="error-holder"
+             *ngIf="mainSearchFormGroup.get('zipCodeCtrl').dirty || mainSearchFormGroup.get('zipCodeCtrl').touched">
+          <div *ngIf="mainSearchFormGroup.get('zipCodeCtrl').errors?.required">
+            Zip code is required
+          </div>
+          <div *ngIf="mainSearchFormGroup.get('zipCodeCtrl').errors?.pattern">
+            Please enter a valid ZIP code
+          </div>
+        </div>
+
+      </div>
+
+      <div class="service-type-form-group">
+        <input #serviceType class="mobile-main-search-service-input"
+               [formControl]="serviceTypeCtrl"
+               type="text"
+               placeholder="Pipe, carpet, paint, etc.">
+        <div class="error-holder"
+             *ngIf="mainSearchFormGroup.get('serviceTypeCtrl').dirty || mainSearchFormGroup.get('serviceTypeCtrl').touched">
+          <div *ngIf="mainSearchFormGroup.get('serviceTypeCtrl').errors?.required">
+            Please tell us what do you need
+          </div>
+        </div>
+
+      </div>
+
+      <div class="submit-button-form-group">
+        <button type="submit">GET STARTED</button>
+      </div>
+
+    </form>
+
+    <div class="autocomplete-content">
+      <div *ngFor="let serviceType of filteredServiceTypes">
+        <div class="autocomplete-item" (click)="searchServiceType(serviceType.name)">
+          {{serviceType.name}}
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
