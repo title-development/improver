@@ -74,7 +74,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
                 authentication = attemptAuthentication(request, response);
             } catch (CredentialsExpiredException e) {
                 log.trace("Token has expired");
-                unsuccessfulAuthentication(response, SESSION_TIMED_OUT_MSG);
+                unsuccessfulAuthentication(response, "Token has expired");
                 return;
             } catch (BadCredentialsException e) {
                 log.trace("Invalid Token", e);

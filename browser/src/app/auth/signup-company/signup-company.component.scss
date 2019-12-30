@@ -37,6 +37,10 @@ services-selector::ng-deep {
 }
 
 .card {
+  @include response-to(xs) {
+    padding: 8px;
+  }
+
   .radius-value {
     color: $primary-600;
     font-weight: 600;

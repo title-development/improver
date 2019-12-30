@@ -1,16 +1,17 @@
-import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import {Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import { Constants } from '../../util/constants';
-import { SystemMessageType } from '../../model/data-model';
 import { SecurityService } from '../../auth/security.service';
 import { BillingService } from '../../api/services/billing.service';
 import { NgForm } from '@angular/forms';
-import { PopUpMessageService } from '../../util/pop-up-message.service';
 import { Router } from "@angular/router";
 import { SubscriptionActionsService } from "../../entity/contractor/subscription-actions/subscription-actions.service";
 import { ProjectRequest } from '../../api/models/ProjectRequest';
 import { Billing } from "../../api/models/Billing";
 import BillingSubscription = Billing.LeadSubscription;
 import {differenceInDays, parse, format} from "date-fns";
+import {MediaQuery, MediaQueryService} from "../../util/media-query.service";
+import {takeUntil} from "rxjs/operators";
+import {Subject} from "rxjs";
 
 @Component({
   selector: 'subscription',
@@ -18,8 +19,9 @@ import {differenceInDays, parse, format} from "date-fns";
   styleUrls: ['./subscription.component.scss']
 })
 
-export class SubscriptionComponent implements OnInit {
+export class SubscriptionComponent implements OnInit, OnDestroy {
 
+  private readonly destroyed$ = new Subject<void>();
   MINIMAL_MONTHLY_BUDGET = 100;
   @Output() subscribe: EventEmitter<any> = new EventEmitter<any>();
 
@@ -27,6 +29,7 @@ export class SubscriptionComponent implements OnInit {
   model = {
     nextMonthlyBudget: 0
   };
+  mediaQuery: MediaQuery;
   submitForm = false;
   projectRequest: ProjectRequest;
   formErrors: boolean;
@@ -37,8 +40,13 @@ export class SubscriptionComponent implements OnInit {
               public subscriptionActionsService: SubscriptionActionsService,
               private billingService: BillingService,
               private securityService: SecurityService,
-              private popupService: PopUpMessageService) {
+              public mediaQueryService: MediaQueryService) {
     this.constants = constants;
+    this.mediaQueryService.screen
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((mediaQuery: MediaQuery) => {
+        this.mediaQuery = mediaQuery;
+      });
   }
 
   ngOnInit(): void {
@@ -90,6 +98,11 @@ export class SubscriptionComponent implements OnInit {
 
   validateBudget(): void {
     this.formErrors = this.model.nextMonthlyBudget && this.model.nextMonthlyBudget < 100;
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
 }

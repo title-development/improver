@@ -52,12 +52,12 @@ public class SocialConnectionService {
     public User registerPro(@Valid SocialUser socialUser, String phone, String referredBy) throws AuthenticationRequiredException {
         SocialConnection connection = socialConnectionRepository.findByProviderId(socialUser.getId());
         if (connection != null) {
-            throw new AuthenticationRequiredException(StringUtil.capitalize(socialUser.getProvider().toString()) + " account is already connected to another user");
+            throw new ConflictException(StringUtil.capitalize(socialUser.getProvider().toString()) + " account is already connected to another user");
         }
 
         User user = userRepository.findByEmail(socialUser.getEmail()).orElse(null);
         if(user != null) {
-            throw new AuthenticationRequiredException("User with email "+socialUser.getEmail()+ " already registered");
+            throw new ConflictException("User with email "+socialUser.getEmail()+ " already registered");
         }
 
         Contractor contractor = Contractor.of(socialUser, phone, referredBy);
