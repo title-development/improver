@@ -164,6 +164,7 @@ export class FindProfessionalsComponent implements OnInit {
 
   searchServiceType(form: FormGroup) {
     if (this.mainSearchFormGroup.valid) {
+      this.userSearchService.isMobileSearchActive = false;
       this.findProfessionalService.close();
       this.userSearchService.findServiceType(this.mainSearchFormGroup.value);
       form.reset({

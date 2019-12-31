@@ -47,13 +47,13 @@
     <ng-container *ngIf="items">
       <!--simple dropdown or with autocomplate-->
       <ng-container *ngIf="!multiple && !grouped">
-        <div class="holder items" #itemsHolder>
+        <div [ngStyle]="{'max-height.px': virtualScrollHeight(items, mediaQuery.xs ? 3 : 4)}" class="holder items" #itemsHolder>
           <cdk-virtual-scroll-viewport itemSize="10" minBufferPx="38" maxBufferPx="60"
                                        [ngStyle]="{'height.px': virtualScrollHeight(items, mediaQuery.xs ? 3 : 4)}">
             <ng-template cdkVirtualFor [cdkVirtualForOf]="items" let-item="$implicit" let-i="index" let-even="even"
                          let-last="last"
                          [cdkVirtualForTrackBy]="trackBy">
-              <div class="item" [ngClass]="{'-choose': highlightedItemIndex == i}" (click)="add(item)">{{item[labelKey]
+              <div class="item" [ngStyle]="{'font-size.px': itemFontSize}" [ngClass]="{'-choose': highlightedItemIndex == i}" (click)="add(item)">{{item[labelKey]
                 ||
                 item}}
               </div>

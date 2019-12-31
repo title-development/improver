@@ -86,6 +86,7 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
   @Input() trackBy: (index: number, item: any) => {};
   @Input() disableItemsMatch: boolean = false;
   @Input() propagateEnterEvent: boolean = false;
+  @Input() dropdownHeight: number;
   @Output() autocompleteSearch: EventEmitter<string | number> = new EventEmitter<string | number>();
   @Output() onSelect: EventEmitter<any> = new EventEmitter<any>();
   @Output() onClose: EventEmitter<any> = new EventEmitter<any>();
@@ -105,6 +106,8 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
   dropDownAnimationState: string | 'void' | 'closed' | 'opened' = 'closed';
   isItemsShowed: boolean = false;
   itemMinHeight: number = ItemMinHeight.other;
+
+  itemFontSize: number;
 
   private onOverlayClick = (event: MouseEvent) => this.closeByOverlayHandler(event);
   // private onMouseLeave = (event: MouseEvent) => this.closeDropdown(event);
@@ -353,9 +356,16 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
    * @maxItems: maxItems in view
    */
   virtualScrollHeight(items, maxItems: number = 4): number {
+    if (this.dropdownHeight) {
+      this.itemMinHeight = ItemMinHeight.sm;
+    }
+
     if (items && items.length > 0) {
-      if (items.length > maxItems) {
+      if (items.length > maxItems && !this.dropdownHeight) {
         return maxItems * this.itemMinHeight;
+      } else if (this.dropdownHeight && items.length > maxItems + 1) {
+        this.itemFontSize = 16;
+        return this.dropdownHeight * this.itemMinHeight;
       } else {
         return items.length * this.itemMinHeight;
       }

@@ -1,12 +1,14 @@
 import {
   ChangeDetectorRef,
   Component,
+  ElementRef,
   EventEmitter,
   Input,
   OnChanges,
   OnInit,
   Output,
-  SimpleChanges
+  SimpleChanges,
+  ViewChild
 } from '@angular/core';
 import { markAsTouched } from '../../util/functions';
 import { ServiceType } from '../../model/data-model';
@@ -16,7 +18,6 @@ import { MatDialog } from '@angular/material';
 import { Constants } from '../../util/constants';
 import { ServiceTypeService } from '../../api/services/service-type.service';
 import { Router } from '@angular/router';
-import { PopUpMessageService } from "../../util/pop-up-message.service";
 import { SecurityService } from "../../auth/security.service";
 import { UserService } from "../../api/services/user.service";
 import { CustomerSuggestionService } from "../../api/services/customer-suggestion.service";
@@ -41,6 +42,7 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
   @Input() resetAfterFind: boolean = true;
   @Input() mainButtonText: string = 'GET STARTED';
   @Output() notMatch: EventEmitter<any> = new EventEmitter<any>();
+  @ViewChild("serviceType") serviceTypeRef: ElementRef;
 
   mainSearchFormGroup: FormGroup;
   serviceTypeCtrl: FormControl;
@@ -128,6 +130,7 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
   }
 
   openMobileSearchBar(){
+    this.serviceTypeRef.nativeElement.blur();
     this.dialog.closeAll();
     this.mobileSearchDialogRef = this.dialog.open(dialogsMap['mobile-main-search-bar'], mobileMainDialogBarConfig );
     this.mobileSearchDialogRef.afterClosed()
@@ -138,6 +141,7 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
 
   searchServiceType(form: FormGroup): void {
     if (this.mainSearchFormGroup.valid) {
+      this.userSearchService.isMobileSearchActive = false;
       const serviceTypeCtrl = this.mainSearchFormGroup.get('serviceTypeCtrl');
       if (serviceTypeCtrl.value) {
         this.userSearchService.findServiceType(this.mainSearchFormGroup.value);

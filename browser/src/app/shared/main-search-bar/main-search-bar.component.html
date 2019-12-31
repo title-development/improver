@@ -50,7 +50,7 @@
       (ngSubmit)="searchServiceType(mainSearchFormGroup)" (mouseleave)="mouseleave($event)">
 
   <div class="mobile-service-type-form-group">
-    <input class="mobile-main-search-service-input"
+    <input #serviceType class="mobile-main-search-service-input"
            [formControl]="serviceTypeCtrl"
            type="text"
            placeholder="Pipe, carpet, paint, etc."

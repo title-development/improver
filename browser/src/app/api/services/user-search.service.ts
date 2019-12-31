@@ -15,7 +15,7 @@ import { FuseOptions } from "fuse.js";
 export class UserSearchService {
 
   @Output() notMatch: EventEmitter<any> = new EventEmitter<any>();
-  @Input() isMobileSearchActive: boolean;
+  @Input() isMobileSearchActive: boolean = false;
 
   allServiceTypes: Array<ServiceType> = [];
   allTrades: Array<Trade> = [];

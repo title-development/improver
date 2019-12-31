@@ -5,8 +5,35 @@
       <mat-icon class="close-modal" color="accent" (click)="close()">clear</mat-icon>
     </div>
 
-    <form class="main-search-form" [formGroup]="mainSearchFormGroup" (ngSubmit)="searchServiceType()"
-          (mouseleave)="mouseleave($event)">
+    <form class="main-search-form" [formGroup]="mainSearchFormGroup" (ngSubmit)="searchServiceType()">
+
+      <div class="service-type-form-group">
+        <cv-select #serviceType class="main-search-service-input"
+                   [highlightErrors]="false"
+                   [dropdownHeight]="dropdownHeight"
+                   label="Pipe, carpet, paint, etc."
+                   [formControl]="serviceTypeCtrl"
+                   [items]="filteredServiceTypes"
+                   [disableItemsMatch]="true"
+                   [autocomplete]="true"
+                   [allowAnyValue]="true"
+                   [propagateEnterEvent]="true"
+                   labelKey="name"
+                   valueKey="name"
+                   [dropdownBorder]="false"
+                   [trackBy]="selectTrackBy"
+                   (autocompleteSearch)="autocompleteSearch($event)"
+                   (onSelect)="searchServiceType($event.service)"
+                   (onClose)="mouseleave($event)">
+        </cv-select>
+        <div class="error-holder"
+             *ngIf="mainSearchFormGroup.get('serviceTypeCtrl').dirty || mainSearchFormGroup.get('serviceTypeCtrl').touched">
+          <div *ngIf="mainSearchFormGroup.get('serviceTypeCtrl').errors?.required">
+            Please tell us what do you need
+          </div>
+        </div>
+
+      </div>
 
       <div class="zip-code-form-group">
         <div class="main-search-zip-input-wrapper">
@@ -26,20 +53,6 @@
 
       </div>
 
-      <div class="service-type-form-group">
-        <input #serviceType class="mobile-main-search-service-input"
-               [formControl]="serviceTypeCtrl"
-               type="text"
-               placeholder="Pipe, carpet, paint, etc.">
-        <div class="error-holder"
-             *ngIf="mainSearchFormGroup.get('serviceTypeCtrl').dirty || mainSearchFormGroup.get('serviceTypeCtrl').touched">
-          <div *ngIf="mainSearchFormGroup.get('serviceTypeCtrl').errors?.required">
-            Please tell us what do you need
-          </div>
-        </div>
-
-      </div>
-
       <div class="submit-button-form-group">
         <button type="submit">GET STARTED</button>
       </div>
@@ -47,7 +60,7 @@
     </form>
 
     <div class="autocomplete-content">
-      <div *ngFor="let serviceType of filteredServiceTypes">
+      <div *ngFor="let serviceType of searchResults">
         <div class="autocomplete-item" (click)="searchServiceType(serviceType.name)">
           {{serviceType.name}}
         </div>

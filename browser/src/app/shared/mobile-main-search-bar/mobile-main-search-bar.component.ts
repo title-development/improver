@@ -1,13 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  HostListener,
-  Input,
-  OnChanges,
-  OnInit,
-  SimpleChanges, ViewChild
-} from '@angular/core';
+import { Component, ElementRef, HostListener, Input, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef } from "@angular/material/dialog";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ServiceType } from "../../model/data-model";
@@ -23,7 +14,7 @@ import { markAsTouched } from "../../util/functions";
   templateUrl: './mobile-main-search-bar.component.html',
   styleUrls: ['./mobile-main-search-bar.component.scss']
 })
-export class MobileMainSearchBarComponent implements OnInit, OnChanges, AfterViewInit {
+export class MobileMainSearchBarComponent implements OnInit {
 
   @Input() resetAfterFind: boolean = true;
 
@@ -35,6 +26,8 @@ export class MobileMainSearchBarComponent implements OnInit, OnChanges, AfterVie
   zipCodeCtrl: FormControl;
   filteredServiceTypes: Array<ServiceType> = [];
   popularServiceTypes: Array<ServiceType> = [];
+  searchResults: Array<ServiceType> = [];
+  dropdownHeight: number = 5;
   lastZipCode: string;
 
   constructor(public currentDialogRef: MatDialogRef<any>,
@@ -54,7 +47,7 @@ export class MobileMainSearchBarComponent implements OnInit, OnChanges, AfterVie
     this.serviceTypeCtrl = group.serviceTypeCtrl;
     this.zipCodeCtrl = group.zipCodeCtrl;
 
-    this.customerSuggestionService.onZipChange.subscribe(zip=> this.zipCodeCtrl.setValue(zip));
+    this.customerSuggestionService.onZipChange.subscribe(zip => this.zipCodeCtrl.setValue(zip));
 
     this.zipCodeCtrl.setValue(localStorage.getItem('zipCode'));
 
@@ -63,17 +56,8 @@ export class MobileMainSearchBarComponent implements OnInit, OnChanges, AfterVie
       }
     );
 
-    this.serviceTypeCtrl.valueChanges.subscribe( value => {
-      this.autocompleteSearch(value);
-    });
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.service && !changes.service.firstChange) {
-      this.serviceTypeCtrl.setValue(changes.service.currentValue);
-    }
-    if (changes.zipCode && !changes.zipCode.firstChange){
-      this.zipCodeCtrl.setValue(changes.zipCode.currentValue);
+    if (this.searchResults.length == 0) {
+      this.searchResults = this.popularServiceTypes;
     }
   }
 
@@ -84,25 +68,29 @@ export class MobileMainSearchBarComponent implements OnInit, OnChanges, AfterVie
       } else {
         this.filteredServiceTypes = this.popularServiceTypes;
       }
-      if (this.filteredServiceTypes.length == 0){
+      if (this.filteredServiceTypes.length == 0) {
         this.filteredServiceTypes = this.popularServiceTypes;
       }
     }, 0);
   }
 
   searchServiceType(serviceType?: string): void {
-    this.userSearchService.isMobileSearchActive = true;
-    if (serviceType){
+    if (serviceType) {
       this.serviceTypeCtrl.setValue(serviceType);
     }
 
     if (this.mainSearchFormGroup.valid) {
+      this.userSearchService.isMobileSearchActive = true;
       const serviceTypeCtrl = this.mainSearchFormGroup.get('serviceTypeCtrl');
       if (serviceTypeCtrl.value) {
         this.userSearchService.findServiceType(this.mainSearchFormGroup.value);
+        this.searchResults = this.userSearchService.getSearchResults(serviceTypeCtrl.value.trim());
+        if (this.searchResults.length == 0) {
+          this.searchResults = this.popularServiceTypes;
+        }
         if (this.resetAfterFind) {
           this.mainSearchFormGroup.reset({
-            zipCodeCtrl: localStorage.getItem('zipCode')? localStorage.getItem('zipCode'): this.lastZipCode
+            zipCodeCtrl: localStorage.getItem('zipCode') ? localStorage.getItem('zipCode') : this.lastZipCode
           });
           Object.values(this.mainSearchFormGroup.controls).forEach(control => control.markAsPristine());
         }
@@ -155,12 +143,8 @@ export class MobileMainSearchBarComponent implements OnInit, OnChanges, AfterVie
     }
   }
 
-  ngAfterViewInit(): void {
-    if (this.zipCodeCtrl.valid){
-      this.serviceTypeField.nativeElement.focus();
-    } else {
-      this.zipCodeField.nativeElement.focus();
-    }
+  selectTrackBy(index: number, item: ServiceType): number {
+    return item.id;
   }
 
 }
