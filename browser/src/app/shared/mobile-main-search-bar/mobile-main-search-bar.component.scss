@@ -68,6 +68,13 @@
   flex-direction: column;
 }
 
+.no-result-text {
+  margin: 20px auto;
+  width: 90%;
+  color: #7f7f7f;
+  font-size: 14px;
+}
+
 .autocomplete-content {
   width: 90%;
   max-height: 60%;
@@ -85,7 +92,6 @@
     padding: 15px;
     width: 100%;
     cursor: pointer;
-    border-top: 1px solid #fafafa;
   }
 }
 

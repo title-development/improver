@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, OnInit } from '@angular/core';
 import { MatDialogRef } from "@angular/material/dialog";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ServiceType } from "../../model/data-model";
@@ -16,11 +16,8 @@ import { markAsTouched } from "../../util/functions";
 })
 export class MobileMainSearchBarComponent implements OnInit {
 
-  @Input() resetAfterFind: boolean = true;
-
-  @ViewChild("serviceType") serviceTypeField: ElementRef;
-  @ViewChild("zipCode") zipCodeField: ElementRef;
-
+  resetAfterFind: boolean = false;
+  searchResultMessageText: string;
   mainSearchFormGroup: FormGroup;
   serviceTypeCtrl: FormControl;
   zipCodeCtrl: FormControl;
@@ -55,10 +52,6 @@ export class MobileMainSearchBarComponent implements OnInit {
         this.getLastCustomerZipCode();
       }
     );
-
-    if (this.searchResults.length == 0) {
-      this.searchResults = this.popularServiceTypes;
-    }
   }
 
   autocompleteSearch(search): void {
@@ -86,7 +79,10 @@ export class MobileMainSearchBarComponent implements OnInit {
         this.userSearchService.findServiceType(this.mainSearchFormGroup.value);
         this.searchResults = this.userSearchService.getSearchResults(serviceTypeCtrl.value.trim());
         if (this.searchResults.length == 0) {
+          this.searchResultMessageText = 'No results were found for \"' + serviceTypeCtrl.value + '\". The following are results for a similar search.';
           this.searchResults = this.popularServiceTypes;
+        } else {
+          this.searchResultMessageText = '';
         }
         if (this.resetAfterFind) {
           this.mainSearchFormGroup.reset({
@@ -134,6 +130,12 @@ export class MobileMainSearchBarComponent implements OnInit {
         control.markAsPristine();
       }
     });
+  }
+
+  focusout() {
+    if (this.zipCodeCtrl.valid){
+      this.searchServiceType();
+    }
   }
 
   @HostListener('window:beforeunload', ['$event'])

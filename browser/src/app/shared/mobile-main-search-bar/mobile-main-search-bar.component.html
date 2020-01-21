@@ -23,6 +23,7 @@
                    [dropdownBorder]="false"
                    [trackBy]="selectTrackBy"
                    (autocompleteSearch)="autocompleteSearch($event)"
+                   (focusout)="focusout()"
                    (onSelect)="searchServiceType($event.service)"
                    (onClose)="mouseleave($event)">
         </cv-select>
@@ -58,6 +59,10 @@
       </div>
 
     </form>
+
+    <div class="no-result-text">
+      {{searchResultMessageText}}
+    </div>
 
     <div class="autocomplete-content">
       <div *ngFor="let serviceType of searchResults">

@@ -10,6 +10,7 @@
     <input cv-input name="search" [(ngModel)]="search" (ngModelChange)="autocompleteSearchHandler($event)"
            autocomplete="off"
            placeholder="{{label}}"
+           (blur)="closeDropdown($event)"
            (focus)="openDropdown()"
     />
   </ng-container>
