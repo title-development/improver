@@ -240,12 +240,12 @@ INSERT INTO trades_service_types (trade_id, service_type_id) VALUES ((SELECT cur
 INSERT INTO service_types (name, lead_price, image_url) SELECT 'Concrete Slab General', 999, null WHERE NOT EXISTS (SELECT name FROM service_types WHERE service_types.name = 'Concrete Slab General');
 INSERT INTO trades_service_types (trade_id, service_type_id) VALUES ((SELECT currval(pg_get_serial_sequence('trades','id'))), (SELECT id FROM service_types WHERE service_types.name = 'Concrete Slab General'));
 INSERT INTO trades (name) VALUES ('Countertop Services');
-INSERT INTO service_types (name, lead_price, image_url) SELECT 'Counter-top Installation', 1900, null WHERE NOT EXISTS (SELECT name FROM service_types WHERE service_types.name = 'Counter-top Installation');
-INSERT INTO trades_service_types (trade_id, service_type_id) VALUES ((SELECT currval(pg_get_serial_sequence('trades','id'))), (SELECT id FROM service_types WHERE service_types.name = 'Counter-top Installation'));
-INSERT INTO service_types (name, lead_price, image_url) SELECT 'Counter-top Removal', 999, null WHERE NOT EXISTS (SELECT name FROM service_types WHERE service_types.name = 'Counter-top Removal');
-INSERT INTO trades_service_types (trade_id, service_type_id) VALUES ((SELECT currval(pg_get_serial_sequence('trades','id'))), (SELECT id FROM service_types WHERE service_types.name = 'Counter-top Removal'));
-INSERT INTO service_types (name, lead_price, image_url) SELECT 'Counter-top Repair', 900, null WHERE NOT EXISTS (SELECT name FROM service_types WHERE service_types.name = 'Counter-top Repair');
-INSERT INTO trades_service_types (trade_id, service_type_id) VALUES ((SELECT currval(pg_get_serial_sequence('trades','id'))), (SELECT id FROM service_types WHERE service_types.name = 'Counter-top Repair'));
+INSERT INTO service_types (name, lead_price, image_url) SELECT 'Countertop Installation', 1900, null WHERE NOT EXISTS (SELECT name FROM service_types WHERE service_types.name = 'Countertop Installation');
+INSERT INTO trades_service_types (trade_id, service_type_id) VALUES ((SELECT currval(pg_get_serial_sequence('trades','id'))), (SELECT id FROM service_types WHERE service_types.name = 'Countertop Installation'));
+INSERT INTO service_types (name, lead_price, image_url) SELECT 'Countertop Removal', 999, null WHERE NOT EXISTS (SELECT name FROM service_types WHERE service_types.name = 'Countertop Removal');
+INSERT INTO trades_service_types (trade_id, service_type_id) VALUES ((SELECT currval(pg_get_serial_sequence('trades','id'))), (SELECT id FROM service_types WHERE service_types.name = 'Countertop Removal'));
+INSERT INTO service_types (name, lead_price, image_url) SELECT 'Countertop Repair', 900, null WHERE NOT EXISTS (SELECT name FROM service_types WHERE service_types.name = 'Countertop Repair');
+INSERT INTO trades_service_types (trade_id, service_type_id) VALUES ((SELECT currval(pg_get_serial_sequence('trades','id'))), (SELECT id FROM service_types WHERE service_types.name = 'Countertop Repair'));
 INSERT INTO trades (name) VALUES ('Chimney Services');
 INSERT INTO service_types (name, lead_price, image_url) SELECT 'Build New Chimney', 2400, '' WHERE NOT EXISTS (SELECT name FROM service_types WHERE service_types.name = 'Build New Chimney');
 INSERT INTO trades_service_types (trade_id, service_type_id) VALUES ((SELECT currval(pg_get_serial_sequence('trades','id'))), (SELECT id FROM service_types WHERE service_types.name = 'Build New Chimney'));

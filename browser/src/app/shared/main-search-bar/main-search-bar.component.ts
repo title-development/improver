@@ -116,9 +116,6 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
       } else {
         this.filteredServiceTypes = this.popularServiceTypes;
       }
-      if (this.filteredServiceTypes.length == 0){
-        this.filteredServiceTypes = this.popularServiceTypes;
-      }
     }, 0);
   }
 

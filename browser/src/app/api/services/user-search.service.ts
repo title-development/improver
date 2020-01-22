@@ -35,7 +35,7 @@ export class UserSearchService {
   getSearchResults(search: string): Array<ServiceType> {
     let searchResult: Array<ServiceType> = [];
     let filteredTrades: Array<Trade> = [];
-
+    search = search.trim();
     //Find indexed Service Types if Exists by search term
     if (this.serviceTypeIndexes) {
       searchResult = this.serviceTypeIndexes.search(search)
@@ -46,11 +46,11 @@ export class UserSearchService {
     if (searchResult.length == 0 && this.tradeIndexes) {
       filteredTrades = this.tradeIndexes.search(search)
         .map(item => this.allTrades.find(trade => item.id == trade.id.toString()));
-      let services = [];
+      let servicesFromTrade = [];
       filteredTrades.forEach(trade => {
-        trade.services.forEach(service => services.push(service));
+        trade.services.forEach(service => servicesFromTrade.push(service));
       });
-      searchResult = services;
+      searchResult = servicesFromTrade;
     }
 
     return searchResult;
@@ -67,9 +67,11 @@ export class UserSearchService {
       trades => {
         if (trades && trades.length >0){
           let options: FuseOptions<Trade> = {
-            threshold: 0.5,
             maxPatternLength: 100,
             minMatchCharLength: 3,
+            threshold: 0.1,
+            tokenize: true,
+            matchAllTokens: true,
             keys: ['name']
           };
           this.tradeIndexes = new Fuse(trades, options);
@@ -84,9 +86,13 @@ export class UserSearchService {
       serviceTypes => {
         if (serviceTypes && serviceTypes.length > 0) {
           let options: FuseOptions<ServiceType> = {
-            threshold: 0.2,
             maxPatternLength: 100,
-            minMatchCharLength: 3,
+            minMatchCharLength: 2,
+            threshold: 0.1,
+            tokenize: true,
+            matchAllTokens: true,
+            //location: 0,
+            //distance: 10,
             keys: ['name']
           };
           this.serviceTypeIndexes = new Fuse(serviceTypes, options);
