@@ -43,14 +43,14 @@ export class UserSearchService {
     }
 
     // Service Types not exists get Service Types on indexed Trades by search term
-    if (searchResult.length == 0 && this.tradeIndexes) {
+    if (searchResult.length < 3 && this.tradeIndexes) {
       filteredTrades = this.tradeIndexes.search(search)
         .map(item => this.allTrades.find(trade => item.id == trade.id.toString()));
       let servicesFromTrade = [];
       filteredTrades.forEach(trade => {
         trade.services.forEach(service => servicesFromTrade.push(service));
       });
-      searchResult = servicesFromTrade;
+      searchResult = searchResult.concat(servicesFromTrade);
     }
 
     return searchResult;

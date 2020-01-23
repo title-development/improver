@@ -109,6 +109,7 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
     }
   }
 
+  // TODO: Ivan, refactor this
   autocompleteSearch(search): void {
     setTimeout(() => {
       if (search && search.length > 1) {
