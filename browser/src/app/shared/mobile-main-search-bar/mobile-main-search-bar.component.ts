@@ -54,15 +54,8 @@ export class MobileMainSearchBarComponent implements OnInit {
     );
   }
 
-  // TODO: Ivan, refactor this
   autocompleteSearch(search): void {
-    setTimeout(() => {
-      if (search && search.length > 1) {
-        this.filteredServiceTypes = this.userSearchService.getSearchResults(search.trim());
-      } else {
-        this.filteredServiceTypes = this.popularServiceTypes;
-      }
-    }, 0);
+    this.filteredServiceTypes = this.userSearchService.autocompleteSearchResult(search);
   }
 
   searchServiceType(serviceType?: string): void {

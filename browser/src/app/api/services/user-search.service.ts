@@ -18,6 +18,7 @@ export class UserSearchService {
   @Input() isMobileSearchActive: boolean = false;
 
   allServiceTypes: Array<ServiceType> = [];
+  popularServiceTypes: Array<ServiceType> = [];
   allTrades: Array<Trade> = [];
 
   tradeIndexes;
@@ -30,6 +31,7 @@ export class UserSearchService {
               private router: Router,) {
     this.createTradeIndexes();
     this.createServiceTypeIndexes();
+    this.getPopularServiceTypes();
   }
 
   getSearchResults(search: string): Array<ServiceType> {
@@ -54,6 +56,23 @@ export class UserSearchService {
     }
 
     return searchResult;
+  }
+
+  autocompleteSearchResult(searchTerm): Array<ServiceType> {
+    let filteredServiceTypes: Array<ServiceType> = [];
+      if (searchTerm && searchTerm.length > 1) {
+        filteredServiceTypes = this.getSearchResults(searchTerm.trim());
+      } else {
+        filteredServiceTypes = this.popularServiceTypes;
+      }
+    return filteredServiceTypes;
+  }
+
+  getPopularServiceTypes(){
+    this.customerSuggestionService.popular$
+      .subscribe(
+        popularServiceTypes => this.popularServiceTypes = popularServiceTypes
+      );
   }
 
 
@@ -88,7 +107,7 @@ export class UserSearchService {
           let options: FuseOptions<ServiceType> = {
             maxPatternLength: 100,
             minMatchCharLength: 2,
-            threshold: 0.1,
+            threshold: 0.2,
             tokenize: true,
             matchAllTokens: true,
             //location: 0,

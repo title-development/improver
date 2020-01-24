@@ -109,15 +109,8 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
     }
   }
 
-  // TODO: Ivan, refactor this
   autocompleteSearch(search): void {
-    setTimeout(() => {
-      if (search && search.length > 1) {
-        this.filteredServiceTypes = this.userSearchService.getSearchResults(search.trim());
-      } else {
-        this.filteredServiceTypes = this.popularServiceTypes;
-      }
-    }, 0);
+    this.filteredServiceTypes = this.userSearchService.autocompleteSearchResult(search);
   }
 
   searchByRegex(search: string) {

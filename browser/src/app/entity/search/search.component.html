@@ -5,6 +5,11 @@
   <div class="search-bar">
     <main-search-bar [service]="service" [zipCode]="zipCode" [resetAfterFind]="false" (notMatch)="userSearchService.getSearchResults($event.service)" mainButtonText="SEARCH"></main-search-bar>
   </div>
+
+  <div class="no-result-text">
+    {{searchResultMessageText}}
+  </div>
+
   <div class="results">
     <ng-container *ngIf="searchResults.length > 0">
       <ng-template ngFor let-service [ngForOf]="searchResults" let-i="index">

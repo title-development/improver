@@ -36,8 +36,14 @@
 
     <div class="header-right">
 
-      <div class="find-professionals-wrapper" *ngIf="(mediaQuery.xs || mediaQuery.sm) && !securityService.isAuthenticated()">
-        <find-professionals></find-professionals>
+      <div class="find-professionals-wrapper"
+           *ngIf="(mediaQuery.xs || mediaQuery.sm) && !securityService.isAuthenticated()"
+           (click)="open('mobile-main-search-bar')">
+        <button class="mobile-menu-button mat-button md-none lg-none xlg-none">
+        <span>
+          <i class="material-icons">search</i>
+        </span>
+        </button>
       </div>
 
       <!--Notification icon-->

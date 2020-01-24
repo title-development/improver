@@ -24,7 +24,7 @@ import { Subject } from 'rxjs';
 import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { animate, AnimationEvent, state, style, transition, trigger } from '@angular/animations';
 import { CvSelection } from '../../util/CvSelection';
-import { CdkVirtualForOf, CdkVirtualForOfContext } from '@angular/cdk/scrolling';
+import { CdkVirtualForOf, CdkVirtualForOfContext, CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { MediaQuery, MediaQueryService } from '../../../util/media-query.service';
 
 export const SELECT_VALUE_ACCESSOR: Provider = {
@@ -92,12 +92,15 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
   @Output() onClose: EventEmitter<any> = new EventEmitter<any>();
   @ViewChild('targetElement') targetElement: ElementRef;
   @ViewChild('itemsHolder') itemsHolder: ElementRef;
+  @ViewChild(CdkVirtualScrollViewport) virtualScroll: CdkVirtualScrollViewport;
 
   private readonly destroyed$ = new Subject<void>();
 
   disabled: boolean;
   selectedItemsCount: number = 0;
   search: string | number;
+  originalSearchTerm: string;
+  activateOriginalSearchTerm: boolean = false;
   filterArgs: any;
   multipleSearchModel: string | number;
   opened: boolean;
@@ -112,7 +115,7 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
   private onOverlayClick = (event: MouseEvent) => this.closeByOverlayHandler(event);
   // private onMouseLeave = (event: MouseEvent) => this.closeDropdown(event);
   private onKeyDown = (event: KeyboardEvent) => this.onKeyDownHandler(event);
-  private highlightedItemIndex: number = 0;
+  private highlightedItemIndex: number = -1;
   private lastLabel: string;
   private hostHeight: number;
   private itemHeight: number;
@@ -150,10 +153,9 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
 
   writeValue(model: any | Array<any>): void {
     if (!this.opened) {
+      this.originalSearchTerm = model;
       this.autocompleteSearch.emit(model);
       this.init(model);
-    } else {
-      this.resetSelection();
     }
   }
 
@@ -197,11 +199,13 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
   autocompleteSearchHandler(value = undefined): void {
     if (this.disableItemsMatch) {
       this.onChange(value);
+      this.originalSearchTerm = value;
+      this.highlightedItemIndex = 0;
       this.search = value;
     }
 
     this.autocompleteSearch.next(this.search);
-    if (!this.opened && !this.allowAnyValue) {
+    if (!this.opened && this.allowAnyValue) {
       this.openDropdown();
     }
   }
@@ -258,6 +262,7 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
   openDropdown(): void {
     if (!this.opened) {
       this.opened = true;
+      this.highlightedItemIndex = 0;
       setTimeout(() => {
         this.dropDownAnimationState = 'opened';
         this.changeDetectorRef.markForCheck();
@@ -359,7 +364,6 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
     if (this.dropdownHeight) {
       this.itemMinHeight = ItemMinHeight.sm;
     }
-
     if (items && items.length > 0) {
       if (items.length > maxItems && !this.dropdownHeight) {
         return maxItems * this.itemMinHeight;
@@ -367,11 +371,25 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
         this.itemFontSize = 16;
         return this.dropdownHeight * this.itemMinHeight;
       } else {
-        return items.length * this.itemMinHeight;
+        return items.length * this.getItemHeight();
       }
     } else {
       return 0;
     }
+  }
+
+  getItemHeight(): number {
+    let itemHeight: number;
+    let maxItemNameLength = 40;
+    let longItemNameHeight = 64;
+    this.items.forEach( item =>{
+      if ((this.mediaQuery.xs || this.mediaQuery.sm || this.mediaQuery.md) && item.name.length > maxItemNameLength){
+        itemHeight = longItemNameHeight;
+      } else {
+        itemHeight = this.itemMinHeight;
+      }
+    });
+    return itemHeight;
   }
 
   private updateHolderDimensions(force: boolean): void {
@@ -452,9 +470,26 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
 
   private onScrollUp(holder: HTMLElement): void {
     if (holder) {
-      const item: HTMLElement = holder.children[this.highlightedItemIndex] as HTMLElement;
-      if (item && item.offsetTop <= holder.scrollTop) {
-        holder.scrollTo(0, this.highlightedItemIndex * this.itemHeight);
+      if (this.virtualScroll) {
+        if (this.activateOriginalSearchTerm && this.highlightedItemIndex == 0){
+          this.highlightedItemIndex = -1;
+          this.activateOriginalSearchTerm = false;
+          this.search = this.originalSearchTerm;
+          this.changeDetectorRef.detectChanges();
+        }
+        if (this.highlightedItemIndex == 0){
+          this.activateOriginalSearchTerm = true;
+        }
+        if (this.items && this.items[this.highlightedItemIndex]) {
+          this.search = this.items[this.highlightedItemIndex].name;
+          this.changeDetectorRef.detectChanges();
+        }
+        this.virtualScroll.scrollToIndex(this.highlightedItemIndex - 1, "smooth");
+      } else {
+        const item: HTMLElement = holder.children[this.highlightedItemIndex] as HTMLElement;
+        if (item && item.offsetTop <= holder.scrollTop) {
+          item.scrollTo(0, this.highlightedItemIndex * this.itemHeight);
+        }
       }
     } else {
       console.warn('Could not find holder');
@@ -463,9 +498,18 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
 
   private onScrollDown(holder: HTMLElement): void {
     if (holder) {
-      const item: HTMLElement = holder.children[this.highlightedItemIndex] as HTMLElement;
-      if (item && item.offsetTop + item.offsetHeight >= holder.offsetHeight + holder.scrollTop) {
-        holder.scrollTo(0, item.offsetTop + item.offsetHeight - holder.offsetHeight);
+      if (this.virtualScroll) {
+        this.activateOriginalSearchTerm = this.highlightedItemIndex == 0;
+        if (this.items && this.items[this.highlightedItemIndex]) {
+          this.search = this.items[this.highlightedItemIndex].name;
+          this.changeDetectorRef.detectChanges();
+        }
+        this.virtualScroll.scrollToIndex(this.highlightedItemIndex - 2, "smooth");
+      } else {
+        const item: HTMLElement = holder.children[this.highlightedItemIndex] as HTMLElement;
+        if (item && item.offsetTop + item.offsetHeight >= holder.offsetHeight + holder.scrollTop) {
+          holder.scrollTo(0, item.offsetTop + item.offsetHeight - holder.offsetHeight);
+        }
       }
     } else {
       console.warn('Could not find holder');
