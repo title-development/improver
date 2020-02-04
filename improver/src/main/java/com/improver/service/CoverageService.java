@@ -13,10 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -29,6 +26,7 @@ public class CoverageService {
     @Autowired ServedZipRepository servedZipRepository;
     @Autowired StaffActionLogger staffActionLogger;
     @Autowired BoundariesService boundariesService;
+    @Autowired ExecutorService executorService;
 
     public void updateZipCodesCoverage(List<String> zips, Admin currentAdmin) {
         List<String> existed = servedZipRepository.getAllServedZips();
@@ -55,52 +53,52 @@ public class CoverageService {
     }
 
     public void updateCountiesCoverage(ServedAreasUpdate servedAreasUpdate, Admin currentAdmin) throws ThirdPartyException, InterruptedException {
-        AtomicReference<String> requestFailMessage = new AtomicReference<>();
-        JsonNode zipCodesToDelete = boundariesService.getZipCodesByCounties(servedAreasUpdate.getRemoved().toArray(new String[0]));
-        List<String> toDelete = new ArrayList<>();
-        zipCodesToDelete.get("features")
-            .forEach(f -> toDelete.add(f.get("id").asText()));
-        servedZipRepository.deleteByZipIn(toDelete);
 
-        Set<ServedZip> toAdd = new CopyOnWriteArraySet<>();
-        List<Callable<AbstractMap.SimpleEntry<String, JsonNode>>> requests = new ArrayList<>();
-
-        for (String added : servedAreasUpdate.getAdded()) {
-            requests.add(() -> new AbstractMap.SimpleEntry<>(added, boundariesService.getZipCodesByCounties(added)));
+        if (!servedAreasUpdate.getRemoved().isEmpty()) {
+            JsonNode zipCodesToDelete = boundariesService.getZipCodesByCounties(servedAreasUpdate.getRemoved().toArray(new String[0]));
+            List<String> toDelete = new ArrayList<>();
+            zipCodesToDelete.get("features")
+                .forEach(f -> toDelete.add(f.get("id").asText()));
+            servedZipRepository.deleteByZipIn(toDelete);
         }
 
-        ExecutorService executor = Executors.newWorkStealingPool();
+        if (!servedAreasUpdate.getAdded().isEmpty()) {
+            Set<ServedZip> toAdd = new CopyOnWriteArraySet<>();
+            List<Callable<AbstractMap.SimpleEntry<String, JsonNode>>> requests = new ArrayList<>();
 
-        executor.invokeAll(requests)
-            .parallelStream()
-            .map(future -> {
-                try {
-                    return future.get();
-                }
-                catch (Exception e) {
-                    requestFailMessage.set(e.getMessage());
-                    log.error(e.getMessage());
-                    return null;
-                }
-            })
-            .filter(Objects::nonNull)
-            .forEach(zipCodesToAdd -> {
-                String countyId = zipCodesToAdd.getKey();
-                zipCodesToAdd.getValue().get("features")
-                    .forEach(feature -> {
-                        Iterator<JsonNode> coordinates = feature.get("properties").get("centroid").get("coordinates").elements();
-                        Centroid centroid = new Centroid().setLng(coordinates.next().asDouble())
-                            .setLat(coordinates.next().asDouble());
-                        toAdd.add(new ServedZip(feature.get("id").asText(), countyId, centroid));
-                    });
-            });
+            for (String added : servedAreasUpdate.getAdded()) {
+                requests.add(() -> new AbstractMap.SimpleEntry<>(added, boundariesService.getZipCodesByCounties(added)));
+            }
 
-        if (nonNull(requestFailMessage.get())) {
-            throw new ThirdPartyException(requestFailMessage.get());
+            AtomicReference<String> requestFailMessage = new AtomicReference<>();
+            executorService.invokeAll(requests)
+                .parallelStream()
+                .map(future -> {
+                    try {
+                        return future.get();
+                    } catch (Exception e) {
+                        requestFailMessage.set(e.getMessage());
+                        log.error(e.getMessage());
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .forEach(zipCodesToAdd -> {
+                    String countyId = zipCodesToAdd.getKey();
+                    zipCodesToAdd.getValue().get("features")
+                        .forEach(feature -> {
+                            Iterator<JsonNode> coordinates = feature.get("properties").get("centroid").get("coordinates").elements();
+                            Centroid centroid = new Centroid().setLng(coordinates.next().asDouble())
+                                .setLat(coordinates.next().asDouble());
+                            toAdd.add(new ServedZip(feature.get("id").asText(), countyId, centroid));
+                        });
+                });
+
+            if (nonNull(requestFailMessage.get())) {
+                throw new ThirdPartyException(requestFailMessage.get());
+            }
+            servedZipRepository.saveAll(toAdd);
         }
-
-
-        servedZipRepository.saveAll(toAdd);
         staffActionLogger.logCoverageUpdate(currentAdmin, servedAreasUpdate.getRemoved(), servedAreasUpdate.getAdded());
     }
 
