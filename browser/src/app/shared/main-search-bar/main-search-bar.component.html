@@ -1,4 +1,4 @@
-<form *ngIf="!media.xs && !media.sm" class="main-search-form" [formGroup]="mainSearchFormGroup" (ngSubmit)="search(mainSearchFormGroup)" (mouseleave)="mouseleave($event)">
+<form *ngIf="!media.xs && !media.sm" class="main-search-form" [formGroup]="mainSearchFormGroup" (ngSubmit)="search()" (mouseleave)="mouseleave($event)">
   <div class="service-type-form-group">
     <cv-select class="main-search-service-input"
                [highlightErrors]="false"
@@ -14,6 +14,7 @@
                [dropdownBorder]="false"
                [trackBy]="selectTrackBy"
                (autocompleteSearch)="autocompleteSearch($event)"
+               (onSelect)="search($event.service)"
                (onClose)="mouseleave($event)">
     </cv-select>
     <div class="error-holder" *ngIf="mainSearchFormGroup.get('selectionCtrl').dirty || mainSearchFormGroup.get('selectionCtrl').touched">
@@ -47,7 +48,7 @@
 
     <!--Mobile ( xs, sm ) version-->
 <form *ngIf="media.xs || media.sm" class="mobile-main-search-form" [formGroup]="mainSearchFormGroup"
-      (ngSubmit)="search(mainSearchFormGroup)" (mouseleave)="mouseleave($event)">
+      (ngSubmit)="search()" (mouseleave)="mouseleave($event)">
 
   <div class="mobile-service-type-form-group">
     <input #selectionInput class="mobile-main-search-service-input"

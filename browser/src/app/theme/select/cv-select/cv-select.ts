@@ -200,7 +200,7 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
     if (this.disableItemsMatch) {
       this.onChange(value);
       this.originalSearchTerm = value;
-      this.highlightedItemIndex = 0;
+      this.highlightedItemIndex = -1;
       this.search = value;
     }
 
@@ -371,19 +371,19 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
         this.itemFontSize = 16;
         return this.dropdownHeight * this.itemMinHeight;
       } else {
-        return items.length * this.getItemHeight();
+        return items.length * this.getItemHeight(items);
       }
     } else {
       return 0;
     }
   }
 
-  getItemHeight(): number {
+  getItemHeight(items): number {
     let itemHeight: number;
     let maxItemNameLength = 40;
     let longItemNameHeight = 64;
-    this.items.forEach( item =>{
-      if ((this.mediaQuery.xs || this.mediaQuery.sm || this.mediaQuery.md) && item.name.length > maxItemNameLength){
+    items.forEach(item => {
+      if ((this.mediaQuery.xs || this.mediaQuery.sm || this.mediaQuery.md) && item.name && item.name.length > maxItemNameLength) {
         itemHeight = longItemNameHeight;
       } else {
         itemHeight = this.itemMinHeight;
@@ -457,6 +457,12 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
   }
 
   private onEnter(): void {
+    if (this.highlightedItemIndex == -1 && this.search != null && String(this.search).trim()) {
+      this.renderer.removeChild(this.overlayRef.getBackdrop(), this.overlayRef.getOverlay());
+      this.onSelect.emit(this.search);
+      this.overlayRef.$updateDropdownPosition.next();
+    }
+
     if (!this.grouped) {
       if (this.items && this.items[this.highlightedItemIndex]) {
         this.add(this.items[this.highlightedItemIndex]);

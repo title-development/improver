@@ -101,7 +101,7 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.selected && !changes.selected.firstChange) {
-      this.selectionCtrl.setValue(changes.service.currentValue);
+      this.selectionCtrl.setValue(changes.selected.currentValue);
     }
     if (changes.zipCode && !changes.zipCode.firstChange){
       this.zipCodeCtrl.setValue(changes.zipCode.currentValue);
@@ -109,7 +109,9 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
   }
 
   autocompleteSearch(search): void {
+    setTimeout(() => {
     this.filteredOptions = this.userSearchService.autocompleteSearchResult(search);
+    },);
   }
 
   openMobileSearchBar(){
@@ -122,17 +124,22 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
       });
   }
 
-  search(form: FormGroup): void {
+  search(serviceType?: string): void {
+    if (serviceType) {
+      this.selectionCtrl.setValue(serviceType);
+    }
+
     if (this.mainSearchFormGroup.valid) {
       this.userSearchService.isMobileSearchActive = false;
       const selectionCtrl = this.mainSearchFormGroup.get('selectionCtrl');
       if (selectionCtrl.value) {
         this.userSearchService.findServiceTypeOrTrade(this.mainSearchFormGroup.value);
         if (this.resetAfterFind) {
-          form.reset({
+          this.mainSearchFormGroup.reset({
             zipCodeCtrl: localStorage.getItem('zipCode')? localStorage.getItem('zipCode'): this.lastZipCode
           });
-          Object.values(form.controls).forEach(control => control.markAsPristine());
+          Object.values(this.mainSearchFormGroup.controls).forEach(control => control.markAsPristine());
+          this.changeDetectorRef.detectChanges();
         }
       }
     } else {

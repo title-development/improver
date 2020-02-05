@@ -156,6 +156,8 @@
   &.-border {
     .holder {
       border: 1px solid $primary-500;
+      box-sizing: content-box;
+      width: calc(100% - 2px);
     }
   }
   .cv-input {
