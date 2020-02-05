@@ -1,8 +1,6 @@
-import { Component, ElementRef, Input, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, ElementRef, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { QuestionaryBlock } from '../../../../../model/questionary-model';
 import { QuestionaryControlService } from '../../../../../util/questionary-control.service';
-import { ServiceType } from '../../../../../model/data-model';
 import { RequestOrder } from '../../../../../model/order-model';
 import { Constants } from '../../../../../util/constants';
 import { Messages } from '../../../../../util/messages';
@@ -16,13 +14,10 @@ import { PopUpMessageService } from '../../../../../util/pop-up-message.service'
 import { Router } from '@angular/router';
 import { ProjectActionService } from '../../../../../util/project-action.service';
 import { getErrorMessage, markAsTouched } from '../../../../../util/functions';
-import { CompanyService } from '../../../../../api/services/company.service';
-import { ErrorHandler } from '../../../../../util/error-handler';
 import { finalize, first } from "rxjs/internal/operators";
-import { BoundariesService } from "../../../../../api/services/boundaries.service";
 import { UserService } from "../../../../../api/services/user.service";
 import { AccountService } from "../../../../../api/services/account.service";
-import { CustomerSuggestionService } from "../../../../../api/services/customer-suggestion.service";
+import { TradeService } from "../../../../../api/services/trade.service";
 
 @Component({
   selector: 'default-questionary-block',
@@ -32,10 +27,14 @@ import { CustomerSuggestionService } from "../../../../../api/services/customer-
 
 export class DefaultQuestionaryBlockComponent implements OnInit {
 
-  @Input() mainForm: FormGroup;
-  @Input() serviceType: ServiceType;
-  @Input() questionary: QuestionaryBlock[];
-  @Input() companyId: string;
+  startExpectationOptions = [
+    "I'm flexible",
+    "Within 48 hours",
+    "Within a week",
+    "Within a month",
+    "Within a year",
+  ];
+
   Role = Role;
   defaultQuestionaryForm;
   emailIsUnique;
@@ -52,13 +51,13 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
   hideNextAction: boolean;
   disabledNextAction: boolean;
   postOrderProcessing = false;
-  lastZipCode: string;
   nextStepFn: Function;
 
   @ViewChildren('defaultQuestion') defaultQuestions: QueryList<ElementRef>;
 
   constructor(public questionaryControlService: QuestionaryControlService,
               public projectService: ProjectService,
+              public tradeService: TradeService,
               public projectActionService: ProjectActionService,
               public securityService: SecurityService,
               public userService: UserService,
@@ -66,41 +65,21 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
               public constants: Constants,
               public messages: Messages,
               public popUpMessageService: PopUpMessageService,
-              public customerSuggestionService: CustomerSuggestionService,
               private accountService: AccountService,
               private router: Router,
-              private locationValidate: LocationValidateService,
-              private companyService: CompanyService,
-              private boundariesService: BoundariesService,
-              private errorHandler: ErrorHandler) {
+              private locationValidate: LocationValidateService) {
     this.constants = constants;
     this.messages = messages;
     this.emailIsChecked = false;
     this.filteredStates = constants.states;
-
-    this.lastZipCode = localStorage.getItem('zipCode');
-
-    this.securityService.onUserInit.subscribe(() => {
-        this.getLastCustomerZipCode();
-      }
-    );
   }
 
   ngOnInit(): void {
-    this.defaultQuestionaryForm = this.mainForm.get('defaultQuestionaryGroup');
+    this.defaultQuestionaryForm = this.questionaryControlService.mainForm.get('defaultQuestionaryGroup');
   }
 
   isValid(name) {
     return this.defaultQuestionaryForm.get(name).valid;
-  }
-
-  getLastCustomerZipCode() {
-    if (this.securityService.hasRole(Role.CUSTOMER) || this.securityService.hasRole(Role.ANONYMOUS)) {
-      this.customerSuggestionService.lastCustomerZipCode$
-        .subscribe(
-          zipCode => this.lastZipCode = zipCode
-        )
-    }
   }
 
   nextQuestion(name, handler?: Function) {
@@ -125,8 +104,8 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     if (this.questionaryControlService.currentQuestionIndex > -1) {
       this.questionaryControlService.currentQuestionIndex--;
     }
-  }
 
+  }
 
   onSubmit(name?, handler?: Function): void {
     if (name) {
@@ -164,7 +143,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
   }
 
   saveProjectToStorage() {
-    let requestOrder = RequestOrder.build(this.mainForm.getRawValue(), this.serviceType);
+    let requestOrder = RequestOrder.build(this.questionaryControlService.mainForm.getRawValue(), this.questionaryControlService.serviceType);
     let unsavedProjects = {};
     let date = new Date().toISOString();
     unsavedProjects[date] = requestOrder;
@@ -173,16 +152,8 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
 
   saveProject(): void {
     this.disabledNextAction = true;
-    const requestOrder = RequestOrder.build(this.mainForm.getRawValue(), this.serviceType);
+    const requestOrder = RequestOrder.build(this.questionaryControlService.mainForm.getRawValue(), this.questionaryControlService.serviceType);
     this.postOrderProcessing = true;
-    if (this.companyId) {
-      this.companyService.postOrder(requestOrder, this.companyId).subscribe(
-        result => this.orderSuccess(requestOrder),
-        err => {
-          this.postOrderProcessing = false;
-        }
-      );
-    } else {
       this.projectService.postOrder(requestOrder).subscribe(
         result => this.orderSuccess(requestOrder),
         err => {
@@ -190,7 +161,6 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
           this.postOrderProcessing = false;
         }
       );
-    }
   }
 
   orderSuccess(requestOrder: RequestOrder): void {
@@ -217,7 +187,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
    * Location
    */
 
-  autocompleteSearch(search): void {
+  autocompleteStateSearch(search): void {
     if (search && search.length > 0) {
       const regExp: RegExp = new RegExp(`^${search.trim()}`, 'i');
       this.filteredStates = this.constants.states.filter(state => Object.values(state).some(str => regExp.test(str as string)));
@@ -305,7 +275,6 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     this.processingPhoneValidation = true;
   }
 
-
   onPhoneValidated() {
     this.disabledNextAction = false;
     this.processingPhoneValidation = false;
@@ -313,24 +282,8 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     this.nextStepFn.call(this,"customerPersonalInfo")
   }
 
-  submitZip() {
-    console.log(this.defaultQuestionaryForm.get('projectLocation.zip'));
-    this.projectActionService.zipIsChecking = true;
-    this.boundariesService.isZipSupported(this.defaultQuestionaryForm.get('projectLocation.zip').value).subscribe(
-      supported => {
-        this.projectActionService.zipIsChecking = false;
-        this.projectActionService.zipIsSupported = supported;
-        if (supported) {
-          this.customerSuggestionService.saveUserSearchTerm(this.serviceType.name, this.defaultQuestionaryForm.get('projectLocation.zip').value, false);
-          this.nextStep();
-        }
-      },
-      error => {
-        this.projectActionService.zipIsChecking = false;
-        console.log(error)
-      }
-    );
-
+  eraseSelectedServiceType() {
+    this.questionaryControlService.serviceType = null;
   }
 
 }

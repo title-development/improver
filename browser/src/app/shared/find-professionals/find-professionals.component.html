@@ -16,14 +16,14 @@
       <div class="dropdown-content">
         <!--TODO: move to shared search component-->
         <form class="search-form"
-              #form="ngForm"
+              #form
               [formGroup]="mainSearchFormGroup"
               (ngSubmit)="searchServiceType(mainSearchFormGroup)"
               (mouseleave)="mouseleave($event)">
           <div class="service-type-form-group">
             <cv-select class="main-search-service-input"
                        label="Find service or professionals"
-                       [formControl]="serviceTypeCtrl"
+                       [formControl]="selectionCtrl"
                        [items]="filteredServiceTypes"
                        [disableItemsMatch]="true"
                        [autocomplete]="true"
@@ -37,9 +37,9 @@
                        (onClose)="mouseleave($event)"></cv-select>
 
             <div class="messages-block"
-                 *ngIf="mainSearchFormGroup.get('serviceTypeCtrl').dirty || mainSearchFormGroup.get('serviceTypeCtrl').touched">
+                 *ngIf="mainSearchFormGroup.get('selectionCtrl').dirty || mainSearchFormGroup.get('selectionCtrl').touched">
               <div class="main-input-message mat-error"
-                   *ngIf="mainSearchFormGroup.get('serviceTypeCtrl').errors?.required">
+                   *ngIf="mainSearchFormGroup.get('selectionCtrl').errors?.required">
                 Please tell us what do you need
               </div>
             </div>

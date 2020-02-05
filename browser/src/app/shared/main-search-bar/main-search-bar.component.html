@@ -1,10 +1,10 @@
-<form *ngIf="!media.xs && !media.sm" class="main-search-form" [formGroup]="mainSearchFormGroup" (ngSubmit)="searchServiceType(mainSearchFormGroup)" (mouseleave)="mouseleave($event)">
+<form *ngIf="!media.xs && !media.sm" class="main-search-form" [formGroup]="mainSearchFormGroup" (ngSubmit)="search(mainSearchFormGroup)" (mouseleave)="mouseleave($event)">
   <div class="service-type-form-group">
     <cv-select class="main-search-service-input"
                [highlightErrors]="false"
                label="Pipe, carpet, paint, etc."
-               [formControl]="serviceTypeCtrl"
-               [items]="filteredServiceTypes"
+               [formControl]="selectionCtrl"
+               [items]="filteredOptions"
                [disableItemsMatch]="true"
                [autocomplete]="true"
                [allowAnyValue]="true"
@@ -16,8 +16,8 @@
                (autocompleteSearch)="autocompleteSearch($event)"
                (onClose)="mouseleave($event)">
     </cv-select>
-    <div class="error-holder" *ngIf="mainSearchFormGroup.get('serviceTypeCtrl').dirty || mainSearchFormGroup.get('serviceTypeCtrl').touched">
-      <div *ngIf="mainSearchFormGroup.get('serviceTypeCtrl').errors?.required">
+    <div class="error-holder" *ngIf="mainSearchFormGroup.get('selectionCtrl').dirty || mainSearchFormGroup.get('selectionCtrl').touched">
+      <div *ngIf="mainSearchFormGroup.get('selectionCtrl').errors?.required">
         Please tell us what do you need
       </div>
     </div>
@@ -47,11 +47,11 @@
 
     <!--Mobile ( xs, sm ) version-->
 <form *ngIf="media.xs || media.sm" class="mobile-main-search-form" [formGroup]="mainSearchFormGroup"
-      (ngSubmit)="searchServiceType(mainSearchFormGroup)" (mouseleave)="mouseleave($event)">
+      (ngSubmit)="search(mainSearchFormGroup)" (mouseleave)="mouseleave($event)">
 
   <div class="mobile-service-type-form-group">
-    <input #serviceType class="mobile-main-search-service-input"
-           [formControl]="serviceTypeCtrl"
+    <input #selectionInput class="mobile-main-search-service-input"
+           [formControl]="selectionCtrl"
            type="text"
            placeholder="Pipe, carpet, paint, etc."
            (click)="openMobileSearchBar()">

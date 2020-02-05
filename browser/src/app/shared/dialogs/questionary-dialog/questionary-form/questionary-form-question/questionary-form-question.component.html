@@ -1,4 +1,4 @@
-<div [formGroup]="mainForm" *ngIf="index == questionaryControlService.currentQuestionIndex" class="question-wrapper">
+<div [formGroup]="questionaryControlService.mainForm" *ngIf="index == questionaryControlService.currentQuestionIndex" class="question-wrapper">
   <div [ngSwitch]="question.type" [formGroupName]="'questionaryGroup'">
 
     <div *ngSwitchCase="QuestionType.TEXT_INPUT" class="form-element-wrapper text-input-wrapper">

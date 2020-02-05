@@ -86,7 +86,8 @@
       font-size: 16px;
       color: $white;
       bottom: 20px;
-      left: 15px;
+      left: 16px;
+      padding-right: 16px;
       position: absolute;
 
       @include response(xs) {

@@ -1,57 +1,4 @@
-<div class="form-row" [formGroup]="mainForm">
-
-  <div #defaultQuestion class="form-element-wrapper text-input-wrapper" [formGroupName]="'defaultQuestionaryGroup'"
-       *ngIf="projectActionService.zipIsSupported && (questionaryControlService.currentQuestionIndex == -1)">
-    <h2 class="question-title">Where do you need a {{questionaryControlService.serviceType.name}}?</h2>
-    <div class="text-input-group zip-check-group" [formGroupName]="'projectLocation'"
-         [cvSpinner]="projectActionService.zipIsChecking"
-         [cvSpinnerSize]="50"
-         [cvSpinnerBackground]="true">
-      <cv-input-field>
-        <cv-field-label>Zip</cv-field-label>
-        <input [(ngModel)]="lastZipCode"
-               cv-input type="text"
-               placeholder="Zip"
-               name="zip"
-               maxlength="5"
-               [formControlName]="'zip'"
-               numericMask
-               pattern="{{constants.patterns.zipcode}}"
-               required>
-        <cv-field-error
-          *ngIf="defaultQuestionaryForm.get('projectLocation.zip').dirty || defaultQuestionaryForm.get('projectLocation.zip').touched">
-          <span *ngIf="defaultQuestionaryForm.get('projectLocation.zip').errors?.required">Is required</span>
-          <span
-            *ngIf="defaultQuestionaryForm.get('projectLocation.zip').errors?.pattern">{{messages.errors.zip.pattern}}</span>
-        </cv-field-error>
-      </cv-input-field>
-
-    </div>
-
-    <div class="questionary-dialog-footer">
-      <button class="questionary-next-button" (click)="submitZip()" type="button"
-              [disabled]="defaultQuestionaryForm.get('projectLocation.zip').invalid">
-        Next
-      </button>
-    </div>
-
-  </div>
-
-  <div #defaultQuestion class="form-element-wrapper text-input-wrapper"
-       *ngIf="!projectActionService.zipIsSupported">
-    <h2 class="question-title">Home Improve is not serving {{defaultQuestionaryForm.get('projectLocation.zip').value}}</h2>
-
-    <div class="unsupported-zip-message">
-      We are coming to your area soon.
-    </div>
-
-    <div class="questionary-dialog-footer">
-      <button class="questionary-next-button" (click)="close()" type="button"
-              [disabled]="defaultQuestionaryForm.get('projectLocation.zip').invalid">
-        Ok
-      </button>
-    </div>
-  </div>
+<div class="form-row" [formGroup]="questionaryControlService.mainForm">
 
   <div #defaultQuestion class="form-element-wrapper radio-button-wrapper" [formGroupName]="'defaultQuestionaryGroup'"
        *ngIf="questionaryControlService.currentQuestionIndex == questionaryControlService.questionaryLength">
@@ -59,11 +6,7 @@
     <div class="radio-button-group">
 
       <cv-radio-group formControlName="startExpectation" required>
-        <cv-radio value="I'm flexible">I'm flexible</cv-radio>
-        <cv-radio value="Within 48 hours">Within 48 hours</cv-radio>
-        <cv-radio value="Within a week">Within a week</cv-radio>
-        <cv-radio value="Within a month">Within a month</cv-radio>
-        <cv-radio value="Within a year">Within a year</cv-radio>
+        <cv-radio *ngFor="let option of startExpectationOptions" [value]="option" [checked]="defaultQuestionaryForm.get('startExpectation').value == option">{{option}}</cv-radio>
       </cv-radio-group>
 
       <div class="question-general-error"
@@ -75,7 +18,7 @@
     </div>
 
     <div class="questionary-dialog-footer">
-      <button class="questionary-previous-button" (click)="previousQuestion()" *ngIf="!questionaryControlService.withZip || questionaryControlService.currentQuestionIndex >= 1" type="button">Back</button>
+      <button class="questionary-previous-button" (click)="previousQuestion(eraseSelectedServiceType)" *ngIf="!questionaryControlService.withZip || questionaryControlService.trade || questionaryControlService.currentQuestionIndex >= 1" type="button">Back</button>
       <button class="questionary-next-button" (click)="nextQuestion('startExpectation')" type="button">Next</button>
     </div>
 
@@ -150,7 +93,7 @@
       <cv-input-field>
         <cv-field-label>State</cv-field-label>
         <cv-select [multiple]="false" [tags]="false" [autocomplete]="true"
-                   (autocompleteSearch)="autocompleteSearch($event)" [items]="filteredStates"
+                   (autocompleteSearch)="autocompleteStateSearch($event)" [items]="filteredStates"
                    valueKey="value"
                    labelKey="label"
                    name="state"
@@ -359,7 +302,11 @@
       </div>
 
       <div class="loading-spinner-wrapper" *ngIf="!emailIsChecked">
-        <i class="imp-icon-loading-spinner animate-spin"></i>
+        <mat-progress-spinner
+          class="example-margin"
+          mode="indeterminate"
+          diameter="30">
+        </mat-progress-spinner>
       </div>
 
     </div>

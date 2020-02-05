@@ -12,7 +12,7 @@
                    [highlightErrors]="false"
                    [dropdownHeight]="dropdownHeight"
                    label="Pipe, carpet, paint, etc."
-                   [formControl]="serviceTypeCtrl"
+                   [formControl]="selectionCtrl"
                    [items]="filteredServiceTypes"
                    [disableItemsMatch]="true"
                    [autocomplete]="true"
@@ -28,8 +28,8 @@
                    (onClose)="mouseleave($event)">
         </cv-select>
         <div class="error-holder"
-             *ngIf="mainSearchFormGroup.get('serviceTypeCtrl').dirty || mainSearchFormGroup.get('serviceTypeCtrl').touched">
-          <div *ngIf="mainSearchFormGroup.get('serviceTypeCtrl').errors?.required">
+             *ngIf="mainSearchFormGroup.get('selectionCtrl').dirty || mainSearchFormGroup.get('selectionCtrl').touched">
+          <div *ngIf="mainSearchFormGroup.get('selectionCtrl').errors?.required">
             Please tell us what do you need
           </div>
         </div>

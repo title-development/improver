@@ -19,7 +19,7 @@ export class MobileMainSearchBarComponent implements OnInit {
   resetAfterFind: boolean = false;
   searchResultMessageText: string;
   mainSearchFormGroup: FormGroup;
-  serviceTypeCtrl: FormControl;
+  selectionCtrl: FormControl;
   zipCodeCtrl: FormControl;
   filteredServiceTypes: Array<ServiceType> = [];
   popularServiceTypes: Array<ServiceType> = [];
@@ -38,10 +38,10 @@ export class MobileMainSearchBarComponent implements OnInit {
 
   ngOnInit() {
     let group: any = {};
-    group.serviceTypeCtrl = new FormControl('', Validators.required);
+    group.selectionCtrl = new FormControl('', Validators.required);
     group.zipCodeCtrl = new FormControl('', Validators.compose([Validators.required, Validators.pattern(this.constants.patterns.zipcode)]));
     this.mainSearchFormGroup = new FormGroup(group);
-    this.serviceTypeCtrl = group.serviceTypeCtrl;
+    this.selectionCtrl = group.selectionCtrl;
     this.zipCodeCtrl = group.zipCodeCtrl;
 
     this.customerSuggestionService.onZipChange.subscribe(zip => this.zipCodeCtrl.setValue(zip));
@@ -60,17 +60,17 @@ export class MobileMainSearchBarComponent implements OnInit {
 
   searchServiceType(serviceType?: string): void {
     if (serviceType) {
-      this.serviceTypeCtrl.setValue(serviceType);
+      this.selectionCtrl.setValue(serviceType);
     }
 
     if (this.mainSearchFormGroup.valid) {
       this.userSearchService.isMobileSearchActive = true;
-      const serviceTypeCtrl = this.mainSearchFormGroup.get('serviceTypeCtrl');
-      if (serviceTypeCtrl.value) {
-        this.userSearchService.findServiceType(this.mainSearchFormGroup.value);
-        this.searchResults = this.userSearchService.getSearchResults(serviceTypeCtrl.value.trim());
+      const selectionCtrl = this.mainSearchFormGroup.get('selectionCtrl');
+      if (selectionCtrl.value) {
+        this.userSearchService.findServiceTypeOrTrade(this.mainSearchFormGroup.value);
+        this.searchResults = this.userSearchService.getSearchResults(selectionCtrl.value.trim());
         if (this.searchResults.length == 0) {
-          this.searchResultMessageText = 'No results were found for \"' + serviceTypeCtrl.value + '\". The following are results for a similar search.';
+          this.searchResultMessageText = 'No results were found for \"' + selectionCtrl.value + '\". The following are results for a similar search.';
           this.searchResults = this.popularServiceTypes;
         } else {
           this.searchResultMessageText = '';

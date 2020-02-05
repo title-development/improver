@@ -1,4 +1,4 @@
-<form class="questionary-form" [formGroup]="mainForm" [ngClass]="changeBg ? 'bg-white' : 'bg-image'">
+<form class="questionary-form" [formGroup]="questionaryControlService.mainForm" [ngClass]="questionaryControlService.showQuestionary ? 'bg-white' : 'bg-image'">
   <div class="start-screen" *ngIf="!questionaryControlService.showQuestionary && !questionaryControlService.questionaryIsLoading">
 
     <div class="logo-text">HOME IMPROVE</div>
@@ -12,13 +12,17 @@
   </div>
   <div *ngIf="questionaryControlService.showQuestionary" class="start-white-screen" fxFlexFill>
     <ng-container>
-      <!--TODO: check if <div class="form-row"> container is necessary-->
-      <div class="form-row" *ngFor="let question of questionary; let i=index">
-        <questionary-form-question [question]="question" [mainForm]="mainForm" [index]="i"></questionary-form-question>
-      </div>
 
-      <default-questionary-block [mainForm]="mainForm" [serviceType]="serviceType" [questionary]="questionary" [companyId]="companyId">
+      <pre-questionary-block>
+      </pre-questionary-block>
+
+        <ng-template ngFor let-question [ngForOf]="questionaryControlService.questionary?.questions" let-i="index">
+          <questionary-form-question [question]="question" [index]="i"></questionary-form-question>
+        </ng-template>
+
+      <default-questionary-block>
       </default-questionary-block>
+
     </ng-container>
   </div>
 

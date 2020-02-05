@@ -13,6 +13,11 @@
     flex: 1;
     height: 100%;
     min-height: 140px;
+
+    &.fix-height {
+      height: 436px;
+    }
+
   }
 
   @include response-to(sm) {
@@ -109,20 +114,15 @@
   top: -18px;
 }
 
-.fix-height {
-  height: 436px;
-}
+
 
 .loading-spinner-wrapper {
   display: flex;
+  flex: 1;
   flex-wrap: wrap;
   height: 100%;
   align-items: center;
   justify-content: center;
-    .imp-icon-loading-spinner {
-      font-size: 30px;
-      color: $primary-500;
-    }
 }
 
 

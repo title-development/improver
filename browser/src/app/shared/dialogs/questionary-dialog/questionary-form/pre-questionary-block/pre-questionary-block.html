@@ -1,0 +1,79 @@
+<div class="form-row" [formGroup]="questionaryControlService.mainForm">
+
+  <div #defaultQuestion class="form-element-wrapper text-input-wrapper" [formGroupName]="'defaultQuestionaryGroup'"
+       *ngIf="questionaryControlService.trade && !questionaryControlService.serviceType">
+    <h2 class="question-title">Please, specify service that you need?</h2>
+    <div class="text-input-group"
+         [cvSpinner]="false"
+         [cvSpinnerSize]="50"
+         [cvSpinnerBackground]="true">
+      <cv-input-field>
+        <input [(ngModel)]="serviceSearch" [ngModelOptions]="{standalone: true}"
+               cv-input type="text"
+               placeholder="Service that you need..."
+               name="serviceSearch" (ngModelChange)="autocompleteServiceSelectionSearch($event)">
+        <cv-field-error
+          *ngIf="defaultQuestionaryForm.get('serviceType').dirty || defaultQuestionaryForm.get('serviceType').touched">
+          <span *ngIf="defaultQuestionaryForm.get('serviceType').errors?.required">Is required</span>
+        </cv-field-error>
+      </cv-input-field>
+
+      <div class="filtered-services-wrapper">
+        <perfect-scrollbar>
+          <cv-radio-group name="serviceType" formControlName="serviceType" [items]="filteredServices" labelKey="name">
+          </cv-radio-group>
+        </perfect-scrollbar>
+      </div>
+
+    </div>
+
+    <div class="questionary-dialog-footer">
+      <button class="questionary-next-button" (click)="submitServiceTypeSelection()" type="button"
+              [disabled]="defaultQuestionaryForm.get('serviceType').invalid">
+        Next
+      </button>
+    </div>
+
+  </div>
+
+
+
+  <div #defaultQuestion class="form-element-wrapper text-input-wrapper" [formGroupName]="'defaultQuestionaryGroup'"
+       *ngIf="projectActionService.zipIsSupported && !questionaryControlService.withZip && (questionaryControlService.currentQuestionIndex == -1)">
+    <h2 class="question-title">Where do you need a {{questionaryControlService.serviceType.name}}?</h2>
+    <div class="text-input-group zip-check-group" [formGroupName]="'projectLocation'"
+         [cvSpinner]="projectActionService.zipIsChecking"
+         [cvSpinnerSize]="50"
+         [cvSpinnerBackground]="true">
+      <cv-input-field>
+        <cv-field-label>Zip</cv-field-label>
+        <input [(ngModel)]="lastZipCode"
+               cv-input type="text"
+               placeholder="Zip"
+               name="zip"
+               maxlength="5"
+               [formControlName]="'zip'"
+               numericMask
+               pattern="{{constants.patterns.zipcode}}"
+               required>
+        <cv-field-error
+          *ngIf="defaultQuestionaryForm.get('projectLocation.zip').dirty || defaultQuestionaryForm.get('projectLocation.zip').touched">
+          <span *ngIf="defaultQuestionaryForm.get('projectLocation.zip').errors?.required">Is required</span>
+          <span
+            *ngIf="defaultQuestionaryForm.get('projectLocation.zip').errors?.pattern">{{messages.errors.zip.pattern}}</span>
+        </cv-field-error>
+      </cv-input-field>
+
+    </div>
+
+    <div class="questionary-dialog-footer">
+      <button class="questionary-next-button" (click)="submitZip()" type="button"
+              [disabled]="defaultQuestionaryForm.get('projectLocation.zip').invalid">
+        Next
+      </button>
+    </div>
+
+  </div>
+
+</div>
+

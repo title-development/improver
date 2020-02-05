@@ -23,8 +23,6 @@ import { getErrorMessage } from "../../../util/functions";
 
 export class QuestionaryDialogComponent implements OnInit, ComponentCanDeactivate {
 
-  serviceType: ServiceType;
-  questionary: QuestionaryBlock[];
   companyId: string;
   model = {};
 
@@ -56,22 +54,10 @@ export class QuestionaryDialogComponent implements OnInit, ComponentCanDeactivat
   }
 
   ngOnInit() {
-    this.getQuestionary(this.serviceType.id);
+    this.questionaryControlService.initFormGroup()
   }
 
   onSubmit(questionaryForm: NgForm) {
-  }
-
-  getQuestionary(workId) {
-    this.questionaryControlService.questionaryIsLoading = true;
-    this.serviceTypeService.getQuestionary(workId)
-      .subscribe(
-        (questionary: ServiceQuestionaryModel )=> {
-          this.questionary = questionary.questions;
-          this.questionaryControlService.updateQuestionaryTotalLength(this.questionary.length, questionary.hasPhone);
-        },
-        err => this.popUpService.showError(getErrorMessage(err))
-      );
   }
 
   close() {

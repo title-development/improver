@@ -37,18 +37,17 @@ import { MatDialogRef } from "@angular/material/dialog";
   styleUrls: ['./main-search-bar.component.scss']
 })
 export class MainSearchBarComponent implements OnInit, OnChanges {
-  @Input() service: string;
+  @Input() selected: string;
   @Input() zipCode: number;
   @Input() resetAfterFind: boolean = true;
   @Input() mainButtonText: string = 'GET STARTED';
   @Output() notMatch: EventEmitter<any> = new EventEmitter<any>();
-  @ViewChild("serviceType") serviceTypeRef: ElementRef;
+  @ViewChild("selectionInput") selectionInputRef: ElementRef;
 
   mainSearchFormGroup: FormGroup;
-  serviceTypeCtrl: FormControl;
+  selectionCtrl: FormControl;
   zipCodeCtrl: FormControl;
-  filteredServiceTypes: Array<ServiceType> = [];
-  serviceTypes: Array<ServiceType> = [];
+  filteredOptions: Array<any> = [];
   popularServiceTypes: Array<ServiceType> = [];
   mobileSearchDialogRef: MatDialogRef<any>;
   lastZipCode: string;
@@ -84,10 +83,10 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     let group: any = {};
-    group.serviceTypeCtrl = new FormControl(this.service, Validators.required);
+    group.selectionCtrl = new FormControl(this.selected, Validators.required);
     group.zipCodeCtrl = new FormControl(this.zipCode, Validators.compose([Validators.required, Validators.pattern(this.constants.patterns.zipcode)]));
     this.mainSearchFormGroup = new FormGroup(group);
-    this.serviceTypeCtrl = group.serviceTypeCtrl;
+    this.selectionCtrl = group.selectionCtrl;
     this.zipCodeCtrl = group.zipCodeCtrl;
 
     this.customerSuggestionService.onZipChange.subscribe(zip=> this.zipCodeCtrl.setValue(zip));
@@ -101,8 +100,8 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.service && !changes.service.firstChange) {
-      this.serviceTypeCtrl.setValue(changes.service.currentValue);
+    if (changes.selected && !changes.selected.firstChange) {
+      this.selectionCtrl.setValue(changes.service.currentValue);
     }
     if (changes.zipCode && !changes.zipCode.firstChange){
       this.zipCodeCtrl.setValue(changes.zipCode.currentValue);
@@ -110,18 +109,11 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
   }
 
   autocompleteSearch(search): void {
-    this.filteredServiceTypes = this.userSearchService.autocompleteSearchResult(search);
-  }
-
-  searchByRegex(search: string) {
-    this.filteredServiceTypes = this.serviceTypes.filter(service => {
-      const regExp: RegExp = new RegExp(`\\b${search}`, 'gmi');
-      return regExp.test(service.name);
-    });
+    this.filteredOptions = this.userSearchService.autocompleteSearchResult(search);
   }
 
   openMobileSearchBar(){
-    this.serviceTypeRef.nativeElement.blur();
+    this.selectionInputRef.nativeElement.blur();
     this.dialog.closeAll();
     this.mobileSearchDialogRef = this.dialog.open(dialogsMap['mobile-main-search-bar'], mobileMainDialogBarConfig );
     this.mobileSearchDialogRef.afterClosed()
@@ -130,12 +122,12 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
       });
   }
 
-  searchServiceType(form: FormGroup): void {
+  search(form: FormGroup): void {
     if (this.mainSearchFormGroup.valid) {
       this.userSearchService.isMobileSearchActive = false;
-      const serviceTypeCtrl = this.mainSearchFormGroup.get('serviceTypeCtrl');
-      if (serviceTypeCtrl.value) {
-        this.userSearchService.findServiceType(this.mainSearchFormGroup.value);
+      const selectionCtrl = this.mainSearchFormGroup.get('selectionCtrl');
+      if (selectionCtrl.value) {
+        this.userSearchService.findServiceTypeOrTrade(this.mainSearchFormGroup.value);
         if (this.resetAfterFind) {
           form.reset({
             zipCodeCtrl: localStorage.getItem('zipCode')? localStorage.getItem('zipCode'): this.lastZipCode
@@ -151,7 +143,7 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
   getPopularServiceTypes() {
     this.customerSuggestionService.popular$
       .subscribe(
-        popularServiceTypes => this.popularServiceTypes = this.filteredServiceTypes = popularServiceTypes
+        popularServiceTypes => this.popularServiceTypes = this.filteredOptions = popularServiceTypes
       );
   }
 
@@ -167,7 +159,7 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
     }
   }
 
-  selectTrackBy(index: number, item: ServiceType): number {
+  selectTrackBy(index, item): number {
     return item.id;
   }
 

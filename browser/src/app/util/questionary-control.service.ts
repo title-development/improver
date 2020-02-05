@@ -2,8 +2,13 @@ import { Injectable } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { QuestionaryBlock, QuestionType } from '../model/questionary-model';
 import { SecurityService } from '../auth/security.service';
-import { Account, ServiceType } from '../model/data-model';
+import { Account, ServiceType, Trade } from '../model/data-model';
 import { Role } from '../model/security-model';
+import { ServiceQuestionaryModel } from "../model/service-questionary-model";
+import { getErrorMessage } from "./functions";
+import { ServiceTypeService } from "../api/services/service-type.service";
+import { PopUpMessageService } from "./pop-up-message.service";
+import { finalize } from "rxjs/operators";
 
 @Injectable()
 export class QuestionaryControlService {
@@ -16,13 +21,15 @@ export class QuestionaryControlService {
 
   public showQuestionary = false;
   public questionaryIsLoading = false;
-  public currentQuestionIndex = -1;
+  public currentQuestionIndex = -2;
   public withZip: boolean = false;
+  public needServiceTypeSelect: boolean = false;
   public customerHasPhone: boolean = false;
   public questionaryLength = 0;
   public totalQuestionaryLength;
 
   public zip = '';
+  public trade: Trade;
   public serviceType: ServiceType;
   public customerAccount: Account = {
     id: 0,
@@ -33,10 +40,15 @@ export class QuestionaryControlService {
     phone: '',
   };
 
-  constructor(private securityService: SecurityService) {
+  mainForm;
+  questionary: ServiceQuestionaryModel;
+
+  constructor(private securityService: SecurityService,
+              private serviceTypeService: ServiceTypeService,
+              private popUpService: PopUpMessageService) {
   }
 
-  toFormGroup(questions: QuestionaryBlock[]) {
+  toFormGroup(questions: QuestionaryBlock[] = []) {
     let mainFormGroup: any = {};
     let questionaryFormGroup: any = {};
     let defaultQuestionaryFormGroup: any = {};
@@ -60,7 +72,31 @@ export class QuestionaryControlService {
     return new FormGroup(mainFormGroup);
   }
 
+  initFormGroup() {
+    this.questionaryIsLoading = true;
+
+    if (this.serviceType) {
+      this.serviceTypeService.getQuestionary(this.serviceType.id)
+        .pipe(finalize(() => this.questionaryIsLoading = false))
+        .subscribe(
+        (questionary: ServiceQuestionaryModel )=> {
+          this.questionary = questionary;
+          this.updateQuestionaryTotalLength(this.questionary.questions.length, this.questionary.hasPhone);
+          this.mainForm = this.toFormGroup(this.questionary.questions);
+        },
+        err => this.popUpService.showError(getErrorMessage(err))
+      );
+
+    } else {
+      this.mainForm = this.toFormGroup([]);
+      this.questionaryIsLoading = false;
+    }
+
+  }
+
   addDefaultQuestions(group: any) {
+
+    group.serviceType = new FormControl('');
 
     group.startExpectation = new FormControl('', Validators.required);
     group.notes = new FormControl('');
@@ -84,7 +120,7 @@ export class QuestionaryControlService {
 
   resetQuestionaryForm() {
     this.showQuestionary = false;
-    this.currentQuestionIndex = -1;
+    this.currentQuestionIndex = -2;
     this.questionaryLength = 0;
     this.totalQuestionaryLength = 0;
     this.defaultQuestionaryLength = this.DEFAULT_QUESTIONARY_LENGTH;
@@ -114,7 +150,6 @@ export class QuestionaryControlService {
     }
 
     this.totalQuestionaryLength = this.questionaryLength + this.defaultQuestionaryLength;
-    this.questionaryIsLoading = false;
   }
 
 }

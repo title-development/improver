@@ -5,7 +5,7 @@ import { QuestionaryFormComponent } from './questionary-dialog/questionary-form/
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared.module';
-import { MatCheckboxModule, MatRadioModule } from '@angular/material';
+import { MatCheckboxModule, MatProgressSpinnerModule, MatRadioModule } from '@angular/material';
 import { CvButtonModule } from '../../theme/button/cv-button.module';
 import { CvIconModule } from '../../theme/icon/cv-icon-module';
 import { CvSelectModule } from '../../theme/select/cv-select-module';
@@ -24,6 +24,7 @@ import { BoundariesService } from '../../api/services/boundaries.service';
 import { ReferralService } from '../../api/services/referral.service';
 import { ClipboardModule } from 'ngx-clipboard';
 import { MatDialogModule } from '@angular/material/dialog';
+import { PreQuestionaryBlock } from "./questionary-dialog/questionary-form/pre-questionary-block/pre-questionary-block";
 
 @NgModule({
   imports: [
@@ -46,12 +47,14 @@ import { MatDialogModule } from '@angular/material/dialog';
     CvDateRangePickerModule,
     PerfectScrollbarModule,
     ClipboardModule,
-    MatDialogModule
+    MatDialogModule,
+    MatProgressSpinnerModule
   ],
   declarations: [
     QuestionaryFormComponent,
     QuestionaryFormQuestionComponent,
     DefaultQuestionaryBlockComponent,
+    PreQuestionaryBlock,
     ...dialogs,
   ],
   entryComponents: [

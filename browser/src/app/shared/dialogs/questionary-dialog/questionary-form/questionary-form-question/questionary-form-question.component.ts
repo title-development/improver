@@ -14,7 +14,6 @@ import { MatDialog } from "@angular/material";
 
 export class QuestionaryFormQuestionComponent implements OnInit{
   @Input() question: QuestionaryBlock;
-  @Input() mainForm: FormGroup;
   @Input() index: number;
   public QuestionType = QuestionType;
   public questionaryForm;
@@ -28,7 +27,7 @@ export class QuestionaryFormQuestionComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    this.questionaryForm = this.mainForm.get('questionaryGroup');
+    this.questionaryForm = this.questionaryControlService.mainForm.get('questionaryGroup');
   }
 
   get isValid() {

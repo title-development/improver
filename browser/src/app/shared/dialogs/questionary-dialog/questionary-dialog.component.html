@@ -3,7 +3,7 @@
 
     <div class="questionary-header" [ngClass]="{'start-screen': !questionaryControlService.showQuestionary}">
 
-      <div class="questionary-progress-bar-wrapper" fxLayoutAlign="center center">
+      <div class="questionary-progress-bar-wrapper" fxLayoutAlign="center center" *ngIf="!questionaryControlService.questionaryIsLoading">
         <div class="questionary-progress-bar-empty">
           <div class="questionary-progress-bar"
                [ngStyle]="{'width': checkProgressBarWidth()}"></div>
@@ -14,10 +14,14 @@
 
     </div>
 
-    <questionary-form [questionary]="questionary" *ngIf="questionary" [serviceType]="serviceType" [companyId]="companyId"></questionary-form>
+    <questionary-form *ngIf="!questionaryControlService.questionaryIsLoading"></questionary-form>
 
     <div class="loading-spinner-wrapper" *ngIf="questionaryControlService.questionaryIsLoading">
-        <i class="imp-icon-loading-spinner animate-spin" ></i>
+      <mat-progress-spinner
+        class="example-margin"
+        mode="indeterminate"
+        diameter="30">
+      </mat-progress-spinner>
     </div>
 
   </div>

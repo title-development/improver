@@ -28,7 +28,7 @@ import { UserSearchService } from "../../api/services/user-search.service";
 
 export class FindProfessionalsComponent implements OnInit {
   mainSearchFormGroup: FormGroup;
-  serviceTypeCtrl: FormControl;
+  selectionCtrl: FormControl;
   zipCodeCtrl: FormControl;
   suggestedServiceTypes: Array<ServiceType> = [];
   popularServiceTypes: Array<ServiceType> = [];
@@ -54,14 +54,14 @@ export class FindProfessionalsComponent implements OnInit {
               public findProfessionalService: FindProfessionalService) {
     let group: any = {};
 
-    group.serviceTypeCtrl = new FormControl(null, Validators.required);
+    group.selectionCtrl = new FormControl(null, Validators.required);
     group.zipCodeCtrl = new FormControl(
       null,
       Validators.compose([Validators.required, Validators.pattern(constants.patterns.zipcode)])
     );
 
     this.mainSearchFormGroup = new FormGroup(group);
-    this.serviceTypeCtrl = group.serviceTypeCtrl;
+    this.selectionCtrl = group.selectionCtrl;
     this.zipCodeCtrl = group.zipCodeCtrl;
 
     this.getSuggestedServiceTypes();
@@ -144,7 +144,7 @@ export class FindProfessionalsComponent implements OnInit {
   searchServiceTypeByRecentSearch(recentSearch: any){
     this.findProfessionalService.close();
     this.mainSearchFormGroup.setValue({
-      serviceTypeCtrl: recentSearch,
+      selectionCtrl: recentSearch,
       zipCodeCtrl: this.lastZipCode
     });
     if (this.lastZipCode){
@@ -158,7 +158,7 @@ export class FindProfessionalsComponent implements OnInit {
     if (this.mainSearchFormGroup.valid) {
       this.userSearchService.isMobileSearchActive = false;
       this.findProfessionalService.close();
-      this.userSearchService.findServiceType(this.mainSearchFormGroup.value);
+      this.userSearchService.findServiceTypeOrTrade(this.mainSearchFormGroup.value);
       form.reset({
         zipCodeCtrl: localStorage.getItem('zipCode')? localStorage.getItem('zipCode'): this.lastZipCode
       });

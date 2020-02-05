@@ -281,7 +281,7 @@ export class ProjectActionService {
         });
   }
 
-  openQuestionary(serviceType: ServiceType, zip = undefined): void {
+  openQuestionary(selected, zip = undefined): void {
     switch (this.securityService.getRole()) {
       case Role.INCOMPLETE_PRO:
         event.preventDefault();
@@ -300,10 +300,9 @@ export class ProjectActionService {
               this.zipIsSupported = supported;
 
               if (this.zipIsSupported) {
-                this.questionaryControlService.currentQuestionIndex++;
                 this.questionaryControlService.withZip = true;
-                this.customerSuggestionService.saveUserSearchTerm(serviceType.name, this.questionaryControlService.zip, true);
-                this.openQuestionaryModal(serviceType);
+                this.customerSuggestionService.saveUserSearchTerm(selected.name, this.questionaryControlService.zip, true);
+                this.openQuestionaryModal(selected);
               } else {
                 this.openZipNotSupportedModal(zip);
                 this.questionaryControlService.resetQuestionaryForm();
@@ -315,7 +314,7 @@ export class ProjectActionService {
             }
           );
         } else {
-          this.openQuestionaryModal(serviceType);
+          this.openQuestionaryModal(selected);
         }
         break;
       default:
@@ -324,9 +323,15 @@ export class ProjectActionService {
     }
   }
 
-  private openQuestionaryModal(serviceType) {
+  private openQuestionaryModal(selected) {
     this.dialog.closeAll();
-    this.questionaryControlService.serviceType = serviceType;
+    if (!selected.services) {
+      this.questionaryControlService.serviceType = selected;
+    } else {
+      this.questionaryControlService.trade = selected;
+      this.questionaryControlService.needServiceTypeSelect = true;
+    }
+    this.checkPreQuestionary();
     this.questionaryDialogRef = this.dialog.open(dialogsMap['questionary-dialog'], questionaryDialogConfig);
     this.questionaryDialogRef
       .afterClosed()
@@ -334,13 +339,23 @@ export class ProjectActionService {
         this.questionaryControlService.resetQuestionaryForm();
         this.reset();
         this.questionaryDialogRef = null;
+        this.questionaryControlService.serviceType = null;
       });
-    this.questionaryDialogRef.componentInstance.serviceType = serviceType;
   };
+
+  private checkPreQuestionary() {
+    console.log("checkPreQuestionary");
+    if (this.questionaryControlService.serviceType) {
+      this.questionaryControlService.currentQuestionIndex++
+    }
+    if (this.questionaryControlService.withZip) {
+      this.questionaryControlService.currentQuestionIndex++
+    }
+  }
 
   closeProject(project: ContractorProjectShort) {
     let properties = {
-      title: 'Are you sure want to close <b>' + project.serviceType + '</b> project?',
+      title: `Are you sure want to close <b>${project.serviceType}</b> project?`,
       message: 'By proceeding, a project will be closed for you, and no further guarantees regarding last would be provided.',
       OK: 'Close',
       CANCEL: 'No'
@@ -355,7 +370,7 @@ export class ProjectActionService {
     this.confirmDialogRef.componentInstance.onConfirm.subscribe( result => {
       this.projectRequestService.closeProject(project.id, false).subscribe(
         response => {
-          this.popUpService.showInfo('<b>' + project.serviceType + '</b>' + ' closed');
+          this.popUpService.showInfo(`<b>${project.serviceType}</b> closed`);
           this.projectUpdated()
         },
         err => {
