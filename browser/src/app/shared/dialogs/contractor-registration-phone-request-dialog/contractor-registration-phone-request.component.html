@@ -13,8 +13,6 @@
 
     <div class="content">
 
-      <phone-validation *ngIf="validating" [phoneNumber]="phone" (onSuccess)="registerUser()"></phone-validation>
-
       <form name="account-form"
             #phoneUpdateForm="ngForm"
             (ngSubmit)="phoneUpdateForm.valid && validatePhone()"
@@ -55,6 +53,9 @@
           <button cv-button type="submit" class="button-next" [loading]="processing">Continue</button>
         </div>
       </form>
+
+      <phone-validation *ngIf="validating" [phoneNumber]="phone" [showEditButton]="true" (onSuccess)="registerUser()" (onPhoneNumberChangeClick)="validating = false"></phone-validation>
+
     </div>
   </div>
 </div>

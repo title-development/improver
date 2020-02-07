@@ -4,6 +4,7 @@ import { finalize } from "rxjs/operators";
 import { SecurityService } from "../../auth/security.service";
 import { PhoneService } from "../../api/services/phone.service";
 import { PopUpMessageService } from "../../util/pop-up-message.service";
+import { removePhoneMask } from "../../util/functions";
 
 @Component({
   selector: 'phone-validation',
@@ -12,10 +13,14 @@ import { PopUpMessageService } from "../../util/pop-up-message.service";
 })
 export class PhoneValidationComponent implements OnInit {
 
+  removePhoneMask = removePhoneMask;
+
   RESEND_DISABLED_SECONDS_DEFAULT = 20;
 
   @Input() phoneNumber;
+  @Input() showEditButton = false;
   @Output() onSuccess :EventEmitter<any> = new EventEmitter<boolean>();
+  @Output() onPhoneNumberChangeClick :EventEmitter<any> = new EventEmitter<boolean>();
 
   phoneValidationConfirm: PhoneValidationConfirm = new PhoneValidationConfirm();
   loading = true;

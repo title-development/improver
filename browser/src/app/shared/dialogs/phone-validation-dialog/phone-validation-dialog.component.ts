@@ -9,6 +9,7 @@ import { MatDialog, MatDialogRef } from "@angular/material";
 
 export class PhoneValidationDialogComponent implements OnInit {
 
+  showEditButton = false;
   phoneNumber;
   onSuccess :EventEmitter<any> = new EventEmitter<boolean>();
   onManualClose :EventEmitter<any> = new EventEmitter<any>();

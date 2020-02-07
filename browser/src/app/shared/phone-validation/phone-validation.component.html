@@ -1,6 +1,11 @@
 <div class="wrapper" [cvSpinner]="loading" [cvSpinnerSize]="24" [cvSpinnerBackground]="true">
 
-  <div class="message">Please enter verification code from text message</div>
+  <div class="message">
+    We sent verification code to your phone
+    <span class="editable-phone-wrapper">
+    <span class="phone-number">{{removePhoneMask(phoneNumber)}}</span><span *ngIf="showEditButton" class="edit-phone-number" (click)="onPhoneNumberChangeClick.emit($event)"> (edit)</span>
+    </span>
+  </div>
 
   <form class="validate-phone-form"
         name="validate-phone-form"
@@ -32,7 +37,7 @@
 
   <div class="actions" >
     <span class="no-message">Did not received message?</span>
-    <button cv-button-flat [disabled]="resendDisabledSeconds > 0 || loading" (click)="numberValidationRequest()">Send again<span *ngIf="resendDisabledSeconds > 0">{{' (' + resendDisabledSeconds + ')'}}</span></button>
+    <button class="send-again-button" [disabled]="resendDisabledSeconds > 0 || loading" (click)="numberValidationRequest()">Send again<span *ngIf="resendDisabledSeconds > 0">{{' (' + resendDisabledSeconds + ')'}}</span></button>
   </div>
 
 </div>

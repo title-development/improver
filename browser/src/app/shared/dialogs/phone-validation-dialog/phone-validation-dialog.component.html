@@ -11,7 +11,7 @@
 
     <div class="content">
 
-      <phone-validation [phoneNumber]="phoneNumber" (onSuccess)="success()"></phone-validation>
+      <phone-validation [phoneNumber]="phoneNumber" [showEditButton]="showEditButton"  (onSuccess)="success()" (onPhoneNumberChangeClick)="close()"></phone-validation>
 
     </div>
 

@@ -239,7 +239,7 @@
         </cv-field-error>
       </cv-input-field>
 
-      <cv-input-field>
+      <cv-input-field *ngIf="!processingPhoneValidation && !postOrderProcessing">
         <cv-field-label>Phone number</cv-field-label>
         <input cv-input type="text"
                placeholder="Phone number"
@@ -259,10 +259,10 @@
 
     </div>
 
-    <phone-validation *ngIf="processingPhoneValidation" [phoneNumber]="defaultQuestionaryForm.get('customerPersonalInfo.phone').value" (onSuccess)="onPhoneValidated()"></phone-validation>
+    <phone-validation *ngIf="processingPhoneValidation" [showEditButton]="true" [phoneNumber]="defaultQuestionaryForm.get('customerPersonalInfo.phone').value" (onSuccess)="onPhoneValidated()" (onPhoneNumberChangeClick)="editPhoneAgain()"></phone-validation>
 
     <div class="questionary-dialog-footer" *ngIf="!processingPhoneValidation" [cvSpinner]="postOrderProcessing" [cvSpinnerSize]="20">
-      <button class="questionary-previous-button" (click)="previousQuestion()" type="button">Back</button>
+      <button class="questionary-previous-button" (click)="previousQuestion()" type="button" [disabled]="postOrderProcessing">Back</button>
       <button *ngIf="securityService.hasRole(Role.ANONYMOUS)" class="questionary-next-button"
               (click)="nextQuestion('customerPersonalInfo', validatePhone); checkEmail(defaultQuestionaryForm.get('customerPersonalInfo.email').value)"
               type="button">Next

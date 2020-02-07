@@ -36,13 +36,26 @@
     color: $black-600;
     display: block;
     margin-bottom: 12px;
-    margin-top: 16px;
+
+    .editable-phone-wrapper {
+      white-space: nowrap;
+
+      .phone-number {
+        font-weight: 600;
+      }
+
+      .edit-phone-number {
+        cursor: pointer;
+        color: $primary-500;
+      }
+    }
+
   }
 
 }
 
 .actions {
-  padding: 8px 0 0;
+  margin: 16px 0;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -55,6 +68,12 @@
 
   button.confirm {
     margin-left: auto;
+  }
+
+  .send-again-button {
+    border: none;
+    background: transparent;
+    color: $primary-500;
   }
 
 }

@@ -275,6 +275,12 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     this.processingPhoneValidation = true;
   }
 
+  editPhoneAgain() {
+    this.nextStepFn = null;
+    this.disabledNextAction = false;
+    this.processingPhoneValidation = false;
+  }
+
   onPhoneValidated() {
     this.disabledNextAction = false;
     this.processingPhoneValidation = false;

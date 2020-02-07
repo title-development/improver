@@ -143,6 +143,7 @@ export class SignupProComponent implements OnDestroy {
         this.phoneValidationDialog = null;
       });
     this.phoneValidationDialog.componentInstance.phoneNumber = this.user.phone;
+    this.phoneValidationDialog.componentInstance.showEditButton = false;
     this.phoneValidationDialog.componentInstance.onSuccess
       .pipe(takeUntil(this.phoneValidationDialog.afterClosed()))
       .subscribe(() => {
