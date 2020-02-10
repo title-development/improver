@@ -18,6 +18,7 @@ export class BoundariesService {
   bboxUrl = '/bbox';
   radiusUrl = '/radius';
   coverageUrl = '/coverage';
+  unsupportedUrl = '/unsupported';
 
   constructor(private http: HttpClient) {
   }
@@ -39,7 +40,11 @@ export class BoundariesService {
   }
 
   getUnsupportedArea(): Observable<ZipBoundaries> {
-    return this.http.get<ZipBoundaries>(`${this.geoUrl}${this.coverageUrl}/json`);
+    return this.http.get<ZipBoundaries>(`${this.geoUrl}${this.unsupportedUrl}`);
+  }
+
+  getCoverageArea(): Observable<ZipBoundaries> {
+    return this.http.get<ZipBoundaries>(`${this.geoUrl}${this.coverageUrl}`);
   }
 
   isZipSupported(zip): Observable<boolean> {

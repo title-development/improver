@@ -409,7 +409,7 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
     this.autocompleteSearch.emit('');
   }
 
-  private startClosingDropdown(): void {
+  public startClosingDropdown(): void {
     this.isItemsShowed = false;
     this.dropDownAnimationState = 'void';
   }

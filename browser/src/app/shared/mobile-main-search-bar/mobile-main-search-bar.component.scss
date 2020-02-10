@@ -75,9 +75,29 @@
   font-size: 14px;
 }
 
+::-webkit-scrollbar {
+  -webkit-appearance: none;
+}
+
+::-webkit-scrollbar:vertical {
+  width: 6px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, .5);
+  border-radius: 10px;
+  border: 2px solid #ffffff;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background-color: #ffffff;
+}
+
 .autocomplete-content {
   width: 90%;
-  max-height: 60%;
+  max-height: 50%;
   overflow-y: auto;
   margin: 20px auto;
   display: flex;

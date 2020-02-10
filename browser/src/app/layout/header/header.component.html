@@ -8,8 +8,16 @@
       </button>
 
       <div class="nav navbar-nav navbar-left">
-        <div class="find-professionals-wrapper" *ngIf="securityService.hasRole(Role.CUSTOMER) || !securityService.isAuthenticated() && (!mediaQuery.xs && !mediaQuery.sm)">
+        <div class="find-professionals-wrapper" *ngIf="securityService.hasRole(Role.CUSTOMER) && (!mediaQuery.xs && !mediaQuery.sm) || !securityService.isAuthenticated() && (!mediaQuery.xs && !mediaQuery.sm)">
           <find-professionals></find-professionals>
+        </div>
+        <div class="find-professionals-wrapper" *ngIf="securityService.hasRole(Role.CUSTOMER) && (mediaQuery.xs || mediaQuery.sm)"
+          (click)="open('mobile-main-search-bar')">
+          <button class="mobile-menu-button mat-button md-none lg-none xlg-none">
+        <span>
+          <i class="material-icons">search</i>
+        </span>
+          </button>
         </div>
 
         <button class="menu-button lead-search-icon md-none lg-none xlg-none" mat-button color="accent" *ngIf="(mediaQuery.xs || mediaQuery.sm) && securityService.hasRole(Role.CONTRACTOR)" routerLink="/pro/leads-search">

@@ -321,7 +321,7 @@
         <div class="footer">
           <button cv-button-flat flatStyle="dark" class="button-back" (click)="step = step - 1" type="button">Back
           </button>
-          <button cv-button class="button-next" type="submit">Next Step</button>
+          <button cv-button class="button-next" type="submit" [disabled]="isServiceAreaStepDisabled$ | async">Next Step</button>
         </div>
 
       </form>

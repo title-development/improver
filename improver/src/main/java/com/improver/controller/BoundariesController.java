@@ -20,7 +20,7 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.List;
 
-import static com.improver.application.properties.Path.GEO_PATH;
+import static com.improver.application.properties.Path.*;
 
 @Slf4j
 @RestController
@@ -34,16 +34,24 @@ public class BoundariesController {
     @Autowired private UserSecurityService userSecurityService;
 
     private static String coverageGeometry;
+    private static String unsupportedGeometry;
 
     @PostConstruct
     public void init() throws IOException {
-        Resource resource = resourceLoader.getResource("classpath:/coverage.json");
-        coverageGeometry = IOUtils.toString(resource.getInputStream());
+        Resource unsupportedGeometryResource = resourceLoader.getResource("classpath:/unsupported-area.json");
+        unsupportedGeometry = IOUtils.toString(unsupportedGeometryResource.getInputStream());
+        Resource coverageGeometryResource = resourceLoader.getResource("classpath:/coverage.json");
+        coverageGeometry = IOUtils.toString(coverageGeometryResource.getInputStream());
     }
 
 
-    @GetMapping("/coverage/json")
-    public ResponseEntity<Object> getCoverageJson() {
+    @GetMapping(UNSUPPORTED)
+    public ResponseEntity<Object> getUnsupported(){
+        return new ResponseEntity<>(unsupportedGeometry, HttpStatus.OK);
+    }
+
+    @GetMapping(COVERAGE)
+    public ResponseEntity<Object> getCoverage(){
         return new ResponseEntity<>(coverageGeometry, HttpStatus.OK);
     }
 

@@ -41,6 +41,7 @@ public final class Path {
     public static final String TUTORIALS =             "/tutorials";
     public static final String STAFF =                 "/staff";
     public static final String COVERAGE =              "/coverage";
+    public static final String UNSUPPORTED =           "/unsupported";
     public static final String CONFIG =                "/config";
     public static final String REFERRAL =              "/referral";
     public static final String REQUEST =               "/request";

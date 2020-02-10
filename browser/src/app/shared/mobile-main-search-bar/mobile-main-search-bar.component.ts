@@ -1,4 +1,14 @@
-import { Component, ElementRef, HostListener, Input, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  HostListener,
+  Input,
+  OnInit,
+  Renderer2,
+  ViewChild
+} from '@angular/core';
 import { MatDialogRef } from "@angular/material/dialog";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ServiceType } from "../../model/data-model";
@@ -8,13 +18,14 @@ import { SecurityService } from "../../auth/security.service";
 import { Role } from "../../model/security-model";
 import { UserSearchService } from "../../api/services/user-search.service";
 import { markAsTouched } from "../../util/functions";
+import { CvSelectComponent } from "../../theme/select/cv-select/cv-select";
 
 @Component({
   selector: 'mobile-main-search-bar',
   templateUrl: './mobile-main-search-bar.component.html',
   styleUrls: ['./mobile-main-search-bar.component.scss']
 })
-export class MobileMainSearchBarComponent implements OnInit {
+export class MobileMainSearchBarComponent implements OnInit, AfterViewInit {
 
   resetAfterFind: boolean = false;
   searchResultMessageText: string;
@@ -27,12 +38,16 @@ export class MobileMainSearchBarComponent implements OnInit {
   dropdownHeight: number = 5;
   lastZipCode: string;
 
+  @ViewChild('serviceType') cvSelectComponent: CvSelectComponent;
+
   constructor(public currentDialogRef: MatDialogRef<any>,
               public constants: Constants,
               public customerSuggestionService: CustomerSuggestionService,
               public userSearchService: UserSearchService,
               private securityService: SecurityService,
-              public element: ElementRef<HTMLElement>) {
+              public element: ElementRef<HTMLElement>,
+              private renderer: Renderer2,
+              private changeDetectorRef: ChangeDetectorRef) {
     this.getPopularServiceTypes();
   }
 
@@ -54,6 +69,14 @@ export class MobileMainSearchBarComponent implements OnInit {
     );
   }
 
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      let element =  this.element.nativeElement.querySelector('cv-select').getElementsByTagName('input')[0];
+      this.renderer.selectRootElement(element).focus();
+      this.changeDetectorRef.detectChanges();
+    }, 0);
+  }
+
   autocompleteSearch(search): void {
     this.filteredServiceTypes = this.userSearchService.autocompleteSearchResult(search);
   }
@@ -64,6 +87,8 @@ export class MobileMainSearchBarComponent implements OnInit {
     }
 
     if (this.mainSearchFormGroup.valid) {
+      this.cvSelectComponent.startClosingDropdown();
+      this.changeDetectorRef.detectChanges();
       this.userSearchService.isMobileSearchActive = true;
       const selectionCtrl = this.mainSearchFormGroup.get('selectionCtrl');
       if (selectionCtrl.value) {

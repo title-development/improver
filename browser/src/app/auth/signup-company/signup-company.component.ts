@@ -1,4 +1,4 @@
-import { ApplicationRef, Component } from '@angular/core';
+import { ApplicationRef, ChangeDetectorRef, Component } from '@angular/core';
 import { MapOptions } from '@agm/core/services/google-maps-types';
 import { defaultMapOptions } from '../../util/google-map-default-options';
 import { MatDialog, MatDialogRef } from '@angular/material';
@@ -24,7 +24,9 @@ import { getErrorMessage } from '../../util/functions';
 import { SystemMessageType } from '../../model/data-model';
 import { HttpResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
+import { ReplaySubject, Subject } from 'rxjs';
+import LatLng = google.maps.LatLng;
+import Polygon = google.maps.Polygon;
 
 @Component({
   selector: 'signup-company',
@@ -37,6 +39,7 @@ export class SignupCompanyComponent {
   MAX_COVERAGE_RADIUS = 50;
   MAX_SLIDER_COVERAGE_RADIUS = 50;
   DEFAULT_COVERAGE_RADIUS = 10;
+  minLatLngPointsInCoverage: number = 14;
   step: number = 1;
   mapOptions: MapOptions = defaultMapOptions;
   locationSuggestDialog: MatDialogRef<any>;
@@ -54,6 +57,8 @@ export class SignupCompanyComponent {
 
   servedZipCodes: string [];
 
+  isServiceAreaStepDisabled$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
+  infoWindow: any;
   processing: boolean = false;
 
   // tmp test data
@@ -88,6 +93,8 @@ export class SignupCompanyComponent {
     }
   };
 
+  coveragePolygon: Polygon;
+  coverageArea: any;
   unsupportedArea: any;
   readonly confirmationResendBlockingTime: number = 15000;
   private readonly NOT_ACTIVE_USER_KEY: string = 'NOT_ACTIVE_USER';
@@ -104,6 +111,7 @@ export class SignupCompanyComponent {
               public popUpMessageService: PopUpMessageService,
               public registrationService: RegistrationService,
               public boundariesService: BoundariesService,
+              private changeDetectorRef: ChangeDetectorRef,
               private gMapUtils: GoogleMapUtilsService,
               private applicationRef: ApplicationRef,
               public dialog: MatDialog,
@@ -124,6 +132,7 @@ export class SignupCompanyComponent {
     this.companyRegistration.coverage.center.lat = this.serviceAreaCircle.center.lat();
     this.companyRegistration.coverage.center.lng = this.serviceAreaCircle.center.lng();
     this.applicationRef.tick();
+    this.isCircleAreaInCoverage(this.minLatLngPointsInCoverage);
   }
 
   onServiceAreaRadiusChange() {
@@ -144,12 +153,33 @@ export class SignupCompanyComponent {
     this.map.fitBounds(this.serviceAreaCircle.getBounds());
     this.companyRegistration.coverage.radius = radius;
     this.applicationRef.tick();
+    this.isCircleAreaInCoverage(this.minLatLngPointsInCoverage);
   }
 
   getServedZipCodes() {
     this.boundariesService.getAllServedZips().subscribe(zipCodes => {
       this.servedZipCodes = zipCodes;
     });
+  }
+
+  getCoveragePolygon() {
+    this.boundariesService.getCoverageArea().subscribe(coverage => {
+        this.coverageArea = coverage;
+        let zipBoundaries: Array<any> = this.coverageArea.geometry.coordinates;
+
+        for (let i = 0; i < zipBoundaries.length; i++) {
+          for (let j = 0; j < zipBoundaries[i].length; j++) {
+            let value: Array<any> = zipBoundaries[i][j];
+            zipBoundaries[i][j] = new google.maps.LatLng(value[1], value[0]);
+          }
+        }
+
+        this.coveragePolygon = new google.maps.Polygon({
+          paths: zipBoundaries[0],
+        });
+
+      },
+      error => console.log(error))
   }
 
   drawUnsupportedAreaUSA() {
@@ -160,11 +190,13 @@ export class SignupCompanyComponent {
     this.map = map;
     applyStyleToMapLayers(this.map);
     this.drawUnsupportedAreaUSA();
+    this.getCoveragePolygon();
 
     let address = this.companyRegistration.company.location.streetAddress + ' ' + this.companyRegistration.company.location.city;
 
     this.gMapUtils.addressGeocode(address).subscribe(
       (location) => {
+        let circleCenter: LatLng;
         let lat = (location as any).lat();
         let lng = (location as any).lng();
         this.companyRegistration.company.location.lat = lat;
@@ -174,8 +206,22 @@ export class SignupCompanyComponent {
           this.companyRegistration.coverage.center.lng = lng;
         }
 
-        this.map.setCenter(new google.maps.LatLng(this.companyRegistration.coverage.center.lat, this.companyRegistration.coverage.center.lng));
+        //Company locations in supported area
+        if (!google.maps.geometry.poly.containsLocation(new google.maps.LatLng(this.companyRegistration.coverage.center.lat, this.companyRegistration.coverage.center.lng), this.coveragePolygon)) {
+          let latLngBounds = new google.maps.LatLngBounds();
+          let polygonPaths = this.coveragePolygon.getPaths();
+          polygonPaths.getArray().forEach(polygons => {
+            polygons.getArray().forEach(latlng => {
+              latLngBounds.extend(latlng);
+            })
+          });
 
+          circleCenter = new google.maps.LatLng(latLngBounds.getCenter().lat(), latLngBounds.getCenter().lng())
+        } else {
+          circleCenter = new google.maps.LatLng(this.companyRegistration.coverage.center.lat, this.companyRegistration.coverage.center.lng);
+        }
+
+        this.map.setCenter(circleCenter);
         this.gMapUtils.drawCompanyMarker(this.map, new google.maps.LatLng(this.companyRegistration.company.location.lat, this.companyRegistration.company.location.lng));
 
         this.serviceAreaCircle = new google.maps.Circle({
@@ -185,7 +231,7 @@ export class SignupCompanyComponent {
           fillColor: '#14ABE3',
           fillOpacity: 0.3,
           map: this.map,
-          center: new google.maps.LatLng(this.companyRegistration.coverage.center.lat, this.companyRegistration.coverage.center.lng),
+          center: circleCenter,
           radius: this.companyRegistration.coverage.radius * this.METERS_IN_MILE,
           draggable: true,
           editable: true
@@ -314,6 +360,80 @@ export class SignupCompanyComponent {
     this.confirmDialogRef.componentInstance.properties = properties;
   }
 
+
+  getPointsOnCircle(center: LatLng, radius: number, pointsNumber: number) {
+    let d2r = Math.PI / 180;   // degrees to radians
+    let r2d = 180 / Math.PI;   // radians to degrees
+    let earthsRadius = 3963; // 3963 is the radius of the earth in miles
+    let points = pointsNumber;
+
+    // find the radius in lat/lon
+    let radiusLat = (radius / earthsRadius) * r2d;
+    let radiusLng = radiusLat / Math.cos(center.lat() * d2r);
+
+    let resultPoints = new Array();
+    let start = 0;
+    let end = points; // one extra here makes sure we connect the path
+
+    for (let i = start; i < end; i = i + 1) {
+      let theta = Math.PI * (i / (points / 2));
+      let longitude = center.lng() + (radiusLng * Math.cos(theta)); // center a + radius x * cos(theta)
+      let latitude = center.lat() + (radiusLat * Math.sin(theta)); // center b + radius y * sin(theta)
+      resultPoints.push(new google.maps.LatLng(latitude, longitude));
+    }
+    return resultPoints;
+  }
+
+  isCircleAreaInCoverage(minPointsInCoverage: number) {
+    let pointsNumber: number = 36;
+    if (this.infoWindow) {
+      this.infoWindow.close();
+    }
+    let pointsLatLng: Array<LatLng> = this.getPointsOnCircle(
+      new google.maps.LatLng(this.serviceAreaCircle.center.lat(), this.serviceAreaCircle.center.lng()),
+      this.companyRegistration.coverage.radius,
+      pointsNumber
+    );
+
+    let existsInSupportedZip: boolean = this.isMinPointsNumberInCoverage(pointsLatLng, minPointsInCoverage);
+
+    if (existsInSupportedZip) {
+      this.isServiceAreaStepDisabled$.next(false);
+    } else {
+      this.infoWindow = new google.maps.InfoWindow({
+        content: 'Please, select from supported area '
+      });
+      this.infoWindow.open(this.map);
+      this.infoWindow.setPosition(pointsLatLng[pointsNumber / 4]);
+      this.isServiceAreaStepDisabled$.next(true);
+    }
+    this.changeDetectorRef.detectChanges();
+  }
+
+  private isMinPointsNumberInCoverage(pointsLatLng: Array<google.maps.LatLng>, minPointsInCoverage: number): boolean {
+    for (let i = 0; i < pointsLatLng.length; i++) {
+      if (google.maps.geometry.poly.containsLocation(pointsLatLng[i], this.coveragePolygon)) {
+        let nextIndex = i;
+        let pointsCounter: number = 1;
+        for (let x = 0; x < minPointsInCoverage; x++) {
+          nextIndex++;
+          if (nextIndex == pointsLatLng.length) {
+            nextIndex = 0;
+          }
+          if (google.maps.geometry.poly.containsLocation(pointsLatLng[nextIndex], this.coveragePolygon)) {
+            pointsCounter++;
+          } else {
+            pointsCounter = 1;
+          }
+          if (pointsCounter >= minPointsInCoverage) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+
   submitServiceArea(form) {
     if (this.companyRegistration.coverage.radius < this.MIN_COVERAGE_RADIUS) {
       this.popUpMessageService.showWarning('Service area radius should be at least ' + this.MIN_COVERAGE_RADIUS + ' miles');
@@ -357,7 +477,7 @@ export class SignupCompanyComponent {
 
   }
 
-  setResendConfirmationTimeout(){
+  setResendConfirmationTimeout() {
     setTimeout(() => {
       this.isResendBlocked = false;
     }, this.confirmationResendBlockingTime);
