@@ -319,7 +319,7 @@
             novalidate>
 
         <div class="footer">
-          <button cv-button-flat flatStyle="dark" class="button-back" (click)="step = step - 1" type="button">Back
+          <button cv-button-flat flatStyle="dark" class="button-back" (click)="previousStep()" type="button">Back
           </button>
           <button cv-button class="button-next" type="submit" [disabled]="isServiceAreaStepDisabled$ | async">Next Step</button>
         </div>
@@ -370,7 +370,7 @@
              [cvSpinnerSize]="30"
              [cvSpinnerBackground]="true"
              cvSpinnerBackgroundColor="white">
-          <button cv-button-flat flatStyle="dark" class="button-back" (click)="step = step - 1" type="button">Back
+          <button cv-button-flat flatStyle="dark" class="button-back" (click)="previousStep()" type="button">Back
           </button>
           <button cv-button class="button-next" type="submit">Submit</button>
         </div>

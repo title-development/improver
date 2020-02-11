@@ -1,5 +1,5 @@
 import { ApplicationRef, ChangeDetectorRef, EventEmitter, Inject, Injectable, OnInit } from '@angular/core';
-import { Credentials, LoginModel, Role } from '../model/security-model';
+import { CompanyRegistration, Credentials, LoginModel, Role } from '../model/security-model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CompanyService } from '../api/services/company.service';
 import { Observable, of, ReplaySubject, throwError } from 'rxjs';

@@ -97,6 +97,8 @@ export class SignupCompanyComponent {
   coverageArea: any;
   unsupportedArea: any;
   readonly confirmationResendBlockingTime: number = 15000;
+  public static readonly COMPANY_REGISTRATION_STEP_KEY = 'COMPANY_REGISTRATION_STEP';
+  public static readonly COMPANY_STORAGE_KEY = 'company';
   private readonly NOT_ACTIVE_USER_KEY: string = 'NOT_ACTIVE_USER';
   private readonly destroyed$ = new Subject<void>();
   private cancelRegistrationDialogRef: MatDialogRef<any>;
@@ -118,6 +120,7 @@ export class SignupCompanyComponent {
               private router: Router) {
     this.years = this.tricksService.fillArrayWithNumbers(this.constants.COMPANY_FOUNDATION_MIN_YEAR, new Date().getFullYear(), false);
     this.companyRegistration.company.founded = (new Date()).getFullYear().toString();
+    this.getIncompleteCompanyRegistration();
     this.getServedZipCodes();
 
     this.boundariesService.getUnsupportedArea().subscribe(unsupportedArea => {
@@ -154,6 +157,43 @@ export class SignupCompanyComponent {
     this.companyRegistration.coverage.radius = radius;
     this.applicationRef.tick();
     this.isCircleAreaInCoverage(this.minLatLngPointsInCoverage);
+  }
+
+  getIncompleteCompanyRegistration() {
+    if (sessionStorage.getItem(SignupCompanyComponent.COMPANY_REGISTRATION_STEP_KEY) && sessionStorage.getItem(SignupCompanyComponent.COMPANY_STORAGE_KEY)) {
+      this.getCompanyModel();
+    }
+  }
+
+  previousStep() {
+    this.step--;
+    this.setCompanyModel(this.companyRegistration, this.step);
+  }
+
+  nextStep() {
+    this.step++;
+    this.setCompanyModel(this.companyRegistration, this.step);
+  }
+
+  public getCompanyModel() {
+    const company = sessionStorage.getItem(SignupCompanyComponent.COMPANY_STORAGE_KEY);
+    const companyRegistrationStep = sessionStorage.getItem(SignupCompanyComponent.COMPANY_REGISTRATION_STEP_KEY);
+    try {
+      this.companyRegistration = JSON.parse(company);
+      this.step = JSON.parse(companyRegistrationStep);
+    } catch (e) {
+      this.securityService.logoutFrontend();
+    }
+  }
+
+  public setCompanyModel(company: CompanyRegistration, companyRegistrationStep: number){
+    sessionStorage.setItem(SignupCompanyComponent.COMPANY_REGISTRATION_STEP_KEY, JSON.stringify(companyRegistrationStep));
+    sessionStorage.setItem(SignupCompanyComponent.COMPANY_STORAGE_KEY, JSON.stringify(company));
+  }
+
+  removeIncompleteCompanyFromStorage(){
+    sessionStorage.removeItem(SignupCompanyComponent.COMPANY_REGISTRATION_STEP_KEY);
+    sessionStorage.removeItem(SignupCompanyComponent.COMPANY_STORAGE_KEY);
   }
 
   getServedZipCodes() {
@@ -302,7 +342,7 @@ export class SignupCompanyComponent {
       .subscribe((validatedLocation: ValidatedLocation) => {
           if (validatedLocation.valid) {
             if (this.servedZipCodes.includes(this.companyRegistration.company.location.zip)) {
-              this.step++;
+              this.nextStep();
               this.addressValidationProcessing = false;
             } else {
               this.openZipUnsupportedDialog(locationRequest.zip);
@@ -320,7 +360,7 @@ export class SignupCompanyComponent {
                 this.companyRegistration.company.location = Object.assign(this.companyRegistration.company.location, formData);
                 validatedLocation.error = null;
                 if (this.servedZipCodes.includes(this.companyRegistration.company.location.zip)) {
-                  this.step++;
+                  this.nextStep();
                 } else {
                   this.openZipUnsupportedDialog(validatedLocation.suggested.zip);
                 }
@@ -354,7 +394,7 @@ export class SignupCompanyComponent {
       .afterClosed()
       .subscribe(result => {
         this.confirmDialogRef = null;
-        this.step++;
+        this.nextStep();
         this.addressValidationProcessing = false;
       });
     this.confirmDialogRef.componentInstance.properties = properties;
@@ -442,7 +482,7 @@ export class SignupCompanyComponent {
       this.popUpMessageService.showWarning('Service area radius shouldn\'t exceed ' + this.MAX_COVERAGE_RADIUS + ' miles');
       return;
     } else {
-      this.step++;
+      this.nextStep();
     }
   }
 
@@ -466,7 +506,8 @@ export class SignupCompanyComponent {
           if ((response.body)) {
             this.securityService.loginUser(JSON.parse(response.body) as LoginModel, response.headers.get('authorization'), true);
           } else {
-            this.step++;
+            this.nextStep();
+            this.removeIncompleteCompanyFromStorage();
             this.storeUserIdIsSessionStorage(this.securityService.getLoginModel().id);
             this.securityService.logoutFrontend();
           }
@@ -527,6 +568,7 @@ export class SignupCompanyComponent {
     this.cancelRegistrationDialogRef.componentInstance.properties = properties;
     this.cancelRegistrationDialogRef.componentInstance.onConfirm.subscribe(
       () => {
+        this.removeIncompleteCompanyFromStorage();
         this.securityService.logoutFrontend();
         this.router.navigate(['/become-pro']);
       },
