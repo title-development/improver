@@ -25,10 +25,10 @@
                 <img title="Subscription lead" alt="Subscription" *ngIf="transaction.type == TransactionType.PURCHASE && !transaction.manualLead" src="assets/img/dashboard-project-subscription.blue.svg">
                 <img src="/assets/img/transaction-types/bonus.svg" *ngIf="transaction.type == TransactionType.BONUS">
                 <img src="/assets/img/transaction-types/refund.svg" *ngIf="transaction.type == TransactionType.RETURN">
-                <img src="/assets/img/transaction-types/replenishment.svg" *ngIf="transaction.type == TransactionType.REPLENISHMENT">
+                <img src="/assets/img/transaction-types/replenishment.svg" *ngIf="transaction.type == TransactionType.TOP_UP">
                 <img src="/assets/img/transaction-types/subscription.svg" *ngIf="transaction.type == TransactionType.SUBSCRIPTION">
               </div>
-              <div class="action xs-none sm-none md-none" fxFlex="13"  [ngClass]="transaction.type | toclassname">{{transaction.type}}</div>
+              <div class="action xs-none sm-none md-none" fxFlex="13"  [ngClass]="transaction.type | toclassname">{{transaction.type | statuscapitalize}}</div>
               <div class="date" fxFlex="15" [style.padding-right.px]="5">
                 <div>{{transaction.created | date:'MM/dd/yy' }}</div>
                 <div>{{transaction.created | date:'shortTime' }}</div>

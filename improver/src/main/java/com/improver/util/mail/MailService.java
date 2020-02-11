@@ -693,7 +693,7 @@ public class MailService {
 
     public void sendBalanceReplenished(Company company, int amount) {
         Context context = contextTemplate();
-        context.setVariable(TITLE, "Balance replenishment");
+        context.setVariable(TITLE, "Balance top-up");
         context.setVariable(BODY, "You have replenished the balance by " + highlight(formatUsd(amount)) + ".");
         context.setVariable(CONFIRM_URL, siteUrl + BILLING_URL);
         context.setVariable(CONFIRM_BTN_TEXT, "Check billing");

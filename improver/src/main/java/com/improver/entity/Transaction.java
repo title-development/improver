@@ -59,9 +59,9 @@ public class Transaction {
     public static final String BALANCE_SOURCE = "Balance";
     public static final String PURCHASE_DESC = "Purchase";
     public static final String BONUS_DESC = "Bonus";
-    public static final String SUBSCRIPTION_REPLENISH_DESC = "Subscription balance replenishment";
+    public static final String SUBSCRIPTION_REPLENISH_DESC = "Subscription balance top-up";
     public static final String SUBSCRIPTION_RESERVE_DESC = "Subscription budget reservation";
-    public static final String REPLENISHMENT_DESC = "Balance replenishment";
+    public static final String TOP_UP_DESC = "Balance top-up";
 
     private Transaction() {
     }
@@ -81,7 +81,7 @@ public class Transaction {
                 return "Bonus Credit";
             case SUBSCRIPTION:
                 return generateDescription();
-            case REPLENISHMENT:
+            case TOP_UP:
                 return generateDescription();
             default:
                 throw new IllegalArgumentException(type.toString());
@@ -98,8 +98,8 @@ public class Transaction {
                 return BONUS_DESC;
             case SUBSCRIPTION:
                 return (amount > 0) ? SUBSCRIPTION_REPLENISH_DESC : SUBSCRIPTION_RESERVE_DESC;
-            case REPLENISHMENT:
-                return REPLENISHMENT_DESC;
+            case TOP_UP:
+                return TOP_UP_DESC;
             default:
                 throw new IllegalArgumentException(type.toString());
         }
@@ -115,7 +115,7 @@ public class Transaction {
                 return comment;
             case SUBSCRIPTION:
                 return (!isCharge()) ? comment : paymentMethod;
-            case REPLENISHMENT:
+            case TOP_UP:
                 return paymentMethod;
             default:
                 throw new IllegalArgumentException(type.toString());
@@ -130,7 +130,7 @@ public class Transaction {
             .setComment(comment);
     }
 
-    public static Transaction replenishmentFor(Type type, String comment, Company company, String paymentMethod, String chargeId, int amount, int balance) {
+    public static Transaction topupFor(Type type, String comment, Company company, String paymentMethod, String chargeId, int amount, int balance) {
         return new Transaction().setType(type)
             .setComment(comment)
             .setPaymentMethod(paymentMethod)
@@ -183,7 +183,7 @@ public class Transaction {
     public enum Type {
         BONUS("BONUS"),
         SUBSCRIPTION ("SUBSCRIPTION"),
-        REPLENISHMENT ("REPLENISHMENT"),
+        TOP_UP ("TOP_UP"),
         PURCHASE ("PURCHASE"),
         RETURN ("RETURN");
 
@@ -203,36 +203,11 @@ public class Transaction {
         }
     }
 
-    public static Transaction leadFromCard(Company company, String serviceType, ProjectRequest projectRequest, Location location, int amount, int balance, String paymentMethod, String chargeId) {
-        return new Transaction().setType(Type.PURCHASE)
-            .setChargeId(chargeId)
-            .setManualLead(true)
-            .setService(serviceType)
-            .setPaymentMethod(paymentMethod)
-            .setCompany(company)
-            .setProjectRequest(projectRequest)
-            .setLocation(location)
-            .setAmount(amount)
-            .setBalance(balance);
-    }
-
     public static Transaction leadFromBalance(boolean isManual, Company company, String serviceType, ProjectRequest projectRequest, Location location, int amount, int balance) {
         return new Transaction().setType(Type.PURCHASE)
             .setManualLead(isManual)
             .setService(serviceType)
             .setPaymentMethod(BALANCE_SOURCE)
-            .setCompany(company)
-            .setProjectRequest(projectRequest)
-            .setLocation(location)
-            .setAmount(amount)
-            .setBalance(balance);
-    }
-
-    public static Transaction leadSubscription(Company company, String serviceType, ProjectRequest projectRequest, Location location, int amount, int balance) {
-        return new Transaction().setType(Type.PURCHASE)
-            .setManualLead(false)
-            .setPaymentMethod(BALANCE_SOURCE)
-            .setService(serviceType)
             .setCompany(company)
             .setProjectRequest(projectRequest)
             .setLocation(location)

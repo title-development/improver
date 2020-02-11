@@ -113,6 +113,7 @@ import { StaffActionsComponent } from "./staff-actions/staff-actions.component";
 import { RecaptchaModule } from 'ng-recaptcha';
 import { ProjectCancelComponent } from "./components/project-cancel/project-cancel.component";
 import { ProjectCompleteComponent } from "./components/project-complete/project-complete.component";
+import {StatusCapitalize} from "../../pipes/status-capitalize.pipe";
 
 
 @NgModule({
@@ -219,6 +220,7 @@ import { ProjectCompleteComponent } from "./components/project-complete/project-
     MessageService,
     QuestionariesService,
     StatusToString,
+    StatusCapitalize,
     CamelCaseHumanPipe,
     RefundService,
     ProjectRequestService,

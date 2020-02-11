@@ -572,7 +572,7 @@ public class TestDataInitializer {
     private void setTransactionsForCompany(Company company) {
         ZonedDateTime now = ZonedDateTime.now();
         int bonus = 20000;
-        int replenishment = 6000;
+        int topup = 6000;
         Billing bill = company.getBilling();
 
         // 1 Bonus
@@ -580,9 +580,9 @@ public class TestDataInitializer {
         transactionRepository.save(Transaction.bonus(company, bonus, bill.getBalance(), "Initial bonus")
             .setCreated(now.minusMonths(7)));
 
-        // 2 Replenishment
-        bill.addToBalance(replenishment);
-        transactionRepository.save(Transaction.replenishmentFor(Transaction.Type.REPLENISHMENT, null, company, VISA_ENDING_IN_1132, "test-4332123", replenishment, bill.getBalance())
+        // 2 Top-up
+        bill.addToBalance(topup);
+        transactionRepository.save(Transaction.topupFor(Transaction.Type.TOP_UP, null, company, VISA_ENDING_IN_1132, "test-4332123", topup, bill.getBalance())
             .setCreated(now.minusMonths(6).plusDays(3)));
 
         // 3 projects

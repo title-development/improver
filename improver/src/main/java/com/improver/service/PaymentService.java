@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 
 import static com.improver.application.properties.BusinessProperties.MAX_AVAILABLE_CARDS_COUNT;
 import static com.improver.application.properties.BusinessProperties.REFERRAL_BONUS_AMOUNT;
-import static com.improver.application.properties.Constants.REPLENISHMENT_PURPOSE;
+import static com.improver.application.properties.Text.TOP_UP_PURPOSE;
 import static com.improver.util.TextMessages.REFERRAL_BONUS_MESSAGE;
 
 @Service
@@ -76,7 +76,7 @@ public class PaymentService {
         if (amount <= 0) {
             throw new ValidationException("Amount should be greater then 0");
         }
-        Billing billing = addToBalance(company, amount, Transaction.Type.REPLENISHMENT, REPLENISHMENT_PURPOSE, null);
+        Billing billing = addToBalance(company, amount, Transaction.Type.TOP_UP, TOP_UP_PURPOSE, null);
         wsNotificationService.updateBalance(company, billing);
         mailService.sendBalanceReplenished(company, amount);
         addReferredBonusesIfNeeded(company, contractor, amount);
@@ -84,7 +84,7 @@ public class PaymentService {
 
     public Billing autoChargeForSubscription(Company company, int amount, int budget) {
         Billing billing = addToBalance(company, amount, Transaction.Type.SUBSCRIPTION,
-            "Subscription balance replenishment",
+            "Subscription balance top-up",
             "Charged " + SerializationUtil.formatUsd(amount) + " to fulfill subscription of $" + SerializationUtil.centsToUsd(budget));
         wsNotificationService.updateBalance(company, billing);
         return billing;
@@ -98,7 +98,7 @@ public class PaymentService {
         Card card = (Card) charge.getSource();
         billing.addToBalance(amount);
         Billing saved = billRepository.save(billing);
-        transactionRepository.save(Transaction.replenishmentFor(type,
+        transactionRepository.save(Transaction.topupFor(type,
             comment,
             company,
             card.getBrand() + " ending in " + card.getLast4(),

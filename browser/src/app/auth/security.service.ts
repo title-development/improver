@@ -1,13 +1,12 @@
-import { ApplicationRef, ChangeDetectorRef, EventEmitter, Inject, Injectable, OnInit } from '@angular/core';
-import { CompanyRegistration, Credentials, LoginModel, Role } from '../model/security-model';
+import { ApplicationRef, EventEmitter, Inject, Injectable } from '@angular/core';
+import { Credentials, LoginModel, Role } from '../model/security-model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CompanyService } from '../api/services/company.service';
 import { Observable, of, ReplaySubject, throwError } from 'rxjs';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { catchError, finalize, switchMap } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import * as jwt_decode from 'jwt-decode';
 import { JWT } from './Jwt.inteface';
-import { createConsoleLogger } from '@angular-devkit/core/node';
 import { MatDialog } from '@angular/material';
 import { OverlayRef } from '../theme/util/overlayRef';
 

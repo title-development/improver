@@ -26,7 +26,7 @@ enum StatisticColors {
   CONTRACTOR = 'darkcyan',
   CUSTOMER = 'darkorange',
   RETURN = 'red',
-  REPLENISHMENT = 'cyan',
+  TOP_UP = 'cyan',
   IN_PROGRESS = 'red',
   NEW = 'blue',
   CLOSED = 'green',

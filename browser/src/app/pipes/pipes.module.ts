@@ -7,6 +7,7 @@ import { ForJsonPipe } from "./for-json.pipe";
 import { TimeAgoPipe } from "./time-ago-pipe";
 import { CamelCaseHumanPipe } from "./camelcase-to-human.pipe";
 import { AddHtmlPipe } from './add-html.pipe';
+import {StatusCapitalize} from "./status-capitalize.pipe";
 
 @NgModule({
   imports: [],
@@ -14,6 +15,7 @@ import { AddHtmlPipe } from './add-html.pipe';
     FilterByPipe,
     ToClassNamePipe,
     StatusToString,
+    StatusCapitalize,
     TimeAgoPipe,
     CutArrayLengthPipe,
     ForJsonPipe,
@@ -24,6 +26,7 @@ import { AddHtmlPipe } from './add-html.pipe';
     FilterByPipe,
     ToClassNamePipe,
     StatusToString,
+    StatusCapitalize,
     TimeAgoPipe,
     CutArrayLengthPipe,
     ForJsonPipe,

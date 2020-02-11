@@ -56,7 +56,7 @@ export namespace Billing {
 
   export enum TransactionType {
     BONUS = 'BONUS',
-    REPLENISHMENT = 'REPLENISHMENT',
+    TOP_UP = 'TOP_UP',
     PURCHASE = 'PURCHASE',
     RETURN = 'RETURN',
     SUBSCRIPTION = 'SUBSCRIPTION'
