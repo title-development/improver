@@ -1,6 +1,7 @@
 import { MapOptions } from '@agm/core/services/google-maps-types';
 import { ApplicationRef, Component, ElementRef, HostListener, OnDestroy, ViewChild } from '@angular/core';
-import { MatDialog, MatSidenav } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSidenav } from '@angular/material/sidenav';
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';

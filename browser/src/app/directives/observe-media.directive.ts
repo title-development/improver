@@ -1,6 +1,6 @@
 import { Directive, ElementRef, Renderer2, OnDestroy } from "@angular/core";
 import { Subscription } from "rxjs";
-import { ObservableMedia, MediaChange } from "@angular/flex-layout";
+import { MediaChange, MediaObserver } from "@angular/flex-layout";
 
 @Directive({selector: '[observeMedia]'})
 export class ObserveMediaDirective implements OnDestroy{
@@ -9,16 +9,17 @@ export class ObserveMediaDirective implements OnDestroy{
   activeMediaQuery = "";
   fxMediaClasses = ['xs', 'sm', 'md', 'lg', 'xl'];
 
-  constructor(private element: ElementRef, private renderer: Renderer2, media: ObservableMedia) {
+  constructor(private element: ElementRef, private renderer: Renderer2, mediaObserver: MediaObserver) {
 
-    this.watcher = media.subscribe((change: MediaChange) => {
-      this.activeMediaQuery = change ? `'${change.mqAlias}' = (${change.mediaQuery})` : "";
+    this.watcher = mediaObserver.asObservable().subscribe((changes: MediaChange[]) => {
+      console.log(changes);
+      // this.activeMediaQuery = changes ? `'${changes.mqAlias}' = (${changes.mediaQuery})` : "";
       // this.removeFxMediaClasses(element);
       // this.addFxMediaLtClasses(element, this.fxMediaClasses.indexOf(change.mqAlias));
       // this.addFxMediaGtClasses(element, this.fxMediaClasses.indexOf(change.mqAlias));
       console.log(element);
       console.log(element.nativeElement);
-      console.log(change)
+      console.log(changes)
     });
 
     // renderer.addClass(element.nativeElement, "fxClass-lt-md");

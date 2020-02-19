@@ -7,11 +7,8 @@ import { ProjectsListComponent } from './projects/projects-list/projects-list.co
 import { MoneyChartsComponent } from './money-charts/money-charts.component';
 import { DashboardMapComponent } from './find-more-leads/find-more-card.component';
 
-import {
-
-  MatListModule,
-  MatTabsModule,
-} from '@angular/material';
+import { MatListModule } from '@angular/material/list';
+import { MatTabsModule } from '@angular/material/tabs';
 import { ChartsModule } from 'ng2-charts';
 import { ContactUsComponent } from './contact-us/contact-us.component';
 import { PayAndGoComponent } from './pay-and-go/pay-and-go.component';

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { CloseProjectVariant, CustomerProjectShort } from '../../../model/data-model';
 import { SecurityService } from '../../../auth/security.service';
 import { CompanyService } from '../../../api/services/company.service';

@@ -1,5 +1,5 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { SelectItem } from 'primeng/primeng';
+import { FilterMetadata, SelectItem } from 'primeng';
 import { ProjectService } from '../../../../api/services/project.service';
 import { PopUpMessageService } from '../../../../util/pop-up-message.service';
 import { Pagination } from '../../../../model/data-model';
@@ -15,8 +15,8 @@ import { Project } from '../../../../api/models/Project';
 import { ConfirmationService } from 'primeng/api';
 import { dataTableFilter } from '../../util';
 import { ActivatedRoute } from '@angular/router';
-import { FilterMetadata } from 'primeng/components/common/filtermetadata';
 import isArchived = Project.isArchived;
+import { Location } from '../../../../model/data-model';
 
 @Component({
   selector: 'admin-projects',
@@ -24,7 +24,7 @@ import isArchived = Project.isArchived;
   styleUrls: ['./projects-list.component.scss']
 })
 export class AdminProjectsComponent {
-  @ViewChild('dt') dataTable: any;
+  @ViewChild('dt') table: any;
   @ViewChild('target') animationTarget: ElementRef;
   rowsPerPage: Array<number> = [10, 50, 100];
   projects: RestPage<Project> = new RestPage<Project>();
@@ -40,18 +40,24 @@ export class AdminProjectsComponent {
   projectValidation: Project.ValidationRequest = {};
   contextMenuItems = [];
 
-  tableColumns: Array<SelectItem> = [];
-  selectedTableCols: Array<string> = [
-    'id',
-    'customer',
-    'serviceType',
-    'status',
-    'reason',
-    'location',
-    'leadPrice',
-    'lead',
-    'created'
+  columns = [
+    {field: 'id', header: 'Id', active: true},
+    {field: 'customer', header: 'Customer', active: true},
+    {field: 'serviceType', header: 'Service Type', active: true},
+    {field: 'status', header: 'Status', active: true},
+    {field: 'reason', header: 'Reason', active: true},
+    {field: 'reasonDescription', header: 'Reason Description', active: false},
+    {field: 'location', header: 'Location', active: true},
+    {field: 'leadPrice', header: 'Lead Price', active: true},
+    {field: 'lead', header: 'Is Lead', active: true},
+    {field: 'freePositions', header: 'Free Positions', active: false},
+    {field: 'startDate', header: 'Start date', active: false},
+    {field: 'created', header: 'Created', active: true},
+    {field: 'updated', header: 'Updated', active: false},
+    {field: 'notes', header: 'Notes', active: false},
   ];
+
+  selectedColumns = this.columns.filter(column => column.active);
 
   filters: { [s: string]: FilterMetadata };
 
@@ -97,42 +103,43 @@ export class AdminProjectsComponent {
     ];
   }
 
+  onColumnSelect(event) {
+    let changedColumn = this.columns.find(column => column.field == event.itemValue.field);
+    changedColumn.active = !changedColumn.active;
+    this.selectedColumns = this.columns.filter(column => column.active);
+  }
+
+  loadDataLazy(filters = {}, pagination: Pagination = new Pagination()) {
+    this.getProjects(filters, pagination)
+  }
+
+  onLazyLoad(event: any) {
+    const filters = filtersToParams(event.filters);
+    this.loadDataLazy(filtersToParams(filters), new Pagination().fromPrimeNg(event));
+  }
+
+  refresh(): void {
+    this.table.onLazyLoad.emit(this.table.createLazyLoadMetadata());
+  }
+
   getProjects(filters = {}, pagination: Pagination = new Pagination(0, this.rowsPerPage[0])): void {
     this.projectsProcessing = true;
     this.projectService.getAll(filters, pagination).subscribe(projects => {
       this.projects = projects;
       this.projectsProcessing = false;
-      if (projects.content.length > 0) {
-        this.tableColumns = [...this.selectedTableCols, ...Object.keys(projects.content[0])]
-          .filter((elem, pos, arr) => arr.indexOf(elem) == pos) //remove duplicates
-          .filter(item => !(item == 'details' || item == 'projectActions' || item == 'projectRequests' || item == 'notes'))
-          .map(key => {
-              return {label: this.camelCaseHumanPipe.transform(key, true), value: key};
-            }
-          );
-      }
+      // if (projects.content.length > 0) {
+      //   this.tableColumns = [...this.selectedTableCols, ...Object.keys(projects.content[0])]
+      //     .filter((elem, pos, arr) => arr.indexOf(elem) == pos) //remove duplicates
+      //     .filter(item => !(item == 'details' || item == 'projectActions' || item == 'projectRequests' || item == 'notes'))
+      //     .map(key => {
+      //         return {label: this.camelCaseHumanPipe.transform(key, true), value: key};
+      //       }
+      //     );
+      // }
     }, err => {
       this.popUpMessageService.showError(getErrorMessage(err));
       this.projectsProcessing = false;
     });
-  }
-
-  loadProjectsLazy(event): void {
-    this.getProjects(filtersToParams(event.filters), new Pagination().fromPrimeNg(event));
-  }
-
-  refresh(): void {
-    const paging = {
-      first: this.dataTable.first,
-      rows: this.dataTable.rows
-    };
-    this.dataTable.expandedRows = [];
-    this.dataTable.paginate(paging);
-  }
-
-  selectProject(selection: { originalEvent: MouseEvent, data: any }): void {
-    this.selectedProject = selection.data;
-    this.initContextMenu();
   }
 
   moreInformation(event) {
@@ -153,7 +160,7 @@ export class AdminProjectsComponent {
     this.displayLocationDialog = true;
   }
 
-  updateLocation(location: Location): void {
+  updateLocation(location): void {
     this.projectService.updateLocation(this.selectedProject.id, location).subscribe(
       res => {
         this.refresh();
@@ -184,19 +191,19 @@ export class AdminProjectsComponent {
   }
 
   expandRow(selection: { originalEvent: MouseEvent, data: Project }): void {
-    if (!this.dataTable.expandedRows) {
-      this.dataTable.expandedRows = [];
+    if (!this.table.expandedRows) {
+      this.table.expandedRows = [];
     }
-    if (this.dataTable.expandedRows.some(item => item.id == selection.data.id)) {
-      this.dataTable.expandedRows = this.dataTable.expandedRows.filter(item => item.id != selection.data.id);
+    if (this.table.expandedRows.some(item => item.id == selection.data.id)) {
+      this.table.expandedRows = this.table.expandedRows.filter(item => item.id != selection.data.id);
     } else {
-      this.dataTable.expandedRows = [];
+      this.table.expandedRows = [];
       this.projectService.getProject(selection.data.id).subscribe(
         (customerProject: Project) => {
           selection.data.projectRequests = customerProject.projectRequests;
           selection.data.details = customerProject.details;
           selection.data.projectActions = customerProject.projectActions;
-          this.dataTable.expandedRows.push(selection.data);
+          this.table.expandedRows.push(selection.data);
         },
         err => {
           console.log(err);

@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { ContractorProjectShort } from '../../../../../model/data-model';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { completeProjectDialogConfig } from '../../../../../shared/dialogs/dialogs.configs';
 import { dialogsMap } from '../../../../../shared/dialogs/dialogs.state';
 import { ProjectRequest } from "../../../../../api/models/ProjectRequest";

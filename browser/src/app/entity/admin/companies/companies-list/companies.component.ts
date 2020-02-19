@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { ConfirmationService, DataTable, MenuItem, SelectItem } from 'primeng/primeng';
+import { ConfirmationService, Table, MenuItem, SelectItem, FilterMetadata } from 'primeng';
 import { CompanyService } from '../../../../api/services/company.service';
 import { enumToArrayList, filtersToParams } from '../../../../util/tricks.service';
 import { Role } from '../../../../model/security-model';
@@ -8,7 +8,6 @@ import { Location, Pagination } from '../../../../model/data-model';
 import { RestPage } from '../../../../api/models/RestPage';
 import { Constants } from '../../../../util/constants';
 import { CamelCaseHumanPipe } from '../../../../pipes/camelcase-to-human.pipe';
-import { FilterMetadata } from 'primeng/components/common/filtermetadata';
 import { dataTableFilter } from '../../util';
 import { ActivatedRoute } from '@angular/router';
 import { Project } from '../../../../api/models/Project';
@@ -16,7 +15,6 @@ import { SecurityService } from "../../../../auth/security.service";
 import { BillingService } from "../../../../api/services/billing.service";
 import { PopUpMessageService } from "../../../../util/pop-up-message.service";
 import { getErrorMessage } from "../../../../util/functions";
-import { Questionary } from "../../../../api/models/Questionary";
 
 @Component({
   selector: 'admin-companies',
@@ -25,25 +23,35 @@ import { Questionary } from "../../../../api/models/Questionary";
 })
 export class CompaniesComponent {
 
-  @ViewChild('dt') dataTable: DataTable;
+  @ViewChild('dt') table: Table;
   rowsPerPage: Array<number> = [10, 50, 100];
   companiesPage: RestPage<Company> = new RestPage<Company>();
   selectedCompany: Company;
-  tableColumns: Array<SelectItem> = [];
   displayEditDialog: boolean = false;
   fetching: boolean = true;
   states: Array<SelectItem> = [];
   accreditations: Array<SelectItem> = [];
   Role = Role;
-  selectedTableCols: Array<string> = [
-    'id',
-    'email',
-    'name',
-    'location',
-    'rating',
-    'balance',
-    'approved'
+
+  columns = [
+    {field: 'id', header: 'Id', active: true},
+    {field: 'iconUrl', header: 'Icon', active: true},
+    {field: 'backgroundUrl', header: 'Background', active: false},
+    {field: 'name', header: 'Name', active: true},
+    {field: 'location', header: 'Location', active: true},
+    {field: 'description', header: 'Description', active: false},
+    {field: 'founded', header: 'founded', active: false},
+    {field: 'siteUrl', header: 'Site Url', active: false},
+    {field: 'rating', header: 'Rating', active: false},
+    {field: 'approved', header: 'Approved', active: true},
+    {field: 'uri', header: 'Uri', active: false},
+    {field: 'created', header: 'Created', active: false},
+    {field: 'deleted', header: 'Deleted', active: false},
+    {field: 'balance', header: 'Balance', active: true},
   ];
+
+  selectedColumns = this.columns.filter(column => column.active);
+
   roles: Array<SelectItem> = [];
   displayLocationDialog: boolean = false;
   displayBonusDialog: boolean = false;
@@ -114,12 +122,22 @@ export class CompaniesComponent {
     ];
   }
 
-  loadLazy(event, callback: () => void): void {
-    const pagination: Pagination = new Pagination().fromPrimeNg(event);
-    const filters = filtersToParams(event.filters);
-    if (typeof callback == 'function') {
-      callback.call(this, filters, pagination);
-    }
+  onColumnSelect(event) {
+    let changedColumn = this.columns.find(column => column.field == event.itemValue.field);
+    changedColumn.active = !changedColumn.active;
+    this.selectedColumns = this.columns.filter(column => column.active);
+  }
+
+  loadDataLazy(filters = {}, pagination: Pagination = new Pagination()) {
+    this.getCompanies(filters, pagination)
+  }
+
+  onLazyLoad(event: any) {
+    this.loadDataLazy(filtersToParams(event.filters), new Pagination().fromPrimeNg(event));
+  }
+
+  refresh(): void {
+    this.table.onLazyLoad.emit(this.table.createLazyLoadMetadata());
   }
 
   getCompanies(filters = {}, pagination: Pagination = new Pagination(0, this.rowsPerPage[0])): void {
@@ -127,29 +145,7 @@ export class CompaniesComponent {
     this.companyService.getCompanies(filters, pagination).subscribe((companies: RestPage<Company>) => {
       this.fetching = false;
       this.companiesPage = companies;
-      // fill columns
-      this.tableColumns = [...this.selectedTableCols, ...Object.keys(companies.content[0])]
-        .filter((elem, pos, arr) => arr.indexOf(elem) == pos) //remove duplicates
-        .filter(item => !(item == 'licenses' || item == 'reviewCount' || item == 'sumRating' || item == 'billing'))
-        .map(key => {
-            return {label: this.camelCaseHumanPipe.transform(key, true), value: key};
-          }
-        );
     });
-  }
-
-  refresh(dataTable): void {
-    const paging = {
-      first: dataTable.first,
-      rows: dataTable.rows
-    };
-    dataTable.expandedRows = [];
-    dataTable.paginate(paging);
-  }
-
-  selectCompany(selection: { originalEvent: MouseEvent, data: any }): void {
-    this.selectedCompany = selection.data;
-    this.initContextMenu();
   }
 
   deleteCompanyLogo(): void {
@@ -205,7 +201,7 @@ export class CompaniesComponent {
   updateLocation(location: Location): void {
     this.companyService.updateLocation(this.selectedCompany.id, location).subscribe(
       res => {
-        this.refresh(this.dataTable);
+        this.refresh();
         this.popUpService.showSuccess(`Company location has been updated`);
       }, err => {
         this.popUpService.showError(`Could not update company location. ${getErrorMessage(err)}`);
@@ -217,15 +213,17 @@ export class CompaniesComponent {
   }
 
   expandRow(selection: { originalEvent: MouseEvent, data: Project }): void {
-    if (!this.dataTable.expandedRows) {
-      this.dataTable.expandedRows = [];
-    }
-    if (this.dataTable.expandedRows.some(item => item.id == selection.data.id)) {
-      this.dataTable.expandedRows = this.dataTable.expandedRows.filter(item => item.id != selection.data.id);
-    } else {
-      this.dataTable.expandedRows = [];
-      this.dataTable.expandedRows.push(selection.data);
-    }
+    console.log("selection", selection);
+    console.log("this.table", this.table.selectionKeys)
+    // if (!this.dataTable.expandedRows) {
+    //   this.dataTable.expandedRows = [];
+    // }
+    // if (this.dataTable.expandedRows.some(item => item.id == selection.data.id)) {
+    //   this.dataTable.expandedRows = this.dataTable.expandedRows.filter(item => item.id != selection.data.id);
+    // } else {
+    //   this.dataTable.expandedRows = [];
+    //   this.dataTable.expandedRows.push(selection.data);
+    // }
   }
 
   addBonus() {

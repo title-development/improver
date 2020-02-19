@@ -5,12 +5,10 @@ import { ContractorLeadPurchaseComponent } from './contractor-lead-purchase.comp
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule } from '@angular/forms';
 
-import {
-  MatCardModule,
-  MatIconModule,
-  MatButtonModule,
-  MatInputModule
-} from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { AccountService } from '../../../api/services/account.service';
 import { BoundariesService } from '../../../api/services/boundaries.service';
 import { SharedModule } from '../../../shared/shared.module';

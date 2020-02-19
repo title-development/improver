@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, Inject, OnInit, Renderer2 } from '@angular/core';
-import { MatDialog, MatIconRegistry } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { PopUpMessageService } from '../util/pop-up-message.service';
 import { SecurityService } from '../auth/security.service';

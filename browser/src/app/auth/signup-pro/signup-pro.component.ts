@@ -14,9 +14,9 @@ import { Subject, throwError } from 'rxjs';
 import { ActivatedRoute, Params } from '@angular/router';
 import { finalize, mergeMap, takeUntil, timeoutWith } from 'rxjs/operators';
 import { RecaptchaComponent } from 'ng-recaptcha';
-import { MatDialog, MatDialogRef } from "@angular/material";
 import { dialogsMap } from "../../shared/dialogs/dialogs.state";
 import { phoneValidationDialogConfig } from "../../shared/dialogs/dialogs.configs";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 
 
 @Component({

@@ -18,7 +18,7 @@ export class UserService {
   }
 
   getAll(params, pagination): Observable<RestPage<User>> {
-    params = Object.assign(params, ...pagination);
+    params = Object.assign(params, pagination);
     return this.http.get<RestPage<User>>(this.url, {params: params});
   }
 

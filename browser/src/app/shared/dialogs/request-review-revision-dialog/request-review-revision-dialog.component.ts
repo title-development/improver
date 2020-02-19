@@ -1,14 +1,12 @@
 import { Component, EventEmitter, Input, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material';
 import { ReviewService } from '../../../api/services/review.service';
-import { ProRequestReview } from '../../../api/models/ProRequestReview';
 import { PopUpMessageService } from '../../../util/pop-up-message.service';
-import { Company } from '../../../api/models/Company';
 import { CompanyService } from '../../../api/services/company.service';
 import { SecurityService } from "../../../auth/security.service";
 import { Review } from "../../../model/data-model";
 import { getErrorMessage } from "../../../util/functions";
 import { Messages } from "../../../util/messages";
+import { MatDialogRef } from "@angular/material/dialog";
 
 @Component({
   selector: 'request-review-dialog',

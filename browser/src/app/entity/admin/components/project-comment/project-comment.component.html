@@ -1,7 +1,6 @@
 <p-dialog
   header="Add project comment"
-  [contentStyle]="{'overflow':'visible'}" [(visible)]="toggle" [responsive]="true" showEffect="fade"
-  [width]="700"
+  [contentStyle]="{'overflow':'visible'}" [(visible)]="toggle" showEffect="fade"
   [modal]="true">
   <form #form="ngForm" (ngSubmit)="form.valid && addComment()">
     <div class="ui-grid ui-grid-responsive ui-fluid">

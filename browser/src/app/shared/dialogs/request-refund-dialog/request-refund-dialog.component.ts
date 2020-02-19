@@ -1,13 +1,12 @@
-import { Component, EventEmitter, OnInit, Output, ViewEncapsulation } from '@angular/core';
-import { ContractorProject, ContractorProjectShort } from '../../../model/data-model';
-import { MatDialogRef } from "@angular/material";
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { ContractorProjectShort } from '../../../model/data-model';
 import { PopUpMessageService } from "../../../util/pop-up-message.service";
 import { ProjectService } from "../../../api/services/project.service";
 import { NgForm } from "@angular/forms";
 import { Refund } from "../../../api/models/Refund";
 import { getErrorMessage } from "../../../util/functions";
-import { ProjectRequest } from "../../../api/models/ProjectRequest";
 import { ProjectActionService } from "../../../util/project-action.service";
+import { MatDialogRef } from "@angular/material/dialog";
 
 @Component({
   selector: 'request-refund-dialog',

@@ -1,9 +1,10 @@
-import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, ViewChild, Directive } from '@angular/core';
 import { BaseChartDirective } from 'ng2-charts';
 import { ActivatedRoute } from '@angular/router';
 import { LeadsReport, MonthReport } from '../../../../api/models/LeadsReport';
 import { chartColors } from './chart.oprions';
 
+@Directive()
 class MoneySpentModel {
   chartsNumbers: Array<number>;
   chartLabels: Array<string>;

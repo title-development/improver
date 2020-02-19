@@ -19,9 +19,9 @@
   }
 }
 
-@include response-to(xs) {
-  flex-direction: column !important;
-}
+//@include response-to(xs) {
+//  flex-direction: column !important;
+//}
 
 .main-guide-container {
   display: flex;

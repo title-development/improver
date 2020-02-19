@@ -1,6 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { AuthService, GoogleLoginProvider, SocialUser } from 'angularx-social-login';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Constants } from '../../../util/constants';
 import { Messages } from '../../../util/messages';
 import { SocialConnectionsService } from '../../../auth/social-connections.service';

@@ -194,7 +194,7 @@ export function chunk<T>(array: ReadonlyArray<T>, size: number): T[][] {
 }
 
 export function clone(src) {
-  return Object.assign({}, src);
+  return JSON.parse(JSON.stringify(src));
 }
 
 export function removePhoneMask(s: string) {

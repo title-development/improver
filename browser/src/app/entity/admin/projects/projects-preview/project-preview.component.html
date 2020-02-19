@@ -2,7 +2,7 @@
   <div class="ui-grid ui-grid-responsive project-information">
     <div class="ui-grid-row">
       <div class="ui-g-6 ui-md-6">
-        <p-card title="Details">
+        <p-card title="Details" header="Details">
           <div *ngIf="projectInfo">
             <div class="ui-g">
 
@@ -71,7 +71,7 @@
             </div>
           </div>
         </p-card>
-        <p-card title="Contractors">
+        <p-card title="Contractors" header="Contractors">
           <div class="ui-g">
             <div class="projectRequests">
               <ng-template ngFor [ngForOf]="projectInfo.projectRequests" let-projectRequest let-i="index"
@@ -106,7 +106,7 @@
         </p-card>
       </div>
       <div class="ui-g-6 ui-md-6">
-        <p-card title="Questionary">
+        <p-card title="Questionary" header="Questionary">
           <div *ngIf="projectInfo" class="project-questionary">
             <div class="ui-g">
               <div class="ui-g-12 ui-md-12 ui-g-nopad">
@@ -153,18 +153,50 @@
     <div class="ui-grid-row">
       <div class="ui-g-12">
         <p-accordion [multiple]="true">
-          <p-accordionTab header="Project actions log" [selected]="true">
-            <p-dataTable [value]="projectInfo?.projectActions"
+          <p-accordionTab header="Project actions log" [selected]="false">
+            <p-table [value]="projectInfo?.projectActions"
                          [responsive]="true">
-              <p-column field="author" header="Author"></p-column>
-              <p-column field="text" header="Text"></p-column>
-              <p-column field="created" header="Created">
-                <ng-template let-col let-action="rowData" pTemplate="body">
-                  {{action[col.field] | date: 'MMM d, y, h:mm a' }}
-                </ng-template>
-              </p-column>
-              <p-column field="action" header="Action"></p-column>
-            </p-dataTable>
+
+              <ng-template pTemplate="header" let-columns>
+                <tr>
+                  <th pSortableColumn="author">
+                    Author
+                    <p-sortIcon field="author"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="text">
+                    Text
+                    <p-sortIcon field="text"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="created">
+                    Created
+                    <p-sortIcon field="created"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="action">
+                    Action
+                    <p-sortIcon field="action"></p-sortIcon>
+                  </th>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="body" let-row let-columns="columns">
+                <tr [pContextMenuRow]="row">
+                  <td>
+                    <span>{{row.author}}</span>
+                  </td>
+                  <td>
+                    <span>{{row.text}}</span>
+                  </td>
+                  <td>
+                    {{row.created | date: 'MMM d, y, h:mm a' }}
+                  </td>
+                  <td>
+                    <span>{{row.action}}</span>
+                  </td>
+
+                </tr>
+              </ng-template>
+
+            </p-table>
           </p-accordionTab>
         </p-accordion>
       </div>

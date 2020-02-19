@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { SecurityService } from '../../../auth/security.service';
 import { Constants } from '../../../util/constants';
 import { Messages } from '../../../util/messages';

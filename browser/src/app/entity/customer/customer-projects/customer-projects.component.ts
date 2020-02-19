@@ -1,7 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { CustomerProjectShort, Pagination, ServiceType } from '../../../model/data-model';
 import { SecurityService } from '../../../auth/security.service';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { PopUpMessageService } from '../../../util/pop-up-message.service';
 import { ProjectRequestService } from '../../../api/services/project-request.service';
 import { ProjectService } from '../../../api/services/project.service';

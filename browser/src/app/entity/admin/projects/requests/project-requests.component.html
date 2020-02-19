@@ -3,91 +3,116 @@
   <p-button (onClick)="refresh()" icon="pi pi-fw pi-refresh" label="&nbsp;&nbsp;Refresh"></p-button>
 </div>
 
-<p-dataTable class="projectRequests-table" [lazy]="true" [loading]="processing" #dt
-             [value]="projectRequests.content"
-             selectionMode="single" sortMode="single"
-             [responsive]="true" [contextMenu]="cm" [paginator]="true"
-             [filters]="filters"
-             [rows]="rowsPerPage[0]" [totalRecords]="projectRequests.totalElements" [rowsPerPageOptions]="rowsPerPage"
-             sortField="id" [sortOrder]="1"
-             [expandableRows]="true" (onRowSelect)="expandRow($event)"
-             (onContextMenuSelect)="selectItem($event)"
-             (onLazyLoad)="loadLazy($event)">
-  <p-header>
+<p-table class="projectRequests-table" [lazy]="true" [loading]="processing" #dt
+         dataKey="id"
+         [value]="projectRequests.content"
+         selectionMode="single" sortMode="single"
+         [responsive]="true" [contextMenu]="cm" [paginator]="true"
+         [filters]="filters"
+         [rows]="rowsPerPage[0]" [totalRecords]="projectRequests.totalElements" [rowsPerPageOptions]="rowsPerPage"
+         sortField="id" [sortOrder]="1"
+         (onRowExpand)="expandRow($event)"
+         [(contextMenuSelection)]="selected"
+         (onContextMenuSelect)="selectItem($event)"
+         (onLazyLoad)="onLazyLoad($event)">
+
+  <!--Column selector-->
+  <ng-template pTemplate="caption">
     <div style="text-align:left">
-      <p-multiSelect [options]="tableColumns" [panelStyle]="{minWidth:'270px'}" [(ngModel)]="selectedTableCols"></p-multiSelect>
+      <p-multiSelect [options]="columns" [(ngModel)]="selectedColumns" optionLabel="header"
+                     selectedItemsLabel="{0} columns selected" [style]="{minWidth: '300px'}" defaultLabel="Select columns"
+                     (onChange)="onColumnSelect($event)"></p-multiSelect>
     </div>
-  </p-header>
-  <p-column field="id" header="ID" [sortable]="true" *ngIf="selectedTableCols.includes('id')" [filter]="true"></p-column>
-  <p-column field="contractor" header="Contractor" sortField="contractor.email" filterField="contractorEmail"  [sortable]="true" *ngIf="selectedTableCols.includes('contractor')" [filter]="true" >
-    <ng-template pTemplate="filter" let-col>
-      <input type="text" pInputText [ngModel]="filters?.contractorEmail?.value" (input)="dt.filter($event.target.value,col.filterField,col.filterMatchMode)">
-    </ng-template>
-    <ng-template pTemplate="body" let-col let-data="rowData">
-      {{data[col.field].email}}
-    </ng-template>
-  </p-column>
-  <p-column field="customer" header="Customer" sortField="project.customer.email" filterField="customerEmail" [sortable]="true" *ngIf="selectedTableCols.includes('customer')" [filter]="true">
-    <ng-template pTemplate="filter" let-col>
-      <input type="text" pInputText (input)="dt.filter($event.target.value,col.filterField,col.filterMatchMode)">
-    </ng-template>
-    <ng-template pTemplate="body" let-col let-data="rowData">
-      {{data[col.field].email}}
-    </ng-template>
-  </p-column>
-  <p-column field="status" header="Status" sortField="status" [filter]="true" [sortable]="true" *ngIf="selectedTableCols.includes('status')">
-    <ng-template pTemplate="filter" let-col>
-      <p-dropdown [options]="projectRequestStatuses" [style]="{'width':'100%'}" (onChange)="dt.filter($event.value,col.field,col.filterMatchMode)" styleClass="ui-column-filter"></p-dropdown>
-    </ng-template>
-  </p-column>
-  <p-column field="reason" header="Reason" sortField="reason" [filter]="true" [sortable]="true"  *ngIf="selectedTableCols.includes('reason')">
-    <ng-template pTemplate="filter" let-col>
-      <p-dropdown [options]="projectRequestReasons" [style]="{'width':'100%'}" (onChange)="dt.filter($event.value,col.field,col.filterMatchMode)" styleClass="ui-column-filter"></p-dropdown>
-    </ng-template>
-  </p-column>
-  <p-column field="reasonComment" header="Reason comment" sortField="reasonComment" [sortable]="true" *ngIf="selectedTableCols.includes('reasonComment')">
-
-  </p-column>
-  <p-column field="serviceType" sortField="project.serviceType.name" header="Service type" [sortable]="true" *ngIf="selectedTableCols.includes('serviceType')"></p-column>
-  <p-column field="projectStatus" header="Project status" sortField="project.status" [filter]="true" [sortable]="true" *ngIf="selectedTableCols.includes('projectStatus')">
-    <ng-template pTemplate="filter" let-col>
-      <p-dropdown [options]="projectStatuses" [style]="{'width':'100%'}" (onChange)="dt.filter($event.value,col.field,col.filterMatchMode)" styleClass="ui-column-filter"></p-dropdown>
-    </ng-template>
-  </p-column>
-  <p-column field="manual" header="Manual" sortField="isManual" [sortable]="true" *ngIf="selectedTableCols.includes('manual')">
-    <ng-template let-row="rowData" pTemplate="body">
-      <i class="pi pi-check" *ngIf="row.manual"></i>
-      <i class="pi pi-ban" *ngIf="!row.manual"></i>
-    </ng-template>
-  </p-column>
-  <p-column field="viewed" header="Viewed" sortField="isViewed" [sortable]="true" *ngIf="selectedTableCols.includes('viewed')">
-    <ng-template let-row="rowData" pTemplate="body">
-      <i class="pi pi-check" *ngIf="row.viewed"></i>
-      <i class="pi pi-ban" *ngIf="!row.viewed"></i>
-    </ng-template>
-  </p-column>
-  <p-column field="refund" header="Refund Request" [sortable]="true" *ngIf="selectedTableCols.includes('refund')">
-    <ng-template let-row="rowData" pTemplate="body">
-      <i class="pi pi-check" *ngIf="row.refund"></i>
-      <i class="pi pi-ban" *ngIf="!row.refund"></i>
-    </ng-template>
-  </p-column>
-  <p-column field="created" header="Created" [sortable]="true" *ngIf="selectedTableCols.includes('created')">
-    <ng-template let-col let-data="rowData" pTemplate="body">
-      {{data[col.field] | date: 'MMM d, y, h:mm a'}}
-    </ng-template>
-  </p-column>
-  <p-column field="updated" header="Updated" [sortable]="true" *ngIf="selectedTableCols.includes('updated')">
-    <ng-template let-col let-data="rowData" pTemplate="body">
-      {{data[col.field] | date: 'MMM d, y, h:mm a'}}
-    </ng-template>
-  </p-column>
-  <ng-template let-data pTemplate="rowexpansion">
-    <project-preview [projectInfo]="data.project" ></project-preview>
   </ng-template>
-</p-dataTable>
 
-<p-dialog class="messanger-dialog" header="Messenger" [(visible)]="displayMessenger" [responsive]="true" showEffect="fade" [width]="500"
+  <ng-template pTemplate="header" let-columns>
+
+    <!--Titles-->
+
+    <tr>
+      <th></th>
+
+      <ng-container *ngFor="let col of selectedColumns" [ngSwitch]="col.field">
+
+        <th *ngSwitchDefault [pSortableColumn]="col.field" >
+          {{col.header}}
+          <p-sortIcon [field]="col.field"></p-sortIcon>
+        </th>
+
+      </ng-container>
+
+    </tr>
+
+    <tr>
+
+      <th></th>
+      <th *ngFor="let col of selectedColumns" [ngSwitch]="col.field">
+
+        <input *ngSwitchCase="'id'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
+        <input *ngSwitchCase="'contractor'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
+        <input *ngSwitchCase="'customer'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
+
+      </th>
+
+    </tr>
+
+  </ng-template>
+
+  <ng-template pTemplate="body" let-row let-expanded="expanded" let-columns="columns">
+    <tr [pContextMenuRow]="row" [pSelectableRow]="row">
+
+      <td class="expander">
+        <a [pRowToggler]="row">
+          <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+        </a>
+      </td>
+
+      <td *ngFor="let col of selectedColumns" [ngSwitch]="col.field">
+
+        <span *ngSwitchDefault>
+          {{row[col.field]}}
+        </span>
+
+        <span *ngSwitchCase="'contractor'">
+          <span>{{row.contractor.email}}</span>
+        </span>
+
+        <span *ngSwitchCase="'customer'">
+          <span>{{row.customer.email}}</span>
+        </span>
+
+        <span *ngSwitchCase="'created'">
+          {{row[col.field] | date: 'MMM d, y, h:mm a'}}
+        </span>
+
+        <span *ngSwitchCase="'updated'">
+          {{row[col.field] | date: 'MMM d, y, h:mm a'}}
+        </span>
+
+        <span *ngSwitchCase="'manual'">
+          <i class="pi pi-check" *ngIf="row[col.field]"></i>
+          <i class="pi pi-ban" *ngIf="!row[col.field]"></i>
+        </span>
+
+        <span *ngSwitchCase="'refundRequest'">
+          <i class="pi pi-check" *ngIf="row[col.field]"></i>
+          <i class="pi pi-ban" *ngIf="!row[col.field]"></i>
+        </span>
+
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template let-data pTemplate="rowexpansion">
+    <tr>
+      <td [attr.colspan]="selectedColumns.length + 1">
+            <project-preview [projectInfo]="data.project" ></project-preview>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<p-dialog class="messanger-dialog" header="Messenger" [(visible)]="displayMessenger" showEffect="fade"
           (onHide)="onModalClose($event)"
           [modal]="true">
   <div class="processing" *ngIf="fetchingMessages">

@@ -1,6 +1,6 @@
 import { Component, Inject, Input, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material';
 import * as Swiper from 'swiper/dist/js/swiper.min';
+import { MatDialogRef } from "@angular/material/dialog";
 
 @Component({
   selector: 'image-viewer',
@@ -23,7 +23,7 @@ export class ImageViewerComponent implements OnInit {
 
   ngOnInit() {
     this.currentDialogRef
-      .afterOpen()
+      .afterOpened()
       .subscribe(() => {
         this.galleryTop = new Swiper('.gallery-top', {
           realIndex: this.galleryActiveIndex,

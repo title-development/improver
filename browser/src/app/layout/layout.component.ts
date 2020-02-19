@@ -36,7 +36,7 @@ import { ScrollHolderService } from '../util/scroll-holder.service';
   `]
 })
 export class LayoutComponent {
-  @ViewChild('scrollHolder') scrollHolder: ElementRef;
+  @ViewChild('scrollHolder', {static: true}) scrollHolder: ElementRef;
 
   constructor(private scrollHolderService: ScrollHolderService) {
 

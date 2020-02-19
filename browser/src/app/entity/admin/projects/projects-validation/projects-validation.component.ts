@@ -7,9 +7,10 @@ import { SecurityService } from '../../../../auth/security.service';
 import { PopUpMessageService } from '../../../../util/pop-up-message.service';
 import { getErrorMessage } from '../../../../util/functions';
 import { Project } from '../../../../api/models/Project';
-import { SelectItem } from "primeng/primeng";
+import { SelectItem } from "primeng";
 import { CamelCaseHumanPipe } from "../../../../pipes/camelcase-to-human.pipe";
 import { enumToArrayList, filtersToParams } from "../../../../util/tricks.service";
+import { Location } from '../../../../model/data-model';
 
 @Component({
   selector: 'projects-validation',
@@ -17,7 +18,7 @@ import { enumToArrayList, filtersToParams } from "../../../../util/tricks.servic
   styleUrls: ['./projects-validation.component.scss']
 })
 export class AdminProjectsValidationComponent {
-  @ViewChild('dt') dataTable: any;
+  @ViewChild('dt') table: any;
   @ViewChild('target') animationTarget: ElementRef;
   rowsPerPage: Array<number> = [10, 50, 100];
   projects: RestPage<Project> = new RestPage<Project>();
@@ -36,28 +37,26 @@ export class AdminProjectsValidationComponent {
   displayCancelDialog: boolean = false;
   displayCompleteDialog: boolean = false;
   projectValidation: Project.ValidationRequest = {};
-  tableColumns: Array<SelectItem> = [];
-  selectedTableCols: Array<string> = [
-    'id',
-    'customer',
-    'serviceType',
-    'reason',
-    'lead',
-    'status',
-    'leadPrice',
-    'location',
-    'created'
+
+  columns = [
+    {field: 'id', header: 'Id', active: true},
+    {field: 'customer', header: 'Customer', active: true},
+    {field: 'serviceType', header: 'Service Type', active: true},
+    {field: 'status', header: 'Status', active: true},
+    {field: 'reason', header: 'Reason', active: true},
+    {field: 'reasonDescription', header: 'Reason Description', active: false},
+    {field: 'location', header: 'Location', active: true},
+    {field: 'leadPrice', header: 'Lead Price', active: true},
+    {field: 'lead', header: 'Is Lead', active: true},
+    {field: 'freePositions', header: 'Free Positions', active: false},
+    {field: 'startDate', header: 'Start date', active: false},
+    {field: 'created', header: 'Created', active: true},
+    {field: 'updated', header: 'Updated', active: false},
+    {field: 'notes', header: 'Notes', active: false},
   ];
-  projectTabs = [
-    {
-      header: 'Validation',
-      content: this.getProjects(true, {})
-    },
-    {
-      header: 'Invalid',
-      content: this.getProjects(false, {})
-    }
-  ];
+
+  selectedColumns = this.columns.filter(column => column.active);
+
   tabIndex = 0;
   contextMenuItems: Array<MenuItem> = [];
 
@@ -119,6 +118,25 @@ export class AdminProjectsValidationComponent {
     ]
   }
 
+  onColumnSelect(event) {
+    let changedColumn = this.columns.find(column => column.field == event.itemValue.field);
+    changedColumn.active = !changedColumn.active;
+    this.selectedColumns = this.columns.filter(column => column.active);
+  }
+
+  loadDataLazy(filters = {}, pagination: Pagination = new Pagination()) {
+    this.getProjects(filters, pagination)
+  }
+
+  onLazyLoad(event: any) {
+    const filters = filtersToParams(event.filters);
+    this.loadDataLazy(filtersToParams(filters), new Pagination().fromPrimeNg(event));
+  }
+
+  refresh(): void {
+    this.table.onLazyLoad.emit(this.table.createLazyLoadMetadata());
+  }
+
 
   getProjects(isValid, filters, pagination: Pagination = new Pagination(0, this.rowsPerPage[0])) {
     this.projectsProcessing = true;
@@ -128,15 +146,15 @@ export class AdminProjectsValidationComponent {
       this.projects = projects;
       this.projectsProcessing = false;
 
-      if (projects.content.length > 0) {
-        this.tableColumns = [...this.selectedTableCols, ...Object.keys(projects.content[0])]
-          .filter((elem, pos, arr) => arr.indexOf(elem) == pos) //remove duplicates
-          .filter(item => !(item == 'details' || item == 'projectActions' || item == 'projectRequests' || item == 'notes'))
-          .map(key => {
-              return {label: this.camelCaseHumanPipe.transform(key, true), value: key};
-            }
-          );
-      }
+      // if (projects.content.length > 0) {
+      //   this.tableColumns = [...this.selectedTableCols, ...Object.keys(projects.content[0])]
+      //     .filter((elem, pos, arr) => arr.indexOf(elem) == pos) //remove duplicates
+      //     .filter(item => !(item == 'details' || item == 'projectActions' || item == 'projectRequests' || item == 'notes'))
+      //     .map(key => {
+      //         return {label: this.camelCaseHumanPipe.transform(key, true), value: key};
+      //       }
+      //     );
+      // }
 
     }, err => {
       console.log(err);
@@ -160,15 +178,6 @@ export class AdminProjectsValidationComponent {
   selectProject(selection: { originalEvent: MouseEvent, data: any }): void {
     this.selectedProject = selection.data;
     this.initContextMenu();
-  }
-
-  refresh(): void {
-    const paging = {
-      first: this.dataTable.first,
-      rows: this.dataTable.rows
-    };
-    this.dataTable.expandedRows = [];
-    this.dataTable.paginate(paging);
   }
 
   openLocationValidationPopup(): void {
@@ -216,19 +225,19 @@ export class AdminProjectsValidationComponent {
   }
 
   expandRow(selection: { originalEvent: MouseEvent, data: Project }): void {
-    if (!this.dataTable.expandedRows) {
-      this.dataTable.expandedRows = [];
+    if (!this.table.expandedRows) {
+      this.table.expandedRows = [];
     }
-    if (this.dataTable.expandedRows.some(item => item.id == selection.data.id)) {
-      this.dataTable.expandedRows = this.dataTable.expandedRows.filter(item => item.id != selection.data.id);
+    if (this.table.expandedRows.some(item => item.id == selection.data.id)) {
+      this.table.expandedRows = this.table.expandedRows.filter(item => item.id != selection.data.id);
     } else {
-      this.dataTable.expandedRows = [];
+      this.table.expandedRows = [];
       this.projectService.getProject(selection.data.id).subscribe(
         (customerProject: Project) => {
           selection.data.projectRequests = customerProject.projectRequests;
           selection.data.details = customerProject.details;
           selection.data.projectActions = customerProject.projectActions;
-          this.dataTable.expandedRows.push(selection.data);
+          this.table.expandedRows.push(selection.data);
         },
         err => {
           console.log(err);

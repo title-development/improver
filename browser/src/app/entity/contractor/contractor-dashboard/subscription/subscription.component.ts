@@ -2,7 +2,7 @@ import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { SecurityService } from '../../../../auth/security.service';
 import { BillingService } from '../../../../api/services/billing.service';
 import { PopUpMessageService } from '../../../../util/pop-up-message.service';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { confirmDialogConfig } from '../../../../shared/dialogs/dialogs.configs';
 
 

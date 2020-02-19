@@ -72,9 +72,7 @@ export class CompanyService {
   }
 
   getCompanies(filters, pagination: Pagination): Observable<RestPage<Company>> {
-    // const params = toHttpParams({...filters, ...pagination});
     const params = {...filters, ...pagination};
-
     return this.http.get<RestPage<Company>>(`${this.companyUrl}`, {params});
   }
 

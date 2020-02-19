@@ -3,7 +3,7 @@ import { SecurityService } from "../../../auth/security.service";
 import { CompanyService } from '../../../api/services/company.service';
 import { ProjectService } from '../../../api/services/project.service';
 import { ProjectRequestService } from "../../../api/services/project-request.service";
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ProjectRequest } from '../../../api/models/ProjectRequest';
 
 @Component({

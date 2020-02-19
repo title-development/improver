@@ -3,7 +3,6 @@ import { FileItem, FileLikeObject, FileUploader } from 'ng2-file-upload';
 import { ProjectService } from '../../api/services/project.service';
 import { FILE_MIME_TYPES, IMAGE_UPLOADER_QUERY_LIMIT, MAX_FILE_SIZE } from '../../util/file-parameters';
 import { confirmDialogConfig, customerGalleryDialogConfig, } from '../dialogs/dialogs.configs';
-import { MatDialog, MatDialogRef } from '@angular/material';
 import { PopUpMessageService } from '../../util/pop-up-message.service';
 import { SystemMessageType } from '../../model/data-model';
 import { HttpClient } from '@angular/common/http';
@@ -13,6 +12,7 @@ import { SecurityService } from '../../auth/security.service';
 import { dialogsMap } from '../dialogs/dialogs.state';
 import { Subject } from 'rxjs/internal/Subject';
 import { Observable } from 'rxjs/internal/Observable';
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 
 @Component({
   selector: 'image-uploader',

@@ -1,18 +1,6 @@
-import {
-  Component,
-  ElementRef,
-  EventEmitter, Inject,
-  Input, OnChanges,
-  OnDestroy,
-  Output,
-  Renderer,
-  Renderer2,
-  ViewChild
-} from '@angular/core';
+import { Component, ElementRef, EventEmitter, Inject, Input, Output, Renderer2, ViewChild } from '@angular/core';
 import { ALLOWED_FILE_EXTENTIONS, MAX_FILE_SIZE } from '../../../../util/file-parameters';
-import { MessageService } from 'primeng/components/common/messageservice';
-import { ConfirmationService } from '../../../../../../node_modules/primeng/primeng';
-import { PopUpMessage } from "../../../../model/data-model";
+import { ConfirmationService } from 'primeng';
 import { PopUpMessageService } from "../../../../util/pop-up-message.service";
 
 let index: number = 0;

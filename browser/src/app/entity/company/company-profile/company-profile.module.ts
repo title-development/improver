@@ -5,15 +5,13 @@ import { CompanyProfileComponent } from "./company-profile.component";
 import { FlexLayoutModule } from "@angular/flex-layout";
 import { FormsModule } from "@angular/forms";
 
-import {
-  MatCardModule,
-  MatIconModule,
-  MatListModule,
-  MatButtonModule,
-  MatInputModule,
-  MatMenuModule,
-  MatRadioModule
-} from "@angular/material";
+import { MatButtonModule } from "@angular/material/button";
+import { MatCardModule } from "@angular/material/card";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatListModule } from "@angular/material/list";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatRadioModule } from "@angular/material/radio";
 
 import { CompanyReviewItemComponent } from "./company-reviews/company-review-item/company-review-item.component";
 import { AccountService } from '../../../api/services/account.service';

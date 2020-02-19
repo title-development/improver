@@ -3,8 +3,6 @@ import { Constants } from "../../../../util/constants";
 import { Messages } from "../../../../util/messages";
 import { ActivatedRoute } from "@angular/router";
 import { SecurityService } from "../../../../auth/security.service";
-import { RequestOptions } from "@angular/http";
-
 import { AccountService } from '../../../../api/services/account.service';
 import { PopUpMessageService } from "../../../../util/pop-up-message.service";
 import {

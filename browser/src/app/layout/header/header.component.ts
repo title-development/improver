@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { questionaryDialogConfig } from '../../shared/dialogs/dialogs.configs';
 import { Role } from '../../model/security-model';
 import { NotificationResource } from '../../util/notification.resource';

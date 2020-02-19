@@ -1,4 +1,4 @@
-p-datatable::ng-deep {
+p-table::ng-deep {
   .ui-cell-data {
     a {
       display: block;
@@ -17,11 +17,15 @@ p-datatable::ng-deep {
   display: inline-block;
 }
 
-p-overlaypanel::ng-deep {
-  img {
-    max-width: 400px;
-    max-height: 400px;
-    height:  auto;
-    width: auto;
+
+td[ng-reflect-ng-switch="questionaryId"] {
+  text-align: center;
+}
+
+.trade-wrapper {
+  background-color: rgba(230, 230, 230, 0.5);
+  padding: 0px 2px;
+  &:not(:last-of-type) {
+    margin-bottom: 2px;
   }
 }

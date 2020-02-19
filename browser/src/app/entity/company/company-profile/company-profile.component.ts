@@ -10,7 +10,7 @@ import {
   personalPhotoDialogConfig,
   unavailabilityPeriodDialogConfig
 } from '../../../shared/dialogs/dialogs.configs';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { CompanyReviewsComponent } from './company-reviews/company-reviews.component';
 import { MediaQuery, MediaQueryService } from '../../../util/media-query.service';
 import { GoogleMapUtilsService } from '../../../util/google-map.utils';

@@ -9,24 +9,23 @@ const routes: Routes = [
   },
   {
     path: ':companyId',
-    loadChildren: './company-profile/company-profile.module#CompanyProfileModule'
+    loadChildren: () => import('./company-profile/company-profile.module').then(m => m.CompanyProfileModule)
   },
   {
     path: ':companyId/projects/view/:projectId',
-    loadChildren: './company-demo-project-viewer/company-demo-project-viewer.module#CompanyDemoProjectViewerModule',
+    loadChildren: () => import('./company-demo-project-viewer/company-demo-project-viewer.module').then(m => m.CompanyDemoProjectViewerModule),
     canActivate: [AuthGuard]
   },
   {
     path: ':companyId/projects/:mode/:projectId',
-    loadChildren: './company-demo-project-editor/company-demo-project-editor.module#CompanyDemoProjectEditorModule',
+    loadChildren: () => import('./company-demo-project-editor/company-demo-project-editor.module').then(m => m.CompanyDemoProjectEditorModule),
     canActivate: [AuthGuard, ContractorGuard]
   },
   {
     path: ':companyId/projects/:mode',
-    loadChildren: './company-demo-project-editor/company-demo-project-editor.module#CompanyDemoProjectEditorModule',
+    loadChildren: () => import('./company-demo-project-editor/company-demo-project-editor.module').then(m => m.CompanyDemoProjectEditorModule),
     canActivate: [AuthGuard, ContractorGuard]
   }
-
 ];
 
 export const COMPANIES_ROUTES: ModuleWithProviders = RouterModule.forChild(routes);

@@ -3,10 +3,8 @@ import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HomeComponent } from './home.component';
 
-import {
-  MatAutocompleteModule,
-  MatCardModule
-} from '@angular/material';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatCardModule } from '@angular/material/card';
 import { MainSearchComponent } from './main-search/main-search.component';
 import { MainGuideComponent } from './main-guide/main-guide.component';
 import { PopularServicesComponent } from './popular-services/popular-services.component';

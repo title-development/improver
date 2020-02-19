@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { Questionary } from '../../../../api/models/Questionary';
 import { QuestionariesService } from '../../../../api/services/questionaries.service';
-import { ConfirmationService, MenuItem } from 'primeng/primeng';
+import { ConfirmationService, MenuItem } from 'primeng';
 import { Router } from '@angular/router';
 import { Pagination } from '../../../../model/data-model';
 import { filtersToParams } from '../../../../util/tricks.service';
@@ -16,12 +16,24 @@ import { PopUpMessageService } from "../../../../util/pop-up-message.service";
   styleUrls: ['./questionary.component.scss']
 })
 export class QuestionaryListComponent {
-  @ViewChild('dt') dataTable: any;
+  @ViewChild('dt') table: any;
   Role = Role;
   processing = true;
   selectedQuestionary: Questionary;
   questionaries: RestPage<Questionary> = new RestPage<Questionary>();
   rowsPerPage: Array<number> = [10, 50, 100];
+
+  selectedColumns = [
+    {field: 'id', header: 'Id'},
+    {field: 'company', header: 'Company'},
+    {field: 'customer', header: 'Customer'},
+    {field: 'score', header: 'Score'},
+    {field: 'created', header: 'Created'},
+    {field: 'published', header: 'Published'},
+    {field: 'publishDate', header: 'Publish Date'},
+    {field: 'revisionRequested', header: 'Revision Requested'},
+  ];
+
 
   contextMenuItems: Array<MenuItem> = [
     {
@@ -52,12 +64,16 @@ export class QuestionaryListComponent {
               private router: Router) {
   }
 
-  loadLazy(event): void {
-    this.getQuestions(filtersToParams(event.filters), new Pagination().fromPrimeNg(event));
+  loadDataLazy(filters = {}, pagination: Pagination = new Pagination()) {
+    this.getQuestionarie(filters, pagination)
   }
 
-  selectQuestionary(selection: { originalEvent: MouseEvent, data: Questionary }): void {
-    this.selectedQuestionary = selection.data;
+  onLazyLoad(event: any) {
+    this.loadDataLazy(filtersToParams(event.filters), new Pagination().fromPrimeNg(event));
+  }
+
+  refresh(): void {
+    this.table.onLazyLoad.emit(this.table.createLazyLoadMetadata());
   }
 
   deleteQuestionary(questionary: Questionary): void {
@@ -77,16 +93,7 @@ export class QuestionaryListComponent {
     });
   }
 
-  refresh(): void {
-    const paging = {
-      first: this.dataTable.first,
-      rows: this.dataTable.rows
-    };
-    this.dataTable.expandedRows = [];
-    this.dataTable.paginate(paging);
-  }
-
-  getQuestions(filters = {}, pagination: Pagination = new Pagination(0, this.rowsPerPage[0])): void {
+  getQuestionarie(filters = {}, pagination: Pagination = new Pagination(0, this.rowsPerPage[0])): void {
     this.processing = true;
     this.questionariesService.getAll(filters, pagination).subscribe(
       (restPage: RestPage<Questionary>) => {

@@ -5,7 +5,9 @@ import { QuestionaryFormComponent } from './questionary-dialog/questionary-form/
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared.module';
-import { MatCheckboxModule, MatProgressSpinnerModule, MatRadioModule } from '@angular/material';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatRadioModule } from '@angular/material/radio';
 import { CvButtonModule } from '../../theme/button/cv-button.module';
 import { CvIconModule } from '../../theme/icon/cv-icon-module';
 import { CvSelectModule } from '../../theme/select/cv-select-module';
@@ -25,6 +27,7 @@ import { ReferralService } from '../../api/services/referral.service';
 import { ClipboardModule } from 'ngx-clipboard';
 import { MatDialogModule } from '@angular/material/dialog';
 import { PreQuestionaryBlock } from "./questionary-dialog/questionary-form/pre-questionary-block/pre-questionary-block";
+import { NgReplacePipeModule } from "angular-pipes";
 
 @NgModule({
   imports: [
@@ -48,7 +51,8 @@ import { PreQuestionaryBlock } from "./questionary-dialog/questionary-form/pre-q
     PerfectScrollbarModule,
     ClipboardModule,
     MatDialogModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    NgReplacePipeModule
   ],
   declarations: [
     QuestionaryFormComponent,

@@ -1,7 +1,6 @@
 import { ApplicationRef, ChangeDetectorRef, Component } from '@angular/core';
 import { MapOptions } from '@agm/core/services/google-maps-types';
 import { defaultMapOptions } from '../../util/google-map-default-options';
-import { MatDialog, MatDialogRef } from '@angular/material';
 import { CompanyRegistration, LoginModel } from '../../model/security-model';
 import { SecurityService } from '../security.service';
 import { Constants } from '../../util/constants';
@@ -27,6 +26,7 @@ import { Router } from '@angular/router';
 import { ReplaySubject, Subject } from 'rxjs';
 import LatLng = google.maps.LatLng;
 import Polygon = google.maps.Polygon;
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 
 @Component({
   selector: 'signup-company',

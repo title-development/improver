@@ -1,9 +1,9 @@
 import { Component, ViewEncapsulation } from '@angular/core';
-import { Message } from 'primeng/primeng';
+import { Message } from 'primeng';
 
 @Component({
   selector: 'admin-panel',
-  template: `<router-outlet></router-outlet><p-growl [(value)]="msgs"></p-growl><p-confirmDialog width="425"></p-confirmDialog>`,
+  template: `<router-outlet></router-outlet><p-confirmDialog width="425"></p-confirmDialog>`,
   styleUrls: [
     '../../../../node_modules/@fortawesome/fontawesome-free/css/fontawesome.min.css',
     '../../../../node_modules/@fortawesome/fontawesome-free/css/all.min.css',
@@ -17,8 +17,6 @@ import { Message } from 'primeng/primeng';
   encapsulation: ViewEncapsulation.None
 })
 export class AdminComponent {
-  msgs: Array<Message> = [];
   constructor() {
-
   }
 }

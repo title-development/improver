@@ -7,7 +7,7 @@ import {DemoProject, Review} from '../../model/data-model';
 import { NgForm } from '@angular/forms';
 import { dialogsMap } from '../../shared/dialogs/dialogs.state';
 import { confirmDialogConfig } from '../../shared/dialogs/dialogs.configs';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Messages } from '../../util/messages';
 import { PopUpMessageService } from '../../util/pop-up-message.service';
 import { Constants } from '../../util/constants';

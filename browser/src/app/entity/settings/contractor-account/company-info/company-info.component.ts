@@ -11,7 +11,7 @@ import {
   locationSuggestDialogConfig,
   personalPhotoDialogConfig
 } from '../../../../shared/dialogs/dialogs.configs';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { LicenseService } from '../../../../api/services/license.service';
 import { PopUpMessageService } from '../../../../util/pop-up-message.service';
 import { TricksService } from '../../../../util/tricks.service';

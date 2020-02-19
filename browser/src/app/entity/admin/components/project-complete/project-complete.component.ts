@@ -19,7 +19,7 @@ export class ProjectCompleteComponent implements OnInit {
   @Output() toggleChange: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() onDone: EventEmitter<Location> = new EventEmitter<Location>();
 
-  @ViewChild('form') form: NgForm;
+  @ViewChild('form', {static: true}) form: NgForm;
   completeVariants = [];
   comment;
   reason;
@@ -39,7 +39,7 @@ export class ProjectCompleteComponent implements OnInit {
     if (this._toggle) {
       this.getCloseVariants();
     } else {
-      this.form.resetForm();
+        this.form.resetForm();
     }
   }
 
@@ -103,6 +103,5 @@ export class ProjectCompleteComponent implements OnInit {
       err => this.popUpMessageService.showError(getErrorMessage(err))
     )
   }
-
 
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Pagination, Review } from '../../../../model/data-model';
-import { MenuItem, SelectItem } from 'primeng/primeng';
+import { MenuItem, SelectItem } from 'primeng';
 import { enumToArrayList, filtersToParams } from '../../../../util/tricks.service';
 import { RestPage } from '../../../../api/models/RestPage';
 import { CamelCaseHumanPipe } from '../../../../pipes/camelcase-to-human.pipe';
@@ -21,27 +21,30 @@ import { Role } from "../../../../model/security-model";
   styleUrls: ['./my-tickets.component.scss']
 })
 export class MyTicketsComponent {
-  @ViewChild('dt') dataTable: any;
+  @ViewChild('dt') table: any;
   displayTicketDialog = false;
   processing = true;
   tickets: RestPage<Ticket> = new RestPage<Ticket>();
   rowsPerPage: Array<number> = [10, 50, 100];
-  tableColumns: Array<SelectItem> = [];
   ticketSubjectFilter: Array<SelectItem> = [];
   ticketStatusFilter: Array<SelectItem> = [];
   ticketPriorityFilter: Array<SelectItem> = [];
   selected: Ticket;
-  selectedTableCols: Array<string> = [
-    'id',
-    'created',
-    'email',
-    'name',
-    'businessName',
-    'option',
-    'status',
-    'priority',
-    'author'
+
+  columns = [
+    {field: 'id', header: 'Id', active: true},
+    {field: 'created', header: 'Created', active: true},
+    {field: 'email', header: 'Email', active: true},
+    {field: 'name', header: 'Name', active: true},
+    {field: 'businessName', header: 'Business Name', active: true},
+    {field: 'option', header: 'Option', active: true},
+    {field: 'status', header: 'Status', active: true},
+    {field: 'priority', header: 'Priority', active: true},
+    {field: 'author', header: 'Author', active: true}
   ];
+
+  selectedColumns = this.columns.filter(column => column.active);
+
   contextMenuItems: Array<MenuItem> = [];
 
   filters: any;
@@ -63,6 +66,24 @@ export class MyTicketsComponent {
       return {label: item, value: item};
     });
     this.ticketPriorityFilter.unshift({label: 'All', value: ''});
+  }
+
+  onColumnSelect(event) {
+    let changedColumn = this.columns.find(column => column.field == event.itemValue.field);
+    changedColumn.active = !changedColumn.active;
+    this.selectedColumns = this.columns.filter(column => column.active);
+  }
+
+  loadDataLazy(filters = {}, pagination: Pagination = new Pagination()) {
+    this.getTickets(filters, pagination)
+  }
+
+  onLazyLoad(event: any) {
+    this.loadDataLazy(filtersToParams(event.filters), new Pagination().fromPrimeNg(event));
+  }
+
+  refresh(): void {
+    this.table.onLazyLoad.emit(this.table.createLazyLoadMetadata());
   }
 
   initContextMenu() {
@@ -98,33 +119,15 @@ export class MyTicketsComponent {
       && ((!this.selected.assigneeName || this.selected.assigneeName === this.securityService.getLoginModel().name));
   }
 
-  refresh(): void {
-    const paging = {
-      first: this.dataTable.first,
-      rows: this.dataTable.rows
-    };
-    this.dataTable.expandedRows = [];
-    this.dataTable.paginate(paging);
-  }
-
-  loadLazy(event): void {
-    this.getTickets(filtersToParams(event.filters), new Pagination().fromPrimeNg(event));
-  }
-
-  selectItem(selection: { originalEvent: MouseEvent, data: Ticket }): void {
-    this.selected = selection.data;
-    this.initContextMenu();
-  }
-
   expandRow(selection: { originalEvent: MouseEvent, data: Review }): void {
-    if (!this.dataTable.expandedRows) {
-      this.dataTable.expandedRows = [];
+    if (!this.table.expandedRows) {
+      this.table.expandedRows = [];
     }
-    if (this.dataTable.expandedRows.some(item => item.id == selection.data.id)) {
-      this.dataTable.expandedRows = this.dataTable.expandedRows.filter(item => item.id != selection.data.id);
+    if (this.table.expandedRows.some(item => item.id == selection.data.id)) {
+      this.table.expandedRows = this.table.expandedRows.filter(item => item.id != selection.data.id);
     } else {
-      this.dataTable.expandedRows = [];
-      this.dataTable.expandedRows.push(selection.data);
+      this.table.expandedRows = [];
+      this.table.expandedRows.push(selection.data);
     }
   }
 
@@ -137,15 +140,6 @@ export class MyTicketsComponent {
       (restPage: RestPage<Ticket>) => {
         this.processing = false;
         this.tickets = restPage;
-        if (restPage.content.length > 0) {
-          this.tableColumns = [...this.selectedTableCols, ...Object.keys(restPage.content[0])]
-            .filter((elem, pos, arr) => arr.indexOf(elem) == pos) //remove duplicates
-            .filter(e => !(e == 'assigneeId' || e == 'assigneeName' || e == 'assigneeEmail' || e == 'authorRole'  || e == 'authorEmail'))
-            .map(key => {
-                return {label: this.camelCaseHumanPipe.transform(key, true), value: key};
-              }
-            );
-        }
       }, err => {
         this.processing = false;
       });
@@ -153,7 +147,7 @@ export class MyTicketsComponent {
 
   start(ticket) {
     this.ticketService.changeStatus(ticket.id, Ticket.Status.IN_PROGRESS).subscribe(
-      responce => {
+      () => {
         this.popUpService.showSuccess('Work on Ticket has been started');
         this.refresh();
       },
@@ -164,7 +158,7 @@ export class MyTicketsComponent {
 
   close(ticket) {
     this.ticketService.changeStatus(ticket.id, Ticket.Status.CLOSED).subscribe(
-      responce => {
+      () => {
         this.popUpService.showSuccess('Done');
         this.refresh();
       },

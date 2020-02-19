@@ -1,40 +1,23 @@
 import { LOCALE_ID, ModuleWithProviders, NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, HammerModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouteReuseStrategy, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { JsonpModule } from '@angular/http';
 import { ErrorHandler } from '../util/error-handler';
 import { AppComponent } from './app.component';
-import { requestOptionsProvider } from '../util/default-request-options.service';
 import { SecurityService } from '../auth/security.service';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { Constants } from '../util/constants';
 import { Messages } from '../util/messages';
 import { ObserveMediaDirective } from '../directives/observe-media.directive';
 import { routing } from './app.routing';
-
-import {
-  MAT_DATE_FORMATS,
-  MatAutocompleteModule,
-  MatButtonModule,
-  MatCheckboxModule,
-  MatDialogModule,
-  MatIconModule,
-  MatInputModule,
-  MatNativeDateModule,
-  MatRadioModule,
-  MatSnackBarModule,
-  MatToolbarModule
-} from '@angular/material';
-
 import { ScrollService } from '../util/scroll.service';
 import { PhoneHelpService } from '../util/phone-help.service';
 import { AgmCoreModule } from '@agm/core';
 import { NotificationResource } from '../util/notification.resource';
 import { PopUpMessageService } from '../util/pop-up-message.service';
 import { QuestionaryControlService } from '../util/questionary-control.service';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientJsonpModule, HttpClientModule } from '@angular/common/http';
 import { NgArrayPipesModule } from 'angular-pipes';
 import { HomeModule } from '../entity/home/home.module';
 import { BillingService } from '../api/services/billing.service';
@@ -92,6 +75,17 @@ import { CustomRouteReuseStrategy } from '../util/router-reuse.strategy';
 import { TutorialsService } from '../api/services/tutorials.service';
 import { RECAPTCHA_SETTINGS, RecaptchaSettings } from 'ng-recaptcha';
 import { PhoneService } from "../api/services/phone.service";
+import { MatAutocompleteModule } from "@angular/material/autocomplete";
+import { MatToolbarModule } from "@angular/material/toolbar";
+import { MatDialogModule } from "@angular/material/dialog";
+import { MatIconModule } from "@angular/material/icon";
+import { MatButtonModule } from "@angular/material/button";
+import { MatInputModule } from "@angular/material/input";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatRadioModule } from "@angular/material/radio";
+import { MAT_DATE_FORMATS, MatNativeDateModule } from "@angular/material/core";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { AuthInterceptor } from "../util/interceptors/auth.interseptor";
 
 const rootRouting: ModuleWithProviders = RouterModule.forRoot([], {useHash: false});
 
@@ -134,7 +128,7 @@ export function getAuthServiceConfigs() {
     MatCheckboxModule,
     MatRadioModule,
     HttpClientModule,
-    JsonpModule,
+    HttpClientJsonpModule,
     MatNativeDateModule,
     FlexLayoutModule,
     MatSnackBarModule,
@@ -145,7 +139,8 @@ export function getAuthServiceConfigs() {
     CvIconModule,
     CvInputModule,
     CvInputFieldModule,
-    CvButtonModule
+    CvButtonModule,
+    HammerModule
   ],
   declarations: [
     PageNotFoundComponent,
@@ -164,7 +159,6 @@ export function getAuthServiceConfigs() {
   providers: [
     Constants,
     Messages,
-    requestOptionsProvider,
     SecurityService,
     BillingService,
     RegistrationService,
@@ -219,6 +213,11 @@ export function getAuthServiceConfigs() {
     },
     {
       provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,
       multi: true
     },
@@ -226,7 +225,8 @@ export function getAuthServiceConfigs() {
       provide: HTTP_INTERCEPTORS,
       useClass: RestDeleteInterceptor,
       multi: true
-    }, {
+    },
+    {
       provide: RouteReuseStrategy,
       useClass: CustomRouteReuseStrategy
     },

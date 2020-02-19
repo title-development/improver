@@ -2,7 +2,7 @@
   <div class="ui-grid ui-grid-responsive project-information">
     <div class="ui-grid-row">
       <div class="ui-g-6 ui-md-6">
-        <p-card title="Details">
+        <p-card title="Details" header="Details">
           <div class="ui-g">
             <div class="ui-g-12 ui-md-12 ui-g-nopad ui-grid-space">
               <div class="ui-g-4 ui-md-4 ui-g-nopad">
@@ -60,7 +60,7 @@
       <div class="ui-g-6 ui-md-6 ui-g-nopad">
         <div class="ui-grid-row">
           <div class="ui-g-12 ui-md-12">
-            <p-card title="Contact information">
+            <p-card title="Contact information" header="Contact information">
               <div class="ui-g">
                 <div class="ui-g-12 ui-md-12 ui-g-nopad ui-grid-space">
                   <div class="ui-g-4 ui-md-4 ui-g-nopad">
@@ -93,7 +93,7 @@
         </div>
         <div class="ui-grid-row">
           <div class="ui-g-12 ui-md-12">
-            <p-card title="Licenses">
+            <p-card title="Licenses" header="Licenses">
               <div class="ui-g">
                 <div class="ui-g-12 ui-md-12 ui-g-nopad licenses-wrapper">
                   <ng-container *ngFor="let license of company.licenses">
@@ -143,131 +143,299 @@
       <div class="ui-g-12 ui-md-12">
         <p-accordion [multiple]="true" (onOpen)="onTabOpen($event)" (onClose)="onTabClose($event)">
           <p-accordionTab header="Offered Services">
-            <p-dataTable *ngIf="accordionControls[0].active" [(first)]="accordionControls[0].first" [value]="offeredServicesPage.content"
+            <p-table *ngIf="accordionControls[0].active" [(first)]="accordionControls[0].first" [value]="offeredServicesPage.content"
                          sortMode="single"
                          [lazy]="true"
-                         [loading]="fetching"
                          sortField="name"
                          [rows]="rowsPerPage[0]" [totalRecords]="offeredServicesPage.totalElements" [rowsPerPageOptions]="rowsPerPage"
                          (onLazyLoad)="loadLazy($event, getCompanyServices)"
                          [paginator]="true"
                          [responsive]="true">
-              <p-column field="name" header="Name" sortField="s.name" [sortable]="true"></p-column>
-            </p-dataTable>
+
+              <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th pSortableColumn="s.name">
+                      Name
+                      <p-sortIcon field="s.name"></p-sortIcon>
+                    </th>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="body" let-row let-columns="columns">
+                <tr [pContextMenuRow]="row">
+                  <td>
+                    <span>{{row.name}}</span>
+                  </td>
+                </tr>
+              </ng-template>
+
+            </p-table>
+
           </p-accordionTab>
           <p-accordionTab header="Transactions">
-            <p-dataTable *ngIf="accordionControls[1].active" [(first)]="accordionControls[0].first" [value]="transactionsPage.content"
+            <p-table *ngIf="accordionControls[1].active" [(first)]="accordionControls[0].first" [value]="transactionsPage.content"
                          sortMode="single"
                          selectionMode="single"
                          [lazy]="true"
-                         [loading]="fetching"
                          sortField="created"
                          [rows]="rowsPerPage[0]" [totalRecords]="transactionsPage.totalElements" [rowsPerPageOptions]="rowsPerPage"
                          (onLazyLoad)="loadLazy($event, getCompanyTransactions)"
                          [paginator]="true"
                          [responsive]="true">
-              <p-column field="id" header="ID" [sortable]="true"></p-column>
-              <p-column field="type" header="Type" [sortable]="true"></p-column>
-              <p-column field="description" header="Description" [sortable]="false">
-                <ng-template let-col let-row="rowData" pTemplate="body">
-                  {{row.description}}<br/>{{row.details}}
-                </ng-template>
-              </p-column>
-              <p-column field="created" header="Created" [sortable]="true">
-                <ng-template let-col let-created="rowData" pTemplate="body">
-                  {{created[col.field] | date: 'MMM d, y, h:mm a' }}
-                </ng-template>
-              </p-column>
-              <p-column field="amount" header="Amount" [sortable]="true">
-                <ng-template let-col let-amount="rowData" pTemplate="body">
-                  {{amount[col.field] / 100 | currency}}
-                </ng-template>
-              </p-column>
-              <p-column field="balance" header="Balance" [sortable]="false">
-                <ng-template let-col let-balance="rowData" pTemplate="body">
-                  {{balance[col.field] / 100 | currency}}
-                </ng-template>
-              </p-column>
-              <p-column field="comment" header="Comment" [sortable]="true"></p-column>
-              <p-column field="chargeId" header="chargeId" [sortable]="true"></p-column>
-            </p-dataTable>
+
+              <ng-template pTemplate="header" let-columns>
+                <tr>
+                  <th pSortableColumn="id">
+                    Id
+                    <p-sortIcon field="id"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="type">
+                    Type
+                    <p-sortIcon field="type"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="description">
+                    Description
+                    <p-sortIcon field="description"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="created">
+                    Created
+                    <p-sortIcon field="created"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="amount">
+                    Amount
+                    <p-sortIcon field="amount"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="balance">
+                    Balance
+                    <p-sortIcon field="balance"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="comment">
+                    Comment
+                    <p-sortIcon field="comment"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="chargeId">
+                    Charge Id
+                    <p-sortIcon field="chargeId"></p-sortIcon>
+                  </th>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="body" let-row let-columns="columns">
+                <tr [pContextMenuRow]="row">
+                  <td>
+                    <span>{{row.id}}</span>
+                  </td>
+                  <td>
+                    <span>{{row.type}}</span>
+                  </td>
+                  <td>
+                    <span>{{row.description}}<br/>{{row.details}}</span>
+                  </td>
+                  <td>
+                    {{row.created | date: 'MMM d, y, h:mm a' }}
+                  </td>
+                  <td>
+                    {{row.amount / 100 | currency: 'USD'}}
+                  </td>
+                  <td>
+                    {{row.balance / 100 | currency: 'USD'}}
+                  </td>
+                  <td>
+                    {{row.comment}}
+                  </td>
+                  <td>
+                    {{row.chargeId}}
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+
           </p-accordionTab>
           <p-accordionTab header="Project Requests">
-            <p-dataTable *ngIf="accordionControls[2].active" [(first)]="accordionControls[1].first" [value]="projectPage.content"
+            <p-table *ngIf="accordionControls[2].active" [(first)]="accordionControls[1].first" [value]="projectPage.content"
                          sortMode="single"
                          selectionMode="single"
                          [lazy]="true"
-                         [loading]="fetching"
+                         [loading]="loading"
                          sortField="updated"
                          [rows]="rowsPerPage[0]" [totalRecords]="projectPage.totalElements" [rowsPerPageOptions]="rowsPerPage"
                          (onLazyLoad)="loadLazy($event, getProjects)"
                          [paginator]="true"
                          [responsive]="true">
-              <p-column field="id" header="ID" [sortable]="true"></p-column>
-              <p-column field="customer" header="Customer" [sortable]="true" sortField="customer">
-                <ng-template let-col let-customer="rowData" pTemplate="body">
-                  {{customer[col.field].name}}
-                </ng-template>
-              </p-column>
-              <p-column field="serviceType" header="Service Type" [sortable]="true"></p-column>
-              <p-column field="projectStatus" header="Project Status" [sortable]="true"></p-column>
-              <p-column field="status" header="Status"></p-column>
-              <p-column field="updated" header="Updated" [sortable]="true"></p-column>
-            </p-dataTable>
+
+              <ng-template pTemplate="header" let-columns>
+                <tr>
+                  <th pSortableColumn="id">
+                    Id
+                    <p-sortIcon field="id"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="customer.displayName">
+                    Customer
+                    <p-sortIcon field="customer.displayName"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="serviceType">
+                    Service Type
+                    <p-sortIcon field="serviceType"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="projectStatus">
+                    Project Status
+                    <p-sortIcon field="projectStatus"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="status">
+                    Request Status
+                    <p-sortIcon field="status"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="updated">
+                    Updated
+                    <p-sortIcon field="updated"></p-sortIcon>
+                  </th>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="body" let-row let-columns="columns">
+                <tr [pContextMenuRow]="row">
+                  <td>
+                    <span>{{row.id}}</span>
+                  </td>
+                  <td>
+                    <span>{{row.customer.name}}</span>
+                  </td>
+                  <td>
+                    <span>{{row.serviceType}}</span>
+                  </td>
+                  <td>
+                    <span>{{row.projectStatus}}</span>
+                  </td>
+                  <td>
+                    <span>{{row.status}}</span>
+                  </td>
+                  <td>
+                    {{row.updated | date: 'MMM d, y, h:mm a' }}
+                  </td>
+
+                </tr>
+              </ng-template>
+            </p-table>
+
           </p-accordionTab>
           <p-accordionTab header="Reviews">
-            <p-dataTable *ngIf="accordionControls[3].active" [(first)]="accordionControls[2].first" [value]="reviewRating.reviews.content"
+            <p-table *ngIf="accordionControls[3].active" [(first)]="accordionControls[2].first" [value]="reviewRating.reviews.content"
                          sortMode="single"
                          selectionMode="single"
                          [lazy]="true"
-                         [loading]="fetching"
+                         [loading]="loading"
                          sortField="created"
                          [rows]="rowsPerPage[0]" [totalRecords]="reviewRating.reviews.totalElements" [rowsPerPageOptions]="rowsPerPage"
                          (onLazyLoad)="loadLazy($event, getReviews)"
                          [paginator]="true"
                          [responsive]="true"
-                         (onRowSelect)="selectReview($event)"
-            >
-              <p-column field="id" header="ID" [sortable]="true"></p-column>
-              <p-column field="customer" sortField="customer.displayName" header="Customer" [sortable]="true">
-                <ng-template let-col let-review="rowData" pTemplate="body">
-                  {{review[col.field].name}}
-                </ng-template>
-              </p-column>
-              <p-column field="score" header="Score" [sortable]="true"></p-column>
-              <p-column field="description" header="Description" [sortable]="true">
-                <ng-template let-col let-description="rowData" pTemplate="body">
-                  <span>{{description[col.field] | slice:0:25}}{{description[col.field].length > 25 ? '...' : ''}}</span>
-                </ng-template>
-              </p-column>
-              <p-column field="created" header="Created" [sortable]="true">
-                <ng-template let-col let-review="rowData" pTemplate="body">
-                  {{review[col.field] | date: 'MMM d, y, h:mm a' }}
-                </ng-template>
-              </p-column>
-            </p-dataTable>
+                         (onRowSelect)="selectReview($event)">
+
+              <ng-template pTemplate="header" let-columns>
+                <tr>
+                  <th pSortableColumn="id">
+                    Id
+                    <p-sortIcon field="id"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="customer.displayName">
+                    Display Name
+                    <p-sortIcon field="customer.displayName"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="score">
+                    Score
+                    <p-sortIcon field="score"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="description">
+                    Description
+                    <p-sortIcon field="description"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="created">
+                    Created
+                    <p-sortIcon field="created"></p-sortIcon>
+                  </th>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="body" let-row let-columns="columns">
+                <tr [pContextMenuRow]="row">
+                  <td>
+                    <span>{{row.id}}</span>
+                  </td>
+                  <td>
+                    <span>{{row.customer.displayName}}</span>
+                  </td>
+                  <td>
+                    {{row.score}}
+                  </td>
+                  <td>
+                    <span>{{row.description | slice:0:25}}{{row.description.length > 25 ? '...' : ''}}</span>
+                  </td>
+                  <td>
+                    {{row.created | date: 'MMM d, y, h:mm a' }}
+                  </td>
+                </tr>
+              </ng-template>
+
+            </p-table>
           </p-accordionTab>
           <p-accordionTab header="Actions log">
-            <p-dataTable *ngIf="accordionControls[4].active" [(first)]="accordionControls[3].first" [value]="companyLogsPage.content"
+            <p-table *ngIf="accordionControls[4].active" [(first)]="accordionControls[3].first" [value]="companyLogsPage.content"
                          sortMode="single"
                          [rows]="rowsPerPage[0]"
                          [lazy]="true"
-                         [loading]="fetching"
+                         [loading]="loading"
                          sortField="created"
-                         [rows]="maxItemsPerPage" [totalRecords]="companyLogsPage.totalElements" [rowsPerPageOptions]="rowsPerPage"
+                         [totalRecords]="companyLogsPage.totalElements" [rowsPerPageOptions]="rowsPerPage"
                          (onLazyLoad)="loadLazy($event, getCompanyLogs)"
                          [paginator]="true"
                          [responsive]="true">
-              <p-column field="id" header="ID" [sortable]="true"></p-column>
-              <p-column field="author" header="Author" [sortable]="true"></p-column>
-              <p-column field="text" header="Text" [sortable]="true"></p-column>
-              <p-column field="created" header="Created" [sortable]="true">
-                <ng-template let-col let-action="rowData" pTemplate="body">
-                  {{action[col.field] | date: 'MMM d, y, h:mm a' }}
-                </ng-template>
-              </p-column>
-              <p-column field="action" header="Action" [sortable]="true"></p-column>
-            </p-dataTable>
+
+              <ng-template pTemplate="header" let-columns>
+                <tr>
+                  <th pSortableColumn="id">
+                    Id
+                    <p-sortIcon field="id"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="author">
+                    Author
+                    <p-sortIcon field="author"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="text">
+                    Text
+                    <p-sortIcon field="text"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="created">
+                    Created
+                    <p-sortIcon field="created"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="action">
+                    Action
+                    <p-sortIcon field="action"></p-sortIcon>
+                  </th>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="body" let-row let-columns="columns">
+                <tr [pContextMenuRow]="row">
+                  <td>
+                    <span>{{row.id}}</span>
+                  </td>
+                  <td>
+                    <span>{{row.author}}</span>
+                  </td>
+                  <td>
+                    <span>{{row.text}}</span>
+                  </td>
+                  <td>
+                    {{row.created | date: 'MMM d, y, h:mm a' }}
+                  </td>
+                  <td>
+                    <span>{{row.action}}</span>
+                  </td>
+                </tr>
+              </ng-template>
+
+            </p-table>
           </p-accordionTab>
         </p-accordion>
       </div>
@@ -275,7 +443,7 @@
   </div>
 </ng-container>
 
-<p-dialog header="Review" [(visible)]="reviewDialogToggle" [responsive]="true" showEffect="fade" [width]="700"
+<p-dialog header="Review" [(visible)]="reviewDialogToggle" showEffect="fade"
           [modal]="true">
   <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="selectedReview">
     <div class="ui-grid-row ui-grid-space">

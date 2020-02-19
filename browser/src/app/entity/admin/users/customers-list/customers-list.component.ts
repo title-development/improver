@@ -1,10 +1,9 @@
 import { Component, ViewChild } from '@angular/core';
 import { AdminContractor } from '../../../../api/models/AdminContractor';
 import { RestPage } from '../../../../api/models/RestPage';
-import { MenuItem, SelectItem } from 'primeng/primeng';
+import { FilterMetadata, MenuItem, SelectItem, Table } from 'primeng';
 import { Pagination } from '../../../../model/data-model';
 import { filtersToParams } from '../../../../util/tricks.service';
-import { MessageService } from 'primeng/components/common/messageservice';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SecurityService } from '../../../../auth/security.service';
 import { PopUpMessageService } from '../../../../util/pop-up-message.service';
@@ -12,7 +11,6 @@ import { CamelCaseHumanPipe } from '../../../../pipes/camelcase-to-human.pipe';
 import { UserService } from '../../../../api/services/user.service';
 import { User } from '../../../../api/models/User';
 import { dataTableFilter } from '../../util';
-import { FilterMetadata } from 'primeng/components/common/filtermetadata';
 import { getErrorMessage } from "../../../../util/functions";
 import { Role } from "../../../../model/security-model";
 
@@ -22,7 +20,7 @@ import { Role } from "../../../../model/security-model";
   styleUrls: ['./customers-list.component.scss']
 })
 export class CustomersListComponent {
-  @ViewChild('dt') dataTable: any;
+  @ViewChild('dt') table: Table;
   rowsPerPage: Array<number> = [10, 50, 100];
   customers: RestPage<AdminContractor> = new RestPage<AdminContractor>();
   processing = true;
@@ -33,15 +31,27 @@ export class CustomersListComponent {
   filters: { [s: string]: FilterMetadata } = {};
   contextMenuItems: Array<MenuItem> = [];
   Role = Role;
-  selectedTableCols: Array<string> = [
-    'id',
-    'email',
-    'displayName',
-    'activated',
-    'blocked',
-    'deleted',
-    'created'
+
+  columns = [
+    {field: 'id', header: 'Id', active: true},
+    {field: 'iconUrl', header: 'Icon', active: true},
+    {field: 'email', header: 'Email', active: true},
+    {field: 'newEmail', header: 'New email', active: false},
+    {field: 'displayName', header: 'Display name', active: true},
+    {field: 'firstName', header: 'First name', active: false},
+    {field: 'LastName', header: 'Last name', active: false},
+    {field: 'internalPhone', header: 'Internal phone', active: true},
+    {field: 'validationKey', header: 'Validation Key', active: false},
+    {field: 'deleted', header: 'Deleted', active: true},
+    {field: 'blocked', header: 'Blocked', active: true},
+    {field: 'activated', header: 'Activated', active: true},
+    {field: 'created', header: 'Created', active: true},
+    {field: 'lastLogin', header: 'Last login', active: false},
+    {field: 'credentialExpired', header: 'Credential Expired', active: false},
+    {field: 'nativeUser', header: 'Native User', active: false},
   ];
+
+  selectedColumns = this.columns.filter(column => column.active);
 
   constructor(public securityService: SecurityService,
               public popUpService: PopUpMessageService,
@@ -65,8 +75,22 @@ export class CustomersListComponent {
     ];
   }
 
-  loadLazy(event): void {
-    this.getCustomers(filtersToParams(event.filters), new Pagination().fromPrimeNg(event));
+  onColumnSelect(event) {
+    let changedColumn = this.columns.find(column => column.field == event.itemValue.field);
+    changedColumn.active = !changedColumn.active;
+    this.selectedColumns = this.columns.filter(column => column.active);
+  }
+
+  loadDataLazy(filters = {}, pagination: Pagination = new Pagination()) {
+    this.getCustomers(filters, pagination)
+  }
+
+  onLazyLoad(event: any) {
+    this.loadDataLazy(filtersToParams(event.filters), new Pagination().fromPrimeNg(event));
+  }
+
+  refresh(): void {
+    this.table.onLazyLoad.emit(this.table.createLazyLoadMetadata());
   }
 
   getCustomers(filters = {}, pagination: Pagination = new Pagination(0, this.rowsPerPage[0])): void {
@@ -75,28 +99,10 @@ export class CustomersListComponent {
       (restPage: RestPage<AdminContractor>) => {
         this.processing = false;
         this.customers = restPage;
-        if (restPage.content.length > 0) {
-          this.tableColumns = [...this.selectedTableCols, ...Object.keys(restPage.content[0])]
-            .filter((elem, pos, arr) => arr.indexOf(elem) == pos) //remove duplicates
-            .filter(item => !(item == 'role' || item == 'refreshId' || item == 'projectRequests' || item == 'validationKey' || item == 'newEmail' || item == 'mailSettings' || item == 'socialConnections' || item == 'notifications' || item == 'nativeUser'))
-            .map(key => {
-                return {label: this.camelCaseHumanPipe.transform(key, true), value: key};
-              }
-            );
-        }
       }, err => {
         this.processing = false;
       }
     );
-  }
-
-  refresh(): void {
-    const paging = {
-      first: this.dataTable.first,
-      rows: this.dataTable.rows
-    };
-    this.dataTable.expandedRows = [];
-    this.dataTable.paginate(paging);
   }
 
   selectItem(selection: { originalEvent: MouseEvent, data: AdminContractor }): void {

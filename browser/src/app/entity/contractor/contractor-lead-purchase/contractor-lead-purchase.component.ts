@@ -1,6 +1,6 @@
 import { ApplicationRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Lead, PaymentCard, SystemMessageType } from '../../../model/data-model';
 import { PopUpMessageService } from '../../../util/pop-up-message.service';
 import { SecurityService } from '../../../auth/security.service';

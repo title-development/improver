@@ -1,5 +1,5 @@
 
-<p-dialog [header]="mode == 'new' ? 'Create Ticket' : 'Edit Ticket'" [(visible)]="displayDialog" [responsive]="true" showEffect="fade" [width]="600"
+<p-dialog [header]="mode == 'new' ? 'Create Ticket' : 'Edit Ticket'" [(visible)]="displayDialog" showEffect="fade"
           [modal]="true">
   <form id="ngForm" #form="ngForm" (ngSubmit)="form.valid && ((mode == 'edit' && updateTicket(selected)) || createTicket(selected))">
   <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="selected && !processing">

@@ -1,6 +1,7 @@
 import { ProjectDetail, UserInfo } from '../../model/data-model';
 import { ProjectRequest } from './ProjectRequest';
 import { ProjectAction } from './ProjectAction';
+import { Location } from '../../model/data-model';
 
 export class Project {
   id: number;

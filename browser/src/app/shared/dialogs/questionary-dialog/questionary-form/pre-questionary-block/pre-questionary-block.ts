@@ -3,7 +3,7 @@ import { QuestionaryControlService } from '../../../../../util/questionary-contr
 import { ServiceType } from '../../../../../model/data-model';
 import { Constants } from '../../../../../util/constants';
 import { Messages } from '../../../../../util/messages';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { Role } from '../../../../../model/security-model';
 import { SecurityService } from '../../../../../auth/security.service';
 import { ProjectService } from '../../../../../api/services/project.service';

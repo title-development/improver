@@ -2,7 +2,7 @@ import {
   AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, OnDestroy, OnInit,
   ViewChild
 } from '@angular/core';
-import { MatDialog, MatDialogRef } from "@angular/material";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { Constants } from '../../../util/constants';
 import { Messages } from '../../../util/messages';
 import { SecurityService } from '../../../auth/security.service';

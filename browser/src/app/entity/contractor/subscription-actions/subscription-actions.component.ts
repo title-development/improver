@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { addPaymentCardDialogConfig } from '../../../shared/dialogs/dialogs.configs';
 import { dialogsMap } from '../../../shared/dialogs/dialogs.state';
 import { PaymentCard } from '../../../model/data-model';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { SecurityService } from '../../../auth/security.service';
 import { BillingService } from '../../../api/services/billing.service';
 import { PopUpMessageService } from '../../../util/pop-up-message.service';

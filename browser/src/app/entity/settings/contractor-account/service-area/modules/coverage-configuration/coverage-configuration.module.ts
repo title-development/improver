@@ -13,7 +13,7 @@ import { CvButtonModule } from '../../../../../../theme/button/cv-button.module'
 import { SharedDirectivesModule } from '../../../../../../shared/shared-directives.module';
 import { CvInputModule } from '../../../../../../theme/input/cv-input.module';
 import { RouterModule } from '@angular/router';
-import { MatSelectModule } from "@angular/material";
+import { MatSelectModule } from "@angular/material/select";
 
 @NgModule({
   imports: [

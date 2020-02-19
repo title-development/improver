@@ -31,6 +31,21 @@
   }
 }
 
+.ui-table {
+  .ui-contextmenu-selected {
+    background-color: rgba(230, 119, 0, 0.8) !important;
+  }
+
+  tr {
+    td.expander {
+      i {
+        cursor: pointer;
+      }
+    }
+  }
+
+}
+
 .ui-datatable {
   .ui-datatable-thead {
     tr {
@@ -79,6 +94,8 @@
 
 .ui-contextmenu {
   background: #33454d;
+  white-space: nowrap;
+  width: auto;
 
   .ui-menuitem {
     .ui-menuitem-link {
@@ -194,6 +211,13 @@
   }
 }
 
+p-contextmenu {
+  .ui-menuitem-icon {
+    min-width: 22px;
+    font-size: 18px;
+  }
+}
+
 .ui-tieredmenu {
   width: 12.5em;
   padding: 5px 10px;
@@ -209,15 +233,6 @@
   }
 
 }
-
-//.ui-button {
-//  border: 0;
-//  border-radius: 2px;
-//  font-size: 14px;
-//  min-height: 35px;
-//  display: flex;
-//  align-items: center;
-//}
 
 .ui-dialog-footer {
   padding: 10px 20px;
@@ -240,11 +255,9 @@
     border: 0;
 
     &.ui-state-active {
-      background: $primary-500 !important;
+      //background: $primary-500 !important;
 
-      &:hover {
-        background: #f8a95f !important;
-      }
+
     }
 
     &:hover {
@@ -397,5 +410,13 @@ body .ui-fluid .ui-inputgroup .ui-spinner-button {
 .ui-inputgroup {
   p-spinner {
     flex-grow: 1;
+  }
+}
+
+p-table {
+  td {
+    span {
+      overflow-wrap: break-word;
+    }
   }
 }

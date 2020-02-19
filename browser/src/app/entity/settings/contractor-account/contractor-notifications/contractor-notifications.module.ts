@@ -4,9 +4,7 @@ import { RouterModule } from '@angular/router';
 import { FormsModule } from "@angular/forms";
 import { EqualValidator } from "../../../../validators/equal-validator.directive";
 
-import {
-  MatCardModule
-} from "@angular/material";
+import { MatCardModule } from "@angular/material/card";
 
 import { ContractorNotificationsComponent } from "./contractor-notifications.component";
 import { SharedModule } from '../../../../shared/shared.module';

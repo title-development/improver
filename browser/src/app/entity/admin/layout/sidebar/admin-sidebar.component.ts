@@ -1,7 +1,7 @@
 import { Component, HostBinding, Input } from '@angular/core';
 import { SecurityService } from '../../../../auth/security.service';
 import { Role } from '../../../../model/security-model';
-import { MenuItem } from 'primeng/primeng';
+import { MenuItem } from 'primeng';
 
 @Component({
   selector: 'admin-sidebar',
@@ -148,6 +148,12 @@ export class AdminSidebarComponent {
       ]
     },
     {
+      icon: 'fas fa-history',
+      label: 'Staff Actions',
+      url: 'staff-actions',
+      visible: this.isVisible(Role.ADMIN, Role.STAKEHOLDER),
+    },
+    {
       icon: 'fa fa-map',
       label: 'Coverage',
       url: 'coverage',
@@ -158,12 +164,6 @@ export class AdminSidebarComponent {
       label: 'Jobs',
       url: 'jobs',
       visible: this.isVisible(Role.ADMIN),
-    },
-    {
-      icon: 'fas fa-history',
-      label: 'Staff Actions',
-      url: 'staff-actions',
-      visible: this.isVisible(Role.ADMIN, Role.STAKEHOLDER),
     },
     {
       icon: 'fa fa-cogs',

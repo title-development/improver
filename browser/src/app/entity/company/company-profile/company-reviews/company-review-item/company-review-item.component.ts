@@ -5,7 +5,7 @@ import { Role } from "../../../../../model/security-model";
 import { ReviewService } from "../../../../../api/services/review.service";
 import { PopUpMessageService } from "../../../../../util/pop-up-message.service";
 import { capitalize, getErrorMessage } from "../../../../../util/functions";
-import { MatDialog, MatDialogRef } from "@angular/material";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { dialogsMap } from "../../../../../shared/dialogs/dialogs.state";
 import { confirmDialogConfig, unavailabilityPeriodDialogConfig } from "../../../../../shared/dialogs/dialogs.configs";
 import { SocialConnection } from "../../../../../api/models/SocialConnection";

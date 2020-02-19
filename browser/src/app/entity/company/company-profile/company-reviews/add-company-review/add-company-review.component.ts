@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { CompanyProfile, Review, SystemMessageType } from '../../../../../model/data-model';
 import { CompanyService } from '../../../../../api/services/company.service';
 import { PopUpMessageService } from '../../../../../util/pop-up-message.service';

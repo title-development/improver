@@ -5,7 +5,7 @@ import { ProjectService } from '../../../api/services/project.service';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { dialogsMap } from '../../../shared/dialogs/dialogs.state';
 import { completeProjectDialogConfig, customerGalleryDialogConfig } from '../../../shared/dialogs/dialogs.configs';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MediaQuery, MediaQueryService } from '../../../util/media-query.service';
 import { Subscription } from 'rxjs';
 import * as Swiper from 'swiper/dist/js/swiper.min';

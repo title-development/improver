@@ -1,5 +1,4 @@
 import { AfterViewInit, Component } from '@angular/core';
-
 import { SecurityService } from '../security.service';
 import { Constants } from '../../util/constants';
 import { Messages } from 'app/util/messages';

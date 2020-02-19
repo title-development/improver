@@ -6,7 +6,7 @@ import {
   questionaryDialogConfig
 } from '../shared/dialogs/dialogs.configs';
 import { CloseProjectRequest, ContractorProjectShort, CustomerProject, ServiceType } from '../model/data-model';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ProjectService } from '../api/services/project.service';
 import { PopUpMessageService } from './pop-up-message.service';
 import { ProjectRequestService } from '../api/services/project-request.service';

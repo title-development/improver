@@ -734,7 +734,7 @@
   align-items: center;
 
   @include response(sm, md) {
-    justify-content: start;
+    justify-content: flex-start;
   }
 
   .approve-icon {

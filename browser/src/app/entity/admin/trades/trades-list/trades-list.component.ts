@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { TradeService } from '../../../../api/services/trade.service';
-import { ConfirmationService, DataTable, FilterMetadata, MenuItem, OverlayPanel } from 'primeng/primeng';
+import { ConfirmationService, FilterMetadata, MenuItem, OverlayPanel, Table } from 'primeng';
 import { Router } from '@angular/router';
 import { Pagination } from '../../../../model/data-model';
 import { RestPage } from '../../../../api/models/RestPage';
@@ -19,7 +19,7 @@ import { SecurityService } from "../../../../auth/security.service";
   styleUrls: ['./trades-list.component.scss']
 })
 export class TradesListComponent {
-  @ViewChild('dt') dataTable: any;
+  @ViewChild('dt') table: any;
   selectedTrade: AdminTrade;
   fetching: boolean = true;
   maxRatingValue: number = 5;
@@ -30,6 +30,16 @@ export class TradesListComponent {
   rowsPerPage: Array<number> = [10, 50, 100];
   trades: RestPage<AdminTrade> = new RestPage<AdminTrade>();
   Role = Role;
+
+  columns = [
+    {field: 'id', header: 'Id', active: true},
+    {field: 'imageUrl', header: 'Image', active: true},
+    {field: 'name', header: 'Name', active: true},
+    {field: 'description', header: 'Description', active: true},
+    {field: 'rating', header: 'Rating', active: true},
+  ];
+
+  selectedColumns = this.columns.filter(column => column.active);
 
   contextMenuItems: Array<MenuItem> = [
     {
@@ -61,13 +71,22 @@ export class TradesListComponent {
               private errorHandler: ErrorHandler) {
   }
 
+  onColumnSelect(event) {
+    let changedColumn = this.columns.find(column => column.field == event.itemValue.field);
+    changedColumn.active = !changedColumn.active;
+    this.selectedColumns = this.columns.filter(column => column.active);
+  }
+
+  loadDataLazy(filters = {}, pagination: Pagination = new Pagination()) {
+    this.getTrades(filters, pagination)
+  }
+
+  onLazyLoad(event: any) {
+    this.loadDataLazy(filtersToParams(event.filters), new Pagination().fromPrimeNg(event));
+  }
+
   refresh(): void {
-    const paging = {
-      first: this.dataTable.first,
-      rows: this.dataTable.rows
-    };
-    this.dataTable.expandedRows = [];
-    this.dataTable.paginate(paging);
+    this.table.onLazyLoad.emit(this.table.createLazyLoadMetadata());
   }
 
   getTrades(filters = {}, pagination: Pagination = new Pagination(0, this.rowsPerPage[0])): void {
@@ -80,17 +99,9 @@ export class TradesListComponent {
         err => this.fetching = false);
   }
 
-  loadTradesLazy(event): void {
-    this.getTrades(filtersToParams(event.filters), new Pagination().fromPrimeNg(event));
-  }
-
-  selectTrade(selection: { originalEvent: MouseEvent, data: AdminTrade }): void {
-    this.selectedTrade = selection.data;
-  }
-
-  showTradeImage(event, trade: AdminTrade, overlaypanel: OverlayPanel): void {
+  showTradeImage(event, trade: AdminTrade, overlayPanel: OverlayPanel): void {
     this.selectedTrade = trade;
-    overlaypanel.toggle(event);
+    overlayPanel.toggle(event);
   }
 
   deleteTrade(trade: AdminTrade): void {
@@ -112,18 +123,18 @@ export class TradesListComponent {
   }
 
   expandRow(selection: { originalEvent: MouseEvent, data: AdminTrade }): void {
-    if (!this.dataTable.expandedRows) {
-      this.dataTable.expandedRows = [];
+    if (!this.table.expandedRows) {
+      this.table.expandedRows = [];
     }
-    if (this.dataTable.expandedRows.some(item => item.id == selection.data.id)) {
-      this.dataTable.expandedRows = this.dataTable.expandedRows.filter(item => item.id != selection.data.id);
+    if (this.table.expandedRows.some(item => item.id == selection.data.id)) {
+      this.table.expandedRows = this.table.expandedRows.filter(item => item.id != selection.data.id);
     } else {
-      this.dataTable.expandedRows = [];
-      this.dataTable.expandedRows.push(selection.data);
+      this.table.expandedRows = [];
+      this.table.expandedRows.push(selection.data);
     }
   }
 
-  clearRatingFilter(col, dt: DataTable): void {
+  clearRatingFilter(col, dt: Table): void {
     if (this.ratingTimeout) {
       clearTimeout(this.ratingTimeout);
     }
@@ -135,7 +146,7 @@ export class TradesListComponent {
     }, 350);
   }
 
-  onRatingFilterChange(event, dt: DataTable, col) {
+  onRatingFilterChange(event, dt: Table, col) {
     if (this.ratingTimeout) {
       clearTimeout(this.ratingTimeout);
     }

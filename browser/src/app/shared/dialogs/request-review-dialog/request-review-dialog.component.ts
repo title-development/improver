@@ -1,11 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material';
 import { ReviewService } from '../../../api/services/review.service';
 import { ProRequestReview } from '../../../api/models/ProRequestReview';
 import { PopUpMessageService } from '../../../util/pop-up-message.service';
 import { Messages } from '../../../util/messages';
 import {finalize} from "rxjs/operators";
 import {ReviewRequestOption} from "../../../model/data-model";
+import { MatDialogRef } from "@angular/material/dialog";
 
 @Component({
   selector: 'request-review-dialog',

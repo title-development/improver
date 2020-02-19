@@ -4,8 +4,8 @@ import { Observable, Subject, throwError } from 'rxjs';
 import { SecurityService } from '../../auth/security.service';
 import { catchError, finalize, first, switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { MatDialog } from '@angular/material';
 import { OverlayRef } from '../../theme/util/overlayRef';
+import { MatDialog } from "@angular/material/dialog";
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {

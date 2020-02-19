@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { UserService } from '../../../../api/services/user.service';
 import { User } from '../../../../api/models/User';
-import { ConfirmationService, MenuItem, SelectItem } from 'primeng/primeng';
+import { ConfirmationService, FilterMetadata, MenuItem, SelectItem } from 'primeng';
 import { Role } from '../../../../model/security-model';
 import { enumToArrayList, filtersToParams } from '../../../../util/tricks.service';
 import { Pagination } from '../../../../model/data-model';
@@ -9,10 +9,10 @@ import { getErrorMessage } from '../../../../util/functions';
 import { PopUpMessageService } from '../../../../util/pop-up-message.service';
 import { CamelCaseHumanPipe } from '../../../../pipes/camelcase-to-human.pipe';
 import { RestPage } from '../../../../api/models/RestPage';
-import { FilterMetadata } from 'primeng/components/common/filtermetadata';
 import { dataTableFilter } from '../../util';
 import { ActivatedRoute } from '@angular/router';
 import { first } from 'rxjs/internal/operators';
+import { Table } from "primeng/table";
 
 @Component({
   selector: 'admin-users',
@@ -20,25 +20,38 @@ import { first } from 'rxjs/internal/operators';
   styleUrls: ['./users.component.scss']
 })
 export class AdminUsersComponent {
+  @ViewChild('dt') private table: Table;
+
   users: RestPage<User> = new RestPage<User>();
   usersProcessing = true;
   editedUser: User;
   selectedUser: User;
   displayEditDialog: boolean = false;
-  tableColumns: Array<SelectItem> = [];
   rowsPerPage: Array<number> = [10, 50, 100];
-  selectedTableCols: Array<any> = [
-    'id',
-    'email',
-    'displayName',
-    'role',
-    'internalPhone',
-    'blocked',
-    'deleted',
-    'created'
+
+  columns = [
+    {field: 'id', header: 'Id', active: true},
+    {field: 'iconUrl', header: 'Icon', active: true},
+    {field: 'email', header: 'Email', active: true},
+    {field: 'newEmail', header: 'New email', active: false},
+    {field: 'displayName', header: 'Display name', active: true},
+    {field: 'firstName', header: 'First name', active: false},
+    {field: 'LastName', header: 'Last name', active: false},
+    {field: 'role', header: 'Role', active: true},
+    {field: 'internalPhone', header: 'Internal phone', active: true},
+    {field: 'validationKey', header: 'Validation Key', active: false},
+    {field: 'deleted', header: 'Deleted', active: true},
+    {field: 'blocked', header: 'Blocked', active: true},
+    {field: 'activated', header: 'Activated', active: true},
+    {field: 'created', header: 'Created', active: true},
+    {field: 'lastLogin', header: 'Last login', active: false},
+    {field: 'credentialExpired', header: 'Credential Expired', active: false},
+    {field: 'nativeUser', header: 'Native User', active: false},
   ];
+
+  selectedColumns = this.columns.filter(column => column.active);
+
   roles: Array<SelectItem> = [];
-  selectedRole = '';
   contextMenuItems: Array<MenuItem>;
   filters: { [s: string]: FilterMetadata };
 
@@ -97,34 +110,28 @@ export class AdminUsersComponent {
     ];
   }
 
-  loadUsersLazy(event) {
-    const pagination = new Pagination().fromPrimeNg(event);
-    const filters = filtersToParams(event.filters);
-    this.getUsers(filters, pagination);
+  onColumnSelect(event) {
+    let changedColumn = this.columns.find(column => column.field == event.itemValue.field);
+    changedColumn.active = !changedColumn.active;
+    this.selectedColumns = this.columns.filter(column => column.active);
   }
 
-  refresh(dataTable) {
-    const paging = {
-      first: dataTable.first,
-      rows: dataTable.rows
-    };
-    dataTable.expandedRows = [];
-    dataTable.paginate(paging);
+  loadDataLazy(filters = {}, pagination: Pagination = new Pagination()) {
+    this.getUsers(filters, pagination)
+  }
+
+  onLazyLoad(event: any) {
+    this.loadDataLazy(filtersToParams(event.filters), new Pagination().fromPrimeNg(event));
+  }
+
+  refresh(): void {
+    this.table.onLazyLoad.emit(this.table.createLazyLoadMetadata());
   }
 
   getUsers(filters: any = {}, pagination: Pagination = new Pagination(0, this.rowsPerPage[0])) {
     this.usersProcessing = true;
     this.userService.getAll(filters, pagination).subscribe(users => {
       this.users = users;
-      if (users.numberOfElements > 0) {
-        this.tableColumns = [...this.selectedTableCols, ...Object.keys(this.users.content[0])]
-          .filter((elem, pos, arr) => arr.indexOf(elem) == pos) //remove duplicates
-          .filter(item => !(item == 'socialConnections' || item == 'notifications' || item == 'nativeUser' || item == 'refreshId'))
-          .map(key => {
-              return {label: this.camelCaseHumanPipe.transform(key, true), value: key};
-            }
-          );
-      }
       this.usersProcessing = false;
     }, err => {
       console.log(err);

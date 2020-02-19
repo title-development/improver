@@ -1,4 +1,4 @@
-p-datatable::ng-deep {
+p-table::ng-deep {
   .ui-cell-data {
     a {
       display: block;
@@ -15,15 +15,6 @@ p-datatable::ng-deep {
   height: 60px;
   background-size: cover;
   display: inline-block;
-}
-
-p-overlaypanel::ng-deep {
-  img {
-    max-width: 400px;
-    max-height: 400px;
-    height: auto;
-    width: auto;
-  }
 }
 
 .service-types-list {

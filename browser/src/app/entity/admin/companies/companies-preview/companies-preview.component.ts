@@ -34,6 +34,7 @@ export class CompaniesPreviewComponent implements OnChanges {
     {active: false, first: 0},
     {active: false, first: 0}
   ];
+  loading;
 
   constructor(private reviewService: ReviewService,
               private companyService: CompanyService,
@@ -45,7 +46,7 @@ export class CompaniesPreviewComponent implements OnChanges {
     this.selectedReview = selection.data;
   }
 
-  loadLazy(event, callback: () => void): void {
+  loadLazy(event, callback: (pagination: Pagination) => void): void {
     const pagination: Pagination = new Pagination().fromPrimeNg(event);
     if (typeof callback == 'function') {
       callback.call(this, pagination);

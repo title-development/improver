@@ -4,13 +4,11 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule } from '@angular/forms';
 import { EqualValidator } from '../../validators/equal-validator.directive';
 
-import {
-  MatCardModule,
-  MatIconModule,
-  MatButtonModule,
-  MatInputModule,
-  MatRadioModule
-} from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatRadioModule } from '@angular/material/radio';
 import { SharedModule } from '../../shared/shared.module';
 import { SETTINGS_ROUTES } from './settings.routing';
 import { NotificationGuard } from '../../auth/router-guards/notification.guard';

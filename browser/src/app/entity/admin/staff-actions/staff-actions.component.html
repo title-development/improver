@@ -3,46 +3,78 @@
   <p-button (onClick)="refresh()" icon="pi pi-fw pi-refresh" label="&nbsp;&nbsp;Refresh"></p-button>
 </div>
 
-<p-dataTable class="reviews-table" [lazy]="true" [loading]="processing" #dt
-             [value]="staffActions.content"
-             selectionMode="single" sortMode="single"
-             [responsive]="true" [contextMenu]="cm" [paginator]="true"
-             [rows]="rowsPerPage[0]" [totalRecords]="staffActions.totalElements" [rowsPerPageOptions]="rowsPerPage"
-             sortField="id" [sortOrder]="1"
-             (onContextMenuSelect)="selectItem($event)"
-             (onLazyLoad)="loadLazy($event)">
-  <p-header>
-    <div style="text-align:left">
-      <p-multiSelect [options]="tableColumns" [panelStyle]="{minWidth:'270px'}" [(ngModel)]="selectedTableCols"></p-multiSelect>
-    </div>
-  </p-header>
-  <p-column field="id" header="ID" [sortable]="true" *ngIf="selectedTableCols.includes('id')" [filter]="true" [style]="{'width':'80px'}"></p-column>
-  <p-column field="description" header="Description" filterField="description" sortField="description" *ngIf="selectedTableCols.includes('description')" >
-    <ng-template let-col let-data="rowData" pTemplate="body">
-      {{data[col.field]}}
-    </ng-template>
-  </p-column>
-  <p-column field="author" header="Author" filterField="author" sortField="author" [sortable]="true" *ngIf="selectedTableCols.includes('author')" [filter]="true">
-    <ng-template let-col let-data="rowData" pTemplate="body">
-      {{data[col.field]}}
-    </ng-template>
-  </p-column>
-  <p-column field="authorRole" header="Role" [filter]="true" *ngIf="selectedTableCols.includes('authorRole')">
-    <ng-template pTemplate="filter" let-col>
-      <p-dropdown [options]="roles" [style]="{'width':'100%'}" (onChange)="dt.filter($event.value, col.field,col.filterMatchMode)" styleClass="ui-column-filter"></p-dropdown>
-    </ng-template>
-  </p-column>
-  <p-column field="action" header="Action" [filter]="true" *ngIf="selectedTableCols.includes('action')">
-    <ng-template pTemplate="filter" let-col>
-      <p-dropdown [options]="actions" [style]="{'width':'100%'}" (onChange)="dt.filter($event.value, col.field,col.filterMatchMode)" styleClass="ui-column-filter"></p-dropdown>
-    </ng-template>
-  </p-column>
-  <p-column field="created" header="Created" [sortable]="true" *ngIf="selectedTableCols.includes('created')">
-    <ng-template let-col let-data="rowData" pTemplate="body">
-      {{data[col.field] | date: 'MMM d, y, h:mm a'}}
-    </ng-template>
-  </p-column>
+<p-table class="reviews-table" [lazy]="true" [loading]="processing" #dt
+         [tableStyle]="{'table-layout':'auto'}"
+         [value]="staffActions.content"
+         selectionMode="single" sortMode="single"
+         [responsive]="true" [contextMenu]="cm" [paginator]="true"
+         [rows]="rowsPerPage[0]" [totalRecords]="staffActions.totalElements" [rowsPerPageOptions]="rowsPerPage"
+         sortField="id" [sortOrder]="1"
+         [(contextMenuSelection)]="selected"
+         (onContextMenuSelect)="initContextMenu()"
+         (onLazyLoad)="onLazyLoad($event)">
 
-</p-dataTable>
+  <!--Column selector-->
+  <ng-template pTemplate="caption">
+    <div style="text-align:left">
+      <p-multiSelect [options]="columns" [(ngModel)]="selectedColumns" optionLabel="header"
+                     selectedItemsLabel="{0} columns selected" [style]="{minWidth: '300px'}" defaultLabel="Select columns"
+                     (onChange)="onColumnSelect($event)"></p-multiSelect>
+    </div>
+  </ng-template>
+
+  <!--Header-->
+
+  <ng-template pTemplate="header" let-columns>
+
+    <!--Titles-->
+
+    <tr>
+
+      <ng-container *ngFor="let col of selectedColumns" [ngSwitch]="col.field">
+
+        <th *ngSwitchDefault [pSortableColumn]="col.field" >
+          {{col.header}}
+          <p-sortIcon [field]="col.field"></p-sortIcon>
+        </th>
+
+      </ng-container>
+
+    </tr>
+
+    <tr>
+
+      <th *ngFor="let col of selectedColumns" [ngSwitch]="col.field">
+
+        <input *ngSwitchCase="'id'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
+        <input *ngSwitchCase="'author'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
+
+      </th>
+
+    </tr>
+
+  </ng-template>
+
+  <!--Rows-->
+
+  <ng-template pTemplate="body" let-row let-expanded="expanded" let-columns="columns">
+    <tr [pContextMenuRow]="row">
+
+      <td *ngFor="let col of selectedColumns" [ngSwitch]="col.field">
+
+        <span *ngSwitchDefault>
+          {{row[col.field]}}
+        </span>
+
+        <span *ngSwitchCase="'created'" [ngStyle]="{wordWrap: 'break-word'}">
+          {{row[col.field] | date: 'MMM d, y, h:mm a'}}
+        </span>
+
+      </td>
+    </tr>
+  </ng-template>
+
+
+</p-table>
 
 <p-contextMenu #cm [model]="contextMenuItems"></p-contextMenu>

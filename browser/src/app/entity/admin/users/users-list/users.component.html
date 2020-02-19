@@ -2,74 +2,110 @@
   <div class="panel-title">All Users</div>
   <div class="table-header-buttons">
   <button type="button" pButton icon="fa fa-plus" label="Add" class="ui-button-success" routerLink="new"></button>
-  <p-button (onClick)="refresh(dt)" icon="pi pi-fw pi-refresh" label="&nbsp;&nbsp;Refresh"></p-button>
+  <p-button (onClick)="refresh()" icon="pi pi-fw pi-refresh" label="&nbsp;&nbsp;Refresh"></p-button>
   </div>
 </div>
 
-<p-dataTable [value]="users.content" [lazy]="true" [loading]="usersProcessing" #dt
-             selectionMode="single" sortMode="single" scrollable="true"
-             [responsive]="true" [contextMenu]="cm" [paginator]="true"
-             [rows]="rowsPerPage[0]" [totalRecords]="users.totalElements" [rowsPerPageOptions]="rowsPerPage"
-             [sortField]="'email'" [sortOrder]="1"
-             [filters]="filters"
-             (onContextMenuSelect)="selectUser($event)"
-             (onLazyLoad)="loadUsersLazy($event)">
+<p-table #dt
+         [value]="users.content" [lazy]="true" [loading]="usersProcessing"
+         [tableStyle]="{'table-layout':'auto'}"
+         selectionMode="single" sortMode="single"
+         [contextMenu]="cm" [paginator]="true"
+         [rows]="rowsPerPage[0]" [totalRecords]="users.totalElements" [rowsPerPageOptions]="rowsPerPage"
+         [sortField]="'email'" [sortOrder]="1"
+         [filters]="filters"
+         (onContextMenuSelect)="selectUser($event)"
+         (onLazyLoad)="onLazyLoad($event)">
 
-  <p-header>
+  <!--Column selector-->
+  <ng-template pTemplate="caption">
     <div style="text-align:left">
-      <p-multiSelect [options]="tableColumns" [panelStyle]="{minWidth:'270px'}" [(ngModel)]="selectedTableCols" ></p-multiSelect>
+      <p-multiSelect [options]="columns" [(ngModel)]="selectedColumns" optionLabel="header"
+                     selectedItemsLabel="{0} columns selected" [style]="{minWidth: '300px'}" defaultLabel="Select columns"
+                     (onChange)="onColumnSelect($event)"></p-multiSelect>
     </div>
-  </p-header>
+  </ng-template>
 
-  <p-column field="iconUrl" header="Icon url" *ngIf="selectedTableCols.includes('iconUrl')">
-    <ng-template pTemplate="body" let-row="rowData">
-      <div class="user-logo" [ngStyle]="row.iconUrl && row.iconUrl != '' && {'background-image':'url(' + row.iconUrl + ')'} || {'background-image':'url(/assets/img/user-logo-placeholder.png)'}"></div>
-    </ng-template>
-  </p-column>
+  <!--Header-->
 
-  <p-column field="id" header="ID" [sortable]="true" *ngIf="selectedTableCols.includes('id')" [filter]="true">
-    <ng-template pTemplate="filter" let-col>
-      <input pInputText type="text" pKeyFilter="pint" [ngModel]="filters?.id?.value" [style]="{'width':'100%'}" (input)="dt.filter($event.target.value,col.field,col.filterMatchMode)">
-    </ng-template>
-  </p-column>
-  <p-column field="name" header="Name" [sortable]="true" [filter]="true" *ngIf="selectedTableCols.includes('name')"></p-column>
-  <p-column field="email" header="Email" [sortable]="true" [filter]="true" *ngIf="selectedTableCols.includes('email')"></p-column>
-  <p-column field="newEmail" header="New email" [sortable]="true" *ngIf="selectedTableCols.includes('newEmail')"></p-column>
-  <p-column field="firstName" header="First name" [sortable]="true" *ngIf="selectedTableCols.includes('firstName')"></p-column>
-  <p-column field="lastName" header="Last name" [sortable]="true" *ngIf="selectedTableCols.includes('lastName')"></p-column>
-  <p-column field="displayName" header="Display name" [sortable]="true" [filter]="true" *ngIf="selectedTableCols.includes('displayName')"></p-column>
-  <p-column field="role" header="Role" [filter]="true" *ngIf="selectedTableCols.includes('role')">
-    <ng-template pTemplate="filter" let-col>
-      <p-dropdown [options]="roles" [style]="{'width':'100%'}" (onChange)="dt.filter($event.value,col.field,col.filterMatchMode)" styleClass="ui-column-filter"></p-dropdown>
-    </ng-template>
-  </p-column>
-  <p-column field="internalPhone" header="Internal phone" [sortable]="true" *ngIf="selectedTableCols.includes('internalPhone')"></p-column>
-  <p-column field="created" header="Created" [sortable]="true" *ngIf="selectedTableCols.includes('created')"></p-column>
-  <p-column field="updated" header="Updated" [sortable]="true" *ngIf="selectedTableCols.includes('updated')"></p-column>
-  <p-column field="lastLogin" header="Last Login" [sortable]="true" *ngIf="selectedTableCols.includes('lastLogin')"></p-column>
-  <p-column field="validationKey" header="Validation key" [sortable]="true" *ngIf="selectedTableCols.includes('validationKey')"></p-column>
-  <p-column field="deleted" header="Deleted" sortField="isDeleted" [sortable]="true" *ngIf="selectedTableCols.includes('deleted')">
-    <ng-template let-row="rowData" pTemplate="body">
-      <i class="pi pi-check" *ngIf="row.deleted"></i>
-      <i class="pi pi-ban" *ngIf="!row.deleted"></i>
-    </ng-template>
-  </p-column>
-  <p-column field="blocked" header="Blocked" sortField="isBlocked" [sortable]="true" *ngIf="selectedTableCols.includes('blocked')">
-    <ng-template let-row="rowData" pTemplate="body">
-      <i class="pi pi-check" *ngIf="row.blocked"></i>
-      <i class="pi pi-ban" *ngIf="!row.blocked"></i>
-    </ng-template>
-  </p-column>
-  <p-column field="activated" header="Activated" sortField="isActivated" [sortable]="true" *ngIf="selectedTableCols.includes('activated')">
-    <ng-template let-row="rowData" pTemplate="body">
-      <i class="pi pi-check" *ngIf="row.activated"></i>
-      <i class="pi pi-ban" *ngIf="!row.activated"></i>
-    </ng-template>
-  </p-column>
+  <ng-template pTemplate="header" let-columns>
 
-</p-dataTable>
+    <!--Titles-->
 
-<p-dialog header="Edit user" [(visible)]="displayEditDialog" [responsive]="true" showEffect="fade" [width]="500"
+    <tr>
+
+      <ng-container *ngFor="let col of selectedColumns" [ngSwitch]="col.field">
+
+        <th *ngSwitchDefault [pSortableColumn]="col.field" >
+          {{col.header}}
+          <p-sortIcon [field]="col.field"></p-sortIcon>
+        </th>
+
+        <th *ngSwitchCase="'iconUrl'">
+          {{col.header}}
+        </th>
+
+      </ng-container>
+
+    </tr>
+
+    <tr>
+
+      <th *ngFor="let col of selectedColumns" [ngSwitch]="col.field">
+
+        <input *ngSwitchCase="'id'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
+        <input *ngSwitchCase="'name'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
+        <input *ngSwitchCase="'email'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
+        <input *ngSwitchCase="'displayName'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
+        <p-dropdown *ngSwitchCase="'role'" [options]="roles" (onChange)="dt.filter($event.value, col.field, 'equals')" styleClass="ui-column-filter"></p-dropdown>
+
+      </th>
+
+    </tr>
+
+  </ng-template>
+
+  <!--Rows-->
+
+  <ng-template pTemplate="body" let-row let-expanded="expanded" let-columns="columns">
+    <tr [pContextMenuRow]="row">
+
+      <td *ngFor="let col of selectedColumns" [ngSwitch]="col.field">
+
+        <span *ngSwitchDefault>
+          {{row[col.field]}}
+        </span>
+
+        <span *ngSwitchCase="'iconUrl'" class="table-row-image-wrapper">
+          <div class="round-image" [ngStyle]="row[col.field] && row[col.field] != '' && {'background-image':'url(' + row[col.field] + ')'} || {'background-image':'url(/assets/img/user-logo-placeholder.png)'}"></div>
+        </span>
+
+        <span *ngSwitchCase="'deleted'">
+          <i class="pi pi-check" *ngIf="row[col.field]"></i>
+          <i class="pi pi-ban" *ngIf="!row[col.field]"></i>
+        </span>
+
+        <span *ngSwitchCase="'blocked'">
+          <i class="pi pi-check" *ngIf="row[col.field]"></i>
+          <i class="pi pi-ban" *ngIf="!row[col.field]"></i>
+        </span>
+
+        <span *ngSwitchCase="'activated'">
+          <i class="pi pi-check" *ngIf="row[col.field]"></i>
+          <i class="pi pi-ban" *ngIf="!row[col.field]"></i>
+        </span>
+
+        <span *ngSwitchCase="'created'" [ngStyle]="{wordWrap: 'break-word'}">
+          {{row[col.field] | date: 'MMM d, y, h:mm a'}}
+        </span>
+
+      </td>
+    </tr>
+  </ng-template>
+
+</p-table>
+
+<p-dialog header="Edit user" [(visible)]="displayEditDialog" showEffect="fade"
           [modal]="true">
   <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="editedUser">
     <div class="ui-grid-row ui-grid-field">

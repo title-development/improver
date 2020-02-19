@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { SecurityService } from '../../../../auth/security.service';
-import { MenuItem } from 'primeng/primeng';
+import { MenuItem } from 'primeng';
 
 @Component({
   selector: 'admin-header',

@@ -4,7 +4,6 @@
     "paths": {
     },
     "outDir": "../out-tsc/app",
-    "module": "es2015",
     "baseUrl": "."
   },
   "exclude": [

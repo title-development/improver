@@ -1,10 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
 import { QuestionaryBlock, QuestionType } from "../../../../../model/questionary-model";
 import { QuestionaryControlService } from "../../../../../util/questionary-control.service";
 import { Constants } from "../../../../../util/constants";
 import { Messages } from "../../../../../util/messages";
-import { MatDialog } from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
 
 @Component({
   selector: 'questionary-form-question',

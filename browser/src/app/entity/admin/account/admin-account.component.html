@@ -177,8 +177,8 @@
   </div>
 </form>
 
-<p-dialog header="Confirm email change" [(visible)]="emailChangeDialog" [modal]="true" [responsive]="true"
-          [width]="400" (onHide)="hideChangeEmailDialog(dialogForm)">
+<p-dialog header="Confirm email change" [(visible)]="emailChangeDialog" [modal]="true"
+          (onHide)="hideChangeEmailDialog(dialogForm)">
   <form action="" #dialogForm="ngForm" (ngSubmit)="updateEmail(dialogForm)">
     <div class="ui-grid-row ui-grid-field">
       <div class="ui-grid-col-4"><label for="emailConfirmPassword">Password</label></div>

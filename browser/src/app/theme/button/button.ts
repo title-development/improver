@@ -1,7 +1,4 @@
-import {
-  Component, ContentChild, ElementRef, HostBinding, HostListener, Input, OnChanges, OnInit,
-  Renderer2
-} from '@angular/core';
+import { Component, ContentChild, ElementRef, HostBinding, HostListener, Input, OnChanges, OnInit, Renderer2, Directive } from '@angular/core';
 import { CvIconComponent } from '../icon/cv-icon/cv-icon.component';
 
 export class Button implements OnInit, OnChanges {

@@ -3,83 +3,112 @@
   <p-button (onClick)="refresh()" icon="pi pi-fw pi-refresh" label="&nbsp;&nbsp;Refresh"></p-button>
 </div>
 
-<p-dataTable class="projects-table" [lazy]="true" [loading]="projectsProcessing" #dt
-             [value]="projects.content"
-             selectionMode="single"
-             [responsive]="true" [contextMenu]="cm" [paginator]="true"
-             [rows]="rowsPerPage[0]" [totalRecords]="projects.totalElements" [rowsPerPageOptions]="rowsPerPage"
-             sortField="created" [sortOrder]="-1"
-             (onContextMenuSelect)="selectProject($event)"
-             [expandableRows]="true" (onRowSelect)="expandRow($event)"
-             (onLazyLoad)="loadProjectsLazy($event)">
-  <p-header>
+<p-table [lazy]="true" [loading]="projectsProcessing" #dt
+         [tableStyle]="{'table-layout':'auto'}"
+         [value]="projects.content"
+         selectionMode="single"
+         [responsive]="true" [contextMenu]="cm" [paginator]="true"
+         [rows]="rowsPerPage[0]" [totalRecords]="projects.totalElements" [rowsPerPageOptions]="rowsPerPage"
+         sortField="created" [sortOrder]="-1"
+         [(contextMenuSelection)]="selectedProject"
+         (onContextMenuSelect)="initContextMenu()"
+         (onRowExpand)="expandRow($event)"
+         (onLazyLoad)="onLazyLoad($event)">
+
+  <!--Column selector-->
+  <ng-template pTemplate="caption">
     <div style="text-align:left">
-      <p-multiSelect [options]="tableColumns" [panelStyle]="{minWidth:'270px'}" [(ngModel)]="selectedTableCols"></p-multiSelect>
+      <p-multiSelect [options]="columns" [(ngModel)]="selectedColumns" optionLabel="header"
+                     selectedItemsLabel="{0} columns selected" [style]="{minWidth: '300px'}" defaultLabel="Select columns"
+                     (onChange)="onColumnSelect($event)"></p-multiSelect>
     </div>
-  </p-header>
-  <p-column field="id" header="ID" [sortable]="true" *ngIf="selectedTableCols.includes('id')" [filter]="true">
-    <ng-template pTemplate="filter" let-col>
-      <input pInputText type="text" pKeyFilter="pint" [style]="{'width':'100%'}" (input)="dt.filter($event.target.value,col.field,col.filterMatchMode)">
-    </ng-template>
-  </p-column>
-  <p-column field="customer" header="Customer" [sortable]="true" [filter]="true" filterField="customerEmail"
-            *ngIf="selectedTableCols.includes('customer')">
-    <ng-template let-col let-row="rowData" pTemplate="body">
-      <div *ngIf="row.customer.email">{{row.customer.email}}</div>
-    </ng-template>
-  </p-column>
-  <p-column field="serviceType" header="Service type" [sortable]="true" [filter]="true"
-            *ngIf="selectedTableCols.includes('serviceType')"></p-column>
-  <p-column field="freePositions" header="Free positions" [sortable]="true" *ngIf="selectedTableCols.includes('freePositions')"></p-column>
-  <p-column field="status" header="Status" [sortable]="false" [filter]="false" *ngIf="selectedTableCols.includes('status')">
-  </p-column>
-  <p-column field="reason" header="Reason" [filter]="true" [sortable]="true" *ngIf="selectedTableCols.includes('reason')">
-    <ng-template pTemplate="filter" let-col>
-      <p-dropdown [options]="projectReasons" [style]="{'width':'100%'}" (onChange)="dt.filter($event.value,col.field,col.filterMatchMode)" styleClass="ui-column-filter"></p-dropdown>
-    </ng-template>
-    <ng-template let-col let-row="rowData" pTemplate="body">
-      <div *ngIf="row.reason">{{row.reason}}</div>
-    </ng-template>
-  </p-column>
-  <p-column field="reasonDescription" header="Reason Desc" [sortable]="false" [filter]="false"
-            *ngIf="selectedTableCols.includes('reasonDescription')">
-  </p-column>
-  <p-column field="location" header="Location" filterField="location" [sortable]="true" [filter]="true"
-            *ngIf="selectedTableCols.includes('location')">
-    <ng-template let-col let-row="rowData" pTemplate="body">
-      <div *ngIf="row.location">{{row.location.streetAddress}}, {{row.location.city}} {{row.location.state}}
-        {{row.location.zip}}
-      </div>
-    </ng-template>
-  </p-column>
-  <p-column field="leadPrice" header="Lead price" [sortable]="true" *ngIf="selectedTableCols.includes('leadPrice')">
-    <ng-template pTemplate="body" let-col let-data="rowData">
-      {{(data[col.field] / 100 ) | currency}}
-    </ng-template>
-  </p-column>
-  <p-column field="lead" header="Lead" [sortable]="false" *ngIf="selectedTableCols.includes('lead')">
-    <ng-template let-row="rowData" pTemplate="body">
-      <i class="pi pi-check" *ngIf="row.lead"></i>
-      <i class="pi pi-ban" *ngIf="!row.lead"></i>
-    </ng-template>
-  </p-column>
-  <p-column field="comments" header="Comments" [sortable]="true" *ngIf="selectedTableCols.includes('comments')"></p-column>
-  <p-column field="notes" header="Notes" *ngIf="selectedTableCols.includes('notes')"></p-column>
-  <p-column field="startDate" header="Start date" *ngIf="selectedTableCols.includes('startDate')"></p-column>
-  <p-column field="created" header="Created" [sortable]="true" *ngIf="selectedTableCols.includes('created')">
-    <ng-template let-col let-row="rowData" pTemplate="body">
-      <div *ngIf="row.created">{{row.created | date: 'MMM d, y, h:mm a'}}</div>
-    </ng-template>
-  </p-column>
-  <p-column field="updated" header="Updated" [sortable]="true" *ngIf="selectedTableCols.includes('updated')">
-    <ng-template let-col let-row="rowData" pTemplate="body">
-      <div *ngIf="row.updated">{{row.updated | date: 'MMM d, y, h:mm a'}}</div>
-    </ng-template>
-  </p-column>
-  <ng-template let-data pTemplate="rowexpansion">
-    <project-preview [projectInfo]="data"></project-preview>
   </ng-template>
-</p-dataTable>
+
+  <ng-template pTemplate="header" let-columns>
+
+    <!--Titles-->
+
+    <tr>
+      <th></th>
+
+      <ng-container *ngFor="let col of selectedColumns" [ngSwitch]="col.field">
+
+        <th *ngSwitchDefault [pSortableColumn]="col.field" >
+          {{col.header}}
+          <p-sortIcon [field]="col.field"></p-sortIcon>
+        </th>
+
+      </ng-container>
+
+    </tr>
+
+    <tr>
+
+      <th></th>
+      <th *ngFor="let col of selectedColumns" [ngSwitch]="col.field">
+
+        <input *ngSwitchCase="'id'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
+
+      </th>
+
+    </tr>
+
+  </ng-template>
+
+  <ng-template pTemplate="body" let-row let-expanded="expanded" let-columns="columns">
+    <tr [pContextMenuRow]="row" [pSelectableRow]="row">
+
+      <td class="expander">
+        <a [pRowToggler]="row">
+          <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+        </a>
+      </td>
+
+      <td *ngFor="let col of selectedColumns" [ngSwitch]="col.field">
+
+        <span *ngSwitchDefault>
+          {{row[col.field]}}
+        </span>
+
+        <span *ngSwitchCase="'customer'">
+          <span>{{row.customer.email}}</span>
+        </span>
+
+        <span *ngSwitchCase="'created'">
+          {{row[col.field] | date: 'MMM d, y, h:mm a'}}
+        </span>
+
+        <span *ngSwitchCase="'updated'">
+          {{row[col.field] | date: 'MMM d, y, h:mm a'}}
+        </span>
+
+        <span *ngSwitchCase="'lead'">
+          <i class="pi pi-check" *ngIf="row[col.field]"></i>
+          <i class="pi pi-ban" *ngIf="!row[col.field]"></i>
+        </span>
+
+        <span *ngSwitchCase="'leadPrice'">
+          {{row[col.field] / 100 | currency:'USD'}}
+        </span>
+
+        <span *ngSwitchCase="'location'">
+          {{row[col.field].streetAddress}}, {{row[col.field].city}}, {{row[col.field].state}}
+          {{row[col.field].zip}}
+        </span>
+
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template let-data pTemplate="rowexpansion">
+    <tr>
+      <td [attr.colspan]="selectedColumns.length + 1">
+        <project-preview [projectInfo]="data"></project-preview>
+      </td>
+    </tr>
+  </ng-template>
+
+</p-table>
 
 <admin-location-validation [(toggle)]="displayLocationDialog" (onValidatedLocation)="updateLocation($event)"
                            [location]="toLocationValidate"></admin-location-validation>

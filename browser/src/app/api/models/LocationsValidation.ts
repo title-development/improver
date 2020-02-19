@@ -1,5 +1,3 @@
-import { HttpParams } from '@angular/common/http';
-import { HttpParamsOptions } from '@angular/common/http/src/params';
 import { Location } from '../../model/data-model';
 
 export interface ValidationMessages {

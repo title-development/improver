@@ -5,7 +5,7 @@ import { SecurityService } from "../../../../auth/security.service";
 import { Role } from "../../../../model/security-model";
 import { PopUpMessageService } from "../../../../util/pop-up-message.service";
 import { Router } from "@angular/router";
-import { MatDialog, MatDialogRef } from "@angular/material";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { dialogsMap } from '../../../../shared/dialogs/dialogs.state';
 import { confirmDialogConfig } from '../../../../shared/dialogs/dialogs.configs';
 

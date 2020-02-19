@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange, SimpleChanges } from '@angular/core';
 import { CompanyProfile, Pagination, Review } from '../../../../model/data-model';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ReviewService } from '../../../../api/services/review.service';
 import { ReviewRating } from '../../../../api/models/ReviewRating';
 import { RestPage } from '../../../../api/models/RestPage';

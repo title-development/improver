@@ -3,7 +3,7 @@
   <p-button (onClick)="refresh()" icon="pi pi-fw pi-refresh" label="&nbsp;&nbsp;Refresh"></p-button>
 </div>
 
-<p-dataTable class="projectRequests-table" [lazy]="true" [loading]="processing" #dt
+<p-table class="projectRequests-table" [lazy]="true" [loading]="processing" #dt [tableStyle]="{'table-layout':'auto'}"
              [value]="contractors.content"
              selectionMode="single" sortMode="single"
              [responsive]="true" [contextMenu]="cm" [paginator]="true"
@@ -11,75 +11,96 @@
              sortField="id" [sortOrder]="1"
              [filters]="filters"
              (onContextMenuSelect)="selectItem($event)"
-             (onLazyLoad)="loadLazy($event)">
-  <p-header>
-    <div style="text-align:left">
-      <p-multiSelect [options]="tableColumns" [panelStyle]="{minWidth:'270px'}" [(ngModel)]="selectedTableCols"></p-multiSelect>
-    </div>
-  </p-header>
-  <p-column field="id" header="ID" [sortable]="true" *ngIf="selectedTableCols.includes('id')" [filter]="true"></p-column>
-  <p-column field="iconUrl" header="Icon url" *ngIf="selectedTableCols.includes('iconUrl')">
-    <ng-template pTemplate="body" let-row="rowData">
-      <div class="user-logo" [ngStyle]="row.iconUrl && row.iconUrl != '' && {'background-image':'url(' + row.iconUrl + ')'} || {'background-image':'url(/assets/img/user-logo-placeholder.png)'}"></div>
-    </ng-template>
-  </p-column>
-  <p-column field="firstName" header="First name" [sortable]="true" *ngIf="selectedTableCols.includes('firstName')" ></p-column>
-  <p-column field="lastName" header="Last name" [sortable]="true" *ngIf="selectedTableCols.includes('lastName')" ></p-column>
-  <p-column field="displayName" header="Display name" [sortable]="true" *ngIf="selectedTableCols.includes('displayName')" [filter]="true"></p-column>
-  <p-column field="email" header="Email" [sortable]="true" *ngIf="selectedTableCols.includes('email')" [filter]="true"></p-column>
-  <p-column field="lastLogin" header="Last login" [sortable]="true" *ngIf="selectedTableCols.includes('lastLogin')">
-    <ng-template let-col let-data="rowData" pTemplate="body">
-      {{data[col.field] | date: 'MMM d, y, h:mm a'}}
-    </ng-template>
-  </p-column>
-  <p-column field="quickReply" header="Quick reply" [sortable]="true" *ngIf="selectedTableCols.includes('quickReply')" >
-    <ng-template let-row="rowData" pTemplate="body">
-      <i class="pi pi-check" *ngIf="row.quickReply"></i>
-      <i class="pi pi-ban" *ngIf="!row.quickReply"></i>
-    </ng-template>
-  </p-column>
-  <p-column field="internalPhone" header="Internal phone" [sortable]="true" *ngIf="selectedTableCols.includes('internalPhone')" ></p-column>
-  <p-column field="company" header="Company" filterField="companyName" [sortable]="true" *ngIf="selectedTableCols.includes('company')" [filter]="true">
-    <ng-template pTemplate="body" let-col let-company="rowData">
-      <a href=""
-        icon="pi pi-fw pi-search"
-        [routerLink]="['/', 'admin', 'companies']"
-        [queryParams]='{id: company[col.field].id}'>
-        {{company[col.field].name}}
-      </a>
-    </ng-template>
-  </p-column>
-  <p-column field="activated" header="Activated" sortField="isActivated" [sortable]="true" *ngIf="selectedTableCols.includes('activated')">
-    <ng-template let-row="rowData" pTemplate="body">
-      <i class="pi pi-check" *ngIf="row.activated"></i>
-      <i class="pi pi-ban" *ngIf="!row.activated"></i>
-    </ng-template>
-  </p-column>
-  <p-column field="blocked" header="Blocked" sortField="isBlocked" [sortable]="true" *ngIf="selectedTableCols.includes('blocked')">
-    <ng-template let-row="rowData" pTemplate="body">
-      <i class="pi pi-check" *ngIf="row.blocked"></i>
-      <i class="pi pi-ban" *ngIf="!row.blocked"></i>
-    </ng-template>
-  </p-column>
-  <p-column field="deleted" header="Deleted" sortField="isDeleted" [sortable]="true" *ngIf="selectedTableCols.includes('deleted')">
-    <ng-template let-row="rowData" pTemplate="body">
-      <i class="pi pi-check" *ngIf="row.deleted"></i>
-      <i class="pi pi-ban" *ngIf="!row.deleted"></i>
-    </ng-template>
-  </p-column>
-  <p-column field="created" header="Created" [sortable]="true" *ngIf="selectedTableCols.includes('created')">
-    <ng-template let-col let-data="rowData" pTemplate="body">
-      {{data[col.field] | date: 'MMM d, y, h:mm a'}}
-    </ng-template>
-  </p-column>
-  <p-column field="updated" header="Updated" [sortable]="true" *ngIf="selectedTableCols.includes('updated')">
-    <ng-template let-col let-data="rowData" pTemplate="body">
-      {{data[col.field] | date: 'MMM d, y, h:mm a'}}
-    </ng-template>
-  </p-column>
-</p-dataTable>
+             (onLazyLoad)="onLazyLoad($event)">
 
-<p-dialog [header]="securityService.hasRole(Role.ADMIN) ? 'Edit Contractor' : 'Contractor info'" [(visible)]="displayEditDialog" [responsive]="true" showEffect="fade" [width]="500"
+  <!--Column selector-->
+  <ng-template pTemplate="caption">
+    <div style="text-align:left">
+      <p-multiSelect [options]="columns" [(ngModel)]="selectedColumns" optionLabel="header"
+                     selectedItemsLabel="{0} columns selected" [style]="{minWidth: '300px'}" defaultLabel="Select columns"
+                     (onChange)="onColumnSelect($event)"></p-multiSelect>
+    </div>
+  </ng-template>
+
+  <!--Header-->
+
+  <ng-template pTemplate="header" let-columns>
+
+    <!--Titles-->
+
+    <tr>
+
+      <ng-container *ngFor="let col of selectedColumns" [ngSwitch]="col.field">
+
+        <th *ngSwitchDefault [pSortableColumn]="col.field" >
+          {{col.header}}
+          <p-sortIcon [field]="col.field"></p-sortIcon>
+        </th>
+
+        <th *ngSwitchCase="'iconUrl'">
+          {{col.header}}
+        </th>
+
+      </ng-container>
+
+    </tr>
+
+    <tr>
+
+      <th *ngFor="let col of selectedColumns" [ngSwitch]="col.field">
+
+        <input *ngSwitchCase="'id'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
+        <input *ngSwitchCase="'name'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
+        <input *ngSwitchCase="'email'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
+        <input *ngSwitchCase="'displayName'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
+
+      </th>
+
+    </tr>
+
+  </ng-template>
+
+  <!--Rows-->
+
+  <ng-template pTemplate="body" let-row let-expanded="expanded" let-columns="columns">
+    <tr [pContextMenuRow]="row">
+
+      <td *ngFor="let col of selectedColumns" [ngSwitch]="col.field">
+
+        <span *ngSwitchDefault>
+          {{row[col.field]}}
+        </span>
+
+        <span *ngSwitchCase="'iconUrl'" class="table-row-image-wrapper">
+          <div class="round-image"  [ngStyle]="row[col.field] && row[col.field] != '' && {'background-image':'url(' + row[col.field] + ')'} || {'background-image':'url(/assets/img/user-logo-placeholder.png)'}"></div>
+        </span>
+
+        <span *ngSwitchCase="'deleted'">
+          <i class="pi pi-check" *ngIf="row[col.field]"></i>
+          <i class="pi pi-ban" *ngIf="!row[col.field]"></i>
+        </span>
+
+        <span *ngSwitchCase="'blocked'">
+          <i class="pi pi-check" *ngIf="row[col.field]"></i>
+          <i class="pi pi-ban" *ngIf="!row[col.field]"></i>
+        </span>
+
+        <span *ngSwitchCase="'activated'">
+          <i class="pi pi-check" *ngIf="row[col.field]"></i>
+          <i class="pi pi-ban" *ngIf="!row[col.field]"></i>
+        </span>
+
+        <span *ngSwitchCase="'created'" [ngStyle]="{wordWrap: 'break-word'}">
+          {{row[col.field] | date:'short'}}
+        </span>
+
+      </td>
+    </tr>
+  </ng-template>
+
+</p-table>
+
+<p-dialog [header]="securityService.hasRole(Role.ADMIN) ? 'Edit Contractor' : 'Contractor info'" [(visible)]="displayEditDialog" showEffect="fade"
           [modal]="true">
   <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="selected">
     <div class="ui-grid-row ui-grid-field">

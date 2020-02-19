@@ -6,25 +6,81 @@
   </div>
 </div>
 
-<p-dataTable [value]="questionaries.content"
-             [lazy]="true" [loading]="processing"
-             (onLazyLoad)="loadLazy($event)"
-             sortField="id"
-             [sortOrder]="1"
-             selectionMode="single"
-             [responsive]="true" [contextMenu]="cm" [paginator]="true"
-             [rows]="rowsPerPage[0]" [totalRecords]="questionaries.totalElements" [rowsPerPageOptions]="rowsPerPage"
-             (onContextMenuSelect)="selectQuestionary($event)"
-              #dt>
-  <p-column field="id" header="ID" [sortable]="true" [filter]="true" [style]="{'width':'80px'}"></p-column>
-  <p-column field="serviceTypes" header="Service Types">
-    <ng-template let-col let-car="rowData" pTemplate="body">
-      <span *ngFor="let serviceType of car[col.field]">
-        {{serviceType.name}}
-      </span>
-    </ng-template>
-  </p-column>
-  <p-column field="name" header="Name" [filter]="true" filterPlaceholder="Search"  sortable="true"></p-column>
-  <p-column field="description" header="Description"></p-column>
-</p-dataTable>
+<p-table #dt
+         [tableStyle]="{'table-layout':'auto'}"
+         [value]="questionaries.content"
+         [lazy]="true"
+         [loading]="processing"
+         (onLazyLoad)="onLazyLoad($event)"
+         sortField="id"
+         [sortOrder]="1"
+         selectionMode="single"
+         [responsive]="true" [contextMenu]="cm" [paginator]="true"
+         [rows]="rowsPerPage[0]" [totalRecords]="questionaries.totalElements" [rowsPerPageOptions]="rowsPerPage"
+         [(contextMenuSelection)]="selectedQuestionary">
+
+  <!--Header-->
+
+  <ng-template pTemplate="header" let-columns>
+
+    <!--Titles-->
+
+    <tr>
+
+      <ng-container *ngFor="let col of selectedColumns" [ngSwitch]="col.field">
+
+        <th *ngSwitchDefault [pSortableColumn]="col.field" >
+          {{col.header}}
+          <p-sortIcon [field]="col.field"></p-sortIcon>
+        </th>
+
+        <th *ngSwitchCase="'description'">
+          {{col.header}}
+        </th>
+
+      </ng-container>
+
+    </tr>
+
+    <!--Filters-->
+
+    <tr>
+
+      <th *ngFor="let col of selectedColumns" [ngSwitch]="col.field">
+
+        <input *ngSwitchCase="'id'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
+        <input *ngSwitchCase="'name'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
+
+      </th>
+
+    </tr>
+
+  </ng-template>
+
+  <!--Rows-->
+
+  <ng-template pTemplate="body" let-row let-expanded="expanded" let-columns="columns">
+    <tr [pContextMenuRow]="row">
+
+      <td *ngFor="let col of selectedColumns" [ngSwitch]="col.field">
+
+        <span *ngSwitchDefault>
+          {{row[col.field]}}
+        </span>
+
+        <span *ngSwitchCase="'leadPrice'" >
+            {{(row[col.field] / 100 ) | currency: 'USD'}}
+        </span>
+
+        <span *ngSwitchCase="'serviceTypes'">
+            <span *ngFor="let serviceType of row[col.field]">
+              {{serviceType.name}}
+            </span>
+        </span>
+
+      </td>
+    </tr>
+  </ng-template>
+
+</p-table>
 <p-contextMenu #cm [model]="contextMenuItems"></p-contextMenu>

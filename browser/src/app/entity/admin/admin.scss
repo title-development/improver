@@ -48,16 +48,6 @@ admin-panel {
   overflow: visible !important;
 }
 
-.user-logo {
-  display: inline-block;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-}
-
 .panel-header {
   display: flex;
   justify-content: space-between;
@@ -82,3 +72,51 @@ admin-panel {
     color: #e91224 !important;
   }
 }
+
+.table-row-image-wrapper {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+
+  .round-image {
+    display: flex;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+  }
+
+  .box-image {
+    display: flex;
+    width: 64px;
+    height: 64px;
+    background-size: contain;
+    background-position: center center;
+    background-repeat: no-repeat;
+  }
+}
+
+td[ng-reflect-ng-switch="imageUrl"] {
+  padding: 8px !important;
+}
+
+td[ng-reflect-ng-switch="iconUrl"] {
+  padding: 8px !important;
+}
+
+.image-zoomer-overlay {
+  .ui-overlaypanel-content {
+    img {
+      max-width: 600px;
+      max-height: 600px;
+      height: auto;
+      width: auto;
+    }
+  }
+}
+
+
+
+

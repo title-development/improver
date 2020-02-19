@@ -73,7 +73,7 @@
   </div>
 </form>
 
-<p-dialog header="Add/Edit Question" [(visible)]="displayEditDialog" (onHide)="resetAddEditQuestionForm()" (visibleChange)="closeQuestionDialog()" [responsive]="true" showEffect="fade" [width]="700"
+<p-dialog header="Add/Edit Question" [(visible)]="displayEditDialog" (onHide)="resetAddEditQuestionForm()" (visibleChange)="closeQuestionDialog()" showEffect="fade"
           [modal]="true">
   <question-preview [toggle]="preview" [question]="selectedQuestion"></question-preview>
   <form action="" #addEditQuestionForm="ngForm"

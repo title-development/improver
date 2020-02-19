@@ -7,15 +7,13 @@ import { FormsModule } from '@angular/forms';
 import { PaymentMethodComponent } from './payment-method/payment-method.component';
 import { BillingTransactionsComponent } from './billing-transactions/billing-transactions.component';
 
-import {
-  MatAutocompleteModule,
-  MatButtonModule,
-  MatCardModule,
-  MatDatepickerModule,
-  MatIconModule,
-  MatNativeDateModule,
-  MatSelectModule
-} from '@angular/material';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
 import { SubscriptionComponent } from '../../../../shared/billing-subscription/subscription.component';
 import { SharedModule } from '../../../../shared/shared.module';
 import { CvButtonModule } from '../../../../theme/button/cv-button.module';

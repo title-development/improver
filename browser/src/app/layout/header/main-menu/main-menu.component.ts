@@ -15,7 +15,7 @@ import { Subscription } from 'rxjs';
 import { MediaQuery, MediaQueryService } from '../../../util/media-query.service';
 import { distinctUntilChanged } from 'rxjs/internal/operators';
 import { Constants } from '../../../util/constants';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { dialogsMap } from '../../../shared/dialogs/dialogs.state';
 import { confirmDialogConfig } from '../../../shared/dialogs/dialogs.configs';
 import { ReferralDialogComponent } from '../../../shared/dialogs/refreal-dialog/referral-dialog.component';

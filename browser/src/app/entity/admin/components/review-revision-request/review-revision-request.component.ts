@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewC
 import { LocationValidateService } from '../../../../api/services/location-validate.service';
 import { ValidatedLocation } from '../../../../api/models/LocationsValidation';
 import { Location, Review, ReviewRevisionRequest } from '../../../../model/data-model';
-import { SelectItem } from 'primeng/primeng';
+import { SelectItem } from 'primeng';
 import { Constants } from '../../../../util/constants';
 import { NgForm } from '@angular/forms';
 import { ReviewService } from "../../../../api/services/review.service";

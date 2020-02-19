@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ContractorProject, ContractorProjectShort } from "../../../model/data-model";
-import { MatDialogRef } from "@angular/material";
+import { MatDialogRef } from "@angular/material/dialog";
 import { PopUpMessageService } from "../../../util/pop-up-message.service";
 import { ProjectService } from "../../../api/services/project.service";
 import { NgForm } from "@angular/forms";

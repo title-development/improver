@@ -2,7 +2,7 @@ import { ApplicationRef, Component, HostListener, OnInit } from '@angular/core';
 import { SecurityService } from '../../../../auth/security.service';
 import { Constants } from '../../../../util/constants';
 import { ActivatedRoute } from '@angular/router';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { TradeService } from '../../../../api/services/trade.service';
 import { ServiceTypeService } from '../../../../api/services/service-type.service';
 import { CompanyService } from '../../../../api/services/company.service';

@@ -19,7 +19,7 @@ export class ProjectCancelComponent implements OnInit {
   @Output() toggleChange: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() onDone: EventEmitter<Location> = new EventEmitter<Location>();
 
-  @ViewChild('form') form: NgForm;
+  @ViewChild('form', {static: true}) form: NgForm;
   cancelVariants = [];
   comment;
   reason;

@@ -6,14 +6,12 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule } from '@angular/forms';
 import { DataLayerManager, GoogleMapsAPIWrapper, InfoWindowManager, MarkerManager } from '@agm/core';
 
-import {
-  MatButtonModule,
-  MatCardModule,
-  MatIconModule,
-  MatInputModule,
-  MatProgressBarModule,
-  MatSidenavModule
-} from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { AgmSnazzyInfoWindowModule } from '@agm/snazzy-info-window';
 import { LeadsSearchMapComponent } from './leads-search-map.component';
 import { PipesModule } from '../../../pipes/pipes.module';

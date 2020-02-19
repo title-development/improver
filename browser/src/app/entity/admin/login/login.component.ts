@@ -4,12 +4,10 @@ import { Constants } from '../../../util/constants';
 import { Messages } from '../../../util/messages';
 import { NgForm } from '@angular/forms';
 import { LoginModel } from '../../../model/security-model';
-
-
-import { MessageService } from 'primeng/components/common/messageservice';
 import { mergeMap, takeUntil, timeoutWith } from 'rxjs/internal/operators';
 import { RecaptchaComponent } from 'ng-recaptcha';
 import { Subject, throwError } from 'rxjs';
+import { MessageService } from "primeng";
 
 @Component({
   selector: 'admin-login',

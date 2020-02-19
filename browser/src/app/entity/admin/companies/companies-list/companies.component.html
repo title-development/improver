@@ -1,96 +1,139 @@
 <div class="panel-header">
   <div class="panel-title">Companies</div>
-  <p-button (onClick)="refresh(dt)" icon="pi pi-refresh" label="&nbsp;&nbsp;Refresh"></p-button>
+  <p-button (onClick)="refresh()" icon="pi pi-refresh" label="&nbsp;&nbsp;Refresh"></p-button>
 </div>
 
-<p-dataTable #dt [value]="companiesPage?.content"
-             sortMode="single"
-             selectionMode="single"
-             [lazy]="true"
-             [loading]="fetching"
-             sortField="name" sortOrder="1"
-             [rows]="rowsPerPage[0]" [totalRecords]="companiesPage.totalElements"
-             [rowsPerPageOptions]="rowsPerPage"
-             (onLazyLoad)="loadLazy($event, getCompanies)"
-             [paginator]="true"
-             (onContextMenuSelect)="selectCompany($event)"
-             [contextMenu]="cm"
-             [filters]="filters"
-             [expandableRows]="true" (onRowSelect)="expandRow($event)"
-             [responsive]="true">
-  <p-header>
+<p-table #dt [value]="companiesPage?.content"
+         [tableStyle]="{'table-layout':'auto'}"
+         sortMode="single"
+         rowExpandMode="single"
+         dataKey="id"
+         [lazy]="true"
+         [loading]="fetching"
+         sortField="name" sortOrder="1"
+         [rows]="rowsPerPage[0]"
+         [totalRecords]="companiesPage.totalElements"
+         [rowsPerPageOptions]="rowsPerPage"
+         (onLazyLoad)="onLazyLoad($event)"
+         [paginator]="true"
+         [(contextMenuSelection)]="selectedCompany"
+         (onContextMenuSelect)="initContextMenu()"
+         [contextMenu]="cm"
+         [filters]="filters"
+         [responsive]="true">
+
+  <!--Column selector-->
+  <ng-template pTemplate="caption">
     <div style="text-align:left">
-      <p-multiSelect [panelStyle]="{minWidth:'270px'}" [options]="tableColumns" [(ngModel)]="selectedTableCols"></p-multiSelect>
+      <p-multiSelect [options]="columns" [(ngModel)]="selectedColumns" optionLabel="header"
+                     selectedItemsLabel="{0} columns selected" [style]="{minWidth: '300px'}" defaultLabel="Select columns"
+                     (onChange)="onColumnSelect($event)"></p-multiSelect>
     </div>
-  </p-header>
-  <p-column field="id" header="ID" [sortable]="true" [filter]="true" *ngIf="selectedTableCols.includes('id')">
-    <ng-template pTemplate="filter" let-col>
-      <input pInputText type="text" pKeyFilter="pint" [ngModel]="filters?.id?.value" [style]="{'width':'100%'}" (input)="dt.filter($event.target.value,col.field,col.filterMatchMode)">
-    </ng-template>
-    <ng-template let-col let-data="rowData" pTemplate="body">
-      <span class="word-break">{{data[col.field]}}</span>
-    </ng-template>
-  </p-column>
-  <!--<p-column field="uri" header="Uri" [sortable]="true" *ngIf="selectedTableCols.includes('uri')"></p-column>-->
-  <p-column field="founded" header="Founded" [sortable]="true" *ngIf="selectedTableCols.includes('founded')"></p-column>
-  <p-column field="iconUrl" header="Icon Url" [sortable]="true" *ngIf="selectedTableCols.includes('iconUrl')">
-    <ng-template pTemplate="body" let-col let-data="rowData">
-      <div *ngIf="data[col.field]" class="image-preview"
-           [ngStyle]="{'background-image': 'url('+data[col.field]+')'}"></div>
-      <div *ngIf="!data[col.field]">No image</div>
-    </ng-template>
-  </p-column>
-  <p-column field="backgroundUrl" header="Background url" [sortable]="true" *ngIf="selectedTableCols.includes('backgroundUrl')">
-    <ng-template pTemplate="body" let-col let-data="rowData">
-      <div *ngIf="data[col.field]" class="image-preview"
-           [ngStyle]="{'background-image': 'url('+data[col.field]+')'}"></div>
-      <div *ngIf="!data[col.field]">No image</div>
-    </ng-template>
-  </p-column>
-  <p-column field="name" header="Name" [sortable]="true" *ngIf="selectedTableCols.includes('name')"></p-column>
-  <p-column field="description" header="Description" [sortable]="true" *ngIf="selectedTableCols.includes('description')">
-    <ng-template let-col let-data="rowData" pTemplate="body">
-      <span class="word-break">{{data[col.field]}}</span>
-    </ng-template>
-  </p-column>
-  <p-column field="location" header="Location" sortField="location.streetAddress" [sortable]="true" *ngIf="selectedTableCols.includes('location')">
-    <ng-template let-col let-data="rowData" pTemplate="body">
-      {{data[col.field].streetAddress}}, {{data[col.field].city}}, {{data[col.field].state}}
-      {{data[col.field].zip}}
-    </ng-template>
-  </p-column>
-  <p-column field="rating" header="Rating" [sortable]="true" *ngIf="selectedTableCols.includes('rating')"></p-column>
-  <p-column field="internalPhone" header="Internal phone" [sortable]="true" *ngIf="selectedTableCols.includes('internalPhone')"></p-column>
-  <p-column field="siteUrl" header="Site Url" [sortable]="true" *ngIf="selectedTableCols.includes('siteUrl')"></p-column>
-  <p-column field="billing" header="Balance" sortField="billing.balance" [sortable]="true" *ngIf="selectedTableCols.includes('balance')">
-    <ng-template let-col let-data="rowData" pTemplate="body">
-      {{data[col.field].balance / 100 | currency}}
-    </ng-template>
-  </p-column>
-  <p-column field="created" header="Created" [sortable]="true" *ngIf="selectedTableCols.includes('created')">
-    <ng-template let-col let-data="rowData" pTemplate="body">
-      {{data[col.field] | date: 'MMM d, y, h:mm a'}}
-    </ng-template>
-  </p-column>
-  <p-column field="updated" header="Updated" [sortable]="true" *ngIf="selectedTableCols.includes('updated')">
-    <ng-template let-col let-data="rowData" pTemplate="body">
-      {{data[col.field] | date: 'MMM d, y, h:mm a'}}
-    </ng-template>
-  </p-column>
-  <p-column field="approved" header="Approved" sortField="isApproved" [sortable]="true" *ngIf="selectedTableCols.includes('approved')">
-    <ng-template let-row="rowData" pTemplate="body">
-      <i class="pi pi-check" *ngIf="row.approved"></i>
-      <i class="pi pi-ban" *ngIf="!row.approved"></i>
-    </ng-template>
-  </p-column>
-  <ng-template let-data pTemplate="rowexpansion">
-    <company-preview [company]="data"></company-preview>
   </ng-template>
-</p-dataTable>
+
+  <!--Header-->
+
+  <ng-template pTemplate="header" let-columns>
+
+    <!--Titles-->
+
+    <tr>
+      <th></th>
+
+      <ng-container *ngFor="let col of selectedColumns" [ngSwitch]="col.field">
+
+        <th *ngSwitchDefault [pSortableColumn]="col.field" >
+          {{col.header}}
+          <p-sortIcon [field]="col.field"></p-sortIcon>
+        </th>
+
+      </ng-container>
+
+    </tr>
+
+    <!--Filters-->
+
+    <tr>
+
+      <th></th>
+      <th *ngFor="let col of selectedColumns" [ngSwitch]="col.field">
+
+        <input *ngSwitchCase="'id'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
+
+      </th>
+
+    </tr>
+
+  </ng-template>
+
+  <!--Rows-->
+
+  <ng-template pTemplate="body" let-row let-expanded="expanded" let-columns="columns">
+    <tr [pContextMenuRow]="row">
+
+      <td class="expander">
+        <a [pRowToggler]="row">
+          <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+        </a>
+      </td>
+
+      <td *ngFor="let col of selectedColumns" [ngSwitch]="col.field">
+
+        <span *ngSwitchDefault>
+          {{row[col.field]}}
+        </span>
+
+        <span *ngSwitchCase="'iconUrl'" class="table-row-image-wrapper">
+          <div class="round-image"  [ngStyle]="row[col.field] && row[col.field] != '' && {'background-image':'url(' + row[col.field] + ')'} || {'background-image':'url(/assets/img/company-logo-placeholder.png)'}"></div>
+        </span>
+
+        <span *ngSwitchCase="'backgroundUrl'" class="table-row-image-wrapper">
+          <div [ngStyle]="row[col.field] && row[col.field] != '' && {'background-image':'url(' + row[col.field] + ')'}"></div>
+        </span>
+
+        <span *ngSwitchCase="'created'">
+          {{row[col.field] | date: 'MMM d, y, h:mm a'}}
+        </span>
+
+        <span *ngSwitchCase="'updated'">
+          {{row[col.field] | date: 'MMM d, y, h:mm a'}}
+        </span>
+
+        <span *ngSwitchCase="'balance'">
+          {{row.billing.balance / 100 | currency:'USD'}}
+        </span>
+
+        <span *ngSwitchCase="'approved'">
+          <i class="pi pi-check" *ngIf="row[col.field]"></i>
+          <i class="pi pi-ban" *ngIf="!row[col.field]"></i>
+        </span>
+
+        <span *ngSwitchCase="'deleted'">
+          <i class="pi pi-check" *ngIf="row[col.field]"></i>
+          <i class="pi pi-ban" *ngIf="!row[col.field]"></i>
+        </span>
+
+        <span *ngSwitchCase="'location'">
+          {{row[col.field].streetAddress}}, {{row[col.field].city}}, {{row[col.field].state}}
+          {{row[col.field].zip}}
+        </span>
+
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template let-data pTemplate="rowexpansion">
+    <tr>
+      <td [attr.colspan]="selectedColumns.length + 1">
+        <company-preview [company]="data"></company-preview>
+      </td>
+    </tr>
+  </ng-template>
+
+</p-table>
 
 <p-dialog [header]="securityService.hasRole(Role.ADMIN) ? 'Edit Company' : 'Company info'" [(visible)]="displayEditDialog"
-          [responsive]="true" showEffect="fade" [width]="700"
-          [modal]="true" (onHide)="closeDialog()">
+          showEffect="fade" [modal]="true" (onHide)="closeDialog()">
   <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="selectedCompany">
     <div class="ui-card-title">General information</div>
     <div class="ui-grid-row ui-grid-field">
@@ -158,7 +201,7 @@
   </p-footer>
 </p-dialog>
 
-<p-dialog header="Add bonus" [(visible)]="displayBonusDialog" [responsive]="true" showEffect="fade" [width]="700"
+<p-dialog header="Add bonus" [(visible)]="displayBonusDialog" showEffect="fade"
           [modal]="true" [contentStyle]="{'overflow':'visible'}" (onHide)="closeDialog()">
   <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="selectedCompany">
     <div class="ui-card-title">

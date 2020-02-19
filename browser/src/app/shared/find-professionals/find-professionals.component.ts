@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ServiceType, Trade } from '../../model/data-model';
 import { ServiceTypeService } from '../../api/services/service-type.service';

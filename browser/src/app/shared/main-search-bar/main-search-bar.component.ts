@@ -14,7 +14,7 @@ import { markAsTouched } from '../../util/functions';
 import { ServiceType } from '../../model/data-model';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ProjectActionService } from '../../util/project-action.service';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { Constants } from '../../util/constants';
 import { ServiceTypeService } from '../../api/services/service-type.service';
 import { Router } from '@angular/router';

@@ -17,7 +17,7 @@ table thead tr th span.ui-column-title {
   display: block !important;
 }
 
-p-datatable::ng-deep {
+p-table::ng-deep {
   th .ui-column-title {
     display: inline !important;
   }

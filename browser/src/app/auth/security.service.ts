@@ -7,8 +7,9 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { switchMap } from 'rxjs/operators';
 import * as jwt_decode from 'jwt-decode';
 import { JWT } from './Jwt.inteface';
-import { MatDialog } from '@angular/material';
+import { createConsoleLogger } from '@angular-devkit/core/node';
 import { OverlayRef } from '../theme/util/overlayRef';
+import { MatDialog } from "@angular/material/dialog";
 
 @Injectable()
 export class SecurityService {

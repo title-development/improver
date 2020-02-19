@@ -2,7 +2,7 @@ import { Component, EventEmitter, OnInit, ViewEncapsulation } from '@angular/cor
 import {
   License
 } from '../../../model/data-model';
-import { MatDialogRef } from '@angular/material';
+import { MatDialogRef } from '@angular/material/dialog';
 import { PopUpMessageService } from '../../../util/pop-up-message.service';
 import { LicenseService } from '../../../api/services/license.service';
 import { SecurityService } from '../../../auth/security.service';

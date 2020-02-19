@@ -4,7 +4,7 @@ import { Messages } from '../../../../util/messages';
 import { Account, OldNewValue, SystemMessageType } from '../../../../model/data-model';
 import { ActivatedRoute } from '@angular/router';
 import { SecurityService } from '../../../../auth/security.service';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import {
   completeProjectDialogConfig,
   confirmDialogConfig,

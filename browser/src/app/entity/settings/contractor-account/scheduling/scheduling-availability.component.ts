@@ -4,7 +4,7 @@ import { SecurityService } from '../../../../auth/security.service';
 import { UnavailabilityPeriod } from '../../../../api/models/UnavailabilityPeriod';
 
 import { eachDay, format, getOverlappingDaysInRanges, getTime } from 'date-fns';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { dialogsMap } from '../../../../shared/dialogs/dialogs.state';
 import { confirmDialogConfig, unavailabilityPeriodDialogConfig } from '../../../../shared/dialogs/dialogs.configs';
 import { Subscription } from 'rxjs';

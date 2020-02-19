@@ -8,7 +8,7 @@ import { SocialConnectionsService } from '../social-connections.service';
 import { SecurityService } from '../security.service';
 import { dialogsMap } from '../../shared/dialogs/dialogs.state';
 import { phoneRequestDialogConfig } from '../../shared/dialogs/dialogs.configs';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 
 export enum SocialPlatform {
   FACEBOOK = 'Facebook',

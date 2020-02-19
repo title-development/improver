@@ -5,58 +5,115 @@
     <button type="button" pButton icon="pi pi-fw pi-refresh" label="&nbsp;&nbsp;Refresh" (click)="refresh()"></button>
   </div>
 </div>
-<p-dataTable [value]="trades.content"
-             sortMode="single"
-             selectionMode="single"
-             [lazy]="true"
-             [loading]="fetching"
-             [rows]="rowsPerPage[0]"
-             [filters]="filters"
-             sortField="name"
-             [sortOrder]="1"
-             [paginator]="true"
-             [contextMenu]="cm" [responsive]="true"
-             [totalRecords]="trades.totalElements" [rowsPerPageOptions]="rowsPerPage"
-             (onLazyLoad)="loadTradesLazy($event)"
-             (onContextMenuSelect)="selectTrade($event)"
-             #dt
-             [expandableRows]="true" (onRowSelect)="expandRow($event)"
->
-  <p-column field="id" header="ID" [filter]="true" [sortable]="true"></p-column>
-  <p-column field="imageUrl" header="Image" [sortable]="true">
-    <ng-template pTemplate="body" let-col let-trade="rowData">
-      <div *ngIf="trade[col.field]" class="image-preview"
-           (click)="showTradeImage($event,trade,op3);"
-           [ngStyle]="{'background-image': 'url('+trade[col.field]+')'}"></div>
-      <div *ngIf="!trade[col.field]">No image</div>
-    </ng-template>
-  </p-column>
-  <p-column field="name" header="Name" [filter]="true" [sortable]="true"></p-column>
-  <p-column field="description" header="Description" [filter]="true" [sortable]="true"></p-column>
-  <p-column field="rating" header="Rating ({{ratingFilter[0]}} - {{ratingFilter[1]}})" [sortable]="true" [filter]="true">
-    <ng-template pTemplate="filter" let-col>
-      <i class="pi pi-close" (click)="clearRatingFilter(col, dt)"></i>
-      <p-slider [style]="{'width':'100%','margin-top':'8px'}" [(ngModel)]="ratingFilter" [min]="minRatingValue" [max]="maxRatingValue" [step]="1" [range]="true" (onChange)="onRatingFilterChange($event, dt, col)"></p-slider>
-    </ng-template>
-  </p-column>
-  <ng-template let-data pTemplate="rowexpansion">
-    <div class="ui-grid ui-grid-responsive ui-fluid">
-      <div class="ui-grid-row">
-        <div class="ui-grid-col-9">
-          <div class="ui-grid ui-grid-responsive ui-grid-pad" style="text-align: left">
-            <div class="service-types-list">
-              <h4>Service types</h4>
-              <ng-container *ngFor="let serviceType of data.serviceTypes">
-                <a [routerLink]="['/', 'admin', 'services', serviceType.id]">{{serviceType.name}}</a> <br>
-              </ng-container>
-            </div>
-          </div>
-        </div>
-      </div>
+<p-table #dt
+         [value]="trades.content"
+         [tableStyle]="{'table-layout':'auto'}"
+         sortMode="single"
+         selectionMode="single"
+         dataKey="id"
+         [lazy]="true"
+         [loading]="fetching"
+         [rows]="rowsPerPage[0]"
+         [filters]="filters"
+         sortField="name"
+         [sortOrder]="1"
+         [paginator]="true"
+         [contextMenu]="cm"
+         [responsive]="true"
+         [totalRecords]="trades.totalElements"
+         [rowsPerPageOptions]="rowsPerPage"
+         (onLazyLoad)="onLazyLoad($event)"
+         [(contextMenuSelection)]="selectedTrade"
+         (onRowExpand)="expandRow($event)">
+
+  <!--Column selector-->
+  <ng-template pTemplate="caption">
+    <div style="text-align:left">
+      <p-multiSelect [options]="columns" [(ngModel)]="selectedColumns" optionLabel="header"
+                     selectedItemsLabel="{0} columns selected" [style]="{minWidth: '300px'}" defaultLabel="Select columns"
+                     (onChange)="onColumnSelect($event)"></p-multiSelect>
     </div>
   </ng-template>
-</p-dataTable>
+
+  <!--Header-->
+
+  <ng-template pTemplate="header" let-columns>
+
+    <!--Titles-->
+
+    <tr>
+      <th></th>
+
+      <ng-container *ngFor="let col of selectedColumns" [ngSwitch]="col.field">
+
+        <th *ngSwitchDefault [pSortableColumn]="col.field" >
+          {{col.header}}
+          <p-sortIcon [field]="col.field"></p-sortIcon>
+        </th>
+
+      </ng-container>
+
+    </tr>
+
+    <!--Filters-->
+
+    <tr>
+
+      <th></th>
+      <th *ngFor="let col of selectedColumns" [ngSwitch]="col.field">
+
+        <input *ngSwitchCase="'id'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
+        <input *ngSwitchCase="'name'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
+
+      </th>
+
+    </tr>
+
+  </ng-template>
+
+  <!--Rows-->
+
+  <ng-template pTemplate="body" let-row let-expanded="expanded" let-columns="columns">
+    <tr [pContextMenuRow]="row">
+
+      <td class="expander">
+        <a [pRowToggler]="row">
+          <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+        </a>
+      </td>
+
+      <td *ngFor="let col of selectedColumns" [ngSwitch]="col.field">
+
+        <span *ngSwitchDefault>
+          {{row[col.field]}}
+        </span>
+
+        <span *ngSwitchCase="'imageUrl'" class="table-row-image-wrapper">
+          <div *ngIf="row[col.field]" class="box-image" (click)="showTradeImage($event, row, op3)" [ngStyle]="row[col.field] && row[col.field] != '' && {'background-image':'url(' + row[col.field] + ')'} || {'background-image':'url(/assets/img/company-logo-placeholder.png)'}"></div>
+          <div *ngIf="!row[col.field]">No image</div>
+        </span>
+
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template let-data pTemplate="rowexpansion">
+    <tr>
+      <td [attr.colspan]="selectedColumns.length + 1">
+        <div class="service-types-list">
+          <h4>Service types:</h4>
+          <ng-container *ngFor="let serviceType of data.serviceTypes">
+            <a [routerLink]="['/', 'admin', 'services', serviceType.id]">{{serviceType.name}}</a> <br>
+          </ng-container>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+
+</p-table>
+
 <p-contextMenu #cm [model]="contextMenuItems"></p-contextMenu>
-<p-overlayPanel #op3>
+
+<p-overlayPanel #op3 class="image-zoomer-overlay">
   <img [src]="selectedTrade.imageUrl" *ngIf="selectedTrade"/>
 </p-overlayPanel>

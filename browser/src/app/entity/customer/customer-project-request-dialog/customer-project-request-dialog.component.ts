@@ -1,5 +1,5 @@
 import { Component, ElementRef, EventEmitter, Inject, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { CompanyProfile } from '../../../model/data-model';
 import { SecurityService } from '../../../auth/security.service';
 import { ReviewService } from '../../../api/services/review.service';

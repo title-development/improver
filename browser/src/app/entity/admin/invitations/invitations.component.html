@@ -3,12 +3,13 @@
   <div class="table-header-buttons">
     <button pButton (click)="displayInviteDialog = true" icon="fa fa-plus" label="Invite" class="ui-button-success"
             *ngIf="securityService.hasRole(Role.ADMIN)"></button>
-    <button pButton (click)="refresh(dt)" icon="pi pi-refresh" label="&nbsp;&nbsp;Refresh"></button>
+    <button pButton (click)="refresh()" icon="pi pi-refresh" label="&nbsp;&nbsp;Refresh"></button>
   </div>
 
 </div>
 
-<p-dataTable #dt [value]="invitationsPage?.content"
+<p-table #dt [value]="invitationsPage?.content"
+             [tableStyle]="{'table-layout':'auto'}"
              sortMode="single"
              selectionMode="single"
              [lazy]="true"
@@ -16,67 +17,83 @@
              sortField="created" sortOrder="1"
              [rows]="rowsPerPage[0]" [totalRecords]="invitationsPage.totalElements"
              [rowsPerPageOptions]="rowsPerPage"
-             (onLazyLoad)="loadLazy($event, getInvitations)"
+             (onLazyLoad)="onLazyLoad($event)"
              [paginator]="true"
              (onContextMenuSelect)="selectInvitation($event)"
              [contextMenu]="securityService.getRole() == Role.ADMIN && cm"
              [filters]="filters"
              [responsive]="true">
-  <p-header>
-    <div style="text-align:left">
-      <p-multiSelect [panelStyle]="{minWidth:'270px'}" [options]="tableColumns"
-                     [(ngModel)]="selectedTableCols"></p-multiSelect>
-    </div>
-  </p-header>
-  <p-column field="id" header="ID" [sortable]="true" [filter]="true" *ngIf="selectedTableCols.includes('id')">
-    <ng-template pTemplate="filter" let-col>
-      <input pInputText type="text" pKeyFilter="pint" [ngModel]="filters?.id?.value" [style]="{'width':'100%'}"
-             (input)="dt.filter($event.target.value,col.field,col.filterMatchMode)">
-    </ng-template>
-    <ng-template let-col let-data="rowData" pTemplate="body">
-      <span class="word-break">{{data[col.field]}}</span>
-    </ng-template>
-  </p-column>
-  <p-column field="email" header="Email" [sortable]="true" *ngIf="selectedTableCols.includes('email')">
-    <ng-template pTemplate="filter" let-col>
-      <input pInputText type="text" pKeyFilter="email" [ngModel]="filters?.email?.value" [style]="{'width':'100%'}"
-             (input)="dt.filter($event.target.value,col.field,col.filterMatchMode)">
-    </ng-template>
-    <ng-template let-col let-data="rowData" pTemplate="body">
-      <span class="word-break">{{data[col.field]}}</span>
-    </ng-template>
-  </p-column>
-  <p-column field="bonus" header="Bonus ({{bonusFilter[0]}} - {{bonusFilter[1]}}), $" [sortable]="true" [filter]="true">
-    <ng-template pTemplate="filter" let-col>
-      <i class="pi pi-close" (click)="clearBonusFilter(col, dt)"></i>
-      <p-slider [style]="{'width':'100%','margin-top':'8px'}" [(ngModel)]="bonusFilter" [min]="minBonusValue"
-                [max]="maxBonusValue" [step]="1" [range]="true"
-                (onChange)="onBonusFilterChange($event, dt, col)"></p-slider>
-    </ng-template>
-    <ng-template let-col let-data="rowData" pTemplate="body">
-      <span>{{data[col.field] / 100}}</span>
-    </ng-template>
-  </p-column>
-  <p-column field="description" header="Description" [sortable]="true"
-            *ngIf="selectedTableCols.includes('description')">
-    <ng-template let-col let-data="rowData" pTemplate="body">
-      <span class="word-break">{{data[col.field]}}</span>
-    </ng-template>
-  </p-column>
-  <p-column field="created" header="Created" [sortable]="true" *ngIf="selectedTableCols.includes('created')">
-    <ng-template let-col let-data="rowData" pTemplate="body">
-      {{data[col.field] | date: 'MMM d, y, h:mm a'}}
-    </ng-template>
-  </p-column>
-  <p-column field="activated" header="Activated" [sortable]="true" *ngIf="selectedTableCols.includes('created')">
-    <ng-template let-col let-data="rowData" pTemplate="body">
-      {{data[col.field] | date: 'MMM d, y, h:mm a'}}
-    </ng-template>
-  </p-column>
-</p-dataTable>
 
-<p-dialog header="Invite Contractor" [(visible)]="displayInviteDialog" [responsive]="true" showEffect="fade"
-          [width]="700" [modal]="true" [contentStyle]="{'overflow':'visible'}" (onHide)="closeDialog(form)">
+  <!--Column selector-->
+  <ng-template pTemplate="caption">
+    <div style="text-align:left">
+      <p-multiSelect [options]="columns" [(ngModel)]="selectedColumns" optionLabel="header"
+                     selectedItemsLabel="{0} columns selected" [style]="{minWidth: '300px'}" defaultLabel="Select columns"
+                     (onChange)="onColumnSelect($event)"></p-multiSelect>
+    </div>
+  </ng-template>
+
+  <!--Header-->
+
+  <ng-template pTemplate="header" let-columns>
+
+    <!--Titles-->
+
+    <tr>
+
+      <ng-container *ngFor="let col of selectedColumns" [ngSwitch]="col.field">
+
+        <th *ngSwitchDefault [pSortableColumn]="col.field" >
+          {{col.header}}
+          <p-sortIcon [field]="col.field"></p-sortIcon>
+        </th>
+
+      </ng-container>
+
+    </tr>
+
+    <tr>
+
+      <th *ngFor="let col of selectedColumns" [ngSwitch]="col.field">
+
+        <input *ngSwitchCase="'id'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
+        <input *ngSwitchCase="'name'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
+        <input *ngSwitchCase="'email'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
+
+      </th>
+
+    </tr>
+
+  </ng-template>
+
+  <!--Rows-->
+
+  <ng-template pTemplate="body" let-row let-expanded="expanded" let-columns="columns">
+    <tr [pContextMenuRow]="row">
+
+      <td *ngFor="let col of selectedColumns" [ngSwitch]="col.field">
+
+        <span *ngSwitchDefault>
+          {{row[col.field]}}
+        </span>
+
+        <span *ngSwitchCase="'bonus'">
+          {{row[col.field] / 100 | currency:'USD'}}
+        </span>
+
+        <span *ngSwitchCase="'activated'">
+          <i class="pi pi-check" *ngIf="row[col.field]"></i>
+          <i class="pi pi-ban" *ngIf="!row[col.field]"></i>
+        </span>
+
+      </td>
+    </tr>
+  </ng-template>
+
+</p-table>
+
+<p-dialog header="Invite Contractor" [(visible)]="displayInviteDialog" showEffect="fade"
+          [modal]="true" [contentStyle]="{'overflow':'visible'}" (onHide)="closeDialog(form)">
   <form #form="ngForm" (ngSubmit)="form.valid && postInvitation(form)" class="add-invitation-from">
     <div class="ui-grid ui-grid-responsive ui-fluid">
 

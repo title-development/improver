@@ -3,7 +3,7 @@ import { Constants } from '../../../util/constants';
 import { Messages } from '../../../util/messages';
 import { UserService } from '../../../api/services/user.service';
 import { PopUpMessageService } from '../../../util/pop-up-message.service';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { SecurityService } from '../../../auth/security.service';
 import { CompanyService } from '../../../api/services/company.service';
 import { getErrorMessage } from '../../../util/functions';

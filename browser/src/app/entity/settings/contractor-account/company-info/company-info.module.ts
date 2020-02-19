@@ -4,12 +4,17 @@ import { RouterModule } from '@angular/router';
 import { CompanyInfoComponent } from "./company-info.component";
 import { FlexLayoutModule } from "@angular/flex-layout";
 import { FormsModule} from "@angular/forms";
-import {
-  MatAutocompleteModule,
-  MatButtonModule, MatCardModule, MatCheckboxModule, MatDatepickerModule,
-  MatIconModule, MatInputModule, MatNativeDateModule,
-  MatRadioModule, MatSelectModule, MatSnackBarModule
-} from "@angular/material";
+import { MatAutocompleteModule } from "@angular/material/autocomplete";
+import { MatButtonModule } from "@angular/material/button";
+import { MatCardModule } from "@angular/material/card";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatNativeDateModule } from "@angular/material/core";
+import { MatDatepickerModule } from "@angular/material/datepicker";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatRadioModule } from "@angular/material/radio";
+import { MatSelectModule } from "@angular/material/select";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { SharedModule } from '../../../../shared/shared.module';
 import { CvButtonModule } from "../../../../theme/button/cv-button.module";
 import { CvInputFieldModule } from "../../../../theme/input-field/form-field.module";

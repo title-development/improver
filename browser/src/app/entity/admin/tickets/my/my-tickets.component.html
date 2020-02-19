@@ -3,80 +3,116 @@
   <p-button (onClick)="refresh()" icon="pi pi-fw pi-refresh" label="&nbsp;&nbsp;Refresh"></p-button>
 </div>
 
-<p-dataTable class="tickets-table" [lazy]="true" [loading]="processing" #dt
-             [value]="tickets.content"
-             selectionMode="single" sortMode="single"
-             [responsive]="true" [contextMenu]="cm" [paginator]="true"
-             [rows]="rowsPerPage[0]" [totalRecords]="tickets.totalElements" [rowsPerPageOptions]="rowsPerPage"
-             (onContextMenuSelect)="selectItem($event)"
-             (onLazyLoad)="loadLazy($event)" [expandableRows]="true" (onRowSelect)="expandRow($event)">
-  <p-header>
-    <div style="text-align:left">
-      <p-multiSelect [options]="tableColumns" [panelStyle]="{minWidth:'270px'}" [(ngModel)]="selectedTableCols"></p-multiSelect>
-    </div>
-  </p-header>
-  <p-column field="id" header="ID" [sortable]="true" *ngIf="selectedTableCols.includes('id')" [filter]="true" [style]="{'width':'80px'}"></p-column>
-  <p-column field="created" header="Created" [sortable]="true" *ngIf="selectedTableCols.includes('created')">
-    <ng-template let-col let-data="rowData" pTemplate="body">
-      {{data[col.field] | date: 'MMM d, y, h:mm a'}}
-    </ng-template>
-  </p-column>
-  <p-column field="updated" header="Updated" [sortable]="true" *ngIf="selectedTableCols.includes('updated')">
-    <ng-template let-col let-data="rowData" pTemplate="body">
-      {{data[col.field] | date: 'MMM d, y, h:mm a'}}
-    </ng-template>
-  </p-column>
-  <p-column field="email" header="Email" filterField="email" sortField="email"  [sortable]="true" *ngIf="selectedTableCols.includes('email')" [filter]="true"></p-column>
-  <p-column field="name" header="Name" filterField="name" sortField="name"  [sortable]="true" *ngIf="selectedTableCols.includes('name')" [filter]="true"></p-column>
-  <p-column field="businessName" header="Business name" filterField="businessName" sortField="businessName"  [sortable]="true" *ngIf="selectedTableCols.includes('businessName')" [filter]="true"></p-column>
-  <p-column field="description" header="Description" filterField="description" [sortable]="false" *ngIf="selectedTableCols.includes('description')"></p-column>
-  <p-column field="subject" header="Subject" [sortable]="true" [filter]="true"
-            *ngIf="selectedTableCols.includes('subject')">
-    <ng-template pTemplate="filter" let-col>
-      <p-dropdown [options]="ticketSubjectFilter" [style]="{'width':'100%'}"
-                  (onChange)="dt.filter($event.value,col.field,col.filterMatchMode)"
-                  styleClass="ui-column-filter"></p-dropdown>
-    </ng-template>
-    <ng-template let-col let-row="rowData" pTemplate="body">
-      <div *ngIf="row.option">{{row.option}}</div>
-    </ng-template>
-  </p-column>
-  <p-column field="status" header="Status" [sortable]="true" [filter]="false"
-            *ngIf="selectedTableCols.includes('status')">
-  </p-column>
-  <p-column field="priority" header="Priority" [sortable]="true" [filter]="true"
-            *ngIf="selectedTableCols.includes('priority')">
-    <ng-template pTemplate="filter" let-col>
-      <p-dropdown [options]="ticketPriorityFilter" [style]="{'width':'100%'}"
-                  (onChange)="dt.filter($event.value,col.field,col.filterMatchMode)"
-                  styleClass="ui-column-filter"></p-dropdown>
-    </ng-template>
-    <ng-template let-col let-row="rowData" pTemplate="body">
-      <div *ngIf="row.priority">{{row.priority}}</div>
-    </ng-template>
-  </p-column>
-  <p-column field="author" header="Author" filterField="author" sortField="author" [sortable]="false" *ngIf="selectedTableCols.includes('author')" [filter]="true">
-    <ng-template let-col let-row="rowData" pTemplate="body">
-      <div *ngIf="row.authorEmail">{{row.authorEmail + ' <' + row.authorRole + '>'}}</div>
-    </ng-template>
-  </p-column>
+<p-table class="tickets-table" [lazy]="true" [loading]="processing" #dt
+         [tableStyle]="{'table-layout':'auto'}"
+         dataKey="id"
+         [value]="tickets.content"
+         selectionMode="single" sortMode="single"
+         [responsive]="true" [contextMenu]="cm" [paginator]="true"
+         [rows]="rowsPerPage[0]" [totalRecords]="tickets.totalElements" [rowsPerPageOptions]="rowsPerPage"
+         [(contextMenuSelection)]="selected"
+         (onContextMenuSelect)="initContextMenu()"
+         (onLazyLoad)="onLazyLoad($event)"
+         (onRowExpand)="expandRow($event)">
 
-  <ng-template let-data pTemplate="rowexpansion">
-    <div class="ui-grid ui-grid-responsive ui-fluid">
-      <div class="ui-grid-row">
-        <div class="ui-grid-col-9">
-          <div class="ui-grid ui-grid-responsive ui-grid-pad" style="text-align: left">
-            <span *ngIf="data.description && data.description != ''; else noDescription">{{data.description}}</span>
-            <ng-template #noDescription>
-              No description
-            </ng-template>
-          </div>
-        </div>
-      </div>
+  <!--Column selector-->
+  <ng-template pTemplate="caption">
+    <div style="text-align:left">
+      <p-multiSelect [options]="columns" [(ngModel)]="selectedColumns" optionLabel="header"
+                     selectedItemsLabel="{0} columns selected" [style]="{minWidth: '300px'}" defaultLabel="Select columns"
+                     (onChange)="onColumnSelect($event)"></p-multiSelect>
     </div>
   </ng-template>
 
-</p-dataTable>
+  <!--Header-->
+
+  <ng-template pTemplate="header" let-columns>
+
+    <!--Titles-->
+
+    <tr>
+
+      <th></th>
+      <ng-container *ngFor="let col of selectedColumns" [ngSwitch]="col.field">
+
+        <th *ngSwitchDefault [pSortableColumn]="col.field" >
+          {{col.header}}
+          <p-sortIcon [field]="col.field"></p-sortIcon>
+        </th>
+
+        <th *ngSwitchCase="'iconUrl'">
+          {{col.header}}
+        </th>
+
+      </ng-container>
+
+    </tr>
+
+    <tr>
+
+      <th></th>
+      <th *ngFor="let col of selectedColumns" [ngSwitch]="col.field">
+
+        <input *ngSwitchCase="'id'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
+        <input *ngSwitchCase="'name'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
+        <input *ngSwitchCase="'email'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
+        <input *ngSwitchCase="'businessName'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
+        <input *ngSwitchCase="'assignee'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
+        <input *ngSwitchCase="'author'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
+
+      </th>
+
+    </tr>
+
+  </ng-template>
+
+  <!--Rows-->
+
+  <ng-template pTemplate="body" let-row let-expanded="expanded" let-columns="columns">
+
+    <tr [pContextMenuRow]="row">
+
+      <td class="expander">
+        <a [pRowToggler]="row">
+          <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+        </a>
+      </td>
+
+      <td *ngFor="let col of selectedColumns" [ngSwitch]="col.field">
+
+        <span *ngSwitchDefault>
+          {{row[col.field]}}
+        </span>
+
+        <span *ngSwitchCase="'assignee'" [ngStyle]="{wordWrap: 'break-word'}">
+          <span *ngIf="row.assigneeEmail">{{row.assigneeEmail + ' <' + row.assigneeName + '>'}}</span>
+        </span>
+
+        <span *ngSwitchCase="'author'" [ngStyle]="{wordWrap: 'break-word'}">
+          <span *ngIf="row.authorEmail">{{row.authorEmail + ' <' + row.authorName + '> ' + row.authorRole}}</span>
+        </span>
+
+        <span *ngSwitchCase="'created'" [ngStyle]="{wordWrap: 'break-word'}">
+          {{row[col.field] | date: 'MMM d, y, h:mm a'}}
+        </span>
+
+      </td>
+    </tr>
+
+  </ng-template>
+
+  <ng-template let-data pTemplate="rowexpansion">
+    <tr>
+      <td [attr.colspan]="selectedColumns.length + 1">
+        <span *ngIf="data.description && data.description != ''; else noDescription">{{data.description}}</span>
+        <ng-template #noDescription>
+          No description
+        </ng-template>
+      </td>
+    </tr>
+  </ng-template>
+
+</p-table>
 
 <ticket-edit-dialog [ticket]="selected" [(display)]="displayTicketDialog" (onDone)="refresh()"></ticket-edit-dialog>
 

@@ -15,7 +15,7 @@ export class StaffService {
   }
 
   getAllActions(params, pagination): Observable<RestPage<StaffAction>> {
-    params = Object.assign(params, ...pagination);
+    params = Object.assign(params, pagination);
     return this.http.get<RestPage<StaffAction>>(`${this.url}/actions`, {params: params});
   }
 

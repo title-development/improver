@@ -3,7 +3,7 @@ import { enumToArrayList, filtersToParams } from '../../../../util/tricks.servic
 import { Pagination, Review } from '../../../../model/data-model';
 import { RestPage } from '../../../../api/models/RestPage';
 import { RefundService } from '../../../../api/services/refund.service';
-import { MenuItem, SelectItem } from 'primeng/primeng';
+import { MenuItem, SelectItem } from 'primeng';
 import { Refund } from '../../../../api/models/Refund';
 import { CamelCaseHumanPipe } from '../../../../pipes/camelcase-to-human.pipe';
 import { Router } from '@angular/router';
@@ -13,7 +13,7 @@ import { ProjectService } from '../../../../api/services/project.service';
 import { PopUpMessageService } from '../../../../util/pop-up-message.service';
 import { RefundAction } from '../../../../api/models/RefundAction';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { switchMap } from 'rxjs/operators';
+import { finalize, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'refunds-list',
@@ -21,11 +21,10 @@ import { switchMap } from 'rxjs/operators';
   styleUrls: ['./refunds-list.component.scss']
 })
 export class RefundsListComponent {
-  @ViewChild('dt') dataTable: any;
+  @ViewChild('dt') table: any;
   processing = true;
   refunds: RestPage<Refund> = new RestPage<Refund>();
   rowsPerPage: Array<number> = [10, 50, 100];
-  tableColumns: Array<SelectItem> = [];
   selected: Refund;
   refundAction;
   refundActionComment: string;
@@ -38,63 +37,24 @@ export class RefundsListComponent {
   refundStatuses: Array<SelectItem> = [];
   refundIssues: Array<SelectItem> = [];
   refundOptions: Array<SelectItem> = [];
-  selectedTableCols: Array<string> = [
-    'id',
-    'customer',
-    'contractor',
-    'issue',
-    'status',
-    'option',
-    'created'
+
+  columns = [
+    {field: 'id', header: 'Id', active: true},
+    {field: 'customer', header: 'Customer', active: true},
+    {field: 'contractor', header: 'Contractor', active: true},
+    {field: 'issue', header: 'Issue', active: true},
+    {field: 'option', header: 'Option', active: true},
+    {field: 'status', header: 'Status', active: true},
+    {field: 'notes', header: 'Notes', active: false},
+    {field: 'comment', header: 'Comment', active: false},
+    {field: 'updated', header: 'Updated', active: false},
+    {field: 'created', header: 'Created', active: true},
   ];
-  contextMenuItems: Array<MenuItem> = [
-    {
-      label: 'View Project',
-      icon: 'fa fa-list-ul',
-      command: () => this.router.navigate(['admin', 'projects'], {queryParams: {id: this.selected.projectId}})
-    },
-    {
-      label: 'View Project Request',
-      icon: 'fa fa-handshake-o',
-      command: () => this.router.navigate(['admin', 'project-requests'], {queryParams: {id: this.selected.projectRequestId}})
-    },
-    {
-      label: 'View Contractor',
-      icon: 'fa fa-user',
-      command: () => this.router.navigate(['admin', 'contractors'], {queryParams: {email: this.selected.contractor}})
-    },
-    {
-      label: 'View Customer',
-      icon: 'fa fa-user',
-      command: () => this.router.navigate(['admin', 'customers'], {queryParams: {email: this.selected.customer}})
-    }
-  ];
-  interviewContextMenuItems: Array<MenuItem> = [
-    {
-      label: 'Approve',
-      icon: 'fa fa-check',
-      command: () => {
-        this.refundActionDialog = true;
-        this.refundAction = RefundAction.Action.APPROVE;
-      }
-    },
-    {
-      label: 'Reject',
-      icon: 'fa fa-minus',
-      command: () => {
-        this.refundActionDialog = true;
-        this.refundAction = RefundAction.Action.REJECT;
-      }
-    },
-    {
-      label: 'Comment',
-      icon: 'fa fa-comment-o',
-      command: () => {
-        this.refundActionDialog = true;
-        this.refundAction = RefundAction.Action.COMMENT;
-      }
-    }
-  ];
+
+  selectedColumns = this.columns.filter(column => column.active);
+
+  contextMenuItems: Array<MenuItem> = [];
+
   filters: any;
 
   constructor(private refundService: RefundService,
@@ -117,60 +77,97 @@ export class RefundsListComponent {
     this.refundOptions.unshift({label: 'All', value: ''});
   }
 
-  refresh(): void {
-    const paging = {
-      first: this.dataTable.first,
-      rows: this.dataTable.rows
-    };
-    this.dataTable.expandedRows = [];
-    this.dataTable.paginate(paging);
+  initContextMenu() {
+    this.contextMenuItems = [
+      {
+        label: 'Approve',
+        icon: 'fa fa-check',
+        command: () => {
+          this.refundActionDialog = true;
+          this.refundAction = RefundAction.Action.APPROVE;
+        },
+        visible: this.selected.status == Refund.Status.IN_REVIEW
+      },
+      {
+        label: 'Reject',
+        icon: 'fa fa-minus',
+        command: () => {
+          this.refundActionDialog = true;
+          this.refundAction = RefundAction.Action.REJECT;
+        },
+        visible: this.selected.status == Refund.Status.IN_REVIEW,
+        styleClass: 'danger-menu-button'
+      },
+      {
+        label: 'Comment',
+        icon: 'fa fa-comment-o',
+        command: () => {
+          this.refundActionDialog = true;
+          this.refundAction = RefundAction.Action.COMMENT;
+        },
+        visible: this.selected.status == Refund.Status.IN_REVIEW
+      },
+      {
+        label: 'View Project',
+        icon: 'fa fa-list-ul',
+        command: () => this.router.navigate(['admin', 'projects'], {queryParams: {id: this.selected.projectId}})
+      },
+      {
+        label: 'View Project Request',
+        icon: 'fa fa-handshake-o',
+        command: () => this.router.navigate(['admin', 'project-requests'], {queryParams: {id: this.selected.projectRequestId}})
+      },
+      {
+        label: 'View Contractor',
+        icon: 'fa fa-user',
+        command: () => this.router.navigate(['admin', 'contractors'], {queryParams: {email: this.selected.contractor}})
+      },
+      {
+        label: 'View Customer',
+        icon: 'fa fa-user',
+        command: () => this.router.navigate(['admin', 'customers'], {queryParams: {email: this.selected.customer}})
+      }
+    ];
   }
 
-  loadLazy(event): void {
-    this.getRefunds(filtersToParams(event.filters), new Pagination().fromPrimeNg(event));
+  onColumnSelect(event) {
+    let changedColumn = this.columns.find(column => column.field == event.itemValue.field);
+    changedColumn.active = !changedColumn.active;
+    this.selectedColumns = this.columns.filter(column => column.active);
+  }
+
+  loadDataLazy(filters = {}, pagination: Pagination = new Pagination()) {
+    this.getRefunds(filters, pagination)
+  }
+
+  onLazyLoad(event: any) {
+    this.loadDataLazy(filtersToParams(event.filters), new Pagination().fromPrimeNg(event));
+  }
+
+  refresh(): void {
+    this.table.onLazyLoad.emit(this.table.createLazyLoadMetadata());
   }
 
   getRefunds(filters = {}, pagination: Pagination = new Pagination(0, this.rowsPerPage[0])): void {
     this.processing = true;
-    this.refundService.getAll(filters, pagination).subscribe(
+    this.refundService.getAll(filters, pagination)
+      .pipe(finalize(() => this.processing = false))
+      .subscribe(
       (restPage: RestPage<Refund>) => {
-        this.processing = false;
         this.refunds = restPage;
-        if (restPage.content.length > 0) {
-          this.tableColumns = [...this.selectedTableCols, ...Object.keys(restPage.content[0])]
-            .filter((elem, pos, arr) => arr.indexOf(elem) == pos) //remove duplicates
-            .filter(item => !(item == 'projectId' || item == 'projectRequestId' || item == 'refundActions'))
-            .map(key => {
-                return {label: this.camelCaseHumanPipe.transform(key, true), value: key};
-              }
-            );
-        }
       }, err => {
-        this.processing = false;
+        console.log(getErrorMessage(err))
       });
   }
 
-  selectItem(selection: { originalEvent: MouseEvent, data: Refund }): void {
-    this.selected = selection.data;
-    if (selection.data.status == Refund.Status.IN_REVIEW) {
-      if (this.contextMenuItems.length < 7) {
-        this.contextMenuItems = [
-          ...this.interviewContextMenuItems,
-          ...this.contextMenuItems];
-      }
-    } else if (this.contextMenuItems.length == 7) {
-      this.contextMenuItems.splice(0, 3);
-    }
-  }
-
   expandRow(selection: { originalEvent: MouseEvent, data }): void {
-    if (!this.dataTable.expandedRows) {
-      this.dataTable.expandedRows = [];
+    if (!this.table.expandedRows) {
+      this.table.expandedRows = [];
     }
-    if (this.dataTable.expandedRows.some(item => item.id == selection.data.id)) {
-      this.dataTable.expandedRows = this.dataTable.expandedRows.filter(item => item.id != selection.data.id);
+    if (this.table.expandedRows.some(item => item.id == selection.data.id)) {
+      this.table.expandedRows = this.table.expandedRows.filter(item => item.id != selection.data.id);
     } else {
-      this.dataTable.expandedRows = [];
+      this.table.expandedRows = [];
       this.refundService.getRefundActions(selection.data.id).pipe(
         switchMap((refundActions: Array<RefundAction>) => {
             selection.data.refundActions = refundActions;
@@ -181,7 +178,7 @@ export class RefundsListComponent {
         .subscribe(
           (customerProject: Project) => {
             selection.data.project = customerProject; //making mutation
-            this.dataTable.expandedRows.push(selection.data);
+            this.table.expandedRows.push(selection.data);
           },
           err => {
             console.log(err);
@@ -196,8 +193,8 @@ export class RefundsListComponent {
         this.popUpMessageService.showSuccess(`Refund request has been ${capitalize(this.refundAction)}${this.refundAction == RefundAction.Action.APPROVE ? 'd' : 'ed'}`);
         this.refundActionDialog = false;
         this.refundActionComment = '';
-        if (this.dataTable.expandedRows) {
-          this.dataTable.expandedRows.forEach((item) => {
+        if (this.table.expandedRows) {
+          this.table.expandedRows.forEach((item) => {
             if (item.id == this.selected.id) {
               this.refundService.getRefundActions(this.selected.id).subscribe((refundActions: Array<RefundAction>) => {
                 item.refundActions = refundActions;

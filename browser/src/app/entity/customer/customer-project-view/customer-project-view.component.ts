@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CustomerProject } from '../../../model/data-model';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { PopUpMessageService } from '../../../util/pop-up-message.service';
 import { ProjectService } from '../../../api/services/project.service';
 import { ProjectRequestService } from '../../../api/services/project-request.service';

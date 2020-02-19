@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
-import { ConfirmationService, DataTable, FilterMetadata, MenuItem, SelectItem } from 'primeng/primeng';
+import { ConfirmationService, Table, FilterMetadata, MenuItem, SelectItem } from 'primeng';
 import { RestPage } from "../../../api/models/RestPage";
 import { Role } from "../../../model/security-model";
 import { CamelCaseHumanPipe } from "../../../pipes/camelcase-to-human.pipe";
@@ -12,7 +12,7 @@ import { Pagination } from "../../../model/data-model";
 import { Invitation } from "../../../api/models/Invitation";
 import { InvitationService } from "../../../api/services/invitation.service";
 import { PopUpMessageService } from "../../../util/pop-up-message.service";
-import { getErrorMessage } from "../../../util/functions";
+import { clone, getErrorMessage } from "../../../util/functions";
 import { NgForm } from "@angular/forms";
 
 @Component({
@@ -22,19 +22,23 @@ import { NgForm } from "@angular/forms";
 })
 export class InvitationsComponent {
   Role = Role;
-  @ViewChild('dt') dataTable: DataTable;
+  @ViewChild('dt') table: Table;
   rowsPerPage: Array<number> = [10, 50, 100];
   invitationsPage: RestPage<Invitation> = new RestPage<Invitation>();
   selectedInvitation: Invitation;
-  tableColumns: Array<SelectItem> = [];
   fetching: boolean = true;
-  selectedTableCols: Array<string> = [
-    'id',
-    'email',
-    'bonus',
-    'created',
-    'activated'
+
+  columns = [
+    {field: 'id', header: 'Id', active: true},
+    {field: 'email', header: 'Email', active: true},
+    {field: 'bonus', header: 'Bonus', active: true},
+    {field: 'created', header: 'Created', active: true},
+    {field: 'activated', header: 'Activated', active: true},
+    {field: 'description', header: 'Description', active: true},
   ];
+
+  selectedColumns = this.columns.filter(column => column.active);
+
   roles: Array<SelectItem> = [];
   displayInviteDialog: boolean = false;
 
@@ -69,16 +73,6 @@ export class InvitationsComponent {
 
   }
 
-  loadLazy(event, callback: () => void): void {
-    const pagination: Pagination = new Pagination().fromPrimeNg(event);
-    const filters = filtersToParams(event.filters);
-    if (filters.bonusFrom) filters.bonusFrom *= 100;
-    if (filters.bonusTo) filters.bonusTo *= 100;
-    if (typeof callback == 'function') {
-      callback.call(this, filters, pagination);
-    }
-  }
-
   initContextMenu () {
     this.contextMenuItems = [
       {
@@ -100,20 +94,32 @@ export class InvitationsComponent {
     ];
   }
 
+  onColumnSelect(event) {
+    let changedColumn = this.columns.find(column => column.field == event.itemValue.field);
+    changedColumn.active = !changedColumn.active;
+    this.selectedColumns = this.columns.filter(column => column.active);
+  }
+
+  loadDataLazy(filters = {}, pagination: Pagination = new Pagination()) {
+    this.getInvitations(filters, pagination)
+  }
+
+  onLazyLoad(event: any) {
+    const filters = filtersToParams(event.filters);
+    if (filters.bonusFrom) filters.bonusFrom *= 100;
+    if (filters.bonusTo) filters.bonusTo *= 100;
+    this.loadDataLazy(filters, new Pagination().fromPrimeNg(event));
+  }
+
+  refresh(): void {
+    this.table.onLazyLoad.emit(this.table.createLazyLoadMetadata());
+  }
+
   getInvitations(filters = {}, pagination: Pagination = new Pagination(0, this.rowsPerPage[0])): void {
     this.fetching = true;
     this.invitationService.getAll(filters, pagination).subscribe((invitations: RestPage<Invitation>) => {
       this.fetching = false;
       this.invitationsPage = invitations;
-      // fill columns
-      if (invitations.content.length > 0) {
-        this.tableColumns = [...this.selectedTableCols, ...Object.keys(invitations.content[0])]
-          .filter((elem, pos, arr) => arr.indexOf(elem) == pos) //remove duplicates
-          .map(key => {
-              return {label: this.camelCaseHumanPipe.transform(key, true), value: key};
-            }
-          );
-      }
     }, err => {
       this.popUpService.showError(getErrorMessage(err));
       this.fetching = false;
@@ -125,7 +131,7 @@ export class InvitationsComponent {
     this.initContextMenu();
   }
 
-  clearBonusFilter(col, dt: DataTable): void {
+  clearBonusFilter(col, dt: Table): void {
     if (this.bonusTimeout) {
       clearTimeout(this.bonusTimeout);
     }
@@ -137,7 +143,7 @@ export class InvitationsComponent {
     }, 350);
   }
 
-  onBonusFilterChange(event, dt: DataTable, col) {
+  onBonusFilterChange(event, dt: Table, col) {
     if (this.bonusTimeout) {
       clearTimeout(this.bonusTimeout);
     }
@@ -146,15 +152,6 @@ export class InvitationsComponent {
     this.bonusTimeout = setTimeout(() => {
       dt.filter(null, col.field, col.filterMatchMode);
     }, 350);
-  }
-
-  refresh(dataTable): void {
-    const paging = {
-      first: dataTable.first,
-      rows: dataTable.rows
-    };
-    dataTable.expandedRows = [];
-    dataTable.paginate(paging);
   }
 
   onInvitationEmailAdd(event) {
@@ -213,7 +210,7 @@ export class InvitationsComponent {
       accept: () => {
         this.invitationService.delete(this.selectedInvitation.id).subscribe(
           res => {
-            this.refresh(this.dataTable);
+            this.refresh();
             this.popUpService.showSuccess('Invitation deleted');
           },
           err => {
@@ -226,7 +223,7 @@ export class InvitationsComponent {
   resend() {
         this.invitationService.resend(this.selectedInvitation.id).subscribe(
           res => {
-            this.refresh(this.dataTable);
+            this.refresh();
             this.popUpService.showSuccess('Invitation resent');
           },
           err => {

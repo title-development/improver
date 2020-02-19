@@ -18,7 +18,7 @@ export class QuestionariesService {
   }
 
   getAll(filters, pagination): Observable<RestPage<Questionary>> {
-    const params = toHttpParams({...filters, ...pagination});
+    const params = {...filters, ...pagination};
     return this.http.get<RestPage<Questionary>>(`${this.url}`, {params});
   }
 

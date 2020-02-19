@@ -1,8 +1,6 @@
-import { HTTP_INTERCEPTORS, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
-import { Injectable, Injector, Provider } from '@angular/core';
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import { Injectable, } from '@angular/core';
 import { Observable } from 'rxjs';
-import { SecurityService } from '../../auth/security.service';
-import { TokenInterceptor } from './token.interceptor'
 
 /**
  * Fix problem with default response type of Angular HttpClient for DELETE method with empty body

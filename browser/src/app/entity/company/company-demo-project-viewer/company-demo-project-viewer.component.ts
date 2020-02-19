@@ -9,7 +9,7 @@ import { ServiceTypeService } from "../../../api/services/service-type.service";
 import { CompanyService } from "../../../api/services/company.service";
 import { PopUpMessageService } from "../../../util/pop-up-message.service";
 import { customerGalleryDialogConfig } from "../../../shared/dialogs/dialogs.configs";
-import { MatDialog, MatDialogRef } from "@angular/material";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { combineLatest } from "rxjs";
 import { dialogsMap } from '../../../shared/dialogs/dialogs.state';
 import { getErrorMessage } from "../../../util/functions";

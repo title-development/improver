@@ -1,11 +1,5 @@
 @import "../../../../../improver-mixins";
 
-.projects-table {
-  margin-bottom: 50px;
-  display: flex;
-  flex-direction: column;
-}
-
 .project-questionary {
   .details-item {
     padding: 10px 0;
@@ -89,6 +83,7 @@
   }
 
   .projectRequest-icon {
+    flex: 0 0 64px;
     width: 64px;
     height: 64px;
     opacity: 1;

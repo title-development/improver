@@ -1,5 +1,4 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { Message } from 'primeng/primeng';
 import { ScrollHolderService } from '../../../util/scroll-holder.service';
 
 @Component({
@@ -9,7 +8,7 @@ import { ScrollHolderService } from '../../../util/scroll-holder.service';
 })
 export class AdminLayoutComponent implements OnInit {
   toggleSidebar: boolean = true;
-  @ViewChild('scrollHolder') scrollHolder: ElementRef;
+  @ViewChild('scrollHolder', {static: true}) scrollHolder: ElementRef;
 
   constructor(private scrollHolderService: ScrollHolderService) {
 

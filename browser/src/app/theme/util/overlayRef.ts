@@ -10,9 +10,9 @@ import {
   Renderer2
 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
-import { MatDialog } from '@angular/material';
 import { BehaviorSubject, Subject, Subscription } from 'rxjs';
 import { ScrollHolderService } from '../../util/scroll-holder.service';
+import { MatDialog } from "@angular/material/dialog";
 
 export enum BackdropType {
   popup = 'cv-type-popup',

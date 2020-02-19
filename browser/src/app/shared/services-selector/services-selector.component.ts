@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, NgForm } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material';
 import { Constants } from '../../util/constants';
 import { ActivatedRoute } from '@angular/router';
 import { SecurityService } from '../../auth/security.service';
@@ -13,6 +12,7 @@ import { dialogsMap } from '../dialogs/dialogs.state';
 import { confirmDialogConfig } from '../dialogs/dialogs.configs';
 import { combineLatest, ReplaySubject } from 'rxjs';
 import { ScrollHolderService } from '../../util/scroll-holder.service';
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 
 
 @Component({

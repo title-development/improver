@@ -1,6 +1,6 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { RestPage } from '../../../../api/models/RestPage';
-import { MenuItem, SelectItem } from 'primeng/primeng';
+import { MenuItem, SelectItem } from 'primeng';
 import { ProjectRequestService } from '../../../../api/services/project-request.service';
 import { Pagination } from '../../../../model/data-model';
 import { AdminProjectRequest } from '../../../../api/models/AdminProjectRequest';
@@ -21,7 +21,7 @@ import { ProjectService } from '../../../../api/services/project.service';
   styleUrls: ['./project-requests.component.scss']
 })
 export class ProjectRequestsComponent {
-  @ViewChild('dt') dataTable: any;
+  @ViewChild('dt') table: any;
   @ViewChild('messenger') messengerWrapper: ElementRef;
   rowsPerPage: Array<number> = [10, 50, 100];
   projectRequests: RestPage<AdminProjectRequest> = new RestPage<AdminProjectRequest>();
@@ -33,18 +33,25 @@ export class ProjectRequestsComponent {
   projectRequestReasons: Array<SelectItem> = [];
   projectRequestStatuses: Array<SelectItem> = [];
   projectStatuses: Array<SelectItem> = [];
-  tableColumns: Array<SelectItem> = [];
   selected: AdminProjectRequest;
-  selectedTableCols: Array<string> = [
-    'id',
-    'contractor',
-    'customer',
-    'status',
-    'serviceType',
-    'projectStatus',
-    'created',
-    'refund'
+
+  columns = [
+    {field: 'id', header: 'Id', active: true},
+    {field: 'contractor', header: 'Contractor', active: true},
+    {field: 'customer', header: 'Customer', active: true},
+    {field: 'serviceType', header: 'Service Type', active: true},
+    {field: 'status', header: 'Status', active: true},
+    {field: 'reason', header: 'Reason', active: false},
+    {field: 'reasonComment', header: 'Reason Comment', active: false},
+    {field: 'projectStatus', header: 'Project Status', active: true},
+    {field: 'refundRequest', header: 'Refund Request', active: true},
+    {field: 'created', header: 'Created', active: true},
+    {field: 'updated', header: 'Created', active: false},
+    {field: 'manual', header: 'Is Manual', active: false},
   ];
+
+  selectedColumns = this.columns.filter(column => column.active);
+
   contextMenuItems: Array<MenuItem> = [
     {
       label: 'View Project',
@@ -87,17 +94,23 @@ export class ProjectRequestsComponent {
     this.projectStatuses.unshift({label: 'All', value: ''});
   }
 
-  refresh(): void {
-    const paging = {
-      first: this.dataTable.first,
-      rows: this.dataTable.rows
-    };
-    this.dataTable.expandedRows = [];
-    this.dataTable.paginate(paging);
+  onColumnSelect(event) {
+    let changedColumn = this.columns.find(column => column.field == event.itemValue.field);
+    changedColumn.active = !changedColumn.active;
+    this.selectedColumns = this.columns.filter(column => column.active);
   }
 
-  loadLazy(event): void {
-    this.getProjectRequests(filtersToParams(event.filters), new Pagination().fromPrimeNg(event));
+  loadDataLazy(filters = {}, pagination: Pagination = new Pagination()) {
+    this.getProjectRequests(filters, pagination)
+  }
+
+  onLazyLoad(event: any) {
+    const filters = filtersToParams(event.filters);
+    this.loadDataLazy(filtersToParams(filters), new Pagination().fromPrimeNg(event));
+  }
+
+  refresh(): void {
+    this.table.onLazyLoad.emit(this.table.createLazyLoadMetadata());
   }
 
   getProjectRequests(filters = {}, pagination: Pagination = new Pagination(0, this.rowsPerPage[0])): void {
@@ -106,15 +119,15 @@ export class ProjectRequestsComponent {
       (restPage: RestPage<AdminProjectRequest>) => {
         this.processing = false;
         this.projectRequests = restPage;
-        if (restPage.content.length > 0) {
-          this.tableColumns = [...this.selectedTableCols, ...Object.keys(restPage.content[0])]
-            .filter((elem, pos, arr) => arr.indexOf(elem) == pos) //remove duplicates
-            .filter(item => !(item == 'projectId'))
-            .map(key => {
-                return {label: this.camelCaseHumanPipe.transform(key, true), value: key};
-              }
-            );
-        }
+        // if (restPage.content.length > 0) {
+        //   this.tableColumns = [...this.selectedTableCols, ...Object.keys(restPage.content[0])]
+        //     .filter((elem, pos, arr) => arr.indexOf(elem) == pos) //remove duplicates
+        //     .filter(item => !(item == 'projectId'))
+        //     .map(key => {
+        //         return {label: this.camelCaseHumanPipe.transform(key, true), value: key};
+        //       }
+        //     );
+        // }
       }, err => {
         this.processing = false;
       });
@@ -159,17 +172,17 @@ export class ProjectRequestsComponent {
   }
 
   expandRow(selection: { originalEvent: MouseEvent, data }): void {
-    if (!this.dataTable.expandedRows) {
-      this.dataTable.expandedRows = [];
+    if (!this.table.expandedRows) {
+      this.table.expandedRows = [];
     }
-    if (this.dataTable.expandedRows.some(item => item.id == selection.data.id)) {
-      this.dataTable.expandedRows = this.dataTable.expandedRows.filter(item => item.id != selection.data.id);
+    if (this.table.expandedRows.some(item => item.id == selection.data.id)) {
+      this.table.expandedRows = this.table.expandedRows.filter(item => item.id != selection.data.id);
     } else {
-      this.dataTable.expandedRows = [];
+      this.table.expandedRows = [];
       this.projectService.getProject(selection.data.projectId).subscribe(
         (customerProject: Project) => {
           selection.data.project = customerProject;
-          this.dataTable.expandedRows.push(selection.data);
+          this.table.expandedRows.push(selection.data);
         },
         err => {
           console.log(err);

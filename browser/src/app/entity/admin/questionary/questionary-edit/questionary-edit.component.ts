@@ -4,7 +4,6 @@ import { QuestionariesService } from '../../../../api/services/questionaries.ser
 import { Questionary } from '../../../../api/models/Questionary';
 import { combineLatest, of, Subscription } from 'rxjs';
 import { ServiceTypeService } from '../../../../api/services/service-type.service';
-import { MessageService } from 'primeng/components/common/messageservice';
 import { Question } from '../../../../api/models/Question';
 import { Constants } from '../../../../util/constants';
 import { Answer } from '../../../../api/models/Answer';

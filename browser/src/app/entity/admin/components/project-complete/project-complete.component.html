@@ -1,7 +1,6 @@
 <p-dialog
   header="Complete project"
-  [contentStyle]="{'overflow':'visible'}" [(visible)]="toggle" [responsive]="true" showEffect="fade"
-  [width]="700"
+  [contentStyle]="{'overflow':'visible'}" [(visible)]="toggle" showEffect="fade"
   [modal]="true">
   <form #form="ngForm" (ngSubmit)="form.valid && completeProject()">
     <div class="ui-grid ui-grid-responsive ui-fluid">

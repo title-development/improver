@@ -1,5 +1,5 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { MatDialog, MatDialogRef } from "@angular/material";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { ServiceType } from "../../../model/data-model";
 import { NgForm } from "@angular/forms";
 import { QuestionaryBlock } from "../../../model/questionary-model";
@@ -61,8 +61,11 @@ export class QuestionaryDialogComponent implements OnInit, ComponentCanDeactivat
   }
 
   close() {
-    this.currentDialogRef.close();
-    this.phoneHelpService.showPartial();
+    if (!this.questionaryControlService.showQuestionary
+      || confirm('Do you want to exit? Service will not be requested. Press OK - to exit, Cancel to stay')) {
+      this.currentDialogRef.close();
+      this.phoneHelpService.showPartial();
+    }
   }
 
   checkProgressBarWidth() {

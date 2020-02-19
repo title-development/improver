@@ -3,7 +3,7 @@ import { enumToArrayList, filtersToParams } from '../../../../util/tricks.servic
 import { Pagination } from '../../../../model/data-model';
 import { RestPage } from '../../../../api/models/RestPage';
 import { RefundService } from '../../../../api/services/refund.service';
-import { MenuItem, SelectItem } from 'primeng/primeng';
+import { MenuItem, SelectItem } from 'primeng';
 import { Refund } from '../../../../api/models/Refund';
 import { CamelCaseHumanPipe } from '../../../../pipes/camelcase-to-human.pipe';
 import { Router } from '@angular/router';
@@ -12,6 +12,7 @@ import { capitalize, getErrorMessage } from '../../../../util/functions';
 import { ProjectService } from '../../../../api/services/project.service';
 import { PopUpMessageService } from '../../../../util/pop-up-message.service';
 import { RefundAction } from '../../../../api/models/RefundAction';
+import { finalize } from "rxjs/operators";
 
 @Component({
   selector: 'refunds-inreview',
@@ -19,11 +20,10 @@ import { RefundAction } from '../../../../api/models/RefundAction';
   styleUrls: ['./inreview.component.scss']
 })
 export class RefundsInreviewComponent {
-  @ViewChild('dt') dataTable: any;
+  @ViewChild('dt') table: any;
   processing = true;
   refunds: RestPage<Refund> = new RestPage<Refund>();
   rowsPerPage: Array<number> = [10, 50, 100];
-  tableColumns: Array<SelectItem> = [];
   selected: Refund;
   refundAction;
   refundActionComment: string;
@@ -36,15 +36,22 @@ export class RefundsInreviewComponent {
   refundStatuses: Array<SelectItem> = [];
   refundIssues: Array<SelectItem> = [];
   refundOptions: Array<SelectItem> = [];
-  selectedTableCols: Array<string> = [
-    'id',
-    'customer',
-    'contractor',
-    'issue',
-    'status',
-    'option',
-    'created'
+
+  columns = [
+    {field: 'id', header: 'Id', active: true},
+    {field: 'customer', header: 'Customer', active: true},
+    {field: 'contractor', header: 'Contractor', active: true},
+    {field: 'issue', header: 'Issue', active: true},
+    {field: 'option', header: 'Option', active: true},
+    {field: 'status', header: 'Status', active: true},
+    {field: 'notes', header: 'Notes', active: false},
+    {field: 'comment', header: 'Comment', active: false},
+    {field: 'updated', header: 'Updated', active: false},
+    {field: 'created', header: 'Created', active: true},
   ];
+
+  selectedColumns = this.columns.filter(column => column.active);
+
   contextMenuItems: Array<MenuItem> = [
     {
       label: 'Approve',
@@ -114,56 +121,49 @@ export class RefundsInreviewComponent {
     this.refundOptions.unshift({label: 'All', value: ''});
   }
 
-  refresh(): void {
-    const paging = {
-      first: this.dataTable.first,
-      rows: this.dataTable.rows
-    };
-    this.dataTable.expandedRows = [];
-    this.dataTable.paginate(paging);
+  onColumnSelect(event) {
+    let changedColumn = this.columns.find(column => column.field == event.itemValue.field);
+    changedColumn.active = !changedColumn.active;
+    this.selectedColumns = this.columns.filter(column => column.active);
   }
 
-  loadLazy(event): void {
-    this.getRefunds(filtersToParams(event.filters), new Pagination().fromPrimeNg(event));
+  loadDataLazy(filters = {}, pagination: Pagination = new Pagination()) {
+    this.getRefunds(filters, pagination)
+  }
+
+  onLazyLoad(event: any) {
+    this.loadDataLazy(filtersToParams(event.filters), new Pagination().fromPrimeNg(event));
+  }
+
+  refresh(): void {
+    this.table.onLazyLoad.emit(this.table.createLazyLoadMetadata());
   }
 
   getRefunds(filters = {}, pagination: Pagination = new Pagination(0, this.rowsPerPage[0])): void {
     this.processing = true;
     filters['status'] = Refund.Status.IN_REVIEW;
-    this.refundService.getAll(filters, pagination).subscribe(
+    this.refundService.getAll(filters, pagination)
+      .pipe(finalize(() => this.processing = false))
+      .subscribe(
       (restPage: RestPage<Refund>) => {
-        this.processing = false;
         this.refunds = restPage;
-        if (restPage.content.length > 0) {
-          this.tableColumns = [...this.selectedTableCols, ...Object.keys(restPage.content[0])]
-            .filter((elem, pos, arr) => arr.indexOf(elem) == pos) //remove duplicates
-            .filter(item => !(item == 'projectId' || item == 'projectRequestId' || item == 'refundActions'))
-            .map(key => {
-                return {label: this.camelCaseHumanPipe.transform(key, true), value: key};
-              }
-            );
-        }
       }, err => {
-        this.processing = false;
+          console.log(getErrorMessage(err))
       });
   }
 
-  selectItem(selection: { originalEvent: MouseEvent, data: Refund }): void {
-    this.selected = selection.data;
-  }
-
   expandRow(selection: { originalEvent: MouseEvent, data }): void {
-    if (!this.dataTable.expandedRows) {
-      this.dataTable.expandedRows = [];
+    if (!this.table.expandedRows) {
+      this.table.expandedRows = [];
     }
-    if (this.dataTable.expandedRows.some(item => item.id == selection.data.id)) {
-      this.dataTable.expandedRows = this.dataTable.expandedRows.filter(item => item.id != selection.data.id);
+    if (this.table.expandedRows.some(item => item.id == selection.data.id)) {
+      this.table.expandedRows = this.table.expandedRows.filter(item => item.id != selection.data.id);
     } else {
-      this.dataTable.expandedRows = [];
+      this.table.expandedRows = [];
       this.projectService.getProject(selection.data.projectId).subscribe(
         (customerProject: Project) => {
           selection.data.project = customerProject; //making mutation
-          this.dataTable.expandedRows.push(selection.data);
+          this.table.expandedRows.push(selection.data);
         },
         err => {
           console.log(err);
@@ -178,8 +178,8 @@ export class RefundsInreviewComponent {
         this.popUpMessageService.showSuccess(`Return credit request has been ${capitalize(this.refundAction)}${this.refundAction == RefundAction.Action.APPROVE ? 'd' : 'ed'}`);
         this.refundActionDialog = false;
         this.refundActionComment = '';
-        if (this.dataTable.expandedRows) {
-          this.dataTable.expandedRows.forEach((item) => {
+        if (this.table.expandedRows) {
+          this.table.expandedRows.forEach((item) => {
             if (item.id == this.selected.id) {
               this.refundService.getRefundActions(this.selected.id).subscribe((refundActions: Array<RefundAction>) => {
                 item.refundActions = refundActions;

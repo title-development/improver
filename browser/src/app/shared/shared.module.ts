@@ -1,25 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ImagesUploaderComponent } from './image-uploader/image-uploader.component';
 import { RatingComponent } from './rating-component/rating.component';
 import { PhoneHelpComponent } from './phone-help/phone-help.component';
-
-import {
-  MatButtonModule,
-  MatCardModule,
-  MatCheckboxModule,
-  MatDialogModule,
-  MatGridListModule,
-  MatIconModule,
-  MatInputModule,
-  MatMenuModule,
-  MatProgressBarModule,
-  MatTooltipModule
-} from '@angular/material';
 
 import { ResponseMessageComponent } from './response-message/response-message.component';
 import { MessengerModule } from './messanger/messenger.module';
@@ -46,13 +32,22 @@ import { SubscriptionComponent } from './billing-subscription/subscription.compo
 import { CvIconModule } from '../theme/icon/cv-icon-module';
 import { CvRadioModule } from "../theme/radio/radio.module";
 import { PhoneValidationComponent } from "./phone-validation/phone-validation.component";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatGridListModule } from "@angular/material/grid-list";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { MatIconModule } from "@angular/material/icon";
+import { MatDialogModule } from "@angular/material/dialog";
+import { MatCardModule } from "@angular/material/card";
+import { MatInputModule } from "@angular/material/input";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { MatButtonModule } from "@angular/material/button";
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpModule,
     RouterModule,
     MatCardModule,
     MatMenuModule,
@@ -99,7 +94,6 @@ import { PhoneValidationComponent } from "./phone-validation/phone-validation.co
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpModule,
     CvCheckboxModule,
     RouterModule,
     EqualValidator,

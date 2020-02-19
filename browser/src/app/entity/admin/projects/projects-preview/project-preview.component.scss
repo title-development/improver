@@ -56,6 +56,7 @@
   }
 
   .projectRequest-icon {
+    flex: 0 0 64px;
     width: 64px;
     height: 64px;
     opacity: 1;
@@ -181,7 +182,7 @@
   }
 }
 
-p-datatable::ng-deep {
+p-table::ng-deep {
   th .ui-column-title {
     display: inline !important;
   }

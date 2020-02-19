@@ -13,7 +13,7 @@ import {
 })
 export class CvHolder {
 
-  @ViewChild('template', {read: ViewContainerRef}) template: ViewContainerRef;
+  @ViewChild('template', {read: ViewContainerRef, static: true}) template: ViewContainerRef;
   constructor() {
   }
 
