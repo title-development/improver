@@ -39,7 +39,7 @@ export class SignupCompanyComponent {
   MAX_COVERAGE_RADIUS = 50;
   MAX_SLIDER_COVERAGE_RADIUS = 50;
   DEFAULT_COVERAGE_RADIUS = 10;
-  minLatLngPointsInCoverage: number = 14;
+  minLatLngPointsInCoverage: number = 9;
   step: number = 1;
   mapOptions: MapOptions = defaultMapOptions;
   locationSuggestDialog: MatDialogRef<any>;
@@ -425,17 +425,30 @@ export class SignupCompanyComponent {
   }
 
   isCircleAreaInCoverage(minPointsInCoverage: number) {
-    let pointsNumber: number = 36;
     if (this.infoWindow) {
       this.infoWindow.close();
     }
-    let pointsLatLng: Array<LatLng> = this.getPointsOnCircle(
+
+    let pointsNumber: number = 36;
+    let infoWindowPosition: LatLng;
+    let bigCirclePoints: Array<LatLng> = this.getPointsOnCircle(
       new google.maps.LatLng(this.serviceAreaCircle.center.lat(), this.serviceAreaCircle.center.lng()),
       this.companyRegistration.coverage.radius,
       pointsNumber
     );
+    let smallCirclePoints: Array<LatLng> = this.getPointsOnCircle(
+      new google.maps.LatLng(this.serviceAreaCircle.center.lat(), this.serviceAreaCircle.center.lng()),
+      (this.companyRegistration.coverage.radius / 100 * 65),
+      pointsNumber
+    );
 
-    let existsInSupportedZip: boolean = this.isMinPointsNumberInCoverage(pointsLatLng, minPointsInCoverage);
+    if (this.companyRegistration.coverage.radius > 20){
+      infoWindowPosition = new google.maps.LatLng(this.serviceAreaCircle.center.lat(), this.serviceAreaCircle.center.lng());
+    } else {
+      infoWindowPosition = bigCirclePoints[pointsNumber / 4];
+    }
+
+    let existsInSupportedZip: boolean = this.isMinPointsNumberInCoverage(bigCirclePoints, smallCirclePoints, minPointsInCoverage);
 
     if (existsInSupportedZip) {
       this.isServiceAreaStepDisabled$.next(false);
@@ -444,13 +457,38 @@ export class SignupCompanyComponent {
         content: 'Please, select from supported area '
       });
       this.infoWindow.open(this.map);
-      this.infoWindow.setPosition(pointsLatLng[pointsNumber / 4]);
+      this.infoWindow.setPosition(infoWindowPosition);
       this.isServiceAreaStepDisabled$.next(true);
     }
     this.changeDetectorRef.detectChanges();
   }
 
-  private isMinPointsNumberInCoverage(pointsLatLng: Array<google.maps.LatLng>, minPointsInCoverage: number): boolean {
+  /**
+   * @param bigCirclePoints - points on the main circle
+   * @param smallCirclePoints - points on a smaller circle for more coverage
+   * @param minPointsInCoverage - the lowest number of points in the coverage
+   * @return true - when circle are is in coverage
+   */
+  private isMinPointsNumberInCoverage(bigCirclePoints: Array<LatLng>, smallCirclePoints: Array<LatLng>, minPointsInCoverage: number): boolean {
+    let isCircleCenterInCoverage: boolean = google.maps.geometry.poly.containsLocation(new google.maps.LatLng(this.companyRegistration.coverage.center.lat, this.companyRegistration.coverage.center.lng), this.coveragePolygon);
+    let hasAdjacentPoints: boolean;
+    let hasAdjacentPointsOnSmallCircle: boolean;
+
+    //Center of the circle area is in Coverage
+    if (isCircleCenterInCoverage) {
+      return true;
+    }
+
+    hasAdjacentPoints = this.hasAdjacentPoints(bigCirclePoints, minPointsInCoverage);
+    hasAdjacentPointsOnSmallCircle = this.hasAdjacentPoints(smallCirclePoints, (minPointsInCoverage));
+    if (this.companyRegistration.coverage.radius <= this.MAX_COVERAGE_RADIUS / 100 * 75) {
+      return hasAdjacentPoints && hasAdjacentPointsOnSmallCircle;
+    } else {
+      return hasAdjacentPoints || hasAdjacentPointsOnSmallCircle;
+    }
+  }
+
+  hasAdjacentPoints(pointsLatLng: Array<LatLng>, minPointsInCoverage: number): boolean{
     for (let i = 0; i < pointsLatLng.length; i++) {
       if (google.maps.geometry.poly.containsLocation(pointsLatLng[i], this.coveragePolygon)) {
         let nextIndex = i;
