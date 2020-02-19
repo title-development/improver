@@ -607,7 +607,7 @@ export class SignupCompanyComponent {
     this.cancelRegistrationDialogRef.componentInstance.onConfirm.subscribe(
       () => {
         this.removeIncompleteCompanyFromStorage();
-        this.securityService.logoutFrontend();
+        this.securityService.logout();
         this.router.navigate(['/become-pro']);
       },
       err => {
