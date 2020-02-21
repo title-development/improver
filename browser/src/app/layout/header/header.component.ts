@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { questionaryDialogConfig } from '../../shared/dialogs/dialogs.configs';
+import { mobileMainDialogBarConfig, questionaryDialogConfig } from '../../shared/dialogs/dialogs.configs';
 import { Role } from '../../model/security-model';
 import { NotificationResource } from '../../util/notification.resource';
 import { BillingService } from '../../api/services/billing.service';
@@ -61,7 +61,7 @@ export class HeaderComponent {
 
   open(key): void {
     this.dialog.closeAll();
-    this.dialogRef = this.dialog.open(dialogsMap[key], questionaryDialogConfig);
+    this.dialogRef = this.dialog.open(dialogsMap[key], mobileMainDialogBarConfig);
     this.dialogRef
       .afterClosed()
       .subscribe(result => {

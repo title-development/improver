@@ -17,7 +17,13 @@
               {{tab.label}}
             </div>
           </div>
-          <a cv-button class="new-project-button " (click)="findProfessionalService.toggle()">
+          <a *ngIf="(!mediaQuery.xs && !mediaQuery.sm) && securityService.isAuthenticated()" cv-button class="new-project-button " (click)="findProfessionalService.toggle()">
+            <span class="plus">+</span>
+            <span>New project</span>
+          </a>
+          <a *ngIf="(mediaQuery.xs || mediaQuery.sm) && securityService.isAuthenticated()"
+             cv-button class="new-project-button "
+             (click)="openMobileDialog('mobile-main-search-bar')">
             <span class="plus">+</span>
             <span>New project</span>
           </a>

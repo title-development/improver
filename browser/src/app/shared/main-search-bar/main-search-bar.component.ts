@@ -135,11 +135,13 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
       if (selectionCtrl.value) {
         this.userSearchService.findServiceTypeOrTrade(this.mainSearchFormGroup.value);
         if (this.resetAfterFind) {
-          this.mainSearchFormGroup.reset({
-            zipCodeCtrl: localStorage.getItem('zipCode')? localStorage.getItem('zipCode'): this.lastZipCode
-          });
-          Object.values(this.mainSearchFormGroup.controls).forEach(control => control.markAsPristine());
-          this.changeDetectorRef.detectChanges();
+          setTimeout( ()=> {
+            this.mainSearchFormGroup.reset({
+              zipCodeCtrl: localStorage.getItem('zipCode')? localStorage.getItem('zipCode'): this.lastZipCode
+            });
+            Object.values(this.mainSearchFormGroup.controls).forEach(control => control.markAsPristine());
+            this.changeDetectorRef.detectChanges();
+          },100);
         }
       }
     } else {
@@ -170,7 +172,7 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
     return item.id;
   }
 
-  mouseleave(event: KeyboardEvent): void {
+  mouseleave(): void {
     Object.values(this.mainSearchFormGroup.controls).forEach(control => {
       if (!control.value) {
         control.reset();

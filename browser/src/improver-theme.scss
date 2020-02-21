@@ -68,7 +68,7 @@ div[class^='col-'] {
   }
   @for $i from 1 through 5 {
     >div:nth-child(#{$i}) {
-      z-index: 100#{$i};
+      z-index: 100 + #{$i};
     }
   }
   >div {
@@ -93,7 +93,7 @@ div[class^='col-'] {
 .cv-popup-overlay {
   @for $i from 0 through 5 {
     >div:nth-child(#{$i}) {
-      z-index: 100#{$i};
+      z-index: 100 + #{$i};
     }
   }
 

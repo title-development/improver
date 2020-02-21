@@ -300,6 +300,7 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
       this.updateValueAccessor(model);
     }
     this.onSelect.emit(model);
+    this.renderer.removeChild(this.overlayRef.getBackdrop(), this.overlayRef.getOverlay());
     this.overlayRef.$updateDropdownPosition.next();
     this.changeDetectorRef.markForCheck();
   }

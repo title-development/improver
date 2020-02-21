@@ -1,7 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { CustomerProjectShort, Pagination, ServiceType } from '../../../model/data-model';
 import { SecurityService } from '../../../auth/security.service';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { PopUpMessageService } from '../../../util/pop-up-message.service';
 import { ProjectRequestService } from '../../../api/services/project-request.service';
 import { ProjectService } from '../../../api/services/project.service';
@@ -14,6 +14,9 @@ import { getErrorMessage, reCalculatePageable } from '../../../util/functions';
 import { ProjectRequest } from '../../../api/models/ProjectRequest';
 import { finalize, takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
+import { MediaQuery, MediaQueryService } from "../../../util/media-query.service";
+import { dialogsMap } from "../../../shared/dialogs/dialogs.state";
+import { mobileMainDialogBarConfig } from "../../../shared/dialogs/dialogs.configs";
 
 interface Tab {
   label: string;
@@ -32,6 +35,8 @@ interface Tab {
 
 export class CustomerDashboardComponent implements OnDestroy {
   private readonly destroyed$ = new Subject<void>();
+  public mediaQuery: MediaQuery;
+  private dialogRef: MatDialogRef<any>;
   Project = Project;
   ProjectStatus = Project.Status;
   ProjectRequest = ProjectRequest;
@@ -62,12 +67,14 @@ export class CustomerDashboardComponent implements OnDestroy {
               public popUpMessageService: PopUpMessageService,
               public projectActionService: ProjectActionService,
               public findProfessionalService: FindProfessionalService,
-              private securityService: SecurityService,
+              public mediaQueryService: MediaQueryService,
+              public securityService: SecurityService,
               private projectRequestService: ProjectRequestService,
               private projectService: ProjectService,
               private serviceTypeService: ServiceTypeService) {
     this.getProjects(this.tabs[0]);
     this.getRecommendedServiceTypes();
+    this.subscribeForMediaScreen();
     this.onProjectsUpdate$ = this.projectActionService.onProjectsUpdate
       .pipe(takeUntil(this.destroyed$))
       .subscribe(() => this.updateTab());
@@ -78,12 +85,32 @@ export class CustomerDashboardComponent implements OnDestroy {
     this.destroyed$.complete();
   }
 
-    openProjectRequest(project: CustomerProjectShort) {
+  subscribeForMediaScreen(): void {
+    this.mediaQueryService.screen.asObservable()
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe((mediaQuery: MediaQuery) => {
+          console.log('Customer',mediaQuery);
+          this.mediaQuery = mediaQuery;
+        });
+  }
+
+  openMobileDialog(key): void {
+    this.dialog.closeAll();
+    this.dialogRef = this.dialog.open(dialogsMap[key], mobileMainDialogBarConfig);
+    this.dialogRef
+        .afterClosed()
+        .subscribe(result => {
+              this.dialogRef = null;
+            }
+        );
+  }
+
+  openProjectRequest(project: CustomerProjectShort) {
     this.projectRequestService.getProjectRequest(project.id).subscribe(
-      projectRequest => {
-        this.projectActionService.openProjectRequest(projectRequest);
-      },
-      err => this.popUpMessageService.showError(getErrorMessage(err))
+        projectRequest => {
+          this.projectActionService.openProjectRequest(projectRequest);
+        },
+        err => this.popUpMessageService.showError(getErrorMessage(err))
     );
   }
 
