@@ -32,9 +32,7 @@ export class ServiceTypeService {
   // ==== Admin ====
 
   getAll(filters: any, pagination: Pagination): Observable<RestPage<AdminServiceType>> {
-    // const params = toHttpParams(pagination);
     const params = {...filters, ...pagination};
-
     return this.http.get<RestPage<AdminServiceType>>(this.serviceTypesUrl, {params});
   }
 

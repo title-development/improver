@@ -30,7 +30,7 @@ export class AdminProjectsComponent {
   projects: RestPage<Project> = new RestPage<Project>();
   projectsProcessing = true;
   projectReasons: Array<SelectItem> = [];
-  projectStatusesFilter: Array<SelectItem> = [];
+  projectStatuses: Array<SelectItem> = [];
   toLocationValidate: Location;
   selectedProject: Project;
   displayLocationDialog: boolean = false;
@@ -76,10 +76,10 @@ export class AdminProjectsComponent {
     this.route.queryParams.subscribe(params => {
       this.filters = dataTableFilter('id', params['id']);
     });
-    this.projectStatusesFilter = enumToArrayList(Project.Status).map(item => {
+    this.projectStatuses = enumToArrayList(Project.Status).map(item => {
       return {label: item, value: item};
     });
-    this.projectStatusesFilter.unshift({label: 'All', value: ''});
+    this.projectStatuses.unshift({label: 'All', value: ''});
     this.projectReasons = this.trickService.enumToJson(Project.Reason).map(item => {
       return {label: item.label, value: item.value};
     });
@@ -114,8 +114,7 @@ export class AdminProjectsComponent {
   }
 
   onLazyLoad(event: any) {
-    const filters = filtersToParams(event.filters);
-    this.loadDataLazy(filtersToParams(filters), new Pagination().fromPrimeNg(event));
+    this.loadDataLazy(filtersToParams(event.filters), new Pagination().fromPrimeNg(event));
   }
 
   refresh(): void {
@@ -127,15 +126,6 @@ export class AdminProjectsComponent {
     this.projectService.getAll(filters, pagination).subscribe(projects => {
       this.projects = projects;
       this.projectsProcessing = false;
-      // if (projects.content.length > 0) {
-      //   this.tableColumns = [...this.selectedTableCols, ...Object.keys(projects.content[0])]
-      //     .filter((elem, pos, arr) => arr.indexOf(elem) == pos) //remove duplicates
-      //     .filter(item => !(item == 'details' || item == 'projectActions' || item == 'projectRequests' || item == 'notes'))
-      //     .map(key => {
-      //         return {label: this.camelCaseHumanPipe.transform(key, true), value: key};
-      //       }
-      //     );
-      // }
     }, err => {
       this.popUpMessageService.showError(getErrorMessage(err));
       this.projectsProcessing = false;

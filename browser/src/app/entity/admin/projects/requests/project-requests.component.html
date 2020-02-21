@@ -8,12 +8,11 @@
          [value]="projectRequests.content"
          selectionMode="single" sortMode="single"
          [responsive]="true" [contextMenu]="cm" [paginator]="true"
-         [filters]="filters"
+         [tableStyle]="{'table-layout':'auto'}"
          [rows]="rowsPerPage[0]" [totalRecords]="projectRequests.totalElements" [rowsPerPageOptions]="rowsPerPage"
          sortField="id" [sortOrder]="1"
          (onRowExpand)="expandRow($event)"
          [(contextMenuSelection)]="selected"
-         (onContextMenuSelect)="selectItem($event)"
          (onLazyLoad)="onLazyLoad($event)">
 
   <!--Column selector-->
@@ -49,8 +48,11 @@
       <th *ngFor="let col of selectedColumns" [ngSwitch]="col.field">
 
         <input *ngSwitchCase="'id'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
-        <input *ngSwitchCase="'contractor'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
-        <input *ngSwitchCase="'customer'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
+        <input *ngSwitchCase="'contractor'" pInputText type="text" (input)="dt.filter($event.target.value, 'contractorEmail', 'equals')" class="table-filter">
+        <input *ngSwitchCase="'customer'" pInputText type="text" (input)="dt.filter($event.target.value, 'customerEmail', 'equals')" class="table-filter">
+        <input *ngSwitchCase="'serviceType'" pInputText type="text" (input)="dt.filter($event.target.value, 'serviceType', 'equals')" class="table-filter">
+        <p-dropdown *ngSwitchCase="'status'" [options]="projectRequestStatuses" (onChange)="dt.filter($event.value, col.field, 'equals')" styleClass="ui-column-filter"></p-dropdown>
+        <p-dropdown *ngSwitchCase="'projectStatus'" [options]="projectStatuses" (onChange)="dt.filter($event.value, col.field, 'equals')" styleClass="ui-column-filter"></p-dropdown>
 
       </th>
 

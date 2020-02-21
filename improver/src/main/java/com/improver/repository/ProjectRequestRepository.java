@@ -56,16 +56,17 @@ public interface ProjectRequestRepository extends JpaRepository<ProjectRequest, 
     @Query("SELECT c FROM com.improver.entity.ProjectRequest c WHERE c.id = ?1 AND c.contractor.id = ?2")
     Optional<ProjectRequest> findByIdAndContractorId(long projectRequestId, long contractorId);
 
-    @Query("SELECT new com.improver.model.admin.out.AdminProjectRequest(con, pro, ref) " +
+    @Query("SELECT new com.improver.model.admin.out.AdminProjectRequest(con, proj, ref) " +
         "FROM com.improver.entity.ProjectRequest con " +
-        "INNER JOIN com.improver.entity.Project pro ON pro.id = con.project.id " +
+        "INNER JOIN com.improver.entity.Project proj ON proj.id = con.project.id " +
         "LEFT JOIN com.improver.entity.Refund ref ON ref.id = con.refund.id " +
         "WHERE (:id IS null OR con.id = :id) " +
         "AND (:contractorEmail IS null OR LOWER(con.contractor.email) LIKE CONCAT('%', LOWER(cast(:contractorEmail as string)), '%')) " +
-        "AND (:customerEmail IS null OR LOWER(pro.customer.email) LIKE CONCAT('%', LOWER(cast(:customerEmail as string)), '%')) " +
+        "AND (:customerEmail IS null OR LOWER(proj.customer.email) LIKE CONCAT('%', LOWER(cast(:customerEmail as string)), '%')) " +
+        "AND (:serviceType IS null OR LOWER(proj.serviceType.name) LIKE CONCAT('%', LOWER(cast(:serviceType as string)), '%')) " +
         "AND (:status IS null OR con.status = :status) " +
-        "AND (:projectStatus IS null OR pro.status = :projectStatus) ")
-    Page<AdminProjectRequest> getAll(Long id, String contractorEmail, String customerEmail, ProjectRequest.Status status, Project.Status projectStatus, Pageable pageable);
+        "AND (:projectStatus IS null OR proj.status = :projectStatus) ")
+    Page<AdminProjectRequest> getAll(Long id, String contractorEmail, String customerEmail, String serviceType, ProjectRequest.Status status, Project.Status projectStatus, Pageable pageable);
 
     @Query("SELECT  pc FROM com.improver.entity.ProjectRequest pc WHERE pc.contractor.id =?1 ORDER BY pc.created ASC")
     List<ProjectRequest> findByContractorId(long contractorId);

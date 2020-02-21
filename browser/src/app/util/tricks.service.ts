@@ -1,4 +1,5 @@
 import { EventEmitter, Injectable } from '@angular/core';
+import * as moment from 'moment';
 
 @Injectable()
 export class TricksService {
@@ -50,7 +51,19 @@ export function enumToArrayList(enumeration): Array<string> {
 export function filtersToParams(filters): any {
   let params = {};
   Object.keys(filters).forEach(key => {
-    params[key] = filters[key].value;
+    let filterObject = filters[key];
+    let value = filterObject.value;
+    if (filterObject.matchMode == 'range') {
+      params[key + 'From'] = value[0];
+      params[key + 'To'] = value[1];
+    } else if (filterObject.matchMode == 'dateRange') {
+      if (value[0] && value[1]) {
+        params[key + 'From'] = moment(value[0]).format("YYYY-MM-DD") + "T00:00:00";
+        params[key + 'To'] = moment(value[1]).format("YYYY-MM-DD") + "T23:59:59";
+      }
+    } else {
+      params[key] = value;
+    }
   });
   return params;
 }

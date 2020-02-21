@@ -65,8 +65,6 @@ export class ProjectRequestsComponent {
     }
   ];
 
-  filters: any;
-
   constructor(private projectRequestService: ProjectRequestService,
               public camelCaseHumanPipe: CamelCaseHumanPipe,
               private trickService: TricksService,
@@ -74,12 +72,6 @@ export class ProjectRequestsComponent {
               private router: Router,
               public popUpMessageService: PopUpMessageService,
               public projectService: ProjectService,) {
-    this.route.queryParams.subscribe(params => {
-      this.filters = {
-        ...dataTableFilter('contractorEmail', params['pro']),
-        ...dataTableFilter('id', params['id'])
-      };
-    });
     this.projectRequestStatuses = this.trickService.enumToJson(ProjectRequest.Status).map(item => {
       return {label: item.label, value: item.value};
     });
@@ -105,8 +97,7 @@ export class ProjectRequestsComponent {
   }
 
   onLazyLoad(event: any) {
-    const filters = filtersToParams(event.filters);
-    this.loadDataLazy(filtersToParams(filters), new Pagination().fromPrimeNg(event));
+    this.loadDataLazy(filtersToParams(event.filters), new Pagination().fromPrimeNg(event));
   }
 
   refresh(): void {
@@ -119,22 +110,9 @@ export class ProjectRequestsComponent {
       (restPage: RestPage<AdminProjectRequest>) => {
         this.processing = false;
         this.projectRequests = restPage;
-        // if (restPage.content.length > 0) {
-        //   this.tableColumns = [...this.selectedTableCols, ...Object.keys(restPage.content[0])]
-        //     .filter((elem, pos, arr) => arr.indexOf(elem) == pos) //remove duplicates
-        //     .filter(item => !(item == 'projectId'))
-        //     .map(key => {
-        //         return {label: this.camelCaseHumanPipe.transform(key, true), value: key};
-        //       }
-        //     );
-        // }
       }, err => {
         this.processing = false;
       });
-  }
-
-  selectItem(selection: { originalEvent: MouseEvent, data: AdminProjectRequest }): void {
-    this.selected = selection.data;
   }
 
   moveToProject(projectRequest: AdminProjectRequest): void {

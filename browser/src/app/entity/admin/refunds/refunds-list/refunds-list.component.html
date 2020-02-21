@@ -71,6 +71,9 @@
         <input *ngSwitchCase="'id'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
         <input *ngSwitchCase="'customer'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
         <input *ngSwitchCase="'contractor'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
+        <p-dropdown *ngSwitchCase="'issue'" [options]="refundIssues" (onChange)="dt.filter($event.value, col.field, 'equals')" styleClass="ui-column-filter"></p-dropdown>
+        <p-dropdown *ngSwitchCase="'option'" [options]="refundOptions" (onChange)="dt.filter($event.value, col.field, 'equals')" styleClass="ui-column-filter"></p-dropdown>
+        <p-dropdown *ngSwitchCase="'status'" [options]="refundStatuses" (onChange)="dt.filter($event.value, col.field, 'equals')" styleClass="ui-column-filter"></p-dropdown>
 
       </th>
 

@@ -38,6 +38,10 @@
           <p-sortIcon [field]="col.field"></p-sortIcon>
         </th>
 
+        <th *ngSwitchCase="'description'">
+          {{col.header}}
+        </th>
+
       </ng-container>
 
     </tr>

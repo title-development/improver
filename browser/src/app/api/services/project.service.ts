@@ -59,7 +59,6 @@ export class ProjectService {
 
   getAll(params, pagination): Observable<RestPage<Project>> {
     params = Object.assign(params, pagination);
-
     return this.http.get<RestPage<Project>>(`${this.API}${this.PROJECTS}`, {params: params});
   }
 

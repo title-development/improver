@@ -59,6 +59,9 @@
         <input *ngSwitchCase="'businessName'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
         <input *ngSwitchCase="'assignee'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
         <input *ngSwitchCase="'author'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
+        <p-dropdown *ngSwitchCase="'option'" [options]="ticketOptionFilter" (onChange)="dt.filter($event.value, col.field, 'equals')" styleClass="ui-column-filter"></p-dropdown>
+        <p-dropdown *ngSwitchCase="'status'" [options]="ticketStatusFilter" (onChange)="dt.filter($event.value, col.field, 'equals')" styleClass="ui-column-filter"></p-dropdown>
+        <p-dropdown *ngSwitchCase="'priority'" [options]="ticketPriorityFilter" (onChange)="dt.filter($event.value, col.field, 'equals')" styleClass="ui-column-filter"></p-dropdown>
 
       </th>
 

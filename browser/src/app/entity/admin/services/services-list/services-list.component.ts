@@ -21,7 +21,6 @@ export class ServicesListComponent {
   @ViewChild('dt') table: any;
   selectedService: AdminServiceType;
   fetching: boolean = true;
-  filters: { [s: string]: FilterMetadata } = {};
   services: RestPage<AdminServiceType> = new RestPage<AdminServiceType>();
   rowsPerPage: Array<number> = [10, 50, 100];
   ratingTimeout;
@@ -106,11 +105,6 @@ export class ServicesListComponent {
     );
   }
 
-  loadServicesLazy(event): void {
-    const filters = filtersToParams(event.filters);
-    this.getServices(filters, new Pagination().fromPrimeNg(event));
-  }
-
   showServiceImage(event, trade: AdminServiceType, overlaypanel: OverlayPanel): void {
     this.selectedService = trade;
     overlaypanel.toggle(event);
@@ -132,52 +126,6 @@ export class ServicesListComponent {
         );
       }
     });
-  }
-
-  clearRatingFilter(col, dt: Table): void {
-    if (this.ratingTimeout) {
-      clearTimeout(this.ratingTimeout);
-    }
-    this.filters[col.field + 'From'] = {value: this.minRatingValue};
-    this.filters[col.field + 'To'] = {value: this.maxRatingValue};
-    this.ratingFilter = [this.minRatingValue, this.maxRatingValue];
-    this.ratingTimeout = setTimeout(() => {
-      dt.filter(null, col.field, col.filterMatchMode);
-    }, 350);
-  }
-
-  onRatingFilterChange(event, dt: Table, col) {
-    if (this.ratingTimeout) {
-      clearTimeout(this.ratingTimeout);
-    }
-    this.filters[col.field + 'From'] = {value: event.values[0]};
-    this.filters[col.field + 'To'] = {value: event.values[1]};
-    this.ratingTimeout = setTimeout(() => {
-      dt.filter(null, col.field, col.filterMatchMode);
-    }, 350);
-  }
-
-  clearPriceFilter(col, dt: Table): void {
-    if (this.priceTimeout) {
-      clearTimeout(this.priceTimeout);
-    }
-    this.filters[col.field + 'From'] = {value: (this.minPriceValue * 100).toString()};
-    this.filters[col.field + 'To'] = {value: (this.maxPriceValue * 100).toString()};
-    this.priceFilter = [this.minPriceValue, this.maxPriceValue];
-    this.priceTimeout = setTimeout(() => {
-      dt.filter(null, col.field, col.filterMatchMode);
-    }, 350);
-  }
-
-  onPriceFilterChange(event, dt: Table, col) {
-    if (this.priceTimeout) {
-      clearTimeout(this.priceTimeout);
-    }
-    this.filters[col.field + 'From'] = {value: (parseInt(event.values[0]) * 100).toString()};
-    this.filters[col.field + 'To'] = {value: (parseInt(event.values[1]) * 100).toString()};
-    this.priceTimeout = setTimeout(() => {
-      dt.filter(null, col.field, col.filterMatchMode);
-    }, 350);
   }
 
 }

@@ -14,7 +14,7 @@
              selectionMode="single"
              [lazy]="true"
              [loading]="fetching"
-             sortField="created" sortOrder="1"
+             sortField="created" [sortOrder]="1"
              [rows]="rowsPerPage[0]" [totalRecords]="invitationsPage.totalElements"
              [rowsPerPageOptions]="rowsPerPage"
              (onLazyLoad)="onLazyLoad($event)"
@@ -59,6 +59,11 @@
         <input *ngSwitchCase="'id'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
         <input *ngSwitchCase="'name'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
         <input *ngSwitchCase="'email'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
+        <div *ngSwitchCase="'bonus'">
+          ${{this.bonusFromTo[0]}} — ${{this.bonusFromTo[1]}}
+          <p-slider [style]="{'width':'100%','margin-top':'8px'}" [(ngModel)]="bonusFromTo" [min]="bonusMinMax[0]"
+                    [max]="bonusMinMax[1]" [step]="1" (onSlideEnd)="dt.filter(bonusFromTo, col.field, 'range')" [range]="true"></p-slider>
+        </div>
 
       </th>
 
@@ -123,7 +128,7 @@
           <div class="ui-inputgroup">
             <span class="ui-inputgroup-addon">$</span>
             <input pInputText type="number" id="bonus" name="bonus" #bonus="ngModel" [(ngModel)]="invitation.bonus"
-                   maxlength="3" pKeyFilter="pnum" [min]="minBonusValue / 100" [max]="maxBonusValue / 100" required/>
+                   maxlength="3" pKeyFilter="pnum" [min]="bonusMinMax[0] / 100" [max]="bonusMinMax[1] / 100" required/>
             <span class="ui-inputgroup-addon">.00</span>
           </div>
         </div>
@@ -135,7 +140,7 @@
           <div class="ui-message ui-messages-error ui-corner-all"
                *ngIf="(bonus.dirty || bonus.touched || form.submitted) && !bonus.valid && bonus.errors">
             <span *ngIf="bonus.errors?.required">Required</span>
-            <span *ngIf="bonus.errors?.min || bonus.errors?.max">{{minBonusValue / 100}} - {{maxBonusValue / 100}}</span>
+            <span *ngIf="bonus.errors?.min || bonus.errors?.max">{{bonusMinMax[0] / 100}} - {{bonusMinMax[1] / 100}}</span>
           </div>
         </div>
       </div>

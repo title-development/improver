@@ -62,8 +62,13 @@
       <th *ngFor="let col of selectedColumns" [ngSwitch]="col.field">
 
         <input *ngSwitchCase="'id'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
-        <input *ngSwitchCase="'company'" pInputText type="text" (input)="dt.filter($event.target.value, 'customerName', 'equals')" class="table-filter">
+        <input *ngSwitchCase="'company'" pInputText type="text" (input)="dt.filter($event.target.value, 'companyName', 'equals')" class="table-filter">
         <input *ngSwitchCase="'customer'" pInputText type="text" (input)="dt.filter($event.target.value, 'customerName', 'equals')" class="table-filter">
+        <div *ngSwitchCase="'score'">
+          {{this.scoreFromTo[0]}} — {{this.scoreFromTo[1]}}
+          <p-slider [style]="{'width':'100%','margin-top':'8px'}" [(ngModel)]="scoreFromTo" [min]="scoreMinMax[0]"
+                    [max]="scoreMinMax[1]" [step]="1" (onSlideEnd)="dt.filter(scoreFromTo, col.field, 'range')" [range]="true"></p-slider>
+        </div>
 
       </th>
 

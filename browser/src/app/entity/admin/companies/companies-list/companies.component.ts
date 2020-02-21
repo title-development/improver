@@ -40,7 +40,7 @@ export class CompaniesComponent {
     {field: 'name', header: 'Name', active: true},
     {field: 'location', header: 'Location', active: true},
     {field: 'description', header: 'Description', active: false},
-    {field: 'founded', header: 'founded', active: false},
+    {field: 'founded', header: 'Founded', active: false},
     {field: 'siteUrl', header: 'Site Url', active: false},
     {field: 'rating', header: 'Rating', active: false},
     {field: 'approved', header: 'Approved', active: true},
@@ -210,20 +210,6 @@ export class CompaniesComponent {
 
   deleteLicense(index): void {
     this.selectedCompany.licenses.splice(index, 1);
-  }
-
-  expandRow(selection: { originalEvent: MouseEvent, data: Project }): void {
-    console.log("selection", selection);
-    console.log("this.table", this.table.selectionKeys)
-    // if (!this.dataTable.expandedRows) {
-    //   this.dataTable.expandedRows = [];
-    // }
-    // if (this.dataTable.expandedRows.some(item => item.id == selection.data.id)) {
-    //   this.dataTable.expandedRows = this.dataTable.expandedRows.filter(item => item.id != selection.data.id);
-    // } else {
-    //   this.dataTable.expandedRows = [];
-    //   this.dataTable.expandedRows.push(selection.data);
-    // }
   }
 
   addBonus() {

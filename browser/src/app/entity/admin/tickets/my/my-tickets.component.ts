@@ -26,7 +26,7 @@ export class MyTicketsComponent {
   processing = true;
   tickets: RestPage<Ticket> = new RestPage<Ticket>();
   rowsPerPage: Array<number> = [10, 50, 100];
-  ticketSubjectFilter: Array<SelectItem> = [];
+  ticketOptionFilter: Array<SelectItem> = [];
   ticketStatusFilter: Array<SelectItem> = [];
   ticketPriorityFilter: Array<SelectItem> = [];
   selected: Ticket;
@@ -54,10 +54,10 @@ export class MyTicketsComponent {
               public camelCaseHumanPipe: CamelCaseHumanPipe,
               public popUpService: PopUpMessageService,
               public securityService: SecurityService) {
-    this.ticketSubjectFilter = enumToArrayList(Ticket.Subject).map(item => {
+    this.ticketOptionFilter = enumToArrayList(Ticket.Subject).map(item => {
       return {label: item, value: item};
     });
-    this.ticketSubjectFilter.unshift({label: 'All', value: ''});
+    this.ticketOptionFilter.unshift({label: 'All', value: ''});
     this.ticketStatusFilter = enumToArrayList(Ticket.Status).map(item => {
       return {label: item, value: item};
     });

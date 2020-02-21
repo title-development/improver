@@ -37,9 +37,6 @@ public class ReviewService {
     @Autowired private ReviewRevisionRequestRepository reviewRevisionRequestRepository;
     @Autowired private ServiceTypeRepository serviceTypeRepository;
 
-    public Page<CompanyReview> getAll(Long id, String customerName, String companyName, Pageable pageable) {
-        return reviewRepository.getAll(id, customerName, companyName, pageable);
-    }
 
     public Page<CompanyReview> getReviews(long companyId, boolean publishedOnly, Pageable pageable) {
         User user = userSecurityService.currentUserOrNull();

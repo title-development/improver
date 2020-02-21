@@ -5,7 +5,7 @@ import { ConfirmationService, FilterMetadata, MenuItem, SelectItem } from 'prime
 import { Role } from '../../../../model/security-model';
 import { enumToArrayList, filtersToParams } from '../../../../util/tricks.service';
 import { Pagination } from '../../../../model/data-model';
-import { getErrorMessage } from '../../../../util/functions';
+import { clone, getErrorMessage } from '../../../../util/functions';
 import { PopUpMessageService } from '../../../../util/pop-up-message.service';
 import { CamelCaseHumanPipe } from '../../../../pipes/camelcase-to-human.pipe';
 import { RestPage } from '../../../../api/models/RestPage';
@@ -44,6 +44,7 @@ export class AdminUsersComponent {
     {field: 'blocked', header: 'Blocked', active: true},
     {field: 'activated', header: 'Activated', active: true},
     {field: 'created', header: 'Created', active: true},
+    {field: 'updated', header: 'Updated', active: true},
     {field: 'lastLogin', header: 'Last login', active: false},
     {field: 'credentialExpired', header: 'Credential Expired', active: false},
     {field: 'nativeUser', header: 'Native User', active: false},
@@ -140,15 +141,9 @@ export class AdminUsersComponent {
     });
   }
 
-  selectUser(selection: { originalEvent: MouseEvent, data: any }): void {
-    this.selectedUser = selection.data;
-    this.initContextMenu();
-  }
-
   editUser(): void {
     this.displayEditDialog = true;
-    //clone object
-    this.editedUser = Object.assign({}, this.selectedUser);
+    this.editedUser = clone(this.selectedUser);
   }
 
   saveUser(): void {

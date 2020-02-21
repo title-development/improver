@@ -129,8 +129,7 @@ export class AdminProjectsValidationComponent {
   }
 
   onLazyLoad(event: any) {
-    const filters = filtersToParams(event.filters);
-    this.loadDataLazy(filtersToParams(filters), new Pagination().fromPrimeNg(event));
+    this.loadDataLazy(filtersToParams(event.filters), new Pagination().fromPrimeNg(event));
   }
 
   refresh(): void {
@@ -138,46 +137,19 @@ export class AdminProjectsValidationComponent {
   }
 
 
-  getProjects(isValid, filters, pagination: Pagination = new Pagination(0, this.rowsPerPage[0])) {
+  getProjects(filters, pagination: Pagination = new Pagination(0, this.rowsPerPage[0])) {
     this.projectsProcessing = true;
     filters.status = Project.Status.VALIDATION;
     this.projectService.getAll(filters, pagination).subscribe(projects => {
       this.fetching = false;
       this.projects = projects;
       this.projectsProcessing = false;
-
-      // if (projects.content.length > 0) {
-      //   this.tableColumns = [...this.selectedTableCols, ...Object.keys(projects.content[0])]
-      //     .filter((elem, pos, arr) => arr.indexOf(elem) == pos) //remove duplicates
-      //     .filter(item => !(item == 'details' || item == 'projectActions' || item == 'projectRequests' || item == 'notes'))
-      //     .map(key => {
-      //         return {label: this.camelCaseHumanPipe.transform(key, true), value: key};
-      //       }
-      //     );
-      // }
-
     }, err => {
       console.log(err);
       this.fetching = false;
       this.popUpMessageService.showError(getErrorMessage(err));
       this.projectsProcessing = false;
     });
-  }
-
-  handleChange(e) {
-    this.tabIndex = e.index;
-    this.getProjects(this.tabIndex == 0, {});
-  }
-
-  loadProjectsLazy(event) {
-    const filters = filtersToParams(event.filters);
-    const pagination = new Pagination().fromPrimeNg(event);
-    this.getProjects(this.tabIndex == 0, filters, pagination);
-  }
-
-  selectProject(selection: { originalEvent: MouseEvent, data: any }): void {
-    this.selectedProject = selection.data;
-    this.initContextMenu();
   }
 
   openLocationValidationPopup(): void {

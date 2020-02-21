@@ -115,11 +115,6 @@ public class CompanyService {
 
     }
 
-
-    public Page<Company> getCompanies(Long id, Pageable pageable) {
-        return companyRepository.getAllBy(id, pageable);
-    }
-
     /**
      * Updates backgroundUrl for user. Previous backgroundUrl removes form database
      */

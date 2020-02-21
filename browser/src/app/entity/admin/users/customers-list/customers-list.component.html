@@ -90,8 +90,26 @@
           <i class="pi pi-ban" *ngIf="!row[col.field]"></i>
         </span>
 
-        <span *ngSwitchCase="'created'" [ngStyle]="{wordWrap: 'break-word'}">
-          {{row[col.field] | date:'short'}}
+        <span *ngSwitchCase="'credentialExpired'">
+          <i class="pi pi-check" *ngIf="row[col.field]"></i>
+          <i class="pi pi-ban" *ngIf="!row[col.field]"></i>
+        </span>
+
+        <span *ngSwitchCase="'nativeUser'">
+          <i class="pi pi-check" *ngIf="row[col.field]"></i>
+          <i class="pi pi-ban" *ngIf="!row[col.field]"></i>
+        </span>
+
+        <span *ngSwitchCase="'created'">
+          {{row[col.field] | date: 'MMM d, y, h:mm a'}}
+        </span>
+
+        <span *ngSwitchCase="'updated'">
+          {{row[col.field] | date: 'MMM d, y, h:mm a'}}
+        </span>
+
+        <span *ngSwitchCase="'lastLogin'">
+          {{row[col.field] | date: 'MMM d, y, h:mm a'}}
         </span>
 
       </td>

@@ -47,11 +47,12 @@ public class ProjectRequestController {
         @RequestParam(required = false) Long id,
         @RequestParam(required = false) String contractorEmail,
         @RequestParam(required = false) String customerEmail,
+        @RequestParam(required = false) String serviceType,
         @RequestParam(required = false) ProjectRequest.Status status,
         @RequestParam(required = false) Project.Status projectStatus,
         @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageRequest) {
 
-        Page<AdminProjectRequest> projectRequests = projectRequestRepository.getAll(id, contractorEmail, customerEmail, status, projectStatus, pageRequest);
+        Page<AdminProjectRequest> projectRequests = projectRequestRepository.getAll(id, contractorEmail, customerEmail, serviceType, status, projectStatus, pageRequest);
         return new ResponseEntity<>(projectRequests, HttpStatus.OK);
     }
 

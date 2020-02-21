@@ -15,7 +15,6 @@
          [loading]="fetching"
          [sortField]="'name'" [sortOrder]="1" sortMode="single"
          [paginator]="true"
-         [filters]="filters"
          [contextMenu]="cm" [responsive]="true"
          [rows]="rowsPerPage[0]"
          [totalRecords]="services.totalElements"
@@ -54,6 +53,10 @@
         <th *ngSwitchCase="'questionaryId'" pSortableColumn="questionary.id" >
           {{col.header}}
           <p-sortIcon field="questionary.id"></p-sortIcon>
+        </th>
+
+        <th *ngSwitchCase="'description'">
+          {{col.header}}
         </th>
 
       </ng-container>

@@ -41,6 +41,15 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
         "(:id IS null OR c.id = :id) ")
     Page<Company> getAllBy(Long id, Pageable pageable);
 
+    @Query("SELECT c FROM com.improver.entity.Company c WHERE " +
+        "(:id IS null OR c.id = :id) AND " +
+        "(:name IS null OR (LOWER(c.name) LIKE CONCAT('%', LOWER(cast(:name as string)), '%'))) " +
+        " AND (:location IS null OR (LOWER(c.location.streetAddress) LIKE CONCAT('%', LOWER(cast(:location as string)), '%'))" +
+        " OR (LOWER(c.location.city) LIKE CONCAT('%', LOWER(cast(:location as string)), '%')) " +
+        " OR (LOWER(c.location.state) LIKE CONCAT('%', LOWER(cast(:location as string)), '%')) " +
+        " OR (LOWER(c.location.zip) LIKE CONCAT('%', LOWER(cast(:location as string)), '%'))) ")
+    Page<Company> findBy(Long id, String name, String location, Pageable pageable);
+
     boolean existsByServiceTypesId(long id);
 
     boolean existsByTradesId(long id);

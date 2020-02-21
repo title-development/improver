@@ -420,3 +420,11 @@ p-table {
     }
   }
 }
+
+p-dialog {
+  .ui-dialog-wrapper {
+    .ui-dialog {
+      width: 600px;
+    }
+  }
+}

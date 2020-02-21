@@ -51,6 +51,9 @@
         <input *ngSwitchCase="'id'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
         <input *ngSwitchCase="'serviceType'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
         <input *ngSwitchCase="'location'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
+        <input *ngSwitchCase="'customer'" pInputText type="text" (input)="dt.filter($event.target.value, 'customerEmail', 'equals')" class="table-filter">
+        <p-dropdown *ngSwitchCase="'status'" [options]="projectStatuses" (onChange)="dt.filter($event.value, col.field, 'equals')" styleClass="ui-column-filter"></p-dropdown>
+        <p-dropdown *ngSwitchCase="'reason'" [options]="projectReasons" (onChange)="dt.filter($event.value, col.field, 'equals')" styleClass="ui-column-filter"></p-dropdown>
 
       </th>
 

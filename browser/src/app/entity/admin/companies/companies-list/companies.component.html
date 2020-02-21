@@ -10,7 +10,7 @@
          dataKey="id"
          [lazy]="true"
          [loading]="fetching"
-         sortField="name" sortOrder="1"
+         sortField="name" [sortOrder]="1"
          [rows]="rowsPerPage[0]"
          [totalRecords]="companiesPage.totalElements"
          [rowsPerPageOptions]="rowsPerPage"
@@ -47,6 +47,22 @@
           <p-sortIcon [field]="col.field"></p-sortIcon>
         </th>
 
+        <th *ngSwitchCase="'iconUrl'">
+          {{col.header}}
+        </th>
+
+        <th *ngSwitchCase="'backgroundUrl'">
+          {{col.header}}
+        </th>
+
+        <th *ngSwitchCase="'description'">
+          {{col.header}}
+        </th>
+
+        <th *ngSwitchCase="'uri'">
+          {{col.header}}
+        </th>
+
       </ng-container>
 
     </tr>
@@ -59,6 +75,8 @@
       <th *ngFor="let col of selectedColumns" [ngSwitch]="col.field">
 
         <input *ngSwitchCase="'id'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
+        <input *ngSwitchCase="'name'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
+        <input *ngSwitchCase="'location'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
 
       </th>
 

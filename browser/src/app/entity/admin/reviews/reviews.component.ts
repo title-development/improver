@@ -9,7 +9,7 @@ import { CamelCaseHumanPipe } from '../../../pipes/camelcase-to-human.pipe';
 import { Router } from '@angular/router';
 import { finalize } from "rxjs/operators";
 import { PopUpMessageService } from "../../../util/pop-up-message.service";
-import { getErrorMessage } from "../../../util/functions";
+import { clone, getErrorMessage } from "../../../util/functions";
 
 @Component({
   selector: 'admin-reviews',
@@ -39,6 +39,9 @@ export class AdminReviewsComponent {
 
   contextMenuItems: Array<MenuItem> = [];
   filters: any;
+
+  scoreMinMax: [number, number] = [1, 5];
+  scoreFromTo: [number, number] = clone(this.scoreMinMax);
 
   constructor(private reviewService: ReviewService,
               public camelCaseHumanPipe: CamelCaseHumanPipe,

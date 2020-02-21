@@ -43,9 +43,10 @@ public class CompanyController {
     @SupportAccess
     @GetMapping
     public ResponseEntity<Page<Company>> getCompanies(@RequestParam(required = false) Long id,
+                                                      @RequestParam(required = false) String name,
+                                                      @RequestParam(required = false) String location,
                                                       @PageableDefault(sort = "name", direction = Sort.Direction.DESC) Pageable pageRequest) {
-
-        Page<Company> companies = companyService.getCompanies(id, pageRequest);
+        Page<Company> companies = companyRepository.findBy(id, name, location, pageRequest);
         return new ResponseEntity<>(companies, HttpStatus.OK);
     }
 

@@ -134,27 +134,4 @@ export class TradesListComponent {
     }
   }
 
-  clearRatingFilter(col, dt: Table): void {
-    if (this.ratingTimeout) {
-      clearTimeout(this.ratingTimeout);
-    }
-    this.filters[col.field + 'From'] = {value: this.minRatingValue.toString()};
-    this.filters[col.field + 'To'] = {value: this.maxRatingValue.toString()};
-    this.ratingFilter = [this.minRatingValue, this.maxRatingValue];
-    this.ratingTimeout = setTimeout(() => {
-      dt.filter(null, col.field, col.filterMatchMode);
-    }, 350);
-  }
-
-  onRatingFilterChange(event, dt: Table, col) {
-    if (this.ratingTimeout) {
-      clearTimeout(this.ratingTimeout);
-    }
-    this.filters[col.field + 'From'] = {value: event.values[0]};
-    this.filters[col.field + 'To'] = {value: event.values[1]};
-    this.ratingTimeout = setTimeout(() => {
-      dt.filter(null, col.field, col.filterMatchMode);
-    }, 350);
-  }
-
 }

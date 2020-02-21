@@ -44,6 +44,7 @@ export class ContractorsComponent {
     {field: 'blocked', header: 'Blocked', active: true},
     {field: 'activated', header: 'Activated', active: true},
     {field: 'created', header: 'Created', active: true},
+    {field: 'updated', header: 'Updated', active: true},
     {field: 'lastLogin', header: 'Last login', active: false},
     {field: 'credentialExpired', header: 'Credential Expired', active: false},
     {field: 'nativeUser', header: 'Native User', active: false},

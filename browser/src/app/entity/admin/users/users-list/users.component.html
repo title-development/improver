@@ -14,7 +14,8 @@
          [rows]="rowsPerPage[0]" [totalRecords]="users.totalElements" [rowsPerPageOptions]="rowsPerPage"
          [sortField]="'email'" [sortOrder]="1"
          [filters]="filters"
-         (onContextMenuSelect)="selectUser($event)"
+         [(contextMenuSelection)]="selectedUser"
+         (onContextMenuSelect)="initContextMenu()"
          (onLazyLoad)="onLazyLoad($event)">
 
   <!--Column selector-->
@@ -95,7 +96,25 @@
           <i class="pi pi-ban" *ngIf="!row[col.field]"></i>
         </span>
 
-        <span *ngSwitchCase="'created'" [ngStyle]="{wordWrap: 'break-word'}">
+        <span *ngSwitchCase="'credentialExpired'">
+          <i class="pi pi-check" *ngIf="row[col.field]"></i>
+          <i class="pi pi-ban" *ngIf="!row[col.field]"></i>
+        </span>
+
+        <span *ngSwitchCase="'nativeUser'">
+          <i class="pi pi-check" *ngIf="row[col.field]"></i>
+          <i class="pi pi-ban" *ngIf="!row[col.field]"></i>
+        </span>
+
+        <span *ngSwitchCase="'created'">
+          {{row[col.field] | date: 'MMM d, y, h:mm a'}}
+        </span>
+
+        <span *ngSwitchCase="'updated'">
+          {{row[col.field] | date: 'MMM d, y, h:mm a'}}
+        </span>
+
+        <span *ngSwitchCase="'lastLogin'">
           {{row[col.field] | date: 'MMM d, y, h:mm a'}}
         </span>
 
@@ -111,8 +130,8 @@
     <div class="ui-grid-row ui-grid-field">
       <div class="ui-grid-col-4"><label for="role">Role</label></div>
       <div class="ui-grid-col-8">
-        <p-dropdown id="role" disabled [options]="roles" placeholder="choose role"
-                    [(ngModel)]="editedUser.role"></p-dropdown>
+        <p-dropdown id="role" [options]="roles" placeholder="choose role"
+                    [(ngModel)]="editedUser.role" [disabled]="true"></p-dropdown>
       </div>
     </div>
     <div class="ui-grid-row ui-grid-field">

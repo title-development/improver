@@ -34,6 +34,11 @@
           <p-sortIcon [field]="col.field"></p-sortIcon>
         </th>
 
+        <th *ngSwitchCase="'serviceType'" pSortableColumn="serviceType.name">
+          {{col.header}}
+          <p-sortIcon field="serviceType.name"></p-sortIcon>
+        </th>
+
         <th *ngSwitchCase="'description'">
           {{col.header}}
         </th>
@@ -66,10 +71,6 @@
 
         <span *ngSwitchDefault>
           {{row[col.field]}}
-        </span>
-
-        <span *ngSwitchCase="'leadPrice'" >
-            {{(row[col.field] / 100 ) | currency: 'USD'}}
         </span>
 
         <span *ngSwitchCase="'serviceTypes'">

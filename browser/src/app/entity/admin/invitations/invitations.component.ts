@@ -28,6 +28,9 @@ export class InvitationsComponent {
   selectedInvitation: Invitation;
   fetching: boolean = true;
 
+  bonusMinMax: [number, number] = [100, 999];
+  bonusFromTo: [number, number] = clone(this.bonusMinMax);
+
   columns = [
     {field: 'id', header: 'Id', active: true},
     {field: 'email', header: 'Email', active: true},
@@ -41,11 +44,6 @@ export class InvitationsComponent {
 
   roles: Array<SelectItem> = [];
   displayInviteDialog: boolean = false;
-
-  bonusTimeout;
-  maxBonusValue: number = 999;
-  minBonusValue: number = 100;
-  bonusFilter: Array<number> = [this.minBonusValue, this.maxBonusValue];
 
   contextMenuItems: Array<MenuItem>;
 
@@ -129,29 +127,6 @@ export class InvitationsComponent {
   selectInvitation(selection: { originalEvent: MouseEvent, data: any }): void {
     this.selectedInvitation = selection.data;
     this.initContextMenu();
-  }
-
-  clearBonusFilter(col, dt: Table): void {
-    if (this.bonusTimeout) {
-      clearTimeout(this.bonusTimeout);
-    }
-    this.filters[col.field + 'From'] = {value: this.minBonusValue};
-    this.filters[col.field + 'To'] = {value: this.maxBonusValue};
-    this.bonusFilter = [this.minBonusValue, this.maxBonusValue];
-    this.bonusTimeout = setTimeout(() => {
-      dt.filter(null, col.field, col.filterMatchMode);
-    }, 350);
-  }
-
-  onBonusFilterChange(event, dt: Table, col) {
-    if (this.bonusTimeout) {
-      clearTimeout(this.bonusTimeout);
-    }
-    this.filters[col.field + 'From'] = {value: event.values[0]};
-    this.filters[col.field + 'To'] = {value: event.values[1]};
-    this.bonusTimeout = setTimeout(() => {
-      dt.filter(null, col.field, col.filterMatchMode);
-    }, 350);
   }
 
   onInvitationEmailAdd(event) {

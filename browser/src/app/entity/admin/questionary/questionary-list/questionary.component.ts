@@ -25,15 +25,10 @@ export class QuestionaryListComponent {
 
   selectedColumns = [
     {field: 'id', header: 'Id'},
-    {field: 'company', header: 'Company'},
-    {field: 'customer', header: 'Customer'},
-    {field: 'score', header: 'Score'},
-    {field: 'created', header: 'Created'},
-    {field: 'published', header: 'Published'},
-    {field: 'publishDate', header: 'Publish Date'},
-    {field: 'revisionRequested', header: 'Revision Requested'},
+    {field: 'serviceTypes', header: 'ServiceTypes'},
+    {field: 'name', header: 'Name'},
+    {field: 'description', header: 'Description'},
   ];
-
 
   contextMenuItems: Array<MenuItem> = [
     {

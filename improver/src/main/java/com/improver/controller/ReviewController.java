@@ -51,8 +51,10 @@ public class ReviewController {
         @RequestParam(required = false) Long id,
         @RequestParam(required = false) String customerName,
         @RequestParam(required = false) String companyName,
+        @RequestParam(required = false) Integer scoreFrom,
+        @RequestParam(required = false) Integer scoreTo,
         @PageableDefault(sort = "created", direction = Sort.Direction.DESC) Pageable pageRequest) {
-        Page<CompanyReview> reviews = reviewService.getAll(id, customerName, companyName, pageRequest);
+        Page<CompanyReview> reviews = reviewRepository.findAllBy(id, customerName, companyName, scoreFrom, scoreTo, pageRequest);
         return new ResponseEntity<>(reviews, HttpStatus.OK);
     }
 
