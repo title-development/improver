@@ -139,9 +139,7 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
             this.mainSearchFormGroup.reset({
               zipCodeCtrl: localStorage.getItem('zipCode')? localStorage.getItem('zipCode'): this.lastZipCode
             });
-            Object.values(this.mainSearchFormGroup.controls).forEach(control => control.markAsPristine());
-            this.changeDetectorRef.detectChanges();
-          },100);
+          },1000);
         }
       }
     } else {

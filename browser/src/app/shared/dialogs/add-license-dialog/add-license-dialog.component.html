@@ -34,7 +34,7 @@
               <cv-select [multiple]="false" [tags]="false" [autocomplete]="true"
                          (autocompleteSearch)="onAutoCompleteSearch($event)" [items]="filteredStates"
                          valueKey="value"
-                         labelKey="label"
+                         labelKey="value"
                          name="state"
                          #state="ngModel"
                          [(ngModel)]="license.state"
