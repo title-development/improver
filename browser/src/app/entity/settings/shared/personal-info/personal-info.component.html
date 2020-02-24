@@ -10,7 +10,7 @@
       <div class="account-top-line">
         <div class="account-nav-title">User Account</div>
       </div>
-      <div [cvSpinner]="!account" [cvSpinnerSize]="24">
+      <div [cvSpinner]="!account" [cvSpinnerSize]="24" class="account-wrapper">
         <ng-container *ngIf="account">
           <div class="personal-info-card card">
             <h3>User information</h3>

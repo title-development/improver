@@ -23,10 +23,13 @@
     font-size: 20px;
     text-align: left;
     font-weight: 500;
-    margin: 0;
     padding: 0;
     color: $black-primary;
-    margin-bottom: 21px;
+    margin-top: 0px;
+    margin-bottom: 18px;
+    @include response-to(xs) {
+      margin: 8px 8px 16px 8px;
+    }
   }
 }
 

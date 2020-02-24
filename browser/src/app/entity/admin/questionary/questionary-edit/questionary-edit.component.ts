@@ -14,6 +14,7 @@ import { NgForm, NgModel } from '@angular/forms';
 import { ServiceType } from '../../../../model/data-model';
 import { PopUpMessageService } from '../../../../util/pop-up-message.service';
 import { DragulaService } from 'ng2-dragula';
+import { Location } from "@angular/common";
 
 @Component({
   selector: 'questionaries-edit',
@@ -47,7 +48,8 @@ export class QuestionaryEditComponent implements OnDestroy {
               public constants: Constants,
               private confirmationService: ConfirmationService,
               private popUpService: PopUpMessageService,
-              private dragulaService: DragulaService) {
+              private dragulaService: DragulaService,
+              public location: Location) {
 
     this.questionaryMouseDrag$.add(this.dragulaService.drag("questions-drag-group").subscribe(() => this.questionaryDeagged = true));
 

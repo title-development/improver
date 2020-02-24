@@ -43,7 +43,7 @@ export const EDITABLE_INPUT_VALUE_VALIDATOR: Provider = {
 export class EditableInputComponent implements ControlValueAccessor, Validator, OnInit, OnDestroy {
   @Input() buttonEditLabel: string = 'Change';
   @Input() buttonSaveLabel: string = 'Save';
-  @ContentChild(CvInputComponent) input: CvInputComponent;
+  @ContentChild(CvInputComponent, {static: true}) input: CvInputComponent;
   @Output() onSave: EventEmitter<any> = new EventEmitter<any>();
 
   disabled: boolean = false;

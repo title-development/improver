@@ -75,7 +75,7 @@
     </div>
   </div>
   <div class="footer">
-    <button type="button" pButton icon="fa fa-arrow-left" label="Back" [routerLink]="['/','admin','services']"></button>
+    <button type="button" pButton icon="fa fa-arrow-left" label="Back" (click)="location.back()"></button>
     <div class="spacer"></div>
     <button type="submit" pButton icon="fa fa-check" label="{{serviceType.id ? 'Update' : 'Save'}}"
             class="ui-button-success" *ngIf="mode !== 'view'"></button>

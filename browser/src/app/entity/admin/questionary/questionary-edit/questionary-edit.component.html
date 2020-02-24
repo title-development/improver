@@ -66,7 +66,7 @@
     </div>
   </div>
   <div class="footer">
-    <button type="button" pButton icon="fa fa-arrow-left" label="Back" [routerLink]="['/','admin','questionaries']"></button>
+    <button type="button" pButton icon="fa fa-arrow-left" label="Back" (click)="location.back()"></button>
     <div class="spacer"></div>
     <button type="submit" pButton icon="fa fa-check" [disabled]="!(editQuestionary.dirty || questionaryDeagged)" label="{{questionary.id ? 'Update' : 'Add Questionary'}}"
             class="ui-button-success" *ngIf="mode !== 'view'"></button>

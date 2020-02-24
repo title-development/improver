@@ -29,11 +29,18 @@
     font-size: 20px;
     text-align: left;
     font-weight: 500;
-    margin: 0;
     padding: 0;
     color: $black-primary;
-    margin-bottom: 21px;
+    margin-top: 0px;
+    margin-bottom: 18px;
+    @include response-to(xs) {
+      margin: 8px 8px 16px 8px;
+    }
   }
+}
+
+.account-wrapper {
+  min-height: 80px;
 }
 
 .personal-info-card {
@@ -90,7 +97,7 @@
   .personal-info-form-content {
 
     @include response-to(xs) {
-      margin-top: 24px;
+      margin-top: 0px;
     }
 
     //::ng-deep.input-holder {
@@ -134,6 +141,7 @@
 
 .change-password-card {
   padding: 24px;
+
   @include response-to(xs) {
     padding: 8px;
   }

@@ -19,6 +19,7 @@ import { CvInputModule } from "../../../../theme/input/cv-input.module";
 import { CvInputFieldModule } from "../../../../theme/input-field/form-field.module";
 import { CvEditableInputModule } from '../../../../theme/editable-input/editable-input.module';
 import { CvIconModule } from '../../../../theme/icon/cv-icon-module';
+import { NgCapitalizePipeModule } from "angular-pipes";
 
 const routing: ModuleWithProviders = RouterModule.forChild([
   { path: '', component: PersonalInfoComponent },
@@ -43,6 +44,7 @@ const routing: ModuleWithProviders = RouterModule.forChild([
     CvInputFieldModule,
     CvFieldsModule,
     CvEditableInputModule,
+    NgCapitalizePipeModule,
   ],
   declarations: [
     PersonalInfoComponent

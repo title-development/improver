@@ -8,6 +8,7 @@ import { SelectItem } from 'primeng/api';
 import { AdminTrade } from '../../../../api/models/AdminTrade';
 import { first, switchMap } from "rxjs/internal/operators";
 import { PopUpMessageService } from "../../../../util/pop-up-message.service";
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'trade-edit',
@@ -26,7 +27,8 @@ export class TradesEditComponent {
               private router: Router,
               private tradeService: TradeService,
               private serviceTypeService: ServiceTypeService,
-              private popUpService: PopUpMessageService) {
+              private popUpService: PopUpMessageService,
+              public location: Location) {
     this.route.params.pipe(
       first(),
       switchMap(params => {
