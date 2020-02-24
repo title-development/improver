@@ -19,7 +19,7 @@ import { CompanyReviewsComponent } from '../entity/company/company-profile/compa
 import { CompanyReviewItemComponent } from '../entity/company/company-profile/company-reviews/company-review-item/company-review-item.component';
 import { MainSearchBarComponent } from './main-search-bar/main-search-bar.component';
 import { CvSelectModule } from '../theme/select/cv-select-module';
-import { NgStringPipesModule } from "angular-pipes";
+import { NgStringPipesModule, NgTruncatePipeModule } from "angular-pipes";
 import { ServicesSelectorComponent } from "./services-selector/services-selector.component";
 import { CvCheckboxModule } from "../theme/checkbox/checkbox.module";
 import { CvCollapseModule } from "../theme/collapse/cv-collapse.module";
@@ -63,6 +63,7 @@ import { MatButtonModule } from "@angular/material/button";
     PipesModule,
     MessengerModule,
     NgStringPipesModule,
+    NgTruncatePipeModule,
     FileUploadModule,
     CvButtonModule,
     CvSpinnerModule,
@@ -113,6 +114,7 @@ import { MatButtonModule } from "@angular/material/button";
     PipesModule,
     MessengerModule,
     NgStringPipesModule,
+    NgTruncatePipeModule,
     ImagesUploaderComponent,
     CompanyReviewsComponent,
     CompanyReviewItemComponent,

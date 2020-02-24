@@ -15,6 +15,9 @@ import { IZipCodeProps } from '../interfaces/zip-code-props';
 import { ZipInfoWindow } from '../interfaces/zip-info-window';
 import { ZipHistory } from '../models/zip-history';
 import { CoverageService } from './coverage.service';
+import { MapOptions } from "@agm/core/services/google-maps-types";
+import { defaultMapOptions } from "../../../../../util/google-map-default-options";
+import { HttpErrorResponse } from "@angular/common/http";
 
 @Injectable()
 export class DetailModeService implements OnDestroy {
@@ -52,6 +55,8 @@ export class DetailModeService implements OnDestroy {
 
   private _zipsHistory: ZipHistory = new ZipHistory([], []);
   private gMap: google.maps.Map;
+  private readonly mapOptions: MapOptions = defaultMapOptions;
+  private readonly badRequestServerError = 400;
   private _coverageConfig: CoverageConfig;
   private servedZipCodes: string[];
   private mouseOverListener;
@@ -193,7 +198,13 @@ export class DetailModeService implements OnDestroy {
 
         return this.boundariesService.getZipCodesInBbox(northEast, southWest).pipe(
           catchError((err) => {
-            this.popUpMessageService.showError('Unexpected error during gMap rendering');
+            if (err instanceof HttpErrorResponse && err.status == this.badRequestServerError) {
+              let correctZoom = this.gMap.getZoom() + 1;
+              this.gMap.setZoom(correctZoom);
+              this.mapOptions.minZoom = correctZoom;
+            } else {
+              this.popUpMessageService.showError('Unexpected error during gMap rendering');
+            }
 
             return of(null);
           }));

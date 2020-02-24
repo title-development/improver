@@ -2,6 +2,7 @@ package com.improver.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.improver.application.properties.ThirdPartyApis;
+import com.improver.exception.BadRequestException;
 import com.improver.exception.ThirdPartyException;
 import com.improver.util.serializer.SerializationUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -183,7 +185,11 @@ public class BoundariesService {
             try {
                 jsonNode = SerializationUtil.mapper().readTree(result);
                 msg = jsonNode.get("message").asText(defMsg);
-                throw new ThirdPartyException(msg);
+                if (statusCode == HttpStatus.BAD_REQUEST.value()) {
+                    throw new BadRequestException(msg);
+                } else {
+                    throw new ThirdPartyException(msg);
+                }
             } catch (IOException e) {
                 throw new ThirdPartyException(defMsg);
             }

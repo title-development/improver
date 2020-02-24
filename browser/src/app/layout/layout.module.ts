@@ -11,7 +11,6 @@ import { ProBannerComponent } from '../entity/home/pro-banner/pro-banner.compone
 import { MainMenuComponent } from './header/main-menu/main-menu.component';
 import { NotificationsPopupComponent } from "./header/notifications-popup/notifications-popup.component";
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
-import { NgTruncatePipeModule } from "angular-pipes";
 
 @NgModule({
   imports: [
@@ -21,8 +20,7 @@ import { NgTruncatePipeModule } from "angular-pipes";
     RouterModule,
     SharedModule,
     CvSelectModule,
-    PerfectScrollbarModule,
-    NgTruncatePipeModule
+    PerfectScrollbarModule
   ],
   declarations: [
     HeaderComponent,

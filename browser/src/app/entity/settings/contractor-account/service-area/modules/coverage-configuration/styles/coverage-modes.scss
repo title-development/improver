@@ -13,6 +13,9 @@ cv-input-field {
         border-top-left-radius: 2px;
       }
     }
+    .input-holder{
+      display: flex;
+    }
   }
   &:not(:last-child) {
     margin-bottom: 12px;
@@ -65,6 +68,6 @@ form {
 }
 
 .find-zip {
-  width: 0;
+  width: 100%;
 }
 
