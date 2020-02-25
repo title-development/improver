@@ -75,7 +75,8 @@ import { MatButtonModule } from "@angular/material/button";
     CvInputModule,
     CvInputFieldModule,
     CvRadioModule,
-    SharedDirectivesModule
+    SharedDirectivesModule,
+    NgTruncatePipeModule
   ],
   declarations: [
     AccountNavComponent,
@@ -132,7 +133,8 @@ import { MatButtonModule } from "@angular/material/button";
     FindProfessionalsComponent,
     SharedDirectivesModule,
     SubscriptionComponent,
-    PhoneValidationComponent
+    PhoneValidationComponent,
+    NgTruncatePipeModule
   ],
   providers: [
   ]
