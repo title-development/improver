@@ -231,6 +231,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     }, error => {
       this.processingAddressValidation = false;
       this.locationValidation = 'Address Not found';
+      this.resetLocationQuestion();
     });
   }
 
