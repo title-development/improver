@@ -18,7 +18,7 @@
         </cv-field-error>
       </cv-input-field>
 
-      <div class="filtered-services-wrapper">
+      <div class="filtered-services-wrapper fill-flex-space">
         <perfect-scrollbar>
           <cv-radio-group name="serviceType" formControlName="serviceType" [items]="filteredServices" labelKey="name">
           </cv-radio-group>
@@ -37,11 +37,10 @@
   </div>
 
 
-
   <div #defaultQuestion class="form-element-wrapper text-input-wrapper" [formGroupName]="'defaultQuestionaryGroup'"
        *ngIf="projectActionService.zipIsSupported && !questionaryControlService.withZip && (questionaryControlService.currentQuestionIndex == -1)">
     <h2 class="question-title">Where do you need a {{questionaryControlService.serviceType.name}}?</h2>
-    <div class="text-input-group zip-check-group" [formGroupName]="'projectLocation'"
+    <div class="text-input-group zip-check-group fill-flex-space" [formGroupName]="'projectLocation'"
          [cvSpinner]="projectActionService.zipIsChecking"
          [cvSpinnerSize]="50"
          [cvSpinnerBackground]="true">
@@ -59,8 +58,7 @@
         <cv-field-error
           *ngIf="defaultQuestionaryForm.get('projectLocation.zip').dirty || defaultQuestionaryForm.get('projectLocation.zip').touched">
           <span *ngIf="defaultQuestionaryForm.get('projectLocation.zip').errors?.required">Is required</span>
-          <span
-            *ngIf="defaultQuestionaryForm.get('projectLocation.zip').errors?.pattern">{{messages.errors.zip.pattern}}</span>
+          <span *ngIf="defaultQuestionaryForm.get('projectLocation.zip').errors?.pattern">{{messages.errors.zip.pattern}}</span>
         </cv-field-error>
       </cv-input-field>
 
@@ -73,6 +71,22 @@
       </button>
     </div>
 
+  </div>
+
+  <div #defaultQuestion class="form-element-wrapper text-input-wrapper"
+       *ngIf="!projectActionService.zipIsSupported && !questionaryControlService.withZip && (questionaryControlService.currentQuestionIndex == -1)">
+    <h2 class="question-title">Home Improve is not serving {{defaultQuestionaryForm.get('projectLocation.zip').value}}</h2>
+
+    <div class="unsupported-zip-message">
+      We are coming to your area soon.
+    </div>
+
+    <div class="questionary-dialog-footer">
+      <button class="questionary-next-button" (click)="close()" type="button"
+              [disabled]="defaultQuestionaryForm.get('projectLocation.zip').invalid">
+        Ok
+      </button>
+    </div>
   </div>
 
 </div>

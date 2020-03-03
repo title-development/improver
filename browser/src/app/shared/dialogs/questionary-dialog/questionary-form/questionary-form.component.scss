@@ -1,21 +1,22 @@
 @import "../../../../../improver-mixins.scss";
 
+:host {
+  @include response-to(xs) {
+    height: calc(100% - 44px);
+  }
+}
+
+.start-white-screen {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
 .questionary-form {
   display: flex;
   flex: 1;
   height: 100%;
-
-  &.bg-image {
-    background: transparent !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding-top: 0;
-  }
-
-  &.bg-white {
-    background: $white !important;
-  }
+  background: $white;
 
   .start-screen {
     text-align: center;

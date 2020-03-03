@@ -43,7 +43,13 @@ export class QuestionaryFormQuestionComponent implements OnInit{
   }
 
   previousQuestion() {
-    this.questionaryControlService.currentQuestionIndex > -1 ? this.questionaryControlService.currentQuestionIndex-- : "";
+    if (this.questionaryControlService.currentQuestionIndex > -2) {
+      this.questionaryControlService.currentQuestionIndex--;
+    }
+
+    if (this.questionaryControlService.currentQuestionIndex == -1 && !this.questionaryControlService.withServiceType) {
+      this.questionaryControlService.serviceType = null;
+    }
   }
 
   close() {

@@ -327,6 +327,7 @@ export class ProjectActionService {
     this.dialog.closeAll();
     if (!selected.services) {
       this.questionaryControlService.serviceType = selected;
+      this.questionaryControlService.withServiceType = true;
     } else {
       this.questionaryControlService.trade = selected;
       this.questionaryControlService.needServiceTypeSelect = true;

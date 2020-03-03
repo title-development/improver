@@ -154,8 +154,6 @@ body :-moz-placeholder { /* Firefox 18- */
 }
 
 .mat-dialog-container {
-  //margin: 25px auto;
-  margin-bottom: 20px;
   padding: 0px !important;
 }
 
@@ -466,10 +464,6 @@ questionary-form {
   display: none;
 }
 
-.flex-spacer {
-  flex-grow: 1;
-}
-
 .cv-slider {
   -webkit-appearance: none;
   width: 100%;
@@ -622,4 +616,8 @@ input[type=range]::-moz-focus-outer {
 
 .grecaptcha-badge {
   visibility: hidden;
+}
+
+.fill-flex-space {
+  flex: 1;
 }

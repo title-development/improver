@@ -118,9 +118,11 @@ export class PreQuestionaryBlock implements OnInit {
   }
 
   submitServiceTypeSelection() {
-    this.questionaryControlService.serviceType = JSON.parse(this.defaultQuestionaryForm.get('serviceType').value);
-    this.nextStep();
-    this.questionaryControlService.initFormGroup();
+    if (this.defaultQuestionaryForm.get('serviceType').value) {
+      this.questionaryControlService.serviceType = JSON.parse(this.defaultQuestionaryForm.get('serviceType').value);
+      this.nextStep();
+      this.questionaryControlService.initFormGroup();
+    }
   }
 
   autocompleteServiceSelectionSearch(search): void {

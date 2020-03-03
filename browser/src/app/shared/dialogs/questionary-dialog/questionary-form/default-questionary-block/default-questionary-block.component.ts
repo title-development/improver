@@ -14,7 +14,7 @@ import { PopUpMessageService } from '../../../../../util/pop-up-message.service'
 import { Router } from '@angular/router';
 import { ProjectActionService } from '../../../../../util/project-action.service';
 import { getErrorMessage, markAsTouched } from '../../../../../util/functions';
-import { finalize, first } from "rxjs/internal/operators";
+import { finalize, first, take } from "rxjs/internal/operators";
 import { UserService } from "../../../../../api/services/user.service";
 import { AccountService } from "../../../../../api/services/account.service";
 import { TradeService } from "../../../../../api/services/trade.service";
@@ -101,8 +101,12 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     if (handler !== undefined) {
       handler.call(this);
     }
-    if (this.questionaryControlService.currentQuestionIndex > -1) {
+    if (this.questionaryControlService.currentQuestionIndex > -2) {
       this.questionaryControlService.currentQuestionIndex--;
+    }
+
+    if (this.questionaryControlService.currentQuestionIndex == -1 && !this.questionaryControlService.withServiceType) {
+      this.questionaryControlService.serviceType = null;
     }
 
   }
@@ -200,9 +204,9 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     this.disabledNextAction = true;
     const location = this.defaultQuestionaryForm.get(formGroupName).value;
     this.processingAddressValidation = true;
-    this.locationValidate.validateWithCoverage(location).pipe(
-      first()
-    ).subscribe((validatedLocation: ValidatedLocation) => {
+    this.locationValidate.validateWithCoverage(location)
+      .pipe(first())
+      .subscribe((validatedLocation: ValidatedLocation) => {
       this.processingAddressValidation = false;
       if (validatedLocation.valid) {
         this.locationValidation = '';
@@ -240,9 +244,9 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     this.hideNextAction = false;
     this.disabledNextAction = true;
     const location: FormGroup = this.defaultQuestionaryForm.get('projectLocation');
-    location.valueChanges.pipe(
-      first()
-    ).subscribe(res => {
+    location.valueChanges
+      .pipe(first())
+      .subscribe(res => {
         this.locationValidation = '';
         this.disabledNextAction = false;
       }
@@ -287,10 +291,6 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     this.processingPhoneValidation = false;
     this.phoneValid = true;
     this.nextStepFn.call(this,"customerPersonalInfo")
-  }
-
-  eraseSelectedServiceType() {
-    this.questionaryControlService.serviceType = null;
   }
 
 }

@@ -1,13 +1,13 @@
 @import "../../../../improver-mixins.scss";
 
 .dialog-content-wrapper {
-  background: url(../../../../assets/img/start-screen-background.png) no-repeat;
+  background-color: white;
   background-size: cover;
   overflow-x: hidden;
 
   .dialog-content-container {
     background-color: rgba(0, 0, 0, 0.64);
-    overflow: inherit;
+    overflow: visible;
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -15,7 +15,10 @@
     min-height: 140px;
 
     &.fix-height {
-      height: 436px;
+      @include response-from(sm){
+        height: 436px;
+      }
+
     }
 
   }
@@ -123,6 +126,18 @@
   height: 100%;
   align-items: center;
   justify-content: center;
+  background: url(/../../../../assets/img/start-screen-background.png) no-repeat;
+  background-size: cover;
+  .background {
+    display: flex;
+    flex-wrap: wrap;
+    height: 100%;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0,0,0,.64);
+    background-size: cover;
+  }
 }
 
 

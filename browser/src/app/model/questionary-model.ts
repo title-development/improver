@@ -20,6 +20,7 @@ export class QuestionaryBlock {
   id?: number;
   title?: string;
   name?: string;
+  label?: string;
   type?: QuestionType;
   answers?: Answer[];
   results?: string[];

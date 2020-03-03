@@ -1,5 +1,11 @@
 @import "../../../../../../improver-mixins.scss";
 
+:host {
+  height: 100%;
+  display: flex;
+  flex: 1;
+}
+
 .question-title {
   text-align: center;
   color: $primary-500;
@@ -65,7 +71,8 @@
   display: flex;
   flex-direction: column;
   min-height: 280px;
-
+  width: 100%;
+  height: 100%;
 }
 
 .questionary-dialog-footer {
@@ -125,6 +132,18 @@
   height: 100%;
   align-items: center;
   justify-content: center;
+  background: url(../../../../../../assets/img/start-screen-background.png) no-repeat;
+  background-size: cover;
+  .background {
+    display: flex;
+    flex-wrap: wrap;
+    height: 100%;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0,0,0,.64);
+    background-size: cover;
+  }
 }
 
 .customer-explanation {
@@ -298,4 +317,8 @@ cv-radio-group {
     font-size: 12px;
     text-align: center;
   }
+}
+
+.form-row {
+  width: 100%;
 }

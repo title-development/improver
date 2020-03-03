@@ -3,7 +3,7 @@
   <div #defaultQuestion class="form-element-wrapper radio-button-wrapper" [formGroupName]="'defaultQuestionaryGroup'"
        *ngIf="questionaryControlService.currentQuestionIndex == questionaryControlService.questionaryLength">
     <h2 class="question-title">When do you need your project started?</h2>
-    <div class="radio-button-group">
+    <div class="radio-button-group fill-flex-space">
 
       <cv-radio-group formControlName="startExpectation" required>
         <cv-radio *ngFor="let option of startExpectationOptions" [value]="option" [checked]="defaultQuestionaryForm.get('startExpectation').value == option">{{option}}</cv-radio>
@@ -18,7 +18,7 @@
     </div>
 
     <div class="questionary-dialog-footer">
-      <button class="questionary-previous-button" (click)="previousQuestion(eraseSelectedServiceType)" *ngIf="!questionaryControlService.withZip || questionaryControlService.trade || questionaryControlService.currentQuestionIndex >= 1" type="button">Back</button>
+      <button class="questionary-previous-button" (click)="previousQuestion()" *ngIf="!questionaryControlService.withZip || questionaryControlService.trade || questionaryControlService.currentQuestionIndex >= 1" type="button">Back</button>
       <button class="questionary-next-button" (click)="nextQuestion('startExpectation')" type="button">Next</button>
     </div>
 
@@ -30,7 +30,7 @@
       details for Professional</h2>
     <h2 class="question-title" *ngIf="questionaryControlService.questionaryLength != 0">Anything else Professional
       should know about your project</h2>
-    <div class="text-input-group">
+    <div class="text-input-group fill-flex-space">
       <cv-input-field>
         <cv-field-label>Project details</cv-field-label>
         <textarea cv-input placeholder="Describe your project for professional"
@@ -58,7 +58,7 @@
   <div #defaultQuestion class="form-element-wrapper text-input-wrapper" [formGroupName]="'defaultQuestionaryGroup'"
        *ngIf="questionaryControlService.currentQuestionIndex == questionaryControlService.questionaryLength + 2">
     <h2 class="question-title">Where do you need a Professional?</h2>
-    <div class="text-input-group" [formGroupName]="'projectLocation'"
+    <div class="text-input-group fill-flex-space" [formGroupName]="'projectLocation'"
          [cvSpinner]="processingAddressValidation"
          [cvSpinnerSize]="50"
          [cvSpinnerBackground]="true">
@@ -185,7 +185,7 @@
               || (securityService.hasRole(Role.CUSTOMER) && (questionaryControlService.currentQuestionIndex == questionaryControlService.questionaryLength + 3))">
     <h2 class="question-title" *ngIf="securityService.hasRole(Role.ANONYMOUS)">Let's get acquainted</h2>
     <h2 class="question-title" *ngIf="securityService.hasRole(Role.CUSTOMER)">Please add your phone number</h2>
-    <div class="text-input-group" [formGroupName]="'customerPersonalInfo'" *ngIf="!processingPhoneValidation">
+    <div class="text-input-group fill-flex-space" [formGroupName]="'customerPersonalInfo'" *ngIf="!processingPhoneValidation">
 
       <cv-input-field *ngIf="securityService.hasRole(Role.ANONYMOUS)">
         <cv-field-label>First name</cv-field-label>
@@ -282,7 +282,7 @@
        *ngIf="securityService.hasRole(Role.ANONYMOUS) && (questionaryControlService.currentQuestionIndex == questionaryControlService.questionaryLength + 4)">
     <h2 class="question-title">One more step to go</h2>
 
-    <div class="text-input-group customer-explanation">
+    <div class="text-input-group customer-explanation fill-flex-space">
 
       <div class="new-customer-explanation" *ngIf="emailIsUnique && emailIsChecked">
         <div>Please verify your email, so we can start searching the right Pros for you.</div>
@@ -303,11 +303,13 @@
       </div>
 
       <div class="loading-spinner-wrapper" *ngIf="!emailIsChecked">
-        <mat-progress-spinner
-          class="example-margin"
-          mode="indeterminate"
-          diameter="30">
-        </mat-progress-spinner>
+        <div class="background">
+          <mat-progress-spinner
+            class="example-margin"
+            mode="indeterminate"
+            diameter="30">
+          </mat-progress-spinner>
+        </div>
       </div>
 
     </div>
@@ -318,7 +320,6 @@
               *ngIf="((emailIsChecked && emailIsUnique) || emailIsUnique == undefined) && !postOrderProcessing">Back
       </button>
       <div fxFlex=""></div>
-      <!--<button class="questionary-next-button" (click)="nextQuestion('customerContacts')" type="button">Submit</button>-->
       <button class="questionary-next-button" (click)="close()" type="button"
               *ngIf="emailIsChecked && !emailIsUnique && !postOrderProcessing">
         Ok

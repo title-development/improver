@@ -38,6 +38,7 @@
                         minlength="20"
                         maxlength="500">
                      </textarea>
+
               <cv-field-hint>{{quickReplayMessage.value ? quickReplayMessage.value.length : 0}}/500</cv-field-hint>
               <cv-field-error
                 *ngIf="quickReplayMessage.dirty || quickReplayMessage.touched || quickReplyForm.submitted">

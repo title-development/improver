@@ -22,15 +22,16 @@ export class QuestionaryControlService {
   public showQuestionary = false;
   public questionaryIsLoading = false;
   public currentQuestionIndex = -2;
-  public withZip: boolean = false;
   public needServiceTypeSelect: boolean = false;
   public customerHasPhone: boolean = false;
   public questionaryLength = 0;
   public totalQuestionaryLength;
 
   public zip = '';
-  public trade: Trade;
+  public withZip: boolean = false;
   public serviceType: ServiceType;
+  public withServiceType: boolean = false;
+  public trade: Trade;
   public customerAccount: Account = {
     id: 0,
     iconUrl: '',
@@ -83,6 +84,7 @@ export class QuestionaryControlService {
           this.questionary = questionary;
           this.updateQuestionaryTotalLength(this.questionary.questions.length, this.questionary.hasPhone);
           this.mainForm = this.toFormGroup(this.questionary.questions);
+          this.showQuestionary = true;
         },
         err => this.popUpService.showError(getErrorMessage(err))
       );
@@ -125,6 +127,7 @@ export class QuestionaryControlService {
     this.totalQuestionaryLength = 0;
     this.defaultQuestionaryLength = this.DEFAULT_QUESTIONARY_LENGTH;
     this.withZip = false;
+    this.withServiceType = false;
 
     this.customerAccount = {
       id: 0,

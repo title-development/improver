@@ -17,11 +17,13 @@
     <questionary-form *ngIf="!questionaryControlService.questionaryIsLoading"></questionary-form>
 
     <div class="loading-spinner-wrapper" *ngIf="questionaryControlService.questionaryIsLoading">
-      <mat-progress-spinner
-        class="example-margin"
-        mode="indeterminate"
-        diameter="30">
-      </mat-progress-spinner>
+      <div class="background">
+        <mat-progress-spinner
+          class="example-margin"
+          mode="indeterminate"
+          diameter="30">
+        </mat-progress-spinner>
+      </div>
     </div>
 
   </div>

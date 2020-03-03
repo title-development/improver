@@ -1,5 +1,11 @@
 @import "../../../../../../improver-mixins.scss";
 
+:host {
+  height: 100%;
+  display: flex;
+  flex: 1;
+}
+
 .question-title {
   text-align: center;
   color: $primary-500;
@@ -48,8 +54,10 @@
 }
 
 
-
 .text-input-group {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
   position: relative;
   margin-bottom: 20px;
   min-height: 130px;
@@ -70,13 +78,17 @@
   display: flex;
   flex-direction: column;
   min-height: 280px;
+  height: 100%;
 
   .unsupported-zip-message {
+    display: flex;
+    flex: 1;
     padding: 0px 16px;
     font-size: 18px;
     color: $black-secondary;
     margin-top: -16px;
     text-align: center;
+    justify-content: center;
   }
 
 }
@@ -131,23 +143,17 @@
 
 }
 
-.loading-spinner-wrapper {
-  display: flex;
-  flex: 1;
-  flex-wrap: wrap;
-  height: 100%;
-  align-items: center;
-  justify-content: center;
-}
-
 cv-radio-group {
   margin-bottom: 0px;
+
   ::ng-deep {
     .input-holder {
       margin-bottom: 0px;
       flex-direction: column;
+
       cv-radio {
         margin-bottom: 16px;
+
         .radio-label {
           margin-left: 8px;
           margin-top: 2px;
@@ -158,14 +164,18 @@ cv-radio-group {
 }
 
 .filtered-services-wrapper {
-  //overflow-y: auto;
+  display: flex;
+  overflow-y: hidden;
   perfect-scrollbar {
-    max-height: 188px;
-    min-height: 188px;
+    @include response-from(sm) {
+      max-height: 188px;
+      min-height: 188px;
+    }
     margin-top: 16px;
     margin-bottom: 8px;
     padding: 8px 0;
   }
+
   //border: 1px solid #d8d8d8;
   border-radius: 2px;
 
@@ -175,13 +185,18 @@ cv-radio-group {
   }
 
   ::ng-deep .ps {
-    .ps__rail-y{
+    .ps__rail-y {
       opacity: 0.6;
     }
+
     .ps__thumb-y {
       opacity: 0.6;
     }
 
   }
 
+}
+
+.form-row {
+  width: 100%;
 }

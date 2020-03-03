@@ -1,5 +1,5 @@
-<div [formGroup]="questionaryControlService.mainForm" *ngIf="index == questionaryControlService.currentQuestionIndex" class="question-wrapper">
-  <div [ngSwitch]="question.type" [formGroupName]="'questionaryGroup'">
+<div [formGroup]="questionaryControlService.mainForm" class="question-wrapper">
+  <div [ngSwitch]="question.type" [formGroupName]="'questionaryGroup'" class="fill-flex-space">
 
     <div *ngSwitchCase="QuestionType.TEXT_INPUT" class="form-element-wrapper text-input-wrapper">
       <h2 class="question-title">{{question.title}}</h2>
@@ -138,7 +138,7 @@
   </div>
 
   <div class="questionary-dialog-footer" fxLayoutAlign="end center">
-    <button class="questionary-previous-button" (click)="previousQuestion()" type="button" *ngIf="!questionaryControlService.withZip || index > 0">Back</button>
+    <button class="questionary-previous-button" (click)="previousQuestion()" type="button" *ngIf="!questionaryControlService.withZip || !questionaryControlService.withServiceType || index > 0">Back</button>
     <div fxFlex=""></div>
     <button class="questionary-next-button" (click)="nextQuestion()" type="button">Next</button>
   </div>
