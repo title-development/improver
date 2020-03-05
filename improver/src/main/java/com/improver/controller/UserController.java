@@ -4,16 +4,11 @@ package com.improver.controller;
 import com.improver.entity.Admin;
 import com.improver.entity.User;
 import com.improver.exception.NotFoundException;
-import com.improver.model.UserAccount;
 import com.improver.model.admin.AdminContractor;
-import com.improver.model.in.EmailPasswordTuple;
-import com.improver.repository.ContractorRepository;
-import com.improver.repository.CustomerRepository;
+import com.improver.model.admin.UserModel;
 import com.improver.repository.UserRepository;
 import com.improver.security.UserSecurityService;
 import com.improver.security.annotation.AdminAccess;
-import com.improver.security.annotation.SameUserAccess;
-import com.improver.security.annotation.SameUserOrAdminAccess;
 import com.improver.security.annotation.SupportAccess;
 import com.improver.service.AccountService;
 import com.improver.service.UserService;
@@ -28,7 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+
 import java.util.List;
 
 import static com.improver.application.properties.Path.*;
@@ -47,7 +42,7 @@ public class UserController {
 
     @AdminAccess
     @PutMapping(ID_PATH_VARIABLE)
-    public ResponseEntity<Void> updateUser(@PathVariable long id, @RequestBody User user) {
+    public ResponseEntity<Void> updateUser(@PathVariable long id, @RequestBody UserModel user) {
         userService.updateUser(id, user, userSecurityService.currentAdminOrNull());
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -75,12 +70,13 @@ public class UserController {
     @SupportAccess
     @GetMapping
     @PageableSwagger
-    public ResponseEntity<Page<User>> getUsers(@RequestParam(required = false) Long id,
-                                               @RequestParam(required = false) String email,
-                                               @RequestParam(required = false) String displayName,
-                                               @RequestParam(required = false) User.Role role,
-                                               @PageableDefault(sort = "email", direction = Sort.Direction.DESC) Pageable pageRequest) {
-        Page<User> users = userService.findBy(id, email, displayName, role, pageRequest);
+    public ResponseEntity<Page<UserModel>> getUsers(@RequestParam(required = false) Long id,
+                                                    @RequestParam(required = false) String email,
+                                                    @RequestParam(required = false) String displayName,
+                                                    @RequestParam(required = false) User.Role role,
+                                                    @PageableDefault(sort = "email", direction = Sort.Direction.DESC) Pageable pageRequest) {
+        Page<UserModel> users = userService.findBy(id, email, displayName, role, pageRequest)
+            .map(UserModel::new);;
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
@@ -88,8 +84,9 @@ public class UserController {
     @SupportAccess
     @GetMapping("/staff")
     @PageableSwagger
-    public ResponseEntity<Page<User>> getStaff(@PageableDefault(sort = "displayName", direction = Sort.Direction.ASC) Pageable pageRequest) {
-        Page<User> users = userRepository.findByRoleIn(List.of(User.Role.SUPPORT, User.Role.ADMIN), pageRequest);
+    public ResponseEntity<Page<UserModel>> getStaff(@PageableDefault(sort = "displayName", direction = Sort.Direction.ASC) Pageable pageRequest) {
+        Page<UserModel> users = userRepository.findByRoleIn(List.of(User.Role.SUPPORT, User.Role.ADMIN), pageRequest)
+            .map(UserModel::new);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
@@ -155,13 +152,14 @@ public class UserController {
     @SupportAccess
     @PageableSwagger
     @GetMapping(CUSTOMERS)
-    public ResponseEntity<Page<User>> getAllCustomers(
+    public ResponseEntity<Page<UserModel>> getAllCustomers(
         @RequestParam(required = false) Long id,
         @RequestParam(required = false) String displayName,
         @RequestParam(required = false) String email,
         @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageRequest) {
 
-        Page<User> customers = this.userService.getAllCustomers(id, displayName, email, pageRequest);
+        Page<UserModel> customers = this.userService.getAllCustomers(id, displayName, email, pageRequest)
+            .map(UserModel::new);
         return new ResponseEntity<>(customers, HttpStatus.OK);
     }
 

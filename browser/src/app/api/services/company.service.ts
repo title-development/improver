@@ -175,7 +175,7 @@ export class CompanyService {
 
   approve(companyId: string, approved: boolean): Observable<any> {
     const params = new HttpParams()
-      .set('approved', String(approved));
+      .set('isApproved', String(approved));
     return this.http.post(`${this.companyUrl}/${companyId}/approve`, null, { params: params});
   }
 

@@ -59,10 +59,6 @@
           {{col.header}}
         </th>
 
-        <th *ngSwitchCase="'uri'">
-          {{col.header}}
-        </th>
-
       </ng-container>
 
     </tr>
@@ -118,15 +114,15 @@
         </span>
 
         <span *ngSwitchCase="'balance'">
-          {{row.billing.balance / 100 | currency:'USD'}}
+          {{row.balance / 100 | currency:'USD'}}
         </span>
 
-        <span *ngSwitchCase="'approved'">
+        <span *ngSwitchCase="'isApproved'">
           <i class="pi pi-check" *ngIf="row[col.field]"></i>
           <i class="pi pi-ban" *ngIf="!row[col.field]"></i>
         </span>
 
-        <span *ngSwitchCase="'deleted'">
+        <span *ngSwitchCase="'isDeleted'">
           <i class="pi pi-check" *ngIf="row[col.field]"></i>
           <i class="pi pi-ban" *ngIf="!row[col.field]"></i>
         </span>

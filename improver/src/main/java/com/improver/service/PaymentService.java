@@ -72,13 +72,13 @@ public class PaymentService {
      * @param contractor current contractor
      * @param amount     amount in cents
      */
-    public void replenishBalance(Company company, Contractor contractor, int amount) {
+    public void topUpBalance(Company company, Contractor contractor, int amount) {
         if (amount <= 0) {
             throw new ValidationException("Amount should be greater then 0");
         }
         Billing billing = addToBalance(company, amount, Transaction.Type.TOP_UP, TOP_UP_PURPOSE, null);
         wsNotificationService.updateBalance(company, billing);
-        mailService.sendBalanceReplenished(company, amount);
+        mailService.sendBalanceTopUp(company, amount);
         addReferredBonusesIfNeeded(company, contractor, amount);
     }
 

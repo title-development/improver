@@ -4,6 +4,7 @@ import com.improver.entity.*;
 import com.improver.exception.*;
 import com.improver.model.UserAccount;
 import com.improver.model.admin.AdminContractor;
+import com.improver.model.admin.UserModel;
 import com.improver.model.in.OldNewValue;
 import com.improver.model.in.registration.StaffRegistration;
 import com.improver.model.in.registration.UserRegistration;
@@ -57,7 +58,7 @@ public class UserService {
     }
 
 
-    public void updateUser(long id, User toUpdate, Admin currentAdmin) {
+    public void updateUser(long id, UserModel toUpdate, Admin currentAdmin) {
         User existed = userRepository.findById(id)
             .orElseThrow(NotFoundException::new);
 
@@ -195,7 +196,7 @@ public class UserService {
         return userRepository.getAllCustomers(id, displayName, email, pageable);
     }
 
-    public void updateAdminUser(long id, User toUpdate) {
+    public void updateAdminUser(long id, UserModel toUpdate) {
         User user = userRepository.findById(id)
             .orElseThrow(NotFoundException::new);
 
@@ -203,8 +204,8 @@ public class UserService {
         user.setLastName(toUpdate.getLastName());
         user.setEmail(toUpdate.getEmail());
         user.setInternalPhone(toUpdate.getInternalPhone());
-        user.setActivated(toUpdate.isActivated());
-        user.setBlocked(toUpdate.isBlocked());
+        user.setActivated(toUpdate.getIsActivated());
+        user.setBlocked(toUpdate.getIsBlocked());
         userRepository.save(user);
     }
 

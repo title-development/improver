@@ -75,27 +75,17 @@
           <div class="round-image"  [ngStyle]="row[col.field] && row[col.field] != '' && {'background-image':'url(' + row[col.field] + ')'} || {'background-image':'url(/assets/img/user-logo-placeholder.png)'}"></div>
         </span>
 
-        <span *ngSwitchCase="'deleted'">
+        <span *ngSwitchCase="'isDeleted'">
           <i class="pi pi-check" *ngIf="row[col.field]"></i>
           <i class="pi pi-ban" *ngIf="!row[col.field]"></i>
         </span>
 
-        <span *ngSwitchCase="'blocked'">
+        <span *ngSwitchCase="'isBlocked'">
           <i class="pi pi-check" *ngIf="row[col.field]"></i>
           <i class="pi pi-ban" *ngIf="!row[col.field]"></i>
         </span>
 
-        <span *ngSwitchCase="'activated'">
-          <i class="pi pi-check" *ngIf="row[col.field]"></i>
-          <i class="pi pi-ban" *ngIf="!row[col.field]"></i>
-        </span>
-
-        <span *ngSwitchCase="'credentialExpired'">
-          <i class="pi pi-check" *ngIf="row[col.field]"></i>
-          <i class="pi pi-ban" *ngIf="!row[col.field]"></i>
-        </span>
-
-        <span *ngSwitchCase="'nativeUser'">
+        <span *ngSwitchCase="'isActivated'">
           <i class="pi pi-check" *ngIf="row[col.field]"></i>
           <i class="pi pi-ban" *ngIf="!row[col.field]"></i>
         </span>
@@ -144,13 +134,13 @@
     <div class="ui-grid-row ui-grid-field">
       <div class="ui-grid-col-4"><label>Blocked</label></div>
       <div class="ui-grid-col-8">
-        <span>{{selected.blocked ? 'Yes' : 'No'}}</span>
+        <span>{{selected.isBlocked ? 'Yes' : 'No'}}</span>
       </div>
     </div>
     <div class="ui-grid-row ui-grid-field">
       <div class="ui-grid-col-4"><label>Activated</label></div>
       <div class="ui-grid-col-8">
-        <span>{{selected.activated ? 'Yes' : 'No'}}</span>
+        <span>{{selected.isActivated ? 'Yes' : 'No'}}</span>
       </div>
     </div>
   </div>

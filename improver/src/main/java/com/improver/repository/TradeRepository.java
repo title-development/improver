@@ -34,7 +34,7 @@ public interface TradeRepository extends JpaRepository<Trade, Long> {
         "FROM com.improver.entity.Trade t " +
         "LEFT JOIN t.serviceTypes st " +
         "LEFT JOIN st.projects p " +
-        "WHERE st.active = true " +
+        "WHERE st.isActive = true " +
         "GROUP BY t.id " +
         "ORDER BY popularity DESC")
     Page<NameIdImageTuple> getPopular(Pageable pageable);

@@ -55,15 +55,15 @@ public interface ServiceTypeRepository extends JpaRepository<ServiceType, Long> 
     List<NameIdTuple> getByTradeId(long id);
 
     @Query("SELECT new com.improver.model.NameIdTuple(s.id, s.name) FROM com.improver.entity.ServiceType s" +
-        " INNER JOIN s.trades t WHERE s.active = true AND t.id = ?1 ORDER BY s.name ASC")
+        " INNER JOIN s.trades t WHERE s.isActive = true AND t.id = ?1 ORDER BY s.name ASC")
     List<NameIdTuple> getActiveByTradeId(long id);
 
     @Query("SELECT new com.improver.model.NameIdParentTuple(s.id, s.name, t.id) FROM com.improver.entity.ServiceType s" +
-        " INNER JOIN s.trades t WHERE s.active = true AND t.id IN ?1 ORDER BY s.name ASC")
+        " INNER JOIN s.trades t WHERE s.isActive = true AND t.id IN ?1 ORDER BY s.name ASC")
     List<NameIdParentTuple> getActiveByTradeIds(List<Long> ids);
 
     @Query("SELECT new com.improver.model.NameIdTuple(s.id, s.name) FROM com.improver.entity.ServiceType s" +
-        " WHERE s.active = true ORDER BY s.name ASC")
+        " WHERE s.isActive = true ORDER BY s.name ASC")
     List<NameIdTuple> getAllActiveAsModels();
 
     @Query("SELECT new com.improver.model.NameIdParentTuple(s.id, s.name, q.id) FROM com.improver.entity.ServiceType s " +
@@ -78,7 +78,7 @@ public interface ServiceTypeRepository extends JpaRepository<ServiceType, Long> 
 
     @Deprecated
     @Query("SELECT new com.improver.model.out.NameIdImageTuple(s.id, s.name, s.imageUrl) FROM com.improver.entity.ServiceType s " +
-        "WHERE s.active = true AND s.imageUrl IS NOT NULL ORDER BY RANDOM()")
+        "WHERE s.isActive = true AND s.imageUrl IS NOT NULL ORDER BY RANDOM()")
     Page<NameIdImageTuple> getRandomWithImageAsModels(Pageable pageable);
 
     @Query("SELECT new com.improver.model.admin.out.Record(count(s.id), s.name, 'TOP_SERVICE_TYPES') FROM com.improver.entity.ServiceType s " +
@@ -103,13 +103,13 @@ public interface ServiceTypeRepository extends JpaRepository<ServiceType, Long> 
 
     @Query("SELECT new com.improver.model.NameIdTuple(st.id, st.name, COUNT(p) AS popularity)  FROM com.improver.entity.ServiceType st " +
         "LEFT JOIN st.projects p " +
-        "WHERE st.active = true " +
+        "WHERE st.isActive = true " +
         "GROUP BY st.id " +
         "ORDER BY popularity DESC")
     Page<NameIdTuple> getPopularServiceTypes(Pageable pageable);
 
     @Query("SELECT new  com.improver.model.out.NameIdImageTuple(st.id, st.name, st.imageUrl) FROM com.improver.entity.ServiceType st " +
-        "WHERE st.active = true " +
+        "WHERE st.isActive = true " +
         "AND st.rating > 0 AND st.imageUrl <> '' AND st.imageUrl IS NOT NULL " +
         "ORDER BY RANDOM()")
     Page<NameIdImageTuple> getRandomPopularServiceTypes(Pageable pageable);
@@ -124,11 +124,11 @@ public interface ServiceTypeRepository extends JpaRepository<ServiceType, Long> 
     List<NameIdParentTuple> getByCompanyAndTrades(long companyId, List<Long> tradeIds);
 
     @Query("SELECT new com.improver.model.NameIdTuple(s.id, s.name) FROM com.improver.entity.ServiceType s" +
-        " INNER JOIN s.companies c ON c.id = ?1 WHERE s.active = true AND s.id NOT IN ?2")
+        " INNER JOIN s.companies c ON c.id = ?1 WHERE s.isActive = true AND s.id NOT IN ?2")
     List<NameIdTuple> getCompanyServicesExcept(long companyId, List<Long> serviceIds);
 
     @Query("SELECT new com.improver.model.NameIdTuple(s.id, s.name) FROM com.improver.entity.ServiceType s" +
-        " INNER JOIN s.companies c ON c.id = ?1 WHERE s.active = true")
+        " INNER JOIN s.companies c ON c.id = ?1 WHERE s.isActive = true")
     List<NameIdTuple> getAllCompanyServices(long companyId);
 
     @Query("SELECT new com.improver.model.NameIdTuple(s.id, s.name) FROM com.improver.entity.Company c " +

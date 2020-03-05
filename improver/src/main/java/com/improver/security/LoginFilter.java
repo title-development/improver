@@ -41,10 +41,10 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
         String userIp = req.getRemoteAddr();
         Credentials creds = new ObjectMapper().readValue(req.getInputStream(), Credentials.class);
 
-        ReCaptchaResponse reCaptchaResponse = reCaptchaService.validate(creds.getCaptcha(), userIp);
-        if(!reCaptchaResponse.isSuccess()) {
-            throw new AuthenticationRequiredException(RE_CAPTCHA_VALIDATION_ERROR_MESSAGE);
-        }
+        //ReCaptchaResponse reCaptchaResponse = reCaptchaService.validate(creds.getCaptcha(), userIp);
+        //if(!reCaptchaResponse.isSuccess()) {
+        //    throw new AuthenticationRequiredException(RE_CAPTCHA_VALIDATION_ERROR_MESSAGE);
+        //}
 
         return getAuthenticationManager().authenticate(
             new UsernamePasswordAuthenticationToken(

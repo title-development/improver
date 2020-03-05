@@ -43,11 +43,10 @@ export class CompaniesComponent {
     {field: 'founded', header: 'Founded', active: false},
     {field: 'siteUrl', header: 'Site Url', active: false},
     {field: 'rating', header: 'Rating', active: false},
-    {field: 'approved', header: 'Approved', active: true},
-    {field: 'uri', header: 'Uri', active: false},
     {field: 'created', header: 'Created', active: false},
-    {field: 'deleted', header: 'Deleted', active: false},
-    {field: 'balance', header: 'Balance', active: true},
+    {field: 'isDeleted', header: 'Deleted', active: false},
+    {field: 'isApproved', header: 'Approved', active: true},
+    {field: 'balance', header: 'Balance', active: false},
   ];
 
   selectedColumns = this.columns.filter(column => column.active);
@@ -109,13 +108,13 @@ export class CompaniesComponent {
       {
         label: 'Approve',
         icon: 'fas fa-thumbs-up',
-        visible: !this.selectedCompany.approved,
+        visible: !this.selectedCompany.isApproved,
         command: () => this.approve()
       },
       {
         label: 'Disapprove',
         icon: 'fas fa-thumbs-down',
-        visible: this.selectedCompany.approved,
+        visible: this.selectedCompany.isApproved,
         command: () => this.disapprove()
       },
 

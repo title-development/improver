@@ -1,10 +1,10 @@
 package com.improver.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.improver.entity.Company;
 import com.improver.entity.CompanyAction;
 import com.improver.model.CompanyInfo;
 import com.improver.model.NameIdTuple;
+import com.improver.model.admin.CompanyModel;
 import com.improver.model.out.project.ProjectRequestShort;
 import com.improver.repository.CompanyRepository;
 import com.improver.repository.ServiceTypeRepository;
@@ -42,11 +42,12 @@ public class CompanyController {
 
     @SupportAccess
     @GetMapping
-    public ResponseEntity<Page<Company>> getCompanies(@RequestParam(required = false) Long id,
-                                                      @RequestParam(required = false) String name,
-                                                      @RequestParam(required = false) String location,
-                                                      @PageableDefault(sort = "name", direction = Sort.Direction.DESC) Pageable pageRequest) {
-        Page<Company> companies = companyRepository.findBy(id, name, location, pageRequest);
+    public ResponseEntity<Page<CompanyModel>> getCompanies(@RequestParam(required = false) Long id,
+                                                           @RequestParam(required = false) String name,
+                                                           @RequestParam(required = false) String location,
+                                                           @PageableDefault(sort = "name", direction = Sort.Direction.DESC) Pageable pageRequest) {
+        Page<CompanyModel> companies = companyRepository.findBy(id, name, location, pageRequest)
+            .map(CompanyModel::new);
         return new ResponseEntity<>(companies, HttpStatus.OK);
     }
 
@@ -56,8 +57,7 @@ public class CompanyController {
                                        @RequestPart(value = "data") String data,
                                        @RequestPart(value = "icon", required = false) String base64icon,
                                        @RequestPart(value = "coverImage", required = false) MultipartFile coverImage) {
-        Company company = fromJson(new TypeReference<Company>() {
-        }, data);
+        CompanyModel company = fromJson(new TypeReference<>() {}, data);
         companyService.updateCompany(companyId, company, base64icon, coverImage, userSecurityService.currentAdminOrNull());
         return new ResponseEntity<>(HttpStatus.OK);
     }

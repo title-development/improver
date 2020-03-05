@@ -36,7 +36,7 @@ public class SecurityHelper {
         String principalEmail = auth.getName().toLowerCase();
         Company company = companyRepository.findByContractorEmail(principalEmail)
             .orElseThrow(AccessDeniedException::new);
-        return company.getId().equals(companyId) || company.getUri().equals(companyUri);
+        return company.getId().equals(companyId);
     }
 
 

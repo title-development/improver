@@ -43,7 +43,7 @@ export class ServicesListComponent {
     {field: 'labels', header: 'Labels', active: false},
     {field: 'trades', header: 'Trades', active: true},
     {field: 'questionaryId', header: 'Questionary', active: true},
-    {field: 'active', header: 'Active', active: true},
+    {field: 'isActive', header: 'Active', active: true},
   ];
 
   selectedColumns = this.columns.filter(column => column.active);

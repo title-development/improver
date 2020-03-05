@@ -73,7 +73,7 @@ describe('Billing', () => {
 
   });
 
-  it('replenish balance from valid card', () => {
+  it('top up balance from valid card', () => {
 
     let replenishBalanceButton = element(by.css('.balance-part .cv-button'));
     replenishBalanceButton.click();

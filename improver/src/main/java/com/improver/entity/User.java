@@ -1,21 +1,15 @@
 package com.improver.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.improver.model.in.registration.UserRegistration;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import javax.persistence.*;
-import javax.validation.constraints.Pattern;
 import java.security.Principal;
-import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.improver.util.serializer.SerializationUtil.*;
 
 
 @Entity(name = "users")
@@ -39,7 +33,6 @@ public class User implements Principal {
     @Column(unique = true)
     protected String newEmail;
 
-    @JsonIgnore
     protected String password;
 
     protected String firstName;
@@ -60,30 +53,23 @@ public class User implements Principal {
 
     protected String validationKey;
 
-    @JsonFormat(pattern = DATE_TIME_PATTERN)
     protected ZonedDateTime created;
 
-    @JsonFormat(pattern = DATE_TIME_PATTERN)
     protected ZonedDateTime updated;
 
-    @JsonFormat(pattern = DATE_TIME_PATTERN)
     protected ZonedDateTime lastLogin;
 
     protected String refreshId;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "user")
     protected List<Notification> notifications;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "user")
     protected List<SocialConnection> socialConnections;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "author")
     protected List<Ticket> createdTickets;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "user")
     protected List<UserTutorial> userTutorials;
 
@@ -133,7 +119,6 @@ public class User implements Principal {
     }
 
 
-    @JsonIgnore
     @Override
     public String getName() {
         return email;
@@ -143,6 +128,25 @@ public class User implements Principal {
         return firstName + " " + lastName;
     }
 
+    public User setPassword(String password) {
+        this.password = (password != null) ? BCrypt.hashpw(password, BCrypt.gensalt()) : null;
+        return this;
+    }
+
+    public boolean isNativeUser() {
+        return password != null && !password.isEmpty();
+    }
+
+    public User addSocialConnection(SocialConnection socialConnection) {
+        if (getSocialConnections() == null) {
+            this.socialConnections = new ArrayList<>();
+            this.socialConnections.add(socialConnection);
+        } else {
+            this.socialConnections.add(socialConnection);
+        }
+
+        return this;
+    }
 
     /**
      * User role enum
@@ -170,26 +174,5 @@ public class User implements Principal {
         public String toString() {
             return this.value;
         }
-    }
-
-
-    public User setPassword(String password) {
-        this.password = (password != null) ? BCrypt.hashpw(password, BCrypt.gensalt()) : null;
-        return this;
-    }
-
-    public boolean isNativeUser() {
-        return password != null && !password.isEmpty();
-    }
-
-    public User addSocialConnection(SocialConnection socialConnection) {
-        if (getSocialConnections() == null) {
-            this.socialConnections = new ArrayList<>();
-            this.socialConnections.add(socialConnection);
-        } else {
-            this.socialConnections.add(socialConnection);
-        }
-
-        return this;
     }
 }

@@ -6,8 +6,6 @@ import com.improver.exception.NotFoundException;
 import com.improver.repository.CompanyRepository;
 import com.improver.security.UserSecurityService;
 import com.improver.service.PaymentService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +27,7 @@ public class PaymentController {
         Contractor contractor = userSecurityService.currentPro();
         Company company = companyRepository.findById(companyId)
             .orElseThrow(NotFoundException::new);
-        paymentService.replenishBalance(company, contractor, amount);
+        paymentService.topUpBalance(company, contractor, amount);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

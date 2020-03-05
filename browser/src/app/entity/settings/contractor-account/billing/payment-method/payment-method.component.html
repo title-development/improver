@@ -6,7 +6,7 @@
         <div class="balance-value">Balance:
           <span>{{billingService.billing.balance / 100 | currency:'USD':'symbol'}}</span></div>
         <button cv-button (click)="!paymentCardsProcessing && openAddMoney()"
-                [hidden]="cards?.length < 1 || paymentCardsProcessing">Replenish balance
+                [hidden]="cards?.length < 1 || paymentCardsProcessing">Top up balance
         </button>
 
       </div>

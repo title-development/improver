@@ -11,8 +11,8 @@ export class User {
   updated?: string;
   created?: string;
   iconUrl?: string;
-  validationKey?: string;
-  deleted?: boolean;
-  blocked?: boolean;
-  activated?: boolean;
+  isDeleted?: boolean;
+  isBlocked?: boolean;
+  isActivated?: boolean;
+  isNativeUser?: boolean;
 }

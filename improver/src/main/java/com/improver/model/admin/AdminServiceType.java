@@ -16,7 +16,7 @@ public class AdminServiceType {
     private String name;
     private String description;
     private String imageUrl;
-    private boolean active;
+    private Boolean isActive;
     private List<String> labels;
     private int rating;
     private int leadPrice;
@@ -28,7 +28,7 @@ public class AdminServiceType {
         this.name = serviceType.getName();
         this.description = serviceType.getDescription();
         this.imageUrl = serviceType.getImageUrl();
-        this.active = serviceType.isActive();
+        this.isActive = serviceType.isActive();
         this.labels = serviceType.getLabels();
         this.rating = serviceType.getRating();
         this.leadPrice = serviceType.getLeadPrice();

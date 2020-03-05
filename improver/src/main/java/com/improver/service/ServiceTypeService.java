@@ -98,7 +98,7 @@ public class ServiceTypeService {
 
         serviceType.setName(adminServiceType.getName());
         serviceType.setDescription(adminServiceType.getDescription());
-        serviceType.setActive(adminServiceType.isActive());
+        serviceType.setActive(adminServiceType.getIsActive());
         serviceType.setRating(adminServiceType.getRating());
         serviceType.setLabels(adminServiceType.getLabels());
         serviceType.setLeadPrice(adminServiceType.getLeadPrice());

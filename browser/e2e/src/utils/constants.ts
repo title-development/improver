@@ -71,7 +71,7 @@ export const dashboardCurrentUrl = "https://localhost:4200/pro/dashboard";
 export const billingHints = {
   noAddedPaymentCardHeader: "Please add a credit/debit card to finish your account setup",
   selectDefaultPaymentCard: "Select your default payment method",
-  setAmountToReplenish: "Please set an amount of money you want to replenish your balance.\nThis is a one time charge.",
+  setAmountToReplenish: "Please set an amount of money you want to top up your balance.\nThis is a one time charge.",
   };
 
 export const signUpProHints = {

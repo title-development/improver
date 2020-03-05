@@ -33,7 +33,7 @@ public class ServiceType {
     private String imageUrl;
 
     @Column(columnDefinition = "boolean default true")
-    private boolean active = true;
+    private boolean isActive = true;
 
     @Column(columnDefinition = "varchar(16000)")
     private String labels;
@@ -60,7 +60,7 @@ public class ServiceType {
     public ServiceType(AdminServiceType adminServiceType, List<Trade> trades, String imageUrl) {
         this.name = adminServiceType.getName();
         this.description = adminServiceType.getDescription();
-        this.active = adminServiceType.isActive();
+        this.isActive = adminServiceType.getIsActive();
         this.rating = adminServiceType.getRating();
         this.leadPrice = adminServiceType.getLeadPrice();
         this.labels = SerializationUtil.toJson(adminServiceType.getLabels());

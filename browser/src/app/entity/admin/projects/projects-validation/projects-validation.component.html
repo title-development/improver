@@ -84,7 +84,7 @@
           {{row[col.field] | date: 'MMM d, y, h:mm a'}}
         </span>
 
-        <span *ngSwitchCase="'lead'">
+        <span *ngSwitchCase="'isLead'">
           <i class="pi pi-check" *ngIf="row[col.field]"></i>
           <i class="pi pi-ban" *ngIf="!row[col.field]"></i>
         </span>

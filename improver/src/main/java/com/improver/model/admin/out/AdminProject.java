@@ -36,9 +36,9 @@ public class AdminProject {
     private String reasonDescription;
     private int leadPrice;
     private int freePositions;
-    private boolean isLead;
+    private Boolean isLead;
     private String notes;
-    private boolean hasProjectRequests;
+    private Boolean hasProjectRequests;
 
     private List<CompanyProjectRequest> projectRequests;
     private List<ProjectAction> projectActions;
@@ -57,7 +57,7 @@ public class AdminProject {
             .setReasonDescription(project.getReasonDescription())
             .setLeadPrice(project.getLeadPrice())
             .setFreePositions(project.getFreePositions())
-            .setLead(project.isLead())
+            .setIsLead(project.isLead())
             .setNotes(project.getNotes())
             .setHasProjectRequests(project.hasProjectRequests());
     }

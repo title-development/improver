@@ -1,6 +1,5 @@
 package com.improver.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.improver.model.in.registration.CompanyDetails;
 import lombok.Data;
 import lombok.ToString;
@@ -15,15 +14,11 @@ import static com.improver.util.database.DataAccessUtil.*;
 @Data
 @Accessors(chain = true)
 @Entity(name = "companies")
-//@Table(name = "companies")
 public class Company {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Deprecated
-    private String uri;
 
     @Column(nullable = false, unique = true)
     private String name;
@@ -55,17 +50,14 @@ public class Company {
     private boolean isApproved;
 
     @ToString.Exclude
-    @JsonIgnore
     @OneToMany(mappedBy = "company")
     private List<Contractor> contractors;
 
     @ToString.Exclude
-    @JsonIgnore
     @OneToMany(mappedBy = "company")
     private List<UnavailabilityPeriod> unavailabilityPeriods;
 
     @ToString.Exclude
-    @JsonIgnore
     @ManyToMany
     @JoinTable(name="company_service_types",
         joinColumns=@JoinColumn(name="company_id", referencedColumnName="id"),
@@ -73,7 +65,6 @@ public class Company {
     private List<ServiceType> serviceTypes;
 
     @ToString.Exclude
-    @JsonIgnore
     @ManyToMany
     @JoinTable(name="company_trades",
         joinColumns=@JoinColumn(name="company_id", referencedColumnName="id"),
@@ -81,7 +72,6 @@ public class Company {
     private List<Trade> trades;
 
     @ToString.Exclude
-    @JsonIgnore
     @OneToMany(mappedBy = "company")
     private List<Area> areas;
 
@@ -90,17 +80,14 @@ public class Company {
     private List<License> licenses;
 
     @ToString.Exclude
-    @JsonIgnore
     @OneToMany(mappedBy = "company")
     private List<DemoProject> demoProjects;
 
     @ToString.Exclude
-    @JsonIgnore
     @OneToMany(mappedBy = "company")
     private List<Review> reviews;
 
     @ToString.Exclude
-    @JsonIgnore
     @OneToMany(mappedBy = "company")
     private List<Transaction> transactions;
 
@@ -109,21 +96,17 @@ public class Company {
     private Billing billing;
 
     @ToString.Exclude
-    @JsonIgnore
     @OneToMany(mappedBy = "company")
     private List<CompanyAction> actions;
 
-    //@Column(columnDefinition= "TIMESTAMP")
     private ZonedDateTime created;
 
-    //@Column(columnDefinition= "TIMESTAMP")
     private ZonedDateTime updated;
 
     @Column(columnDefinition = CD_BOOLEAN)
     private boolean isDeleted = false;
 
     @ToString.Exclude
-    @JsonIgnore
     @OneToOne(mappedBy = "company", fetch = FetchType.LAZY)
     private CompanyConfig companyConfig;
 

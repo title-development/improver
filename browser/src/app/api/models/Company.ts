@@ -12,12 +12,11 @@ export class Company {
   internalPhone?: any;
   licenses?: any;
   location?: Location;
-  deleted: boolean;
+  isDeleted: boolean;
   name?: string;
   rating?: number;
   reviewCount?: number;
   sumRating: number;
-  uri: null;
   siteUrl?: string;
-  approved: boolean;
+  isApproved: boolean;
 }

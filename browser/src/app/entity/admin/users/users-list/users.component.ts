@@ -33,21 +33,18 @@ export class AdminUsersComponent {
     {field: 'id', header: 'Id', active: true},
     {field: 'iconUrl', header: 'Icon', active: true},
     {field: 'email', header: 'Email', active: true},
-    {field: 'newEmail', header: 'New email', active: false},
     {field: 'displayName', header: 'Display name', active: true},
     {field: 'firstName', header: 'First name', active: false},
-    {field: 'LastName', header: 'Last name', active: false},
+    {field: 'lastName', header: 'Last name', active: false},
     {field: 'role', header: 'Role', active: true},
     {field: 'internalPhone', header: 'Internal phone', active: true},
-    {field: 'validationKey', header: 'Validation Key', active: false},
-    {field: 'deleted', header: 'Deleted', active: true},
-    {field: 'blocked', header: 'Blocked', active: true},
-    {field: 'activated', header: 'Activated', active: true},
+    {field: 'isDeleted', header: 'Deleted', active: true},
+    {field: 'isBlocked', header: 'Blocked', active: true},
+    {field: 'isActivated', header: 'Activated', active: true},
     {field: 'created', header: 'Created', active: true},
     {field: 'updated', header: 'Updated', active: true},
     {field: 'lastLogin', header: 'Last login', active: false},
-    {field: 'credentialExpired', header: 'Credential Expired', active: false},
-    {field: 'nativeUser', header: 'Native User', active: false},
+    {field: 'isNativeUser', header: 'Native User', active: false},
   ];
 
   selectedColumns = this.columns.filter(column => column.active);
@@ -86,27 +83,27 @@ export class AdminUsersComponent {
         label: 'Block User',
         icon: 'fa fa-ban',
         command: () => this.blockUser(this.selectedUser),
-        visible: (this.selectedUser !== undefined) && !this.selectedUser.deleted && !this.selectedUser.blocked && this.selectedUser.role != Role.ADMIN,
+        visible: (this.selectedUser !== undefined) && !this.selectedUser.isDeleted && !this.selectedUser.isBlocked && this.selectedUser.role != Role.ADMIN,
         styleClass: 'danger-menu-button'
       },
       {
         label: 'Unblock User',
         icon: 'fa fa-undo',
         command: () => this.unblockUser(this.selectedUser),
-        visible: (this.selectedUser !== undefined) && !this.selectedUser.deleted && this.selectedUser.blocked && this.selectedUser.role != Role.ADMIN
+        visible: (this.selectedUser !== undefined) && !this.selectedUser.isDeleted && this.selectedUser.isBlocked && this.selectedUser.role != Role.ADMIN
       },
       {
         label: 'Delete User',
         icon: 'fa fa-trash',
         command: () => this.deleteUser(this.selectedUser),
-        visible: (this.selectedUser !== undefined) && !this.selectedUser.deleted && this.selectedUser.role != Role.ADMIN,
+        visible: (this.selectedUser !== undefined) && !this.selectedUser.isDeleted && this.selectedUser.role != Role.ADMIN,
         styleClass: 'danger-menu-button'
       },
       {
         label: 'Restore User',
         icon: 'fas fa-undo',
         command: () => this.restoreUser(this.selectedUser),
-        visible: (this.selectedUser !== undefined) && this.selectedUser.deleted && this.selectedUser.role != Role.ADMIN
+        visible: (this.selectedUser !== undefined) && this.selectedUser.isDeleted && this.selectedUser.role != Role.ADMIN
       }
     ];
   }
@@ -180,7 +177,7 @@ export class AdminUsersComponent {
       accept: () => {
         this.userService.deleteAccount(user.id).subscribe(
           res => {
-            user.deleted = true;
+            user.isDeleted = true;
             this.popUpService.showSuccess(`<b>${user.displayName}</b> has been deleted`);
           },
           error => {
@@ -198,7 +195,7 @@ export class AdminUsersComponent {
       accept: () => {
         this.userService.restoreAccount(user.id).subscribe(
           res => {
-            user.deleted = false;
+            user.isDeleted = false;
             this.popUpService.showSuccess(`<b>${user.displayName}</b> has been restored`);
           },
           error => {
@@ -215,7 +212,7 @@ export class AdminUsersComponent {
       accept: () => {
         this.userService.blockUser(user.id, true).subscribe(
           res => {
-            user.blocked = true;
+            user.isBlocked = true;
             this.popUpService.showSuccess(`<b>${user.displayName}</b> has been blocked`);
           },
           error => {
@@ -232,7 +229,7 @@ export class AdminUsersComponent {
       accept: () => {
         this.userService.blockUser(user.id, false).subscribe(
           res => {
-            user.blocked = false;
+            user.isBlocked = false;
             this.popUpService.showSuccess(`<b>${user.displayName}</b> has been unblocked`);
           },
           error => {

@@ -19,11 +19,11 @@ public class AdminProjectRequest {
     private ProjectRequest.Status status;
     private ProjectRequest.Reason reason;
     private String reasonComment;
-    private boolean isManual;
+    private Boolean isManual;
     private String serviceType;
     private long projectId;
     private Project.Status projectStatus;
-    private boolean isRefund;
+    private Boolean isRefund;
     private UserModel customer;
     private UserModel contractor;
     @JsonFormat(pattern = DATE_TIME_PATTERN)

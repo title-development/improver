@@ -4,7 +4,6 @@ import com.improver.entity.Notification;
 import com.improver.entity.User;
 import com.improver.repository.NotificationRepository;
 import com.improver.security.UserSecurityService;
-import com.improver.service.ChatService;
 import com.improver.util.annotation.PageableSwagger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

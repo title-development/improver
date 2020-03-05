@@ -691,13 +691,13 @@ public class MailService {
             .toArray(String[]::new);
     }
 
-    public void sendBalanceReplenished(Company company, int amount) {
+    public void sendBalanceTopUp(Company company, int amount) {
         Context context = contextTemplate();
         context.setVariable(TITLE, "Balance top-up");
-        context.setVariable(BODY, "You have replenished the balance by " + highlight(formatUsd(amount)) + ".");
+        context.setVariable(BODY, "You top up the balance by " + highlight(formatUsd(amount)) + ".");
         context.setVariable(CONFIRM_URL, siteUrl + BILLING_URL);
         context.setVariable(CONFIRM_BTN_TEXT, "Check billing");
-        mailClient.sendMail("Balance replenished", CONFIRMATION_TEMPLATE, context, MailHolder.MessageType.BILLING, getRecipients(company));
+        mailClient.sendMail("Balance top-up", CONFIRMATION_TEMPLATE, context, MailHolder.MessageType.BILLING, getRecipients(company));
     }
 
 

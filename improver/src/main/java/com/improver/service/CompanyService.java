@@ -6,6 +6,7 @@ import com.improver.exception.InternalServerException;
 import com.improver.exception.NotFoundException;
 import com.improver.exception.ValidationException;
 import com.improver.model.CompanyInfo;
+import com.improver.model.admin.CompanyModel;
 import com.improver.model.in.registration.CompanyDetails;
 import com.improver.model.in.registration.CompanyRegistration;
 import com.improver.model.out.CompanyProfile;
@@ -90,7 +91,7 @@ public class CompanyService {
 
 
 
-    public void updateCompany(long companyId, Company company, String base64icon, MultipartFile coverImage, Admin currentAdmin) {
+    public void updateCompany(long companyId, CompanyModel company, String base64icon, MultipartFile coverImage, Admin currentAdmin) {
         Company existed = companyRepository.findById(companyId)
             .orElseThrow(NotFoundException::new);
         if (userSecurityService.currentUser().getRole() == User.Role.ADMIN || userSecurityService.currentUser().getRole() == User.Role.SUPPORT) {

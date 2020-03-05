@@ -1,12 +1,10 @@
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { ContractorDashboardComponent } from './contractor-dashboard.component';
-import { LevelProgressBarComponent } from './level-progress-bar/level-progress-bar.component';
 import { ProjectsComponent } from './projects/projects.component';
 import { ProjectsListComponent } from './projects/projects-list/projects-list.component';
 import { MoneyChartsComponent } from './money-charts/money-charts.component';
 import { DashboardMapComponent } from './find-more-leads/find-more-card.component';
-
 import { MatListModule } from '@angular/material/list';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ChartsModule } from 'ng2-charts';
@@ -54,7 +52,6 @@ const contractorDashboardRouting: ModuleWithProviders = RouterModule.forChild([
   ],
   declarations: [
     ContractorDashboardComponent,
-    LevelProgressBarComponent,
     ProjectsComponent,
     ProjectsListComponent,
     MoneyChartsComponent,
