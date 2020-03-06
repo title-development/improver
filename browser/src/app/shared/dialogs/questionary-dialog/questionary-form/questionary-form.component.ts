@@ -9,7 +9,6 @@ import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 })
 
 export class QuestionaryFormComponent implements OnInit {
-  changeBg = false;
 
   constructor(public questionaryControlService: QuestionaryControlService,
               public currentDialogRef: MatDialogRef<any>,

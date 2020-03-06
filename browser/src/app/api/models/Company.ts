@@ -1,5 +1,6 @@
 import { Location } from '../../model/data-model';
 import { Billing } from "./Billing";
+import { AdminContractor } from "./AdminContractor";
 
 export class Company {
   backgroundUrl?: any;
@@ -19,4 +20,5 @@ export class Company {
   sumRating: number;
   siteUrl?: string;
   isApproved: boolean;
+  contractors?: AdminContractor[]
 }

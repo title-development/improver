@@ -4,9 +4,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.improver.entity.CompanyAction;
 import com.improver.model.CompanyInfo;
 import com.improver.model.NameIdTuple;
+import com.improver.model.admin.AdminContractor;
 import com.improver.model.admin.CompanyModel;
+import com.improver.model.admin.UserModel;
 import com.improver.model.out.project.ProjectRequestShort;
 import com.improver.repository.CompanyRepository;
+import com.improver.repository.ContractorRepository;
 import com.improver.repository.ServiceTypeRepository;
 import com.improver.security.UserSecurityService;
 import com.improver.security.annotation.CompanyMemberOrAdminAccess;
@@ -25,6 +28,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 import static com.improver.application.properties.Path.*;
 import static com.improver.util.serializer.SerializationUtil.fromJson;
 
@@ -38,6 +43,7 @@ public class CompanyController {
     @Autowired private UserSecurityService userSecurityService;
     @Autowired private AccountService accountService;
     @Autowired private ServiceTypeRepository serviceTypeRepository;
+    @Autowired private ContractorRepository contractorRepository;
 
 
     @SupportAccess
@@ -114,4 +120,12 @@ public class CompanyController {
         companyRepository.approve(companyId, approved);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @SupportAccess
+    @GetMapping(COMPANY_ID + CONTRACTORS)
+    public ResponseEntity<List<UserModel>> getContractors(@RequestParam(required = false) Long id) {
+        List<UserModel> contractors = contractorRepository.findByCompanyId(id);
+        return new ResponseEntity<>(contractors, HttpStatus.OK);
+    }
+
 }

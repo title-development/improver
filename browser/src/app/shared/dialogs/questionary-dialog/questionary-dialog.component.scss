@@ -6,7 +6,6 @@
   overflow-x: hidden;
 
   .dialog-content-container {
-    background-color: rgba(0, 0, 0, 0.64);
     overflow: visible;
     display: flex;
     flex-direction: column;
@@ -126,7 +125,6 @@
   height: 100%;
   align-items: center;
   justify-content: center;
-  background: url(/../../../../assets/img/start-screen-background.png) no-repeat;
   background-size: cover;
   .background {
     display: flex;
@@ -135,7 +133,6 @@
     flex: 1;
     align-items: center;
     justify-content: center;
-    background-color: rgba(0,0,0,.64);
     background-size: cover;
   }
 }

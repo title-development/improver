@@ -330,7 +330,7 @@ export class ProjectActionService {
       this.questionaryControlService.withServiceType = true;
     } else {
       this.questionaryControlService.trade = selected;
-      this.questionaryControlService.needServiceTypeSelect = true;
+      this.questionaryControlService.withServiceType = false;
     }
     this.checkPreQuestionary();
     this.questionaryDialogRef = this.dialog.open(dialogsMap['questionary-dialog'], questionaryDialogConfig);
@@ -338,11 +338,12 @@ export class ProjectActionService {
       .afterClosed()
       .subscribe(result => {
         this.questionaryControlService.resetQuestionaryForm();
-        this.reset();
         this.questionaryDialogRef = null;
         this.questionaryControlService.serviceType = null;
+        this.questionaryControlService.withServiceType = false;
+        this.questionaryControlService.trade = null;
       });
-  };
+  }
 
   private checkPreQuestionary() {
     console.log("checkPreQuestionary");
@@ -465,12 +466,8 @@ export class ProjectActionService {
       .afterClosed()
       .subscribe(result => {
         this.questionaryControlService.resetQuestionaryForm();
-        this.reset();
+        this.zipIsSupported = true;
       });
-  };
-
-  reset() {
-    this.zipIsSupported = true;
   }
 
   projectUpdated(): void {

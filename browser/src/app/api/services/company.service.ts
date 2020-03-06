@@ -179,5 +179,8 @@ export class CompanyService {
     return this.http.post(`${this.companyUrl}/${companyId}/approve`, null, { params: params});
   }
 
+  getContractors(companyId: string): Observable<any> {
+    return this.http.get(`${this.companyUrl}/${companyId}/contractors`);
+  }
 
 }

@@ -1,7 +1,7 @@
 <div class="form-row" [formGroup]="questionaryControlService.mainForm">
 
   <div #defaultQuestion class="form-element-wrapper text-input-wrapper" [formGroupName]="'defaultQuestionaryGroup'"
-       *ngIf="questionaryControlService.trade && !questionaryControlService.serviceType">
+       *ngIf="questionaryControlService.trade && !questionaryControlService.withServiceType">
     <h2 class="question-title">Please, specify service that you need?</h2>
     <div class="text-input-group"
          [cvSpinner]="false"

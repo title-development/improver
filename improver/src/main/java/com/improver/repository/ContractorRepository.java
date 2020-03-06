@@ -2,11 +2,13 @@ package com.improver.repository;
 
 import com.improver.entity.Contractor;
 import com.improver.model.QuickReply;
+import com.improver.model.admin.UserModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -23,4 +25,12 @@ public interface ContractorRepository extends JpaRepository<Contractor, Long> {
     QuickReply getQuickReply(long contractorId);
 
     Optional<Contractor> getContractorByRefCode(String refCode);
+
+    @Query("SELECT new com.improver.model.admin.UserModel(pro) " +
+        "FROM com.improver.entity.Contractor pro " +
+        "INNER JOIN pro.company c " +
+        "WHERE pro.company.id = c.id AND " +
+        "(:id IS null OR c.id = :id)")
+    List<UserModel> findByCompanyId(Long id);
+
 }

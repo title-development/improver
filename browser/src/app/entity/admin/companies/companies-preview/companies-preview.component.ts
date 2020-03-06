@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { Pagination, Review, ServiceType } from '../../../../model/data-model';
 import { ReviewService } from '../../../../api/services/review.service';
 import { ReviewRating } from '../../../../api/models/ReviewRating';
@@ -10,13 +10,14 @@ import { BillingService } from '../../../../api/services/billing.service';
 import { Project } from '../../../../api/models/Project';
 import { Billing } from "../../../../api/models/Billing";
 import Transaction = Billing.Transaction;
+import { AdminContractor } from "../../../../api/models/AdminContractor";
 
 @Component({
   selector: 'company-preview',
   templateUrl: './companies-preview.component.html',
   styleUrls: ['./companies-preview.component.scss']
 })
-export class CompaniesPreviewComponent implements OnChanges {
+export class CompaniesPreviewComponent implements OnInit, OnChanges {
   @Input() company: Company;
 
   reviewDialogToggle: boolean = false;
@@ -41,6 +42,10 @@ export class CompaniesPreviewComponent implements OnChanges {
               private billingService: BillingService) {
   }
 
+  ngOnInit(): void {
+    this.getContractors()
+  }
+
   selectReview(selection: { originalEvent: MouseEvent, data: any }): void {
     this.reviewDialogToggle = !this.reviewDialogToggle;
     this.selectedReview = selection.data;
@@ -51,6 +56,11 @@ export class CompaniesPreviewComponent implements OnChanges {
     if (typeof callback == 'function') {
       callback.call(this, pagination);
     }
+  }
+
+  getContractors() {
+    this.companyService.getContractors(this.company.id).subscribe(
+      (contractors: Array<AdminContractor>) => this.company.contractors = contractors);
   }
 
   getProjects(pagination: Pagination): void {

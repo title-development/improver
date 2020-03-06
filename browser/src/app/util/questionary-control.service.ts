@@ -19,10 +19,9 @@ export class QuestionaryControlService {
 
   public defaultQuestionaryLength = this.DEFAULT_QUESTIONARY_LENGTH;
 
-  public showQuestionary = false;
+  public showQuestionary = true;
   public questionaryIsLoading = false;
   public currentQuestionIndex = -2;
-  public needServiceTypeSelect: boolean = false;
   public customerHasPhone: boolean = false;
   public questionaryLength = 0;
   public totalQuestionaryLength;
@@ -121,7 +120,6 @@ export class QuestionaryControlService {
   }
 
   resetQuestionaryForm() {
-    this.showQuestionary = false;
     this.currentQuestionIndex = -2;
     this.questionaryLength = 0;
     this.totalQuestionaryLength = 0;
