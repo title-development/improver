@@ -10,15 +10,12 @@
 .top-page-header {
   display: flex;
   flex-direction: row;
+  justify-content: center;
   @include response-to(xs) {
     .lead-title {
       width: 100%;
       text-align: center;
     }
-  }
-
-  &.step-two {
-    justify-content: center;
   }
 
   .lead-title {
@@ -195,7 +192,7 @@
 
           .label {
             font-size: 14px;
-            color: $black-500;
+            color: $black-secondary;
           }
           .value {
             font-size: 16px;
@@ -215,7 +212,7 @@
 
           .label {
             font-size: 14px;
-            color: $black-500;
+            color: $black-secondary;
           }
           .value {
             font-size: 14px;
@@ -234,7 +231,7 @@
 
           .label {
             font-size: 14px;
-            color: $black-500;
+            color: $black-secondary;
           }
           .value {
             font-size: 14px;
@@ -477,6 +474,12 @@
         width: 84px;
         height: 84px;
         vertical-align: bottom;
+        margin-bottom: 24px;
+        @include response-to(sm) {
+          margin-bottom: 8px;
+          width: 60px;
+          height: 60px;
+        }
       }
     }
 
@@ -484,6 +487,10 @@
       margin-top: 24px;
       display: flex;
       flex-direction: column;
+
+      @include response-to(sm) {
+        margin-top: 16px;
+      }
 
       .purchase-info-row {
         display: flex;
@@ -593,11 +600,18 @@
   &.step-two {
     margin-top: 24px;
     padding: 0 12px;
+    justify-content: center;
     .lead-title {
       font-size: 24px;
       font-weight: 600;
       color: $black-primary;
       margin: 24px 0 24px 0;
+      text-align: center;
+      @include response-to(sm) {
+        font-size: 20px;
+        margin-bottom: 8px;
+        margin-top: 12px;
+      }
     }
   }
 }
@@ -606,10 +620,15 @@
   margin: auto;
   font-size: 16px;
   text-align: center;
-  color: $black-400;
+  color: $black-secondary;
   padding-bottom: 40px;
   padding-top: 32px;
   max-width: 484px;
+  @include response-to(sm) {
+    font-size: 14px;
+    padding-bottom: 16px;
+    padding-top: 16px;
+  }
 }
 
 .purchase-terms-block {

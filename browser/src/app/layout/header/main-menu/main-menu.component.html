@@ -41,7 +41,7 @@
       <a routerLink="/pro/settings/scheduling-availability" (click)="close()">Vacation Schedule</a>
     </div>
     <div class="user-role" *ngIf="securityService.isAuthenticated() && (securityService.hasRole(Role.ADMIN) || securityService.hasRole(Role.SUPPORT) || securityService.hasRole(Role.STAKEHOLDER))">
-      <a routerLink="/admin" (click)="close()" style="padding: 0;">Admin Panel</a>
+      <a routerLink="/admin" (click)="close()">Admin Panel</a>
     </div>
 
     <div class="user-role unauthorized-menu" *ngIf="!securityService.isAuthenticated() && ( securityService.hasRole(Role.ANONYMOUS) || securityService.hasRole(Role.INCOMPLETE_PRO))">
