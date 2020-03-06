@@ -35,28 +35,36 @@ public class CompanyConfigService {
     @Autowired private StaffActionLogger staffActionLogger;
 
 
-    public void updateCoverageConfig(CompanyConfig.CoverageConfig config, Company company, Contractor contractor) throws ThirdPartyException {
+    public void updateCoverageConfig(CompanyConfig.CoverageConfig config, Company company, Contractor contractor)   {
         if (config.isManualMode()) {
             updateAreas(company, config.getZips());
             CompanyConfig companyConfig = company.getCompanyConfig();
             companyConfig.getCoverageConfig().updateTo(config);
             companyConfigRepository.save(companyConfig);
         } else {
-            updateCoverageByRadius(company, config.getCenterLat(), config.getCenterLng(), config.getRadius());
+            updateCoverageByRadius(company, config.getCenterLat(), config.getCenterLng(), config.getRadius(), config.getZips());
         }
 
     }
 
-    private void updateCoverageByRadius(Company company, double lat, double lng, int radius) throws ThirdPartyException {
-        List<String> zipCodes = boundariesService.getZipCodesInRadius(lat, lng, radius);
+    public void initCompanyCoverage(CompanyConfig.CoverageConfig config, Company company, Contractor contractor) {
+        List<String> zipCodes = null;
+        try {
+            zipCodes = boundariesService.getZipCodesInRadius(config.getCenterLat(), config.getCenterLng(), config.getRadius());
+        } catch (ThirdPartyException e) {
+            zipCodes = Collections.emptyList();
+            log.error("Could not update Company coverage for " + company.getName(), e);
+        }
+        updateCoverageByRadius(company, config.getCenterLat(), config.getCenterLng(), config.getRadius(), zipCodes);
+    }
+
+    private void updateCoverageByRadius(Company company, double lat, double lng, int radius, List<String> zipCodes)   {
         List<String> served = servedZipRepository.getAllServedZips();
         zipCodes.retainAll(served);
-
         updateAreas(company, zipCodes);
         CompanyConfig companyConfig = company.getCompanyConfig();
         CompanyConfig.CoverageConfig coverageConfig = companyConfig.getCoverageConfig();
-        coverageConfig
-            .setManualMode(false)
+        coverageConfig.setManualMode(false)
             .setRadius(radius);
 
         // fix for case if all coverage is in disabled area
@@ -69,7 +77,6 @@ public class CompanyConfigService {
                 .setCenterLat(company.getLocation().getLat())
                 .setCenterLng(company.getLocation().getLng());
         }
-
         companyConfigRepository.save(companyConfig);
     }
 

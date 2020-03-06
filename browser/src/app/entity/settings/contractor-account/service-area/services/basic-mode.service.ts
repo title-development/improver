@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { of, Subject } from 'rxjs';
-import { catchError, finalize, takeUntil } from 'rxjs/operators';
+import { Observable, of, Subject } from 'rxjs';
+import { catchError, finalize, takeUntil, tap } from 'rxjs/operators';
 import { CompanyCoverageConfig } from '../../../../../api/models/CompanyCoverageConfig';
 import { CoverageConfig } from '../../../../../api/models/CoverageConfig';
 import { ZipBoundaries } from '../../../../../api/models/ZipBoundaries';
@@ -47,35 +47,32 @@ export class BasicModeService implements OnDestroy {
       return;
     }
     this.getZipBoundaries();
+    this.coverageService.unsavedChanges$.next(false);
   }
 
-  getZipsByRadius(center: google.maps.LatLng, radius: number): void {
+  getZipsByRadiusAndDraw(center: google.maps.LatLng, radius: number): Observable<ZipBoundaries> {
     this.coverageService.fetching$.next(true);
     this._coverageConfig.radius = radius = Math.round(radius);
-    // TODO: Check this. Is it needed? It makes circular looping.
-    // this.circleService.update(radius, center);
-    this.gMapUtils.clearCoverageDataLayers(this.gMap);
-    this.boundariesService.queryByRadius(center.lat(), center.lng(), radius).pipe(
+    return this.boundariesService.queryByRadius(center.lat(), center.lng(), radius).pipe(
       catchError((err) => {
         this.popUpService.showInternalServerError();
-
         return of(null);
       }),
       takeUntil(this.destroyed$),
       finalize(() => this.coverageService.fetching$.next(false)),
-    ).subscribe((zipBoundaries: ZipBoundaries | null) => {
-      if (!zipBoundaries) {
-        return;
-      }
-      this.gMapUtils.drawZipBoundaries(this.gMap, this.gMapUtils.markAreasZips(zipBoundaries, this.servedZipCodes));
-      this.gMap.setCenter(center);
-      this.newCoverageArea = zipBoundaries.features
-        .map((feature) => feature.properties.zip)
-        .filter(zipCode => this.servedZipCodes.includes(zipCode));
-      this.isHasUnsavedChanges();
-    }, (err) => {
-      console.log(err);
-    });
+      tap((zipBoundaries: ZipBoundaries | null) => {
+        if (!zipBoundaries) {
+          return;
+        }
+        this.gMapUtils.clearCoverageDataLayers(this.gMap);
+        this.gMapUtils.drawZipBoundaries(this.gMap, this.gMapUtils.markAreasZips(zipBoundaries, this.servedZipCodes));
+        this.gMap.setCenter(center);
+        this.newCoverageArea = zipBoundaries.features
+          .map((feature) => feature.properties.zip)
+          .filter(zipCode => this.servedZipCodes.includes(zipCode));
+        this.isHasUnsavedChanges();
+      })
+    );
   }
 
   destroyMode(): void {

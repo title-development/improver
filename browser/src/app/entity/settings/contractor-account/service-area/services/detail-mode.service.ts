@@ -83,6 +83,7 @@ export class DetailModeService implements OnDestroy {
     this.gMap.setZoom(10);
     this.gMap.setCenter(companyCoverageConfig.getCompanyLocationCenter());
     this.getZipBoundaries(gMap);
+    this.coverageService.unsavedChanges$.next(false);
 }
 
   destroyMode(): void {

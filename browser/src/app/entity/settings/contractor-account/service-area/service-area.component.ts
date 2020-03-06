@@ -61,6 +61,8 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate, 
 
   isSavingChanges: boolean = false;
   zipsHistory: ZipHistory;
+  circleCenter: google.maps.LatLng;
+  circleRadius: number;
   mapOptions: MapOptions = defaultMapOptions;
   mapStyles = mapStyle;
   infoWindow: ZipInfoWindow;
@@ -200,7 +202,9 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate, 
 
   onCompanyCirclePropsChanged(circleProps: ICircleProps): void {
     this.gMap.setCenter(circleProps.center);
-    this.basicMode.getZipsByRadius(circleProps.center, circleProps.radius);
+    this.coverageService.unsavedChanges$.next(true);
+    this.circleCenter = circleProps.center;
+    this.circleRadius = circleProps.radius;
   }
 
   undo(zip: string): void {
@@ -208,17 +212,22 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate, 
   }
 
   saveChanges(): void {
+    if (this.isDetailMode) {
+      this.updateCoverage();
+    } else {
+      this.basicMode.getZipsByRadiusAndDraw(this.circleCenter, this.circleRadius).subscribe((zipsFound: ZipBoundaries) => {
+        this.updateCoverage();
+      });
+    }
+  }
+
+  private updateCoverage(): void {
     const coverageConfig = this.isDetailMode ? this.detailsMode.coverageConfig : this.basicMode.coverageConfig;
     if (!coverageConfig.zips.length) {
       this.popUpService.showError('At least one zip should be in your Service Area!');
       return;
     }
     this.updateCoverageConfig(coverageConfig);
-    if (!this.isDetailMode) {
-      this.basicMode.getZipsByRadius(new google.maps.LatLng(this.basicMode.coverageConfig.centerLat,
-        this.basicMode.coverageConfig.centerLng),
-        this.basicMode.coverageConfig.radius)
-    }
   }
 
   ngOnDestroy(): void {

@@ -104,15 +104,11 @@ public class CompanyConfigController {
 
         Company company = companyRepository.findById(companyId)
             .orElseThrow(NotFoundException::new);
-        if(coverageConfig.isManualMode() && (coverageConfig.getZips() == null || coverageConfig.getZips().isEmpty())){
+        if (coverageConfig.isManualMode() && (coverageConfig.getZips() == null || coverageConfig.getZips().isEmpty())) {
             throw new ValidationException("Zip codes not provided for manual coverage mode");
         }
         Contractor contractor = userSecurityService.currentPro();
-        try {
-            companyConfigService.updateCoverageConfig(coverageConfig, company, contractor);
-        } catch (ThirdPartyException e) {
-            throw new InternalServerException("Error in request to Mapreflex API. " + e.getMessage(), e);
-        }
+        companyConfigService.updateCoverageConfig(coverageConfig, company, contractor);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

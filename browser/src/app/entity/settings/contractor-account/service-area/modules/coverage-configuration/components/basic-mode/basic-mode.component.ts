@@ -146,10 +146,12 @@ export class BasicModeComponent implements OnInit, OnDestroy, AfterViewInit {
         return;
       }
       const [center, radius] = data;
-      this.radius = radius;
-      this.circlePropsUpdated.emit({center, radius} as ICircleProps);
-      this.changeDetectorRef.markForCheck();
-      this.changeDetectorRef.detectChanges();
+      if (!center.equals(this.center) || radius != this.radius) {
+        this.radius = radius;
+        this.circlePropsUpdated.emit({center, radius} as ICircleProps);
+        this.changeDetectorRef.markForCheck();
+        this.changeDetectorRef.detectChanges();
+      }
     });
   }
 

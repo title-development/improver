@@ -39,7 +39,7 @@ export class ContractorLeadsSearchComponent implements OnDestroy {
   mapStyles = mapStyle;
   mediaQuery: MediaQuery;
   companyCoverageConfig: CompanyCoverageConfig;
-  @ViewChild(MatSidenav) private mdSidebar: MatSidenav;
+  @ViewChild(MatSidenav, {static: true}) private mdSidebar: MatSidenav;
   @ViewChild('leadsPanel') private leadsPanelEl: ElementRef;
   gMap;
 
