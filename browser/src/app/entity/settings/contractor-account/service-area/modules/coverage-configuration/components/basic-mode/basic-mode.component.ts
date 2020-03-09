@@ -38,6 +38,7 @@ export class BasicModeComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @Output() readonly circlePropsUpdated = new EventEmitter<ICircleProps>();
 
+  currentRadius: number = this.constants.MIN_COVERAGE_RADIUS;
   coverageRadiusStep: number;
   minCoverageRadius: number;
   maxCoverageRadius: number;
@@ -146,8 +147,8 @@ export class BasicModeComponent implements OnInit, OnDestroy, AfterViewInit {
         return;
       }
       const [center, radius] = data;
-      if (!center.equals(this.center) || radius != this.radius) {
-        this.radius = radius;
+      if (!center.equals(this.center) || radius != this.currentRadius) {
+        this.radius = this.currentRadius = radius;
         this.circlePropsUpdated.emit({center, radius} as ICircleProps);
         this.changeDetectorRef.markForCheck();
         this.changeDetectorRef.detectChanges();
