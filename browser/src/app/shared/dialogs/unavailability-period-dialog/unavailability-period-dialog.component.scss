@@ -13,7 +13,7 @@
     overflow-y: auto;
   }
   @include response(xs) {
-    width: 300px;
+    width: 100%;
   }
   @include response(sm) {
     width: 550px;
@@ -51,11 +51,20 @@ cv-input-field {
 .content {
   padding: 20px 24px;
   @include response(xs) {
-    width: 300px;
+    width: 100%;
   }
 }
 .range-picker {
   margin-top: 16px;
+
+  @include response-to(xs){
+    ::ng-deep .cv-date-range-picker {
+      justify-content: center;
+    }
+    ::ng-deep .month {
+      width: 100%;
+    }
+  }
 }
 .actions {
   padding: 0px 24px 16px;

@@ -8,6 +8,12 @@
   height: 72px;
 }
 
+.billing-content {
+  @include response(xs, sm){
+    width: 100%;
+  }
+}
+
 .account-nav-title {
   font-size: 24px;
   font-weight: 600;
