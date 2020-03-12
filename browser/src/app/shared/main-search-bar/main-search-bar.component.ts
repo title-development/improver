@@ -135,11 +135,9 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
       if (selectionCtrl.value) {
         this.userSearchService.findServiceTypeOrTrade(this.mainSearchFormGroup.value);
         if (this.resetAfterFind) {
-          setTimeout( ()=> {
-            this.mainSearchFormGroup.reset({
-              zipCodeCtrl: localStorage.getItem('zipCode')? localStorage.getItem('zipCode'): this.lastZipCode
-            });
-          },1000);
+          this.mainSearchFormGroup.reset({
+            zipCodeCtrl: localStorage.getItem('zipCode') ? localStorage.getItem('zipCode') : this.lastZipCode
+          });
         }
       }
     } else {

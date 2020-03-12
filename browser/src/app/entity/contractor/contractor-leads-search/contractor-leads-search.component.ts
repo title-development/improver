@@ -39,6 +39,7 @@ export class ContractorLeadsSearchComponent implements OnDestroy {
   mapStyles = mapStyle;
   mediaQuery: MediaQuery;
   companyCoverageConfig: CompanyCoverageConfig;
+  companyLocationsLatLng: google.maps.LatLng;
   @ViewChild(MatSidenav, {static: true}) private mdSidebar: MatSidenav;
   @ViewChild('leadsPanel') private leadsPanelEl: ElementRef;
   gMap;
@@ -148,8 +149,10 @@ export class ContractorLeadsSearchComponent implements OnDestroy {
     this.gMap = gMap;
     this.boundariesService.getUnsupportedArea()
       .pipe(takeUntil(this.destroyed$))
-      .subscribe((unsupportedArea: ZipBoundaries) =>
-        this.gMapUtils.drawZipBoundaries(this.gMap, unsupportedArea),
+      .subscribe((unsupportedArea: ZipBoundaries) => {
+          this.gMapUtils.drawZipBoundaries(this.gMap, unsupportedArea);
+          this.companyLocationsLatLng = this.companyCoverageConfig.getCompanyLocationCenter()
+        }
       );
   }
 

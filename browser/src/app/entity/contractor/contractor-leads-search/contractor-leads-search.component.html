@@ -151,7 +151,7 @@
   <imp-gmap-sidebar [gMap]="gMap"
                     [mapMinZoom]="mapOptions.minZoom"
                     [mapMaxZoom]="mapOptions.maxZoom"
-                    [center]="companyCoverageConfig?.getCompanyLocationCenter()"></imp-gmap-sidebar>
+                    [center]="companyLocationsLatLng"></imp-gmap-sidebar>
 </mat-sidenav-container>
 
 <ng-container *ngIf="mediaQuery?.xs || mediaQuery?.sm || mediaQuery?.md">

@@ -7,12 +7,13 @@ import { TradeService } from '../../api/services/trade.service';
 import { ServiceTypeService } from '../../api/services/service-type.service';
 import { PopUpMessageService } from '../../util/pop-up-message.service';
 import { getErrorMessage } from '../../util/functions';
-import { Trade } from '../../model/data-model';
+import { ServiceType, Trade } from '../../model/data-model';
 import { dialogsMap } from '../dialogs/dialogs.state';
 import { confirmDialogConfig } from '../dialogs/dialogs.configs';
 import { combineLatest, ReplaySubject } from 'rxjs';
 import { ScrollHolderService } from '../../util/scroll-holder.service';
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { UserSearchService } from "../../api/services/user-search.service";
 
 
 @Component({
@@ -39,6 +40,8 @@ export class ServicesSelectorComponent implements OnInit {
   tradesControl: FormGroup;
   public confirmDialogRef: MatDialogRef<any>;
   selectedServiceTypesCount: number;
+  dropdownHeight: number = 5;
+  errorMessage: string;
   model = {
     addingItem: ''
   };
@@ -55,7 +58,8 @@ export class ServicesSelectorComponent implements OnInit {
               public dialog: MatDialog,
               private serviceTypeService: ServiceTypeService,
               public  popUpMessageService: PopUpMessageService,
-              public scrollHolder: ScrollHolderService) {
+              public scrollHolder: ScrollHolderService,
+              public userSearchService: UserSearchService) {
     this.getTradesAndServiceTypes();
   }
 
@@ -159,27 +163,42 @@ export class ServicesSelectorComponent implements OnInit {
           label: 'Services',
           content: this.allServices
         });
-        this.filteredData = this.autocompleteData;
+        this.filteredData = this.allTrades;
       });
 
   }
 
-  addItem(form: NgForm) {
+  search(form: NgForm) {
     if (!this.model.addingItem || this.model.addingItem == '') {
       return;
     }
-    let item = this.model.addingItem as any;
-    console.log(item);
-    let tradeIndex = this.allTrades.findIndex((obj => obj.name == item.name));
-    if (tradeIndex >= 0) {
-      this.addTrade(item);
+    let itemModel = this.model.addingItem as any;
+    let service: ServiceType;
+    let trade: Trade;
+
+    if (itemModel && itemModel.name) {
+      trade = this.allTrades.find(item => item.name.toLowerCase() == itemModel.name.toLowerCase());
+      service = this.allServices.find(item => item.name.toLowerCase() == itemModel.name.toLowerCase());
     } else {
-      this.addService(item);
+      trade = this.allTrades.find(item => item.name.toLowerCase() == itemModel.toLowerCase());
+      service = this.allServices.find(item => item.name.toLowerCase() == itemModel.toLowerCase());
     }
-    form.reset();
+    this.addItem(form, trade, service);
   }
 
-  addService(service) {
+  private addItem(form: NgForm, trade: Trade, service: ServiceType){
+    if (trade) {
+      this.addTrade(trade);
+      form.resetForm();
+    } else if (service) {
+      this.addService(service);
+      form.resetForm();
+    } else {
+      this.errorMessage = 'No Results'
+    }
+  }
+
+  private addService(service) {
     let serviceIndex = this.tradesAndServiceTypes.services.findIndex((obj => obj.id == service.id));
     if (serviceIndex < 0) {
       service.enabled = true;
@@ -228,7 +247,7 @@ export class ServicesSelectorComponent implements OnInit {
     this.updateTradesAndServices();
   }
 
-  addTrade(trade) {
+  private addTrade(trade) {
     let tradeIndex = this.tradesAndServiceTypes.trades.findIndex((obj => obj.id == trade.id));
     if (tradeIndex < 0) {
       this.tradeService.getServiceTypes(trade.id)
@@ -325,22 +344,14 @@ export class ServicesSelectorComponent implements OnInit {
     }).length;
   }
 
-  filter(str: string) {
-    if (str) {
-      this.filteredData = this.autocompleteData.map(obj => {
-        let clone = {...obj};
-        clone.content = clone.content.filter(item => {
-          const regExp: RegExp = new RegExp(`\\b${str}`, 'gmi');
-          return regExp.test(item.name);
-        });
-        if (clone.content.length > 0) {
-          return clone;
-        } else {
-          return null;
-        }
-      }).filter(item => item != null);
+  autocompleteSearch(searchTerm: string) {
+    if (this.errorMessage != ''){
+      this.errorMessage = '';
+    }
+    if (searchTerm && searchTerm.length > 2) {
+      this.filteredData = this.userSearchService.getSearchResults(searchTerm);
     } else {
-      this.filteredData = this.autocompleteData;
+      this.filteredData = this.allTrades;
     }
   }
 

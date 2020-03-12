@@ -4,20 +4,30 @@
     <form class="add-trade-form"
           name="add-trade-form"
           #addTradeForm="ngForm"
-          (ngSubmit)="addItem(addTradeForm)">
+          (ngSubmit)="search(addTradeForm)">
 
       <cv-select #addingItem="ngModel"
                  [(ngModel)]="model.addingItem"
+                 [dropdownHeight]="dropdownHeight"
                  name="addingItem"
+                 [dropdownBorder]="false"
+                 [allowAnyValue]="true"
+                 [propagateEnterEvent]="false"
+                 [disableItemsMatch]="true"
                  [autocomplete]="true"
                  [items]="filteredData"
-                 [grouped]="true"
-                 (autocompleteSearch)="filter($event)"
+                 (autocompleteSearch)="autocompleteSearch($event)"
+                 (onSelect)="search(addTradeForm)"
                  labelKey="name"
                  label="Add Trade or Service, e.g. Plumbing">
       </cv-select>
+      <div class="error-holder" *ngIf="addingItem.dirty || addingItem.touched">
+        <div *ngIf="errorMessage != ''">
+          {{errorMessage}}
+        </div>
+      </div>
 
-      <button class="add-service-button">Add</button>
+      <mat-icon>search</mat-icon>
 
     </form>
 
@@ -25,36 +35,37 @@
 
       <div class="trades-title">Trades and Services you provide</div>
 
-      <ng-template ngFor [ngForOf]="tradesAndServiceTypes?.trades" let-trade let-i="index" [ngForTrackBy]="trackById">
-        <cv-collapse [title]="trade.name" [(collapsed)]="trade.collapsed"
-                     (toggle)="$event && scrollHolder.scrollTo(collapse.elementRef, 500)" #collapse>
+        <ng-template ngFor [ngForOf]="tradesAndServiceTypes?.trades" let-trade let-i="index" [ngForTrackBy]="trackById">
+          <div class="collapse-content">
+          <cv-collapse [title]="trade.name" [(collapsed)]="trade.collapsed"
+                       (toggle)="$event && scrollHolder.scrollTo(collapse.elementRef, 500)" #collapse>
 
-          <div content>
+            <div content>
 
-            <div class="hint">Please check any Service Type that applies to you</div>
+              <div class="hint">Please check any Service Type that applies to you</div>
 
-            <div class="check-box-wrapper" [formGroup]="tradesControl">
+              <div class="check-box-wrapper" [formGroup]="tradesControl">
 
-              <cv-checkbox-group [formControlName]="trade.name" #checkbox [items]="trade.services"
-                                 valueKey="id" (check)="onServiceCheck($event)">
-                <ng-template let-item cvTemplate>
-                  <div class="service-type" [ngClass]="{'-highlight': item?.highlight}">
-                    <div class="custom-check-box"></div>
-                    <div class="service-type-name">{{item.name}}</div>
-                  </div>
-                </ng-template>
-              </cv-checkbox-group>
+                <cv-checkbox-group [formControlName]="trade.name" #checkbox [items]="trade.services"
+                                   valueKey="id" (check)="onServiceCheck($event)">
+                  <ng-template let-item cvTemplate>
+                    <div class="service-type" [ngClass]="{'-highlight': item?.highlight}">
+                      <div class="custom-check-box"></div>
+                      <div class="service-type-name">{{item.name}}</div>
+                    </div>
+                  </ng-template>
+                </cv-checkbox-group>
+
+              </div>
+
+              <button cv-button-empty (click)="removeTrade(trade)" type="button">Remove Trade</button>
 
             </div>
 
-            <button cv-button-empty (click)="removeTrade(trade)" type="button">Remove Trade</button>
+          </cv-collapse>
 
           </div>
-
-        </cv-collapse>
-
-
-      </ng-template>
+        </ng-template>
 
       <div class="empty-service-list-message" *ngIf="tradesAndServiceTypes.services.length == 0">You have not selected
         any Trade yet

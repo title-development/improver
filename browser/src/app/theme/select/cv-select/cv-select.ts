@@ -5,7 +5,7 @@ import {
   ElementRef,
   EmbeddedViewRef,
   EventEmitter,
-  forwardRef,
+  forwardRef, HostListener,
   Inject,
   Input,
   OnDestroy,
@@ -149,6 +149,12 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
       })
     }
 
+  }
+
+  @HostListener('ngModelChange', ['$event']) onModelChange(value: any) {
+    if (!value) {
+      this.resetSelection()
+    }
   }
 
   writeValue(model: any | Array<any>): void {

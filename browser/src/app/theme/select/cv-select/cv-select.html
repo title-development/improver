@@ -48,7 +48,7 @@
       <!--simple dropdown or with autocomplate-->
       <ng-container *ngIf="!multiple && !grouped">
         <div [ngStyle]="{'max-height.px': virtualScrollHeight(items, mediaQuery.xs ? 3 : 4)}" class="holder items" #itemsHolder>
-          <cdk-virtual-scroll-viewport itemSize="45" minBufferPx="180" maxBufferPx="360"
+          <cdk-virtual-scroll-viewport itemSize="43" minBufferPx="180" maxBufferPx="360"
                                        [ngStyle]="{'height.px': virtualScrollHeight(items, mediaQuery.xs ? 3 : 4)}">
             <ng-template cdkVirtualFor [cdkVirtualForOf]="items" let-item="$implicit" let-i="index" let-even="even"
                          let-last="last"

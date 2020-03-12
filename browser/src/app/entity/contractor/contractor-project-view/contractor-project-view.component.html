@@ -92,7 +92,7 @@
               </div>
               <div class="group notes">
                 <h4>Notes:</h4>
-                <p #notes [ngClass]="{'left': isLeftAligned()}">{{project.notes| truncate:truncateNotes:'...'}}
+                <p #notes [ngClass]="{'left': showLeftAlignedClass}">{{project.notes| truncate:truncateNotes:'...'}}
                   <span class="show-more-button" (click)="truncateNotes = 10000;"
                         *ngIf="project.notes.length > 300 && truncateNotes == 300">Show more <i class="imp-icon-down-open"></i>
               </span>

@@ -33,6 +33,7 @@ export class ContractorProjectViewComponent implements OnDestroy, AfterViewInit 
   customerGalleryDialogRef: MatDialogRef<any>;
   refundDialog: MatDialogRef<any>;
   mediaQuery: MediaQuery;
+  showLeftAlignedClass: boolean;
   truncateNotes = 300;
   @ViewChild('notes') notes: ElementRef;
   ProjectRequest = ProjectRequest;
@@ -107,7 +108,7 @@ export class ContractorProjectViewComponent implements OnDestroy, AfterViewInit 
   }
 
   ngAfterViewInit(): void {
-    this.isLeftAligned();
+    this.showLeftAlignedClass = this.isLeftAligned();
   }
 
   getProject() {

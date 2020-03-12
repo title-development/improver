@@ -1,5 +1,41 @@
 @import "../../../improver-mixins.scss";
 
+
+.mat-icon {
+  position: absolute;
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+  margin: 0;
+  padding: 0;
+  top: 7px;
+  right: 8px;
+  color: $black-500;
+  pointer-events: none;
+}
+
+.error-holder {
+  z-index: 10;
+  font-size: 10px;
+  background-color: $black-100;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transform: translateY(100%);
+  >div {
+    padding: 5px;
+    color: $red;
+    &:last-child {
+      border-left: 1px solid $black-250;
+    }
+  }
+}
+
+.collapse-content {
+  position: relative;
+}
+
   .services-selector-wrapper {
 
     form {
@@ -48,6 +84,7 @@
     }
 
     .selected-trades-list {
+      margin-top: 36px;
 
       .trades-title {
         margin-bottom: 16px;
@@ -86,6 +123,16 @@
             font-size: 13px;
           }
 
+          button {
+            padding: 8px 12px;
+
+            .button-inner {
+              span {
+                font-size: 13px;
+              }
+            }
+          }
+
           cv-checkbox-group {
 
             ::ng-deep ul {
@@ -100,7 +147,7 @@
                   display: flex;
                   border-radius: 2px;
                   background-color: #efefef;
-                  padding: 8px;
+                  padding: 5px 5px 4px 5px;
 
 
                   &.-highlight {
@@ -111,8 +158,8 @@
 
                   .custom-check-box {
                     display: flex;
-                    width: 16px;
-                    height: 16px;
+                    width: 14px;
+                    height: 14px;
                     border-radius: 2px;
                     background-color: #ffffff;
                     margin-right: 8px;
@@ -132,11 +179,12 @@
                     .custom-check-box {
                       &:after {
                         background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAQAAAC1QeVaAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QAAKqNIzIAAAAJcEhZcwAADdcAAA3XAUIom3gAAAAHdElNRQfiAg0IJh4oMHRrAAAA10lEQVQY043Qv07CYBiF8edtv9BBAx1IUMPANTBzAQRk4QJ0xBHi0CbYxaU0DlgTwPDnDrgNdxcugd3FlJqG14WYQMBwxvNbTg78Ezle+1DUSzlBZe3hWieoT5uVOSQPvaFPnaHMzD4IXOkTdYbWXBPjXZCRRoBPhl0ioMGrPdXNAIuQruR9QDAlCWgS5yZsQsAi4UEf1fXYXmugt7w5oyytAmAkVLhny5IOTWJnlPt53m0w+kUE3NGiQGyPv/8I7A9qCZ84VHiXhaYvh/d54FJkTRJxdn4B5CZA9v8YhGQAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTgtMDItMTNUMDg6Mzg6MzAtMDU6MDCm3uHbAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDE4LTAyLTEzVDA4OjM4OjMwLTA1OjAw14NZZwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAAASUVORK5CYII=');
+                        background-size: 12px 12px;
                         content: '';
                         background-repeat: no-repeat;
-                        background-position: center center;
-                        width: 16px;
-                        height: 16px;
+                        background-position: center;
+                        width: 14px;
+                        height: 14px;
                         transition: all .3s ease;
                       }
                     }

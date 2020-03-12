@@ -56,6 +56,7 @@ export class TradesAndServicesComponent implements OnInit, ComponentCanDeactivat
   onTradesAndServicesChange(tradesAndServiceTypes) {
     this.tradesAndServiceTypes = tradesAndServiceTypes;
     this.unsavedChanges = true;
+    this.updateCompanyTradesAndServiceTypes()
   }
 
   updateCompanyTradesAndServiceTypes() {
@@ -67,7 +68,6 @@ export class TradesAndServicesComponent implements OnInit, ComponentCanDeactivat
       .subscribe(
       () => {
         this.unsavedChanges = false;
-        this.popUpMessageService.showSuccess('Your Trade and Services configuration is updated');
       });
   }
 
