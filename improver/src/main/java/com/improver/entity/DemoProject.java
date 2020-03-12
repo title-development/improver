@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-import static com.improver.util.database.DataAccessUtil.CD_INTEGER;
+import static com.improver.util.database.DataRestrictions.CD_INTEGER;
 import static com.improver.util.serializer.SerializationUtil.DATE_PATTERN;
 
 @Data

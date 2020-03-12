@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.improver.util.database.DataAccessUtil.CD_INTEGER;
+import static com.improver.util.database.DataRestrictions.CD_INTEGER;
 
 @Data
 @Entity(name = "trades")

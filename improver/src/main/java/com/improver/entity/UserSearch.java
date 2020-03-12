@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 
-import static com.improver.util.database.DataAccessUtil.USER_SEARCH_MAX_SIZE;
+import static com.improver.util.database.DataRestrictions.USER_SEARCH_MAX_SIZE;
 import static com.improver.util.serializer.SerializationUtil.DATE_TIME_PATTERN;
 
 @Data

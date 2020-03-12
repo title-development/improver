@@ -1,4 +1,4 @@
-package com.improver.util.database.test;
+package com.improver.test;
 
 import com.improver.entity.Location;
 import com.improver.model.in.Order;

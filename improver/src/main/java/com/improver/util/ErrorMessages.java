@@ -1,7 +1,7 @@
 package com.improver.util;
 
-import static com.improver.util.database.DataAccessUtil.*;
-import static com.improver.util.database.DataAccessUtil.COMPANY_DESCRIPTION_MAX_SIZE;
+import static com.improver.util.database.DataRestrictions.*;
+import static com.improver.util.database.DataRestrictions.COMPANY_DESCRIPTION_MAX_SIZE;
 
 public final class ErrorMessages {
 
@@ -11,7 +11,6 @@ public final class ErrorMessages {
     public static final String EMAIL_VALIDATION_ERROR_MESSAGE = "Email is not a valid";
     public static final String EMAIL_REQUIRED_VALIDATION_ERROR_MESSAGE = "Email is required";
     public static final String NAME_PATTERN_ERROR_MESSAGE = "May contain only letters, numbers and characters: ' -";
-    public static final String PHONE_PATTERN_ERROR_MESSAGE = "Phone number format should be xxx-xxx-xxxx";
     public static final String COMPANY_FOUNDATION_ERROR_MESSAGE = "Company foundation year should be valid";
     public static final String COMPANY_NAME_SIZE_ERROR_MESSAGE = "Company name should be between " + COMPANY_NAME_MIN_SIZE + " and" + COMPANY_NAME_MAX_SIZE + "characters";
     public static final String COMPANY_DESCRIPTION_SIZE_ERROR_MESSAGE = "Company description must be between " + COMPANY_DESCRIPTION_MIN_SIZE + " and" + COMPANY_DESCRIPTION_MAX_SIZE + "characters";

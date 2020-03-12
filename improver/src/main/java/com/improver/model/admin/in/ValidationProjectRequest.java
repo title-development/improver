@@ -6,8 +6,8 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import static com.improver.util.database.DataAccessUtil.ADMIN_PROJECT_VALIDATION_COMMENT_MAX_SIZE;
-import static com.improver.util.database.DataAccessUtil.ADMIN_PROJECT_VALIDATION_COMMENT_MIN_SIZE;
+import static com.improver.util.database.DataRestrictions.ADMIN_PROJECT_VALIDATION_COMMENT_MAX_SIZE;
+import static com.improver.util.database.DataRestrictions.ADMIN_PROJECT_VALIDATION_COMMENT_MIN_SIZE;
 
 @Data
 public class ValidationProjectRequest {

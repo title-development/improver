@@ -30,8 +30,8 @@ import javax.validation.constraints.Size;
 
 import static com.improver.application.properties.Path.*;
 import static com.improver.application.properties.Path.REVIEWS;
-import static com.improver.util.database.DataAccessUtil.REVIEW_MESSAGE_MAX_SIZE;
-import static com.improver.util.database.DataAccessUtil.REVIEW_MESSAGE_MIN_SIZE;
+import static com.improver.util.database.DataRestrictions.REVIEW_MESSAGE_MAX_SIZE;
+import static com.improver.util.database.DataRestrictions.REVIEW_MESSAGE_MIN_SIZE;
 
 @Slf4j
 @RestController

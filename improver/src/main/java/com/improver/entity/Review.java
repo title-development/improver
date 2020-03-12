@@ -7,7 +7,7 @@ import lombok.experimental.Accessors;
 import javax.persistence.*;
 import java.time.ZonedDateTime;
 
-import static com.improver.util.database.DataAccessUtil.REVIEW_MESSAGE_MAX_SIZE;
+import static com.improver.util.database.DataRestrictions.REVIEW_MESSAGE_MAX_SIZE;
 
 @Data
 @Accessors(chain = true)

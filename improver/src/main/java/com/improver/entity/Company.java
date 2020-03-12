@@ -9,7 +9,7 @@ import javax.persistence.*;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-import static com.improver.util.database.DataAccessUtil.*;
+import static com.improver.util.database.DataRestrictions.*;
 
 @Data
 @Accessors(chain = true)

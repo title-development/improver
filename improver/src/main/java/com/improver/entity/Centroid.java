@@ -8,7 +8,7 @@ import lombok.experimental.Accessors;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import static com.improver.util.database.DataAccessUtil.CD_DOUBLE;
+import static com.improver.util.database.DataRestrictions.CD_DOUBLE;
 
 @Data
 @Accessors(chain = true)

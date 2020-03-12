@@ -1,4 +1,4 @@
-package com.improver.util.database.test;
+package com.improver.test;
 
 import com.improver.entity.*;
 import com.improver.exception.NotFoundException;
@@ -7,9 +7,7 @@ import com.improver.model.in.Order;
 import com.improver.model.in.OrderDetails;
 import com.improver.repository.*;
 import com.improver.service.ReviewService;
-import com.improver.util.FileUtil;
 import com.improver.util.enums.State;
-import com.improver.util.payment.TestPaymentAccountResolver;
 import com.improver.util.serializer.SerializationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;

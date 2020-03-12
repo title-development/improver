@@ -6,10 +6,9 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
 import java.time.ZonedDateTime;
 
-import static com.improver.util.database.DataAccessUtil.PROJECT_ACTION_COMMENT_MAX_SIZE;
+import static com.improver.util.database.DataRestrictions.PROJECT_ACTION_COMMENT_MAX_SIZE;
 import static com.improver.util.serializer.SerializationUtil.DATE_TIME_PATTERN;
 
 

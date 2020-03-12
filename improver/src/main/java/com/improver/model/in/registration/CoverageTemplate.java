@@ -4,14 +4,11 @@ import com.google.maps.model.LatLng;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import static com.improver.util.ErrorMessages.COMPANY_COVERAGE_RADIUS_ERROR_MESSAGE;
-import static com.improver.util.database.DataAccessUtil.COMPANY_COVERAGE_MAX_RADIUS;
-import static com.improver.util.database.DataAccessUtil.COMPANY_COVERAGE_MIN_RADIUS;
+import static com.improver.util.database.DataRestrictions.COMPANY_COVERAGE_MAX_RADIUS;
+import static com.improver.util.database.DataRestrictions.COMPANY_COVERAGE_MIN_RADIUS;
 
 @Data
 public class CoverageTemplate {

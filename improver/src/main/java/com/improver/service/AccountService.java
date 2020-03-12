@@ -11,7 +11,6 @@ import com.improver.model.in.EmailPasswordTuple;
 import com.improver.model.in.UserActivation;
 import com.improver.repository.UserRepository;
 import com.improver.security.JwtUtil;
-import com.improver.util.StaffActionLogger;
 import com.improver.util.mail.MailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -8,7 +8,7 @@ import lombok.experimental.Accessors;
 import javax.persistence.*;
 import java.time.ZonedDateTime;
 
-import static com.improver.util.database.DataAccessUtil.STAFF_ACTION_DESCRIPTION_MAX_SIZE;
+import static com.improver.util.database.DataRestrictions.STAFF_ACTION_DESCRIPTION_MAX_SIZE;
 import static com.improver.util.serializer.SerializationUtil.DATE_TIME_PATTERN;
 
 

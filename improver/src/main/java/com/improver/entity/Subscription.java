@@ -9,8 +9,8 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.time.ZonedDateTime;
 
-import static com.improver.util.database.DataAccessUtil.CD_BOOLEAN;
-import static com.improver.util.database.DataAccessUtil.CD_INTEGER;
+import static com.improver.util.database.DataRestrictions.CD_BOOLEAN;
+import static com.improver.util.database.DataRestrictions.CD_INTEGER;
 import static com.improver.util.serializer.SerializationUtil.DATE_TIME_PATTERN;
 
 @Data

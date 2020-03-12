@@ -9,7 +9,6 @@ import com.improver.repository.InvitationRepository;
 import com.improver.repository.StaffActionRepository;
 import com.improver.repository.UserRepository;
 import com.improver.security.UserSecurityService;
-import com.improver.util.StaffActionLogger;
 import com.improver.util.mail.MailService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.buf.StringUtils;

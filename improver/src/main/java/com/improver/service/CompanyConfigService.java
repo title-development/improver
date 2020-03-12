@@ -8,7 +8,6 @@ import com.improver.model.*;
 import com.improver.model.out.CompanyCoverageConfig;
 import com.improver.model.out.ValidatedLocation;
 import com.improver.repository.*;
-import com.improver.util.StaffActionLogger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

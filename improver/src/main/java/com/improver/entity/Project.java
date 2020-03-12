@@ -14,7 +14,7 @@ import java.time.ZonedDateTime;
 import java.util.*;
 
 import static com.improver.entity.Project.Reason.*;
-import static com.improver.util.database.DataAccessUtil.ORDER_DESCRIPTION_SIZE;
+import static com.improver.util.database.DataRestrictions.ORDER_DESCRIPTION_SIZE;
 import static com.improver.util.serializer.SerializationUtil.DATE_TIME_PATTERN;
 
 @Data

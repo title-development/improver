@@ -1,4 +1,4 @@
-package com.improver.util;
+package com.improver.test;
 
 import com.improver.exception.ValidationException;
 import org.apache.commons.io.IOUtils;

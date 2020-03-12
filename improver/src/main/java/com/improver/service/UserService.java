@@ -9,7 +9,6 @@ import com.improver.model.in.registration.StaffRegistration;
 import com.improver.model.in.registration.UserRegistration;
 import com.improver.model.socials.SocialUser;
 import com.improver.repository.*;
-import com.improver.util.StaffActionLogger;
 import com.improver.util.mail.MailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

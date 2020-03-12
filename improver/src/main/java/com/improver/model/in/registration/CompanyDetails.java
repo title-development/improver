@@ -10,7 +10,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.*;
 
 import static com.improver.util.ErrorMessages.*;
-import static com.improver.util.database.DataAccessUtil.*;
+import static com.improver.util.database.DataRestrictions.*;
 
 @Data
 @Accessors(chain = true)

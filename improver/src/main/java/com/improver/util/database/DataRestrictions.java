@@ -1,18 +1,8 @@
 package com.improver.util.database;
 
-public final class DataAccessUtil {
+public final class DataRestrictions {
 
-    private DataAccessUtil() {
-    }
-
-
-    public static final String CREATED_PROPERTY = "created";
-    public static final String UPDATED_PROPERTY = "updated";
-
-
-    public static final String UUID_GENERATOR_NAME = "system-uuid";
-    public static final String UUID_NAME = "uuid";
-
+    private DataRestrictions() {}
 
     /* Column Definitions */
     public static final String CD_INTEGER = "integer default 0";

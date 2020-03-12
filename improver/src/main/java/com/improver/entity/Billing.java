@@ -6,7 +6,7 @@ import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 
-import static com.improver.util.database.DataAccessUtil.CD_INTEGER;
+import static com.improver.util.database.DataRestrictions.CD_INTEGER;
 
 @Data
 @Accessors(chain = true)

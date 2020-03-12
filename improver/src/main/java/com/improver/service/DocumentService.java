@@ -4,7 +4,7 @@ import com.improver.entity.Document;
 import com.improver.exception.BadRequestException;
 import com.improver.exception.InternalServerException;
 import com.improver.repository.DocumentRepository;
-import com.improver.util.FileUtil;
+import com.improver.test.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

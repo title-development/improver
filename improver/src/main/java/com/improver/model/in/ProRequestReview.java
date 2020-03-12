@@ -7,7 +7,7 @@ import java.util.List;
 
 import static com.improver.util.ErrorMessages.REQUEST_REVIEW_MESSAGE_SIZE_ERROR_MESSAGE;
 import static com.improver.util.ErrorMessages.REQUEST_REVIEW_SUBJECT_SIZE_ERROR_MESSAGE;
-import static com.improver.util.database.DataAccessUtil.*;
+import static com.improver.util.database.DataRestrictions.*;
 
 @Data
 public class ProRequestReview {

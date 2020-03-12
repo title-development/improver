@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.improver.util.database.DataAccessUtil.TICKET_MESSAGE_SIZE;
+import static com.improver.util.database.DataRestrictions.TICKET_MESSAGE_SIZE;
 
 @Data
 @Accessors(chain = true)

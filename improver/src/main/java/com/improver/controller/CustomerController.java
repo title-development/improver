@@ -20,7 +20,7 @@ import java.util.List;
 
 import static com.improver.application.properties.Path.*;
 import static com.improver.application.properties.Path.NOTIFICATIONS;
-import static com.improver.util.database.DataAccessUtil.USER_SEARCH_MAX_SIZE;
+import static com.improver.util.database.DataRestrictions.USER_SEARCH_MAX_SIZE;
 
 @Slf4j
 @Controller
