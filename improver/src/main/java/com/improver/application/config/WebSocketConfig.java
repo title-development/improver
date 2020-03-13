@@ -62,8 +62,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
-        registration.addDecoratorFactory(LogWsHandlerDecorator::new) // for debug purposes
-        ;
+        //registration.addDecoratorFactory(LogWsHandlerDecorator::new); // for debug purposes
+
     }
 
 

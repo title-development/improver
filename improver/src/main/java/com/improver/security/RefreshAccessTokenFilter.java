@@ -103,6 +103,7 @@ public class RefreshAccessTokenFilter extends GenericFilterBean {
     }
 
     private void sendError(HttpServletResponse response, int error, String msg) throws IOException {
+        response.setHeader("Access-Control-Allow-Origin", securityProperties.getOrigin());
         response.getWriter().write(SerializationUtil.toJson(new RestError(error, msg)));
         response.sendError(error, msg);
     }

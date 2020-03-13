@@ -18,7 +18,6 @@ public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
     public void onAuthenticationFailure(HttpServletRequest request,
                                         HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
 
-        logger.debug("Sending 401 Unauthorized error - "+ exception.getMessage());
         String message;
         if(exception instanceof BadCredentialsException) {
             message = BAD_CREDENTIALS_MSG;
@@ -33,6 +32,7 @@ public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
         } else {
             message = BAD_CREDENTIALS_MSG;
         }
+        //TODO: may need to send allow origins header
         response.sendError(HttpStatus.UNAUTHORIZED.value(), message);
 
     }

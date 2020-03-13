@@ -25,7 +25,7 @@ public class ReviewPublishingJob implements OnesPerNodeTask {
     @Scheduled(cron = "${job.review.publish.cron}")
     @SchedulerLock(name = "publishReview", lockAtLeastFor = MAX_CLOCK_DIFF_BETWEEN_NODES, lockAtMostFor = MAX_TASK_DELAY)
     public void publishReview(){
-        log.info("Job | Review publishing Job started");
+        log.info("Job 3 started | Review publishing");
         ZonedDateTime now = ZonedDateTime.now();
         reviewRepository.getForPublishing(now).forEach(review -> {
             Company company = review.getCompany();
@@ -36,7 +36,7 @@ public class ReviewPublishingJob implements OnesPerNodeTask {
             mailService.sendReviewPublishedMail(company, review);
             log.debug("Review " + review.getId() + " is published");
         });
-        log.info("Job | Review publishing Job ended");
+        log.info("Job 3 ended | Review publishing");
     }
 
 

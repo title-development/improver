@@ -35,12 +35,12 @@ public class SubscriptionBillingJob implements OnesPerNodeTask {
     @Scheduled(cron = "${job.subscription.billing.cron}")
     @SchedulerLock(name = "updateSubscription", lockAtLeastFor = MAX_CLOCK_DIFF_BETWEEN_NODES, lockAtMostFor = MAX_SUBSCRIPTION_BILLING_JOB_DELAY)
     public void updateSubscription(){
-        log.info("Job | Subscription billing Job started");
+        log.info("Job 2 started | Subscription billing");
         ZonedDateTime now = ZonedDateTime.now();
         ZonedDateTime endOfDay = now.plus(1, ChronoUnit.DAYS).with(ChronoField.HOUR_OF_DAY, 0);
         List<Company> companies = companyRepository.findSubscriptionCandidates(endOfDay);
         companies.forEach(company -> checkBill(company, now));
-        log.info("Job | Subscription billing Job ended");
+        log.info("Job 2 ended | Subscription billing");
     }
 
 

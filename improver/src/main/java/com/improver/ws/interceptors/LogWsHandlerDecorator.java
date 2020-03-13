@@ -9,6 +9,7 @@ import org.springframework.web.socket.handler.WebSocketHandlerDecorator;
 /**
  * Used for debug purposes for now.
  */
+@Deprecated
 public class LogWsHandlerDecorator extends WebSocketHandlerDecorator {
 
     final org.slf4j.Logger log = LoggerFactory.getLogger(getClass());

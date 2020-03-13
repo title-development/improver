@@ -46,6 +46,11 @@ public class MvcConfiguration implements WebMvcConfigurer {
         registry.addResourceHandler("swagger-ui.html").addResourceLocations("classpath:/META-INF/resources/");
     }
 
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/api/**");
+        registry.addMapping("/ws/**");
+    }
 
     //
     @Override

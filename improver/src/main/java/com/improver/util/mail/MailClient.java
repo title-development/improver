@@ -83,9 +83,11 @@ public class MailClient {
     /**
      * Schedule resending of unsent emails
      */
+    //TODO: this should be removed in future
+    @Deprecated
     @Scheduled(fixedDelayString="${job.mail.resend.timeout}")
     public void sendUnsentEmails() {
-        log.trace("Job | Check unsent emails que");
+        log.trace("Job 4 started | Check unsent emails que");
         unsentMails.forEach(mailHolder -> {
             try {
                 if (mailHolder.getAttempts() > maxResendAttempts) {
@@ -101,7 +103,7 @@ public class MailClient {
                 mailHolder.setAttempts(mailHolder.getAttempts() + 1);
             }
         });
-        log.trace("Job | Check unsent emails que ended");
+        log.trace("Job 4 ended | Check unsent emails que");
     }
 
 }

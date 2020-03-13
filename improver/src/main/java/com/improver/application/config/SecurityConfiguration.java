@@ -18,6 +18,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 import static com.improver.application.properties.Path.*;
 
@@ -36,7 +41,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     private JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(jwtUtil)
+        return new JwtAuthenticationFilter(jwtUtil, securityProperties)
             .addMatcher(new AntPathRequestMatcher(API_PATH_PREFIX + "/**"))
             .addMatcher(new AntPathRequestMatcher(WEB_SOCKET_ENDPOINT))
             .skipMatcher(new AntPathRequestMatcher(IMAGES_PATH + "/*/**", HttpMethod.GET.toString()))
@@ -50,6 +55,21 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    //Fix for preflight OPTIONS for api calls
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(securityProperties.getAllowedOrigins());
+        configuration.setAllowedHeaders(Arrays.asList("Content-Type", "X-Requested-With", "Accept", "Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers"));
+        configuration.setAllowedMethods(Arrays.asList("OPTIONS", "GET", "POST", "PUT", "DELETE"));
+        configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/api/**", configuration);
+        source.registerCorsConfiguration("/ws/**", configuration);
+        return source;
     }
 
 
@@ -79,15 +99,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
             // Require HTTPS for all requests
-            .requiresChannel().anyRequest().requiresSecure()
-            .and()
-            .cors().disable() // If the token is sent in the Authorization header, Cross-Origin Resource Sharing (CORS) won't be an issue as it doesn't use cookies.
+            .requiresChannel().anyRequest().requiresSecure().and()
+            .cors().and() // If the token is sent in the Authorization header, Cross-Origin Resource Sharing (CORS) won't be an issue as it doesn't use cookies.
             .csrf().disable() // if we don't use cookies for authorization, CSRF is not an issue
             // don't create session
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-            // redirect to login url // handles bad credentials
-            //.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
-
             .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/").permitAll()
                 .antMatchers(HttpMethod.POST, LOGIN_PATH).anonymous()

@@ -1,5 +1,8 @@
 package com.improver.security;
 
+import com.improver.application.properties.SecurityProperties;
+import com.improver.exception.handler.RestError;
+import com.improver.util.serializer.SerializationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -35,13 +38,15 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
     private AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource = new WebAuthenticationDetailsSource();
     private JwtUtil jwtUtil;
+    private SecurityProperties securityProperties;
     private List<RequestMatcher> matchers = new ArrayList<>();
     private List<RequestMatcher> skipMatchers = new ArrayList<>();
     private RequestMatcher requestMatcher;
 
 
-    public JwtAuthenticationFilter(JwtUtil jwtUtil) {
+    public JwtAuthenticationFilter(JwtUtil jwtUtil, SecurityProperties securityProperties) {
         this.jwtUtil = jwtUtil;
+        this.securityProperties = securityProperties;
     }
 
     public JwtAuthenticationFilter addMatcher(RequestMatcher matcher) {
@@ -120,6 +125,12 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
     protected void unsuccessfulAuthentication(HttpServletResponse response, String msg) throws IOException {
         SecurityContextHolder.clearContext();
-        response.sendError(401, msg);
+        sendError(response, 401, msg);
+    }
+
+    private void sendError(HttpServletResponse response, int error, String msg) throws IOException {
+        response.setHeader("Access-Control-Allow-Origin", securityProperties.getOrigin());
+        response.getWriter().write(SerializationUtil.toJson(new RestError(error, msg)));
+        response.sendError(error, msg);
     }
 }
