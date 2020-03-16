@@ -276,6 +276,15 @@
             <version>${google.api.client.version}</version>
         </dependency>
 
+        <!-- To campare string similarity -->
+        <dependency>
+            <groupId>net.ricecode</groupId>
+            <artifactId>string-similarity</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+
+
         <!-- For generic DTO and POJO mappings -->
         <!--<dependency>
             <groupId>org.modelmapper</groupId>

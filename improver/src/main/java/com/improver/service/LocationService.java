@@ -1,6 +1,5 @@
 package com.improver.service;
 
-import com.google.common.collect.Lists;
 import com.google.maps.GeoApiContext;
 import com.google.maps.GeocodingApi;
 import com.google.maps.errors.ApiException;
@@ -17,15 +16,16 @@ import com.shippo.Shippo;
 import com.shippo.exception.*;
 import com.shippo.model.Address;
 import lombok.extern.slf4j.Slf4j;
+import net.ricecode.similarity.JaroWinklerStrategy;
+import net.ricecode.similarity.StringSimilarityService;
+import net.ricecode.similarity.StringSimilarityServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static com.improver.util.StringUtil.capitalize;
@@ -34,17 +34,14 @@ import static com.improver.util.StringUtil.capitalize;
 @Service
 public class LocationService {
 
-    private static List<String> msgsToSkip = new ArrayList<>();
-    static {
-        msgsToSkip.add("The delivery point is currently inactive. Please check this information with the relevant address owner.");
-    }
-
     private static final String SUGGESTION_MSG = "Some parts of address were corrected to be valid";
     private static final String INCORRECT_ADDRESS_ERROR = "Provided address seems not valid or formatted incorrectly";
     private static final String UNSUPPORTED_AREA = "Sorry, we do not support this area yet.";
+    private static final double MIN_ADDRESS_SIMILARITY_SCORE = 0.9;
 
     @Autowired private ServedZipRepository servedZipRepository;
     @Autowired private ThirdPartyApis thirdPartyApis;
+    private StringSimilarityService service = new StringSimilarityServiceImpl(new JaroWinklerStrategy());
 
     @PostConstruct
     public void init() {
@@ -59,7 +56,7 @@ public class LocationService {
             if (address == null) {
                 throw new ThirdPartyException("Could not validate Address");
             }
-            String validationMsg = SUGGESTION_MSG; //parseMsg(address.getValidationResults().getValidationMessages());
+            String validationMsg = SUGGESTION_MSG;
 
             if (address.getIsComplete() && address.getValidationResults().getIsValid()) {
                 ExtendedLocation suggested = new ExtendedLocation()
@@ -87,7 +84,8 @@ public class LocationService {
                 }
                 String suggestedStreet = suggested.getStreetAddress().toLowerCase();
                 String inputStreet = toValidate.getStreetAddress().toLowerCase();
-                if (!suggestedStreet.equals(inputStreet)) {
+                double similarityScore = service.score(inputStreet, suggestedStreet);
+                if (similarityScore < MIN_ADDRESS_SIMILARITY_SCORE) {
                     log.debug("Street Address doesn't match");
                     errorMsg = "Street address is not fully valid or formatted incorrectly";
                     return suggestion(suggested, errorMsg, validationMsg, checkCoverage);
@@ -108,7 +106,7 @@ public class LocationService {
 
     private ValidatedLocation suggestion(ExtendedLocation suggested, String errorMsg, String validationMsg, boolean checkCoverage){
         if (checkCoverage && !servedZipRepository.isZipServed(suggested.getZip())){
-            return ValidatedLocation.invalid(errorMsg + ". " + UNSUPPORTED_AREA);
+            return ValidatedLocation.invalid(errorMsg);
         }
         return ValidatedLocation.suggestion(suggested, errorMsg, validationMsg);
     }
@@ -123,17 +121,6 @@ public class LocationService {
             full = new ExtendedLocation(toValidate, latLng.lat, latLng.lng);
         }
         return new ValidatedLocation(true, full, infoMsg, null);
-    }
-
-
-    @Deprecated
-    private String parseMsg(List<Address.ValidationMessage> messages) {
-        // last message is more significant!!!
-        return Lists.reverse(messages).stream()
-            .filter(validationMessage -> !msgsToSkip.contains(validationMessage.getText().trim()))
-            .map(validationMessage -> validationMessage.getText().split("\\.")[0].trim())
-            .findFirst()
-            .orElse("Provided address seems not valid or formatted incorrectly");
     }
 
 
