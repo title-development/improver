@@ -45,6 +45,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .addMatcher(new AntPathRequestMatcher(API_PATH_PREFIX + "/**"))
             .addMatcher(new AntPathRequestMatcher(WEB_SOCKET_ENDPOINT))
             .skipMatcher(new AntPathRequestMatcher(IMAGES_PATH + "/*/**", HttpMethod.GET.toString()))
+            .skipMatcher(new AntPathRequestMatcher(CATALOG_PATH + "/**", HttpMethod.GET.toString()))
             .build();
     }
 
