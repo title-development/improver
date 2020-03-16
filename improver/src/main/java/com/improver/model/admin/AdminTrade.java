@@ -18,15 +18,15 @@ public class AdminTrade {
     private String description;
     private int rating;
     private String imageUrl;
-    private List<NameIdTuple> serviceTypes = new ArrayList<>();
+    private List<NameIdTuple> services = new ArrayList<>();
 
-    public AdminTrade(Trade trade, List<NameIdTuple> serviceTypes) {
+    public AdminTrade(Trade trade, List<NameIdTuple> services) {
         this.id = trade.getId();
         this.name = trade.getName();
         this.description = trade.getDescription();
         this.rating = trade.getRating();
         this.imageUrl = trade.getImageUrl();
-        this.serviceTypes = serviceTypes;
+        this.services = services;
     }
 
     public AdminTrade(Trade trade) {

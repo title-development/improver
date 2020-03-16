@@ -77,6 +77,7 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
   @Input() label: string = 'Choose item';
   @Input('dropdownBorder') border: boolean = true;
   @Input() labelKey: string;
+  @Input() typeKey: string;
   @Input() valueKey: string;
   @Input() readonly: boolean;
   @Input() tags: boolean;
@@ -376,7 +377,7 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
       if (items.length > maxItems && !this.dropdownHeight) {
         return maxItems * this.itemMinHeight;
       } else if (this.dropdownHeight && items.length > maxItems + 1) {
-        this.itemFontSize = 16;
+        this.itemFontSize = 14;
         return this.dropdownHeight * this.itemMinHeight;
       } else {
         return items.length * this.getItemHeight(items);

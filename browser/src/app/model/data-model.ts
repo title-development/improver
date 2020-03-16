@@ -107,7 +107,6 @@ export enum Accreditation {
 export class Trade {
   id: number;
   name: string;
-  serviceTypes?: ServiceType [];
   services?: ServiceType [];
 }
 

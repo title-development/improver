@@ -6,14 +6,14 @@ export class AdminTrade {
    description: string;
    imageUrl: string;
    rating: number;
-   serviceTypes: Array<ServiceType>;
+   services: Array<ServiceType>;
 
 
-  constructor(name: string, description: string, imageUrl: string, rating: number, serviceTypes: Array<ServiceType>) {
+  constructor(name: string, description: string, imageUrl: string, rating: number, services: Array<ServiceType>) {
     this.name = name;
     this.description = description;
     this.imageUrl = imageUrl;
     this.rating = rating;
-    this.serviceTypes = serviceTypes;
+    this.services = services;
   }
 }

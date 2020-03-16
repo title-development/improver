@@ -106,7 +106,7 @@
       <td [attr.colspan]="selectedColumns.length + 1">
         <div class="service-types-list">
           <h4>Service types:</h4>
-          <ng-container *ngFor="let serviceType of data.serviceTypes">
+          <ng-container *ngFor="let serviceType of data.services">
             <a [routerLink]="['/', 'admin', 'services', serviceType.id]">{{serviceType.name}}</a> <br>
           </ng-container>
         </div>

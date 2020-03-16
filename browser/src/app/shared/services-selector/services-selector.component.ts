@@ -152,9 +152,12 @@ export class ServicesSelectorComponent implements OnInit {
 
   getTradesAndServiceTypes() {
     combineLatest([this.tradeService.trades$, this.serviceTypeService.serviceTypes$])
-      .subscribe(results => {
-        this.allTrades = results[0];
-        this.allServices = results[1];
+      .subscribe(([trades, services]) => {
+        this.allTrades = trades.map(trade => {
+          (trade as any).type = 'trade';
+          return trade;
+        });
+        this.allServices = services;
         this.onInitialized.next();
         this.autocompleteData.push({
           label: 'Trades',
@@ -176,9 +179,9 @@ export class ServicesSelectorComponent implements OnInit {
     let service: ServiceType;
     let trade: Trade;
 
-    if (itemModel && itemModel.name) {
-      trade = this.allTrades.find(item => item.name.toLowerCase() == itemModel.name.toLowerCase());
-      service = this.allServices.find(item => item.name.toLowerCase() == itemModel.name.toLowerCase());
+    if (itemModel && itemModel.name && itemModel.id) {
+      trade = this.allTrades.find(item => item.name.toLowerCase() == itemModel.name.toLowerCase() && item.id == itemModel.id);
+      service = this.allServices.find(item => item.name.toLowerCase() == itemModel.name.toLowerCase() && item.id == itemModel.id);
     } else {
       trade = this.allTrades.find(item => item.name.toLowerCase() == itemModel.toLowerCase());
       service = this.allServices.find(item => item.name.toLowerCase() == itemModel.toLowerCase());

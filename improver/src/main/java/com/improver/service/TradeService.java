@@ -38,7 +38,7 @@ public class TradeService {
 
     public Page<AdminTrade> getAllTrades(Long id, String name, String description, Integer ratingFrom, Integer ratingTo, Pageable pageRequest) {
         Page<AdminTrade> trades = tradeRepository.getAll(id, name, description, ratingFrom, ratingTo, pageRequest)
-            .map(trade -> trade.setServiceTypes(serviceTypeRepository.getByTradeId(trade.getId())));
+            .map(trade -> trade.setServices(serviceTypeRepository.getByTradeId(trade.getId())));
         return trades;
     }
 
@@ -92,7 +92,7 @@ public class TradeService {
             throw new ConflictException("Trade with name " + adminTrade.getName() + " already exist");
         }
 
-        List<Long> serviceTypeIds = adminTrade.getServiceTypes().stream().map(NameIdTuple::getId).collect(Collectors.toList());
+        List<Long> serviceTypeIds = adminTrade.getServices().stream().map(NameIdTuple::getId).collect(Collectors.toList());
         List<ServiceType> serviceTypes = serviceTypeRepository.findByIdIn(serviceTypeIds);
 
         existedTrade.setName(adminTrade.getName());
@@ -109,7 +109,7 @@ public class TradeService {
             throw new ConflictException("Trade with name " + adminTrade.getName() + " already exist");
         }
 
-        List<Long> serviceTypesIds = adminTrade.getServiceTypes().stream().map(NameIdTuple::getId).collect(Collectors.toList());
+        List<Long> serviceTypesIds = adminTrade.getServices().stream().map(NameIdTuple::getId).collect(Collectors.toList());
         List<ServiceType> serviceTypes = serviceTypeRepository.findByIdIn(serviceTypesIds);
         String imageUrl = file != null ? imageService.saveImage(file) : null;
 

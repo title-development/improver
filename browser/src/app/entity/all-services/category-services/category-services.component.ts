@@ -57,13 +57,13 @@ export class CategoryServicesComponent implements OnInit {
     searchTerm = searchTerm.trim();
 
     if (searchTerm == '') {
-      this.filteredServices = this.trade.serviceTypes;
+      this.filteredServices = this.trade.services;
       return;
     } else {
 
       this.filteredServices = [];
 
-        for (let service of this.trade.serviceTypes) {
+        for (let service of this.trade.services) {
           let regex = new RegExp(searchTerm, 'gi');
           if (regex.test(service.name)) {
             this.filteredServices.push(service)

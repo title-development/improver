@@ -71,7 +71,10 @@ export class UserSearchService {
   private createTradeAndServiceTypeIndexes() {
     zip(this.customerSuggestionService.getTradesWithServices$(), this.serviceTypeService.serviceTypes$)
       .subscribe(([trades, serviceTypes]) => {
-        this.allTrades = trades;
+        this.allTrades = trades.map(trade => {
+          (trade as any).type = 'trade';
+          return trade;
+        });
         this.allServiceTypes = serviceTypes;
 
         this.tradesAndServiceTypes = [...serviceTypes, ...trades];

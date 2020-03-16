@@ -54,7 +54,7 @@ export class TradesEditComponent {
       })
     ).subscribe((serviceTypes: Array<ServiceType>) => {
       if (serviceTypes && serviceTypes instanceof Array) {
-        this.serviceTypes = [...this.trade.serviceTypes, ...serviceTypes]
+        this.serviceTypes = [...this.trade.services, ...serviceTypes]
           .filter((item, index, arr) => index === arr.findIndex((t) => (t.id === item.id))) //remove duplicates
           .map(item => {
           return {
