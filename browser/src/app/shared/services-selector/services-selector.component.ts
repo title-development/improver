@@ -10,10 +10,12 @@ import { getErrorMessage } from '../../util/functions';
 import { ServiceType, Trade } from '../../model/data-model';
 import { dialogsMap } from '../dialogs/dialogs.state';
 import { confirmDialogConfig } from '../dialogs/dialogs.configs';
-import { combineLatest, ReplaySubject } from 'rxjs';
+import { combineLatest, ReplaySubject, Subject } from 'rxjs';
 import { ScrollHolderService } from '../../util/scroll-holder.service';
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { UserSearchService } from "../../api/services/user-search.service";
+import { takeUntil } from "rxjs/operators";
+import { MediaQuery, MediaQueryService } from "../../util/media-query.service";
 
 
 @Component({
@@ -35,19 +37,21 @@ export class ServicesSelectorComponent implements OnInit {
   onUpdate: EventEmitter<any> = new EventEmitter<any>();
   @Output()
   onInitialized: ReplaySubject<any> = new ReplaySubject<any>(1);
-  autocompleteData = [];
-  filteredData: any;
+  autocompleteData: Array<any> = [];
+  filteredData: Array<any> = [];
   tradesControl: FormGroup;
   public confirmDialogRef: MatDialogRef<any>;
   selectedServiceTypesCount: number;
-  dropdownHeight: number = 5;
+  mediaQuery: MediaQuery;
+  dropdownHeight: number = 3;
+  private readonly destroyed$ = new Subject<void>();
   errorMessage: string;
   model = {
     addingItem: ''
   };
 
-  allTrades;
-  allServices;
+  allTrades: Array<Trade> = [];
+  allServices: Array<ServiceType> = [];
 
   private HIGHLIGHT_TIME: number = 4000;
 
@@ -59,7 +63,15 @@ export class ServicesSelectorComponent implements OnInit {
               private serviceTypeService: ServiceTypeService,
               public  popUpMessageService: PopUpMessageService,
               public scrollHolder: ScrollHolderService,
-              public userSearchService: UserSearchService) {
+              public userSearchService: UserSearchService,
+              public mediaQueryService: MediaQueryService) {
+    this.mediaQueryService.screen
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((mediaQuery: MediaQuery) => {
+        this.mediaQuery = mediaQuery;
+        this.dropdownHeight = mediaQuery.xs? 3: 4;
+      });
+
     this.getTradesAndServiceTypes();
   }
 
@@ -159,13 +171,7 @@ export class ServicesSelectorComponent implements OnInit {
         });
         this.allServices = services;
         this.onInitialized.next();
-        this.autocompleteData.push({
-          label: 'Trades',
-          content: this.allTrades
-        }, {
-          label: 'Services',
-          content: this.allServices
-        });
+        this.autocompleteData = [...this.allTrades, ...this.allServices];
         this.filteredData = this.allTrades;
       });
 
@@ -186,10 +192,10 @@ export class ServicesSelectorComponent implements OnInit {
       trade = this.allTrades.find(item => item.name.toLowerCase() == itemModel.toLowerCase());
       service = this.allServices.find(item => item.name.toLowerCase() == itemModel.toLowerCase());
     }
-    this.addItem(form, trade, service);
+    this.addCompanyProvidedServices(form, trade, service);
   }
 
-  private addItem(form: NgForm, trade: Trade, service: ServiceType){
+  private addCompanyProvidedServices(form: NgForm, trade: Trade, service: ServiceType){
     if (trade) {
       this.addTrade(trade);
       form.resetForm();
@@ -352,10 +358,24 @@ export class ServicesSelectorComponent implements OnInit {
       this.errorMessage = '';
     }
     if (searchTerm && searchTerm.length > 2) {
-      this.filteredData = this.userSearchService.getSearchResults(searchTerm);
+      // Raise up trades in array
+      this.filteredData = this.userSearchService.getSearchResults(searchTerm).sort((a, b) => {
+        return (a.services == b.services)? 0 : a.services? -1: 1;
+      });
     } else {
-      this.filteredData = this.allTrades;
+      this.filterServicesAndTradesByRegExp(searchTerm);
     }
+  }
+
+  filterServicesAndTradesByRegExp(searchTerm: string) {
+   if (searchTerm){
+     this.filteredData = this.autocompleteData.filter( item => {
+       const regExp: RegExp = new RegExp(`\\b${searchTerm.trim()}`, 'gmi');
+       return regExp.test(item.name);
+     });
+   } else {
+     this.filteredData = this.allTrades;
+   }
   }
 
   trackById(index, item) {
