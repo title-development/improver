@@ -22,6 +22,14 @@
             </div>
             <div class="ui-g-12 ui-md-12 ui-g-nopad ui-grid-space">
               <div class="ui-g-4 ui-md-4 ui-g-nopad">
+                Balance
+              </div>
+              <div class="ui-g-8 ui-md-8 ui-g-nopad">
+                {{company.balance / 100 | currency:'USD'}}
+              </div>
+            </div>
+            <div class="ui-g-12 ui-md-12 ui-g-nopad ui-grid-space">
+              <div class="ui-g-4 ui-md-4 ui-g-nopad">
                 Description
               </div>
               <div class="ui-g-8 ui-md-8 ui-g-nopad">
@@ -33,7 +41,23 @@
                 Founded
               </div>
               <div class="ui-g-8 ui-md-8 ui-g-nopad">
-                {{company.founded}}
+                {{company.founded | date: 'MMM d, y'}}
+              </div>
+            </div>
+            <div class="ui-g-12 ui-md-12 ui-g-nopad ui-grid-space">
+              <div class="ui-g-4 ui-md-4 ui-g-nopad">
+                Created
+              </div>
+              <div class="ui-g-8 ui-md-8 ui-g-nopad">
+                {{company.created | date: 'MMM d, y'}}
+              </div>
+            </div>
+            <div class="ui-g-12 ui-md-12 ui-g-nopad ui-grid-space">
+              <div class="ui-g-4 ui-md-4 ui-g-nopad">
+                Updated
+              </div>
+              <div class="ui-g-8 ui-md-8 ui-g-nopad">
+                {{company.updated | date: 'MMM d, ya'}}
               </div>
             </div>
             <div class="ui-g-12 ui-md-12 ui-g-nopad ui-grid-space">
@@ -42,6 +66,15 @@
               </div>
               <div class="ui-g-8 ui-md-8 ui-g-nopad">
                 {{company.rating}}
+              </div>
+            </div>
+            <div class="ui-g-12 ui-md-12 ui-g-nopad ui-grid-space">
+              <div class="ui-g-4 ui-md-4 ui-g-nopad">
+                Approved
+              </div>
+              <div class="ui-g-8 ui-md-8 ui-g-nopad">
+                <i class="pi pi-check" *ngIf="company.isApproved"></i>
+                <i class="pi pi-ban" *ngIf="!company.isApproved"></i>
               </div>
             </div>
             <div class="ui-g-12 ui-md-12 ui-g-nopad">
@@ -67,7 +100,7 @@
                     Email
                   </div>
                   <div class="ui-g-8 ui-md-8 ui-g-nopad">
-                    {{company.contractors[0]?.email}}
+                    <span *ngIf="company.contractors">{{company.contractors[0]?.email}}</span>
                   </div>
                 </div>
                 <div class="ui-g-12 ui-md-12 ui-g-nopad ui-grid-space">
@@ -84,7 +117,7 @@
                     Phone
                   </div>
                   <div class="ui-g-8 ui-md-8 ui-g-nopad">
-                    {{company.contractors[0]?.internalPhone}}
+                    <span *ngIf="company.contractors">{{company.contractors[0]?.internalPhone}}</span>
                   </div>
                 </div>
               </div>

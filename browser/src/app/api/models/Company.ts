@@ -7,7 +7,10 @@ export class Company {
   billing?: Billing;
   description?: string;
   email?: string;
-  founded?: number;
+  founded?: string;
+  created?: string;
+  updated?: string;
+  balance: number;
   iconUrl?: string;
   id?: string;
   internalPhone?: any;

@@ -44,6 +44,7 @@ export class CompaniesComponent {
     {field: 'siteUrl', header: 'Site Url', active: false},
     {field: 'rating', header: 'Rating', active: false},
     {field: 'created', header: 'Created', active: false},
+    {field: 'updated', header: 'Updated', active: false},
     {field: 'isDeleted', header: 'Deleted', active: false},
     {field: 'isApproved', header: 'Approved', active: true},
     {field: 'balance', header: 'Balance', active: false},

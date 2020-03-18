@@ -3,7 +3,10 @@
   <p-button (onClick)="refresh()" icon="pi pi-fw pi-refresh" label="&nbsp;&nbsp;Refresh"></p-button>
 </div>
 
-<p-table [lazy]="true" [loading]="projectsProcessing" #dt
+<p-table #dt
+         [lazy]="true"
+         [loading]="projectsProcessing"
+         dataKey="id"
          [tableStyle]="{'table-layout':'auto'}"
          [value]="projects.content"
          selectionMode="single"
