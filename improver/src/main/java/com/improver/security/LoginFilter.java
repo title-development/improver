@@ -1,6 +1,7 @@
 package com.improver.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.improver.application.properties.SecurityProperties;
 import com.improver.entity.User;
 import com.improver.exception.AuthenticationRequiredException;
 import com.improver.model.out.LoginModel;
@@ -28,12 +29,14 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
 
     private UserSecurityService userSecurityService;
     private ReCaptchaService reCaptchaService;
+    private SecurityProperties securityProperties;
 
-    public LoginFilter(String url, AuthenticationManager authManager, UserSecurityService userSecurityService, ReCaptchaService reCaptchaService) {
+    public LoginFilter(String url, AuthenticationManager authManager, UserSecurityService userSecurityService, ReCaptchaService reCaptchaService, SecurityProperties securityProperties) {
         super(new AntPathRequestMatcher(url));
         setAuthenticationManager(authManager);
         this.userSecurityService = userSecurityService;
         this.reCaptchaService = reCaptchaService;
+        this.securityProperties = securityProperties;
         this.setAuthenticationFailureHandler(new LoginFailureHandler());
     }
 
@@ -42,10 +45,13 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
         String userIp = req.getRemoteAddr();
         Credentials creds = new ObjectMapper().readValue(req.getInputStream(), Credentials.class);
 
-        ReCaptchaResponse reCaptchaResponse = reCaptchaService.validate(creds.getCaptcha(), userIp);
-        if(!reCaptchaResponse.isSuccess()) {
-            throw new AuthenticationRequiredException(RE_CAPTCHA_VALIDATION_ERROR_MESSAGE);
+        if (securityProperties.isCaptchaEnabled()){
+            ReCaptchaResponse reCaptchaResponse = reCaptchaService.validate(creds.getCaptcha(), userIp);
+            if(!reCaptchaResponse.isSuccess()) {
+                throw new AuthenticationRequiredException(RE_CAPTCHA_VALIDATION_ERROR_MESSAGE);
+            }
         }
+
 
         return getAuthenticationManager().authenticate(
             new UsernamePasswordAuthenticationToken(

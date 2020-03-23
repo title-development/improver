@@ -37,7 +37,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired ReCaptchaService reCaptchaService;
 
     private LoginFilter loginFilter() throws Exception {
-        return new LoginFilter(LOGIN_PATH, authenticationManager(), userSecurityService, reCaptchaService);
+        return new LoginFilter(LOGIN_PATH, authenticationManager(), userSecurityService, reCaptchaService, securityProperties);
     }
 
     private JwtAuthenticationFilter jwtAuthenticationFilter() {

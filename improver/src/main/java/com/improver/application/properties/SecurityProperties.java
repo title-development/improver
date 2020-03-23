@@ -21,6 +21,7 @@ public class SecurityProperties {
     @Value("${security.login-session.idle}") private Duration userSessionIdle;
     @Value("${security.token.activation.expiration}") private Duration activationTokenDuration;
     @Value("${security.ws.connection.idle}") private Duration wsConnectionDuration;
+    @Value("${google.captcha.enabled}") private boolean captchaEnabled;
 
     @Value("${site.url}") private String origin;
 
@@ -39,6 +40,10 @@ public class SecurityProperties {
 
     public long activationLinkExpiration() {
         return activationTokenDuration.toMillis();
+    }
+
+    public boolean isCaptchaEnabled(){
+        return captchaEnabled;
     }
 
     public long wsConnectionIdleMillis() {

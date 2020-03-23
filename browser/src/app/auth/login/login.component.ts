@@ -12,6 +12,7 @@ import { getErrorMessage } from '../../util/functions';
 import { RecaptchaComponent } from 'ng-recaptcha';
 import { mergeMap, takeUntil, timeoutWith } from 'rxjs/operators';
 import { Subject, throwError } from 'rxjs';
+import { environment } from "../../../environments/environment";
 
 @Component({
   selector: 'login-page',
@@ -29,6 +30,7 @@ export class LoginComponent implements OnDestroy {
   showMessage: boolean = false;
   messageType: string;
   messageText: string;
+  captchaEnabled: boolean = true;
 
   processing: boolean = false;
 
@@ -42,37 +44,60 @@ export class LoginComponent implements OnDestroy {
     public projectService: ProjectService,
     public constants: Constants,
     public messages: Messages,
-  ) {}
+  ) {
+    this.captchaEnabled = environment.captchaEnabled;
+  }
 
   onSubmit(form: NgForm) {
     this.processing = true;
-    this.recaptcha.execute();
-    this.recaptcha.resolved.pipe(
-      timeoutWith(this.constants.ONE_MINUTE, throwError({error:{message: 'Timeout error please try again later'}})),
-      mergeMap((captcha: string | null) => {
-        if(!captcha) {
-          return throwError({error:{message: 'Captcha is expired please try again later'}});
-        }
-        this.credentials.captcha = captcha;
-        return this.securityService.sendLoginRequest(this.credentials)
-      }),
-      takeUntil(this.destroyed$),
-    )
-    .subscribe((response: HttpResponse<any>) => {
-        this.securityService.loginUser(response.body as LoginModel, response.headers.get('authorization'), true);
-      },
-      err => {
-        this.recaptcha.reset();
-        this.processing = false;
-        if (err.status == 401) {
-          this.securityService.logoutFrontend();
-          this.messageText = getErrorMessage(err);
-        } else {
-          this.messageText = getErrorMessage(err);
-        }
-        this.messageType = SystemMessageType.ERROR;
-        this.showMessage = true;
-      });
+    if (this.captchaEnabled) {
+      this.recaptcha.execute();
+      this.recaptcha.resolved.pipe(
+          timeoutWith(this.constants.ONE_MINUTE, throwError({error: {message: 'Timeout error please try again later'}})),
+          mergeMap((captcha: string | null) => {
+            if (!captcha) {
+              return throwError({error: {message: 'Captcha is expired please try again later'}});
+            }
+            this.credentials.captcha = captcha;
+            return this.securityService.sendLoginRequest(this.credentials)
+          }),
+          takeUntil(this.destroyed$),
+      )
+          .subscribe((response: HttpResponse<any>) => {
+                this.securityService.loginUser(response.body as LoginModel, response.headers.get('authorization'), true);
+              },
+              err => {
+                this.recaptcha.reset();
+                this.processing = false;
+                if (err.status == 401) {
+                  this.securityService.logoutFrontend();
+                  this.messageText = getErrorMessage(err);
+                } else {
+                  this.messageText = getErrorMessage(err);
+                }
+                this.messageType = SystemMessageType.ERROR;
+                this.showMessage = true;
+              });
+    } else {
+      this.loginUserToSystemWithoutCaptcha();
+    }
+  }
+  
+  loginUserToSystemWithoutCaptcha(){
+    this.securityService.sendLoginRequest(this.credentials).subscribe((response: HttpResponse<any>) => {
+          this.securityService.loginUser(response.body as LoginModel, response.headers.get('authorization'), true);
+        },
+        err => {
+          this.processing = false;
+          if (err.status == 401) {
+            this.securityService.logoutFrontend();
+            this.messageText = getErrorMessage(err);
+          } else {
+            this.messageText = getErrorMessage(err);
+          }
+          this.messageType = SystemMessageType.ERROR;
+          this.showMessage = true;
+        });
   }
 
   onMessageHide(event) {

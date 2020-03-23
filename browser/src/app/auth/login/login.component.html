@@ -79,7 +79,7 @@
             <a class="no-account-button" routerLink="/signup">Sign up</a>
           </div>
 
-          <re-captcha [size]="'invisible'"></re-captcha>
+          <re-captcha *ngIf="captchaEnabled" [size]="'invisible'"></re-captcha>
         </form>
 
       </div>
