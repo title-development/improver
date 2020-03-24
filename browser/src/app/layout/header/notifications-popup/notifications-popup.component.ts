@@ -33,8 +33,8 @@ import { finalize, first } from "rxjs/operators";
   animations: [
     trigger('toggleNotificationPopup', [
       state('active', style({transform: 'translateX(0)', opacity: '1'})),
-      state('inactive', style({transform: 'translateY(10px)', opacity: '0', right: "-9999px"})),
-      state('inactive-mobile', style({transform: 'translateX(120%)', opacity: '0', right: "-9999px"})),
+      state('inactive', style({transform: 'translateY(10px)', opacity: '0', right: "-9999px", left: 'initial'})),
+      state('inactive-mobile', style({transform: 'translateX(120%)', opacity: '0', right: "-9999px", left: 'initial'})),
       transition('* <=> *', animate('.25s linear'))
     ])
   ]
