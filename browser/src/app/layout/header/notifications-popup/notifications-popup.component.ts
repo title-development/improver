@@ -32,9 +32,9 @@ import { finalize, first } from "rxjs/operators";
   styleUrls: ['notifications-popup.component.scss'],
   animations: [
     trigger('toggleNotificationPopup', [
-      state('active', style({transform: 'translateX(0)', opacity: '1', display: 'flex'})),
-      state('inactive', style({transform: 'translateY(10px)', opacity: '0', display: 'none'})),
-      state('inactive-mobile', style({transform: 'translateX(120%)', opacity: '0', display: 'none'})),
+      state('active', style({transform: 'translateX(0)', opacity: '1'})),
+      state('inactive', style({transform: 'translateY(10px)', opacity: '0', right: "-9999px"})),
+      state('inactive-mobile', style({transform: 'translateX(120%)', opacity: '0', right: "-9999px"})),
       transition('* <=> *', animate('.25s linear'))
     ])
   ]

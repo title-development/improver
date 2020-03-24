@@ -14,9 +14,9 @@ enum Position { Visible = "Visible", FromLeft = "FromLeft", FromRight = "FromRig
         state('Visible', style({})),
         state('FromLeft', style({})),
         state('FromRight', style({})),
-        state('ToLeft', style({display: "none"})),
-        state('ToRight', style({display: "none"})),
-        state('Invisible', style({display: "none"})),
+        state('ToLeft', style({position: "absolute", top: "-9999px"})),
+        state('ToRight', style({position: "absolute", top: "-9999px"})),
+        state('Invisible', style({position: "absolute", top: "-9999px"})),
         transition('* => ToRight', [
           style({transform: 'translateX(0)', opacity: 1}),
           animate('300ms', style({transform: 'translateX(100%)', opacity: 0}))
