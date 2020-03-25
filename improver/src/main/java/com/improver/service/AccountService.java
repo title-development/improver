@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.UUID;
 
 import static com.improver.model.in.CloseProjectRequest.Action.CANCEL;
 
@@ -149,7 +148,7 @@ public class AccountService {
             return;
         }
 
-        user.setValidationKey(UUID.randomUUID().toString());
+        user.generateValidationKey();
         userRepository.save(user);
         mailService.sendPasswordRestore(user);
     }
@@ -240,7 +239,7 @@ public class AccountService {
             }
         }
         user.setNewEmail(emailPasswordTuple.getEmail());
-        user.setValidationKey(UUID.randomUUID().toString());
+        user.generateValidationKey();
         userRepository.save(user);
         mailService.sendEmailChangedNotice(user);
         mailService.sendEmailChanged(user);

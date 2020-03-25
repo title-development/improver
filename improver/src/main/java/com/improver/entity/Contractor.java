@@ -80,8 +80,8 @@ public class Contractor extends User {
             internalPhone,
             socialUser.getPicture())
             .setReferredBy(referredBy)
-            .setIncomplete(true)
-            .setActivated(true);
+            .setActivated(true)
+            .setIncomplete(true);
     }
 
     private static String generateRefCode() {
@@ -110,6 +110,12 @@ public class Contractor extends User {
     @Override
     public Contractor setCreated(ZonedDateTime created) {
         super.setCreated(created);
+        return this;
+    }
+
+    @Override
+    public Contractor generateValidationKey() {
+        super.generateValidationKey();
         return this;
     }
 

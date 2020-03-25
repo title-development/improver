@@ -4,6 +4,7 @@ import com.improver.exception.*;
 import com.improver.exception.NotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,17 +22,13 @@ import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.*;
 
+@Slf4j
 @ControllerAdvice
 public class GenericExceptionHandler extends ResponseEntityExceptionHandler {
-
-    private static final String SERVER_ERR_MSG = "Internal Server Error. Please contact support!";
-
-    private final Logger log = LoggerFactory.getLogger(getClass());
 
 
     @ExceptionHandler({BadRequestException.class})
     public ResponseEntity<Object> handleBadRequestException(BadRequestException e, WebRequest request) {
-        log.warn("Invalid Request Error ", e);
         return new ResponseEntity<>(new RestError(400, e.getMessage()), BAD_REQUEST);
     }
 

@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { SocialConnection } from '../api/models/SocialConnection';
-import { PhoneSocialCredentials } from '../model/security-model';
+import { SocialUserInfo } from '../model/security-model';
 
 @Injectable()
 export class SocialConnectionsService {
@@ -18,12 +18,12 @@ export class SocialConnectionsService {
     return this.http.get<Array<SocialConnection>>(this.API_URL);
   }
 
-  facebookApiLogin(accessToken: string): Observable<any> {
-    return this.http.post<any>(`${this.API_URL}/facebook`, accessToken, {observe: 'response'});
+  facebookApiLogin(socialUserInfo: SocialUserInfo): Observable<any> {
+    return this.http.post<any>(`${this.API_URL}/facebook`, socialUserInfo, {observe: 'response'});
   }
 
-  proFacebookRegister(proSocialCredential: PhoneSocialCredentials): Observable<any> {
-    return this.http.post<any>(`${this.API_URL}/facebook/pro`, proSocialCredential, {observe: 'response'});
+  proFacebookApiRegister(socialUserInfo: SocialUserInfo): Observable<any> {
+    return this.http.post<any>(`${this.API_URL}/facebook/pro`, socialUserInfo, {observe: 'response'});
   }
 
   disconnectFacebook(): Observable<any> {
@@ -34,12 +34,12 @@ export class SocialConnectionsService {
     return this.http.post<any>(`${this.API_URL}/facebook/connect`, accessToken);
   }
 
-  googleApiLogin(tokenId: string): Observable<any> {
-    return this.http.post<any>(`${this.API_URL}/google`, tokenId, {observe: 'response'});
+  googleApiLogin(socialUserInfo: SocialUserInfo): Observable<any> {
+    return this.http.post<any>(`${this.API_URL}/google`, socialUserInfo, {observe: 'response'});
   }
 
-  proGoogleApiRegister(proSocialCredential: PhoneSocialCredentials): Observable<any> {
-    return this.http.post<any>(`${this.API_URL}/google/pro`, proSocialCredential, {observe: 'response'});
+  proGoogleApiRegister(socialUserInfo: SocialUserInfo): Observable<any> {
+    return this.http.post<any>(`${this.API_URL}/google/pro`, socialUserInfo, {observe: 'response'});
   }
 
   disconnectGoogle(): Observable<any> {

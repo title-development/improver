@@ -93,5 +93,9 @@ public class Customer extends User {
         return this;
     }
 
-
+    @Override
+    public Customer generateValidationKey() {
+        super.generateValidationKey();
+        return this;
+    }
 }

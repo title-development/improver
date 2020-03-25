@@ -40,11 +40,6 @@ public class CompanyService {
     @Autowired private ImageService imageService;
     @Autowired private BillRepository billRepository;
     @Autowired private ProjectRepository projectRepository;
-    @Autowired private CompanyConfigRepository companyConfigRepository;
-    @Autowired private ContractorRepository contractorRepository;
-    @Autowired private BillingService billingService;
-    @Autowired private MailService mailService;
-    @Autowired private CompanyConfigService companyConfigService;
     @Autowired private StaffActionLogger staffActionLogger;
 
 
@@ -166,65 +161,6 @@ public class CompanyService {
         Billing billing = company.getBilling();
         billing.getSubscription().reset();
         billRepository.save(billing);
-    }
-
-    /**
-     * Performs registration of given company and links to given contractor
-     *
-     * @param registration registration data for company
-     * @param contractor   company owner
-     */
-    @Transactional
-    public void registerCompany(CompanyRegistration registration, Contractor contractor) {
-        if (contractor.getCompany() != null) {
-            throw new ConflictException(contractor.getCompany().getName() + " company already registered for "
-                + contractor.getEmail());
-        }
-
-        Company company = createCompany(registration.getCompany());
-        linkCompanyAndContractor(company, contractor);
-        companyConfigService.updateTradesServicesCollection(company, registration.getTradesAndServices());
-        CompanyConfig.CoverageConfig coverageConfig = company.getCompanyConfig().getCoverageConfig();
-        coverageConfig.setCenterLat(registration.getCoverage().getCenter().lat)
-            .setCenterLng(registration.getCoverage().getCenter().lng)
-            .setRadius(registration.getCoverage().getRadius());
-        companyConfigService.initCompanyCoverage(coverageConfig, company, contractor);
-
-        // Add initial bonus from Invitation
-        billingService.addInitialBonus(company, contractor.getEmail());
-        if (contractor.isNativeUser()) {
-            mailService.sendRegistrationConfirmEmail(contractor);
-        }
-    }
-
-
-    private Company createCompany(CompanyDetails companyDetails) {
-        ZonedDateTime now = ZonedDateTime.now();
-        String iconUrl = null;
-        if (companyDetails.getLogo() != null && !companyDetails.getLogo().isEmpty()) {
-            try {
-                iconUrl = imageService.saveBase64Image(companyDetails.getLogo());
-            } catch (ValidationException | InternalServerException e) {
-                log.warn("Could not save company logo", e);
-            }
-        }
-
-        Company company = companyRepository.save(Company.of(companyDetails, iconUrl, now));
-        Billing billing = billRepository.save(Billing.forNewCompany(company));
-        CompanyConfig defaultSettings = CompanyConfig.defaultSettings(company);
-        company.setCompanyConfig(defaultSettings);
-        company.setBilling(billing);
-        companyConfigRepository.save(defaultSettings);
-        return company;
-    }
-
-
-    private void linkCompanyAndContractor(Company company, Contractor contractor) {
-        String replyText = String.format(REPLY_TEXT_TEMPLATE, contractor.getDisplayName(), company.getName());
-        contractorRepository.save(contractor.setCompany(company)
-            .setIncomplete(false)
-            .setQuickReply(true)
-            .setReplyText(replyText));
     }
 
 }

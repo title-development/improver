@@ -15,7 +15,7 @@ export class PhoneValidationComponent implements OnInit {
 
   removePhoneMask = removePhoneMask;
 
-  RESEND_DISABLED_SECONDS_DEFAULT = 20;
+  RESEND_DISABLED_SECONDS_DEFAULT = 45;
 
   @Input() phoneNumber;
   @Input() showEditButton = false;

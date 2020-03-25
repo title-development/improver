@@ -14,6 +14,7 @@ import { NavigationHelper } from "../../../util/navigation-helper";
 import { ServiceQuestionaryModel } from "../../../model/service-questionary-model";
 import { PopUpMessageService } from "../../../util/pop-up-message.service";
 import { getErrorMessage } from "../../../util/functions";
+import { ProjectActionService } from "../../../util/project-action.service";
 
 @Component({
   selector: 'questionary-dialog',
@@ -27,6 +28,7 @@ export class QuestionaryDialogComponent implements OnInit, ComponentCanDeactivat
   model = {};
 
   constructor(private accountService: AccountService,
+              public projectActionService: ProjectActionService,
               public currentDialogRef: MatDialogRef<any>,
               public dialog: MatDialog,
               public phoneHelpService: PhoneHelpService,
@@ -61,7 +63,7 @@ export class QuestionaryDialogComponent implements OnInit, ComponentCanDeactivat
   }
 
   close() {
-    if (!this.questionaryControlService.showQuestionary
+    if (!this.projectActionService.zipIsSupported
       || confirm('Do you want to exit? Service will not be requested. Press OK - to exit, Cancel to stay')) {
       this.currentDialogRef.close();
       this.phoneHelpService.showPartial();

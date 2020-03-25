@@ -1,0 +1,77 @@
+<div class="dialog-content-wrapper">
+  <div class="dialog-content-container">
+
+    <div class="header">
+
+      <mat-icon class="close-modal" (click)="close()">clear</mat-icon>
+
+      <div class="header-content" fxLayout="row" fxLayoutAlign="start end">
+        Contact information
+      </div>
+
+    </div>
+
+    <div class="content">
+
+      <form name="additional-info-form"
+            class="additional-info-form"
+            #additionalInfoForm="ngForm"
+            (ngSubmit)="additionalInfoForm.valid && validatePhone()"
+            *ngIf="!phoneValidating"
+            novalidate>
+        {{userName}}, please provide your <span *ngIf="emailMissing">email </span><span *ngIf="emailMissing && phoneMissing">and </span><span *ngIf="phoneMissing">phone number </span> to complete registration.<br>
+        <cv-input-field *ngIf="emailMissing">
+          <input cv-input type="text" placeholder="Email"
+                 name="email"
+                 #email="ngModel"
+                 [(ngModel)]="additionalUserInfo.email"
+                 (ngModelChange)="showMessage = false"
+                 required
+                 trim
+                 pattern="{{constants.patterns.email}}">
+          <cv-field-error *ngIf="email.dirty || email.touched || additionalInfoForm.submitted">
+              <span *ngIf="email.errors?.required">
+                {{messages.errors.email.required}}
+              </span>
+            <span *ngIf="email.errors?.pattern">
+                {{messages.errors.email.pattern}}
+              </span>
+          </cv-field-error>
+        </cv-input-field>
+        <cv-input-field *ngIf="phoneMissing">
+          <input cv-input type="text"
+                 placeholder="Phone"
+                 #phone="ngModel"
+                 name="phone"
+                 [(ngModel)]="additionalUserInfo.phone"
+                 phoneMask
+                 maxlength="14"
+                 [pattern]="constants.patterns.phone"
+                 required>
+          <cv-field-error *ngIf="phone.dirty || phone.touched || additionalInfoForm.submitted">
+                      <span *ngIf="phone.errors?.required">
+                        {{messages.errors.phone.required}}
+                      </span>
+            <span *ngIf="phone.errors?.pattern">
+                        {{messages.errors.phone.pattern}}
+                      </span>
+            <span *ngIf="phone.errors?.allZeros">
+                        {{messages.errors.phone.pattern}}
+                      </span>
+          </cv-field-error>
+        </cv-input-field>
+        <response-message *ngIf="showMessage" [type]="messageType" [message]="messageText"
+                          [paddingV]="12" [paddingH]="24"
+                          [marginTop]="16"
+                          [showIcon]="false" (onHide)="onMessageHide($event)"></response-message>
+        <div class="buttons-wrapper">
+          <div class="spacer"></div>
+          <button cv-button type="submit" class="button-next" [loading]="processing">Continue</button>
+        </div>
+      </form>
+
+      <phone-validation *ngIf="phoneMissing && phoneValidating" [phoneNumber]="additionalUserInfo.phone" [showEditButton]="true" (onSuccess)="registerUser()" (onPhoneNumberChangeClick)="phoneValidating = false"></phone-validation>
+
+    </div>
+  </div>
+</div>

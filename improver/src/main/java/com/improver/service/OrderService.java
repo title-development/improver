@@ -32,7 +32,7 @@ public class OrderService {
 
     @Autowired private ServiceTypeRepository serviceTypeRepository;
     @Autowired private LocationService locationService;
-    @Autowired private UserService userService;
+    @Autowired private RegistrationService registrationService;
     @Autowired private CustomerRepository customerRepository;
     @Autowired private MailService mailService;
     @Autowired private ServedZipRepository servedZipRepository;
@@ -72,17 +72,10 @@ public class OrderService {
 
     private Customer getExistingOrRegister(Order order) {
         return customerRepository.findByEmail(order.getDetails().getEmail())
-            .orElseGet(() -> autoRegisterCustomer(order));
+            .orElseGet(() -> registrationService.autoRegisterCustomer(order.getDetails()));
     }
 
-    private Customer autoRegisterCustomer(Order order) {
-        UserRegistration registration = new UserRegistration()
-            .setEmail(order.getDetails().getEmail())
-            .setFirstName(order.getDetails().getFirstName())
-            .setLastName(order.getDetails().getLastName())
-            .setPhone(order.getDetails().getPhone());
-        return (Customer) userService.saveNewUserRegistration(registration, User.Role.CUSTOMER);
-    }
+
 
     private Project saveProjectOrder(Project project) {
         Project saved = projectRepository.save(project.setUpdated(project.getCreated()));

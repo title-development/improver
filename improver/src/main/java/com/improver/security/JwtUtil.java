@@ -39,7 +39,6 @@ public class JwtUtil {
      * @throws CredentialsExpiredException - when token has been expired
      * @throws BadCredentialsException     - when token is malformed or not valid
      */
-    //TODO : change CredentialsExpiredException -> ExpiredJwtException. throw checked exceptions
     public JwtPrincipal parseAccessToken(String token) throws CredentialsExpiredException, BadCredentialsException {
         if (token == null) {
             throw new BadCredentialsException("Token is NULL");
@@ -63,6 +62,9 @@ public class JwtUtil {
 
 
     public String generateActivationJWT(String validationKey, String email) {
+        if (validationKey == null) {
+            throw new IllegalArgumentException("Validation key should not be NULL");
+        }
         return Jwts.builder()
             .setId(validationKey)
             .setSubject(email)
@@ -95,7 +97,7 @@ public class JwtUtil {
 
         validationKey = body.getId();
         if (validationKey == null || validationKey.isEmpty()){
-            log.error("Activation link contains incorrect key={}", validationKey);
+            log.error("Activation link contains incorrect validationKey={}", validationKey);
             throw new ValidationException(INVALID_ACTIVATION_LINK);
         }
 

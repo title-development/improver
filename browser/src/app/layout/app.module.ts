@@ -77,7 +77,7 @@ import { RECAPTCHA_SETTINGS, RecaptchaSettings } from 'ng-recaptcha';
 import { PhoneService } from "../api/services/phone.service";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { MatToolbarModule } from "@angular/material/toolbar";
-import { MatDialogModule } from "@angular/material/dialog";
+import { MAT_DIALOG_DEFAULT_OPTIONS, MatDialogModule } from "@angular/material/dialog";
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
 import { MatInputModule } from "@angular/material/input";
@@ -197,12 +197,11 @@ export function getAuthServiceConfigs() {
     SocialConnectionsService,
     TutorialsService,
     PhoneService,
+    MyStompService,
     {
       provide: AuthServiceConfig,
       useFactory: getAuthServiceConfigs
     },
-
-
     {provide: 'Window', useValue: window},
     {provide: LOCALE_ID, useValue: 'en-US'},
     {provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMATS},
@@ -230,11 +229,14 @@ export function getAuthServiceConfigs() {
       provide: RouteReuseStrategy,
       useClass: CustomRouteReuseStrategy
     },
-    MyStompService,
+
     {
       provide: RECAPTCHA_SETTINGS,
       useValue: { siteKey: environment.googleReCaptchaSiteKey } as RecaptchaSettings,
     },
+    {
+      provide: MAT_DIALOG_DEFAULT_OPTIONS,
+      useValue: {disableClose: true, hasBackdrop: true, autoFocus: false}}
   ],
   bootstrap: [AppComponent]
 })

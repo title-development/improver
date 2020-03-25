@@ -2,9 +2,6 @@ import { MatDialogConfig } from '@angular/material/dialog';
 // dialogs configurations
 
 export const questionaryDialogConfig: MatDialogConfig = {
-  disableClose: true,
-  hasBackdrop: true,
-  autoFocus: false,
   panelClass: 'dialog-fix-position',
   width: '500px',
   height: '',
@@ -17,15 +14,9 @@ export const questionaryDialogConfig: MatDialogConfig = {
 };
 
 export const mobileMainDialogBarConfig: MatDialogConfig = {
-  disableClose: true,
-  hasBackdrop: true,
-  autoFocus: false
 };
 
 export const customerProjectRequestDialogConfig: MatDialogConfig = {
-  disableClose: true,
-  hasBackdrop: true,
-  autoFocus: false,
   panelClass: 'customer-project-request-dialog',
   width: '996px',
   height: '',
@@ -38,9 +29,6 @@ export const customerProjectRequestDialogConfig: MatDialogConfig = {
 };
 
 export const confirmDialogConfig: MatDialogConfig = {
-  disableClose: true,
-  hasBackdrop: true,
-  autoFocus: false,
   panelClass: 'dialog-fix-position',
   width: '530px',
   height: '',
@@ -52,10 +40,7 @@ export const confirmDialogConfig: MatDialogConfig = {
   }
 };
 
-export const phoneRequestDialogConfig: MatDialogConfig = {
-  disableClose: true,
-  hasBackdrop: true,
-  autoFocus: false,
+export const socialRegistrationAdditionalInfoDialogConfig: MatDialogConfig = {
   panelClass: 'dialog-fix-position',
   width: '400px',
   height: '',
@@ -68,9 +53,6 @@ export const phoneRequestDialogConfig: MatDialogConfig = {
 };
 
 export const addLicenseDialogConfig: MatDialogConfig = {
-  disableClose: true,
-  hasBackdrop: true,
-  autoFocus: false,
   panelClass: 'dialog-fix-position',
   width: '530px',
   height: '',
@@ -83,9 +65,6 @@ export const addLicenseDialogConfig: MatDialogConfig = {
 };
 
 export const personalPhotoDialogConfig: MatDialogConfig = {
-  disableClose: true,
-  hasBackdrop: true,
-  autoFocus: false,
   panelClass: 'dialog-fix-position',
   width: '530px',
   height: '',
@@ -98,9 +77,6 @@ export const personalPhotoDialogConfig: MatDialogConfig = {
 };
 
 export const addPaymentCardDialogConfig: MatDialogConfig = {
-  disableClose: true,
-  hasBackdrop: true,
-  autoFocus: false,
   panelClass: 'dialog-fix-position',
   width: '583px',
   height: '',
@@ -113,9 +89,6 @@ export const addPaymentCardDialogConfig: MatDialogConfig = {
 };
 
 export const addMoneyDialogConfig: MatDialogConfig = {
-  disableClose: true,
-  hasBackdrop: true,
-  autoFocus: false,
   panelClass: 'dialog-fix-position',
   width: '583px',
   height: '',
@@ -128,9 +101,6 @@ export const addMoneyDialogConfig: MatDialogConfig = {
 };
 
 export const completeProjectDialogConfig: MatDialogConfig = {
-  disableClose: true,
-  hasBackdrop: true,
-  autoFocus: false,
   panelClass: 'complete-project-dialog',
   width: '500px',
   height: '',
@@ -143,9 +113,6 @@ export const completeProjectDialogConfig: MatDialogConfig = {
 };
 
 export const customerGalleryDialogConfig: MatDialogConfig = {
-  disableClose: true,
-  hasBackdrop: true,
-  autoFocus: false,
   panelClass: 'customer-gallery-position',
   width: '500px',
   height: '100%',
@@ -158,9 +125,6 @@ export const customerGalleryDialogConfig: MatDialogConfig = {
 };
 
 export const locationSuggestDialogConfig: MatDialogConfig = {
-  disableClose: true,
-  hasBackdrop: true,
-  autoFocus: false,
   panelClass: 'dialog-fix-position',
   width: '530px',
   height: '',
@@ -173,9 +137,6 @@ export const locationSuggestDialogConfig: MatDialogConfig = {
 };
 
 export const unavailabilityPeriodDialogConfig: MatDialogConfig = {
-  disableClose: true,
-  hasBackdrop: true,
-  autoFocus: false,
   panelClass: 'dialog-fix-position',
   width: '545px',
   height: '',
@@ -188,9 +149,6 @@ export const unavailabilityPeriodDialogConfig: MatDialogConfig = {
 };
 
 export const phoneValidationDialogConfig: MatDialogConfig = {
-  disableClose: true,
-  hasBackdrop: true,
-  autoFocus: false,
   panelClass: 'dialog-fix-position',
   width: '380px',
   height: '',

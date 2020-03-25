@@ -24,9 +24,9 @@ import { SystemMessageType } from '../../model/data-model';
 import { HttpResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { ReplaySubject, Subject } from 'rxjs';
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import LatLng = google.maps.LatLng;
 import Polygon = google.maps.Polygon;
-import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 
 @Component({
   selector: 'signup-company',
@@ -541,11 +541,11 @@ export class SignupCompanyComponent {
       )
       .subscribe(
         (response: HttpResponse<any>) => {
+          this.removeIncompleteCompanyFromStorage();
           if ((response.body)) {
             this.securityService.loginUser(JSON.parse(response.body) as LoginModel, response.headers.get('authorization'), true);
           } else {
             this.nextStep();
-            this.removeIncompleteCompanyFromStorage();
             this.storeUserIdIsSessionStorage(this.securityService.getLoginModel().id);
             this.securityService.logoutFrontend();
           }

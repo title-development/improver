@@ -2,22 +2,16 @@ package com.improver.controller;
 
 
 import com.improver.entity.Contractor;
-import com.improver.entity.User;
 import com.improver.exception.AuthenticationRequiredException;
 import com.improver.exception.BadRequestException;
-import com.improver.exception.ConflictException;
-import com.improver.exception.ValidationException;
 import com.improver.model.in.registration.CompanyRegistration;
 import com.improver.model.in.OldNewValue;
 import com.improver.model.in.registration.UserRegistration;
 import com.improver.model.out.LoginModel;
 import com.improver.model.recapcha.ReCaptchaResponse;
-import com.improver.repository.UserRepository;
 import com.improver.security.UserSecurityService;
-import com.improver.service.CompanyService;
 import com.improver.service.ReCaptchaService;
-import com.improver.service.UserService;
-import com.improver.util.mail.MailService;
+import com.improver.service.RegistrationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.UUID;
 
 import static com.improver.application.properties.Path.*;
 import static com.improver.util.ErrorMessages.RE_CAPTCHA_VALIDATION_ERROR_MESSAGE;
@@ -38,36 +31,17 @@ import static com.improver.util.ErrorMessages.RE_CAPTCHA_VALIDATION_ERROR_MESSAG
 @RestController
 @RequestMapping(REGISTRATION_PATH)
 public class RegistrationController {
-    @Autowired private UserService userService;
-    @Autowired private UserRepository userRepository;
-    @Autowired private MailService mailService;
-    @Autowired private CompanyService companyService;
+
+
     @Autowired private UserSecurityService userSecurityService;
     @Autowired private ReCaptchaService reCaptchaService;
+    @Autowired private RegistrationService registrationService;
 
 
     @PreAuthorize("isAnonymous()")
     @PostMapping("/email-change")
     public ResponseEntity changeRegistrationEmail(@RequestBody OldNewValue oldNewEmail) {
-        oldNewEmail.setNewValue(oldNewEmail.getNewValue().toLowerCase());
-        oldNewEmail.setOldValue(oldNewEmail.getOldValue().toLowerCase());
-
-        if (oldNewEmail.getOldValue().equals(oldNewEmail.getNewValue())) {
-            throw new ValidationException("Email must be different");
-        }
-
-        User user = userRepository.findByEmail(oldNewEmail.getOldValue())
-            .orElseThrow(() -> new ConflictException("Account doesn't exist for " + oldNewEmail.getNewValue()));
-        if (user.isActivated()) {
-            log.warn("Cannot change registration email. User {} already activated!", user.getEmail());
-            throw new ValidationException("Cannot change registration email. Email already confirmed!");
-        }
-
-        // regenerate validation key, so the old confirmation links became invalid
-        User updated = userRepository.save(user.setValidationKey(UUID.randomUUID().toString())
-            .setEmail(oldNewEmail.getNewValue())
-        );
-        mailService.sendRegistrationConfirmEmail(updated);
+        registrationService.changeRegistrationEmail(oldNewEmail);
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -77,8 +51,7 @@ public class RegistrationController {
         if((email == null || email.isEmpty()) && userId == null) {
             throw new BadRequestException("Bad request");
         }
-        User user = userService.resendConfirmationEmail(email, userId);
-        mailService.sendRegistrationConfirmEmail(user);
+        registrationService.resendRegistrationConfirmationEmail(email, userId);
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -90,7 +63,7 @@ public class RegistrationController {
         if(!reCaptchaResponse.isSuccess()) {
             throw new AuthenticationRequiredException(RE_CAPTCHA_VALIDATION_ERROR_MESSAGE);
         }
-        userService.registerCustomer(customer);
+        registrationService.registerCustomer(customer);
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -103,7 +76,7 @@ public class RegistrationController {
         if(!reCaptchaResponse.isSuccess()) {
             throw new AuthenticationRequiredException(RE_CAPTCHA_VALIDATION_ERROR_MESSAGE);
         }
-        Contractor contractor = userService.registerContractor(registration);
+        Contractor contractor = registrationService.registerContractor(registration);
         LoginModel loginModel = userSecurityService.performUserLogin(contractor, res);
         return new ResponseEntity<>(loginModel, HttpStatus.OK);
     }
@@ -114,9 +87,9 @@ public class RegistrationController {
     public ResponseEntity<LoginModel> registerCompany(@RequestBody @Valid CompanyRegistration registration, HttpServletResponse res) {
         log.info("Registration of Company = {}", registration.getCompany().getName());
         Contractor contractor = userSecurityService.currentPro();
-        companyService.registerCompany(registration, contractor);
+        registrationService.registerCompany(registration, contractor);
         LoginModel loginModel = null;
-        if (!contractor.isNativeUser()) {
+        if (!contractor.isNativeUser() && contractor.isActivated()) {
             loginModel = userSecurityService.performUserLogin(contractor, res);
         } else {
             userSecurityService.performLogout(contractor,res);

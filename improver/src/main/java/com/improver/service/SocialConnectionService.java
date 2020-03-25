@@ -8,29 +8,32 @@ import com.improver.exception.AuthenticationRequiredException;
 import com.improver.exception.ConflictException;
 import com.improver.exception.NotFoundException;
 import com.improver.model.socials.SocialUser;
-import com.improver.repository.ContractorRepository;
-import com.improver.repository.CustomerRepository;
+import com.improver.model.socials.SocialUserInfo;
 import com.improver.repository.SocialConnectionRepository;
 import com.improver.repository.UserRepository;
 import com.improver.util.StringUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 
-import javax.validation.Valid;
+
+import javax.validation.ValidationException;
 import java.util.List;
 
+import static java.util.Objects.nonNull;
+
+@Slf4j
 @Service
-@Validated
 public class SocialConnectionService {
 
     @Autowired private UserRepository userRepository;
-    @Autowired private CustomerRepository customerRepository;
-    @Autowired private ContractorRepository contractorRepository;
+    @Autowired private RegistrationService registrationService;
     @Autowired private SocialConnectionRepository socialConnectionRepository;
-    @Autowired private UserService userService;
 
-    public User findExistingOrRegister(@Valid SocialUser socialUser) throws AuthenticationRequiredException {
+
+    //TODO: this better to split into 2 separate methods
+    public User findExistingOrRegister(SocialUser socialUser, boolean emailVerificationRequired) throws AuthenticationRequiredException {
+        // by providerId
         SocialConnection connection = socialConnectionRepository.findByProviderId(socialUser.getId());
         if (connection != null) {
             if (connection.getUser().isDeleted() || connection.getUser().isBlocked()) {
@@ -39,33 +42,40 @@ public class SocialConnectionService {
             return connection.getUser();
         }
 
+        // by email
         User user = userRepository.findByEmail(socialUser.getEmail()).orElse(null);
         if (user != null) {
             return addSocialConnection(user, socialUser);
         } else {
             Customer customer = Customer.of(socialUser);
-
-            return userService.registerUser(customer, socialUser);
+            return registrationService.registerSocialUser(customer, socialUser, emailVerificationRequired);
         }
     }
 
-    public User registerPro(@Valid SocialUser socialUser, String phone, String referredBy) throws AuthenticationRequiredException {
+
+    public User registerPro(SocialUser socialUser, SocialUserInfo socialUserInfo, String referredBy) throws AuthenticationRequiredException {
+        boolean emailVerificationRequired = false;
         SocialConnection connection = socialConnectionRepository.findByProviderId(socialUser.getId());
         if (connection != null) {
             throw new ConflictException(StringUtil.capitalize(socialUser.getProvider().toString()) + " account is already connected to another user");
         }
-
+        if (nonNull(socialUserInfo.getEmail())) {
+            socialUser.setEmail(socialUserInfo.getEmail());
+            emailVerificationRequired = true;
+        }
+        if (socialUser.getEmail() == null) {
+            throw new ValidationException("Email is required");
+        }
         User user = userRepository.findByEmail(socialUser.getEmail()).orElse(null);
         if(user != null) {
             throw new ConflictException("User with email "+socialUser.getEmail()+ " already registered");
         }
-
-        Contractor contractor = Contractor.of(socialUser, phone, referredBy);
-
-        return userService.registerUser(contractor, socialUser);
+        Contractor contractor = Contractor.of(socialUser, socialUserInfo.getPhone(), referredBy);
+        return registrationService.registerSocialUser(contractor, socialUser, emailVerificationRequired);
     }
 
-    public void connect(@Valid SocialUser socialUser, User user) throws ConflictException {
+
+    public void connect(SocialUser socialUser, User user) throws ConflictException {
         if (user.getSocialConnections().stream().anyMatch(connection -> connection.getProvider().equals(socialUser.getProvider()))) {
             throw new ConflictException("You have already connected " + StringUtil.capitalize(socialUser.getProvider().toString()));
         }
@@ -77,24 +87,25 @@ public class SocialConnectionService {
         socialConnectionRepository.save(socialConnection);
     }
 
-    public List<SocialConnection> getSocialConnections(User user) {
 
+    public List<SocialConnection> getSocialConnections(User user) {
         return socialConnectionRepository.findAllByUser(user);
     }
+
 
     public void disconnectSocial(User user, SocialConnection.Provider provider) throws ConflictException {
         SocialConnection socialConnection = socialConnectionRepository.findByUserAndProvider(user, provider).orElseThrow(NotFoundException::new);
         socialConnectionRepository.delete(socialConnection);
     }
 
-    private User addSocialConnection(User user, @Valid SocialUser socialUser) {
+
+    private User addSocialConnection(User user, SocialUser socialUser) {
         if (user.isDeleted() || user.isBlocked()) {
             throw new AuthenticationRequiredException("Account has been deleted");
         }
         SocialConnection socialConnection = new SocialConnection(socialUser, user);
         user.addSocialConnection(socialConnection);
         socialConnectionRepository.save(socialConnection);
-
         return user;
     }
 }

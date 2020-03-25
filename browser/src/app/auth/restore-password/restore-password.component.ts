@@ -68,7 +68,6 @@ export class RestorePasswordComponent {
 
   restorePassword(form: NgForm) {
     this.activationService.confirmPasswordReset(this.credentials, this.token).subscribe(response => {
-      console.log(response);
       this.securityService.loginUser(JSON.parse(response.body) as LoginModel, response.headers.get('authorization'), true);
       // this.step = 4;
       this.popUpMessageService.showSuccess('Password changed successfully');

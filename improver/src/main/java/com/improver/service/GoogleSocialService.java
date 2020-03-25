@@ -8,7 +8,7 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.improver.entity.User;
 import com.improver.exception.AuthenticationRequiredException;
 import com.improver.exception.InternalServerException;
-import com.improver.model.socials.PhoneSocialCredentials;
+import com.improver.model.socials.SocialUserInfo;
 import com.improver.model.socials.SocialUser;
 import com.improver.application.properties.ThirdPartyApis;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
@@ -26,8 +25,8 @@ public class GoogleSocialService {
 
     @Autowired private SocialConnectionService socialConnectionService;
     @Autowired private ThirdPartyApis thirdPartyApis;
-
     private GoogleIdTokenVerifier verifier;
+
 
     @PostConstruct
     public void init() {
@@ -36,23 +35,24 @@ public class GoogleSocialService {
             .build();
     }
 
+
     public User loginOrRegister(String idTokenString) {
         SocialUser socialUser = getSocialUser(idTokenString);
-
-        return socialConnectionService.findExistingOrRegister(socialUser);
+        return socialConnectionService.findExistingOrRegister(socialUser, false);
     }
 
-    public User registerPro(PhoneSocialCredentials phoneSocialCredentials) {
-        SocialUser socialUser = getSocialUser(phoneSocialCredentials.getAccessToken());
 
-        return socialConnectionService.registerPro(socialUser, phoneSocialCredentials.getPhone(), phoneSocialCredentials.getReferralCode());
+    public User registerPro(SocialUserInfo socialUserInfo) {
+        SocialUser socialUser = getSocialUser(socialUserInfo.getAccessToken());
+        return socialConnectionService.registerPro(socialUser, socialUserInfo, socialUserInfo.getReferralCode());
     }
+
 
     public void connect(User user, String idTokenString) {
         SocialUser socialUser = getSocialUser(idTokenString);
-
         socialConnectionService.connect(socialUser, user);
     }
+
 
     private SocialUser getSocialUser(String idTokenString) {
         GoogleIdToken idToken = null;
@@ -61,6 +61,7 @@ public class GoogleSocialService {
         } catch (GeneralSecurityException e) {
             throw new AuthenticationRequiredException("Token id is invalid");
         } catch (Exception e) {
+            log.error("Google api exception", e);
             throw new InternalServerException("Could not connect to google api", e);
         }
         if (idToken == null) {

@@ -24,11 +24,12 @@ import { CustomerProjectRequestDialogAboutComponent } from '../../entity/custome
 import { CustomerProjectRequestDialogReviewsComponent } from '../../entity/customer/customer-project-request-dialog/customer-project-request-dialog-reviews/customer-project-request-dialog-reviews.component';
 import { EmailConfirmDialogComponent } from './email-confirm-dialog/email-confirm-dialog.component';
 import { RequestReviewRevisionDialogComponent } from './request-review-revision-dialog/request-review-revision-dialog.component';
-import { ContractorRegistrationPhoneRequestComponent } from './contractor-registration-phone-request-dialog/contractor-registration-phone-request.component';
+
 import { ReferralDialogComponent } from './refreal-dialog/referral-dialog.component';
 import { InfoWindowDialogComponent } from './info-window-dialog';
 import { MobileMainSearchBarComponent } from "../mobile-main-search-bar/mobile-main-search-bar.component";
 import { PhoneValidationDialogComponent } from "./phone-validation-dialog/phone-validation-dialog.component";
+import { SocialRegistrationAdditionalInfoDialog } from "./social-registration-additional-info-dialog/social-registration-additional-info-dialog";
 
 export const dialogs = [
   QuestionaryDialogComponent,
@@ -57,7 +58,7 @@ export const dialogs = [
   RequestReviewRevisionDialogComponent,
   DeleteAccountDialogComponent,
   DeleteCompanyDialogComponent,
-  ContractorRegistrationPhoneRequestComponent,
+  SocialRegistrationAdditionalInfoDialog,
   ReferralDialogComponent,
   InfoWindowDialogComponent,
   PhoneValidationDialogComponent,
@@ -88,7 +89,7 @@ export const dialogsMap = {
   'subscription-dialog': SubscriptionDialogComponent,
   'delete-account-dialog': DeleteAccountDialogComponent,
   'delete-company-dialog': DeleteCompanyDialogComponent,
-  'contractor-registration-phone-request': ContractorRegistrationPhoneRequestComponent,
+  'social-registration-additional-info-dialog': SocialRegistrationAdditionalInfoDialog,
   'referral-dialog': ReferralDialogComponent,
   'info-window-dialog': InfoWindowDialogComponent,
   'phone-validation-dialog': PhoneValidationDialogComponent,

@@ -342,6 +342,8 @@ export class ProjectActionService {
         this.questionaryControlService.serviceType = null;
         this.questionaryControlService.withServiceType = false;
         this.questionaryControlService.trade = null;
+        this.zipIsChecking = false;
+        this.zipIsSupported = true;
       });
   }
 

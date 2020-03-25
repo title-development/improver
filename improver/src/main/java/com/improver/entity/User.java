@@ -10,6 +10,7 @@ import java.security.Principal;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 
 @Entity(name = "users")
@@ -74,6 +75,11 @@ public class User implements Principal {
     protected List<UserTutorial> userTutorials;
 
     protected User() {
+    }
+
+    public User generateValidationKey() {
+        this.validationKey = UUID.randomUUID().toString();
+        return this;
     }
 
     public User setEmail(String email) {

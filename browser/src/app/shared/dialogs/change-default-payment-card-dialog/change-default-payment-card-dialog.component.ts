@@ -87,7 +87,6 @@ export class ChangeDefaultPaymentCardDialogComponent implements OnInit, OnDestro
     this.billingService.setDefaultCard(this.securityService.getLoginModel().company, cardId)
       .subscribe(
         response => {
-          console.log(response);
           this.getPaymentCards();
           this.onPaymentCardSelect.emit();
           this.close();

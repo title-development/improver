@@ -83,14 +83,25 @@ export class ActivationCustomerModel {
   password?: string;
 }
 
-export class PhoneSocialCredentials {
+export class SocialUserInfo {
   accessToken: string;
+  email: string;
   phone: string;
   referralCode: string;
 
-  constructor(accessToken: string, phone: string, referralCode: string) {
+  constructor(accessToken?: string, email?: string, phone?: string, referralCode?: string) {
     this.accessToken = accessToken;
+    this.email = email;
     this.phone = phone;
     this.referralCode = referralCode;
+  }
+}
+
+export class AdditionalUserInfo {
+  email: string;
+  phone: string;
+  constructor(email?: string, phone?: string) {
+    this.email = email;
+    this.phone = phone;
   }
 }

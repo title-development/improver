@@ -108,7 +108,6 @@ export class AddPaymentCardDialogComponent implements OnInit, AfterViewInit, OnD
       };
       this.billingService.addCard(this.securityService.getLoginModel().company, stripeToken).subscribe(
         response => {
-          // console.log(response);
           this.onPaymentCardAdd.emit();
           this.currentDialogRef.close()
         },
@@ -118,7 +117,6 @@ export class AddPaymentCardDialogComponent implements OnInit, AfterViewInit, OnD
           } else {
             this.checkingCard = false;
             this.error = JSON.parse(response.error).message;
-            // console.log(response);
           }
         }
       )

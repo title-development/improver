@@ -198,7 +198,7 @@ public class UserSecurityService implements UserDetailsService {
     public void checkUser(User user) throws DisabledException, LockedException, CredentialsExpiredException, AccountExpiredException {
         if(!user.isActivated()) {
             if (user instanceof Contractor && ((Contractor) user).isIncomplete()) {
-                log.debug("Skip incomplete PRO " + user.getEmail());
+                log.debug("Pass through incomplete PRO " + user.getEmail());
             } else {
                 throw new DisabledException(ACCOUNT_NOT_ACTIVATED_MSG);
             }
@@ -232,7 +232,7 @@ public class UserSecurityService implements UserDetailsService {
             Company company = ((Contractor) user).getCompany();
             if (company == null) {
                 role = User.Role.INCOMPLETE_PRO;
-                log.debug("Not fully registered Pro={} login", user.getEmail());
+                log.debug("Login incomplete PRO {}", user.getEmail());
             } else {
                 iconUrl = company.getIconUrl();
                 companyId = company.getId();

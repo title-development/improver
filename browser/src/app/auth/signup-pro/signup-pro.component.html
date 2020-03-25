@@ -200,17 +200,8 @@
 
             <div class="row" *ngIf="mediaQuery.xs || mediaQuery.sm">
               <div class="col-md-8 col-sm-12 col-xs-12">
-                <cv-checkbox #agreeEl="ngModel" name="agree"
-                             [(ngModel)]="registerProps.agree"
-                             class="agree"
-                             required>
-                  <div>I agree with Home Improve <a routerLink="/terms-of-use" target="_blank">Terms of Use</a> and <a
-                    routerLink="/privacy-policy" target="_blank">Privacy policy</a></div>
-                </cv-checkbox>
-                <cv-field-error
-                  *ngIf="agreeEl.dirty || agreeEl.touched || accountForm.submitted || agreeForSocialLogin">
-                  <span *ngIf="agreeEl.errors?.required">Please agree to all the terms and conditions</span>
-                </cv-field-error>
+                  <div class="terms-agreement">By proceeding you are accepting our <a target="_blank" href="/terms-of-use">Terms of Use</a> and <a
+                    target="_blank" href="/privacy-policy">Privacy Policy</a></div>
               </div>
             </div>
             <response-message *ngIf="showMessage" [type]="messageType" [message]="messageText"
@@ -223,17 +214,8 @@
         </div>
         <div class="row" *ngIf="!(mediaQuery.xs || mediaQuery.sm)">
           <div class="col-md-8 col-sm-12 col-xs-12">
-            <cv-checkbox #agreeEl="ngModel" name="agree"
-                         [(ngModel)]="registerProps.agree"
-                         class="agree"
-                         required>
-              <div>I agree with Home Improve <a routerLink="/terms-of-use" target="_blank">Terms of Use</a> and <a
-                routerLink="/privacy-policy" target="_blank">Privacy policy</a></div>
-            </cv-checkbox>
-            <cv-field-error
-              *ngIf="agreeEl.dirty || agreeEl.touched || accountForm.submitted || agreeForSocialLogin">
-              <span *ngIf="agreeEl.errors?.required">Please agree to all the terms and conditions</span>
-            </cv-field-error>
+            <div class="terms-agreement">By proceeding you are accepting our <a target="_blank" href="/terms-of-use">Terms of Use</a> and <a
+              target="_blank" href="/privacy-policy">Privacy Policy</a></div>
           </div>
         </div>
         <div class="captcha-reminder">This site is protected by reCAPTCHA and the Google

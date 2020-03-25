@@ -2,16 +2,10 @@ package com.improver.model.socials;
 
 import com.google.api.client.auth.openidconnect.IdToken;
 import com.improver.entity.SocialConnection;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.Accessors;
+import lombok.*;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
 
-import static com.improver.util.ErrorMessages.EMAIL_REQUIRED_VALIDATION_ERROR_MESSAGE;
 import static com.improver.util.ErrorMessages.EMAIL_VALIDATION_ERROR_MESSAGE;
 
 @RequiredArgsConstructor
@@ -20,12 +14,13 @@ public class SocialUser {
     private final String id;
 
     @Email(message = EMAIL_VALIDATION_ERROR_MESSAGE)
-    @NotNull(message = EMAIL_REQUIRED_VALIDATION_ERROR_MESSAGE)
-    private final String email;
+    @Setter
+    private String email;
     private final String firstName;
     private final String lastName;
     private final String picture;
     private final SocialConnection.Provider provider;
+
 
     public SocialUser(FacebookUserProfile userProfile) {
         this.id = userProfile.getId();
@@ -35,6 +30,7 @@ public class SocialUser {
         this.picture = userProfile.getPicture().getData().getUrl();
         this.provider = SocialConnection.Provider.FACEBOOK;
     }
+
 
     public SocialUser(IdToken.Payload payload) {
         this.id = payload.getSubject();

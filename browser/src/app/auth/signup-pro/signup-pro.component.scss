@@ -1,13 +1,16 @@
 @import "../../../improver-mixins.scss";
 
+:host {
+}
+
 .container {
   max-width: 891px;
-  margin: 48px auto;
+  margin: 24px auto;
   width: 100%;
   color: $black-primary;
 
   @include response-to(xs) {
-    margin: 0 auto;
+    margin: 16px auto;
   }
 }
 
@@ -17,6 +20,11 @@ h3 {
   font-weight: 600;
   color: $black-primary;
   margin-top: 16px;
+
+  @include response-to(sm) {
+    margin-bottom: 16px;
+    margin-top: 8px;
+  }
 }
 
 .or-social {
@@ -26,6 +34,10 @@ h3 {
 .step-wizard {
   display: flex;
   margin-bottom: 24px;
+
+  @include response-to(sm) {
+    display: none;
+  }
 
   .step-icon {
     display: flex;
@@ -233,15 +245,23 @@ cv-input-field {
   }
 }
 
+.terms-agreement {
+  font-size: 14px;
+  a {
+    cursor: pointer;
+    color: $primary-500;
+  }
+}
+
 .captcha-reminder {
   text-align: left;
   margin-top: 8px;
-  font-size: 12px;
+  font-size: 10px;
   color: rgba(0, 0, 0, 0.54);
 
   a {
     cursor: pointer;
-    color: $primary-500;
+    color: inherit;
   }
 
 }

@@ -47,7 +47,7 @@ export class SignupProComponent implements OnDestroy {
 
   registerProps: RegistrationUserProps = {
     confirmPassword: '',
-    agree: false
+    agree: true
   };
   mediaQuery: MediaQuery;
   private readonly REFERRAL_CODE_STORAGE_KEY: string = 'REFERRAL_CODE';
