@@ -347,13 +347,13 @@
     }
 
     .change-email-input-wrapper {
-      //margin-top: 16px;
-      input {
 
-      }
+      ::ng-deep .input-holder {
+        display: flex;
 
-      button {
-
+        input {
+          padding-left: 48px;
+        }
       }
 
     }
