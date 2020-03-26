@@ -2,7 +2,7 @@
 
   <div #defaultQuestion class="form-element-wrapper text-input-wrapper" [formGroupName]="'defaultQuestionaryGroup'"
        *ngIf="questionaryControlService.trade && !questionaryControlService.withServiceType">
-    <h2 class="question-title">Please, specify service that you need?</h2>
+    <h2 class="question-title">Please, select service you need</h2>
     <div class="text-input-group"
          [cvSpinner]="false"
          [cvSpinnerSize]="50"
@@ -10,7 +10,7 @@
       <cv-input-field>
         <input [(ngModel)]="serviceSearch" [ngModelOptions]="{standalone: true}"
                cv-input type="text"
-               placeholder="Service that you need..."
+               placeholder="Type to filter services..."
                name="serviceSearch" (ngModelChange)="autocompleteServiceSelectionSearch($event)">
         <cv-field-error
           *ngIf="defaultQuestionaryForm.get('serviceType').dirty || defaultQuestionaryForm.get('serviceType').touched">

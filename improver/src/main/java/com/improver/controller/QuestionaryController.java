@@ -2,6 +2,7 @@ package com.improver.controller;
 
 import com.improver.entity.Question;
 import com.improver.model.admin.AdminQuestionary;
+import com.improver.model.out.ServiceQuestionaryModel;
 import com.improver.repository.QuestionRepository;
 import com.improver.repository.QuestionaryRepository;
 import com.improver.repository.ServiceTypeRepository;
@@ -18,9 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
-import static com.improver.application.properties.Path.ID_PATH_VARIABLE;
-import static com.improver.application.properties.Path.QUESTIONARY_PATH;
+import static com.improver.application.properties.Path.*;
 
 @RestController
 @RequestMapping(QUESTIONARY_PATH)
@@ -30,6 +29,13 @@ public class QuestionaryController {
     @Autowired QuestionaryService questionaryService;
     @Autowired ServiceTypeRepository serviceTypeRepository;
     @Autowired QuestionRepository questionRepository;
+
+
+    @GetMapping(SERVICES + ID_PATH_VARIABLE)
+    public ResponseEntity<ServiceQuestionaryModel> getQuestionary(@PathVariable long id) {
+        ServiceQuestionaryModel questions = questionaryService.getQuestionaryInfo(id);
+        return new ResponseEntity<>(questions, HttpStatus.OK);
+    }
 
     @SupportAccess
     @PageableSwagger

@@ -30,7 +30,6 @@ public class CatalogController {
     @Autowired private TradeRepository tradeRepository;
     @Autowired private ServiceTypeService serviceTypeService;
     @Autowired private ServiceTypeRepository serviceTypeRepository;
-    @Autowired private QuestionaryService questionaryService;
 
     /**
      * Returns suggested {@link ServiceType} list represented by list of {@link NameIdImageTuple}'s.
@@ -73,14 +72,6 @@ public class CatalogController {
         List<NameIdTuple> services = serviceTypeService.getAllServicesModel();
 
         return new ResponseEntity<>(services, HttpStatus.OK);
-    }
-
-
-    @GetMapping(QUESTIONARY + ID_PATH_VARIABLE)
-    public ResponseEntity<ServiceQuestionaryModel> getQuestionary(@PathVariable long id) {
-        ServiceQuestionaryModel questions = questionaryService.getQuestionaryInfo(id);
-
-        return new ResponseEntity<>(questions, HttpStatus.OK);
     }
 
 

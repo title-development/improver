@@ -59,7 +59,7 @@ export class ServiceTypeService {
   }
 
   getQuestionary(id: number): Observable<ServiceQuestionaryModel> {
-    return this.http.get<ServiceQuestionaryModel>(`${this.catalogUrl}/questionary/${id}`);
+    return this.http.get<ServiceQuestionaryModel>(`api/questionary/services/${id}`);
 
   }
 
