@@ -46,7 +46,6 @@ export class InvoiceComponent implements OnDestroy {
     this.billingService.getTransaction(this.securityService.getLoginModel().company, this.receiptId).subscribe(
       transaction => {
         this.transaction = transaction;
-        console.log(transaction)
       },
       err => {
         console.error(getErrorMessage(err))
@@ -58,7 +57,6 @@ export class InvoiceComponent implements OnDestroy {
     this.projectService.getProjectReceipt(this.receiptId).subscribe(
       transaction => {
         this.transaction = transaction;
-        console.log(transaction)
       },
       err => {
         switch (err.status) {

@@ -28,7 +28,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
         " AND t.company.id = :companyId")
     int countSubscriptionPurchasesForPeriod(long companyId, ZonedDateTime startDate, ZonedDateTime endDate);
 
-    Optional<Transaction> findByIdAndCompany(String transactionId, Company company);
+    Optional<Transaction> findByIdAndCompany(Long transactionId, Company company);
 
     @Query("SELECT t FROM com.improver.entity.Transaction t WHERE t.projectRequest.id = :proProjectRequestId" +
         " AND t.type = :type AND t.company = :company")

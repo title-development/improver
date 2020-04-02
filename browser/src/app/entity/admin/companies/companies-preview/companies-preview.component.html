@@ -218,7 +218,7 @@
 
               <ng-template pTemplate="header" let-columns>
                 <tr>
-                  <th pSortableColumn="id">
+                  <th pSortableColumn="id" class="transaction-id-column">
                     Id
                     <p-sortIcon field="id"></p-sortIcon>
                   </th>
@@ -395,7 +395,7 @@
                     <span>{{row.id}}</span>
                   </td>
                   <td>
-                    <span>{{row.customer.displayName}}</span>
+                    <span>{{row.customer.name}}</span>
                   </td>
                   <td>
                     {{row.score}}

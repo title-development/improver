@@ -21,6 +21,7 @@ import java.time.format.TextStyle;
 import java.util.*;
 
 import static com.improver.application.properties.BusinessProperties.MONTHS_STATISTIC_COUNT;
+import static com.improver.entity.Transaction.getTransactionIdFromTransactionNumber;
 import static com.improver.service.InvitationService.MAX_ALLOWED_BONUS;
 import static com.improver.service.InvitationService.MIN_ALLOWED_BONUS;
 import static java.time.temporal.TemporalAdjusters.firstDayOfMonth;
@@ -143,7 +144,7 @@ public class BillingService {
 
 
     public Receipt getReceipt(Company company, String transactionId) {
-        Transaction transaction = transactionRepository.findByIdAndCompany(transactionId, company)
+        Transaction transaction = transactionRepository.findByIdAndCompany(getTransactionIdFromTransactionNumber(transactionId), company)
             .orElseThrow(NotFoundException::new);
          return from(transaction, company);
     }
@@ -187,7 +188,7 @@ public class BillingService {
         // 3 General details
         String type = StringUtil.capitalize(transaction.getType().toString());
         receipt.setDetail(new Receipt.Record(transaction.getCreated(), type, transaction.generateRecordTitle(), transaction.getAmount()))
-            .setId(transaction.getId())
+            .setId(transaction.getTransactionNumber())
             .setComments(transaction.getComment())
             .setInvoice(transaction.isCharge())
             .setCode(transaction.getChargeId())

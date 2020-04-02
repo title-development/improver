@@ -3,18 +3,8 @@ package com.improver.entity;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
-import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.time.ZonedDateTime;
 
 @Data
@@ -23,10 +13,9 @@ import java.time.ZonedDateTime;
 public class Transaction {
 
     @Id
-    @GeneratedValue(generator = "ip-time-based-id")
-    @GenericGenerator(name = "ip-time-based-id", strategy = "com.improver.util.database.IPAndTimeBasedIdGenerator")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private String id;
+    private long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id", foreignKey = @ForeignKey(name = "transaction_company_fkey"))
@@ -62,6 +51,8 @@ public class Transaction {
     public static final String SUBSCRIPTION_REPLENISH_DESC = "Subscription balance top-up";
     public static final String SUBSCRIPTION_RESERVE_DESC = "Subscription budget reservation";
     public static final String TOP_UP_DESC = "Balance top-up";
+    public static final String TRANSACTIONS_PREFIX = "TA";
+    public static final int TRANSACTIONS_NUMBER_MAX_LENGTH = 16; // Max long type value in hexadecimal format
 
     private Transaction() {
     }
@@ -201,6 +192,38 @@ public class Transaction {
         public String toString() {
             return this.value;
         }
+    }
+
+    /**
+     * Get transaction ID(Long type) from Transaction number(Hexadecimal)
+     *
+     * @param transactionNumber //consists of standard transaction prefix and transaction ID in Hexadecimal
+     */
+    public static long getTransactionIdFromTransactionNumber(String transactionNumber) {
+        String transactionNumberWithoutPrefix = transactionNumber.split(TRANSACTIONS_PREFIX)[1];
+        return Long.parseLong(transactionNumberWithoutPrefix, 16);
+    }
+
+    /**
+     * Generate transaction number(String) from transaction ID(Long)
+     * For example transaction ID equal "30" => "TA0000000000000016"
+     * Where:  "TA" - standard transaction prefix
+     *         "16" - value in hexadecimal format
+     *         "00000000000000" - zeros to fill standard of transactions number length
+     */
+    public String getTransactionNumber() {
+        String hexadecimalId = String.format("%X", this.id);
+        StringBuilder stringWithZeros = new StringBuilder();
+        char[] hexadecimalCharArray = hexadecimalId.toCharArray();
+        if (hexadecimalCharArray.length < TRANSACTIONS_NUMBER_MAX_LENGTH) {
+            for (int i = 0; i < TRANSACTIONS_NUMBER_MAX_LENGTH - hexadecimalCharArray.length; i++) {
+                stringWithZeros.append('0');
+            }
+        }
+
+        return TRANSACTIONS_PREFIX +
+                stringWithZeros +
+                hexadecimalId;
     }
 
     public static Transaction leadFromBalance(boolean isManual, Company company, String serviceType, ProjectRequest projectRequest, Location location, int amount, int balance) {

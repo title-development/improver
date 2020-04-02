@@ -29,7 +29,7 @@ public class TransactionModel {
 
 
     public TransactionModel(Transaction transaction) {
-        this.id = transaction.getId();
+        this.id = transaction.getTransactionNumber();
         this.type = transaction.getType();
         this.created = transaction.getCreated();
         this.amount = transaction.getAmount();
