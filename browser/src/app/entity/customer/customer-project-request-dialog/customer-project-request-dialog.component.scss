@@ -527,6 +527,12 @@
       margin-bottom: 0;
     }
 
+    &.-medium {
+      @include response(xs, md) {
+        padding: 8px 16px !important;
+      }
+    }
+
     &.hire-company-button {
       background-color: #63be8d;
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.15);
@@ -633,7 +639,6 @@
 .company-name {
   font-size: 20px;
   font-weight: 600;
-  text-align: center;
   text-align: center;
   padding: 16px 0;
   color: $black;
