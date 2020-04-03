@@ -42,16 +42,6 @@ export class QuestionaryFormQuestionComponent implements OnInit{
 
   }
 
-  previousQuestion() {
-    if (this.questionaryControlService.currentQuestionIndex > -2) {
-      this.questionaryControlService.currentQuestionIndex--;
-    }
-
-    if (this.questionaryControlService.currentQuestionIndex == -1 && !this.questionaryControlService.withServiceType) {
-      this.questionaryControlService.serviceType = null;
-    }
-  }
-
   close() {
     this.dialog.closeAll();
   };

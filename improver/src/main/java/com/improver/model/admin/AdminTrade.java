@@ -18,6 +18,7 @@ public class AdminTrade {
     private String description;
     private int rating;
     private String imageUrl;
+    private Boolean isAdvertised;
     private List<NameIdTuple> services = new ArrayList<>();
 
     public AdminTrade(Trade trade, List<NameIdTuple> services) {
@@ -26,6 +27,7 @@ public class AdminTrade {
         this.description = trade.getDescription();
         this.rating = trade.getRating();
         this.imageUrl = trade.getImageUrl();
+        this.isAdvertised = trade.isAdvertised();
         this.services = services;
     }
 
@@ -35,5 +37,6 @@ public class AdminTrade {
         this.description = trade.getDescription();
         this.rating = trade.getRating();
         this.imageUrl = trade.getImageUrl();
+        this.isAdvertised = trade.isAdvertised();
     }
 }

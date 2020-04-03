@@ -64,7 +64,6 @@ export class FindProfessionalsComponent implements OnInit {
     this.selectionCtrl = group.selectionCtrl;
     this.zipCodeCtrl = group.zipCodeCtrl;
 
-    this.getSuggestedServiceTypes();
     this.getPopularTrades();
     this.getPopularServiceTypes();
 
@@ -106,13 +105,6 @@ export class FindProfessionalsComponent implements OnInit {
           recentSearches => this.recentSearches = recentSearches
         )
     }
-  }
-
-  getSuggestedServiceTypes() {
-    this.customerSuggestionService.suggested$
-      .subscribe(
-        suggestedServiceTypes => this.suggestedServiceTypes = suggestedServiceTypes
-      );
   }
 
   getPopularServiceTypes() {

@@ -1,12 +1,14 @@
 package com.improver.service;
 
-import com.improver.entity.*;
+import com.improver.entity.ServiceType;
+import com.improver.entity.Trade;
 import com.improver.exception.ConflictException;
 import com.improver.exception.NotFoundException;
-import com.improver.model.NameIdTuple;
 import com.improver.model.NameIdParentTuple;
+import com.improver.model.NameIdTuple;
 import com.improver.model.admin.AdminTrade;
 import com.improver.model.out.TradeAndServices;
+import com.improver.model.out.TradeModel;
 import com.improver.repository.CompanyRepository;
 import com.improver.repository.ServiceTypeRepository;
 import com.improver.repository.TradeRepository;
@@ -17,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -100,6 +103,7 @@ public class TradeService {
         existedTrade.setRating(adminTrade.getRating());
         existedTrade.setServiceTypes(serviceTypes);
         existedTrade.setImageUrl(newImageUrl);
+        existedTrade.setAdvertised(adminTrade.getIsAdvertised());
 
         tradeRepository.save(existedTrade);
     }
@@ -134,6 +138,24 @@ public class TradeService {
         trade.getServiceTypes().forEach(serviceType -> serviceType.removeTradeById(trade.getId()));
 
         tradeRepository.delete(trade);
+    }
+
+    public List<TradeModel> getSuggestedTrades(Pageable pageable) {
+        return tradeRepository.getSuggested(pageable).getContent().stream()
+            .map(t -> {
+
+                List<NameIdTuple> suggestedServiceTypes = t.getServiceTypes().stream()
+                    .sorted(Comparator.comparing(ServiceType::getName))
+                    .map(st -> new NameIdTuple(st.getId(), st.getName()))
+                    .collect(Collectors.toList());
+
+                return new TradeModel()
+                    .setId(t.getId())
+                    .setName(t.getName())
+                    .setImage(t.getImageUrl())
+                    .setServices(suggestedServiceTypes);
+
+            }).collect(Collectors.toList());
     }
 
 

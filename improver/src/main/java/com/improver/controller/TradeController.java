@@ -28,7 +28,6 @@ import static com.improver.util.serializer.SerializationUtil.fromJson;
 @RequestMapping(TRADES_PATH)
 public class TradeController {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
     @Autowired private TradeService tradeService;
     @Autowired private TradeRepository tradeRepository;
 

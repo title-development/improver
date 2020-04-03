@@ -109,4 +109,18 @@ export class TradeService {
 
     return this._popular$;
   }
+
+  getSuggested(size): Observable<Array<Trade>> {
+    const params = new HttpParams().set('size', size);
+    return this.http.get<Array<Trade>>(`${this.tradesCatalogUrl}/suggested`, {params});
+  }
+
+  getRecommended(userId, size: number): Observable<Array<Trade>> {
+    const params = new HttpParams()
+      .set('size', size.toString())
+      .set('userId', userId.toString());
+
+    return this.http.get<Array<Trade>>(`${this.tradesCatalogUrl}/recommended`, {params});
+  }
+
 }

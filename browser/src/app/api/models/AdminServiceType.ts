@@ -5,18 +5,18 @@ export class AdminServiceType {
   name: string;
   description: string;
   imageUrl: string;
-  active: boolean;
+  isActive: boolean;
   rating: number;
   labels: Array<string>;
   leadPrice: number;
   questionaryId: number;
   trades: Array<Trade>;
 
-  constructor(name: string, description: string, imageUrl: string, active: boolean, rating: number, labels: Array<string>, leadPrice: number, questionaryId: number, trades: Array<Trade>) {
+  constructor(name: string, description: string, imageUrl: string, isActive: boolean, rating: number, labels: Array<string>, leadPrice: number, questionaryId: number, trades: Array<Trade>) {
     this.name = name;
     this.description = description;
     this.imageUrl = imageUrl;
-    this.active = active;
+    this.isActive = isActive;
     this.rating = rating;
     this.labels = labels;
     this.leadPrice = leadPrice;

@@ -3,12 +3,11 @@ package com.improver.controller;
 import com.improver.entity.ServiceType;
 import com.improver.entity.Trade;
 import com.improver.model.NameIdTuple;
-import com.improver.model.out.ServiceQuestionaryModel;
 import com.improver.model.out.NameIdImageTuple;
 import com.improver.model.out.TradeAndServices;
+import com.improver.model.out.TradeModel;
 import com.improver.repository.ServiceTypeRepository;
 import com.improver.repository.TradeRepository;
-import com.improver.service.QuestionaryService;
 import com.improver.service.ServiceTypeService;
 import com.improver.service.TradeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,10 +31,12 @@ public class CatalogController {
     @Autowired private ServiceTypeRepository serviceTypeRepository;
 
     /**
+     * Deprecated
      * Returns suggested {@link ServiceType} list represented by list of {@link NameIdImageTuple}'s.
      *
      * <b>Note</b> {@link CacheControl} is used to reduce REST API calls and improve performance.
      */
+    @Deprecated
     @GetMapping(SERVICES + SUGGESTED)
     public ResponseEntity<List<NameIdImageTuple>> getSuggestedServices(@RequestParam(defaultValue = "8") int size) {
         // TODO: Done for testing of images at home page. Will be removed later
@@ -94,6 +95,21 @@ public class CatalogController {
         return new ResponseEntity<>(popular, HttpStatus.OK);
     }
 
+    @GetMapping(TRADES + SUGGESTED)
+    public ResponseEntity<List<TradeModel>> getSuggestedTrades(@RequestParam(defaultValue = "8") int size) {
+        List<TradeModel> suggested = tradeService.getSuggestedTrades(PageRequest.of(0, size));
+        return new ResponseEntity<>(suggested, HttpStatus.OK);
+    }
+
+    /**
+     * Returns recommended {@link Trade} list represented by list of {@link NameIdImageTuple}'s.
+     *
+     * Used in Customer dashboard
+     */
+    @GetMapping(TRADES + RECOMMENDED)
+    public ResponseEntity<List<TradeModel>> getRecommendedTrades(@RequestParam(defaultValue = "6") int size) {
+        return getSuggestedTrades(size);
+    }
 
     @GetMapping(TRADES + ID_PATH_VARIABLE + SERVICES)
     public ResponseEntity<List<NameIdTuple>> getServices(@PathVariable long id) {

@@ -339,22 +339,19 @@ export class ProjectActionService {
       .subscribe(result => {
         this.questionaryControlService.resetQuestionaryForm();
         this.questionaryDialogRef = null;
-        this.questionaryControlService.serviceType = null;
-        this.questionaryControlService.withServiceType = false;
-        this.questionaryControlService.trade = null;
         this.zipIsChecking = false;
         this.zipIsSupported = true;
       });
   }
 
   private checkPreQuestionary() {
-    console.log("checkPreQuestionary");
-    if (this.questionaryControlService.serviceType) {
-      this.questionaryControlService.currentQuestionIndex++
+    if (!this.questionaryControlService.withServiceType) {
+      this.questionaryControlService.firstQuestionIndex--
     }
-    if (this.questionaryControlService.withZip) {
-      this.questionaryControlService.currentQuestionIndex++
+    if (!this.questionaryControlService.withZip) {
+      this.questionaryControlService.firstQuestionIndex--
     }
+    this.questionaryControlService.currentQuestionIndex = this.questionaryControlService.firstQuestionIndex;
   }
 
   closeProject(project: ContractorProjectShort) {

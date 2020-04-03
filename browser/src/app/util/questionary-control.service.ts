@@ -21,14 +21,15 @@ export class QuestionaryControlService {
 
   public showQuestionary = true;
   public questionaryIsLoading = false;
-  public currentQuestionIndex = -2;
+  public currentQuestionIndex = 0;
+  public firstQuestionIndex = 0;
   public customerHasPhone: boolean = false;
   public questionaryLength = 0;
   public totalQuestionaryLength;
 
   public zip = '';
-  public withZip: boolean = false;
   public serviceType: ServiceType;
+  public withZip: boolean = false;
   public withServiceType: boolean = false;
   public trade: Trade;
   public customerAccount: Account = {
@@ -120,9 +121,13 @@ export class QuestionaryControlService {
   }
 
   resetQuestionaryForm() {
-    this.currentQuestionIndex = -2;
+    this.firstQuestionIndex = 0;
+    this.currentQuestionIndex = 0;
     this.questionaryLength = 0;
     this.totalQuestionaryLength = 0;
+    this.serviceType = null;
+    this.withServiceType = false;
+    this.trade = null;
     this.defaultQuestionaryLength = this.DEFAULT_QUESTIONARY_LENGTH;
     this.withZip = false;
     this.withServiceType = false;
@@ -151,6 +156,18 @@ export class QuestionaryControlService {
     }
 
     this.totalQuestionaryLength = this.questionaryLength + this.defaultQuestionaryLength;
+  }
+
+  previousQuestion() {
+
+    if (this.currentQuestionIndex > this.firstQuestionIndex) {
+      this.currentQuestionIndex--;
+    }
+
+    if (!this.withServiceType && (this.currentQuestionIndex == -1 && this.withZip || this.currentQuestionIndex == -2 && !this.withZip)) {
+      this.serviceType = null;
+    }
+
   }
 
 }

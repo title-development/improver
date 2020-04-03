@@ -95,22 +95,6 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     }
   }
 
-  previousQuestion(handler?: Function) {
-    console.log('previousQuestion');
-
-    if (handler !== undefined) {
-      handler.call(this);
-    }
-    if (this.questionaryControlService.currentQuestionIndex > -2) {
-      this.questionaryControlService.currentQuestionIndex--;
-    }
-
-    if (this.questionaryControlService.currentQuestionIndex == -1 && !this.questionaryControlService.withServiceType) {
-      this.questionaryControlService.serviceType = null;
-    }
-
-  }
-
   onSubmit(name?, handler?: Function): void {
     if (name) {
       if (this.isValid(name)) {

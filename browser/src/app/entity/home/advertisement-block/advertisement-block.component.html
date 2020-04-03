@@ -6,15 +6,15 @@
     <div class="col-xs-12">
       <div class="row">
 
-        <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3" *ngFor="let serviceType of suggestedServiceTypes"
-             (click)="projectActionService.openQuestionary(serviceType)">
+        <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3" *ngFor="let item of advertised"
+             (click)="projectActionService.openQuestionary(item)">
           <div class="popular-services-card-content">
 
             <div class="popular-services-image">
-              <div class="cover" [ngStyle]="serviceType.image && {'background-image':'url(' + serviceType.image + ')'} || {'background-image':'url(' + 'http://via.placeholder.com/267x323?text=NO+SERVICE+IMAGE' + ')'}"></div>
+              <div class="cover" [ngStyle]="item.image && {'background-image':'url(' + item.image + ')'} || {'background-image':'url(' + 'http://via.placeholder.com/267x323?text=NO+SERVICE+IMAGE' + ')'}"></div>
 
               <div class="popular-services-text">
-                {{serviceType.name}}
+                {{item.name}}
               </div>
             </div>
           </div>

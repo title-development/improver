@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { CustomerProjectShort, Pagination, ServiceType } from '../../../model/data-model';
+import { CustomerProjectShort, Pagination, ServiceType, Trade } from '../../../model/data-model';
 import { SecurityService } from '../../../auth/security.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { PopUpMessageService } from '../../../util/pop-up-message.service';
@@ -17,6 +17,7 @@ import { Subject } from "rxjs";
 import { MediaQuery, MediaQueryService } from "../../../util/media-query.service";
 import { dialogsMap } from "../../../shared/dialogs/dialogs.state";
 import { mobileMainDialogBarConfig } from "../../../shared/dialogs/dialogs.configs";
+import { TradeService } from "../../../api/services/trade.service";
 
 interface Tab {
   label: string;
@@ -41,7 +42,7 @@ export class CustomerDashboardComponent implements OnDestroy {
   ProjectStatus = Project.Status;
   ProjectRequest = ProjectRequest;
   projectsProcessing = true;
-  recommendedServiceTypes: ServiceType[];
+  recommendedTrades: Trade[];
   onProjectsUpdate$;
   maxItemPerPage: number = 6;
   tabs: Array<Tab> = [
@@ -71,9 +72,10 @@ export class CustomerDashboardComponent implements OnDestroy {
               public securityService: SecurityService,
               private projectRequestService: ProjectRequestService,
               private projectService: ProjectService,
-              private serviceTypeService: ServiceTypeService) {
+              private serviceTypeService: ServiceTypeService,
+              private tradeService: TradeService) {
     this.getProjects(this.tabs[0]);
-    this.getRecommendedServiceTypes();
+    this.getRecommendedTrades();
     this.subscribeForMediaScreen();
     this.onProjectsUpdate$ = this.projectActionService.onProjectsUpdate
       .pipe(takeUntil(this.destroyed$))
@@ -153,13 +155,13 @@ export class CustomerDashboardComponent implements OnDestroy {
   }
 
 
-  getRecommendedServiceTypes() {
-    this.serviceTypeService
+  getRecommendedTrades() {
+    this.tradeService
       .getRecommended(this.securityService.getLoginModel().id, 6)
       .pipe(takeUntil(this.destroyed$))
       .subscribe(
-        recommendedServiceTypes => {
-          this.recommendedServiceTypes = recommendedServiceTypes;
+        recommendedTrades => {
+          this.recommendedTrades = recommendedTrades;
         },
         err => this.popUpMessageService.showError(getErrorMessage(err))
       )

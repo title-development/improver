@@ -112,7 +112,6 @@ public class TestDataInitializer {
             log.info("Start test data ======================================");
             log.info("=========== Init Test Questionary ...");
             initQuestions();
-//            setServicesImagesIntoDb();
             try {
                 setServicesImagesIntoDb("classpath*:**/tmp/trades/*.jpg");
             } catch (IOException e) {
@@ -629,31 +628,6 @@ public class TestDataInitializer {
         projectRequestRepository.save(toRefund.setStatus(ProjectRequest.Status.REFUNDED).setRefund(refund));
     }
 
-    private void setServicesImagesIntoDb() {
-        Map<String, String> images = new HashMap<>();
-        String path = "tmp/services/";
-        images.put("Interior Design", (path + "127-templeofblues-interior-designer.jpg"));
-        images.put("Kitchen Remodeling", (path + "30-kitchen-remodel-1136x450.jpg"));
-        images.put("Carpet Cleaning", (path + "75-534301_orig.jpg"));
-        images.put("House Cleaning", (path + "92-House-Cleaning-Services-in-El-Cajon.jpg"));
-        images.put("Door Installation", (path + "133-doors.jpg"));
-        images.put("General Contracting", (path + "192-mpc-general-contractor.jpg"));
-        images.put("Landscaping Design", (path + "275-Planning-an-outdoor-space-landscaping.jpg"));
-        images.put("Interior Painting", (path + "346-interior-paint-job-blue-color.jpg"));
-        images.put("Swimming Pool Cleaning", (path + "378-pool-maintenance-banner.jpg"));
-        images.put("Roof Repair or Maintenance", (path + "382-6320643.jpg"));
-        images.put(TILE_INSTALLATION, (path + "kitchen-tiling.jpg"));
-
-        List<ServiceType> all = serviceTypeRepository.findAll();
-        for (ServiceType serviceType : all) {
-            String imageUrl;
-            if (images.containsKey(serviceType.getName())) {
-                imageUrl = saveImage(images.get(serviceType.getName()));
-                serviceTypeRepository.save(serviceType.setImageUrl(imageUrl));
-            }
-        }
-    }
-
     private void setServicesImagesIntoDb(String pattern) throws IOException {
         Resource[] resources = ResourcePatternUtils.getResourcePatternResolver(resourceLoader).getResources(pattern);
         Map<String, Resource> images = new HashMap<>();
@@ -663,16 +637,10 @@ public class TestDataInitializer {
 
         List<Trade> trades = tradeRepository.findAll();
         for (Trade trade : trades) {
-            if (images.containsKey(trade.getName())) {
-                for (ServiceType serviceType: trade.getServiceTypes()) {
-                    // TODO: Remove this later. When image from Group is suitable for Service type then value of it will be empty String other way it will be null;
-                    if (serviceType.getImageUrl() != null) {
-                        String imageUrl = saveImage(images.get(trade.getName()));
-                        serviceTypeRepository.save(serviceType.setImageUrl(imageUrl));
-                    }
-                }
-            }
+                String imageUrl = saveImage(images.get(trade.getName()));
+                trade.setImageUrl(imageUrl);
         }
+        this.tradeRepository.saveAll(trades);
     }
 
     //============================

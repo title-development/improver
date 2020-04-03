@@ -26,6 +26,9 @@ public class Trade {
     @Column(columnDefinition = CD_INTEGER)
     private int rating = 0;
 
+    @Column(columnDefinition = "boolean default false")
+    private boolean isAdvertised = false;
+
     private String imageUrl;
 
     @ManyToMany
@@ -43,6 +46,7 @@ public class Trade {
         this.description = adminTrade.getDescription();
         this.rating = adminTrade.getRating();
         this.imageUrl = imageUrl;
+        this.isAdvertised = adminTrade.getIsAdvertised();
         this.serviceTypes = serviceTypes;
     }
 

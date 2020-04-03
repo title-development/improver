@@ -1,7 +1,7 @@
 <div class="form-row" [formGroup]="questionaryControlService.mainForm">
 
   <div #defaultQuestion class="form-element-wrapper text-input-wrapper" [formGroupName]="'defaultQuestionaryGroup'"
-       *ngIf="questionaryControlService.trade && !questionaryControlService.withServiceType">
+       *ngIf="questionaryControlService.trade && !questionaryControlService.withServiceType && !questionaryControlService.serviceType">
     <h2 class="question-title">Please, select service you need</h2>
     <div class="text-input-group"
          [cvSpinner]="false"
@@ -38,8 +38,8 @@
 
 
   <div #defaultQuestion class="form-element-wrapper text-input-wrapper" [formGroupName]="'defaultQuestionaryGroup'"
-       *ngIf="projectActionService.zipIsSupported && !questionaryControlService.withZip && (questionaryControlService.currentQuestionIndex == -1)">
-    <h2 class="question-title">Where do you need a {{questionaryControlService.serviceType.name}}?</h2>
+       *ngIf="projectActionService.zipIsSupported && !questionaryControlService.withZip && questionaryControlService.serviceType">
+    <h2 class="question-title">Where do you need a {{questionaryControlService.serviceType?.name}}?</h2>
     <div class="text-input-group zip-check-group fill-flex-space" [formGroupName]="'projectLocation'"
          [cvSpinner]="projectActionService.zipIsChecking"
          [cvSpinnerSize]="50"
@@ -65,6 +65,10 @@
     </div>
 
     <div class="questionary-dialog-footer">
+      <button *ngIf="!questionaryControlService.withServiceType" class="questionary-previous-button" (click)="questionaryControlService.previousQuestion()" type="button"
+              [disabled]="defaultQuestionaryForm.get('projectLocation.zip').invalid">
+        Back
+      </button>
       <button class="questionary-next-button" (click)="submitZip()" type="button"
               [disabled]="defaultQuestionaryForm.get('projectLocation.zip').invalid">
         Next

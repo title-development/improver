@@ -2449,9 +2449,6 @@ INSERT INTO served_zips (zip, county, lng, lat) VALUES ('11753', '36059', -73.54
 INSERT INTO served_zips (zip, county, lng, lat) VALUES ('11803', '36059', -73.473483, 40.781802);
 INSERT INTO served_zips (zip, county, lng, lat) VALUES ('11558', '36059', -73.649267, 40.604809);
 
-UPDATE service_types SET rating = 100 WHERE id in (
-    SELECT st.id FROM service_types as st LEFT JOIN trades_service_types tst on st.id = tst.service_type_id
-                                          LEFT JOIN trades t on tst.trade_id = t.id
-    WHERE t.name in ('Landscaping Services', 'Painting', 'Masonry', 'Chimney Services', 'Property Management Service', 'Design Services',
-                     'Remodeling Services', 'General Contracting Services', 'Tile Services', 'Carpentry Services')
-);
+
+UPDATE trades SET is_advertised = true WHERE name in ('Landscaping Services', 'Painting', 'Masonry', 'Chimney Services', 'Property Management Service', 'Design Services',
+                                           'Remodeling Services', 'General Contracting Services', 'Tile Services', 'Carpentry Services');

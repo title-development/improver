@@ -36,8 +36,7 @@ export class TradesEditComponent {
         if (params['id']) {
           return this.tradeService.getTradeById(params['id']);
         } else {
-
-          return of(new AdminTrade('', '', '', 0, []));
+          return of(new AdminTrade('', '', '', 0, false, []));
         }
       }),
       switchMap((trade: AdminTrade) => {

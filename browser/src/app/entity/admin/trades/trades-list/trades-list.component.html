@@ -97,6 +97,11 @@
           <div *ngIf="!row[col.field]">No image</div>
         </span>
 
+        <span *ngSwitchCase="'isAdvertised'">
+          <i class="pi pi-check" *ngIf="row[col.field]"></i>
+          <i class="pi pi-ban" *ngIf="!row[col.field]"></i>
+        </span>
+
       </td>
     </tr>
   </ng-template>

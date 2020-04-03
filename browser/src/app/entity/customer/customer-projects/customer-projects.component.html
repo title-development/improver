@@ -140,22 +140,22 @@
         </div>
       </div>
 
-      <div [cvSpinner]="!(recommendedServiceTypes && recommendedServiceTypes.length > 0)" [cvSpinnerSize]="24">
+      <div [cvSpinner]="!(recommendedTrades && recommendedTrades.length > 0)" [cvSpinnerSize]="24">
         <div class="recommended-services-content row">
           <div class="recommended-services-card-wrapper col-xs-12 col-sm-6 col-md-4"
-               *ngFor="let serviceType of recommendedServiceTypes">
+               *ngFor="let trade of recommendedTrades">
 
             <div class="recommended-services-card noselect"
-                 (click)="projectActionService.openQuestionary(serviceType)">
+                 (click)="projectActionService.openQuestionary(trade)">
               <div class="recommended-services-card-content">
 
                 <div class="recommended-services-image-block">
-                  <img [src]="serviceType.image" alt="" class="recommended-works-img">
+                  <img [src]="trade.image" alt="" class="recommended-works-img">
                   <div class="shadow-box"></div>
                 </div>
 
                 <div class="recommended-services-text-block">
-                  <div class="text">{{serviceType.name}}</div>
+                  <div class="text">{{trade.name}}</div>
                 </div>
               </div>
             </div>

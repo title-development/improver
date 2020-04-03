@@ -12,11 +12,7 @@ export class ServiceTypeService {
   private serviceCatalogUrl = `${this.catalogUrl}/services`;
   private serviceTypesUrl = 'api/services';
   private _serviceTypes$: ReplaySubject<Array<ServiceType>> = new ReplaySubject<Array<ServiceType>>(1);
-
-
   private serviceTypeCached: boolean = false;
-
-
 
   constructor(private http: HttpClient) {
   }
@@ -65,13 +61,11 @@ export class ServiceTypeService {
 
   getSuggested(size): Observable<Array<ServiceType>> {
     const params = new HttpParams().set('size', size);
-
     return this.http.get<Array<ServiceType>>(`${this.serviceCatalogUrl}/suggested`, {params});
   }
 
   getPopular(size): Observable<Array<ServiceType>> {
     const params = new HttpParams().set('size', size);
-
     return this.http.get<Array<ServiceType>>(`${this.serviceCatalogUrl}/popular`, {params});
   }
 

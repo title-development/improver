@@ -1,11 +1,12 @@
 package com.improver.model.out;
 
 import com.improver.entity.ServiceType;
+import com.improver.entity.Trade;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * Read model of {@link ServiceType} to display in "POPULAR HOME SERVICES"
+ * Read model of {@link ServiceType} or {@link Trade}
  *
  * @author Mykhailo Soltys
  */
