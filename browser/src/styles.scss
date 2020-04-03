@@ -575,6 +575,12 @@ input[type=range]::-moz-focus-outer {
   border: 0;
 }
 
+//Fix radius on IOS
+input {
+  border-radius: 0;
+  -webkit-border-radius: 0;
+}
+
 .textarea-formatting {
   white-space: pre-line;
   word-break: break-word;

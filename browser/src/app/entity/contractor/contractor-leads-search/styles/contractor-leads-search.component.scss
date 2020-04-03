@@ -32,6 +32,9 @@ agm-map::ng-deep {
   @include response-to(xs) {}
   @include response(sm) {}
 
+  ::ng-deep .mat-drawer-inner-container {
+    overflow: hidden;
+  }
 
   ::ng-deep .mat-drawer-backdrop {
     visibility: hidden;

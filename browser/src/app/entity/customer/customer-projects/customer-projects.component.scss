@@ -477,6 +477,10 @@
 
 }
 
+::ng-deep .mat-menu-panel{
+  min-height: max-content !important;
+}
+
 ::ng-deep .mat-menu-panel.project-card-menu {
   position: relative;
   overflow: visible !important;

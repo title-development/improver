@@ -138,6 +138,19 @@
         }
       }
 
+      // Only for Safari 10+
+      @media not all and (min-resolution: .001dpcm) {
+        @media all {
+          .notification-bar {
+            .counter {
+              span {
+                margin-top: -1px;
+              }
+            }
+          }
+        }
+      }
+
       //Balance
       .balance-bar {
         margin-left: -8px;

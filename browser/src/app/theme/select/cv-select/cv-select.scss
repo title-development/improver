@@ -178,6 +178,10 @@
   @include response(xs) {
     max-height: 120px;
   }
+
+  ::ng-deep .cdk-virtual-scroll-viewport {
+    width: 100%;
+  }
 }
 
 .items {

@@ -82,6 +82,15 @@ h4 {
   .body {
     padding: 0 24px 24px;
 
+    ::ng-deep .input-holder {
+      .cv-input {
+        border-radius: 2px 0 0 2px;
+      }
+      button {
+        border-radius: 0 2px 2px 0;
+      }
+    }
+
     @include response-to(xs) {
       padding: 0px;
       height: 72px;
