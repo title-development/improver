@@ -14,7 +14,7 @@ import { PopUpMessageService } from '../../../../../util/pop-up-message.service'
 import { Router } from '@angular/router';
 import { ProjectActionService } from '../../../../../util/project-action.service';
 import { getErrorMessage, markAsTouched } from '../../../../../util/functions';
-import { finalize, first, take } from "rxjs/internal/operators";
+import { finalize, first } from "rxjs/internal/operators";
 import { UserService } from "../../../../../api/services/user.service";
 import { AccountService } from "../../../../../api/services/account.service";
 import { TradeService } from "../../../../../api/services/trade.service";
@@ -216,7 +216,8 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
             }
           );
       }
-    }, error => {
+    }, err => {
+        console.error(err)
       this.processingAddressValidation = false;
       this.locationValidation = 'Address Not found';
       this.resetLocationQuestion();

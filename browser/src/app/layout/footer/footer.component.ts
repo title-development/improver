@@ -36,7 +36,6 @@ export class FooterComponent {
   }
 
   submitPhoneHelpRequest(form: NgForm) {
-    console.log("submitPhoneHelpRequest");
     this.phoneHelpService.requestCall(this.callRequest.name, this.callRequest.phone).subscribe(
       res => {
         this.popUpService.showSuccess("Your request for a call is successfully submitted");
@@ -44,7 +43,10 @@ export class FooterComponent {
         form.reset();
         form.resetForm();
       },
-      err => this.popUpService.showError(getErrorMessage(err)))
+      err => {
+        console.error(err);
+        this.popUpService.showError(getErrorMessage(err));
+      })
   }
 
 }

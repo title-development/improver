@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ServiceType, Trade } from "../../model/data-model";
+import { Trade } from "../../model/data-model";
 import { ServiceTypeService } from "../../api/services/service-type.service";
 import { TradeService } from "../../api/services/trade.service";
 import { ProjectActionService } from "../../util/project-action.service";
@@ -34,7 +34,7 @@ export class AllServicesComponent implements OnInit {
         this.onFilter('');
       },
       err => {
-        console.log(err);
+        console.error(err);
       });
   }
 

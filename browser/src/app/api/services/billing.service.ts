@@ -1,19 +1,19 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { SecurityService } from '../../auth/security.service';
-import { StripeToken, Pagination, PaymentCard } from '../../model/data-model';
-import { Observable, Subject } from 'rxjs';
+import { Pagination, PaymentCard, StripeToken } from '../../model/data-model';
+import { Observable } from 'rxjs';
 
 
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { LeadsReport } from '../models/LeadsReport';
 import { toHttpParams } from '../../util/functions';
 import { RestPage } from '../models/RestPage';
 import { Billing } from "../models/Billing";
+import { Role } from "../../model/security-model";
 import BillingSubscription = Billing.LeadSubscription;
 import Transaction = Billing.Transaction;
 import Receipt = Billing.Receipt;
-import { Role } from "../../model/security-model";
 
 
 @Injectable()
@@ -57,7 +57,7 @@ export class BillingService {
           this.billing.balance = parseInt(res.body);
         },
         err => {
-          console.log(err);
+          console.error(err);
         })
   }
 
@@ -68,7 +68,7 @@ export class BillingService {
         this.billing.subscriptionOn = billingSubscription.active;
       },
       err => {
-        console.log(err);
+        console.error(err);
       })
   }
 

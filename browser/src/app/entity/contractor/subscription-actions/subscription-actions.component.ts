@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { addPaymentCardDialogConfig } from '../../../shared/dialogs/dialogs.configs';
 import { dialogsMap } from '../../../shared/dialogs/dialogs.state';
@@ -44,7 +44,6 @@ export class SubscriptionActionsComponent implements OnDestroy {
       const isAmountNotAvailableToChange = subscriptionActionsService.subscriptionAmount <= 0 && this.mode != ModeEnum.CANCEL;
       const isNotAllowUnsubscribe = subscriptionActionsService.nextBillingDate == null && this.mode === ModeEnum.CANCEL;
       if (isIncorrectMode || isAmountNotAvailableToChange || isNotAllowUnsubscribe) {
-        console.log('navigate1');
         this.router.navigate(['/pro/settings/billing']);
       }
       this.getPaymentCards();
@@ -75,7 +74,7 @@ export class SubscriptionActionsComponent implements OnDestroy {
           this.cardProcessing = false;
         },
         err => {
-          console.log(err);
+          console.error(err);
           this.popupService.showError(getErrorMessage(err));
           this.cardProcessing = false;
         }
@@ -110,7 +109,7 @@ export class SubscriptionActionsComponent implements OnDestroy {
         this.router.navigate(['pro', 'settings', 'billing']);
       },
       err => {
-        console.log(err);
+        console.error(err);
         this.popupService.showError(getErrorMessage(err));
         this.subscriptionProcessing = false;
       }

@@ -95,7 +95,7 @@ export class CompanyDemoProjectEditorComponent implements OnInit, ComponentCanDe
           this.projectImages = result[2] ? result[2] as any[] : this.projectImages;
         },
         err => {
-          console.log(err);
+          console.error(err);
           if (err.status == 404 && !this.newMode) {
             this.router.navigate(['404']);
           } else {
@@ -154,7 +154,7 @@ export class CompanyDemoProjectEditorComponent implements OnInit, ComponentCanDe
 
         },
         err => {
-          console.log(err);
+          console.error(err);
         });
   }
 
@@ -195,8 +195,8 @@ export class CompanyDemoProjectEditorComponent implements OnInit, ComponentCanDe
           this.router.navigate(['/companies', this.companyId]);
         },
         err => {
-          console.log(err);
-          this.popUpMessageService.showError(err.statusText);
+          console.error(err);
+          this.popUpMessageService.showError(getErrorMessage(err));
         });
   }
 

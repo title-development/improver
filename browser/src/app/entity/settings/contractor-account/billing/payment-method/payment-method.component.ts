@@ -5,7 +5,8 @@ import { Constants } from '../../../../../util/constants';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import {
   addMoneyDialogConfig,
-  addPaymentCardDialogConfig, confirmDialogConfig
+  addPaymentCardDialogConfig,
+  confirmDialogConfig
 } from '../../../../../shared/dialogs/dialogs.configs';
 import { SecurityService } from '../../../../../auth/security.service';
 import { BillingService } from '../../../../../api/services/billing.service';
@@ -47,7 +48,7 @@ export class PaymentMethodComponent implements OnInit {
           this.paymentCardsProcessing = false;
         },
         err => {
-          console.log(err);
+          console.error(err);
           this.paymentCardsProcessing = false;
         }
       );
@@ -73,7 +74,7 @@ export class PaymentMethodComponent implements OnInit {
   openRemoveCardConfirm(card) {
     let properties = {
       title: 'Are you sure that you want to remove current credit card?',
-      message: `<img width="27px" height="17px" src="assets/img/credit-cards-types/${this.tricksService.replaceSpases(card.brand)}.png"/> 
+      message: `<img width="27px" height="17px" src="assets/img/credit-cards-types/${this.tricksService.replaceSpases(card.brand)}.png"/>
                  &nbsp;&nbsp;<span>${card.brand} ending in ${card.last4}</span>`,
       messageStyle: {'display': 'flex', 'align-items': 'center'},
       OK: 'Confirm',
@@ -91,7 +92,7 @@ export class PaymentMethodComponent implements OnInit {
         this.removeCard(card.id);
       },
       err => {
-        console.log(err);
+        console.error(err);
       }
     );
   }
@@ -104,7 +105,7 @@ export class PaymentMethodComponent implements OnInit {
           this.getPaymentCards();
         },
         err => {
-          console.log(err);
+          console.error(err);
           this.paymentCardsProcessing = false;
         });
   }

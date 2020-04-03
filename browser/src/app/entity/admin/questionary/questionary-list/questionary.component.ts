@@ -80,7 +80,7 @@ export class QuestionaryListComponent {
         this.questionariesService.deleteQuestionaryById(questionary.id).subscribe(res => {
             this.refresh();
             this.popUpService.showSuccess(`Questionary <b>${questionary.name}</b> has been deleted`);
-          }, error => {
+          }, err => {
             this.popUpService.showError(`Could not delete <b>${questionary.name}</b>`);
           }
         );

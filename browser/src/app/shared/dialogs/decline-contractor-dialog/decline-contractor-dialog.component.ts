@@ -47,7 +47,7 @@ export class DeclineContractorDialogComponent implements OnInit, OnDestroy {
           this.declineContractorVariants = variants;
         },
         err => {
-          console.log(err);
+          console.error(err);
         }
       );
   }

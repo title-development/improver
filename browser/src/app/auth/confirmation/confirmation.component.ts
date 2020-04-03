@@ -85,7 +85,7 @@ export class ConfirmationComponent implements OnDestroy {
       (response) => {
         this.processing = false;
       }, err => {
-        console.log(err);
+        console.error(err);
         this.processing = false;
         this.step = 2;
       }
@@ -105,7 +105,7 @@ export class ConfirmationComponent implements OnDestroy {
             .then(() => this.openSuccessDialog('Thank you for choosing Home Improve!'))
         },
         err => {
-          console.log(err);
+          console.error(err);
           this.confirmationErrorMessage = getErrorMessage(err);
           this.step = 2;
           this.activationSuccess = false;
@@ -125,7 +125,7 @@ export class ConfirmationComponent implements OnDestroy {
             .then(()=> this.openSuccessDialog('Email confirmed'))
         },
         err => {
-          console.log(err);
+          console.error(err);
           this.confirmationErrorMessage = getErrorMessage(err);
           this.step = 2;
           this.emailConfirmationSuccess = false;

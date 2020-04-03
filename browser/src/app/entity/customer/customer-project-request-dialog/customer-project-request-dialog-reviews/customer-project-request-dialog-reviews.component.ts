@@ -96,8 +96,8 @@ export class CustomerProjectRequestDialogReviewsComponent implements OnInit, OnC
       projectRequest => {
         this.projectRequest = projectRequest;
       },
-      error => {
-        console.log(error);
+      err => {
+        console.error(err);
       }
     );
   }
@@ -109,7 +109,7 @@ export class CustomerProjectRequestDialogReviewsComponent implements OnInit, OnC
         this.reviewsPage = reviewRating.reviews;
       },
       err => {
-        console.log('Error:', err);
+        console.error(err);
       }
     );
   }
@@ -121,7 +121,7 @@ export class CustomerProjectRequestDialogReviewsComponent implements OnInit, OnC
         this.reviewsPage = reviewRating.reviews;
       },
       err => {
-        console.log('Error:', err);
+        console.error(err);
       }
     );
   }

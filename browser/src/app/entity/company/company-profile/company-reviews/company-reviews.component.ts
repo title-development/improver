@@ -54,7 +54,7 @@ export class CompanyReviewsComponent implements OnInit, OnChanges {
         this.reviewsLoading = false;
       },
       err => {
-        console.log(err);
+        console.error(err);
         this.reviewsLoading = false;
       }
     );
@@ -69,7 +69,7 @@ export class CompanyReviewsComponent implements OnInit, OnChanges {
       },
       err => {
         this.loadMore.emit(false);
-        console.log(err);
+        console.error(err);
       }
     );
   }

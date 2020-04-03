@@ -109,9 +109,9 @@ export class PreQuestionaryBlock implements OnInit {
           this.nextStep();
         }
       },
-      error => {
+      err => {
+        console.error(err);
         this.projectActionService.zipIsChecking = false;
-        console.log(error)
       }
     );
 

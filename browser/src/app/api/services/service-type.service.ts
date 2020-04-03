@@ -1,9 +1,9 @@
-import {Observable, ReplaySubject} from 'rxjs';
-import {Injectable} from '@angular/core';
-import {Pagination, ServiceType} from '../../model/data-model';
-import {HttpClient, HttpParams} from '@angular/common/http';
-import {RestPage} from '../models/RestPage';
-import {AdminServiceType} from '../models/AdminServiceType';
+import { Observable, ReplaySubject } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { Pagination, ServiceType } from '../../model/data-model';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { RestPage } from '../models/RestPage';
+import { AdminServiceType } from '../models/AdminServiceType';
 import { ServiceQuestionaryModel } from "../../model/service-questionary-model";
 
 @Injectable()
@@ -98,7 +98,7 @@ export class ServiceTypeService {
         this._serviceTypes$.next(serviceTypes);
       }, err => {
         this.serviceTypeCached = false;
-        console.log(err);
+        console.error(err);
       });
     }
 

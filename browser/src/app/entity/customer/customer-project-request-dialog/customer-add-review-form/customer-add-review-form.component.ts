@@ -1,10 +1,10 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Review, SystemMessageType} from "../../../../model/data-model";
-import {NgForm} from "@angular/forms";
-import {PopUpMessageService} from "../../../../util/pop-up-message.service";
-import {ReviewService} from "../../../../api/services/review.service";
-import {animate, state, style, transition, trigger} from "@angular/animations";
-import {ProjectRequestService} from "../../../../api/services/project-request.service";
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Review, SystemMessageType } from "../../../../model/data-model";
+import { NgForm } from "@angular/forms";
+import { PopUpMessageService } from "../../../../util/pop-up-message.service";
+import { ReviewService } from "../../../../api/services/review.service";
+import { animate, state, style, transition, trigger } from "@angular/animations";
+import { ProjectRequestService } from "../../../../api/services/project-request.service";
 import { ProjectRequest } from '../../../../api/models/ProjectRequest';
 import { Constants } from '../../../../util/constants';
 
@@ -88,15 +88,15 @@ export class CustomerAddReviewFormComponent implements OnInit {
                     this.onLoadReviews.emit(this.isReviewSend);
                   },
                   err => {
-                  this.isSubmitButtonDisabled = false;
-                  console.log(err);
+                    console.error(err);
+                    this.isSubmitButtonDisabled = false;
                   }
                 );
             }
           }
         },
         err => {
-          console.log(err);
+          console.error(err);
           this.popUpMessageService.showMessage({text: JSON.parse(err.error).message, type: SystemMessageType.ERROR});
         }
       );
@@ -112,8 +112,8 @@ export class CustomerAddReviewFormComponent implements OnInit {
       projectRequest => {
         this.projectRequest = projectRequest;
       },
-      error => {
-        console.log(error);
+      err => {
+        console.error(err);
       }
     )
   }

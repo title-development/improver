@@ -132,7 +132,7 @@ export class AdminUsersComponent {
       this.users = users;
       this.usersProcessing = false;
     }, err => {
-      console.log(err);
+      console.error(err);
       this.popUpService.showError(getErrorMessage(err));
       this.usersProcessing = false;
     });
@@ -162,7 +162,7 @@ export class AdminUsersComponent {
         });
         this.selectedUser = null;
       },
-      error => {
+      err => {
         this.popUpService.showError(`Cannot update <b>${this.editedUser.displayName}</b>`);
         this.displayEditDialog = false;
         this.selectedUser = null;
@@ -180,14 +180,13 @@ export class AdminUsersComponent {
             user.isDeleted = true;
             this.popUpService.showSuccess(`<b>${user.displayName}</b> has been deleted`);
           },
-          error => {
+          err => {
             this.popUpService.showError(`Can't delete <b>${user.displayName}</b>`);
           });
       }
     });
   }
 
-  // TODO: Implement this method
   restoreUser(user: User) {
     this.confirmationService.confirm({
       header: 'Restore user?',
@@ -198,7 +197,7 @@ export class AdminUsersComponent {
             user.isDeleted = false;
             this.popUpService.showSuccess(`<b>${user.displayName}</b> has been restored`);
           },
-          error => {
+          err => {
             this.popUpService.showError(`Can't restore <b>${user.displayName}</b>`);
           });
       }
@@ -215,7 +214,7 @@ export class AdminUsersComponent {
             user.isBlocked = true;
             this.popUpService.showSuccess(`<b>${user.displayName}</b> has been blocked`);
           },
-          error => {
+          err => {
             this.popUpService.showError(`Can't block user ${user.displayName}`);
           });
       }
@@ -232,7 +231,7 @@ export class AdminUsersComponent {
             user.isBlocked = false;
             this.popUpService.showSuccess(`<b>${user.displayName}</b> has been unblocked`);
           },
-          error => {
+          err => {
             this.popUpService.showError(`Can't unblock <b>${user.displayName}</b>`);
           });
       }

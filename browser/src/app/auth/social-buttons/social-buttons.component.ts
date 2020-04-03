@@ -128,12 +128,12 @@ export class SocialButtonsComponent {
           let observable = this.getLoginObservable(socialPlatform, socialUser);
           observable.subscribe((response: HttpResponse<any>) => {
               this.securityService.loginUser(response.body as LoginModel, response.headers.get('authorization'), true);
-            }, error => {
-              if (error.status == 404) {
+            }, err => {
+              if (err.status == 404) {
                 this.socialSignIn(socialUser);
               } else {
-                console.error(error);
-                this.popUpService.showError(getErrorMessage(error));
+                console.error(err);
+                this.popUpService.showError(getErrorMessage(err));
                 this.googleFetching = false;
                 this.facebookFetching = false;
               }
@@ -142,7 +142,7 @@ export class SocialButtonsComponent {
         }
       )
       .catch(err => {
-        console.log(err);
+        console.error(err);
         this.showError(socialPlatform);
       });
 

@@ -5,7 +5,7 @@ import { Messages } from '../../../util/messages';
 import { ReferralService } from '../../../api/services/referral.service';
 import { PopUpMessageService } from '../../../util/pop-up-message.service';
 import { getErrorMessage } from '../../../util/functions';
-import { Subject, Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 
@@ -38,9 +38,9 @@ export class ReferralDialogComponent implements OnInit, OnDestroy {
         this.popUpService.showError('Referral code not found');
       }
     }, err => {
-      this.fetching = false;
-      console.log(err);
+      console.error(err);
       this.popUpService.showError(getErrorMessage(err));
+      this.fetching = false;
     });
   }
 

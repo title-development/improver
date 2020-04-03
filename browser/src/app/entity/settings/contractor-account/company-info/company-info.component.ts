@@ -1,12 +1,11 @@
-import { ApplicationRef, ChangeDetectorRef, Component, EventEmitter, OnInit } from '@angular/core';
-import { CompanyInfo, License, SystemMessageType } from '../../../../model/data-model';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { CompanyInfo, License, Location, SystemMessageType } from '../../../../model/data-model';
 import { SecurityService } from '../../../../auth/security.service';
 import { Constants } from '../../../../util/constants';
 import { Messages } from '../../../../util/messages';
 import { CompanyService } from '../../../../api/services/company.service';
 import {
   addLicenseDialogConfig,
-  completeProjectDialogConfig,
   confirmDialogConfig,
   locationSuggestDialogConfig,
   personalPhotoDialogConfig
@@ -16,13 +15,11 @@ import { LicenseService } from '../../../../api/services/license.service';
 import { PopUpMessageService } from '../../../../util/pop-up-message.service';
 import { TricksService } from '../../../../util/tricks.service';
 import { LocationValidateService } from '../../../../api/services/location-validate.service';
-import { LocationAddress, ValidatedLocation } from '../../../../api/models/LocationsValidation';
+import { ValidatedLocation } from '../../../../api/models/LocationsValidation';
 import { dialogsMap } from '../../../../shared/dialogs/dialogs.state';
-import { Location } from '../../../../model/data-model';
 import { getErrorMessage } from '../../../../util/functions';
 import { first } from "rxjs/internal/operators";
 import { switchMap } from "rxjs/operators";
-import {Role} from "../../../../model/security-model";
 
 export enum Tabs {
   MAIN = 'MAIN',
@@ -99,7 +96,7 @@ export class CompanyInfoComponent implements OnInit {
           this.previousAdditionalEmail = companyProfile.email;
         },
         err => {
-          console.log(err);
+          console.error(err);
         });
   }
 
@@ -114,7 +111,7 @@ export class CompanyInfoComponent implements OnInit {
           this.previousAdditionalEmail = this.companyInfo.email;
         },
         err => {
-          console.log(err);
+          console.error(err);
         });
   }
 
@@ -152,8 +149,8 @@ export class CompanyInfoComponent implements OnInit {
             this.locationValidation = '';
           });
         }
-      }, error => {
-        this.popupService.showError(getErrorMessage(error));
+      }, err => {
+        this.popupService.showError(getErrorMessage(err));
       });
     form.valueChanges.pipe(first()).subscribe(res => {
       this.locationValidation = '';
@@ -170,7 +167,7 @@ export class CompanyInfoComponent implements OnInit {
           });
         },
         err => {
-          console.log(err);
+          console.error(err);
         }
       );
   }
@@ -182,7 +179,7 @@ export class CompanyInfoComponent implements OnInit {
           this.licenses = licenses;
         },
         err => {
-          console.log(err);
+          console.error(err);
         });
   }
 
@@ -233,9 +230,8 @@ export class CompanyInfoComponent implements OnInit {
         this.getCompanyLicenses();
       },
       err => {
-        console.log(err);
+        console.error(err);
       });
-    console.log('Removing license ' + licenseId);
   }
 
   openDialogPhoto(): void {
@@ -260,7 +256,7 @@ export class CompanyInfoComponent implements OnInit {
         this.setCompanyIconUrl(null);
         this.popupService.showSuccess('Account icon has been deleted');
       }, err => {
-        console.log(err);
+        console.error(err);
       });
   }
 

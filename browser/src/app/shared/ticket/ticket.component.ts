@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Messages } from "../../util/messages";
 import { Constants } from "../../util/constants";
 import { Ticket } from "../../api/models/Ticket";
@@ -72,7 +72,7 @@ export class TicketComponent {
             this.ticket.name = `${account.firstName} ${account.lastName}`;
           },
           err => {
-            console.log(err);
+            console.error(err);
           }
         );
 

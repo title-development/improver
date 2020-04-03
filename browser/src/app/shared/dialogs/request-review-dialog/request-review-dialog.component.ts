@@ -1,10 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ReviewService } from '../../../api/services/review.service';
 import { ProRequestReview } from '../../../api/models/ProRequestReview';
 import { PopUpMessageService } from '../../../util/pop-up-message.service';
 import { Messages } from '../../../util/messages';
-import {finalize} from "rxjs/operators";
-import {ReviewRequestOption} from "../../../model/data-model";
+import { finalize } from "rxjs/operators";
+import { ReviewRequestOption } from "../../../model/data-model";
 import { MatDialogRef } from "@angular/material/dialog";
 
 @Component({
@@ -36,7 +36,7 @@ export class RequestReviewDialogComponent implements OnInit {
     this.reviewService.getReviewRequestOptions()
       .pipe(finalize(() => this.processing = false)).subscribe(
       options => this.reviewRequestOption = options,
-      err => console.log(err)
+      err => console.error(err)
     );
   }
 
@@ -49,8 +49,8 @@ export class RequestReviewDialogComponent implements OnInit {
         this.close();
       },
       err => {
+        console.error(err);
         this.processing = false;
-        console.log(err);
       }
     );
   }

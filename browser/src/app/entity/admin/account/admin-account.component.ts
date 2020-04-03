@@ -5,11 +5,10 @@ import { Constants } from '../../../util/constants';
 import { Messages } from '../../../util/messages';
 import { AccountService } from '../../../api/services/account.service';
 import { OldNewValue } from '../../../model/data-model';
-import { NgForm, NgModel } from '@angular/forms';
+import { NgForm } from '@angular/forms';
 import { getErrorMessage } from '../../../util/functions';
 import { PopUpMessageService } from '../../../util/pop-up-message.service';
 import { SecurityService } from '../../../auth/security.service';
-import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'admin-account',
@@ -109,7 +108,7 @@ export class AdminAccountComponent {
       this.oldEmail = user.email;
       this.previousEmail = user.email;
     }, err => {
-      console.log(err);
+      console.error(err);
     });
   }
 }

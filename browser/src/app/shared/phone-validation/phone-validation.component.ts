@@ -43,7 +43,8 @@ export class PhoneValidationComponent implements OnInit {
       .subscribe(response => {
           this.phoneValidationConfirm.messageSid = response.body;
         },
-        error => {
+        err => {
+          console.error(err);
           this.popUpService.showError("Unexpected error during phone number validation. Please try again later.")
         })
   }
@@ -54,9 +55,9 @@ export class PhoneValidationComponent implements OnInit {
       .subscribe(() => {
           this.onSuccess.emit();
         },
-        error => {
+        err => {
           this.loading = false;
-          if (error.error.status == 422) {
+          if (err.error.status == 422) {
             this.phoneValidationConfirm.code = "";
             this.verificationCodeIsIncorrect = true;
             this.popUpService.showError("Verification code is incorrect. Please check your phone number and try again.")

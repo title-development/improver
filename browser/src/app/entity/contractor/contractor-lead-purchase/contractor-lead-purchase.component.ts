@@ -1,7 +1,7 @@
 import { ApplicationRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { Lead, PaymentCard, SystemMessageType } from '../../../model/data-model';
+import { Lead, PaymentCard } from '../../../model/data-model';
 import { PopUpMessageService } from '../../../util/pop-up-message.service';
 import { SecurityService } from '../../../auth/security.service';
 import { addPaymentCardDialogConfig } from '../../../shared/dialogs/dialogs.configs';
@@ -185,11 +185,8 @@ export class ContractorLeadPurchaseComponent implements OnInit, OnDestroy {
           this.cardProcessing = false;
         },
         err => {
-          console.log(err);
-          this.popUpMessageService.showMessage({
-            text: JSON.parse(err.error).message,
-            type: SystemMessageType.ERROR
-          });
+          console.error(err);
+          this.popUpMessageService.showError(getErrorMessage(err));
           this.cardProcessing = false;
         }
       );
@@ -259,8 +256,8 @@ export class ContractorLeadPurchaseComponent implements OnInit, OnDestroy {
           this.similarLeads = similarLeads;
         }
       },
-      error => {
-        console.log(error);
+      err => {
+        console.error(err);
       }
     );
   }

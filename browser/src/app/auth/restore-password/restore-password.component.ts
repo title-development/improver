@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
-
 import { SecurityService } from "../security.service";
 import { Constants } from "../../util/constants";
 import { Messages } from "app/util/messages";
@@ -10,8 +9,8 @@ import { UserService } from "../../api/services/user.service";
 import { PopUpMessageService } from "../../util/pop-up-message.service";
 import { SystemMessageType } from "../../model/data-model";
 import { getErrorMessage } from "../../util/functions";
-import {ActivationService} from "../../api/services/activation.service";
-import {AccountService} from "../../api/services/account.service";
+import { ActivationService } from "../../api/services/activation.service";
+import { AccountService } from "../../api/services/account.service";
 
 
 @Component({
@@ -19,8 +18,6 @@ import {AccountService} from "../../api/services/account.service";
   templateUrl: 'restore-password.component.html',
   styleUrls: ['../shared/auth.scss']
 })
-
-
 export class RestorePasswordComponent {
 
   step = 1;
@@ -61,7 +58,7 @@ export class RestorePasswordComponent {
     this.accountService.restorePasswordRequest(this.credentials.email).subscribe(response => {
       this.step = 2;
     }, err => {
-      this.popUpMessageService.showError(err.statusText);
+      this.popUpMessageService.showError(getErrorMessage(err));
     });
 
   }
@@ -69,10 +66,9 @@ export class RestorePasswordComponent {
   restorePassword(form: NgForm) {
     this.activationService.confirmPasswordReset(this.credentials, this.token).subscribe(response => {
       this.securityService.loginUser(JSON.parse(response.body) as LoginModel, response.headers.get('authorization'), true);
-      // this.step = 4;
       this.popUpMessageService.showSuccess('Password changed successfully');
     }, err => {
-      console.log(err);
+      console.error(err);
       this.messageText = getErrorMessage(err);
       this.showMessage = true;
     });

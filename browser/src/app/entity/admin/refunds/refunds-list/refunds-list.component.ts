@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { enumToArrayList, filtersToParams } from '../../../../util/tricks.service';
-import { Pagination, Review } from '../../../../model/data-model';
+import { Pagination } from '../../../../model/data-model';
 import { RestPage } from '../../../../api/models/RestPage';
 import { RefundService } from '../../../../api/services/refund.service';
 import { MenuItem, SelectItem } from 'primeng';
@@ -12,7 +12,6 @@ import { capitalize, getErrorMessage } from '../../../../util/functions';
 import { ProjectService } from '../../../../api/services/project.service';
 import { PopUpMessageService } from '../../../../util/pop-up-message.service';
 import { RefundAction } from '../../../../api/models/RefundAction';
-import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { finalize, switchMap } from 'rxjs/operators';
 
 @Component({
@@ -156,7 +155,7 @@ export class RefundsListComponent {
       (restPage: RestPage<Refund>) => {
         this.refunds = restPage;
       }, err => {
-        console.log(getErrorMessage(err))
+        console.error(err)
       });
   }
 
@@ -181,7 +180,7 @@ export class RefundsListComponent {
             this.table.expandedRows.push(selection.data);
           },
           err => {
-            console.log(err);
+            console.error(err);
             this.popUpMessageService.showError(getErrorMessage(err));
           });
     }

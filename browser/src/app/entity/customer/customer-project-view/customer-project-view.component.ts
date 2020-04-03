@@ -123,7 +123,7 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy, Componen
           }
         },
         err => {
-          console.log(err);
+          console.error(err);
           if (err.status == 404) {
             this.router.navigate(['404']);
           }

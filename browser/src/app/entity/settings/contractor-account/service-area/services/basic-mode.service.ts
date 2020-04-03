@@ -113,8 +113,8 @@ export class BasicModeService implements OnDestroy {
             return;
           }
           this.gMapUtils.drawZipBoundaries(this.gMap, this.gMapUtils.markAreasZips(zipBoundaries, this.servedZipCodes));
-        }, (err) => {
-          console.log(err);
+        }, err => {
+          console.error(err);
         },
         () => this.gMapUtils.fitMapToDataLayer(this.gMap),
       );

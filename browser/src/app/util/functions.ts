@@ -154,7 +154,6 @@ export function reCalculatePageable(oldPageable: RestPage<any>,
   const items = newPageable.totalElements;
   const pages = Math.ceil(items / maxItemPerPage);
   const page = oldPageable.number > pages ? pages : oldPageable.number;
-  // oldPageable.totalElements = items;
   oldPageable.numberOfElements = newPageable.numberOfElements;
   oldPageable.totalPages = pages;
   oldPageable.last = newPageable.last;

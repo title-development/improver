@@ -11,7 +11,6 @@ import { PopUpMessageService } from '../../../util/pop-up-message.service';
 import { Constants } from '../../../util/constants';
 import { CountyBoundaries, CountyMapArea } from "../../../api/models/CountyBoundaries";
 import { ZipInfoWindow } from '../../settings/contractor-account/service-area/interfaces/zip-info-window';
-import { fromPromise } from 'rxjs/internal-compatibility';
 
 @Component({
   selector: 'admin-map',
@@ -174,7 +173,6 @@ export class AdminMap implements OnDestroy {
   };
 
   addRemovedArea(area: CountyMapArea, undo: boolean = false): void {
-    console.log(area, this.coveredArea, this.areaHistory.added)
     if (area) {
       if (!this.coveredArea.includes(area.id)) {
         if (this.areaHistory.added.every(e => e.id !== area.id)) {

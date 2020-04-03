@@ -1,5 +1,11 @@
 import {
-  AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, OnDestroy, OnInit,
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  EventEmitter,
+  OnDestroy,
+  OnInit,
   ViewChild
 } from '@angular/core';
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
@@ -11,8 +17,6 @@ import { CompanyService } from '../../../api/services/company.service';
 import { PaymentCard } from '../../../model/data-model';
 import { StripeService } from "../../../util/stripe.service";
 import { NgForm } from "@angular/forms";
-import { environment } from "../../../../environments/environment";
-import { PaymentService } from "../../../api/services/payment.service";
 import { PopUpMessageService } from '../../../util/pop-up-message.service';
 
 // import {} from "Stripe";
@@ -96,10 +100,9 @@ export class AddPaymentCardDialogComponent implements OnInit, AfterViewInit, OnD
     const {token, error} = await this.stripeService.stripe.createToken(this.card);
 
     if (error) {
-      // console.log('Something is wrong:', error);
+      console.error(error);
       this.checkingCard = false;
     } else {
-      // console.log('Success!', token);
       // ...send the token to the your backend to process the charge
       let stripeToken = {
         id: token.id,

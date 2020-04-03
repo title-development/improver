@@ -138,7 +138,7 @@ export class ImagesUploaderComponent implements OnInit {
           );
         },
         err => {
-          console.log(err);
+          console.error(err);
         });
     });
   }

@@ -1,7 +1,10 @@
-import { Directive, ElementRef, Renderer2, OnDestroy } from "@angular/core";
+import { Directive, ElementRef, OnDestroy, Renderer2 } from "@angular/core";
 import { Subscription } from "rxjs";
 import { MediaChange, MediaObserver } from "@angular/flex-layout";
 
+/**
+ * @deprecated Not used anywhere and braked after migration to Angular 9
+ */
 @Directive({selector: '[observeMedia]'})
 export class ObserveMediaDirective implements OnDestroy{
 
@@ -12,17 +15,13 @@ export class ObserveMediaDirective implements OnDestroy{
   constructor(private element: ElementRef, private renderer: Renderer2, mediaObserver: MediaObserver) {
 
     this.watcher = mediaObserver.asObservable().subscribe((changes: MediaChange[]) => {
-      console.log(changes);
       // this.activeMediaQuery = changes ? `'${changes.mqAlias}' = (${changes.mediaQuery})` : "";
       // this.removeFxMediaClasses(element);
       // this.addFxMediaLtClasses(element, this.fxMediaClasses.indexOf(change.mqAlias));
       // this.addFxMediaGtClasses(element, this.fxMediaClasses.indexOf(change.mqAlias));
-      console.log(element);
-      console.log(element.nativeElement);
-      console.log(changes)
     });
 
-    // renderer.addClass(element.nativeElement, "fxClass-lt-md");
+    renderer.addClass(element.nativeElement, "fxClass-lt-md");
   }
 
   removeFxMediaClasses(element){

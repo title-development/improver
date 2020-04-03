@@ -6,7 +6,7 @@ import { SecurityService } from '../../auth/security.service';
 import { ProjectRequestService } from '../../api/services/project-request.service';
 import { CompanyService } from '../../api/services/company.service';
 import { ALLOWED_FILE_EXTENTIONS, FILE_MIME_TYPES, MAX_FILE_SIZE } from '../../util/file-parameters';
-import { jsonParse } from '../../util/functions';
+import { getErrorMessage, jsonParse } from '../../util/functions';
 import { PopUpMessageService } from '../../util/pop-up-message.service';
 import { hasClass } from '../../util/dom';
 import { PerfectScrollbarComponent } from 'ngx-perfect-scrollbar';
@@ -134,13 +134,11 @@ export class MessengerComponent implements OnInit, OnDestroy {
   private subscribeOnNewMessages() {
     if (this.msgSubscription === undefined) {
       this.msgSubscription = this.myStompService.watch(`/topic/project-requests/${this.projectRequestId}`).subscribe(this.onMessage);
-      console.log('Subscribed for messages on projectRequest ' + this.projectRequestId);
     }
   }
 
   private onMessage = (message: Message) => {
     let newMessage = JSON.parse(message.body) as ProjectMessage;
-    console.log(newMessage);
 
     if (newMessage.event == this.ProjectRequest.MessageEvent.IS_TYPING) {
       this.handleIsTyping(newMessage);
@@ -222,11 +220,11 @@ export class MessengerComponent implements OnInit, OnDestroy {
             fileList.splice(0, 1);
             this.sendFiles(fileList, fileCount);
           }
-        }, error => {
+        }, err => {
           fileList.splice(0, 1);
           this.sendFiles(fileList, fileCount);
-          if (error.message) {
-            this.popUpService.showError(error.message);
+          if (err.message) {
+            this.popUpService.showError(getErrorMessage(err));
           } else {
             this.popUpService.showError('Error while saving file');
           }

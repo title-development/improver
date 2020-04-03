@@ -127,7 +127,7 @@ export class NotificationsPopupComponent implements OnChanges, OnDestroy {
     this.notificationResource.unreadMessages$
       .pipe(finalize(() => this.notificationsProcessing = false))
       .subscribe(unreadMessages => this.unreadMessages = unreadMessages,
-        error => this.popUpService.showError(getErrorMessage(error)))
+        err => this.popUpService.showError(getErrorMessage(err)))
   }
 
   getNotifications(pagination: Pagination) {
@@ -140,8 +140,8 @@ export class NotificationsPopupComponent implements OnChanges, OnDestroy {
         this.showMore = !notifications.last;
         this.changeDetectorRef.detectChanges();
       },
-      error => {
-        this.popUpService.showError(getErrorMessage(error));
+      err => {
+        this.popUpService.showError(getErrorMessage(err));
       }
     );
   }

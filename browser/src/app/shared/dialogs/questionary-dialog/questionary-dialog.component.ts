@@ -1,8 +1,6 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
-import { ServiceType } from "../../../model/data-model";
 import { NgForm } from "@angular/forms";
-import { QuestionaryBlock } from "../../../model/questionary-model";
 import { QuestionaryControlService } from "../../../util/questionary-control.service";
 import { PhoneHelpService } from "../../../util/phone-help.service";
 import { SecurityService } from "../../../auth/security.service";
@@ -11,9 +9,7 @@ import { ServiceTypeService } from '../../../api/services/service-type.service';
 import { AccountService } from '../../../api/services/account.service';
 import { ComponentCanDeactivate } from "../../../auth/router-guards/component-can-deactivate.guard";
 import { NavigationHelper } from "../../../util/navigation-helper";
-import { ServiceQuestionaryModel } from "../../../model/service-questionary-model";
 import { PopUpMessageService } from "../../../util/pop-up-message.service";
-import { getErrorMessage } from "../../../util/functions";
 import { ProjectActionService } from "../../../util/project-action.service";
 
 @Component({
@@ -46,7 +42,7 @@ export class QuestionaryDialogComponent implements OnInit, ComponentCanDeactivat
             this.questionaryControlService.customerAccount = account;
           },
           err => {
-            console.log(err);
+            console.error(err);
           }
         );
     }

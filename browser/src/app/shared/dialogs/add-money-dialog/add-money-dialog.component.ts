@@ -3,15 +3,13 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { SecurityService } from '../../../auth/security.service';
 import { Constants } from '../../../util/constants';
 import { Messages } from '../../../util/messages';
-import { PaymentCard, SystemMessageType } from '../../../model/data-model';
+import { PaymentCard } from '../../../model/data-model';
 import { CompanyService } from '../../../api/services/company.service';
 import { BillingService } from '../../../api/services/billing.service';
 import { TricksService } from '../../../util/tricks.service';
 import { PaymentService } from '../../../api/services/payment.service';
 import { PopUpMessageService } from '../../../util/pop-up-message.service';
 import { getErrorMessage } from '../../../util/functions';
-import { dialogsMap } from '../dialogs.state';
-import { confirmDialogConfig } from '../dialogs.configs';
 import { NgForm } from '@angular/forms';
 
 @Component({
@@ -47,7 +45,6 @@ export class AddMoneyDialogComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.card);
   }
 
   addMoney() {

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
-import { catchError, first, mergeMap, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { catchError, first, mergeMap } from 'rxjs/operators';
 import { SecurityService } from '../../auth/security.service';
 import { UserTutorial } from '../models/UserTutorial';
 
@@ -40,7 +40,7 @@ export class TutorialsService {
           return this.tutorials$;
         }),
         catchError((err) => {
-          console.log(err);
+          console.error(err);
 
           return of(null);
         }),

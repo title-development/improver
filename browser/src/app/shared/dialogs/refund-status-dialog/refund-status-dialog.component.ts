@@ -1,12 +1,9 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { ContractorProject, ContractorProjectShort } from "../../../model/data-model";
+import { Component, OnInit } from '@angular/core';
+import { ContractorProjectShort } from "../../../model/data-model";
 import { MatDialogRef } from "@angular/material/dialog";
 import { PopUpMessageService } from "../../../util/pop-up-message.service";
 import { ProjectService } from "../../../api/services/project.service";
-import { NgForm } from "@angular/forms";
 import { Refund } from "../../../api/models/Refund";
-import { getErrorMessage } from "../../../util/functions";
-import { ProjectRequest } from "../../../api/models/ProjectRequest";
 
 @Component({
   selector: 'refund-status-dialog',
@@ -34,12 +31,11 @@ export class RefundStatusDialogComponent implements OnInit {
     this.projectService.getRefundResult(this.project.id)
       .subscribe(
         refundResult => {
-          console.log(this.refundResult);
           this.refundResult = refundResult;
           this.refundResultProcessing = false;
         },
         err => {
-          console.log(err);
+          console.error(err);
           this.refundResultProcessing = false;
         }
       );
@@ -50,7 +46,6 @@ export class RefundStatusDialogComponent implements OnInit {
   }
 
   onSubmit(form) {
-    console.log(form);
   }
 
 

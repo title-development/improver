@@ -115,8 +115,8 @@ export class CustomerProjectRequestDialogComponent implements OnInit, OnDestroy 
       projectRequest => {
         this.projectRequest = projectRequest;
       },
-      error => {
-        console.log(error);
+      err => {
+        console.error(err);
       }
     );
   }
@@ -127,13 +127,12 @@ export class CustomerProjectRequestDialogComponent implements OnInit, OnDestroy 
 
 
   loadOverview(): void {
-    console.log(this.projectRequest);
     this.companyService.getProfile(this.projectRequest.company.id).subscribe(
       companyProfile => {
         this.companyProfile = companyProfile;
       },
       err => {
-        console.log(err);
+        console.error(err);
       }
     );
   }

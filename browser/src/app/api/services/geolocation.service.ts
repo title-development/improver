@@ -1,10 +1,9 @@
-
-import {throwError as observableThrowError,  Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { Geolocation } from '../../model/data-model';
 
 
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class GeolocationService {
@@ -32,7 +31,7 @@ export class GeolocationService {
           this.setGeolocation(JSON.stringify(geolocation));
         },
         err => {
-          console.log(err);
+          console.error(err);
         });
     } else {
       this.setGeolocation(sessionStorage.getItem('geolocation'));

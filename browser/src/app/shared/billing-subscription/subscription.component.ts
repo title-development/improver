@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { Constants } from '../../util/constants';
 import { SecurityService } from '../../auth/security.service';
 import { BillingService } from '../../api/services/billing.service';
@@ -7,11 +7,11 @@ import { Router } from "@angular/router";
 import { SubscriptionActionsService } from "../../entity/contractor/subscription-actions/subscription-actions.service";
 import { ProjectRequest } from '../../api/models/ProjectRequest';
 import { Billing } from "../../api/models/Billing";
+import { differenceInDays, format, parse } from "date-fns";
+import { MediaQuery, MediaQueryService } from "../../util/media-query.service";
+import { takeUntil } from "rxjs/operators";
+import { Subject } from "rxjs";
 import BillingSubscription = Billing.LeadSubscription;
-import {differenceInDays, parse, format} from "date-fns";
-import {MediaQuery, MediaQueryService} from "../../util/media-query.service";
-import {takeUntil} from "rxjs/operators";
-import {Subject} from "rxjs";
 
 @Component({
   selector: 'subscription',
@@ -61,7 +61,7 @@ export class SubscriptionComponent implements OnInit, OnDestroy {
         this.subscriptionActionsService.nextBillingDate = this.subscription.nextBillingDate ? this.subscription.nextBillingDate : new Date().toISOString();
       },
       err => {
-        console.log(err);
+        console.error(err);
       }
     );
   }

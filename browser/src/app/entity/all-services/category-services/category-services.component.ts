@@ -44,7 +44,7 @@ export class CategoryServicesComponent implements OnInit {
         this.onFilter('');
       },
       err => {
-        console.log(err);
+        console.error(err);
         if (err.status == 404) {
           this.router.navigate(['/404']);
         } else {

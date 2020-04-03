@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { ConfirmationService, Table, MenuItem, SelectItem, FilterMetadata } from 'primeng';
+import { ConfirmationService, FilterMetadata, MenuItem, SelectItem, Table } from 'primeng';
 import { CompanyService } from '../../../../api/services/company.service';
 import { enumToArrayList, filtersToParams } from '../../../../util/tricks.service';
 import { Role } from '../../../../model/security-model';
@@ -10,7 +10,6 @@ import { Constants } from '../../../../util/constants';
 import { CamelCaseHumanPipe } from '../../../../pipes/camelcase-to-human.pipe';
 import { dataTableFilter } from '../../util';
 import { ActivatedRoute } from '@angular/router';
-import { Project } from '../../../../api/models/Project';
 import { SecurityService } from "../../../../auth/security.service";
 import { BillingService } from "../../../../api/services/billing.service";
 import { PopUpMessageService } from "../../../../util/pop-up-message.service";
@@ -186,7 +185,9 @@ export class CompaniesComponent {
         this.getCompanies();
         this.displayEditDialog = false;
         this.selectedCompany = null;
-      }, error => {
+      }, err => {
+        console.error(err);
+        this.popUpService.showError(getErrorMessage(err))
         this.displayEditDialog = false;
         this.selectedCompany = null;
       }
@@ -231,7 +232,6 @@ export class CompaniesComponent {
       icon: 'fa fa-question-circle',
       message: `Do you want to approve <b>${this.selectedCompany.name}</b>`,
       accept: () => {
-        console.log("Approving " + this.selectedCompany.name);
         this.companyService.approve(this.selectedCompany.id, true).subscribe(
           response => {
             this.getCompanies();

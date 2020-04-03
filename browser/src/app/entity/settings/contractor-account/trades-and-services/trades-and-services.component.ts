@@ -48,7 +48,7 @@ export class TradesAndServicesComponent implements OnInit, ComponentCanDeactivat
           this.tradesAndServiceTypes.trades.forEach(trade => trade.collapsed = false);
         },
         err => {
-          console.log(err);
+          console.error(err);
           this.popUpMessageService.showError(getErrorMessage(err));
         });
   }

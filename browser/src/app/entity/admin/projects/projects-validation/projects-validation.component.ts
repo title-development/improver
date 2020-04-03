@@ -1,5 +1,5 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { Pagination } from '../../../../model/data-model';
+import { Location, Pagination } from '../../../../model/data-model';
 import { RestPage } from '../../../../api/models/RestPage';
 import { MenuItem } from 'primeng/api';
 import { ProjectService } from '../../../../api/services/project.service';
@@ -10,7 +10,6 @@ import { Project } from '../../../../api/models/Project';
 import { SelectItem } from "primeng";
 import { CamelCaseHumanPipe } from "../../../../pipes/camelcase-to-human.pipe";
 import { enumToArrayList, filtersToParams } from "../../../../util/tricks.service";
-import { Location } from '../../../../model/data-model';
 
 @Component({
   selector: 'projects-validation',
@@ -145,7 +144,7 @@ export class AdminProjectsValidationComponent {
       this.projects = projects;
       this.projectsProcessing = false;
     }, err => {
-      console.log(err);
+      console.error(err);
       this.fetching = false;
       this.popUpMessageService.showError(getErrorMessage(err));
       this.projectsProcessing = false;
@@ -212,7 +211,7 @@ export class AdminProjectsValidationComponent {
           this.table.expandedRows.push(selection.data);
         },
         err => {
-          console.log(err);
+          console.error(err);
           this.popUpMessageService.showError(getErrorMessage(err));
         });
     }

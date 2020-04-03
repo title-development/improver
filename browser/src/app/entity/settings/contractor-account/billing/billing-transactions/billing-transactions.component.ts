@@ -47,7 +47,7 @@ export class BillingTransactionsComponent {
           this.transactionsProcessing = false;
         },
         err => {
-          console.log(err);
+          console.error(err);
           this.transactionsProcessing = false;
         }
       );

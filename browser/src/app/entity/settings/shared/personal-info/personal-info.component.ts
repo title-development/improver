@@ -89,7 +89,7 @@ export class PersonalInfoComponent implements OnDestroy {
           this.accountPhone = this.currentPhone = this.account.phone = account.phone ? applyPhoneMask(account.phone) : "";
         },
         err => {
-          console.log(err);
+          console.error(err);
         }
       );
     this.socialConnectionService.getConnections().subscribe(
@@ -97,7 +97,7 @@ export class PersonalInfoComponent implements OnDestroy {
         this.socialConnections = socialConnections;
       },
       err => {
-        console.log(err);
+        console.error(err);
       }
     );
   }
@@ -116,7 +116,7 @@ export class PersonalInfoComponent implements OnDestroy {
             });
           },
           err => {
-            console.log(err);
+            console.error(err);
             this.popupService.showError(getErrorMessage(err));
           }
         );
@@ -172,7 +172,7 @@ export class PersonalInfoComponent implements OnDestroy {
                 this.currentPhone = this.accountPhone;
                 this.popupService.showSuccess("Your phone number updated successfully")
               },
-              error => this.popupService.showError(getErrorMessage(error)));
+              err => this.popupService.showError(getErrorMessage(err)));
         });
 
       this.confirmDialogRef.componentInstance.onManualClose
@@ -228,7 +228,7 @@ export class PersonalInfoComponent implements OnDestroy {
         this.setUserIconUrl(null);
         this.popupService.showSuccess('Account icon has been deleted');
       }, err => {
-        console.log(err);
+        console.error(err);
       });
   }
 

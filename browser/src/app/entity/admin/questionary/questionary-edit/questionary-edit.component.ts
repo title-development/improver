@@ -7,7 +7,7 @@ import { ServiceTypeService } from '../../../../api/services/service-type.servic
 import { Question } from '../../../../api/models/Question';
 import { Constants } from '../../../../util/constants';
 import { Answer } from '../../../../api/models/Answer';
-import { getErrorMessage, toSnakeCase } from '../../../../util/functions';
+import { toSnakeCase } from '../../../../util/functions';
 import { ConfirmationService, SelectItem } from 'primeng/api';
 import { first, switchMap } from 'rxjs/internal/operators';
 import { NgForm, NgModel } from '@angular/forms';
@@ -107,7 +107,7 @@ export class QuestionaryEditComponent implements OnDestroy {
         }
       },
       err => {
-        console.log(err);
+        console.error(err);
       }
     );
   }
@@ -120,7 +120,7 @@ export class QuestionaryEditComponent implements OnDestroy {
             this.getQuestionary(this.questionary.id);
             this.router.navigate(['admin', 'questionaries']);
           },
-          error => {
+          err => {
             this.popUpService.showError(`Could not update Questionary`);
           }
         );
@@ -129,7 +129,7 @@ export class QuestionaryEditComponent implements OnDestroy {
         .subscribe(res => {
           this.popUpService.showSuccess(`Questionary ${this.questionary.name} has been added`);
             this.router.navigate(['admin', 'questionaries']);
-          }, error => {
+          }, err => {
             this.popUpService.showError(`Could not add Questionary`);
           }
         );
@@ -143,7 +143,7 @@ export class QuestionaryEditComponent implements OnDestroy {
       if (questionary) {
         this.questionary = questionary;
       }
-    }, error => {
+    }, err => {
       this.popUpService.showError(`Could not get questionary`);
     });
   }
@@ -192,7 +192,7 @@ export class QuestionaryEditComponent implements OnDestroy {
             this.getQuestionary(this.questionary.id);
             this.questionary.questions.push(question);
             this.displayEditDialog = false;
-          }, error => {
+          }, err => {
             this.popUpService.showError(`Could not add ${question.title ? question.title : question.name}`);
           }
         );
@@ -205,7 +205,7 @@ export class QuestionaryEditComponent implements OnDestroy {
           this.popUpService.showSuccess(`Question ${question.title ? question.title : question.name} has been updated`);
             this.getQuestionary(this.questionary.id);
             this.displayEditDialog = false;
-          }, error => {
+          }, err => {
             this.popUpService.showError(`Could not update ${question.title ? question.title : question.name}`);
           }
         );
@@ -228,7 +228,7 @@ export class QuestionaryEditComponent implements OnDestroy {
           this.questionariesService.deleteQuestionById(question.id).subscribe(res => {
               this.questionary.questions = this.questionary.questions.filter(item => item.id != question.id);
               this.popUpService.showSuccess(`Question ${question.title} has been deleted`);
-            }, error => {
+            }, err => {
               this.popUpService.showError(`Could not delete ${question.title}`)
             }
           );
@@ -261,7 +261,7 @@ export class QuestionaryEditComponent implements OnDestroy {
     if (answer.id) {
       this.questionariesService.deleteAnswerImage(answer.id).subscribe(res => {
         this.popUpService.showSuccess(`Image has been deleted`);
-      }, error => {
+      }, err => {
         this.popUpService.showError('Could not delete image');
       });
     }

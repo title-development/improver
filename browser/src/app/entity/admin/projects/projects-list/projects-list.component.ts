@@ -2,7 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FilterMetadata, SelectItem } from 'primeng';
 import { ProjectService } from '../../../../api/services/project.service';
 import { PopUpMessageService } from '../../../../util/pop-up-message.service';
-import { Pagination } from '../../../../model/data-model';
+import { Location, Pagination } from '../../../../model/data-model';
 import { SecurityService } from '../../../../auth/security.service';
 import { StatusToString } from '../../../../pipes/status-to-string.pipe';
 import { Constants } from '../../../../util/constants';
@@ -16,7 +16,6 @@ import { ConfirmationService } from 'primeng/api';
 import { dataTableFilter } from '../../util';
 import { ActivatedRoute } from '@angular/router';
 import isArchived = Project.isArchived;
-import { Location } from '../../../../model/data-model';
 
 @Component({
   selector: 'admin-projects',
@@ -34,7 +33,6 @@ export class AdminProjectsComponent {
   toLocationValidate: Location;
   selectedProject: Project;
   displayLocationDialog: boolean = false;
-  displayChangeOwnerDialog: boolean = false;
   displayValidationDialog: boolean = false;
   displayCommentDialog: boolean = false;
   projectValidation: Project.ValidationRequest = {};
@@ -132,24 +130,6 @@ export class AdminProjectsComponent {
     });
   }
 
-  moreInformation(event) {
-    let projectId = event.data.id;
-
-    this.projectService.getProject(projectId).subscribe(
-      customerProjects => {
-        // this.projectInfo = customerProjects;
-      },
-      err => {
-        console.log(err);
-        this.popUpMessageService.showError(getErrorMessage(err));
-      });
-  }
-
-  openLocationValidationPopup(): void {
-    this.toLocationValidate = {...this.selectedProject.location}; //clone object
-    this.displayLocationDialog = true;
-  }
-
   updateLocation(location): void {
     this.projectService.updateLocation(this.selectedProject.id, location).subscribe(
       res => {
@@ -196,7 +176,7 @@ export class AdminProjectsComponent {
           this.table.expandedRows.push(selection.data);
         },
         err => {
-          console.log(err);
+          console.error(err);
           this.popUpMessageService.showError(getErrorMessage(err));
         });
     }

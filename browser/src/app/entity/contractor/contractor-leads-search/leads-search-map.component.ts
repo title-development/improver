@@ -6,25 +6,15 @@ import { BoundariesService } from '../../../api/services/boundaries.service';
 import { CompanyService } from '../../../api/services/company.service';
 import { LeadService } from '../../../api/services/lead.service';
 import { SecurityService } from '../../../auth/security.service';
-import { Lead, Pagination, ShortLead } from '../../../model/data-model';
+import { Pagination, ShortLead } from '../../../model/data-model';
 import { MapMarkersStore } from '../../../util/google-map-markers-store.service';
 
-import { ZipBoundaries, ZipFeature } from '../../../api/models/ZipBoundaries';
+import { ZipBoundaries } from '../../../api/models/ZipBoundaries';
 import { applyStyleToMapLayers, GoogleMapUtilsService } from '../../../util/google-map.utils';
 import { PopUpMessageService } from '../../../util/pop-up-message.service';
 
-import { combineLatest, from, of, Subject, Subscription } from 'rxjs';
-import {
-  catchError,
-  debounceTime,
-  first,
-  map,
-  mergeMap,
-  publishReplay,
-  refCount,
-  switchMap, takeUntil,
-  tap,
-} from 'rxjs/internal/operators';
+import { combineLatest, from, of, Subject } from 'rxjs';
+import { catchError, debounceTime, mergeMap, publishReplay, refCount, takeUntil, tap, } from 'rxjs/internal/operators';
 import { CompanyCoverageConfig } from '../../../api/models/CompanyCoverageConfig';
 import { RestPage } from '../../../api/models/RestPage';
 import { Constants } from '../../../util/constants';
@@ -166,8 +156,8 @@ export class LeadsSearchMapComponent implements OnInit, OnDestroy {
     ).subscribe(
       (res) => {
       },
-      (err) => {
-        console.log(err);
+      err => {
+        console.error(err);
         this.mapIsLoading = false;
       },
     );

@@ -8,7 +8,6 @@ import { CamelCaseHumanPipe } from '../../../../pipes/camelcase-to-human.pipe';
 import { filtersToParams, TricksService } from '../../../../util/tricks.service';
 import { Project } from '../../../../api/models/Project';
 import { ActivatedRoute, Router } from '@angular/router';
-import { dataTableFilter } from '../../util';
 import { ProjectRequest } from '../../../../api/models/ProjectRequest';
 import { ProjectMessage } from '../../../../api/models/ProjectMessage';
 import { getErrorMessage } from '../../../../util/functions';
@@ -163,7 +162,7 @@ export class ProjectRequestsComponent {
           this.table.expandedRows.push(selection.data);
         },
         err => {
-          console.log(err);
+          console.error(err);
           this.popUpMessageService.showError(getErrorMessage(err));
         });
     }

@@ -111,7 +111,7 @@ export class AdminDashboardComponent implements OnInit {
         backgroundColor: enumToArrayList(StatisticColors)
       }];
     }, err => {
-      console.log(err);
+      console.error(err);
     });
   }
 

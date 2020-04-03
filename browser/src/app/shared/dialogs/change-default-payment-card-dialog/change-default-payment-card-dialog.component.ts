@@ -1,7 +1,4 @@
-import {
-  AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, OnDestroy, OnInit,
-  ViewChild
-} from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { Constants } from '../../../util/constants';
 import { Messages } from '../../../util/messages';
@@ -9,10 +6,7 @@ import { SecurityService } from '../../../auth/security.service';
 import { BillingService } from '../../../api/services/billing.service';
 import { CompanyService } from '../../../api/services/company.service';
 import { PaymentCard } from '../../../model/data-model';
-import { StripeService } from "../../../util/stripe.service";
 import { NgForm } from "@angular/forms";
-import { environment } from "../../../../environments/environment";
-import { PaymentService } from "../../../api/services/payment.service";
 import { TricksService } from "../../../util/tricks.service";
 import { PopUpMessageService } from "../../../util/pop-up-message.service";
 import { getErrorMessage } from "../../../util/functions";
@@ -77,7 +71,7 @@ export class ChangeDefaultPaymentCardDialogComponent implements OnInit, OnDestro
         },
         err => {
           this.paymentCardsProcessing = false;
-          console.log(err)
+          console.error(err)
         }
       );
   }
@@ -92,7 +86,7 @@ export class ChangeDefaultPaymentCardDialogComponent implements OnInit, OnDestro
           this.close();
         },
         err => {
-          console.log(err);
+          console.error(err);
           this.popUpMessageService.showError(getErrorMessage(err)) ;
           this.paymentCardsProcessing = false;
         });

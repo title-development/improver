@@ -82,7 +82,6 @@ export class ProjectCompleteComponent implements OnInit {
   }
 
   completeProject() {
-    console.log(!isNaN(this.reason));
     this.processing = true;
     let closeProjectRequest: CloseProjectRequest = {
       action: 'COMPLETE',

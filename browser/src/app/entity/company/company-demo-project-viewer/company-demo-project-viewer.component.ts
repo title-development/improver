@@ -50,10 +50,6 @@ export class CompanyDemoProjectViewerComponent implements OnInit {
       this.companyId = params['companyId'];
       this.projectId = params['projectId'];
 
-      // this.getDemoProject();
-      // this.getProjectImages();
-      // this.getServiceTypes();
-
       let requests = [
         this.serviceTypeService.serviceTypes$,
         this.demoProjectService.get(this.companyId, this.projectId),
@@ -66,11 +62,11 @@ export class CompanyDemoProjectViewerComponent implements OnInit {
           this.projectImages = result[2];
         },
         err => {
-          console.log(err);
+          console.error(err);
           if (err.status == 404) {
             this.router.navigate(['404'])
           } else {
-            this.popUpMessageService.showError(err.statusText);
+            this.popUpMessageService.showError(getErrorMessage(err));
           }
         });
 
@@ -89,8 +85,8 @@ export class CompanyDemoProjectViewerComponent implements OnInit {
           this.allServiceTypes = serviceTypes;
         },
         err => {
-          console.log(err);
-          this.popUpMessageService.showError(JSON.parse(err.error).message)
+          console.error(err);
+          this.popUpMessageService.showError(getErrorMessage(err))
         });
   }
 
@@ -115,8 +111,8 @@ export class CompanyDemoProjectViewerComponent implements OnInit {
         this.companyProfile = companyProfile;
       },
       err => {
-        console.log(err);
-        this.popUpMessageService.showError(JSON.parse(err.error).message)
+        console.error(err);
+        this.popUpMessageService.showError(getErrorMessage(err))
       });
   }
 
@@ -127,7 +123,7 @@ export class CompanyDemoProjectViewerComponent implements OnInit {
           this.projectImages = images;
         },
         err => {
-          console.log(err);
+          console.error(err);
           this.popUpMessageService.showError(getErrorMessage(err))
         });
   }

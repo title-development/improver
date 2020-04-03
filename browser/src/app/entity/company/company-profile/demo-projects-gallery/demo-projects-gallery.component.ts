@@ -8,6 +8,7 @@ import { Router } from "@angular/router";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { dialogsMap } from '../../../../shared/dialogs/dialogs.state';
 import { confirmDialogConfig } from '../../../../shared/dialogs/dialogs.configs';
+import { getErrorMessage } from "../../../../util/functions";
 
 @Component({
   selector: 'demo-projects-gallery',
@@ -60,8 +61,8 @@ export class DemoProjectsGalleryComponent implements OnInit {
       (projects) => {
         this.projects = projects;
       },
-      (error) => {
-        console.log(error)
+      err => {
+        console.error(err)
       }
     )
   }
@@ -89,7 +90,7 @@ export class DemoProjectsGalleryComponent implements OnInit {
         this.deleteDemoProject(project.id);
       },
       err => {
-        console.log(err)
+        console.error(err)
       }
     );
   }
@@ -101,8 +102,8 @@ export class DemoProjectsGalleryComponent implements OnInit {
           this.getDemoProjects()
         },
         err => {
-          console.log(err);
-          this.popUpMessageService.showError(JSON.parse(err.error).message)
+          console.error(err);
+          this.popUpMessageService.showError(getErrorMessage(err))
         });
   }
 

@@ -5,7 +5,7 @@ import {
   customerProjectRequestDialogConfig,
   questionaryDialogConfig
 } from '../shared/dialogs/dialogs.configs';
-import { CloseProjectRequest, ContractorProjectShort, CustomerProject, ServiceType } from '../model/data-model';
+import { CloseProjectRequest, ContractorProjectShort, CustomerProject } from '../model/data-model';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ProjectService } from '../api/services/project.service';
 import { PopUpMessageService } from './pop-up-message.service';
@@ -78,7 +78,7 @@ export class ProjectActionService {
         this.hireCompanyConfirm(projectRequest);
       },
       err => {
-        console.log(err);
+        console.error(err);
       }
     );
 
@@ -87,8 +87,8 @@ export class ProjectActionService {
         this.declineCompanyConfirm(projectRequest);
       },
       err => {
-        console.log(err);
-        this.popUpService.showError(JSON.parse(err.error).message);
+        console.error(err);
+        this.popUpService.showError(getErrorMessage(err));
       }
     );
   }
@@ -113,8 +113,8 @@ export class ProjectActionService {
         this.hireCompany(projectRequest);
       },
       err => {
-        console.log(err);
-        this.popUpService.showError(JSON.parse(err.error).message);
+        console.error(err);
+        this.popUpService.showError(getErrorMessage(err));
       }
     );
   }
@@ -128,8 +128,8 @@ export class ProjectActionService {
         this.popUpService.showSuccess(`You have accepted offer <b>${projectRequest.company.name}</b> for your <b>${this.project.serviceType}</b> project`);
       },
       err => {
-        console.log(err);
-        this.popUpService.showError(JSON.parse(err.error).message);
+        console.error(err);
+        this.popUpService.showError(getErrorMessage(err));
       }
     );
   }
@@ -149,8 +149,8 @@ export class ProjectActionService {
         this.declineCompany(projectRequest.id, body);
       },
       err => {
-        console.log(err);
-        this.popUpService.showError(JSON.parse(err.error).message);
+        console.error(err);
+        this.popUpService.showError(getErrorMessage(err));
       }
     );
   }
@@ -165,8 +165,8 @@ export class ProjectActionService {
         }
       },
       err => {
-        console.log(err);
-        this.popUpService.showError(JSON.parse(err.error).message);
+        console.error(err);
+        this.popUpService.showError(getErrorMessage(err));
       }
     );
   }
@@ -200,7 +200,7 @@ export class ProjectActionService {
           this.completeProject(project, closeProjectRequest);
         },
         err => {
-          console.log(err);
+          console.error(err);
         }
       );
       return;
@@ -239,8 +239,8 @@ export class ProjectActionService {
           this.popUpService.showSuccess(`Your <b>${project.serviceType}</b> project marked as completed`);
         },
         err => {
-          console.log(err);
-          this.popUpService.showError(JSON.parse(err.error).message);
+          console.error(err);
+          this.popUpService.showError(getErrorMessage(err));
         });
   }
 
@@ -258,8 +258,8 @@ export class ProjectActionService {
         this.cancelProject(project, body);
       },
       err => {
-        console.log(err);
-        this.popUpService.showError(JSON.parse(err.error).message);
+        console.error(err);
+        this.popUpService.showError(getErrorMessage(err));
       }
     );
 
@@ -276,8 +276,8 @@ export class ProjectActionService {
           this.confirmDialogRef.close();
         },
         err => {
-          console.log(err);
-          this.popUpService.showError(JSON.parse(err.error).message);
+          console.error(err);
+          this.popUpService.showError(getErrorMessage(err));
         });
   }
 
@@ -308,9 +308,9 @@ export class ProjectActionService {
                 this.questionaryControlService.resetQuestionaryForm();
               }
             },
-            error => {
+            err => {
               this.zipIsChecking = false;
-              this.popUpService.showError(getErrorMessage(error));
+              this.popUpService.showError(getErrorMessage(err));
             }
           );
         } else {
@@ -375,8 +375,8 @@ export class ProjectActionService {
           this.projectUpdated()
         },
         err => {
-          console.log(err);
-          this.popUpService.showError(JSON.parse(err.error).message);
+          console.error(err);
+          this.popUpService.showError(getErrorMessage(err));
         }
       );
     })
@@ -436,13 +436,13 @@ export class ProjectActionService {
             this.projectUpdated();
           },
           err => {
-            console.log(err);
-            this.popUpService.showError(JSON.parse(err.error).message);
+            console.error(err);
+            this.popUpService.showError(getErrorMessage(err));
           }
         );
       },
       err => {
-        console.log(err);
+        console.error(err);
       }
     );
 

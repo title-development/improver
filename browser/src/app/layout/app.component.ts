@@ -80,7 +80,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   checkSwUpdate() {
     if (this.swUpdate.isEnabled) {
       this.swUpdate.available.subscribe(() => {
-          console.log("Service is updated, please reload the page to prevent errors");
+        console.log("Service is updated, please reload the page to prevent errors");
         alert('We improving your user experience. Page reload required for changes to take effect.');
         window.location.reload();
       });

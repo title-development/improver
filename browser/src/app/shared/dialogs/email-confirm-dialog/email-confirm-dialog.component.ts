@@ -1,10 +1,11 @@
-import { Component, EventEmitter, OnInit } from '@angular/core';
+import { Component, EventEmitter } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { SecurityService } from '../../../auth/security.service';
 import { Constants } from '../../../util/constants';
 import { Messages } from '../../../util/messages';
 import { AccountService } from '../../../api/services/account.service';
 import { PopUpMessageService } from '../../../util/pop-up-message.service';
+import { getErrorMessage } from "../../../util/functions";
 
 @Component({
   selector: 'email-confirm-dialog',
@@ -63,8 +64,7 @@ export class EmailConfirmDialogComponent {
         err => {
           this.fetching = false;
           this.successful = false;
-          let message = err.error ? JSON.parse(err.error).message : err.statusText;
-          this.popupService.showError(message);
+          this.popupService.showError(getErrorMessage(err));
         }
       );
   }

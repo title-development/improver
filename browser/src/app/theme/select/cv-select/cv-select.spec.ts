@@ -1,4 +1,4 @@
-import { ComponentFixture, inject, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CvSelectComponent } from './cv-select';
 import { FormsModule } from '@angular/forms';
 import { OverlayRef } from '../../util/overlayRef';
@@ -289,11 +289,9 @@ describe('panel toggling', () => {
 
   it('should open the dropDown', () => {
     let elem = fixture.debugElement.query(By.css('.select-open')).nativeElement;
-    // console.log('elem', elem);
     // elem.dispatchEvent(new Event('click'));
     // fixture.detectChanges();
     // fixture.detectChanges();
-    // console.log(overlayRef.getBackdrop());
   });
 });
 

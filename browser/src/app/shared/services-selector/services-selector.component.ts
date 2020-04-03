@@ -90,8 +90,6 @@ export class ServicesSelectorComponent implements OnInit {
   }
 
   onServiceCheck(item) {
-    console.log('onServiceCheck');
-    console.log(this.tradesControl);
     this.tradesAndServiceTypes.services.forEach((service, index) => {
       if (service.id == item.id) {
         service.enabled = !service.enabled;

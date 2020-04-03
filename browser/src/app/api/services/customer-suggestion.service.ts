@@ -46,7 +46,7 @@ export class CustomerSuggestionService {
         this._suggestedServiceTypes$.next(serviceType);
       }, err => {
         this.suggestedServiceTypesCached = false;
-        console.log(err);
+        console.error(err);
       });
     }
 
@@ -63,7 +63,7 @@ export class CustomerSuggestionService {
         this._suggestedTrades$.next(trades);
       }, err => {
         this.suggestedTradesTypesCached = false;
-        console.log(err);
+        console.error(err);
       });
     }
 
@@ -79,9 +79,9 @@ export class CustomerSuggestionService {
         }
         this._tradeWithServices$.next(trade);
       },
-        error => {
+        err => {
         this.tradeWithServicesCached = false;
-        console.log(error);
+        console.error(err);
         })
     }
 
@@ -91,7 +91,7 @@ export class CustomerSuggestionService {
   getCustomerRecentSearches$(): ReplaySubject<Array<string>> {
       this.accountService.getRecentSearches(5).subscribe(
         (recentSearch: Array<string>) => this._recentSearches$.next(recentSearch),
-        err => console.log(err)
+        err => console.error(err)
       );
     return this._recentSearches$;
   }
@@ -105,9 +105,9 @@ export class CustomerSuggestionService {
       this.accountService.getLastCustomerZipCode().subscribe(lastCustomerZipCode => {
           this._lastZipCode$.next(lastCustomerZipCode);
         },
-        error => {
+        err => {
           this.lastZipCached = false;
-          console.log(error);
+          console.error(err);
         });
     }
 
@@ -124,7 +124,7 @@ export class CustomerSuggestionService {
         this._popular$.next(serviceType);
       }, err => {
         this.popularServiceTypeCached = false;
-        console.log(err);
+        console.error(err);
       });
     }
 

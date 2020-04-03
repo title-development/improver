@@ -50,7 +50,7 @@ export class RequestRefundDialogComponent implements OnInit {
           this.questionaryProcessing = false;
         },
         err => {
-          console.log(err);
+          console.error(err);
           this.questionaryProcessing = false;
         }
       );

@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { CustomerProjectShort, Pagination, ServiceType, Trade } from '../../../model/data-model';
+import { CustomerProjectShort, Pagination, Trade } from '../../../model/data-model';
 import { SecurityService } from '../../../auth/security.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { PopUpMessageService } from '../../../util/pop-up-message.service';
@@ -91,7 +91,6 @@ export class CustomerDashboardComponent implements OnDestroy {
     this.mediaQueryService.screen.asObservable()
         .pipe(takeUntil(this.destroyed$))
         .subscribe((mediaQuery: MediaQuery) => {
-          console.log('Customer',mediaQuery);
           this.mediaQuery = mediaQuery;
         });
   }

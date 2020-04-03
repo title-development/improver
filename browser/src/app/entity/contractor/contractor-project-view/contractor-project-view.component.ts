@@ -125,7 +125,7 @@ export class ContractorProjectViewComponent implements OnDestroy, AfterViewInit 
           }
         },
         err => {
-          console.log(err);
+          console.error(err);
           if (err.status == 404) {
             this.router.navigate(['404']);
           }

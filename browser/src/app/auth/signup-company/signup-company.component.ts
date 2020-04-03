@@ -61,7 +61,6 @@ export class SignupCompanyComponent {
   infoWindow: any;
   processing: boolean = false;
 
-  // tmp test data
   companyRegistration: CompanyRegistration = {
     company: {
       name: '',
@@ -219,7 +218,7 @@ export class SignupCompanyComponent {
         });
 
       },
-      error => console.log(error))
+      err => console.error(err))
   }
 
   drawUnsupportedAreaUSA() {
@@ -283,9 +282,9 @@ export class SignupCompanyComponent {
         this.serviceAreaCircle.addListener('radius_changed', this.serviceAreaRadiusChangeHandler);
 
       },
-      (err) => {
-        console.log(err);
-        this.popUpMessageService.showError(err);
+      err => {
+        console.error(err);
+        this.popUpMessageService.showError(getErrorMessage(err));
       }
     );
 
@@ -376,7 +375,7 @@ export class SignupCompanyComponent {
           }
         },
         err => {
-          console.log(err);
+          console.error(err);
           this.popUpMessageService.showError(getErrorMessage(err));
         });
 
@@ -576,9 +575,9 @@ export class SignupCompanyComponent {
               });
             },
             err => {
-              console.log(err);
+              console.error(err);
               this.isResendBlocked = false;
-              this.popUpMessageService.showError(JSON.parse(err.error).message);
+              this.popUpMessageService.showError(getErrorMessage(err));
             }
           );
       } else {
@@ -609,7 +608,7 @@ export class SignupCompanyComponent {
         this.router.navigate(['/become-pro']);
       },
       err => {
-        console.log(err);
+        console.error(err);
       }
     );
   }

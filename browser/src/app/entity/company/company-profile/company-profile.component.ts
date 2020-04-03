@@ -162,8 +162,7 @@ export class CompanyProfileComponent implements OnInit, OnDestroy {
           }
         },
         err => {
-
-          console.log(err);
+          console.error(err);
           if (err.status == 404) {
             this.router.navigate(['404']);
           } else {
@@ -250,8 +249,8 @@ export class CompanyProfileComponent implements OnInit, OnDestroy {
 
       });
 
-      onerror.subscribe((error) => {
-        console.log(error);
+      onerror.subscribe(error => {
+        console.error(error);
         this.backgroundProcessing = false;
       });
 

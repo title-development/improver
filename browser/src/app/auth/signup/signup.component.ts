@@ -11,6 +11,7 @@ import { RecaptchaComponent } from 'ng-recaptcha';
 import { mergeMap, takeUntil, timeoutWith } from 'rxjs/operators';
 import { Subject, throwError } from 'rxjs';
 import { ActivatedRoute, Router } from "@angular/router";
+import { getErrorMessage } from "../../util/functions";
 
 @Component({
   selector: 'login-page',
@@ -114,9 +115,9 @@ export class SignupComponent implements OnDestroy {
           });
         },
         err => {
-          console.log(err);
+          console.error(err);
           this.isResendBlocked = false;
-          this.popUpMessageService.showError(JSON.parse(err.error).message);
+          this.popUpMessageService.showError(getErrorMessage(err));
         }
       );
     }
@@ -135,8 +136,8 @@ export class SignupComponent implements OnDestroy {
         this.user.email = this.correctEmailModel.correctEmail;
       },
       err => {
-        console.log(err);
-        this.popUpMessageService.showError(JSON.parse(err.error).message);
+        console.error(err);
+        this.popUpMessageService.showError(getErrorMessage(err));
       }
     );
   }

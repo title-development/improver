@@ -88,8 +88,8 @@ export class NotificationResource {
         (count) => {
           this.unreadNotificationsCounter = count;
         },
-        error => {
-          this.popUpService.showError(getErrorMessage(error));
+        err => {
+          this.popUpService.showError(getErrorMessage(err));
         });
       this.subscribeOnNotifications();
       this.unreadNotificationEmitter();

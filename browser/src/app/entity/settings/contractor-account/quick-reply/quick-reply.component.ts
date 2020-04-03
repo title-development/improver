@@ -48,8 +48,8 @@ export class QuickReplyComponent implements OnInit {
         this.fetching = false;
         this.quickReply = quickReplyMessage;
         this.initialQuickReply = {...{}, ...quickReplyMessage};
-      }, (error) => {
-        console.info(error);
+      }, err => {
+        console.error(err);
       });
 
   }
@@ -61,9 +61,9 @@ export class QuickReplyComponent implements OnInit {
         this.saveProcessing = false;
         this.popUpService.showSuccess('Quick replay message updated successfully');
         this.getQuickReplayMessage();
-      }, (error) => {
+      }, err => {
+        console.error(err);
         this.saveProcessing = false;
-        console.error(error);
       });
   }
 

@@ -148,7 +148,7 @@ export class RefundsInreviewComponent {
       (restPage: RestPage<Refund>) => {
         this.refunds = restPage;
       }, err => {
-          console.log(getErrorMessage(err))
+          console.error(err)
       });
   }
 
@@ -166,7 +166,7 @@ export class RefundsInreviewComponent {
           this.table.expandedRows.push(selection.data);
         },
         err => {
-          console.log(err);
+          console.error(err);
           this.popUpMessageService.showError(getErrorMessage(err));
         });
     }
