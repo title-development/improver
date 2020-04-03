@@ -31,8 +31,7 @@ public class SocialConnectionService {
     @Autowired private SocialConnectionRepository socialConnectionRepository;
 
 
-    //TODO: this better to split into 2 separate methods
-    public User findExistingOrRegister(SocialUser socialUser, boolean emailVerificationRequired) throws AuthenticationRequiredException {
+    public User findExistingUser(SocialUser socialUser) {
         // by providerId
         SocialConnection connection = socialConnectionRepository.findByProviderId(socialUser.getId());
         if (connection != null) {
@@ -47,9 +46,14 @@ public class SocialConnectionService {
         if (user != null) {
             return addSocialConnection(user, socialUser);
         } else {
-            Customer customer = Customer.of(socialUser);
-            return registrationService.registerSocialUser(customer, socialUser, emailVerificationRequired);
+            return null;
         }
+    }
+
+
+    public User registerUser(SocialUser socialUser, Boolean emailVerificationRequired) {
+        Customer customer = Customer.of(socialUser);
+        return registrationService.registerSocialUser(customer, socialUser, emailVerificationRequired);
     }
 
 
@@ -108,4 +112,5 @@ public class SocialConnectionService {
         socialConnectionRepository.save(socialConnection);
         return user;
     }
+
 }

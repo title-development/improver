@@ -8,16 +8,22 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.improver.entity.User;
 import com.improver.exception.AuthenticationRequiredException;
 import com.improver.exception.InternalServerException;
+import com.improver.exception.NotFoundException;
+import com.improver.model.out.LoginModel;
 import com.improver.model.socials.SocialUserInfo;
 import com.improver.model.socials.SocialUser;
 import com.improver.application.properties.ThirdPartyApis;
+import com.improver.security.UserSecurityService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletResponse;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
+
+import static java.util.Objects.isNull;
 
 @Slf4j
 @Service
@@ -25,6 +31,7 @@ public class GoogleSocialService {
 
     @Autowired private SocialConnectionService socialConnectionService;
     @Autowired private ThirdPartyApis thirdPartyApis;
+    @Autowired private UserSecurityService userSecurityService;
     private GoogleIdTokenVerifier verifier;
 
 
@@ -35,12 +42,19 @@ public class GoogleSocialService {
             .build();
     }
 
-
-    public User loginOrRegister(String idTokenString) {
-        SocialUser socialUser = getSocialUser(idTokenString);
-        return socialConnectionService.findExistingOrRegister(socialUser, false);
+    public LoginModel login(String idToken, HttpServletResponse res) {
+        SocialUser socialUser = getSocialUser(idToken);
+        User user = socialConnectionService.findExistingUser(socialUser);
+        if (isNull(user)) {
+            throw new NotFoundException("User is not found");
+        }
+        return userSecurityService.performUserLogin(user, res);
     }
 
+    public User register(SocialUserInfo socialUserInfo) {
+        SocialUser socialUser = getSocialUser(socialUserInfo.getAccessToken());
+        return socialConnectionService.registerUser(socialUser, false);
+    }
 
     public User registerPro(SocialUserInfo socialUserInfo) {
         SocialUser socialUser = getSocialUser(socialUserInfo.getAccessToken());

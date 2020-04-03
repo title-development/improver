@@ -4,6 +4,8 @@ import com.improver.entity.SocialConnection;
 import com.improver.entity.User;
 import com.improver.model.out.LoginModel;
 import com.improver.model.socials.SocialUserInfo;
+import com.improver.repository.SocialConnectionRepository;
+import com.improver.repository.UserRepository;
 import com.improver.security.UserSecurityService;
 import com.improver.service.FacebookSocialService;
 import com.improver.service.GoogleSocialService;
@@ -29,21 +31,24 @@ public class SocialLoginController {
     @Autowired private GoogleSocialService googleSocialService;
     @Autowired private SocialConnectionService socialConnectionService;
 
-    @PostMapping("/facebook")
-    public ResponseEntity<LoginModel> loginOrRegisterWithFacebook(@RequestBody @Valid SocialUserInfo socialUserInfo, HttpServletResponse res) {
-        User user = facebookSocialService.loginOrRegister(socialUserInfo);
-        LoginModel loginModel = userSecurityService.performUserLogin(user, res);
-        return new ResponseEntity<>(loginModel, HttpStatus.OK);
+    @PostMapping("/facebook/register/customer")
+    public ResponseEntity<LoginModel> registerCustomerWithFacebook(@RequestBody @Valid SocialUserInfo socialUserInfo, HttpServletResponse res) {
+        return new ResponseEntity<>(facebookSocialService.register(socialUserInfo, res), HttpStatus.OK);
     }
 
-    @PostMapping("/facebook/pro")
+    @PostMapping("/facebook/register/pro")
     public ResponseEntity<LoginModel> registerProWithFacebook(@RequestBody @Valid SocialUserInfo socialUserInfo, HttpServletResponse res) {
         User user = facebookSocialService.registerPro(socialUserInfo);
         LoginModel loginModel = userSecurityService.performUserLogin(user, res);
         return new ResponseEntity<>(loginModel, HttpStatus.OK);
     }
 
-    @DeleteMapping("/facebook")
+    @PostMapping("/facebook")
+    public ResponseEntity<LoginModel> loginWithFacebook(@RequestBody String accessToken, HttpServletResponse res) {
+        return new ResponseEntity<>(facebookSocialService.login(accessToken, res), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/facebook/connect")
     public ResponseEntity<Void> disconnectFacebook() {
         User user = userSecurityService.currentUser();
         socialConnectionService.disconnectSocial(user, SocialConnection.Provider.FACEBOOK);
@@ -57,21 +62,26 @@ public class SocialLoginController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/google")
-    public ResponseEntity<LoginModel> loginOrRegisterWithGoogle(@RequestBody @Valid SocialUserInfo socialUserInfo, HttpServletResponse res) {
-        User user = googleSocialService.loginOrRegister(socialUserInfo.getAccessToken());
+    @PostMapping("/google/register/customer")
+    public ResponseEntity<LoginModel> registerCustomerWithGoogle(@RequestBody @Valid SocialUserInfo socialUserInfo, HttpServletResponse res) {
+        User user = googleSocialService.register(socialUserInfo);
         LoginModel loginModel = userSecurityService.performUserLogin(user, res);
         return new ResponseEntity<>(loginModel, HttpStatus.OK);
     }
 
-    @PostMapping("/google/pro")
+    @PostMapping("/google/register/pro")
     public ResponseEntity<LoginModel> registerProWithGoogle(@RequestBody SocialUserInfo socialUserInfo, HttpServletResponse res) {
         User user = googleSocialService.registerPro(socialUserInfo);
         LoginModel loginModel = userSecurityService.performUserLogin(user, res);
         return new ResponseEntity<>(loginModel, HttpStatus.OK);
     }
 
-    @DeleteMapping("/google")
+    @PostMapping("/google")
+    public ResponseEntity<LoginModel> loginWithGoogle(@RequestBody String accessToken, HttpServletResponse res) {
+        return new ResponseEntity<>(googleSocialService.login(accessToken, res), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/google/connect")
     public ResponseEntity<Void> disconnectGoogle() {
         User user = userSecurityService.currentUser();
         socialConnectionService.disconnectSocial(user, SocialConnection.Provider.GOOGLE);
@@ -93,7 +103,6 @@ public class SocialLoginController {
         List<SocialConnection> socialConnections = socialConnectionService.getSocialConnections(user);
         return new ResponseEntity<>(socialConnections, HttpStatus.OK);
     }
-
 
 }
 

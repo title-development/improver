@@ -186,7 +186,7 @@
             </div>
             <social-buttons [preventLogin]="!registerProps.agree"
                             [processing]="processing"
-                            [contractorRegistrationFlow]="true"
+                            [isPro]="true"
                             [referralCode]="user.referralCode"
                             (responseMessageType)="messageType = $event;"
                             (responseMessage)="messageText = $event;"

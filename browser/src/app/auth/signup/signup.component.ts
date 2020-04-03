@@ -10,6 +10,7 @@ import { RegistrationUserModel, RegistrationUserProps } from '../../model/securi
 import { RecaptchaComponent } from 'ng-recaptcha';
 import { mergeMap, takeUntil, timeoutWith } from 'rxjs/operators';
 import { Subject, throwError } from 'rxjs';
+import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({
   selector: 'login-page',
@@ -18,17 +19,6 @@ import { Subject, throwError } from 'rxjs';
 })
 
 export class SignupComponent implements OnDestroy {
-  //TODO: temporary values for testing
-  // model = {
-  //   email: "off.bk90@gmail.com",
-  //   password: "password",
-  //   confirmPassword: "password",
-  //   firstName: "Taras",
-  //   lastName: "Halynskyi",
-  //   zip: "77300",
-  //   phone: "(123) 123-1231"
-  // };
-
   @ViewChild(RecaptchaComponent)
   recaptcha: RecaptchaComponent;
 
@@ -62,8 +52,17 @@ export class SignupComponent implements OnDestroy {
   constructor(public securityService: SecurityService,
               public constants: Constants,
               public messages: Messages,
+              private router: Router,
+              private route: ActivatedRoute,
               private registrationService: RegistrationService,
               private popUpMessageService: PopUpMessageService) {
+    this.route.queryParams.subscribe(params => {
+      if (params['email']) {
+        this.user.email = params['email'];
+        this.step = 2;
+        this.router.navigate([], {replaceUrl: true});
+      }
+    });
 
   }
 

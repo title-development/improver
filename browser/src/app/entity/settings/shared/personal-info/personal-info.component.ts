@@ -19,7 +19,7 @@ import { dialogsMap } from '../../../../shared/dialogs/dialogs.state';
 import { NgForm } from '@angular/forms';
 import { applyPhoneMask, capitalize, getErrorMessage, removePhoneMask } from '../../../../util/functions';
 import { switchMap, takeUntil } from 'rxjs/operators';
-import { SocialConnectionsService } from '../../../../auth/social-connections.service';
+import { SocialLoginService } from '../../../../api/services/social-login.service';
 import { SocialConnection } from '../../../../api/models/SocialConnection';
 import { AuthService, FacebookLoginProvider, GoogleLoginProvider, SocialUser } from 'angularx-social-login';
 import { from, Observable, Subject, throwError } from 'rxjs';
@@ -67,7 +67,7 @@ export class PersonalInfoComponent implements OnDestroy {
               public accountService: AccountService,
               public tricksService: TricksService,
               public popupService: PopUpMessageService,
-              private socialConnectionService: SocialConnectionsService,
+              private socialConnectionService: SocialLoginService,
               private socialAuthService: AuthService) {
     this.getUserAccount();
     this.socialProviders = enumToArrayList(SocialConnection.Provider);

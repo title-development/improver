@@ -67,7 +67,7 @@ import { NotificationService } from '../api/services/notification.service';
 import { TicketService } from '../api/services/ticket.service';
 import { ProjectRequestService } from '../api/services/project-request.service';
 import { AuthServiceConfig, FacebookLoginProvider, GoogleLoginProvider } from 'angularx-social-login';
-import { SocialConnectionsService } from '../auth/social-connections.service';
+import { SocialLoginService } from '../api/services/social-login.service';
 import { AccessDeniedInterceptor } from '../util/interceptors/access-denied.interceptor';
 import { MyStompService } from 'app/util/my-stomp.service';
 import { InternalServerErrorComponent } from '../entity/internal-server-error/internal-server-error.component';
@@ -194,7 +194,7 @@ export function getAuthServiceConfigs() {
     SubscriptionActionsService,
     ComponentCanDeactivateGuard,
     ScrollHolderService,
-    SocialConnectionsService,
+    SocialLoginService,
     TutorialsService,
     PhoneService,
     MyStompService,

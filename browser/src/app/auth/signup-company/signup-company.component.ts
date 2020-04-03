@@ -535,10 +535,7 @@ export class SignupCompanyComponent {
 
     this.registrationProcessing = true;
     this.registrationService.registerCompany(this.companyRegistration)
-      .pipe(
-        takeUntil(this.destroyed$),
-        finalize(() => this.registrationProcessing = false)
-      )
+      .pipe(takeUntil(this.destroyed$))
       .subscribe(
         (response: HttpResponse<any>) => {
           this.removeIncompleteCompanyFromStorage();
@@ -551,6 +548,7 @@ export class SignupCompanyComponent {
           }
         }, err => {
           this.popUpMessageService.showError(getErrorMessage(err));
+          this.registrationProcessing = false;
         }
       );
 

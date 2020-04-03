@@ -3,10 +3,13 @@ package com.improver.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.improver.entity.User;
 import com.improver.exception.AuthenticationRequiredException;
+import com.improver.exception.NotFoundException;
 import com.improver.exception.ThirdPartyException;
+import com.improver.model.out.LoginModel;
 import com.improver.model.socials.FacebookUserProfile;
 import com.improver.model.socials.SocialUserInfo;
 import com.improver.model.socials.SocialUser;
+import com.improver.security.UserSecurityService;
 import com.improver.util.serializer.SerializationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpResponse;
@@ -20,9 +23,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Slf4j
@@ -32,6 +37,7 @@ public class FacebookSocialService {
     private static final String FB_API_VERSION = "v3.1";
 
     @Autowired private SocialConnectionService socialConnectionService;
+    @Autowired private UserSecurityService userSecurityService;
     private HttpClient client;
 
 
@@ -42,16 +48,30 @@ public class FacebookSocialService {
             .build();
     }
 
-    public User loginOrRegister(SocialUserInfo socialUserInfo) {
-        boolean emailVerificationRequired = false;
-        SocialUser socialUser = getSocialUser(socialUserInfo.getAccessToken());
-        if (nonNull(socialUserInfo.getEmail())) {
-            socialUser.setEmail(socialUserInfo.getEmail());
-            emailVerificationRequired = true;
+    public LoginModel login(String authToken, HttpServletResponse res) {
+        SocialUser socialUser = getSocialUser(authToken);
+        User user = socialConnectionService.findExistingUser(socialUser);
+        if (isNull(user)) {
+            throw new NotFoundException("User is not found");
         }
-        return socialConnectionService.findExistingOrRegister(socialUser, emailVerificationRequired);
+        userSecurityService.checkUser(user);
+        return userSecurityService.performUserLogin(user, res);
     }
 
+    public LoginModel register(SocialUserInfo socialUserInfo, HttpServletResponse res) {
+        LoginModel loginModel = null;
+        boolean socialProfileHasEmail = true;
+        SocialUser socialUser = getSocialUser(socialUserInfo.getAccessToken());
+        if (isNull(socialUser.getEmail())) {
+            socialUser.setEmail(socialUserInfo.getEmail());
+            socialProfileHasEmail = false;
+        }
+        User user = socialConnectionService.registerUser(socialUser, !socialProfileHasEmail);
+        if (socialProfileHasEmail) {
+            loginModel = userSecurityService.performUserLogin(user, res);
+        }
+        return loginModel;
+    }
 
     public User registerPro(SocialUserInfo socialUserInfo) {
         SocialUser socialUser = getSocialUser(socialUserInfo.getAccessToken());

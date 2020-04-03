@@ -1,14 +1,16 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AuthService, SocialUser } from 'angularx-social-login';
 import { HttpResponse } from '@angular/common/http';
-import { LoginModel, SocialUserInfo, AdditionalUserInfo } from '../../model/security-model';
+import { AdditionalUserInfo, LoginModel, SocialUserInfo } from '../../model/security-model';
 import { getErrorMessage } from '../../util/functions';
 import { SystemMessageType } from '../../model/data-model';
-import { SocialConnectionsService } from '../social-connections.service';
+import { SocialLoginService } from '../../api/services/social-login.service';
 import { SecurityService } from '../security.service';
 import { dialogsMap } from '../../shared/dialogs/dialogs.state';
 import { socialRegistrationAdditionalInfoDialogConfig } from '../../shared/dialogs/dialogs.configs';
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { PopUpMessageService } from "../../util/pop-up-message.service";
+import { Router } from "@angular/router";
 
 export enum SocialPlatform {
   FACEBOOK = 'FACEBOOK',
@@ -26,7 +28,7 @@ export class SocialButtonsComponent {
   @Input() preventLogin: boolean = false;
   @Input() disabled: boolean = false;
   @Input() processing: boolean = false;
-  @Input() contractorRegistrationFlow: boolean = false;
+  @Input() isPro: boolean = false;
   @Output() responseMessage: EventEmitter<string> = new EventEmitter<string>();
   @Output() responseMessageType: EventEmitter<SystemMessageType> = new EventEmitter<SystemMessageType>();
   @Output() showMessage: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -36,9 +38,11 @@ export class SocialButtonsComponent {
   googleFetching: boolean = false;
   private socialRegistrationAdditionalInfoDialogRef: MatDialogRef<any>;
 
-  constructor(private socialLoginService: SocialConnectionsService,
+  constructor(private socialLoginService: SocialLoginService,
               private socialAuthService: AuthService,
               public securityService: SecurityService,
+              public popUpService: PopUpMessageService,
+              private router: Router,
               public dialog: MatDialog) {
   }
 
@@ -52,10 +56,10 @@ export class SocialButtonsComponent {
     } else if (socialPlatform == SocialPlatform.GOOGLE) {
       this.googleFetching = true;
     }
-    this.socialSignIn(socialPlatform);
+    this.socialProviderAuth(socialPlatform);
   }
 
-  private socialRegistrationAdditionalInfoDialog(userData: SocialUser, phoneRequired: boolean, registrationHandler: Function) {
+  private openSocialRegistrationAdditionalInfoDialog(userData: SocialUser, isPro: boolean, registrationHandler: Function) {
     this.googleFetching = false;
     this.facebookFetching = false;
     this.socialRegistrationAdditionalInfoDialogRef = this.dialog.open(dialogsMap['social-registration-additional-info-dialog'], socialRegistrationAdditionalInfoDialogConfig);
@@ -71,48 +75,31 @@ export class SocialButtonsComponent {
       this.socialRegistrationAdditionalInfoDialogRef.componentInstance.accessToken = userData.idToken;
     }
 
-    this.socialRegistrationAdditionalInfoDialogRef.componentInstance.phoneMissing = phoneRequired;
+    this.socialRegistrationAdditionalInfoDialogRef.componentInstance.phoneMissing = isPro;
     this.socialRegistrationAdditionalInfoDialogRef.componentInstance.emailMissing = !userData.email;
     this.socialRegistrationAdditionalInfoDialogRef.componentInstance.userName = userData.name;
     this.socialRegistrationAdditionalInfoDialogRef.componentInstance.socialPlatform = userData.provider;
 
     this.socialRegistrationAdditionalInfoDialogRef.componentInstance.onSuccess.subscribe(additionalContacts => {
-      registrationHandler(userData, additionalContacts);
+      registrationHandler(userData, additionalContacts, isPro);
       this.socialRegistrationAdditionalInfoDialogRef.close();
     })
 
   }
 
-  // TODO: 1. Combine loginOrRegisterUser and loginOrRegisterPro into 1 method, as they are almost identical
-  // TODO: 2. Required call to server to check is user already registered, so on every login we will not ask for email and Phone. This may also required to split into 2 separate methods for login and register.
-  private loginOrRegisterUser(socialUser: SocialUser, additionalUserInfo: AdditionalUserInfo) {
+  private register(socialUser: SocialUser, additionalUserInfo: AdditionalUserInfo, isPro: boolean) {
     let accessToken = this.retrieveAccessToken(socialUser);
     let socialUserInfo: SocialUserInfo = new SocialUserInfo(accessToken, additionalUserInfo?.email, additionalUserInfo?.phone, this.referralCode);
-    let observable = this.getRegistrationObservable(socialUser.provider, socialUserInfo);
+    let observable = this.getRegisterObservable(socialUser.provider, socialUserInfo, isPro);
     observable.subscribe((response: HttpResponse<any>) => {
       this.googleFetching = false;
       this.facebookFetching = false;
-      this.securityService.loginUser(response.body as LoginModel, response.headers.get('authorization'), true);
-    }, err => {
-      this.googleFetching = false;
-      this.facebookFetching = false;
-      if (err.status == 401) {
-        this.securityService.logoutFrontend();
+      let loginModel = response.body as LoginModel;
+      if (loginModel) {
+        this.securityService.loginUser(loginModel, response.headers.get('authorization'), true);
+      } else if (!isPro) {
+        this.router.navigate(['/signup'], {queryParams: {email: additionalUserInfo.email}});
       }
-      this.responseMessage.emit(getErrorMessage(err));
-      this.responseMessageType.emit(SystemMessageType.ERROR);
-      this.showMessage.emit(true);
-    });
-  }
-
-  private loginOrRegisterPro(socialUser: SocialUser, additionalUserInfo: AdditionalUserInfo) {
-    let accessToken = this.retrieveAccessToken(socialUser);
-    let socialUserInfo: SocialUserInfo = new SocialUserInfo(accessToken, additionalUserInfo?.email, additionalUserInfo?.phone, this.referralCode);
-    let observable = this.getRegistrationObservable(socialUser.provider, socialUserInfo, true);
-    observable.subscribe((response: HttpResponse<any>) => {
-      this.googleFetching = false;
-      this.facebookFetching = false;
-      this.securityService.loginUser(response.body as LoginModel, response.headers.get('authorization'), true);
     }, err => {
       this.googleFetching = false;
       this.facebookFetching = false;
@@ -135,36 +122,63 @@ export class SocialButtonsComponent {
     this.showMessage.emit(true);
   }
 
-  private socialSignIn(socialPlatform) {
+  private socialProviderAuth(socialPlatform: SocialPlatform) {
     this.socialAuthService.signIn(socialPlatform)
       .then((socialUser: SocialUser) => {
-          if (socialUser && socialUser.id) {
-            if (this.contractorRegistrationFlow) {
-              this.socialRegistrationAdditionalInfoDialog(socialUser, true, this.loginOrRegisterPro.bind(this));
-            } else {
-              if (socialUser.email) {
-                this.loginOrRegisterUser(socialUser, null);
+          let observable = this.getLoginObservable(socialPlatform, socialUser);
+          observable.subscribe((response: HttpResponse<any>) => {
+              this.securityService.loginUser(response.body as LoginModel, response.headers.get('authorization'), true);
+            }, error => {
+              if (error.status == 404) {
+                this.socialSignIn(socialUser);
               } else {
-                this.socialRegistrationAdditionalInfoDialog(socialUser, false, this.loginOrRegisterUser.bind(this));
+                console.error(error);
+                this.popUpService.showError(getErrorMessage(error));
+                this.googleFetching = false;
+                this.facebookFetching = false;
               }
             }
-          } else {
-            this.showError(socialPlatform);
-          }
+          );
         }
       )
       .catch(err => {
         console.log(err);
         this.showError(socialPlatform);
       });
+
   }
 
-  private getRegistrationObservable(provider, socialUserInfo, isPro: boolean = false) {
-    switch (provider) {
+  private socialSignIn(socialUser: SocialUser) {
+    if (socialUser && socialUser.id) {
+      let needAdditionalInfo = this.isPro || !this.isPro && !socialUser.email;
+      if(needAdditionalInfo) {
+        this.openSocialRegistrationAdditionalInfoDialog(socialUser, this.isPro,  this.register.bind(this));
+      } else {
+        this.register(socialUser, null, this.isPro);
+      }
+
+    } else {
+      this.showError(socialUser.provider as SocialPlatform);
+    }
+  }
+
+  private getLoginObservable(socialPlatform, socialUser: SocialUser) {
+    switch (socialPlatform) {
       case SocialPlatform.FACEBOOK:
-        return isPro ? this.socialLoginService.proFacebookApiRegister(socialUserInfo) : this.socialLoginService.facebookApiLogin(socialUserInfo);
+        return this.socialLoginService.facebookLogin(socialUser.authToken);
       case SocialPlatform.GOOGLE:
-        return isPro ? this.socialLoginService.proGoogleApiRegister(socialUserInfo) : this.socialLoginService.googleApiLogin(socialUserInfo);
+        return this.socialLoginService.googleLogin(socialUser.idToken);
+      default:
+        throw Error("Social provider not allowed")
+    }
+  }
+
+  private getRegisterObservable(socialPlatform, socialUserInfo, isPro: boolean = false) {
+    switch (socialPlatform) {
+      case SocialPlatform.FACEBOOK:
+        return isPro ? this.socialLoginService.facebookRegisterPro(socialUserInfo) : this.socialLoginService.facebookRegisterCustomer(socialUserInfo);
+      case SocialPlatform.GOOGLE:
+        return isPro ? this.socialLoginService.googleRegisterPro(socialUserInfo) : this.socialLoginService.googleRegisterCustomer(socialUserInfo);
       default:
         throw Error("Social provider not allowed")
     }
