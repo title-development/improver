@@ -1,11 +1,14 @@
 package com.improver.entity;
 
 
+import com.improver.util.DecimalConverter;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import java.time.ZonedDateTime;
+
+import static com.improver.application.properties.SystemProperties.TRANSACTIONS_NUMBER_MAX_LENGTH;
 
 @Data
 @Entity(name = "transactions")
@@ -51,8 +54,6 @@ public class Transaction {
     public static final String SUBSCRIPTION_REPLENISH_DESC = "Subscription balance top-up";
     public static final String SUBSCRIPTION_RESERVE_DESC = "Subscription budget reservation";
     public static final String TOP_UP_DESC = "Balance top-up";
-    public static final String TRANSACTIONS_PREFIX = "TA";
-    public static final int TRANSACTIONS_NUMBER_MAX_LENGTH = 16; // Max long type value in hexadecimal format
 
     private Transaction() {
     }
@@ -195,35 +196,30 @@ public class Transaction {
     }
 
     /**
-     * Get transaction ID(Long type) from Transaction number(Hexadecimal)
+     * Transforms transactionNumber from base36 to decimal value
      *
-     * @param transactionNumber //consists of standard transaction prefix and transaction ID in Hexadecimal
+     * @param transactionNumber - base36 value of transactionId
      */
-    public static long getTransactionIdFromTransactionNumber(String transactionNumber) {
-        String transactionNumberWithoutPrefix = transactionNumber.split(TRANSACTIONS_PREFIX)[1];
-        return Long.parseLong(transactionNumberWithoutPrefix, 16);
+    public static long getIdFromNumber(String transactionNumber) {
+        return DecimalConverter.base36ToDecimal(transactionNumber);
     }
 
     /**
-     * Generate transaction number(String) from transaction ID(Long)
-     * For example transaction ID equal "30" => "TA0000000000000016"
-     * Where:  "TA" - standard transaction prefix
-     *         "16" - value in hexadecimal format
-     *         "00000000000000" - zeros to fill standard of transactions number length
+     * Generate transaction number string in base36 format from decimal transactionId
+     * For example transactionId equal "758" => "0000LT"
+     * Where:  "LT" -  758 decimal value in base36 format
+     *         "0000" - zeros to fill standard of transactions number length
      */
     public String getTransactionNumber() {
-        String hexadecimalId = String.format("%X", this.id);
+        String base36Id = DecimalConverter.decimalToBase36(this.id);
         StringBuilder stringWithZeros = new StringBuilder();
-        char[] hexadecimalCharArray = hexadecimalId.toCharArray();
+        char[] hexadecimalCharArray = base36Id.toCharArray();
         if (hexadecimalCharArray.length < TRANSACTIONS_NUMBER_MAX_LENGTH) {
             for (int i = 0; i < TRANSACTIONS_NUMBER_MAX_LENGTH - hexadecimalCharArray.length; i++) {
                 stringWithZeros.append('0');
             }
         }
-
-        return TRANSACTIONS_PREFIX +
-                stringWithZeros +
-                hexadecimalId;
+        return stringWithZeros + base36Id;
     }
 
     public static Transaction leadFromBalance(boolean isManual, Company company, String serviceType, ProjectRequest projectRequest, Location location, int amount, int balance) {

@@ -6,9 +6,7 @@ import com.improver.exception.NotFoundException;
 import com.improver.exception.ValidationException;
 import com.improver.model.ContractorInvitation;
 import com.improver.repository.InvitationRepository;
-import com.improver.repository.StaffActionRepository;
 import com.improver.repository.UserRepository;
-import com.improver.security.UserSecurityService;
 import com.improver.util.mail.MailService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.buf.StringUtils;
@@ -18,23 +16,21 @@ import org.springframework.stereotype.Service;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.improver.application.properties.BusinessProperties.MAX_INVITATION_BONUS;
+import static com.improver.application.properties.BusinessProperties.MIN_INVITATION_BONUS;
+
 @Slf4j
 @Service
 public class InvitationService {
 
-    public static final int MIN_ALLOWED_BONUS = 10000;
-    public static final int MAX_ALLOWED_BONUS = 99900;
-
     @Autowired private InvitationRepository invitationRepository;
     @Autowired private UserRepository userRepository;
     @Autowired private MailService mailService;
-    @Autowired private UserSecurityService userSecurityService;
-    @Autowired private StaffActionRepository staffActionRepository;
     @Autowired private StaffActionLogger staffActionLogger;
 
     public String[] create(ContractorInvitation invitation, Staff currentStaff) {
-        if(invitation.getBonus() < MIN_ALLOWED_BONUS || invitation.getBonus() > MAX_ALLOWED_BONUS) {
-            throw new ValidationException("The bonus amount is out of limits (" + MIN_ALLOWED_BONUS  / 100 + " - " + MAX_ALLOWED_BONUS / 100 + " )");
+        if(invitation.getBonus() < MIN_INVITATION_BONUS || invitation.getBonus() > MAX_INVITATION_BONUS) {
+            throw new ValidationException("The bonus amount is out of limits (" + MIN_INVITATION_BONUS / 100 + " - " + MAX_INVITATION_BONUS / 100 + " )");
         }
         String [] allowedEmails = userRepository.checkAvailableToInviteEmails(StringUtils.join(invitation.getEmails()));
         List<Invitation> created = new LinkedList<>();

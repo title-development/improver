@@ -20,19 +20,15 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.*;
 
-import static com.improver.application.properties.BusinessProperties.MONTHS_STATISTIC_COUNT;
-import static com.improver.entity.Transaction.getTransactionIdFromTransactionNumber;
-import static com.improver.service.InvitationService.MAX_ALLOWED_BONUS;
-import static com.improver.service.InvitationService.MIN_ALLOWED_BONUS;
+import static com.improver.application.properties.BusinessProperties.*;
+import static com.improver.application.properties.Text.BONUS_MESSAGE;
+import static com.improver.application.properties.Text.INITIAL_BONUS_MESSAGE;
 import static java.time.temporal.TemporalAdjusters.firstDayOfMonth;
 import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 
 @Service
 @Slf4j
 public class BillingService {
-
-    public static final String INITIAL_BONUS_MESSAGE = "Initial bonus from Home Improve";
-    public static final String BONUS_MESSAGE = "Bonus from Home Improve";
 
     // Required for same instance Transactional method call
     @Autowired private BillingService self;
@@ -63,8 +59,8 @@ public class BillingService {
 
     @Transactional
     public void addBonusTransactional(Company company, int amount, String comment) {
-        if(amount < MIN_ALLOWED_BONUS || amount > MAX_ALLOWED_BONUS) {
-            throw new ValidationException("The bonus amount is out of limits (" + MIN_ALLOWED_BONUS  / 100 + " - " + MAX_ALLOWED_BONUS / 100 + " )");
+        if(amount < MIN_INVITATION_BONUS || amount > MAX_INVITATION_BONUS) {
+            throw new ValidationException("The bonus amount is out of limits (" + MIN_INVITATION_BONUS / 100 + " - " + MAX_INVITATION_BONUS / 100 + " )");
         }
         Billing billing = company.getBilling();
         billing.addToBalance(amount);
@@ -144,7 +140,7 @@ public class BillingService {
 
 
     public Receipt getReceipt(Company company, String transactionId) {
-        Transaction transaction = transactionRepository.findByIdAndCompany(getTransactionIdFromTransactionNumber(transactionId), company)
+        Transaction transaction = transactionRepository.findByIdAndCompany(Transaction.getIdFromNumber(transactionId), company)
             .orElseThrow(NotFoundException::new);
          return from(transaction, company);
     }

@@ -13,7 +13,12 @@ public class BusinessProperties {
     public static final int MONTHS_STATISTIC_COUNT = 6;
     public static final int MIN_SUBSCRIPTION = 100 * 100; // in cents
     public static final int SUBSCRIPTION_CHARGE_ATTEMPTS = 3;
+    @Value("${subscription.period}") private Duration subscriptionPeriodInternal;
+    public static final int MAX_AVAILABLE_CARDS_COUNT = 5;
+
     public static final int REFERRAL_BONUS_AMOUNT = 100 * 100; // in cents
+    public static final int MIN_INVITATION_BONUS = 100 *100;
+    public static final int MAX_INVITATION_BONUS = 999 *100;
 
     public static final int DAYS_TO_ACCEPT_REFUND = 30;                 // After this period no refunds will be allowed
     public static final int RELAPSE_PROJECT_COUNT = 15;                 // Count of projects that will be scanned for relapse of issue
@@ -24,15 +29,14 @@ public class BusinessProperties {
 
     public static final int NEGATIVE_REVIEW_PREPUBLISH_DAYS = 14;       // Period while negative review will stay unpublished
     public static final int NEGATIVE_REVIEW_RATING_LIMIT = 3;           // Top limit of negative review rating
-
-    public static final int MAX_AVAILABLE_CARDS_COUNT = 5;
-
     public static final int MAX_REQUEST_REVIEWS = 5;
+
     public static final int DEFAULT_COMPANY_COVERAGE_RADIUS = 15;
 
 
-    @Value("${subscription.period}")
-    private Duration subscriptionPeriodInternal;
+
+
+
 
     public TemporalAmount getSubscriptionPeriod() {
         if (subscriptionPeriodInternal.equals(Duration.ofDays(30))) {
