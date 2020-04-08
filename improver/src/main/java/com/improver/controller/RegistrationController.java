@@ -4,8 +4,8 @@ package com.improver.controller;
 import com.improver.entity.Contractor;
 import com.improver.exception.AuthenticationRequiredException;
 import com.improver.exception.BadRequestException;
-import com.improver.model.in.registration.CompanyRegistration;
 import com.improver.model.in.OldNewValue;
+import com.improver.model.in.registration.CompanyRegistration;
 import com.improver.model.in.registration.UserRegistration;
 import com.improver.model.out.LoginModel;
 import com.improver.model.recapcha.ReCaptchaResponse;
@@ -19,13 +19,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import static com.improver.application.properties.Path.*;
-import static com.improver.util.ErrorMessages.RE_CAPTCHA_VALIDATION_ERROR_MESSAGE;
+import static com.improver.util.ErrorMessages.CAPTCHA_VALIDATION_ERROR_MESSAGE;
 
 @Slf4j
 @RestController
@@ -61,7 +60,7 @@ public class RegistrationController {
         log.info("Registration of customer = {}", customer.getEmail());
         ReCaptchaResponse reCaptchaResponse = reCaptchaService.validate(customer.getCaptcha(), request.getRemoteAddr());
         if(!reCaptchaResponse.isSuccess()) {
-            throw new AuthenticationRequiredException(RE_CAPTCHA_VALIDATION_ERROR_MESSAGE);
+            throw new AuthenticationRequiredException(CAPTCHA_VALIDATION_ERROR_MESSAGE);
         }
         registrationService.registerCustomer(customer);
         return new ResponseEntity(HttpStatus.OK);
@@ -74,7 +73,7 @@ public class RegistrationController {
         log.info("Registration of PRO = {}", registration.getEmail());
         ReCaptchaResponse reCaptchaResponse = reCaptchaService.validate(registration.getCaptcha(), request.getRemoteAddr());
         if(!reCaptchaResponse.isSuccess()) {
-            throw new AuthenticationRequiredException(RE_CAPTCHA_VALIDATION_ERROR_MESSAGE);
+            throw new AuthenticationRequiredException(CAPTCHA_VALIDATION_ERROR_MESSAGE);
         }
         Contractor contractor = registrationService.registerContractor(registration);
         LoginModel loginModel = userSecurityService.performUserLogin(contractor, res);

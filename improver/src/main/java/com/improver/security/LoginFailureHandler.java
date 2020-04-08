@@ -1,5 +1,6 @@
 package com.improver.security;
 
+import com.improver.exception.CaptchaValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.AuthenticationException;
@@ -29,6 +30,8 @@ public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
             message = ACCOUNT_DELETED_MSG;
         } else if(exception instanceof CredentialsExpiredException) {
             message = CREDENTIALS_EXPIRED_MSG;
+        } else if(exception instanceof CaptchaValidationException) {
+            message = CAPTCHA_VALIDATION_ERROR_MESSAGE;
         } else {
             message = BAD_CREDENTIALS_MSG;
         }

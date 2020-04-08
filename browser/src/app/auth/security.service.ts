@@ -2,12 +2,11 @@ import { ApplicationRef, EventEmitter, Inject, Injectable } from '@angular/core'
 import { Credentials, LoginModel, Role } from '../model/security-model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CompanyService } from '../api/services/company.service';
-import { Observable, of, ReplaySubject, throwError } from 'rxjs';
+import { Observable, of, ReplaySubject } from 'rxjs';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { switchMap } from 'rxjs/operators';
 import * as jwt_decode from 'jwt-decode';
 import { JWT } from './Jwt.inteface';
-import { createConsoleLogger } from '@angular-devkit/core/node';
 import { OverlayRef } from '../theme/util/overlayRef';
 import { MatDialog } from "@angular/material/dialog";
 
@@ -156,11 +155,12 @@ export class SecurityService {
 
 
   public logoutFrontend() {
-    localStorage.removeItem(SecurityService.TOKEN_STORAGE_KEY);
-    localStorage.removeItem(SecurityService.USER_STORAGE_KEY);
-    this.window.removeEventListener('storage', this.localStorageHandler, false);
-    this.onLogout.emit();
-
+    if (this.isAuthenticated()) {
+      localStorage.removeItem(SecurityService.TOKEN_STORAGE_KEY);
+      localStorage.removeItem(SecurityService.USER_STORAGE_KEY);
+      this.window.removeEventListener('storage', this.localStorageHandler, false);
+      this.onLogout.emit();
+    }
   }
 
   private logoutBackend() {

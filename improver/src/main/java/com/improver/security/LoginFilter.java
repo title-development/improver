@@ -3,7 +3,7 @@ package com.improver.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.improver.application.properties.SecurityProperties;
 import com.improver.entity.User;
-import com.improver.exception.AuthenticationRequiredException;
+import com.improver.exception.CaptchaValidationException;
 import com.improver.model.out.LoginModel;
 import com.improver.model.recapcha.ReCaptchaResponse;
 import com.improver.service.ReCaptchaService;
@@ -22,8 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
-
-import static com.improver.util.ErrorMessages.RE_CAPTCHA_VALIDATION_ERROR_MESSAGE;
 
 public class LoginFilter extends AbstractAuthenticationProcessingFilter {
 
@@ -48,10 +46,9 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
         if (securityProperties.isCaptchaEnabled()){
             ReCaptchaResponse reCaptchaResponse = reCaptchaService.validate(creds.getCaptcha(), userIp);
             if(!reCaptchaResponse.isSuccess()) {
-                throw new AuthenticationRequiredException(RE_CAPTCHA_VALIDATION_ERROR_MESSAGE);
+                throw new CaptchaValidationException();
             }
         }
-
 
         return getAuthenticationManager().authenticate(
             new UsernamePasswordAuthenticationToken(
@@ -77,7 +74,6 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
         }
         getFailureHandler().onAuthenticationFailure(request, response, failed);
     }
-
 
     private static class Credentials {
         private String email;
