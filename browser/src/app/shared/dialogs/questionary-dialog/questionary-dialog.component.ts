@@ -2,7 +2,6 @@ import { Component, HostListener, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { NgForm } from "@angular/forms";
 import { QuestionaryControlService } from "../../../util/questionary-control.service";
-import { PhoneHelpService } from "../../../util/phone-help.service";
 import { SecurityService } from "../../../auth/security.service";
 import { Role } from "../../../model/security-model";
 import { ServiceTypeService } from '../../../api/services/service-type.service';
@@ -27,7 +26,6 @@ export class QuestionaryDialogComponent implements OnInit, ComponentCanDeactivat
               public projectActionService: ProjectActionService,
               public currentDialogRef: MatDialogRef<any>,
               public dialog: MatDialog,
-              public phoneHelpService: PhoneHelpService,
               public serviceTypeService: ServiceTypeService,
               public securityService: SecurityService,
               public questionaryControlService: QuestionaryControlService,
@@ -62,7 +60,6 @@ export class QuestionaryDialogComponent implements OnInit, ComponentCanDeactivat
     if (!this.projectActionService.zipIsSupported
       || confirm('Do you want to exit? Service will not be requested. Press OK - to exit, Cancel to stay')) {
       this.currentDialogRef.close();
-      this.phoneHelpService.showPartial();
     }
   }
 

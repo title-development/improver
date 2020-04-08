@@ -12,7 +12,6 @@ import { Messages } from '../util/messages';
 import { ObserveMediaDirective } from '../directives/observe-media.directive';
 import { routing } from './app.routing';
 import { ScrollService } from '../util/scroll.service';
-import { PhoneHelpService } from '../util/phone-help.service';
 import { AgmCoreModule } from '@agm/core';
 import { NotificationResource } from '../util/notification.resource';
 import { PopUpMessageService } from '../util/pop-up-message.service';
@@ -174,7 +173,6 @@ export function getAuthServiceConfigs() {
     ProjectRequestService,
     ReviewService,
     ScrollService,
-    PhoneHelpService,
     NotificationService,
     NotificationResource,
     PopUpMessageService,

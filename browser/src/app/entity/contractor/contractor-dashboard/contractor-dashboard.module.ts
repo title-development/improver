@@ -8,7 +8,6 @@ import { DashboardMapComponent } from './find-more-leads/find-more-card.componen
 import { MatListModule } from '@angular/material/list';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ChartsModule } from 'ng2-charts';
-import { ContactUsComponent } from './contact-us/contact-us.component';
 import { PayAndGoComponent } from './pay-and-go/pay-and-go.component';
 import { SubscriptionComponent } from './subscription/subscription.component';
 import { NgArrayPipesModule, NgStringPipesModule } from 'angular-pipes';
@@ -56,7 +55,6 @@ const contractorDashboardRouting: ModuleWithProviders = RouterModule.forChild([
     ProjectsListComponent,
     MoneyChartsComponent,
     DashboardMapComponent,
-    ContactUsComponent,
     PayAndGoComponent,
     SubscriptionComponent
   ],

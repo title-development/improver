@@ -1,7 +1,6 @@
 import { Component, Inject } from '@angular/core';
 
 import { ScrollService } from "../../../util/scroll.service";
-import { PhoneHelpService } from "../../../util/phone-help.service";
 
 @Component({
   selector: 'home-footer',
@@ -14,9 +13,8 @@ export class HomeFooterComponent {
 
   constructor(
     @Inject('Window') public window: Window,
-    public scrollService: ScrollService,
-    public phoneHelpService: PhoneHelpService,
-  ) {}
+    public scrollService: ScrollService) {
+  }
 
   goToUrl(url) {
     window.location.href = url;

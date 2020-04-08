@@ -41,7 +41,6 @@
                 <a class="header">Customers</a>
                 <a class="link" (click)="window.scrollTo(0,0);">Find Professionals</a>
                 <a class="link" (click)="scrollService.navigateAndScrollToTag('/', 'hiw-wizard');">How it works</a>
-                <a class="link" (click)="phoneHelpService.showFull()">Phone help</a>
                 <a class="link" routerLink="/signup" *ngIf="!securityService.isAuthenticated()">Sign up</a>
               </div>
             </div>
@@ -57,62 +56,6 @@
         </div>
       </div>
 
-      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-5 col-xlg-6">
-        <div class="contact-us-block">
-          <div class="header">Have questions? Please let us know!</div>
-          <div class="description">Leave your name and phone number and one of our managers will call you within 24h
-          </div>
-          <form class="phone-help-form"
-                name="phone-help-form"
-                #phoneHelpForm="ngForm"
-                (ngSubmit)="phoneHelpForm.valid && submitPhoneHelpRequest(phoneHelpForm)"
-                novalidate>
-            <div class="inputs-wrapper">
-
-              <cv-input-field>
-                <input cv-input placeholder="Your name"
-                       #name="ngModel"
-                       name="name"
-                       type="text"
-                       [(ngModel)]="callRequest.name"
-                       required>
-
-                <cv-field-error *ngIf="name.touched || phoneHelpForm.submitted">
-                  <span *ngIf="name.errors?.required">
-                    {{messages.errors.name.required}}
-                  </span>
-                </cv-field-error>
-              </cv-input-field>
-
-              <cv-input-field>
-                <input cv-input placeholder="Phone number"
-                       #phone="ngModel"
-                       name="phone"
-                       type="text"
-                       [(ngModel)]="callRequest.phone"
-                       phoneMask
-                       required
-                       maxlength="14"
-                       [pattern]="constants.patterns.phone">
-
-                <cv-field-error *ngIf="phone.touched || phoneHelpForm.submitted">
-                  <span *ngIf="phone.errors?.required">
-                    {{messages.errors.phone.required}}
-                  </span>
-                  <span *ngIf="phone.errors?.pattern">
-                    {{messages.errors.phone.pattern}}
-                  </span>
-                </cv-field-error>
-              </cv-input-field>
-              <button type="submit">
-                <div class="submit-contact-us-button">
-                  <div class="submit-contact-us-button-text">Submit</div>
-                </div>
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
     </div>
   </div>
 </div>

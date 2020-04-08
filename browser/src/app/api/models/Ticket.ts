@@ -29,16 +29,16 @@ export namespace Ticket {
     let subjects: Ticket.Subject[] = [];
     switch (role) {
       case Role.CUSTOMER: {
-        subjects = [Ticket.Subject.FEEDBACK, Ticket.Subject.REMOVE_ACCOUNT, Ticket.Subject.PHONE_HELP_REQUEST, Ticket.Subject.OTHER];
+        subjects = [Ticket.Subject.FEEDBACK, Ticket.Subject.REMOVE_ACCOUNT, Ticket.Subject.OTHER];
         break;
       }
       case Role.CONTRACTOR: {
         subjects = [Ticket.Subject.REQUESTING_CREDIT, Ticket.Subject.PROVIDED_SERVICES, Ticket.Subject.COVERAGE_AREA,
-          Ticket.Subject.COMPANY_PROFILE, Ticket.Subject.BILLING, Ticket.Subject.PHONE_HELP_REQUEST, Ticket.Subject.OTHER];
+          Ticket.Subject.COMPANY_PROFILE, Ticket.Subject.BILLING, Ticket.Subject.OTHER];
         break;
       }
       default: {
-        subjects = [Ticket.Subject.FEEDBACK, Ticket.Subject.LOGIN_ISSUE, Ticket.Subject.REMOVE_ACCOUNT, Ticket.Subject.PHONE_HELP_REQUEST, Ticket.Subject.OTHER];
+        subjects = [Ticket.Subject.FEEDBACK, Ticket.Subject.LOGIN_ISSUE, Ticket.Subject.REMOVE_ACCOUNT, Ticket.Subject.OTHER];
         break;
       }
     }
@@ -49,7 +49,6 @@ export namespace Ticket {
     ACCOUNT_ISSUE = "Account issue",
     LOGIN_ISSUE = "Can't login",
     REMOVE_ACCOUNT = "Remove account",
-    PHONE_HELP_REQUEST = "Phone help request",
     REQUESTING_CREDIT = "Request a credit",
     PROVIDED_SERVICES = "Adjusting services",
     COVERAGE_AREA = "Service area",

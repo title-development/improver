@@ -4,6 +4,7 @@ import com.improver.util.enums.Priority;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+
 import javax.persistence.*;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -57,7 +58,6 @@ public class Ticket {
         // FOR ALL
         REMOVE_ACCOUNT ("Remove account"),
         FEEDBACK ("Feedback"),
-        PHONE_HELP_REQUEST ("Phone help request"),
         OTHER ("Other");
 
         private final String value;

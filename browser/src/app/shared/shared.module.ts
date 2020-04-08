@@ -5,8 +5,6 @@ import { RouterModule } from '@angular/router';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ImagesUploaderComponent } from './image-uploader/image-uploader.component';
 import { RatingComponent } from './rating-component/rating.component';
-import { PhoneHelpComponent } from './phone-help/phone-help.component';
-
 import { ResponseMessageComponent } from './response-message/response-message.component';
 import { MessengerModule } from './messanger/messenger.module';
 import { PipesModule } from '../pipes/pipes.module';
@@ -82,7 +80,6 @@ import { MatButtonModule } from "@angular/material/button";
     AccountNavComponent,
     RatingComponent,
     ResponseMessageComponent,
-    PhoneHelpComponent,
     ImagesUploaderComponent,
     CompanyReviewsComponent,
     CompanyReviewItemComponent,
@@ -111,7 +108,6 @@ import { MatButtonModule } from "@angular/material/button";
     AccountNavComponent,
     RatingComponent,
     ResponseMessageComponent,
-    PhoneHelpComponent,
     PipesModule,
     MessengerModule,
     NgStringPipesModule,
