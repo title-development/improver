@@ -14,7 +14,7 @@ import { markAsTouched } from '../../util/functions';
 import { ServiceType } from '../../model/data-model';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ProjectActionService } from '../../util/project-action.service';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Constants } from '../../util/constants';
 import { ServiceTypeService } from '../../api/services/service-type.service';
 import { Router } from '@angular/router';
@@ -29,7 +29,6 @@ import { MediaQuery, MediaQueryService } from "../../util/media-query.service";
 import { takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
 import { mobileMainDialogBarConfig } from "../dialogs/dialogs.configs";
-import { MatDialogRef } from "@angular/material/dialog";
 
 @Component({
   selector: 'main-search-bar',
@@ -94,8 +93,10 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
     this.zipCodeCtrl.setValue(localStorage.getItem('zipCode'));
 
     this.securityService.onUserInit.subscribe(() => {
-        this.getLastCustomerZipCode();
-      }
+          if (this.securityService.hasRole(Role.CUSTOMER)) {
+            this.getLastCustomerZipCode();
+          }
+        }
     );
   }
 
@@ -153,15 +154,13 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
   }
 
   getLastCustomerZipCode() {
-    if (this.securityService.hasRole(Role.CUSTOMER) || this.securityService.hasRole(Role.ANONYMOUS)) {
-      this.customerSuggestionService.lastCustomerZipCode$
+    this.customerSuggestionService.lastCustomerZipCode$
         .subscribe(
           lastZipCode => {
             this.lastZipCode = lastZipCode;
             this.zipCodeCtrl.setValue(lastZipCode)
           }
         );
-    }
   }
 
   selectTrackBy(index, item): number {

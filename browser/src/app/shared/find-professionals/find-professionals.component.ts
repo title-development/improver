@@ -8,7 +8,7 @@ import { Constants } from '../../util/constants';
 import { QuestionaryControlService } from '../../util/questionary-control.service';
 import { ProjectActionService } from '../../util/project-action.service';
 import { MediaQueryService } from '../../util/media-query.service';
-import { getErrorMessage, markAsTouched } from '../../util/functions';
+import { markAsTouched } from '../../util/functions';
 import { Router } from '@angular/router';
 import { FindProfessionalService } from '../../util/find-professional.service';
 import { PopUpMessageService } from "../../util/pop-up-message.service";
@@ -74,8 +74,10 @@ export class FindProfessionalsComponent implements OnInit {
     securityService.onUserInit
       .pipe(takeUntil(securityService.onLogout))
       .subscribe(() => {
-        this.getRecentSearches();
-        this.getLastCustomerZipCode();
+        if (this.securityService.hasRole(Role.CUSTOMER)) {
+          this.getRecentSearches();
+          this.getLastCustomerZipCode();
+        }
       }
     );
 
@@ -98,13 +100,11 @@ export class FindProfessionalsComponent implements OnInit {
     this.filteredServiceTypes = this.userSearchService.autocompleteSearchResult(search);
   }
 
-  getRecentSearches(){
-    if (this.securityService.hasRole(Role.CUSTOMER)) {
-      this.customerSuggestionService.getCustomerRecentSearches$()
+  getRecentSearches() {
+    this.customerSuggestionService.getCustomerRecentSearches$()
         .subscribe(
           recentSearches => this.recentSearches = recentSearches
         )
-    }
   }
 
   getPopularServiceTypes() {
@@ -122,15 +122,13 @@ export class FindProfessionalsComponent implements OnInit {
   }
 
   getLastCustomerZipCode() {
-    if (this.securityService.hasRole(Role.CUSTOMER) || this.securityService.hasRole(Role.ANONYMOUS)) {
-      this.customerSuggestionService.lastCustomerZipCode$
+    this.customerSuggestionService.lastCustomerZipCode$
         .subscribe(
-          lastZipCode => {
-            this.lastZipCode = lastZipCode;
-            this.zipCodeCtrl.setValue(lastZipCode)
-          }
+            lastZipCode => {
+              this.lastZipCode = lastZipCode;
+              this.zipCodeCtrl.setValue(lastZipCode)
+            }
         );
-    }
   }
 
   searchServiceTypeByRecentSearch(recentSearch: any){

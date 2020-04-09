@@ -63,10 +63,12 @@ export class MobileMainSearchBarComponent implements OnInit, AfterViewInit {
 
     this.zipCodeCtrl.setValue(localStorage.getItem('zipCode'));
 
-    this.securityService.onUserInit.subscribe(() => {
-        this.getLastCustomerZipCode();
-      }
-    );
+		this.securityService.onUserInit.subscribe(() => {
+				if (this.securityService.hasRole(Role.CUSTOMER)) {
+					this.getLastCustomerZipCode();
+				}
+			}
+		);
   }
 
   ngAfterViewInit(): void {
@@ -119,17 +121,14 @@ export class MobileMainSearchBarComponent implements OnInit, AfterViewInit {
       );
   }
 
-  getLastCustomerZipCode() {
-    if (this.securityService.hasRole(Role.CUSTOMER) || this.securityService.hasRole(Role.ANONYMOUS)) {
-      this.customerSuggestionService.lastCustomerZipCode$
-        .subscribe(
-          lastZipCode => {
-            this.lastZipCode = lastZipCode;
-            this.zipCodeCtrl.setValue(lastZipCode)
-          }
-        );
-    }
-  }
+	getLastCustomerZipCode() {
+		this.customerSuggestionService.lastCustomerZipCode$
+				.subscribe(
+					lastZipCode => {
+						this.lastZipCode = lastZipCode;
+						this.zipCodeCtrl.setValue(lastZipCode)
+					});
+	}
 
   canDeactivate(): boolean {
     return false;

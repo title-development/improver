@@ -59,7 +59,9 @@ export class PreQuestionaryBlock implements OnInit {
     this.lastZipCode = localStorage.getItem('zipCode');
 
     this.securityService.onUserInit.subscribe(() => {
-        this.getLastCustomerZipCode();
+        if (this.securityService.hasRole(Role.CUSTOMER)) {
+          this.getLastCustomerZipCode();
+        }
       }
     );
 
@@ -78,12 +80,10 @@ export class PreQuestionaryBlock implements OnInit {
   }
 
   getLastCustomerZipCode() {
-    if (this.securityService.hasRole(Role.CUSTOMER) || this.securityService.hasRole(Role.ANONYMOUS)) {
-      this.customerSuggestionService.lastCustomerZipCode$
+    this.customerSuggestionService.lastCustomerZipCode$
         .subscribe(
           zipCode => this.lastZipCode = zipCode
         )
-    }
   }
 
   close(): void {
