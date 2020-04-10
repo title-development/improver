@@ -43,10 +43,10 @@
 h4 {
   padding: 16px 24px;
   font-weight: 600;
-  color: $black-primary;
+  color: $black-800;
   font-size: 16px;
   margin: 0;
-  border-bottom: 1px solid $black-250;
+  border-bottom: 1px solid $grey-250;
   @include response-to(xs) {
     padding: 12px 0px 0px;
     border: none;
@@ -167,7 +167,7 @@ h4 {
 ::ng-deep mat-select {
   &.mat-select-disabled {
     .mat-select-value {
-      color: $black-400 !important;
+      color: $grey-400 !important;
     }
   }
 }

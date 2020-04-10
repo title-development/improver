@@ -11,7 +11,7 @@
 .account-nav-title {
   font-size: 24px;
   font-weight: 600;
-  color: $black-primary;
+  color: $black-800;
 }
 
 .card {
@@ -24,7 +24,7 @@
     text-align: left;
     font-weight: 500;
     padding: 0;
-    color: $black-primary;
+    color: $black-800;
     margin-top: 0px;
     margin-bottom: 18px;
     @include response-to(xs) {
@@ -52,14 +52,14 @@
     .notification-label {
 
       .label {
-        color: $black-primary;
+        color: $black-800;
         margin: 2px 0px;
         font-weight: 600;
 
       }
 
       .hint {
-        color: $black-500;
+        color: $grey-500;
       }
 
     }
@@ -68,7 +68,7 @@
 
   .notification-settings-title {
     font-size: 18px;
-    color: $black-primary;
+    color: $black-800;
     margin-bottom: 27px;
     font-weight: 600;
   }

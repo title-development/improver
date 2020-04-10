@@ -2,11 +2,11 @@
 @import "../../../../improver-mixins";
 
 .cv-input {
-  color: $black-primary;
+  color: $black-800;
   font-size: 15px;
   line-height: 17px;
   font-weight: 500;
-  border: 1px solid $black-300;
+  border: 1px solid $grey-300;
   border-radius: 2px;
   padding: 10px 16px 10px;
   margin: 0;
@@ -35,13 +35,13 @@
     padding-right: 30px;
   }
   &.-disabled {
-    background-color:$black-200;
-    border-color: $black-300;
+    background-color: $grey-200;
+    border-color: $grey-300;
     cursor: not-allowed;
   }
   &.ng-invalid:not(.ng-untouched), &.ng-invalid.-submitted, &.ng-invalid.ng-dirty  {
     border-color: $red;
-    color: $black-primary;
+    color: $black-800;
   }
   &::-webkit-outer-spin-button,
   &::-webkit-inner-spin-button {

@@ -4,7 +4,7 @@
   display: block;
   width: 232px;
   border-radius: 2px;
-  background-color: $black-100;
+  background-color: $grey-100;
   box-shadow: elevation(4);
 }
 
@@ -52,7 +52,7 @@
       color: $white;
     }
     &.-disabled {
-      background-color: $black-200;
+      background-color: $grey-200;
       pointer-events: none;
     }
     &:empty {
@@ -96,7 +96,7 @@
   cursor: pointer;
   &:hover {
     i {
-      color: $black-primary;
+      color: $black-800;
     }
   }
   &.-disabled {

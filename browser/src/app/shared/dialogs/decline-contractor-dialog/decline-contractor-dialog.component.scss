@@ -53,17 +53,17 @@
 
     .header-content {
       padding: 16px 36px 16px 16px;
-      background-color: $black-150;
+      background-color: $grey-150;
       font-size: 20px;
       font-weight: 500;
-      color: $black-secondary;
+      color: $grey-600;
 
       @include response-to(sm){
         font-size: 16px;
       }
 
       .company-name {
-        color: $black-primary;
+        color: $black-800;
       }
 
     }

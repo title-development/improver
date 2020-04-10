@@ -3,7 +3,7 @@
 .add-review-form-block {
   .add-review-wrapper {
     position: absolute;
-    background: $black-100;
+    background: $grey-100;
     top: 0;
     left: 0;
     right: 0;
@@ -40,7 +40,7 @@
         font-size: 20px;
         font-weight: 600;
         text-align: center;
-        color: $black-secondary;
+        color: $grey-600;
 
         @include response-to(xs) {
           font-size: 16px;
@@ -51,7 +51,7 @@
         font-size: 24px;
         font-weight: 600;
         text-align: center;
-        color: $black-primary;
+        color: $black-800;
         margin: 0 0 32px;
 
         @include response-to(xs) {
@@ -68,7 +68,7 @@
             font-size: 24px;
             font-weight: 600;
             text-align: left;
-            color: $black-primary;
+            color: $black-800;
             letter-spacing: -3px;
             margin-left: 21px;
           }
@@ -149,7 +149,7 @@
     position: relative;
     background: $white;
     margin-bottom: 24px;
-    border: 1px solid $black-300;
+    border: 1px solid $grey-300;
 
     textarea {
       width: 100%;
@@ -171,7 +171,7 @@
   .company-review-testimonial-text {
     border: 0;
     font-size: 14px;
-    color: $black-primary;
+    color: $black-800;
     resize: none;
     margin: 12px 0;
     align-items: center;

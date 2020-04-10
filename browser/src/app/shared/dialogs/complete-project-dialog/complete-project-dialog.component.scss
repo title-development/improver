@@ -5,10 +5,10 @@
 
     .header-content {
       padding: 16px 36px 16px 16px;
-      background-color: $black-150;
+      background-color: $grey-150;
       font-size: 20px;
       font-weight: 500;
-      color: $black-secondary;
+      color: $grey-600;
     }
   }
 
@@ -32,7 +32,7 @@
         border: 1px solid transparent;
 
         &:hover {
-          background-color: $black-150;
+          background-color: $grey-150;
           box-shadow: 0 4px 7px 0 rgba(0, 0, 0, 0.24);
         }
 

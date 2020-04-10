@@ -15,11 +15,11 @@
     border: solid 1px $primary-600;
   }
   &.-dark {
-    color: $black-400;
-    border-color: $black-400;
+    color: $grey-400;
+    border-color: $grey-400;
     &:active {
-      color: $black-500;
-      border-color: $black-500;
+      color: $grey-500;
+      border-color: $grey-500;
     }
   }
 

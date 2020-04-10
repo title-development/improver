@@ -9,7 +9,7 @@
     font-size: 24px;
     margin-bottom: 24px;
     font-weight: 600;
-    color: $black-primary;
+    color: $black-800;
 
     @include response-to(sm) {
       text-align: center;
@@ -43,17 +43,17 @@
     .subscription-description {
       padding: 24px;
       font-size: 14px;
-      color: $black-500;
+      color: $grey-500;
 
       .title {
         font-size: 16px;
-        color: $black-primary;
+        color: $black-800;
         margin-bottom: 16px;
       }
 
       .highlight {
         font-weight: 600;
-        color: $black-primary;
+        color: $black-800;
       }
 
     }
@@ -63,7 +63,7 @@
 
 
   .terms-block {
-    color: $black-secondary;
+    color: $grey-600;
     padding-left: 24px;
     margin-bottom: 24px;
     font-size: 12px;
@@ -90,16 +90,16 @@
       .label {
         font-size: 14px;
         letter-spacing: 0.6px;
-        color: $black-500;
+        color: $grey-500;
       }
 
       .value {
-        color: $black-primary;
+        color: $black-800;
         font-size: 16px;
         font-weight: 600;
       }
 
-      border-bottom: 1px solid $black-200;
+      border-bottom: 1px solid $grey-200;
 
     }
 
@@ -111,24 +111,24 @@
       .label {
         font-size: 14px;
         letter-spacing: 0.6px;
-        color: $black-500;
+        color: $grey-500;
       }
 
       .value {
-        color: $black-primary;
+        color: $black-800;
         font-size: 16px;
         font-weight: 600;
       }
     }
 
     .charge-hint {
-      color: $black-500;
+      color: $grey-500;
       padding: 16px 24px;
       font-size: 12px;
       border-bottom: 1px solid #eeeeee;
       .highlight {
         font-weight: 600;
-        color: $black-primary;
+        color: $black-800;
       }
     }
 
@@ -138,7 +138,7 @@
 
       .title {
         font-size: 14px;
-        color: $black-500;
+        color: $grey-500;
       }
 
       .card-info {
@@ -185,7 +185,7 @@
     text-align: center;
     .title {
       margin-top: 24px;
-      color: $black-primary;
+      color: $black-800;
       font-size: 20px;
       font-weight: 600;
       margin-bottom: 24px;
@@ -193,11 +193,11 @@
 
     .body {
       font-size: 14px;
-      color: $black-400;
+      color: $grey-400;
       margin-bottom: 16px;
 
       .highlight {
-        color: $black-primary;
+        color: $black-800;
         font-weight: 600;
       }
     }

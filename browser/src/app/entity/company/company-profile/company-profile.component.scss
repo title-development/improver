@@ -16,7 +16,7 @@ h1 {
 
 h4 {
   font-size: 16px;
-  color: $black-primary;
+  color: $black-800;
   font-weight: 600;
   margin-bottom: 16px;
   @include response(xs) {
@@ -26,13 +26,13 @@ h4 {
 
 h5 {
   font-size: 12px;
-  color: $black-600;
+  color: $grey-700;
 }
 
 p {
   font-size: 14px;
   font-weight: 500;
-  color: $black-600;
+  color: $grey-700;
 }
 
 .container {
@@ -237,7 +237,7 @@ p {
 
 .company-info {
   p {
-    color: $black-primary;
+    color: $black-800;
   }
   span {
     font-size: 14px;
@@ -266,7 +266,7 @@ p {
     padding-left: 0;
     padding-right: 0;
     overflow: hidden;
-    border-top: 1px solid $black-250;
+    border-top: 1px solid $grey-250;
   }
 }
 
@@ -395,7 +395,7 @@ company-reviews {
     padding: 0;
   }
   p {
-    color: $black-primary;
+    color: $black-800;
   }
 }
 
@@ -421,10 +421,10 @@ company-reviews {
     }
   }
   span {
-    color: $black-primary;
+    color: $black-800;
   }
   i {
-    color: $black-600;
+    color: $grey-700;
   }
   .group {
     margin-left: 12px;
@@ -459,7 +459,7 @@ company-reviews {
           position: absolute;
           box-sizing: content-box;
           height: 100%;
-          background-color: $black-250;
+          background-color: $grey-250;
           @include response(xs) {
             top: auto;
             bottom: 0;
@@ -479,8 +479,8 @@ company-reviews {
       padding: 20px 12px;
     }
     &:not(:last-child) {
-      border-bottom: 1px solid $black-250;
-      color: $black-250;
+      border-bottom: 1px solid $grey-250;
+      color: $grey-250;
     }
   }
   .licenses {
@@ -527,12 +527,12 @@ company-reviews {
 }
 
 .pencil {
-  color: $black-300;
+  color: $grey-300;
   cursor: pointer;
   font-size: 14px;
   transition: color .3s ease;
   &:hover {
-    color: $black-primary;
+    color: $black-800;
   }
 }
 

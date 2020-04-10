@@ -32,11 +32,11 @@
 
     .header-content {
       padding: 16px 48px 16px 24px;
-      background-color: $black-100;
+      background-color: $grey-100;
       font-size: 20px;
       font-weight: 600;
       text-align: left;
-      color: $black-secondary;
+      color: $grey-600;
     }
 
   }
@@ -68,7 +68,7 @@
       .hint {
         position: relative;
         padding: 11px 16px;
-        background-color: $black-150;
+        background-color: $grey-150;
         /* box-shadow: 0px 2px 4px 0 rgba(0, 0, 0, 0.16); */
         font-size: 14px;
         line-height: 1.43;
@@ -81,7 +81,7 @@
       }
 
       .balance-block {
-        border: solid 1px $black-200;
+        border: solid 1px $grey-200;
 
         &:last-child {
           border-bottom: solid 1px transparent;
@@ -90,14 +90,14 @@
         .block {
           font-size: 14px;
           padding: 24px;
-          border-bottom: solid 1px $black-200;
+          border-bottom: solid 1px $grey-200;
 
           .group {
             .label {
               color: #757575;
             }
             .value {
-              color: $black-primary;
+              color: $black-800;
 
               .card-wrapper {
                 display: flex;

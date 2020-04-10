@@ -39,7 +39,7 @@
       .title {
         font-size: 24px;
         font-weight: 700;
-        color: $black-primary;
+        color: $black-800;
         margin-bottom: 24px;
         //text-align: center;
       }
@@ -97,7 +97,7 @@
             cursor: pointer;
             font-size: 18px;
             font-weight: 600;
-            color: $black-primary;
+            color: $black-800;
             margin-bottom: 6px;
           }
 
@@ -111,7 +111,7 @@
             }
             .service-type-name {
               //margin-bottom: 4px;
-              color: $black-secondary;
+              color: $grey-600;
               font-size: 14px;
               text-align: left;
               @include response-to(xs) {

@@ -86,7 +86,7 @@
         line-height: 10px;
         font-weight: 400;
         &:hover {
-          color: $black-primary;
+          color: $black-800;
         }
       }
       &:last-child {
@@ -111,7 +111,7 @@
       padding: 4px 12px 5px 5px;
       width: 100%;
       &.-not-in-coverage {
-        background-color: $black-500;
+        background-color: $grey-500;
       }
     }
     i {

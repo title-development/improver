@@ -34,7 +34,7 @@
             font-size: 24px;
             font-weight: 600;
             text-align: left;
-            color: $black-primary;
+            color: $black-800;
 
             @include response-to(sm) {
               font-size: 21px;
@@ -91,7 +91,7 @@
           font-size: 12px;
           line-height: 1.33;
           text-align: left;
-          color: $black-secondary;
+          color: $grey-600;
 
           @include response-to(sm) {
             margin-top: 5px;
@@ -117,7 +117,7 @@
           font-size: 14px;
           line-height: 1.29;
           text-align: right;
-          color: $black-secondary;
+          color: $grey-600;
 
           @include response(xs) {
             font-size: 12px;
@@ -160,14 +160,14 @@
           font-size: 16px;
           font-weight: 600;
           text-align: left;
-          color: $black-primary;
+          color: $black-800;
         }
 
         .hint {
           font-size: 12px;
           line-height: 1.33;
           text-align: left;
-          color: $black-secondary;
+          color: $grey-600;
         }
 
         .decline-line {
@@ -181,7 +181,7 @@
             font-size: 14px;
             line-height: 1.29;
             text-align: center;
-            color: $black-secondary;
+            color: $grey-600;
 
             display: inline-block;
             vertical-align: baseline;
@@ -197,7 +197,7 @@
               width: 1000px;
               position: absolute;
               top: 0.73em;
-              border-top: 1px solid $black-300;
+              border-top: 1px solid $grey-300;
             }
 
             &:before {
@@ -277,7 +277,7 @@
             opacity: 1;
             transition: 0.3s;
             border-radius: 64px;
-            border: solid 1px $black-250;
+            border: solid 1px $grey-250;
             background-size: cover;
             background-repeat: no-repeat;
             background-position: center;
@@ -331,7 +331,7 @@
             opacity: 1;
             transition: 0.3s;
             border-radius: 2px;
-            background-color: $black-200;
+            background-color: $grey-200;
             box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.24);
 
             .projectRequest-icon {
@@ -365,7 +365,7 @@
               font-size: 20px;
               font-weight: 600;
               text-align: left;
-              color: $black-primary;
+              color: $black-800;
 
               .approve-mark {
                 margin-left: 8px;
@@ -393,7 +393,7 @@
               font-size: 12px;
               line-height: 1.33;
               text-align: left;
-              color: $black-secondary;
+              color: $grey-600;
               &.hired {
                 color: $green-500;
               }
@@ -476,7 +476,7 @@
         font-size: 20px;
         font-weight: 600;
         text-align: left;
-        color: $black-primary;
+        color: $black-800;
       }
 
     }
@@ -488,14 +488,14 @@
           font-size: 12px;
           line-height: 1.33;
           text-align: left;
-          color: $black-secondary;
+          color: $grey-600;
         }
         .answer, .answers {
           display: flex;
           font-size: 14px;
           line-height: 1.14;
           text-align: left;
-          color: $black-primary;
+          color: $black-800;
         }
       }
     }
@@ -574,7 +574,7 @@
   height: 40px;
   justify-content: space-between;
   margin-bottom: 20px;
-  color: $black-500 !important;
+  color: $grey-500 !important;
 
   @include response-to(sm) {
     margin-bottom: 12px;
@@ -582,7 +582,7 @@
 
   .back-link {
     cursor: pointer;
-    color: $black-500 !important;
+    color: $grey-500 !important;
     justify-content: flex-start;
     align-items: center;
 

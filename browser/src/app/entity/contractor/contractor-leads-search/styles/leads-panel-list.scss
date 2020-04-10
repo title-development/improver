@@ -13,7 +13,7 @@
   }
   .search-field-holder {
     display: flex;
-    background-color: $black-200;
+    background-color: $grey-200;
     width: 100%;
     padding: 12px 12px 8px;
     .field {
@@ -43,7 +43,7 @@
       border: none;
       width: 100%;
       &::placeholder {
-        color: $black-500;
+        color: $grey-500;
       }
     }
   }
@@ -74,13 +74,13 @@
       transition: transform .3s ease;
     }
     &.-selected {
-      background-color: $black-150;
+      background-color: $grey-150;
       &:after {
         transform: translateX(0);
       }
     }
     &:hover {
-      background-color: $black-150;
+      background-color: $grey-150;
     }
     &:first-child {
       border-top: 1px solid #DDDDDD;
@@ -93,7 +93,7 @@
       align-items: flex-start;
       .service-type {
         font-size: 14px;
-        color: $black-primary;
+        color: $black-800;
         flex-grow: 1;
         padding-right: 10px;
       }

@@ -51,7 +51,7 @@
     margin: 0;
     font-weight: 500;
     font-size: 20px;
-    color: $black-primary;
+    color: $black-800;
     max-width: 185px;
   }
 
@@ -106,7 +106,7 @@
 hr {
   width: 200px;
   border: none;
-  background-color: $black-250;
+  background-color: $grey-250;
   margin: 16px auto;
   height: 1px;
   @include response-from(md) {
@@ -126,7 +126,7 @@ hr {
     margin: 0;
     font-weight: 500;
     font-size: 20px;
-    color: $black-primary;
+    color: $black-800;
     margin-bottom: 16px;
   }
   a {
@@ -151,7 +151,7 @@ hr {
     font-weight: 400;
   }
   h4 {
-    color: $black-500;
+    color: $grey-500;
     font-size: 12px;
     margin-bottom: 2px;
   }
@@ -166,7 +166,7 @@ hr {
       &:not(:last-child) {
         margin-right: 3px;
         padding-right: 3px;
-        border-right: 1px solid $black-400;
+        border-right: 1px solid $grey-400;
       }
     }
   }
@@ -288,15 +288,15 @@ hr {
     height: 55px;
     margin-bottom: 0;
     background-color: #fff;
-    border-bottom: 1px solid $black-250;
+    border-bottom: 1px solid $grey-250;
   }
   a {
     cursor: pointer;
     padding: 8px 8px 8px 0px;
     font-size: 12px;
-    color: $black-secondary;
+    color: $grey-600;
     i {
-      color: $black-500;
+      color: $grey-500;
     }
     @include response-to(sm) {
       display: flex;
@@ -305,12 +305,12 @@ hr {
       width: 55px;
       height: 55px;
       font-size: 15px;
-      border-right: 1px solid $black-250;
+      border-right: 1px solid $grey-250;
     }
   }
   h3 {
     font-size: 18px;
-    color: $black-primary;
+    color: $black-800;
     font-weight: 600;
     margin: 0;
     text-align: center;
@@ -321,7 +321,7 @@ hr {
   }
   .more-button-wrapper {
     @include response-to(sm) {
-      border-left: 1px solid $black-250;
+      border-left: 1px solid $grey-250;
     }
   }
   .material-icons {
@@ -329,7 +329,7 @@ hr {
     height: 30px !important;
     line-height: 30px;
     font-size: 20px;
-    color: $black-500;
+    color: $grey-500;
     display: flex;
     align-items: center;
     justify-content: center;

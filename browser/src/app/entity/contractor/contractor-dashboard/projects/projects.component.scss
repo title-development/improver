@@ -60,12 +60,12 @@
     }
 
     input {
-      background-color: $black-150;
+      background-color: $grey-150;
       font-size: 14px;
       padding: 10px 16px 10px 40px;
       border-radius: 2px;
       &::placeholder {
-        color: $black-400 !important;
+        color: $grey-400 !important;
         display: block;
         font-size: 14px;
       }
@@ -79,7 +79,7 @@
       padding: 0;
       top: 7px;
       left: 8px;
-      color: $black-500;
+      color: $grey-500;
       &.clear {
         cursor: pointer;
       }
@@ -95,7 +95,7 @@
       align-items: center;
       text-align: center;
       padding: 24px 0 16px;
-      color: $black-500;
+      color: $grey-500;
       //height: 52px;
       font-size: 16px;
 
@@ -130,14 +130,14 @@
   }
   .tab-list-labels {
     height: 36px;
-    background-color: $black-150;
+    background-color: $grey-150;
     padding: 0 22px;
     display: flex;
 
     td {
       font-size: 14px;
       text-align: left;
-      color: $black-secondary;
+      color: $grey-600;
     }
   }
   ::ng-deep .mat-tab-label {
@@ -152,13 +152,13 @@
 
     .tab-content-titles {
       width: 100%;
-      background-color: $black-150;
+      background-color: $grey-150;
       padding: 7px 0 4px 15px;
 
       th {
         font-size: 14px;
         text-align: left;
-        color: $black-secondary;
+        color: $grey-600;
         font-weight: 400;
 
         &:last-child {
@@ -183,7 +183,7 @@
 .secondary-button {
   width: 100%;
   &:hover {
-    background-color: $black-150 !important;
+    background-color: $grey-150 !important;
   }
 }
 

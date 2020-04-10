@@ -66,7 +66,7 @@
       display: flex;
       align-items: baseline;
       font-size: 20px;
-      color: $black-primary;
+      color: $black-800;
       .counter {
         margin-left: 8px;
         font-size: 14px;
@@ -95,14 +95,14 @@
     .no-notifications {
       padding: 8px 16px;
       font-size: 14px;
-      border-top: solid 1px $black-200;
-      border-bottom: solid 1px $black-200;
+      border-top: solid 1px $grey-200;
+      border-bottom: solid 1px $grey-200;
     }
 
     .item {
       font-size: 12px;
       padding: 8px;
-      border-top: 1px solid $black-200;
+      border-top: 1px solid $grey-200;
       background-color: transparent;
       display: flex;
       border-left: 4px solid transparent;
@@ -129,7 +129,7 @@
       }
 
       &:last-child {
-        border-bottom: 1px solid $black-200;
+        border-bottom: 1px solid $grey-200;
       }
 
       &.new {
@@ -139,12 +139,12 @@
       }
 
       .top-line {
-        color: $black-primary;
+        color: $black-800;
         margin-bottom: 8px;
       }
 
       .bottom-line {
-        color: $black-500;
+        color: $grey-500;
       }
 
     }

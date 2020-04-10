@@ -6,7 +6,7 @@
 
 h3 {
   font-size: 20px;
-  color: $black-primary;
+  color: $black-800;
   margin: 0 0 30px;
   @include response-to(sm) {
     text-align: center;
@@ -23,7 +23,7 @@ h3 {
   .title {
     font-size: 20px;
     font-weight: 600;
-    color: $black-primary;
+    color: $black-800;
     margin-bottom: 24px;
 
     @include response-to(xs) {
@@ -49,7 +49,7 @@ company-review-item {
     margin-bottom: 30px;
   }
   &:not(:last-of-type) {
-    border-bottom: 1px solid $black-250;
+    border-bottom: 1px solid $grey-250;
   }
   &:last-of-type {
     @include response-to(md) {
@@ -95,7 +95,7 @@ company-review-item {
 }
 
 .no-data {
-  color: $black-500;
+  color: $grey-500;
   padding-bottom: 20px;
   @include response(xs) {
     padding: 0 12px 20px;

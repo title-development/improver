@@ -60,7 +60,7 @@
     font-size: 19px;
     font-weight: 400;
     z-index: 1;
-    color: $black-secondary;
+    color: $grey-600;
 
     @include response(xs, md) {
       top: 32px;
@@ -169,7 +169,7 @@
 
             .value {
               font-size: 14px;
-              color: $black-primary;
+              color: $black-800;
             }
 
           }
@@ -284,7 +284,7 @@
   }
 
   .tab-controls {
-    border-bottom: 1px solid $black-300;
+    border-bottom: 1px solid $grey-300;
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -372,13 +372,13 @@
 }
 
 .tab-controls {
-  border-bottom: 1px solid $black-300;
+  border-bottom: 1px solid $grey-300;
 
   .tab-name {
     cursor: pointer;
     padding: 16px 7px 13px;
     font-size: 14px;
-    color: $black-primary;
+    color: $black-800;
     border-bottom: solid 3px transparent;
     z-index: 1;
 
@@ -401,7 +401,7 @@
   top: 27px;
   font-size: 19px;
   font-weight: 400;
-  color: $black-secondary;
+  color: $grey-600;
   z-index: 1;
 }
 
@@ -411,13 +411,13 @@
   font-size: 12px;
   line-height: 1.33;
   text-align: left;
-  color: $black-secondary;
+  color: $grey-600;
 }
 
 .sidebar {
   position: relative;
   width: 312px;
-  border-left: 1px solid $black-300;
+  border-left: 1px solid $grey-300;
   display: flex;
   flex-direction: column;
 
@@ -435,7 +435,7 @@
       border-radius: 96px;
       background-position: 50%;
       background-size: cover;
-      border: 1px solid $black-300;
+      border: 1px solid $grey-300;
 
       &.-archived {
         pointer-events: none;
@@ -489,7 +489,7 @@
             font-size: 12px;
             line-height: 1.33;
             text-align: left;
-            color: $black-secondary;
+            color: $grey-600;
             margin-bottom: 3px;
           }
 
@@ -497,7 +497,7 @@
             font-size: 14px;
             line-height: 1.29;
             text-align: left;
-            color: $black-primary;
+            color: $black-800;
 
             &[href^="tel:"] {
               color: $primary-500;
@@ -587,7 +587,7 @@
   pointer-events: none;
   left: 0;
   right: 0;
-  background-color: $black-150;
+  background-color: $grey-150;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
   font-size: 14px;
   font-weight: 500;
@@ -622,7 +622,7 @@
     margin: auto;
     border-style: solid;
     border-width: 0 10px 10px 10px;
-    border-color: transparent transparent $black-150 transparent;
+    border-color: transparent transparent $grey-150 transparent;
 
     @include response-to(md) {
       left: 21%;
@@ -705,7 +705,7 @@
   z-index: 124;
   margin-top: 23px;
   padding: 14px 15px 14px 17px;
-  background-color: $black-150;
+  background-color: $grey-150;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
 }
 

@@ -20,7 +20,7 @@
       .header-block {
         display: flex;
         justify-content: space-between;
-        border-bottom: 1px solid $black-300;
+        border-bottom: 1px solid $grey-300;
         padding-bottom: 12px;
 
         @include response-to(xs) {
@@ -36,11 +36,11 @@
             .label {
               font-weight: 600;
               font-size: 16px;
-              color: $black-primary;
+              color: $black-800;
               margin-right: 8px;
             }
             .value {
-              color: $black-500;
+              color: $grey-500;
               font-size: 14px;
             }
           }
@@ -52,7 +52,7 @@
           @include response-to(xs) {
             padding-bottom: 12px;
             margin-bottom: 12px;
-            border-bottom: 1px solid $black-300;
+            border-bottom: 1px solid $grey-300;
           }
 
           .property {
@@ -60,7 +60,7 @@
             align-items: baseline;
             align-self: flex-end;
             .label {
-              color: $black-primary;
+              color: $black-800;
               margin-right: 4px;
               font-size: 16px;
               font-weight: 600;
@@ -78,7 +78,7 @@
 
       .mid-block {
         display: flex;
-        border-bottom: 1px solid $black-300;
+        border-bottom: 1px solid $grey-300;
         padding: 12px 0px;
 
         .additional-info {
@@ -90,11 +90,11 @@
           .label {
             font-weight: 600;
             font-size: 16px;
-            color: $black-primary;
+            color: $black-800;
             margin-bottom: 8px;
           }
           .value {
-            color: $black-500;
+            color: $grey-500;
             font-size: 14px;
             margin-bottom: 8px;
           }
@@ -116,20 +116,20 @@
           .title {
             font-weight: 600;
             font-size: 16px;
-            color: $black-primary;
+            color: $black-800;
             margin-bottom: 8px;
           }
 
           .property {
             display: flex;
             .label {
-              color: $black-500;
+              color: $grey-500;
               font-size: 14px;
               margin-bottom: 8px;
               margin-right: 8px;
             }
             .value {
-              color: $black-500;
+              color: $grey-500;
               font-size: 14px;
               margin-bottom: 8px;
             }
@@ -141,11 +141,11 @@
           .label {
             font-weight: 600;
             font-size: 16px;
-            color: $black-primary;
+            color: $black-800;
             margin-bottom: 8px;
           }
           .value {
-            color: $black-500;
+            color: $grey-500;
             font-size: 14px;
             margin-bottom: 8px;
           }
@@ -181,7 +181,7 @@
   .invoice-title {
     font-size: 24px;
     font-weight: 600;
-    color: $black-primary;
+    color: $black-800;
     margin: 24px 0;
   }
 }
@@ -210,7 +210,7 @@
       }
 
       &.odd {
-        background-color: $black-100;
+        background-color: $grey-100;
       }
 
       div {

@@ -31,7 +31,7 @@
     width: 100%;
   }
   @include response(xs){
-    border-bottom: 1px solid $black-300;
+    border-bottom: 1px solid $grey-300;
   }
 
   cv-select ::ng-deep {
@@ -89,7 +89,7 @@
   width: 75%;
   z-index: 30;
   position: relative;
-  border-bottom: 1px solid $black-300;
+  border-bottom: 1px solid $grey-300;
 
   .mobile-main-search-service-input {
     border: 0;
@@ -111,7 +111,7 @@
 
   @include response(xs){
     width: 100%;
-    border-bottom: 1px solid $black-300;
+    border-bottom: 1px solid $grey-300;
   }
 
   .main-search-zip-input-wrapper {
@@ -121,12 +121,12 @@
     align-items: center;
     padding: 0 15px;
     background-color: white;
-    border-left: solid 1px $black-250;
+    border-left: solid 1px $grey-250;
 
     mat-icon {
       margin-top: -5px;
       font-size: 20px;
-      color: $black-250;
+      color: $grey-250;
       margin-right: 4px;
     }
 
@@ -188,7 +188,7 @@
 .error-holder {
   z-index: 10;
   font-size: 10px;
-  background-color: $black-100;
+  background-color: $grey-100;
   position: absolute;
   left: 0;
   right: 0;
@@ -198,7 +198,7 @@
     padding: 5px;
     color: $red;
     &:last-child {
-      border-left: 1px solid $black-250;
+      border-left: 1px solid $grey-250;
     }
   }
 }

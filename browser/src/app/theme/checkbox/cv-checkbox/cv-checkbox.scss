@@ -20,10 +20,10 @@
   &.-disabled {
     cursor: not-allowed;
     .checkbox-icon {
-      border-color: $black-200;
+      border-color: $grey-200;
     }
     .checkbox-label {
-      color: $black-200;
+      color: $grey-200;
     }
   }
   &:not(.-disabled):hover {
@@ -41,7 +41,7 @@ input[type=checkbox] {
   width: 19px;
   height: 19px;
   border-radius: 2px;
-  border: 1px solid $black-400;
+  border: 1px solid $grey-400;
   background-color: $white;
   display: inline-flex;
   vertical-align: middle;
@@ -58,7 +58,7 @@ input[type=checkbox] {
 
 .checkbox-label {
   font-weight: 500;
-  color: $black-primary;
+  color: $black-800;
   font-size: 15px;
   display: inline-block;
   vertical-align: middle;

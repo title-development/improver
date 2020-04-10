@@ -17,9 +17,9 @@
   &.-disabled {
     cursor: not-allowed;
     .radio-circle {
-      border-color: $black-400;
+      border-color: $grey-400;
       &:after {
-        background-color: $black-100;
+        background-color: $grey-100;
       }
     }
   }
@@ -38,7 +38,7 @@ input[type=radio] {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  border: 1px solid $black-400;
+  border: 1px solid $grey-400;
   background-color: $white;
   display: inline-flex;
   transition: border-color .3s ease;
@@ -57,7 +57,7 @@ input[type=radio] {
 
 .radio-label {
   font-weight: 500;
-  color: $black-primary;
+  color: $black-800;
   font-size: 15px;
   flex:1;
 }

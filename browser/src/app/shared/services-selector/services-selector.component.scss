@@ -10,14 +10,14 @@
   padding: 0;
   top: 7px;
   right: 8px;
-  color: $black-500;
+  color: $grey-500;
   pointer-events: none;
 }
 
 .error-holder {
   z-index: 10;
   font-size: 10px;
-  background-color: $black-100;
+  background-color: $grey-100;
   position: absolute;
   left: 0;
   right: 0;
@@ -27,7 +27,7 @@
     padding: 5px;
     color: $red;
     &:last-child {
-      border-left: 1px solid $black-250;
+      border-left: 1px solid $grey-250;
     }
   }
 }
@@ -89,7 +89,7 @@
       .trades-title {
         margin-bottom: 16px;
         font-size: 20px;
-        color: $black-primary;
+        color: $black-800;
         font-weight: 600;
         margin-left: 4px;
         margin-top: 24px;
@@ -97,17 +97,17 @@
 
       .empty-service-list-message {
         margin-left: 16px;
-        color: $black-500;
+        color: $grey-500;
       }
 
       cv-collapse {
 
         .primary-trade{
-          color: $black-500;
+          color: $grey-500;
           line-height: 0.8;
           letter-spacing: 0.2px;
           font-size: 12px;
-          background-color: $black-200;
+          background-color: $grey-200;
           padding: 8px;
 
           span:nth-child(2) {
@@ -198,7 +198,7 @@
           }
 
           .hint {
-            color: $black-400;
+            color: $grey-400;
             margin-bottom: 12px;
           }
 

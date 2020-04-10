@@ -70,7 +70,7 @@ $border-color: rgba(0, 0, 0, 0.12);
     p {
       margin: 0;
       font-size: 16px;
-      color: $black-primary;
+      color: $black-800;
       &.-coments {
         font-size: 14px;
         margin-top: 3px;
@@ -80,7 +80,7 @@ $border-color: rgba(0, 0, 0, 0.12);
 
   .lead-header {
     h2 {
-      color: $black-primary;
+      color: $black-800;
       font-size: 20px;
       font-weight: 600;
       margin: 0;
@@ -117,7 +117,7 @@ $border-color: rgba(0, 0, 0, 0.12);
       span {
         font-size: 14px;
         line-height: 16px;
-        color: $black-primary;
+        color: $black-800;
         &:not(.see-on-map) {
           flex-grow: 1;
         }
@@ -154,10 +154,10 @@ $border-color: rgba(0, 0, 0, 0.12);
 
   .lead-detail {
     span {
-      background-color: $black-200;
+      background-color: $grey-200;
       display: inline-block;
       font-size: 13px;
-      color: $black-primary;
+      color: $black-800;
       border-radius: 2px;
       padding: 4px 3px 2px;
       margin-top: 3px;

@@ -4,7 +4,7 @@
 .collapse {
   display: flex;
   border-radius: 2px;
-  border: solid 1px $black-300;
+  border: solid 1px $grey-300;
   margin-bottom: 16px;
   flex-direction: column;
 
@@ -13,7 +13,7 @@
     cursor: pointer;
     display: flex;
     flex-direction: row;
-    color: $black-primary;
+    color: $black-800;
     font-size: 16px;
     font-weight: 500;
     align-items: center;
@@ -83,7 +83,7 @@
       position: absolute;
       display: block;
       height: 1px;
-      background-color: $black-300;
+      background-color: $grey-300;
       content: '';
       top: 0;
       left: 0;

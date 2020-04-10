@@ -4,7 +4,7 @@ $step: 0;
 
 :host {
   width: 100%;
-  background-color: $black-100;
+  background-color: $grey-100;
   height: auto;
 }
 
@@ -52,7 +52,7 @@ $step: 0;
   font-weight: 600;
   font-size: 24px;
   text-align: center;
-  color: $black-secondary;
+  color: $grey-600;
   margin-bottom: 40px;
 
   @include response-to(md) {
@@ -97,7 +97,7 @@ $step: 0;
 
     .line {
       height: 2px;
-      background-color: $black-200;
+      background-color: $grey-200;
 
       width: 70px;
 
@@ -217,7 +217,7 @@ $step: 0;
           font-weight: 700;
           line-height: 1.25;
           text-align: center;
-          color: $black-primary;
+          color: $black-800;
         }
 
         .wizard-step-text {
@@ -227,7 +227,7 @@ $step: 0;
           line-height: 1.5;
           letter-spacing: 0.3px;
           text-align: center;
-          color: $black-secondary;
+          color: $grey-600;
           min-height: 108px;
 
           @include response-to(xs) {

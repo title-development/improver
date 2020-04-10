@@ -5,7 +5,7 @@
   &.ng-invalid:not(.ng-untouched), &.ng-invalid.-submitted, &.ng-invalid.ng-dirty  {
     &::ng-deep .cv-input {
       border-color: $red;
-      color: $black-primary;
+      color: $black-800;
     }
   }
   &::ng-deep {
@@ -23,7 +23,7 @@
 button {
   &.-save {
     border-radius: 0;
-    border-right: 1px solid $black-250;
+    border-right: 1px solid $grey-250;
   }
   &.-cancel {
     border-top-left-radius: 0;

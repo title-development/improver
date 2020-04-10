@@ -11,7 +11,7 @@
 .account-nav-title {
   font-size: 24px;
   font-weight: 600;
-  color: $black-primary;
+  color: $black-800;
 }
 
 .card {
@@ -30,7 +30,7 @@
     text-align: left;
     font-weight: 500;
     padding: 0;
-    color: $black-primary;
+    color: $black-800;
     margin-top: 0px;
     margin-bottom: 18px;
     @include response-to(xs) {
@@ -214,11 +214,11 @@
     display: inline-block;
     font-size: 14px;
     margin-bottom: 24px;
-    color: $black-500;
+    color: $grey-500;
     transition: color .3s ease;
     cursor: pointer;
     &:hover {
-      color: $black-primary;
+      color: $black-800;
     }
   }
 }
@@ -240,7 +240,7 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background-color: $black-300;
+        background-color: $grey-300;
         margin-left: -24px;
         margin-right: -24px;
       }
@@ -291,7 +291,7 @@
     margin: 0;
     padding: 0;
     font-size: 14px;
-    color: $black-secondary;
+    color: $grey-600;
     @include response(xs) {
       display: none;
     }

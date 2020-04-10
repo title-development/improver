@@ -24,7 +24,7 @@
     font-size: 20px;
     font-weight: 600;
     text-align: left;
-    color: $black-primary;
+    color: $black-800;
   }
   .subtitle {
     font-size: 10px;
@@ -118,7 +118,7 @@ input[type=file] {
 
       h3 {
         transition: color .3s ease .7s;
-        color: $black-400;
+        color: $grey-400;
 
         @include response(sm) {
           font-size: 16px;
@@ -162,7 +162,7 @@ input[type=file] {
   .add-photo-button-text {
     font-size: 14px;
     margin-top: 5px;
-    color: $black-400;
+    color: $grey-400;
   }
 }
 

@@ -21,7 +21,7 @@
   .lead-title {
     font-size: 24px;
     font-weight: 600;
-    color: $black-primary;
+    color: $black-800;
     margin: 24px 0;
   }
 }
@@ -63,7 +63,7 @@
       .date {
         font-size: 12px;
         line-height: 1.33;
-        color: $black-500;
+        color: $grey-500;
       }
 
     }
@@ -83,7 +83,7 @@
 
         .value {
           font-size: 14px;
-          color: $black-primary;
+          color: $black-800;
         }
 
       }
@@ -113,9 +113,9 @@
           padding: 2px 2px;
           font-size: 12px;
           line-height: 1.33;
-          color: $black-primary;
+          color: $black-800;
           border-radius: 2px;
-          background-color: $black-200;
+          background-color: $grey-200;
           margin-right: 8px;
         }
 
@@ -157,7 +157,7 @@
       font-size: 20px;
       font-weight: 600;
       text-align: left;
-      color: $black-primary;
+      color: $black-800;
       padding: 16px;
     }
 
@@ -166,7 +166,7 @@
       flex-direction: column;
 
       .connect-card-message {
-        color: $black-secondary;
+        color: $grey-600;
         padding: 16px 16px 16px;
         font-size: 14px;
       }
@@ -192,7 +192,7 @@
 
           .label {
             font-size: 14px;
-            color: $black-secondary;
+            color: $grey-600;
           }
           .value {
             font-size: 16px;
@@ -212,7 +212,7 @@
 
           .label {
             font-size: 14px;
-            color: $black-secondary;
+            color: $grey-600;
           }
           .value {
             font-size: 14px;
@@ -231,7 +231,7 @@
 
           .label {
             font-size: 14px;
-            color: $black-secondary;
+            color: $grey-600;
           }
           .value {
             font-size: 14px;
@@ -246,8 +246,8 @@
       .payment-hint-block {
         padding: 16px;
         border-bottom: solid 1px #e8e8e8;
-        color: $black-primary;
-        background-color: $black-100;
+        color: $black-800;
+        background-color: $grey-100;
         font-size: 13px;
         .highlight {
           font-weight: 700;
@@ -259,7 +259,7 @@
 
         .title {
           font-size: 14px;
-          color: $black-500;
+          color: $grey-500;
         }
 
         .card-info-wrapper {
@@ -343,7 +343,7 @@
       .top-line {
         font-size: 14px;
         font-weight: 600;
-        color: $black-primary;
+        color: $black-800;
         margin-bottom: 4px;
 
         .price {
@@ -355,7 +355,7 @@
         font-size: 12px;
         font-weight: 600;
         line-height: 1.33;
-        color: $black-500;
+        color: $grey-500;
 
         .time-ago {
           margin-left: 24px;
@@ -387,7 +387,7 @@
     .top-line {
       font-size: 14px;
       font-weight: 600;
-      color: $black-primary;
+      color: $black-800;
       margin-bottom: 4px;
       flex-direction: row;
       box-sizing: border-box;
@@ -405,7 +405,7 @@
       font-size: 12px;
       font-weight: 600;
       line-height: 1.33;
-      color: $black-500;
+      color: $grey-500;
       flex-direction: row;
       box-sizing: border-box;
       align-items: flex-start;
@@ -425,7 +425,7 @@
     font-size: 20px;
     font-weight: 600;
     text-align: left;
-    color: $black-primary;
+    color: $black-800;
     padding-bottom: 16px;
 
     @include response-to(xs) {
@@ -576,7 +576,7 @@
     .lead-error-title {
       font-size: 24px;
       font-weight: 600;
-      color: $black-primary;
+      color: $black-800;
     }
 
     .buttons-wrapper {
@@ -604,7 +604,7 @@
     .lead-title {
       font-size: 24px;
       font-weight: 600;
-      color: $black-primary;
+      color: $black-800;
       margin: 24px 0 24px 0;
       text-align: center;
       @include response-to(sm) {
@@ -620,7 +620,7 @@
   margin: auto;
   font-size: 16px;
   text-align: center;
-  color: $black-secondary;
+  color: $grey-600;
   padding-bottom: 40px;
   padding-top: 32px;
   max-width: 484px;
@@ -635,7 +635,7 @@
   font-size: 12px;
   text-align: center;
   margin-bottom: 48px;
-  color: $black-500;
+  color: $grey-500;
   a {
     color: $primary-500;
   }

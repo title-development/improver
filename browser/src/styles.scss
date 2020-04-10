@@ -98,7 +98,7 @@ a {
   margin-top: 20px;
   margin-bottom: 20px;
   height: 1px;
-  background-color: $black-300;
+  background-color: $grey-300;
   width: 100%;
 }
 
@@ -250,18 +250,18 @@ body :-moz-placeholder { /* Firefox 18- */
 .cancel-button {
   cursor: pointer;
   background-color: transparent;
-  color: $black-400;
+  color: $grey-400;
   border: none;
   padding: 0px;
   //box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.15);
   font-size: 14px;
 
   &:hover {
-    color: $black-500;
+    color: $grey-500;
   }
 
   &:active {
-    color: $black-300;
+    color: $grey-300;
   }
 }
 

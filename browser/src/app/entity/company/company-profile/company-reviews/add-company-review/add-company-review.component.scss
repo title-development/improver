@@ -43,7 +43,7 @@
       font-size: 24px;
       font-weight: 600;
       text-align: center;
-      color: $black-primary;
+      color: $black-800;
       margin: 40px 0 32px 0;
     }
 
@@ -63,9 +63,9 @@
       font-size: 14px;
       line-height: 1.33;
       text-align: left;
-      color: $black-500;
+      color: $grey-500;
       &::placeholder {
-        color: $black-450;
+        color: $grey-450;
       }
     }
 
@@ -173,7 +173,7 @@
   text-align: center;
   padding: 0 16px;
   h3 {
-    color: $black-primary;
+    color: $black-800;
     text-align: center;
   }
   button {

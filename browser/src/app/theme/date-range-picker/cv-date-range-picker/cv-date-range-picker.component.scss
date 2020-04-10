@@ -12,7 +12,7 @@
 
 .range-date-picker {
   display: flex;
-  border: 1px solid $black-300;
+  border: 1px solid $grey-300;
 }
 
 .month {
@@ -25,9 +25,9 @@
 }
 
 .header {
-  background-color: $black-100;
+  background-color: $grey-100;
   padding: 17px 0 7px;
-  border-bottom: 1px solid $black-300;
+  border-bottom: 1px solid $grey-300;
   position: relative;
   h4 {
     margin: 0;
@@ -48,7 +48,7 @@
   width: 23px;
   height: 23px;
   border-radius: 50%;
-  border: 2px solid $black-300;
+  border: 2px solid $grey-300;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -65,7 +65,7 @@
   i {
     position: relative;
     transition: color .3s ease;
-    color: $black-300;
+    color: $grey-300;
     font-size: 0;
     &:before {
       width: auto;
@@ -124,7 +124,7 @@
     cursor: pointer;
     position: relative;
     &.-current {
-      color: $black-primary;
+      color: $black-800;
       &:before {
         top: 0;
         left: 0;
@@ -149,7 +149,7 @@
       background-color: rgba(#bbcfad, .5);
     }
     &.-disabled {
-      background-color: $black-200;
+      background-color: $grey-200;
       pointer-events: none;
     }
     &:empty {

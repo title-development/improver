@@ -70,7 +70,7 @@
   .hint {
     position: relative;
     padding: 16px;
-    background-color: $black-150;
+    background-color: $grey-150;
     box-shadow: 0px 2px 4px 0 rgba(0, 0, 0, 0.16);
     font-size: 14px;
     line-height: 1.43;
@@ -83,14 +83,14 @@
       width: 0;
       height: 0;
       border-style: solid;
-      border-color: transparent transparent $black-150 transparent;
+      border-color: transparent transparent $grey-150 transparent;
       border-width: 0 10px 10px 10px;
       top: -10px;
       left: calc(50% - 10px);
 
       @include response-from(md) {
         display: block;
-        border-color: transparent $black-150 transparent transparent;
+        border-color: transparent $grey-150 transparent transparent;
         border-width: 10px 10px 10px 0;
         left: -10px;
         top: initial;
@@ -140,14 +140,14 @@
   .account-nav-title {
     font-size: 24px;
     font-weight: 600;
-    color: $black-primary;
+    color: $black-800;
   }
 
   .company-license-item {
     line-height: 140%;
     padding: 11px 24px;
-    border-bottom: 1px solid $black-300;
-    color: $black-secondary;
+    border-bottom: 1px solid $grey-300;
+    color: $grey-600;
     font-size: 14px;
     display: flex;
     justify-content: space-between;
@@ -180,7 +180,7 @@
     }
 
     &:hover {
-      background-color: $black-100;
+      background-color: $grey-100;
 
       .company-license-name {
         color: $black;
@@ -208,10 +208,10 @@
       display: none;
       cursor: pointer;
       width: initial;
-      color: $black-400;
+      color: $grey-400;
 
       &:hover {
-        color: $black-500;
+        color: $grey-500;
       }
 
     }
@@ -233,14 +233,14 @@
     .title {
       font-size: 20px;
       font-weight: 600;
-      color: $black-primary;
+      color: $black-800;
       margin-bottom: 16px;
     }
 
     .sub-title {
       font-size: 16px;
       font-weight: 600;
-      color: $black-primary;
+      color: $black-800;
       margin-bottom: 16px;
     }
 
@@ -268,7 +268,7 @@
     display: flex;
     background-color: white;
     margin-bottom: 16px;
-    box-shadow: 0 1px 0 0 $black-300;
+    box-shadow: 0 1px 0 0 $grey-300;
     padding-left: 16px;
 
     @include response-to(sm) {
@@ -286,7 +286,7 @@
       font-size: 14px;
       font-weight: 500;
       text-align: left;
-      color: $black-secondary;
+      color: $grey-600;
 
       &:first-child {
         margin-left: 8px;
@@ -330,11 +330,11 @@
     display: inline-block;
     font-size: 14px;
     margin-bottom: 24px;
-    color: $black-500;
+    color: $grey-500;
     transition: color .3s ease;
     cursor: pointer;
     &:hover {
-      color: $black-primary;
+      color: $black-800;
     }
   }
 }

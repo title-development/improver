@@ -9,7 +9,7 @@
     padding: 0 16px;
     font-size: 14px;
     font-weight: 500;
-    color: $black-500;
+    color: $grey-500;
     height: 50px;
     display: flex;
     align-items: center;
@@ -149,7 +149,7 @@
           min-width: 80px;
           .messages-block {
             margin: 0 1px;
-            border-left: 1px solid $black-400;
+            border-left: 1px solid $grey-400;
             left: -1px;
           }
 
@@ -160,8 +160,8 @@
             align-items: center;
             padding: 0 10px 0 10px;
             background-color: white;
-            border-left: 1px solid $black-300;
-            border-right: 1px solid $black-300;
+            border-left: 1px solid $grey-300;
+            border-right: 1px solid $grey-300;
 
             @include response-to(xs) {
               padding: 0 4px 0 4px;
@@ -170,7 +170,7 @@
             mat-icon {
               margin-top: -5px;
               font-size: 20px;
-              color: $black-250;
+              color: $grey-250;
             }
 
             .main-search-zip-input {

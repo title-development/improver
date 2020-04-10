@@ -15,7 +15,7 @@
   font-size: 15px;
   line-height: 16px;
   font-weight: 500;
-  border: 1px solid $black-300;
+  border: 1px solid $grey-300;
   border-radius: 2px;
   padding: 11px 16px;
   margin: 0;
@@ -23,14 +23,14 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   &.-selected {
-    color: $black-primary;
+    color: $black-800;
   }
   &:focus {
     border-color: $primary-500;
   }
   &.-disabled {
-    background-color: $black-100;
-    border-color: $black-300;
+    background-color: $grey-100;
+    border-color: $grey-300;
     cursor: not-allowed;
   }
 }

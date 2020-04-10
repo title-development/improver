@@ -10,7 +10,7 @@ h1, h2, h3, h4, h5, p {
 
 h1 {
   font-size: 33px;
-  color: $black-primary;
+  color: $black-800;
   font-weight: 700;
   @include response(xs) {
     font-size: 28px;
@@ -21,14 +21,14 @@ h1 {
 h2 {
   font-size: 26px;
   font-weight: 600;
-  color: $black-primary;
+  color: $black-800;
   text-align: center;
   margin-bottom: 40px;
 }
 
 h3 {
   font-size: 24px;
-  color: $black-primary;
+  color: $black-800;
   font-weight: 500;
   @include response(xs) {
     text-align: center;
@@ -38,12 +38,12 @@ h3 {
 h4 {
   font-size: 18px;
   font-weight: 500;
-  color: $black-primary;
+  color: $black-800;
 }
 
 h5 {
   font-size: 16px;
-  color: $black-primary;
+  color: $black-800;
 }
 
 p {
@@ -320,7 +320,7 @@ ul {
     z-index: 6;
     cursor: pointer;
     transform: translateY(-50%);
-    color: rgba($black-primary, .3);
+    color: rgba($black-800, .3);
     transition: color .3s ease;
     @include response(xs) {
       display: none;
@@ -381,7 +381,7 @@ ul {
   }
   p {
     line-height: 24px;
-    color: $black-secondary;
+    color: $grey-600;
     @include response(sm) {
       max-width: calc(100% - 80px);
       margin: 0 auto;
@@ -447,7 +447,7 @@ ul {
 
     .line {
       height: 2px;
-      background-color: $black-200;
+      background-color: $grey-200;
 
       width: 70px;
 

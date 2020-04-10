@@ -16,19 +16,19 @@ h3, h4, p {
 h3 {
   font-size: 16px;
   font-weight: 600;
-  color: $black-primary;
+  color: $black-800;
   margin-bottom: 18px;
 }
 
 h4 {
   font-size: 12px;
   font-weight: 400;
-  color: $black-600;
+  color: $grey-700;
   margin-bottom: 5px;
 }
 
 p {
-  color: $black-600;
+  color: $grey-700;
   font-size: 14px;
 }
 
@@ -120,7 +120,7 @@ a {
     padding: 22px 0;
     left: 0;
     width: 1px;
-    background-color: $black-300;
+    background-color: $grey-300;
     @include response(xs) {
       height: 1px;
       width: 100%;
@@ -130,7 +130,7 @@ a {
     }
   }
   p {
-    color: $black-primary;
+    color: $black-800;
     margin-bottom: 8px;
   }
 }
@@ -145,14 +145,14 @@ a {
     margin-bottom: 12px;
   }
   i {
-    color: $black-400;
+    color: $grey-400;
     margin-top: 2px;
   }
   .group {
     margin-left: 13px;
   }
   p {
-    color: $black-primary;
+    color: $black-800;
   }
 }
 

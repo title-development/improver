@@ -33,7 +33,7 @@
   }
   .header {
     padding: 9px 18px;
-    color: $black-primary;
+    color: $black-800;
     border-bottom: 1px solid #eeeeee;
     display: flex;
     justify-content: space-between;
@@ -44,7 +44,7 @@
       color: #a3a3a3;
       transition: color .3s ease;
       &:hover {
-        color: $black-primary;
+        color: $black-800;
       }
     }
   }
