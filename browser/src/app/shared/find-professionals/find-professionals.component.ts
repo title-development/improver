@@ -140,7 +140,7 @@ export class FindProfessionalsComponent implements OnInit {
     if (this.lastZipCode){
       this.searchServiceType(this.mainSearchFormGroup);
     } else {
-      this.projectActionService.openQuestionary(recentSearch);
+      this.projectActionService.openQuestionaryWithLastZipCode(recentSearch);
     }
   }
 

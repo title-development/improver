@@ -25,7 +25,7 @@
               <ng-template ngFor [ngForOf]="trade.services" let-service [ngForTrackBy]="trackByFn">
                 <div class="service-type-wrapper">
                   <div class="service-type-name"
-                       (click)="projectActionService.openQuestionary(service)">{{service.name}}</div>
+                       (click)="projectActionService.openQuestionaryWithLastZipCode(service)">{{service.name}}</div>
                 </div>
               </ng-template>
             </div>

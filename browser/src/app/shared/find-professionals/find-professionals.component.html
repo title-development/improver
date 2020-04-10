@@ -89,7 +89,7 @@
               <div class="col-xs-12 col-sm-6 col-md-3"
                    *ngFor="let serviceType of popularServiceTypes | cutarraylength:popularServiceSize">
                 <div class="item"
-                     (click)="findProfessionalService.close(); projectActionService.openQuestionary(serviceType)">
+                     (click)="findProfessionalService.close(); projectActionService.openQuestionaryWithLastZipCode(serviceType)">
                   {{serviceType.name}}
                 </div>
               </div>

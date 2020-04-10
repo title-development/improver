@@ -29,7 +29,7 @@
 
               <ng-template ngFor [ngForOf]="filteredServices" let-service [ngForTrackBy]="trackByFn">
                 <div class="service-type-wrapper">
-                  <div class="service-type-name" (click)="projectActionService.openQuestionary(service)">{{service.name}}</div>
+                  <div class="service-type-name" (click)="projectActionService.openQuestionaryWithLastZipCode(service)">{{service.name}}</div>
                 </div>
               </ng-template>
 

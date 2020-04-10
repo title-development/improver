@@ -281,6 +281,19 @@ export class ProjectActionService {
         });
   }
 
+  openQuestionaryWithLastZipCode(selected) {
+    if (localStorage.getItem('zipCode')) {
+      this.openQuestionary(selected, localStorage.getItem('zipCode'));
+    } else if (this.securityService.hasRole(Role.CUSTOMER)) {
+      this.customerSuggestionService.lastCustomerZipCode$
+          .subscribe(lastCustomerZipCode => {
+            this.openQuestionary(selected, lastCustomerZipCode);
+          });
+    } else {
+      this.openQuestionary(selected);
+    }
+  }
+
   openQuestionary(selected, zip = undefined): void {
     switch (this.securityService.getRole()) {
       case Role.INCOMPLETE_PRO:
