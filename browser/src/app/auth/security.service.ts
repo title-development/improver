@@ -155,7 +155,7 @@ export class SecurityService {
 
 
   public logoutFrontend() {
-    if (this.isAuthenticated()) {
+    if (this.isUserExistInLocalStorage()) {
       localStorage.removeItem(SecurityService.TOKEN_STORAGE_KEY);
       localStorage.removeItem(SecurityService.USER_STORAGE_KEY);
       this.window.removeEventListener('storage', this.localStorageHandler, false);
