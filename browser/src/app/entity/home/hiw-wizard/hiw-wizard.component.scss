@@ -82,7 +82,7 @@
   display: flex;
   max-height: 100%;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
 
   @include response-to(md) {
     max-width: 800px;
@@ -97,37 +97,6 @@
     flex-direction: column;
   }
 
-  .arrow-wrapper {
-    margin-left: -1px;
-    height: 137px;
-    transition: all 0.1s ease-out 0s;
-
-    @include response-to(lg) {
-      display: none;
-    }
-
-    .line {
-      height: 2px;
-      background-color: $grey-200;
-
-      width: 70px;
-
-      &.-top {
-        transform: rotateZ(62deg);
-        position: relative;
-        left: -18px;
-        top: 30px;
-      }
-
-      &.-bottom {
-        transform: rotateZ(118deg);
-        position: relative;
-        top: 90px;
-        left: -18px;
-      }
-
-    }
-  }
 }
 
 .wizard-step {
@@ -143,7 +112,11 @@
   }
 
   @include response-to(sm) {
-    margin-top: 20px;
+    margin-top: 12px;
+  }
+
+  @include response-to(xs) {
+    max-width: 300px;
   }
 
   .wizard-step-content{
@@ -154,42 +127,63 @@
     flex-direction: column;
 
     @include response(xs) {
-      margin-top: 20px;
+      margin-top: 16px;
     }
   }
 }
 
-.wizard-step-image-block {
-  position: relative;
-  width: 60px;
-  height: 60px;
-  border-radius: 20px;
-  text-align: center;
+.wizard-step-header {
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
 
   @include response-to(sm) {
-    border-radius: 12px;
-    height: 40px;
-    width: 40px;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 16px;
   }
 
-  >span {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-    line-height: 60px;
-    font-weight: bold;
-    font-size: 24px;
-    color: $white;
+  .wizard-step-image-block {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    border-radius: 20px;
+    text-align: center;
 
     @include response-to(sm) {
-      font-size: 18px;
-      line-height: 40px;
+      border-radius: 12px;
+      height: 40px;
+      width: 40px;
+    }
+
+    & > span {
+      line-height: 60px;
+      font-weight: bold;
+      font-size: 24px;
+      color: $white;
+
+      @include response-to(sm) {
+        font-size: 18px;
+        line-height: 40px;
+      }
+    }
+  }
+
+  .wizard-step-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: $dark;
+    margin-top: 24px;
+
+    @include response-to(sm) {
+      font-size: 16px;
+      margin-top: 0px;
+      margin-left: 20px;
     }
   }
 }
+
+
 
 .step-1 {
   background-color: $dark-primary;
@@ -208,22 +202,10 @@
 }
 
 .wizard-step-text-block {
-  margin-top: 20px;
   width: 100%;
   height: 100%;
 
-  .wizard-step-title {
-    font-size: 24px;
-    font-weight: bold;
-    color: $dark;
-
-    @include response-to(sm) {
-      font-size: 16px;
-    }
-  }
-
   .wizard-step-text {
-    margin-top: 10px;
     font-size: 16px;
     color: rgba(39, 49, 73, 0.6);
 

@@ -64,76 +64,67 @@
     padding-bottom: 24px;
   }
 
-    .guide-image-block {
+  .guide-header-block {
+    background-color: $white;
+    border-radius: 100px;
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+
+    @include response-to(sm) {
+      flex-direction: row;
+      align-items: center;
+    }
+
+    img {
       width: 60px;
-      background-color: $white;
-      border-radius: 100px;
-      padding-bottom: 24px;
+      height: 60px;
 
       @include response-to(md) {
         width: 50px;
+        height: 50px;
       }
 
-      @include response(xs) {
+      @include response-to(sm) {
         width: 40px;
-      }
-
-      img {
-        width: 60px;
-        height: 60px;
-
-        @include response-to(md) {
-          width: 50px;
-          height: 50px;
-        }
-
-        @include response(xs) {
-          width: 40px;
-          height: 40px;
-        }
-      }
-
-      i {
-        display: flex;
-        font-size: 45px;
-        color: $primary-500;
-
-        &:before {
-          line-height: inherit;
-          margin: 0;
-          width: auto;
-        }
+        height: 40px;
       }
     }
-}
 
-.guide-text-block {
+    .guide-card-title {
+      font-size: 24px;
+      text-align: left;
+      color: $black-800;
+      font-weight: 600;
+      margin-top: 24px;
 
-  .guide-card-title {
-    font-size: 24px;
-    text-align: left;
-    color: $black-800;
-    font-weight: 600;
-    padding-bottom: 15px;
+      @include response-to(md) {
+        font-size: 20px;
+      }
 
-    @include response-to(md) {
-      font-size: 20px;
+      @include response-to(sm) {
+        font-size: 16px;
+        margin-top: 0px;
+        margin-left: 20px;
+      }
     }
 
-    @include response(xs) {
+  }
+
+  .guide-text-block {
+
+    .guide-card-text {
       font-size: 16px;
+      text-align: left;
+      color: #808080;
+      line-height: 1.47;
+      letter-spacing: 0.3px;
+
+      @include response-to(md) {
+        font-size: 14px;
+      }
     }
   }
 
-  .guide-card-text {
-    font-size: 16px;
-    text-align: left;
-    color: #808080;
-    line-height: 1.47;
-    letter-spacing: 0.3px;
-
-    @include response-to(md) {
-      font-size: 14px;
-    }
-  }
 }
+
