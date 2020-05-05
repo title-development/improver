@@ -17,18 +17,21 @@ import { SharedModule } from '../../shared/shared.module';
 import { LayoutModule } from '../../layout/layout.module';
 import { CvSelectModule } from '../../theme/select/cv-select-module';
 import { AdvertisementBlockComponent } from "./advertisement-block/advertisement-block.component";
+import { AdvertisementBlockElementComponent } from './advertisement-block/advertisement-block-element/advertisement-block-element.component';
+import { NgTakePipeModule } from "angular-pipes";
 
 @NgModule({
-  imports: [
-    RouterModule,
-    FormsModule,
-    ReactiveFormsModule,
-    SharedModule,
-    MatAutocompleteModule,
-    MatCardModule,
-    LayoutModule,
-    CvSelectModule
-  ],
+    imports: [
+        RouterModule,
+        FormsModule,
+        ReactiveFormsModule,
+        SharedModule,
+        MatAutocompleteModule,
+        MatCardModule,
+        LayoutModule,
+        CvSelectModule,
+        NgTakePipeModule
+    ],
   declarations: [
     HomeComponent,
     MainSearchComponent,
@@ -37,7 +40,8 @@ import { AdvertisementBlockComponent } from "./advertisement-block/advertisement
     CustomerBannerComponent,
     HiwWizardComponent,
     GeneralInfoComponent,
-    HomeFooterComponent
+    HomeFooterComponent,
+    AdvertisementBlockElementComponent
   ],
   providers: [
     CustomerService,

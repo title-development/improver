@@ -11,6 +11,8 @@ import { CustomerSuggestionService } from "../../api/services/customer-suggestio
   styleUrls: ['./all-services.component.scss']
 })
 export class AllServicesComponent implements OnInit {
+
+  searchResultMessageText: string = '';
   model = '';
   trades: Trade[] = [];
   filteredTrades: Trade[] = [];
@@ -41,6 +43,7 @@ export class AllServicesComponent implements OnInit {
   onFilter(searchTerm) {
     if (searchTerm == '') {
       this.filteredTrades = this.trades;
+      this.searchResultMessageText = '';
       return;
     } else {
 
@@ -67,7 +70,23 @@ export class AllServicesComponent implements OnInit {
         }
 
       }
+      
+      if (this.filteredTrades.length == 0) {
+        console.log('Null');
+        this.trades.forEach( trade => {
+          let regex = new RegExp(searchTerm, 'gi');
+          if (regex.test(trade.name)){
+            this.filteredTrades.push(trade);
+          }
+        })
+      }
 
+    }
+
+    if (this.filteredTrades.length == 0){
+      this.searchResultMessageText = 'No results were found for \"' + searchTerm + '\".';
+    } else {
+      this.searchResultMessageText = '';
     }
 
   }

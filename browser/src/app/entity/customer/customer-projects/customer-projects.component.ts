@@ -18,6 +18,7 @@ import { MediaQuery, MediaQueryService } from "../../../util/media-query.service
 import { dialogsMap } from "../../../shared/dialogs/dialogs.state";
 import { mobileMainDialogBarConfig } from "../../../shared/dialogs/dialogs.configs";
 import { TradeService } from "../../../api/services/trade.service";
+import { MobileMenuService } from "../../../util/mobile-menu-service";
 
 interface Tab {
   label: string;
@@ -73,7 +74,8 @@ export class CustomerDashboardComponent implements OnDestroy {
               private projectRequestService: ProjectRequestService,
               private projectService: ProjectService,
               private serviceTypeService: ServiceTypeService,
-              private tradeService: TradeService) {
+              private tradeService: TradeService,
+              public mobileMenuService: MobileMenuService) {
     this.getProjects(this.tabs[0]);
     this.getRecommendedTrades();
     this.subscribeForMediaScreen();
@@ -97,11 +99,13 @@ export class CustomerDashboardComponent implements OnDestroy {
 
   openMobileDialog(key): void {
     this.dialog.closeAll();
+    this.mobileMenuService.findProfessionalsOpened = true;
     this.dialogRef = this.dialog.open(dialogsMap[key], mobileMainDialogBarConfig);
     this.dialogRef
         .afterClosed()
         .subscribe(result => {
-              this.dialogRef = null;
+          this.mobileMenuService.findProfessionalsOpened = false;
+          this.dialogRef = null;
             }
         );
   }

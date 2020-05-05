@@ -1,7 +1,7 @@
 <div class="footer">
   <div class="row">
     <div class="footer-top">
-      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-7">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-10">
         <div class="links-block">
           <div class="footer-social">
             <div class="logo" routerLink="/"></div>
@@ -52,10 +52,16 @@
                 <a class="link" routerLink="/become-pro" *ngIf="!securityService.isAuthenticated()">Sign up Pro</a>
               </div>
             </div>
+            <div class="links policy-links">
+              <div class="links-content">
+                <a class="header">Policy</a>
+                <a class="link" routerLink="/privacy-policy">Privacy Policy</a>
+                <a class="link" routerLink="/terms-of-use">Terms of Use</a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </div>
@@ -65,10 +71,10 @@
     <div class="footer-bottom">
       <div class="footer-bottom-line-container">
         <div class="footer-company-copyright">© 2019 Home Improve, Inc</div>
-        <div class="footer-bottom-links">
-          <a class="footer-nav" href="/privacy-policy" target="_blank">Privacy Policy</a>
-          <a class="footer-nav" href="/terms-of-use" target="_blank">Terms of Use</a>
-        </div>
+<!--        <div class="footer-bottom-links">-->
+<!--          <a class="footer-nav" href="/privacy-policy" target="_blank">Privacy Policy</a>-->
+<!--          <a class="footer-nav" href="/terms-of-use" target="_blank">Terms of Use</a>-->
+<!--        </div>-->
       </div>
     </div>
   </div>

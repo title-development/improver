@@ -1,21 +1,5 @@
-<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 54 49">
-  <defs>
-    <style>
-      .cls-1 {
-        fill: #00a3d8;
-        stroke: #00a3d8;
-        stroke-miterlimit: 10;
-        stroke-width: 0.5px;
-      }
-
-      .cls-2 {
-        fill: #536d79;
-      }
-    </style>
-  </defs>
-  <title>icons</title>
-  <g>
-    <polygon class="cls-1" points="36.35 21.12 35.18 20.2 24.88 33.33 18.64 27.09 17.59 28.14 25.02 35.58 36.35 21.12"/>
-    <path class="cls-2" d="M20.74,6H3.13v4.68h0V43.6H50.87V10.67h-27ZM4.62,7.48H20l2.15,3.19H4.62ZM49.38,42.1H4.62V12.16H49.38Z"/>
-  </g>
+<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="-0.000854492" width="60" height="60" rx="20" fill="#F17776"/>
+<ellipse cx="29.9991" cy="22.667" rx="5.33333" ry="6" stroke="white" stroke-width="2.5"/>
+<path d="M40.6659 39.333C40.6659 43.9997 35.3325 42.6663 29.9992 42.6663C24.6659 42.6663 19.3325 43.9997 19.3325 39.333C19.3325 36.6663 24.1081 33.333 29.9992 33.333C35.8902 33.333 40.6659 36.6663 40.6659 39.333Z" stroke="white" stroke-width="2.5"/>
 </svg>

@@ -2,24 +2,22 @@
 
 :host {
   width: 100%;
-  height: 700px;
+  height: 740px;
   display: flex;
-  background-color: $grey-500;
-  background-image: url(../../../../assets/img/background_1.jpg);
-  background-size: cover;
-  background-position: 50%;
+  background: linear-gradient(180deg, #B0DEDC 0%, #DDF4F2 100%);
   position: relative;
   flex-direction: column;
   align-items: center;
 
   @include response-to(sm) {
     justify-content: center;
-    padding: 100px 24px;
-    height: auto;
+    padding: 10px 24px;
+    height: 540px;
   }
 
   @include response(xs) {
-    padding: 50px 12px;
+    padding: 40px 20px 70px 20px;
+    height: 430px;
   }
 
   &:before {
@@ -32,43 +30,102 @@
     bottom: 0;
   }
 }
+
+.main-search-content {
+  width: 100%;
+  max-width: 1170px;
+
+  .main-search-text-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+
+
+    @include response-to(md) {
+      width: 100%;
+    }
+    @include response-to(lg) {
+      padding: 0 24px;
+    }
+
+    @include response(xs, sm) {
+      padding: 0;
+    }
+  }
+}
+
+.bottom-background-image {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 182px;
+  background-image: url(../../../../assets/img/background_1.png);
+  background-size: 100% 182px;
+  background-repeat: no-repeat;
+
+  @include response(xs) {
+    height: 48px;
+    background-size: 100% 48px;
+  }
+  @include response(sm) {
+    height: 68px;
+    background-size: 100% 68px;
+  }
+
+  @include response(md) {
+    height: 100px;
+    background-size: 100% 100px;
+  }
+
+  @include response(lg) {
+    height: 140px;
+    background-size: 100% 140px;
+  }
+}
+
 h1, p {
   position: relative;
-  text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
   color: $white;
-  text-align: center;
+  text-align: left;
 }
 
 h1 {
+  font-family: 'Merriweather', serif;
   font-size: 42px;
-  margin: 177px 0 0 0;
-  font-weight: 400;
+  margin-top: 166px;
+  font-weight: bold;
+  color: $dark;
+
   @include response-to(sm) {
     font-size: 35px;
     margin: 0;
   }
   @include response(xs){
-    font-size: 27px;
+    font-size: 24px;
   }
 }
 
 p {
-  max-width: 674px;
+  color: $dark;
+  max-width: 591px;
   font-size: 24px;
   margin: 39px 0 0 0;
+
   @include response-to(sm) {
     font-size: 18px;
   }
   @include response(xs){
-    font-size: 15px;
-    line-height: 1.5;
+    margin-top: 20px;
+    font-size: 14px;
+    line-height: 140%;
   }
 }
 
 main-search-bar {
   margin-top: 53px;
 
-  @include response-to(md) {
+  @include response-to(lg) {
     width: 100%;
     padding: 0 24px;
   }
@@ -78,6 +135,7 @@ main-search-bar {
   }
 
   @include response(xs) {
-    padding: 0 12px;
+    margin-top: 33px;
+    padding: 0;
   }
 }

@@ -2,15 +2,14 @@ import { AfterViewInit, Component, Inject, OnInit, Renderer2 } from '@angular/co
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
-import { PopUpMessageService } from '../util/pop-up-message.service';
-import { SecurityService } from '../auth/security.service';
-import { dialogsMap } from '../shared/dialogs/dialogs.state';
+import { PopUpMessageService } from './util/pop-up-message.service';
+import { SecurityService } from './auth/security.service';
 import { SwUpdate } from '@angular/service-worker';
 import { NavigationEnd, Router } from '@angular/router';
-import { GoogleAnalyticsService } from '../util/google-analytics.service';
-import { HotJarService } from '../util/hotjar.service';
+import { GoogleAnalyticsService } from './util/google-analytics.service';
+import { HotJarService } from './util/hotjar.service';
 import 'hammerjs';
-import '../../../extend';
+import '../../extend';
 
 
 @Component({
@@ -32,8 +31,6 @@ export class AppComponent implements OnInit, AfterViewInit {
               private googleAnalyticsService: GoogleAnalyticsService,
               private hotJarService: HotJarService) {
 
-    //todo Fix entry Component for compiler
-    dialogsMap;
     popUpMessageService.renderer = renderer;
   }
 

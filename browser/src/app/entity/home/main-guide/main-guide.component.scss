@@ -1,109 +1,139 @@
 @import "../../../../improver-mixins.scss";
 
 :host {
-  margin-top: -110px;
+  background-color: white;
+  padding-bottom: 112px;
+
+  @include response-to(md) {
+    padding-top: 0px;
+    padding-bottom: 40px;
+  }
 
   @include response-to(sm) {
-    margin-top: 12px;
+    padding-top: 40px;
+    padding-bottom: 35px;
   }
 }
 
-.main-guide-wrapper {
-  height: 231px;
-  padding: 0 15px;
-  width: 1200px;
+.container-wide {
+  width: 100%;
 
-  @include response-to(sm) {
-    width: 100%;
-    height: auto;
+  @include response-to(lg) {
+    padding: 0;
   }
 }
-
-//@include response-to(xs) {
-//  flex-direction: column !important;
-//}
 
 .main-guide-container {
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
+  width: 100%;
+  max-width: $content-grid-max-width;
+  margin: 0 auto;
+  padding-top: 70px;
 
-  @include response(sm){
+  @include response-to(lg) {
+    padding: 50px 0 0 24px;
+  }
+
+  @include response-to(md) {
+    padding: 35px 0 0 24px;
+  }
+
+  @include response-to(sm) {
+    padding: 0 24px;
     flex-wrap: wrap;
-  }
-
-  @include response(xs){
     flex-direction: column;
+    width: 100%;
+    height: auto;
   }
 
-  .main-guide-card {
-    width: 370px;
-    height: 221px;
-    border-radius: 2px;
-    background-color: $white;
-    box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.15);
+  @include response(xs) {
+    padding: 0 20px;
+  }
+}
 
-    @include response(md,lg){
-      width: 33.3333333%;
-      margin: 0 12px;
-      height: 280px;
-    }
+.main-guide-card {
+  width: 33.3333333%;
+  max-width: 300px;
+  border-radius: 2px;
+  padding-right: 20px;
 
-    @include response(sm) {
-      width: 100%;
-      margin-bottom: 12px;
-    }
+  @include response-to(sm) {
+    width: 100%;
+    padding-bottom: 24px;
+  }
 
-    @include response-to(xs) {
-      width: 100%;
-      height: auto;
-      margin-bottom: 15px;
-    }
+    .guide-image-block {
+      width: 60px;
+      background-color: $white;
+      border-radius: 100px;
+      padding-bottom: 24px;
 
-    .main-guide-card-content {
-      padding: 24px;
+      @include response-to(md) {
+        width: 50px;
+      }
 
-      .guide-image-block {
-        width: 58px;
-        height: 58px;
-        background-color: $white;
-        //box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.15);
-        border-radius: 100px;
-        margin-bottom: 15px;
+      @include response(xs) {
+        width: 40px;
+      }
 
-        img {
-          width: 58px;
-          height: 58px;
+      img {
+        width: 60px;
+        height: 60px;
+
+        @include response-to(md) {
+          width: 50px;
+          height: 50px;
         }
 
-        i {
-          display: flex;
-          font-size: 45px;
-          color: $primary-500;
-
-          &:before {
-            line-height: inherit;
-            margin: 0;
-            width: auto;
-          }
+        @include response(xs) {
+          width: 40px;
+          height: 40px;
         }
       }
 
-      .guide-text-block {
-        .guide-card-title {
-          font-size: 18px;
-          text-align: left;
-          color: $black-800;
-          margin-bottom: 16px;
-          font-weight: 600;
-        }
-        .guide-card-text {
-          font-size: 15px;
-          text-align: left;
-          color: #808080;
-          line-height: 1.47;
-          letter-spacing: 0.3px;
+      i {
+        display: flex;
+        font-size: 45px;
+        color: $primary-500;
+
+        &:before {
+          line-height: inherit;
+          margin: 0;
+          width: auto;
         }
       }
+    }
+}
+
+.guide-text-block {
+
+  .guide-card-title {
+    font-size: 24px;
+    text-align: left;
+    color: $black-800;
+    font-weight: 600;
+    padding-bottom: 15px;
+
+    @include response-to(md) {
+      font-size: 20px;
+    }
+
+    @include response(xs) {
+      font-size: 16px;
+    }
+  }
+
+  .guide-card-text {
+    font-size: 16px;
+    text-align: left;
+    color: #808080;
+    line-height: 1.47;
+    letter-spacing: 0.3px;
+
+    @include response-to(md) {
+      font-size: 14px;
     }
   }
 }

@@ -3,6 +3,7 @@ import { RouterModule } from "@angular/router";
 import { CategoryServicesComponent } from "./category-services.component";
 import { CvInputModule } from "../../../theme/input/cv-input.module";
 import { SharedModule } from "../../../shared/shared.module";
+import { LayoutModule } from "../../../layout/layout.module";
 
 
 const routes: ModuleWithProviders = RouterModule.forChild([
@@ -19,7 +20,8 @@ const routes: ModuleWithProviders = RouterModule.forChild([
   imports: [
     routes,
     SharedModule,
-    CvInputModule
+    CvInputModule,
+    LayoutModule
   ],
   declarations: [
     CategoryServicesComponent

@@ -18,7 +18,8 @@
             "polyfills": "src/polyfills.ts",
             "stylePreprocessorOptions": {
               "includePaths": [
-                "src/scss"
+                "src/scss",
+                "src"
               ]
             },
             "assets": [
@@ -207,11 +208,9 @@
   "defaultProject": "improver",
   "schematics": {
     "@schematics/angular:component": {
-      "prefix": "app",
       "styleext": "scss"
     },
     "@schematics/angular:directive": {
-      "prefix": "app"
     }
   }
 }

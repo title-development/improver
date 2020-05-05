@@ -4,12 +4,12 @@ import {
   Component,
   ElementRef,
   HostListener,
-  Input,
+  OnDestroy,
   OnInit,
   Renderer2,
   ViewChild
 } from '@angular/core';
-import { MatDialogRef } from "@angular/material/dialog";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ServiceType } from "../../model/data-model";
 import { Constants } from "../../util/constants";
@@ -19,16 +19,18 @@ import { Role } from "../../model/security-model";
 import { UserSearchService } from "../../api/services/user-search.service";
 import { markAsTouched } from "../../util/functions";
 import { CvSelectComponent } from "../../theme/select/cv-select/cv-select";
+import { NavigationStart, Router } from "@angular/router";
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: 'mobile-main-search-bar',
   templateUrl: './mobile-main-search-bar.component.html',
   styleUrls: ['./mobile-main-search-bar.component.scss']
 })
-export class MobileMainSearchBarComponent implements OnInit, AfterViewInit {
+export class MobileMainSearchBarComponent implements OnInit, AfterViewInit, OnDestroy {
 
   resetAfterFind: boolean = false;
-  searchResultMessageText: string;
   mainSearchFormGroup: FormGroup;
   selectionCtrl: FormControl;
   zipCodeCtrl: FormControl;
@@ -37,6 +39,8 @@ export class MobileMainSearchBarComponent implements OnInit, AfterViewInit {
   searchResults: Array<ServiceType> = [];
   dropdownHeight: number = 5;
   lastZipCode: string;
+  hasSearchResults: boolean = false;
+	private readonly destroyed$ = new Subject<void>();
 
   @ViewChild('serviceType') cvSelectComponent: CvSelectComponent;
 
@@ -45,10 +49,13 @@ export class MobileMainSearchBarComponent implements OnInit, AfterViewInit {
               public customerSuggestionService: CustomerSuggestionService,
               public userSearchService: UserSearchService,
               private securityService: SecurityService,
+              private router: Router,
+              private dialog: MatDialog,
               public element: ElementRef<HTMLElement>,
               private renderer: Renderer2,
               private changeDetectorRef: ChangeDetectorRef) {
     this.getPopularServiceTypes();
+    this.getRouterEvents();
   }
 
   ngOnInit() {
@@ -74,9 +81,16 @@ export class MobileMainSearchBarComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     setTimeout(() => {
       let element =  this.element.nativeElement.querySelector('cv-select').getElementsByTagName('input')[0];
-      this.renderer.selectRootElement(element).focus();
       this.changeDetectorRef.detectChanges();
     }, 0);
+  }
+
+  getRouterEvents(){
+  	this.router.events.pipe(takeUntil(this.destroyed$)).subscribe( event => {
+      if(event instanceof NavigationStart) {
+        this.dialog.closeAll();
+      }
+    });
   }
 
   autocompleteSearch(search): void {
@@ -88,7 +102,7 @@ export class MobileMainSearchBarComponent implements OnInit, AfterViewInit {
       this.selectionCtrl.setValue(serviceType);
     }
 
-    if (this.mainSearchFormGroup.valid) {
+    if (this.selectionCtrl.valid) {
       this.cvSelectComponent.startClosingDropdown();
       this.changeDetectorRef.detectChanges();
       this.userSearchService.isMobileSearchActive = true;
@@ -96,11 +110,11 @@ export class MobileMainSearchBarComponent implements OnInit, AfterViewInit {
       if (selectionCtrl.value) {
         this.userSearchService.findServiceTypeOrTrade(this.mainSearchFormGroup.value);
         this.searchResults = this.userSearchService.getSearchResults(selectionCtrl.value.trim());
-        if (this.searchResults.length == 0) {
-          this.searchResultMessageText = 'No results were found for \"' + selectionCtrl.value + '\". The following are results for a similar search.';
+        if (this.filteredServiceTypes.length == 0) {
+          this.hasSearchResults = false;
           this.searchResults = this.popularServiceTypes;
         } else {
-          this.searchResultMessageText = '';
+          this.hasSearchResults = true;
         }
         if (this.resetAfterFind) {
           this.mainSearchFormGroup.reset({
@@ -117,7 +131,7 @@ export class MobileMainSearchBarComponent implements OnInit, AfterViewInit {
   getPopularServiceTypes() {
     this.customerSuggestionService.popular$
       .subscribe(
-        popularServiceTypes => this.popularServiceTypes = this.filteredServiceTypes = popularServiceTypes
+        popularServiceTypes => this.popularServiceTypes = this.filteredServiceTypes = this.searchResults = popularServiceTypes
       );
   }
 
@@ -162,6 +176,11 @@ export class MobileMainSearchBarComponent implements OnInit, AfterViewInit {
 
   selectTrackBy(index: number, item: ServiceType): number {
     return item.id;
+  }
+
+  ngOnDestroy(): void {
+		this.destroyed$.next();
+		this.destroyed$.complete();
   }
 
 }

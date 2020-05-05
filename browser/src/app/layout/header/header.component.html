@@ -1,9 +1,9 @@
-<div class="header">
+<div class="header" [ngClass]="mobileMenuService.findProfessionalsOpened? 'header-without-shadow' : ''">
   <div class="header-content">
     <!--TODO: rework menu items with separate components?-->
     <div class="header-left">
       <!--Mobile menu button-->
-      <button class="mobile-menu-button md-none lg-none xlg-none" mat-button color="primary" (click)="isMobMenuOpened = !isMobMenuOpened">
+      <button class="mobile-header-button menu-button md-none lg-none xlg-none" mat-button (click)="mobileMenuService.mobileMenuOpened = !mobileMenuService.mobileMenuOpened">
         <mat-icon class="mobile-menu-icon">menu</mat-icon>
       </button>
 
@@ -12,16 +12,17 @@
           <find-professionals></find-professionals>
         </div>
         <div class="find-professionals-wrapper" *ngIf="securityService.hasRole(Role.CUSTOMER) && (mediaQuery.xs || mediaQuery.sm)"
-          (click)="open('mobile-main-search-bar')">
-          <button class="mobile-menu-button mat-button md-none lg-none xlg-none">
+          (click)="toggleFindProfessionalsMobile()">
+          <button class="mobile-header-button mat-button md-none lg-none xlg-none">
         <span>
-          <i class="material-icons">search</i>
+          <i class="material-icons" *ngIf="!mobileMenuService.findProfessionalsOpened">search</i>
+          <i class="material-icons" *ngIf="mobileMenuService.findProfessionalsOpened">close</i>
         </span>
           </button>
         </div>
 
-        <button class="menu-button lead-search-icon md-none lg-none xlg-none" mat-button color="accent" *ngIf="(mediaQuery.xs || mediaQuery.sm) && securityService.hasRole(Role.CONTRACTOR)" routerLink="/pro/leads-search">
-          <mat-icon class="mobile-menu-icon">search</mat-icon>
+        <button class="menu-button lead-search-button md-none lg-none xlg-none" mat-button *ngIf="(mediaQuery.xs || mediaQuery.sm) && securityService.hasRole(Role.CONTRACTOR)" routerLink="/pro/leads-search">
+          <i class="mobile-menu-icon material-icons">search</i>
         </button>
 
         <!--Desktop left links-->
@@ -46,22 +47,23 @@
 
       <div class="find-professionals-wrapper"
            *ngIf="(mediaQuery.xs || mediaQuery.sm) && !securityService.isAuthenticated()"
-           (click)="open('mobile-main-search-bar')">
-        <button class="mobile-menu-button mat-button md-none lg-none xlg-none">
+           (click)="toggleFindProfessionalsMobile()">
+        <button class="mobile-header-button mat-button md-none lg-none xlg-none">
         <span>
-          <i class="material-icons">search</i>
+          <i class="material-icons" *ngIf="!mobileMenuService.findProfessionalsOpened">search</i>
+          <i class="material-icons" *ngIf="mobileMenuService.findProfessionalsOpened">close</i>
         </span>
         </button>
       </div>
 
       <!--Notification icon-->
       <div class="notification-bar navbar-right" *ngIf="securityService.isAuthenticated()">
-        <button class="menu-button" mat-button color="accent" (click)="isNotificationsPopupOpened = !isNotificationsPopupOpened">
+        <button class="menu-button" mat-button color="accent" (click)="mobileMenuService.notificationsPopupOpened = !mobileMenuService.notificationsPopupOpened">
           <mat-icon class="mobile-menu-icon">notifications</mat-icon>
           <div class="counter" *ngIf="notificationResource.unreadNotificationsCounter + (notificationResource.unreadMessagesCount$ | async ) > 0"><span>{{notificationResource.unreadNotificationsCounter + (notificationResource.unreadMessagesCount$ | async )}}</span></div>
         </button>
         <div class="holder">
-          <notifications-popup [(toggle)]="isNotificationsPopupOpened"></notifications-popup>
+          <notifications-popup [(toggle)]="mobileMenuService.notificationsPopupOpened"></notifications-popup>
         </div>
       </div>
 
@@ -79,7 +81,7 @@
 
       <div class="nav navbar-nav">
         <a class="app-menu-button account-menu" title="{{securityService.getLoginModel().name}}"
-           *ngIf="securityService.isAuthenticated()" (click)="isMobMenuOpened = !isMobMenuOpened">
+           *ngIf="securityService.isAuthenticated()" (click)="mobileMenuService.mobileMenuOpened = !mobileMenuService.mobileMenuOpened">
           <div class="account-icon" [ngClass]="{'mobile': mediaQuery.xs || mediaQuery.sm}"
                [ngStyle]="securityService.getLoginModel().iconUrl && securityService.getLoginModel().iconUrl != '' && {'background-image':'url(' + securityService.getLoginModel().iconUrl + ')'} || securityService.getLoginModel().company && {'background-image':'url(/assets/img/company-logo-placeholder.png)'} || {'background-image':'url(/assets/img/user-logo-placeholder.png)'}"></div>
           <div class="user-name xs-none sm-none md-none" *ngIf="securityService.isAuthenticated()">
@@ -87,18 +89,16 @@
           </div>
         </a>
         <div class="holder">
-          <main-menu [(toggle)]="isMobMenuOpened"></main-menu>
+          <main-menu [(toggle)]="mobileMenuService.mobileMenuOpened"></main-menu>
         </div>
       </div>
 
       <!--Right menu on desktop for ANONYMOUS-->
       <div class="navbar-right xs-none sm-none"
            *ngIf="!securityService.isAuthenticated() && ( securityService.hasRole(Role.ANONYMOUS) || securityService.hasRole(Role.INCOMPLETE_PRO))">
-        <a routerLink="/login">Log in</a>
-        <a routerLink="/signup">Sign up</a>
-        <a class="join-as-pro-button" routerLink="/become-pro">
-          <div class="join-as-pro-button-text">Become a Pro</div>
-        </a>
+        <a class="auth-button" routerLink="/login">Log in</a>
+        <a class="auth-button" routerLink="/signup">Sign up</a>
+        <a class="became-a-pro" routerLink="/become-pro">Become a Pro</a>
       </div>
     </div>
   </div>

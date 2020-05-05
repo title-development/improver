@@ -1,14 +1,13 @@
 @import "../../../improver-mixins.scss";
 
 :host {
-  background-color: $white;
+  // background-color: #E7F6FE;
+  background-color: white;
   width: 100%;
   display: block;
-
 }
 
 .footer {
-  background-color: $white;
   padding: 0 12px;
 
   @include response(md,lg) {
@@ -23,7 +22,7 @@
     width: 100%;
 
     @include response-from(xlg) {
-      max-width: 1170px;
+      max-width: $content-grid-max-width;
     }
 
     @include response-to(md) {
@@ -64,7 +63,7 @@
           text-align: left;
           color: #363636;
           font-size: 21px;
-          background: url(../../../assets/img/logo-cropped.png) no-repeat center center;
+          background: url(../../../assets/img/logo.png) no-repeat center center;
           background-size: contain;
           width: 130px;
           height: 50px;
@@ -109,6 +108,14 @@
       .footer-links {
         display: flex;
 
+        @include response(xlg) {
+          margin-left: 130px;
+        }
+
+        @include response(lg) {
+          margin-left: 100px;
+        }
+
         @include response(md) {
           width: 75%;
         }
@@ -123,10 +130,13 @@
       }
 
       .links {
-        margin-left: 49px;
+
+        @include response(xlg) {
+          min-width: 200px;
+        }
 
         @include response(lg) {
-          margin-left: 30px;
+          min-width: 160px;
         }
 
         @include response(md) {
@@ -158,10 +168,13 @@
         }
 
         .header {
-          font-size: 16px;
           text-align: left;
-          color: $black;
           margin-bottom: 24px;
+          font-family: Merriweather;
+          font-style: normal;
+          font-weight: bold;
+          font-size: 18px;
+          color: $dark;
 
           @include response(xs) {
             text-align: center;
@@ -360,7 +373,6 @@
 .footer-bottom {
   width: 100%;
   height: 48px;
-  background-color: $grey-100;
   display: flex;
   justify-content: center;
   max-width: 100%;
@@ -381,7 +393,7 @@
     align-items: center;
 
     @include response-to(xlg) {
-      max-width: 1170px;
+      max-width: $content-grid-max-width;
     }
 
     @include response(md,lg) {

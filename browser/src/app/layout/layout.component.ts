@@ -9,31 +9,7 @@ import { ScrollHolderService } from '../util/scroll-holder.service';
       <router-outlet></router-outlet>
     </div>
   `,
-  styles: [`
-    :host {
-      position: absolute;
-      top: 50px;
-      left: 0;
-      right: 0;
-      bottom: 0;
-    }
-
-    .scroll-holder {
-      flex-grow: 1;
-      overflow-y: auto;
-      /*height: 100%;*/
-    }
-
-    router-outlet ::ng-deep + * {
-      display: flex;
-      flex-direction: column;
-      min-height: calc(100vh - 50px);
-    }
-
-    router-outlet ::ng-deep + * > .container {
-      flex-grow: 1;
-    }
-  `]
+  styleUrls: ['layout.component.scss']
 })
 export class LayoutComponent {
   @ViewChild('scrollHolder', {static: true}) scrollHolder: ElementRef;

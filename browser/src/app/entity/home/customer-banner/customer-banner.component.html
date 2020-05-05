@@ -1,27 +1,30 @@
-<div class="customer-banner-wrapper">
-
-  <div class="customer-banner-container">
-
-    <div class="customer-banner-content">
-
-      <div class="main-header">Reasons To Choose Home Improve To Get Your House Work Done</div>
-      <div class="secondary-header">The Home Improve Guarantee gives you peace of mind for all of your home improvement projects</div>
-
-      <div class="buttons-block">
-        <div class="learn-more-button" (click)="scrollService.scrollToElementByTag('hiw-wizard');">
-          Learn More
+<div class="swiper-container">
+  <div class="swiper-wrapper">
+    <div class="swiper-slide" *ngFor="let banner of banners">
+      <div class="image" [ngStyle]="banner.image && banner.image != '' && {'background-image':'url(' + banner.image + ')'} || {'background-image':'url(https://via.placeholder.com/2000x1000)'}">
+        <div class="banner-content">
+          <div class="info-block">
+            <div class="title">{{banner.title}}</div>
+            <div class="description">{{banner.description}}</div>
+          </div>
+          <div class="button-wrapper">
+            <button>Find out more</button>
+          </div>
         </div>
-        <div class="buttons-separator">
-          or
-        </div>
-        <a class="connect-with-us-button" routerLink="/ticket">
-          CONNECT WITH US
-        </a>
       </div>
-
     </div>
-
   </div>
 
+  <!-- Pagination -->
+  <div class="swiper-pagination"></div>
+
+  <div class="controls noselect">
+    <div class="previous" (click)="swiper.slidePrev()">
+      <img src="assets/icons/round_arrow_left.svg" alt="Arrow left">
+    </div>
+    <div class="next" (click)="swiper.slideNext()">
+      <img src="assets/icons/round_arrow_right.svg" alt="Arrow right">
+    </div>
+  </div>
 </div>
 

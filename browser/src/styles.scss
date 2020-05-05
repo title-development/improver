@@ -147,6 +147,7 @@ body :-moz-placeholder { /* Firefox 18- */
   user-select: none;
   /* Non-prefixed version, currently
 								   supported by Chrome and Opera */
+  -webkit-tap-highlight-color: transparent
 }
 
 .crop-canvas {

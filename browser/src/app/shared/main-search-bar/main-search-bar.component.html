@@ -1,5 +1,6 @@
 <form *ngIf="!media.xs && !media.sm" class="main-search-form" [formGroup]="mainSearchFormGroup" (ngSubmit)="search()" (mouseleave)="mouseleave($event)">
-  <div class="service-type-form-group">
+  <div class="search-inputs-content">
+  <div class="service-type-form-group" [ngClass]="isDropdownOpenedTop? 'up-direction' : 'bottom-direction'">
     <cv-select class="main-search-service-input"
                [highlightErrors]="false"
                label="Pipe, carpet, paint, etc."
@@ -17,7 +18,8 @@
                (onSelect)="search($event.service)"
                (onClose)="mouseleave($event)">
     </cv-select>
-    <div class="error-holder" *ngIf="mainSearchFormGroup.get('selectionCtrl').dirty || mainSearchFormGroup.get('selectionCtrl').touched">
+    <div class="error-holder service-type-error" *ngIf="mainSearchFormGroup.get('selectionCtrl').errors && (mainSearchFormGroup.get('selectionCtrl').dirty || mainSearchFormGroup.get('selectionCtrl').touched)">
+      <div class="service-type-box-shadow-line"></div>
       <div *ngIf="mainSearchFormGroup.get('selectionCtrl').errors?.required">
         Please tell us what do you need
       </div>
@@ -29,7 +31,8 @@
       <mat-icon class="location-icon">room</mat-icon>
       <input [formControlName]="'zipCodeCtrl'" class="main-search-zip-input" numericMask  type="text" placeholder="Zip code" maxlength="5">
     </div>
-    <div class="error-holder" *ngIf="mainSearchFormGroup.get('zipCodeCtrl').dirty || mainSearchFormGroup.get('zipCodeCtrl').touched">
+    <div class="error-holder zip-error" *ngIf="mainSearchFormGroup.get('zipCodeCtrl').errors && (mainSearchFormGroup.get('zipCodeCtrl').dirty || mainSearchFormGroup.get('zipCodeCtrl').touched)">
+      <div class="zip-box-shadow-line"></div>
       <div *ngIf="mainSearchFormGroup.get('zipCodeCtrl').errors?.required">
         Zip code is required
       </div>
@@ -38,6 +41,7 @@
       </div>
     </div>
 
+  </div>
   </div>
   <div class="submit-button-form-group">
     <button type="submit">{{mainButtonText}}</button>
@@ -50,12 +54,21 @@
 <form *ngIf="media.xs || media.sm" class="mobile-main-search-form" [formGroup]="mainSearchFormGroup"
       (ngSubmit)="search()" (mouseleave)="mouseleave($event)">
 
-  <div class="mobile-service-type-form-group">
-    <input #selectionInput class="mobile-main-search-service-input"
-           [formControl]="selectionCtrl"
-           type="text"
-           placeholder="Pipe, carpet, paint, etc."
-           (click)="openMobileSearchBar()">
+  <div class="mobile-inputs-content">
+    <div class="mobile-service-type-form-group">
+      <input #selectionInput class="mobile-main-search-service-input"
+             [formControl]="selectionCtrl"
+             type="text"
+             placeholder="Pipe, carpet, paint, etc."
+             (click)="openMobileSearchBar()">
+    </div>
+
+    <!--<div class="zip-code-form-group">-->
+      <!--<div class="main-search-zip-input-wrapper">-->
+        <!--<mat-icon class="location-icon">room</mat-icon>-->
+        <!--<input [formControl]="zipCodeCtrl" class="main-search-zip-input" numericMask  type="text" placeholder="Zip code" maxlength="5">-->
+      <!--</div>-->
+    <!--</div>-->
   </div>
 
   <div class="mobile-submit-button-form-group" (click)="openMobileSearchBar()">

@@ -1,14 +1,15 @@
 import {
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  EventEmitter,
-  Input,
-  OnChanges,
-  OnInit,
-  Output,
-  SimpleChanges,
-  ViewChild
+	AfterViewInit,
+	ChangeDetectorRef,
+	Component,
+	ElementRef,
+	EventEmitter,
+	Input,
+	OnChanges,
+	OnInit,
+	Output,
+	SimpleChanges,
+	ViewChild
 } from '@angular/core';
 import { markAsTouched } from '../../util/functions';
 import { ServiceType } from '../../model/data-model';
@@ -29,17 +30,19 @@ import { MediaQuery, MediaQueryService } from "../../util/media-query.service";
 import { takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
 import { mobileMainDialogBarConfig } from "../dialogs/dialogs.configs";
+import { OverlayRef } from "../../theme/util/overlayRef";
+import { MobileMenuService } from "../../util/mobile-menu-service";
 
 @Component({
   selector: 'main-search-bar',
   templateUrl: './main-search-bar.component.html',
   styleUrls: ['./main-search-bar.component.scss']
 })
-export class MainSearchBarComponent implements OnInit, OnChanges {
+export class MainSearchBarComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() selected: string;
   @Input() zipCode: number;
   @Input() resetAfterFind: boolean = true;
-  @Input() mainButtonText: string = 'GET STARTED';
+  @Input() mainButtonText: string = 'SEARCH';
   @Output() notMatch: EventEmitter<any> = new EventEmitter<any>();
   @ViewChild("selectionInput") selectionInputRef: ElementRef;
 
@@ -51,14 +54,17 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
   mobileSearchDialogRef: MatDialogRef<any>;
   lastZipCode: string;
   media: MediaQuery;
+  isDropdownOpenedTop: boolean = false;
   private readonly destroyed$ = new Subject<void>();
 
   constructor(public dialog: MatDialog,
+              public overlayRef: OverlayRef,
               public projectActionService: ProjectActionService,
               public constants: Constants,
               public userService: UserService,
               public customerSuggestionService: CustomerSuggestionService,
               public userSearchService: UserSearchService,
+              public mobileMenuService: MobileMenuService,
               private serviceTypeService: ServiceTypeService,
               private tradeService: TradeService,
               private router: Router,
@@ -68,19 +74,20 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
 
     this.mediaQueryService.screen.pipe(takeUntil(this.destroyed$)).subscribe((mediaQuery: MediaQuery) => {
       this.media = mediaQuery;
-
-      if (this.media.xs || this.media.sm){
-        this.mainButtonText = 'FIND';
-      } else {
-        this.mainButtonText = 'GET STARTED';
-      }
       this.changeDetectorRef.markForCheck();
     });
 
     this.getPopularServiceTypes();
   }
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
+		this.overlayRef.$isDropdownOpenedTop.subscribe(isUpDirection => {
+			this.isDropdownOpenedTop = isUpDirection;
+			this.changeDetectorRef.detectChanges();
+		});
+	}
+
+	ngOnInit(): void {
     let group: any = {};
     group.selectionCtrl = new FormControl(this.selected, Validators.required);
     group.zipCodeCtrl = new FormControl(this.zipCode, Validators.compose([Validators.required, Validators.pattern(this.constants.patterns.zipcode)]));
@@ -93,10 +100,10 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
     this.zipCodeCtrl.setValue(localStorage.getItem('zipCode'));
 
     this.securityService.onUserInit.subscribe(() => {
-          if (this.securityService.hasRole(Role.CUSTOMER)) {
-            this.getLastCustomerZipCode();
-          }
+        if (this.securityService.hasRole(Role.CUSTOMER)) {
+          this.getLastCustomerZipCode();
         }
+      }
     );
   }
 
@@ -111,18 +118,20 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
 
   autocompleteSearch(search): void {
     setTimeout(() => {
-    this.filteredOptions = this.userSearchService.autocompleteSearchResult(search);
+      this.filteredOptions = this.userSearchService.autocompleteSearchResult(search);
     },);
   }
 
   openMobileSearchBar(){
     this.selectionInputRef.nativeElement.blur();
     this.dialog.closeAll();
+    this.mobileMenuService.findProfessionalsOpened = true;
     this.mobileSearchDialogRef = this.dialog.open(dialogsMap['mobile-main-search-bar'], mobileMainDialogBarConfig );
     this.mobileSearchDialogRef.afterClosed()
-      .subscribe(result => {
-        this.mobileSearchDialogRef = null;
-      });
+        .subscribe(result => {
+          this.mobileMenuService.findProfessionalsOpened = false;
+          this.mobileSearchDialogRef = null;
+        });
   }
 
   search(serviceType?: string): void {
@@ -148,9 +157,9 @@ export class MainSearchBarComponent implements OnInit, OnChanges {
 
   getPopularServiceTypes() {
     this.customerSuggestionService.popular$
-      .subscribe(
-        popularServiceTypes => this.popularServiceTypes = this.filteredOptions = popularServiceTypes
-      );
+        .subscribe(
+          popularServiceTypes => this.popularServiceTypes = this.filteredOptions = popularServiceTypes
+        );
   }
 
   getLastCustomerZipCode() {

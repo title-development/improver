@@ -1,0 +1,30 @@
+<div class="wrapper">
+
+  <div class="info-block">
+
+    <div class="name">
+      {{item.name }}
+    </div>
+
+    <div class="services-counter">
+      {{item.services.length}} services
+    </div>
+
+    <div class="services-list-wrapper">
+      <div class="services-list">
+        <ng-template ngFor let-service [ngForOf]="item.services | take: SERVICES_TO_SHOW_COUNT" let-i="index">
+          <button class="service-name" (click)="projectActionService.openQuestionaryWithLastZipCode(service)">{{service.name}}</button>
+        </ng-template>
+      </div>
+
+      <a class="see-all-services-link" [routerLink]="['category', item.id]">
+        All services
+      </a>
+    </div>
+
+  </div>
+
+  <div class="cover" [ngStyle]="item.image && {'background-image':'url(' + item.image + ')'} || {'background-image':'url(' + 'http://via.placeholder.com/267x323?text=' + item.name + ')'}"></div>
+
+</div>
+

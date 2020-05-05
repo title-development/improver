@@ -1,13 +1,11 @@
 <div class="mobile-search-content-wrapper">
   <div class="mobile-search-content-container">
-    <div class="mobile-search-header">
-      <p class="header-text">What service do you need?</p>
-      <mat-icon class="close-modal" color="accent" (click)="close()">clear</mat-icon>
-    </div>
 
     <form class="main-search-form" [formGroup]="mainSearchFormGroup" (ngSubmit)="searchServiceType()">
 
-      <div class="service-type-form-group">
+      <div class="search-inputs-content">
+      <div class="service-type-form-group"
+           [ngClass]="(mainSearchFormGroup.get('selectionCtrl').errors && (mainSearchFormGroup.get('selectionCtrl').dirty || mainSearchFormGroup.get('selectionCtrl').touched))? 'service-type-error-holder': '' ">
         <cv-select #serviceType class="main-search-service-input"
                    [highlightErrors]="false"
                    [dropdownHeight]="dropdownHeight"
@@ -28,7 +26,7 @@
                    (onClose)="mouseleave($event)">
         </cv-select>
         <div class="error-holder"
-             *ngIf="mainSearchFormGroup.get('selectionCtrl').dirty || mainSearchFormGroup.get('selectionCtrl').touched">
+             *ngIf="mainSearchFormGroup.get('selectionCtrl').errors && (mainSearchFormGroup.get('selectionCtrl').dirty || mainSearchFormGroup.get('selectionCtrl').touched)">
           <div *ngIf="mainSearchFormGroup.get('selectionCtrl').errors?.required">
             Please tell us what do you need
           </div>
@@ -43,7 +41,7 @@
                  placeholder="Zip code" maxlength="5">
         </div>
         <div class="error-holder"
-             *ngIf="mainSearchFormGroup.get('zipCodeCtrl').dirty || mainSearchFormGroup.get('zipCodeCtrl').touched">
+             *ngIf="mainSearchFormGroup.get('zipCodeCtrl').errors && (mainSearchFormGroup.get('zipCodeCtrl').dirty || mainSearchFormGroup.get('zipCodeCtrl').touched || mainSearchFormGroup.get('selectionCtrl').valid)">
           <div *ngIf="mainSearchFormGroup.get('zipCodeCtrl').errors?.required">
             Zip code is required
           </div>
@@ -53,24 +51,26 @@
         </div>
 
       </div>
+        </div>
 
       <div class="submit-button-form-group">
-        <button type="submit">GET STARTED</button>
+        <button type="submit">SEARCH</button>
       </div>
 
     </form>
 
-    <div class="no-result-text">
-      {{searchResultMessageText}}
-    </div>
+    <div class="search-result-container">
+      <div class="popular-service-title" *ngIf="!hasSearchResults">Popular services</div>
 
-    <div class="autocomplete-content">
-      <div *ngFor="let serviceType of searchResults">
-        <div class="autocomplete-item" (click)="searchServiceType(serviceType.name)">
-          {{serviceType.name}}
+      <div class="autocomplete-content">
+        <div *ngFor="let serviceType of searchResults">
+          <div class="autocomplete-item" (click)="searchServiceType(serviceType.name)">
+            {{serviceType.name}}
+          </div>
         </div>
       </div>
     </div>
+
 
   </div>
 </div>

@@ -1,18 +1,18 @@
 import { Component } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { mobileMainDialogBarConfig, questionaryDialogConfig } from '../../shared/dialogs/dialogs.configs';
+import { mobileMainDialogBarConfig } from '../../shared/dialogs/dialogs.configs';
 import { Role } from '../../model/security-model';
 import { NotificationResource } from '../../util/notification.resource';
 import { BillingService } from '../../api/services/billing.service';
 import { SecurityService } from '../../auth/security.service';
-import { forkJoin, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { ProjectService } from '../../api/services/project.service';
 import { dialogsMap } from '../../shared/dialogs/dialogs.state';
-import { ScrollHolderService } from '../../util/scroll-holder.service';
 import { MediaQuery, MediaQueryService } from "../../util/media-query.service";
 import { takeUntil, tap } from 'rxjs/operators';
 import { RequestOrder } from "../../model/order-model";
 import { AccountService } from "../../api/services/account.service";
+import { MobileMenuService } from "../../util/mobile-menu-service";
 
 @Component({
   selector: 'layout-header',
@@ -23,8 +23,6 @@ import { AccountService } from "../../api/services/account.service";
 export class HeaderComponent {
 
   Role = Role;
-  isMobMenuOpened: boolean = false;
-  isNotificationsPopupOpened: boolean = false;
   private dialogRef: MatDialogRef<any>;
   private readonly destroyed$ = new Subject<void>();
   public mediaQuery: MediaQuery;
@@ -36,7 +34,7 @@ export class HeaderComponent {
               public securityService: SecurityService,
               public mediaQueryService: MediaQueryService,
               public accountService: AccountService,
-              private scrollHolder: ScrollHolderService) {
+              public mobileMenuService: MobileMenuService) {
 
     this.subscribeForMediaScreen();
 
@@ -55,23 +53,25 @@ export class HeaderComponent {
       });
   }
 
-  toggleMenu(): void {
-    this.isMobMenuOpened = !this.isMobMenuOpened;
-  }
+  toggleFindProfessionalsMobile(): void {
+    if(this.mobileMenuService.findProfessionalsOpened) {
+      this.dialog.closeAll();
+      return;
+    }
 
-  open(key): void {
     this.dialog.closeAll();
-    this.dialogRef = this.dialog.open(dialogsMap[key], mobileMainDialogBarConfig);
+    this.dialogRef = this.dialog.open(dialogsMap['mobile-main-search-bar'], mobileMainDialogBarConfig);
+    this.mobileMenuService.findProfessionalsOpened = true;
     this.dialogRef
       .afterClosed()
       .subscribe(result => {
+          this.mobileMenuService.findProfessionalsOpened = false;
           this.dialogRef = null;
         }
       );
   }
 
-  /** Save projects that was created by anonymous user
-   */
+  /** Save projects that was created by anonymous user */
   private postUnsavedOrder() {
 
     let oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds

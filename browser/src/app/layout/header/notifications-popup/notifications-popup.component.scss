@@ -24,7 +24,7 @@
 .notifications-popup {
   position: absolute;
   left: -100px;
-  top: 20px;
+  top: 30px;
   background: #fff;
   display: flex;
   flex-direction: column;
@@ -39,7 +39,7 @@
 
   &.mobile {
     left: initial !important;
-    top: 50px !important;
+    top: $header-mobile-height !important;
     right: 0px !important;
   }
 

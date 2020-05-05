@@ -1,48 +1,52 @@
 import { Component } from '@angular/core';
 
-import { animate, state, style, transition, trigger } from "@angular/animations";
+import { animate, keyframes, style, transition, trigger } from "@angular/animations";
+import { MediaQuery, MediaQueryService } from "../../../util/media-query.service";
+import { clone } from "../../../util/functions";
 
-enum Position { Visible = "Visible", FromLeft = "FromLeft", FromRight = "FromRight", ToLeft = "ToLeft", ToRight = "ToRight", Invisible = "Invisible" }
+const animationDuration = 200;
 
+let checkMovingRight = (fromState, toState) => {
+  return (fromState != 0 && toState === 'void') || toState > fromState
+};
+
+let checkMovingLeft = (fromState, toState) => {
+  return (fromState === 'void' && toState != 0) || toState < fromState
+};
+
+const moveRight = animate(animationDuration, keyframes([
+  style({transform: 'translateX(-{{transformX}}px)', offset: 0}),
+  style({transform: 'translateX(0px)', offset: 1}),
+]));
+
+const moveLeft = animate(animationDuration, keyframes([
+  style({transform: 'translateX(0px)', offset: 0}),
+  style({transform: 'translateX(-{{transformX}}px)', offset: 1})
+]));
 
 @Component({
   selector: 'general-info',
   templateUrl: 'general-info.component.html',
   animations: [
-    trigger(
-      'carouselAnimation', [
-        state('Visible', style({})),
-        state('FromLeft', style({})),
-        state('FromRight', style({})),
-        state('ToLeft', style({position: "absolute", top: "-9999px"})),
-        state('ToRight', style({position: "absolute", top: "-9999px"})),
-        state('Invisible', style({position: "absolute", top: "-9999px"})),
-        transition('* => ToRight', [
-          style({transform: 'translateX(0)', opacity: 1}),
-          animate('300ms', style({transform: 'translateX(100%)', opacity: 0}))
-        ]),
-        transition('* => FromLeft', [
-          style({transform: 'translateX(-100%)', opacity: 0}),
-          animate('300ms', style({transform: 'translateX(0)', opacity: 1}))
-        ]),
-        transition('* => ToLeft', [
-          style({transform: 'translateX(0)', opacity: 1}),
-          animate('300ms', style({transform: 'translateX(-100%)', opacity: 0}))
-        ]),
-        transition('* => FromRight', [
-          style({transform: 'translateX(100%)', opacity: 0}),
-          animate('300ms', style({transform: 'translateX(0)', opacity: 1}))
-        ]),
-        transition('* => Visible', [
-          style({ opacity: 0}),
-          animate('300ms', style({ opacity: 1}))
-        ]),
-        transition('* => Invisible', [
-          style({ opacity: 1}),
-          animate('0ms', style({ opacity: 0}))
-        ])
-      ]
-    )
+    trigger('blockInitialRenderAnimation', [
+      transition(':enter', [])
+    ]),
+    trigger('animator', [
+      transition('void => 0', animate(animationDuration, keyframes([
+        style({opacity: '0', transform: 'scale3d(0.3, 0.3, 0.3)', offset: 0}),
+        style({opacity: '1', transform: 'scale3d(0.6, 0.6, 0.6)', offset: 0.5}),
+        style({opacity: '1', transform: 'scale3d(1, 1, 1)', offset: 1})
+      ]))),
+      transition('0 => void', animate(animationDuration, keyframes([
+        style({opacity: '1', transform: 'scale3d(1, 1, 1)', offset: 0}),
+        style({opacity: '1', transform: 'scale3d(0.6, 0.6, 0.6)', offset: 0.5}),
+        style({opacity: '0', transform: 'scale3d(0.3, 0.3, 0.3)', offset: 1})
+      ])),),
+
+      transition(checkMovingRight, moveRight),
+      transition(checkMovingLeft, moveLeft),
+
+    ])
   ],
   styleUrls: ['general-info.component.scss']
 })
@@ -50,105 +54,84 @@ enum Position { Visible = "Visible", FromLeft = "FromLeft", FromRight = "FromRig
 
 export class GeneralInfoComponent {
 
+  private readonly MOVING_LENGTH = 470;
+  private readonly MOBILE_MOVING_LENGTH = 260;
+
+  animating = false;
+  transformX = 0;
+  media: MediaQuery;
+
   testimonials = [
     {
-      full_name: "Nico Funk 0",
+      fullName: "Nico Funk 0",
       description: "Residence owner",
       state: "NY",
       text: "I have got problem with me pipe long time. But suddenly I heard about Home Improve and their. beautiful service. All I did is fil right fields and voila, in few days I got my Pipe fixed for vary reasonable price. I recommend Home Improve services to everybody and  definitely will. use it again."
     },
     {
-      full_name: "Nico Funk 1",
+      fullName: "Nico Funk 1",
       description: "Residence owner",
       state: "NY",
       text: "I have got problem with me pipe long time. But suddenly I heard about Home Improve and their. beautiful service. All I did is fil right fields and voila, in few days I got my Pipe fixed for vary reasonable price. I recommend Home Improve services to everybody and  definitely will. use it again."
     },
     {
-      full_name: "Nico Funk 2",
+      fullName: "Nico Funk 2",
       description: "Residence owner",
       state: "NY",
       text: "I have got problem with me pipe long time. But suddenly I heard about Home Improve and their. beautiful service. All I did is fil right fields and voila, in few days I got my Pipe fixed for vary reasonable price. I recommend Home Improve services to everybody and  definitely will. use it again."
     },
     {
-      full_name: "Nico Funk 3",
+      fullName: "Nico Funk 3",
       description: "Residence owner",
       state: "NY",
       text: "I have got problem with me pipe long time. But suddenly I heard about Home Improve and their. beautiful service. All I did is fil right fields and voila, in few days I got my Pipe fixed for vary reasonable price. I recommend Home Improve services to everybody and  definitely will. use it again."
     },
     {
-      full_name: "Nico Funk 4",
+      fullName: "Nico Funk 4",
       description: "Residence owner",
       state: "NY",
       text: "I have got problem with me pipe long time. But suddenly I heard about Home Improve and their. beautiful service. All I did is fil right fields and voila, in few days I got my Pipe fixed for vary reasonable price. I recommend Home Improve services to everybody and  definitely will. use it again."
     },
     {
-      full_name: "Nico Funk 5",
+      fullName: "Nico Funk 5",
       description: "Residence owner",
       state: "NY",
       text: "I have got problem with me pipe long time. But suddenly I heard about Home Improve and their. beautiful service. All I did is fil right fields and voila, in few days I got my Pipe fixed for vary reasonable price. I recommend Home Improve services to everybody and  definitely will. use it again."
     },
     {
-      full_name: "Nico Funk 6",
+      fullName: "Nico Funk 6",
       description: "Residence owner",
       state: "NY",
       text: "I have got problem with me pipe long time. But suddenly I heard about Home Improve and their. beautiful service. All I did is fil right fields and voila, in few days I got my Pipe fixed for vary reasonable price. I recommend Home Improve services to everybody and  definitely will. use it again."
     }
   ];
 
-  public Position = Position;
-  public right: boolean = true;
-  positions: any;
+  constructor(public mediaQueryService: MediaQueryService) {
 
-  currentIndex = 0;
+    this.mediaQueryService.screen.subscribe(media => {
+      this.media = media;
+      this.transformX = media.xs || media.sm ? this.MOBILE_MOVING_LENGTH : this.MOVING_LENGTH;
+    })
 
-  constructor() {
-    this.positions = Array(this.testimonials.length).fill(this.Position.Invisible);
-    this.positions[0] = this.Position.Visible
   }
 
-  moveForward() {
-    this.currentIndex = this.incrementIndex(this.currentIndex, this.testimonials.length);
-  }
-
-  moveBackward() {
-    this.currentIndex = this.decrementIndex(this.currentIndex, this.testimonials.length);
-  }
-
-  incrementIndex(index, length) {
-    this.positions[index] = this.Position.ToRight;
-    if (index < length - 1) {
-      index++;
-    } else {
-      index = 0;
+  moveRight() {
+    if (!this.animating) {
+      this.animating = true;
+      this.testimonials.unshift(clone(this.testimonials.pop()));
     }
-    this.positions[index] = this.Position.FromLeft;
-    return index;
-
   }
 
-  decrementIndex(index, length) {
-    this.positions[index] = this.Position.ToLeft;
-    if (index != 0) {
-      index--;
-    } else {
-      index = length - 1;
+  moveLeft() {
+    if (!this.animating) {
+      this.animating = true;
+      this.testimonials.push(clone(this.testimonials.shift()));
     }
-    this.positions[index] = this.Position.FromRight;
-    return index
   }
 
-  setCurrentIndex(index) {
-    if (index >= this.testimonials.length) {
-      index = 0
-    } else if (index < 0) {
-      index = this.testimonials.length - 1
-    }
-    this.positions[this.currentIndex] = this.Position.Invisible;
-    this.currentIndex = index;
-    this.positions[this.currentIndex] = this.Position.Visible;
+  animationDone(event) {
+    this.animating = false;
   }
-
-
 
 
 }

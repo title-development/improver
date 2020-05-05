@@ -3,9 +3,31 @@
 :host {
   display: block;
 }
+main-search-bar {
+  display: flex;
 
-.container {
-  max-width: 794px;
+  .mobile-service-type-form-group {
+    border: none !important;
+  }
+}
+
+.search-wrapper {
+  width: 100%;
+  justify-content: center;
+
+  .container {
+    max-width: $content-grid-max-width;
+    margin: 0 auto;
+    padding: 0;
+
+    @include response-to(lg) {
+      padding: 0 24px;
+    }
+
+    @include response(xs) {
+      padding: 0 20px;
+    }
+  }
 }
 
 .title {
@@ -18,8 +40,9 @@
 }
 
 .search-bar {
-  text-align: center;
+  text-align: left;
   margin-top: 54px;
+
   @include response(xs, sm){
     margin-top: 24px;
   }
@@ -32,39 +55,16 @@
 
   @include response(md){
     width: max-content;
-    margin: 24px auto;
   }
 }
 
 .results {
   margin-top: 24px;
-  margin-left: 16px;
   margin-bottom: 36px;
 
-  a {
-    display: inline-block;
-    font-size: 16px;
-    cursor: pointer;
-    padding-top: 4px;
-    padding-bottom: 4px;
-    &:hover {
-      color: $link;
-    }
-    @include response(xs){
-      width: 100%;
-    }
-
-  }
-
-
   @include response(xs, sm){
-    //align-items: center;
-    //align-self: center;
-    //justify-self: center;
     display: flex;
     flex-direction: column;
-    margin: 24px auto;
-    padding-left: 16px;
   }
 
   @include response(md){
@@ -73,13 +73,28 @@
     display: flex;
     justify-self: center;
     flex-direction: column;
-    margin: 24px auto;
   }
 
   @include response(sm){
     width: 543px;
   }
 
+  a {
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    padding-top: 4px;
+    padding-bottom: 4px;
+
+    &:hover {
+      color: $link;
+    }
+
+    @include response(xs){
+      width: 100%;
+    }
+
+  }
 }
 
 .load-more {

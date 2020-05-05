@@ -5,11 +5,12 @@
 }
 
 .find-professionals-container {
+
   .find-professionals-button {
     padding: 0 16px;
-    font-size: 14px;
+    font-size: 18px;
     font-weight: 500;
-    color: $grey-500;
+    color: $dark;
     height: 50px;
     display: flex;
     align-items: center;
@@ -17,40 +18,46 @@
     z-index: 3;
     position: relative;
 
-    span {
-      padding-top: 2px;
-    }
-
     @include response-to(sm) {
       padding: 0;
       width: 50px;
     }
 
-    &.opened {
-      background: $primary-600;
-      color: $white !important;
-      cursor: pointer;
+    .desktop-button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
 
-      .mobile-menu-button {
-        color: $white;
+      @include response(md) {
+        font-size: 16px;
       }
 
-      &:hover {
-        //@include reset-hover-active-link-mixin();
+      i {
+        font-size: 22px;
+        margin-right: 8px;
       }
     }
 
-    .mobile-menu-button {
+    &.opened {
+      background: $white;
+      color: $dark !important;
+      cursor: pointer;
 
+    }
+
+    .mobile-header-button {
+      color: $dark;
       i {
         font-size: 24px;
         margin-right: 0px;
+        color: $dark;
       }
 
       @include response-to(sm) {
         min-width: inherit;
         height: 50px;
         width: 50px;
+
         span {
           display: flex;
           justify-content: center;
@@ -65,24 +72,28 @@
 
   .dropdown-content-wrapper {
     position: fixed;
+    top: $header-height;
     left: 0;
     right: 0;
     z-index: 3;
     text-align: initial;
-    color: #ffffff;
-    background-color: $primary-600;
+    background-color: $white;
+    padding-bottom: 5px;
+
+    @include response-to(md) {
+      top: $header-tablet-height;
+    }
 
     @include response-to(sm) {
-      top: 50px;
-      bottom: 0;
+      top: $header-mobile-height;
     }
 
     .dropdown-content {
       display: flex;
       flex-direction: column;
-      width: 1170px;
+      width: $content-grid-max-width;
       margin: 0 auto;
-      padding: 15px 0 15px 0;
+      padding: 20px 0 15px 0;
 
       @include response-to(lg) {
         width: 100%;
@@ -90,154 +101,31 @@
       }
 
       .search-form {
+        position: relative;
+        font-size: 16px;
         display: flex;
+        justify-content: center;
+        width: 1000px;
+        max-width: 100%;
+        border-radius: 20px;
 
-        .service-type-form-group {
-          position: relative;
-          width: 60%;
-
-          @include response-to(xs) {
-            width: 71%;
-          }
+        @include response-to(md) {
+          width: 100%;
         }
 
-        .zip-code-form-group {
-          width: 40%;
-
-          @include response-to(xs) {
-            width: 26%;
-          }
-        }
-
-        cv-select ::ng-deep {
-          .cv-input {
-            border: none;
-            height: 50px;
-            font-size: 16px;
-            border-radius: 0;
-            text-overflow: ellipsis;
-            font-weight: 400;
-            padding: 13px 16px 10px;
-
-            @include response-to(sm) {
-              font-size: 13px;
-              height: 45px;
-            }
-
-            @include response-to(xs) {
-              padding: 13px 8px 10px;
-            }
-          }
-        }
-        .messages-block {
-          font-size: 10px;
-          background-color: $white;
-          position: absolute;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          transform: translateY(100%);
-
-          > div {
-            box-shadow: inset 0px 2px 3px rgba(50, 50, 50, 0.14);
-            padding: 5px;
-          }
-        }
-
-        .zip-code-form-group {
-          position: relative;
-          min-width: 80px;
-          .messages-block {
-            margin: 0 1px;
-            border-left: 1px solid $grey-400;
-            left: -1px;
-          }
-
-          .main-search-zip-input-wrapper {
-            display: flex;
-            flex-direction: row;
-            justify-items: center;
-            align-items: center;
-            padding: 0 10px 0 10px;
-            background-color: white;
-            border-left: 1px solid $grey-300;
-            border-right: 1px solid $grey-300;
-
-            @include response-to(xs) {
-              padding: 0 4px 0 4px;
-            }
-
-            mat-icon {
-              margin-top: -5px;
-              font-size: 20px;
-              color: $grey-250;
-            }
-
-            .main-search-zip-input {
-              border: none;
-              height: 50px;
-              max-height: 50px !important;
-              padding: 2px 16px 0 6px;
-              font-size: 16px;
-              width: 100%;
-              border-radius: 0;
-
-              @include response-to(sm) {
-                font-size: 13px;
-                height: 45px;
-              }
-
-              @include response-to(xs) {
-                padding: 2px 8px 0 4px;
-              }
-            }
-
-          }
-
-
-        }
-
-        .search-button {
-          border: none;
-          min-width: 50px;
-          width: 50px;
-          background-color: $white;
-          color: $primary-600;
-          max-height: 50px;
-          margin: 0;
-          padding: 0;
-          font-size: 0;
-          border-radius: 0;
-          cursor: pointer;
-          span {
-            display: inline-block;
-            width: 100%;
-            height: 100%;
-            vertical-align: middle;
-            mat-icon {
-              vertical-align: middle;
-            }
-            &:after {
-              content: '';
-              display: inline-block;
-              vertical-align: middle;
-              height: 100%;
-              width: 0;
-            }
-          }
-          @include response-to(sm) {
-            height: 45px;
-            width: 45px;
-            min-width: 45px;
-          }
-
-          &:hover {
-          }
+        @include response-to(sm){
+          box-shadow: none;
+          flex-direction: column;
+          max-width: 100%;
         }
       }
 
       .categories-wrapper {
-        padding-top: 15px;
+        margin-top: 44px;
+
+        @include response-to(sm){
+          margin-top: 33px;
+        }
 
         .category-wrapper {
           padding: 10px 0;
@@ -245,21 +133,31 @@
           flex-direction: column;
 
           .header {
+            font-size: 24px;
             position: relative;
             padding-bottom: 10px;
-            max-width: 185px;
 
             .name {
-              font-size: 18px;
-              font-weight: 800;
+              font-family: Merriweather;
+              font-size: 24px;
+              font-weight: bold;
+
+              @include response-to(sm) {
+                font-size: 18px;
+              }
             }
 
             .action {
               position: absolute;
               top: 4px;
               right: 0;
-              font-size: 13px;
-              color: #ffffff;
+              font-size: 18px;
+              font-weight: 600;
+              color: $blue-primary;
+
+              @include response-to(sm) {
+                font-size: 18px;
+              }
 
               &:hover {
                 cursor: pointer;
@@ -268,40 +166,70 @@
           }
 
           .items {
-            @media (max-width: 576px) and (orientation: landscape) {
-              .col-xs-12 {
-                width: 50%;
-              }
+            position: relative;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            order: 2 !important;
+            max-height: 150px;
+            overflow: hidden;
+            margin: 0;
+
+            @include response(sm) {
+              max-height: 130px;
+            }
+
+            @include response(xs) {
+              max-height: 190px;
+              padding: 10px 0 40px 0;
+              flex-direction: column;
+              width: max-content;
             }
 
             .item {
-              font-size: 13px;
-              padding: 5px 0;
-              max-width: 87%;
-              height: 100%;
+              font-weight: bold;
+              font-size: 16px;
+              border: 1px solid rgba(39, 49, 73, 0.2);
+              box-sizing: border-box;
+              border-radius: 25px;
+              padding: 15px 20px;
+              margin: 10px 16px 10px 0;
               display: flex;
               align-items: center;
 
-              a {
-                color: white;
+              @include response-to(sm) {
+                font-size: 14px;
               }
 
-              @include response-to(sm) {
+              @include response(xs) {
+                border: none;
+                margin: 10px 0;
+                padding: 0;
+                font-weight: normal;
                 max-width: 100% !important;
-                margin: 5px 25px 5px 0;
                 display: flex;
                 align-items: center;
                 justify-content: flex-start;
               }
 
-              @include response-to(xs) {
-                margin: 3px 25px 3px 0;
+              a {
+                color: $dark;
               }
+
 
               &:hover {
                 text-decoration: underline;
                 cursor: pointer;
               }
+            }
+
+            .show-more-button {
+              cursor: pointer;
+              position: absolute;
+              bottom: 0;
+              left: 0;
+              color: $blue-primary;
+              font-size: 14px;
             }
           }
         }
@@ -318,5 +246,337 @@
     right: 0;
     bottom: 0;
     z-index: 2;
+
+    @include response-to(sm) {
+      background-color: white;
+      background-image: linear-gradient(transparent 50%, $grey-300 50%);
+    }
   }
+}
+
+.search-inputs-content {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+
+  @include response-to(sm) {
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 5px 15px rgba(38, 47, 86, 0.12);
+    margin-bottom: 25px;
+    border-radius: 12px;
+  }
+}
+
+.service-type-form-group {
+  width: 79%;
+  z-index: 30;
+  position: relative;
+  border-radius: 20px 0 0 20px;
+
+  @include response-to(sm){
+    width: 100%;
+  }
+
+  cv-select ::ng-deep {
+    .cv-input {
+      border: 1px solid rgba(39, 49, 73, 0.2) !important;
+      border-right: none !important;
+      z-index: 2;
+      padding-left: 30px;
+      height: 70px;
+      font-size: 22px;
+      border-radius: 20px 0 0 20px;
+      -webkit-transition: border-radius 0.2s 0.2s linear;
+      transition: border-radius 0.2s 0.2s linear;
+
+      @include response-to(md) {
+        font-size: 18px;
+      }
+
+      @include response-to(sm){
+        border-radius: 12px 12px 0 0;
+        font-size: 14px;
+        height: 50px;
+        border: none !important;
+      }
+
+      &:focus {
+        -webkit-transition: none;
+        transition: none;
+        border-radius: 20px 0 0 0;
+      }
+    }
+  }
+}
+
+.zip-code-form-group {
+  z-index: 1;
+  min-width: 106px;
+  width: 21%;
+  position: relative;
+
+  @include response-to(sm){
+    width: 100%;
+    border-top: 1px solid $grey-300;
+  }
+
+  .main-search-zip-input-wrapper {
+    border: 1px solid rgba(39, 49, 73, 0.2);
+    z-index: 3;
+    display: flex;
+    flex-direction: row;
+    justify-items: center;
+    align-items: center;
+    padding: 0 15px;
+    background-color: white;
+
+    @include response-to(sm) {
+      border: none;
+      border-radius: 0 0 12px 12px;
+    }
+
+    mat-icon {
+      margin-top: -5px;
+      font-size: 20px;
+      color: $grey-250;
+      margin-right: 4px;
+    }
+
+    .main-search-zip-input {
+      width: 100%;
+      border: none;
+      height: 68px;
+      font-size: 22px;
+      border-radius: 0;
+
+      @include response-to(md) {
+        font-size: 18px;
+      }
+
+      @include response-to(sm){
+        width: 100%;
+        font-size: 14px;
+        height: 50px;
+      }
+    }
+  }
+}
+
+.submit-button-form-group {
+  width: 21%;
+  z-index: 30;
+  position: relative;
+  min-width: 130px;
+
+  @include response-to(sm) {
+    width: 100%;
+  }
+
+  button {
+    font-weight: bold;
+    font-size: 22px;
+    background-color: $blue-primary;
+    border: none;
+    height: 70px;
+    color: $white;
+    width: 100%;
+    border-radius: 0 20px 20px 0;
+
+    @include response-to(md) {
+      font-size: 20px;
+    }
+
+    @include response-to(sm){
+      height: 50px;
+      font-size: 18px;
+      border-radius: 12px;
+    }
+
+    &:hover {
+      background-image: linear-gradient(to top, $primary-400, $primary-600 85%);
+    }
+
+    &:active {
+      background: $primary-500 none;
+    }
+
+  }
+}
+
+.error-holder {
+  z-index: 1;
+  height: 50px;
+  font-size: 12px;
+  background-color: #FFFFFF;
+  position: absolute;
+  left: 0;
+  line-height: 60px;
+  right: 0;
+  top: 0;
+  transform: translateY(100%);
+
+  @include response-to(sm) {
+    box-shadow: 0 5px 15px rgba(38, 47, 86, 0.12);
+    border-radius: 12px;
+    z-index: 10;
+    font-size: 10px;
+    position: relative;
+    transform: translateY(0%);
+    height: max-content;
+    line-height: normal;
+
+    > div {
+      padding: 5px;
+      color: $red;
+    }
+  }
+
+  >div {
+    padding: 5px;
+    color: $red;
+  }
+}
+
+.service-type-error {
+  z-index: -1 !important;
+  padding-left: 20px;
+  border-bottom-left-radius: 20px;
+
+  >div {
+    &:last-child {
+      border: none !important;
+    }
+  }
+}
+
+.zipcode-eroor {
+  z-index: -1 !important;
+  border-bottom-right-radius: 20px;
+}
+
+.swiper-container {
+  margin-top: -20px;
+  padding-top: 40px;
+  width: 100% !important;
+  position: relative;
+  height: 100%;
+  max-width: $content-grid-max-width;
+
+  @include response-from(md) {
+    width: calc(100% - 48px);
+  }
+
+  @include response-to(xs) {
+    border-bottom-right-radius: 0px;
+    border-top-right-radius: 0px;
+  }
+
+
+
+  .controls {
+    z-index: 100;
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    flex-direction: row;
+
+    @include response-to(xs) {
+      display: none;
+    }
+
+    .previous {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      margin-right: 20px;
+      background: rgba(39, 49, 73, 0.2);
+      color: $white;
+      img {
+        margin-right: 1px;
+      }
+    }
+
+    .next {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: rgba(39, 49, 73, 0.2);
+      color: $white;
+
+      img {
+        margin-left: 1px;
+      }
+    }
+
+  }
+}
+
+.swiper-slide {
+  min-width: 240px;
+
+  .trade-content {
+    display: flex;
+    flex-direction: row;
+    width: 270px;
+    height: 110px;
+    background: rgba(43, 79, 110, 0.05);
+    border-radius: 8px;
+
+    @include response-to(lg) {
+      width: 100%;
+      min-width: 210px;
+      max-width: 300px;
+    }
+
+    .text-content {
+      padding: 15px 8px 15px 15px;
+      display: flex;
+      flex-direction: column;
+      width: 55%;
+      height: 100%;
+      justify-content: space-between;
+
+      .trade-title {
+        font-size: 18px;
+        font-weight: bold;
+      }
+
+      .services-count {
+        font-size: 14px;
+        color: rgba(39, 49, 73, 0.4);
+      }
+    }
+
+    .image-content {
+      width: 45%;
+      min-width: 110px;
+      height: 100%;
+      border-radius: 8px;
+      background-repeat: no-repeat;
+      background-size: cover;
+
+      img {
+        border-radius: 0 8px 8px 0;
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+}
+
+.show-more-actions {
+  padding: 10px 0 !important;
+  width: 100% !important;
+  overflow-y: scroll !important;
+  flex-wrap: nowrap !important;
 }

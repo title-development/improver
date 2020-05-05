@@ -13,8 +13,6 @@ import { takeUntil } from "rxjs/operators";
 
 export class HiwWizardComponent implements OnInit, OnDestroy {
   private readonly destroyed$: Subject<void> = new Subject();
-  step = 1;
-  wizardIcons;
   mediaQuery: MediaQuery;
   isMobile = false;
 
@@ -33,7 +31,6 @@ export class HiwWizardComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.wizardIcons = this.elementRef.nativeElement.getElementsByClassName('wizard-step-image-block');
   }
 
   ngOnDestroy(): void {

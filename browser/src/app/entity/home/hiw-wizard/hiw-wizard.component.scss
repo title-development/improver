@@ -1,10 +1,8 @@
 @import "../../../../improver-mixins.scss";
 
-$step: 0;
-
 :host {
   width: 100%;
-  background-color: $grey-100;
+  background-color: $white;
   height: auto;
 }
 
@@ -12,27 +10,40 @@ $step: 0;
   flex-direction: column;
   display: flex;
   align-items: center;
-  padding: 40px 0;
-
-  @include response(xs) {
-    padding: 40px 0 0;
-  }
+  padding-top: 100px;
+  padding-bottom: 100px;
 
   @include response-to(sm) {
-    padding-bottom: 24px;
+    padding-top: 60px;
+    padding-bottom: 60px;
   }
 
   .container {
-    max-width: 1200px;
+    padding-left: 0;
+    max-width: 1170px;
+
+    @include response-to(lg) {
+      padding: 0 24px;
+    }
+
+    @include response-to(sm) {
+      justify-content: center;
+      width: 100%;
+    }
+
+    @include response(xs) {
+      padding: 0 20px;
+    }
 
   }
 }
 
 .hiw-wizard-title {
-  font-weight: 600;
+  font-family: Merriweather;
+  font-weight: bold;
   font-size: 36px;
-  text-align: center;
-  color: #333333;
+  text-align: left;
+  color: $dark;
   margin-bottom: 16px;
 
   @include response-to(md) {
@@ -43,33 +54,30 @@ $step: 0;
     font-size: 25px;
   }
 
-  @include response(xs) {
-    font-size: 20px;
+  @include response-to(xs) {
+    font-size: 22px;
   }
 }
 
 .hiw-wizard-subtitle {
-  font-weight: 600;
-  font-size: 24px;
-  text-align: center;
-  color: $grey-600;
+  font-size: 18px;
+  text-align: left;
+  color: $dark;
+  opacity: 0.4;
   margin-bottom: 40px;
 
   @include response-to(md) {
-    font-size: 22px;
+    margin-bottom: 0;
+    font-size: 16px;
   }
 
   @include response-to(sm) {
-    font-size: 20px;
-    margin-bottom: 24px;
-  }
-
-  @include response(xs) {
-    font-size: 18px;
+    font-size: 14px;
   }
 }
 
 .hiw-wizard-content {
+  width: 100%;
   cursor: default;
   display: flex;
   max-height: 100%;
@@ -77,12 +85,15 @@ $step: 0;
   align-items: center;
 
   @include response-to(md) {
+    max-width: 800px;
     width: 100%;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: space-between;
   }
+
   @include response(xs) {
+    align-items: self-start;
     flex-direction: column;
   }
 
@@ -116,157 +127,108 @@ $step: 0;
       }
 
     }
+  }
+}
 
-    &.animate {
+.wizard-step {
+  max-width: 270px;
+  height: auto;
 
+  @include response-to(lg) {
+    padding-right: 20px;
+  }
+
+  @include response-to(md) {
+    margin-top: 30px;
+  }
+
+  @include response-to(sm) {
+    margin-top: 20px;
+  }
+
+  .wizard-step-content{
+    width: 100%;
+    min-width: 232px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    @include response(xs) {
+      margin-top: 20px;
     }
+  }
+}
 
-    &.hover {
-      .line {
-        background-color: $primary-500;
-      }
+.wizard-step-image-block {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  border-radius: 20px;
+  text-align: center;
 
+  @include response-to(sm) {
+    border-radius: 12px;
+    height: 40px;
+    width: 40px;
+  }
+
+  >span {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    line-height: 60px;
+    font-weight: bold;
+    font-size: 24px;
+    color: $white;
+
+    @include response-to(sm) {
+      font-size: 18px;
+      line-height: 40px;
+    }
+  }
+}
+
+.step-1 {
+  background-color: $dark-primary;
+}
+
+.step-2 {
+  background-color: $red-primary;
+}
+
+.step-3 {
+  background-color: $blue-primary;
+}
+
+.step-4 {
+  background-color: $green-primary;
+}
+
+.wizard-step-text-block {
+  margin-top: 20px;
+  width: 100%;
+  height: 100%;
+
+  .wizard-step-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: $dark;
+
+    @include response-to(sm) {
+      font-size: 16px;
     }
   }
 
-  .wizard-step {
-    width: 25%;
-    @include response-to(md) {
-      width: 50%;
-    }
-    @include response-to(xs) {
-      width: 271px;
-    }
+  .wizard-step-text {
+    margin-top: 10px;
+    font-size: 16px;
+    color: rgba(39, 49, 73, 0.6);
 
-    i {
-      color: rgba(0, 0, 0, 0.4);
-    }
-
-    &.animate {
-
-      i {
-        color: $primary-500;
-      }
-
-      .wizard-step-border-bottom-fill {
-        width: 100%;
-        height: 3px;
-        background-color: $primary-500;
-        box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.15);
-        transition: all 0.3s ease-in 0s;
-      }
-    }
-
-    &.hover {
-
-      i {
-        color: $primary-500;
-      }
-
-      .wizard-step-border-bottom-fill {
-        width: 100%;
-        height: 3px;
-        background-color: $primary-500;
-      }
-    }
-
-    .wizard-step-content {
-      width: 100%;
-
-      .wizard-step-image-block {
-        border-radius: 100px;
-        width: 85px;
-        height: 85px;
-        //background-color: $white;
-        //box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.15);
-        margin-bottom: 18px;
-
-        img {
-          height: 50px;
-        }
-
-        &.active {
-          i {
-            color: $primary-500;
-          }
-        }
-
-        i {
-          display: flex;
-          font-size: 50px;
-
-          &:before {
-            line-height: inherit;
-            margin: 0;
-            width: auto;
-          }
-        }
-
-        @include response-to(sm) {
-          margin-bottom: 0px;
-        }
-
-      }
-
-      .wizard-step-text-block {
-
-        .wizard-step-title {
-          width: 100%;
-          margin-bottom: 16px;
-          font-size: 16px;
-          font-weight: 700;
-          line-height: 1.25;
-          text-align: center;
-          color: $black-800;
-        }
-
-        .wizard-step-text {
-          width: 90%;
-          //margin-bottom: 22px;
-          font-size: 14px;
-          line-height: 1.5;
-          letter-spacing: 0.3px;
-          text-align: center;
-          color: $grey-600;
-          min-height: 108px;
-
-          @include response-to(xs) {
-            min-height: inherit;
-            margin-bottom: 0;
-          }
-
-          @include response-to(sm) {
-            min-height: 80px;
-          }
-
-        }
-
-      }
-
-    }
-
-    .wizard-step-border-bottom {
-      width: 100%;
-      height: 3px;
-      background-color: #e8e8e8;
-
-      @include response-to(lg) {
-        display: none;
-      }
-    }
-
-    .wizard-step-border-bottom-fill {
-      position: relative;
-      top: -3px;
-      width: 0;
-      height: 3px;
-      background-color: $primary-500;
-      box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.15);
-
-      @include response-to(lg) {
-        display: none;
-      }
+    @include response-to(sm) {
+      font-size: 14px;
     }
   }
-
 }

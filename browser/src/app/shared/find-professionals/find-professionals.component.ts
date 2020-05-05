@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ServiceType, Trade } from '../../model/data-model';
+import { Pagination, ServiceType, Trade } from '../../model/data-model';
 import { ServiceTypeService } from '../../api/services/service-type.service';
 import { TradeService } from '../../api/services/trade.service';
 import { Constants } from '../../util/constants';
@@ -27,6 +27,7 @@ import { UserSearchService } from "../../api/services/user-search.service";
 })
 
 export class FindProfessionalsComponent implements OnInit {
+
   mainSearchFormGroup: FormGroup;
   selectionCtrl: FormControl;
   zipCodeCtrl: FormControl;
@@ -34,9 +35,14 @@ export class FindProfessionalsComponent implements OnInit {
   popularServiceTypes: Array<ServiceType> = [];
   filteredServiceTypes: Array<ServiceType> = [];
   popularServiceSize: Number;
-  popularTrades: Array<Trade> = [];
+  suggestedTrades: Array<Trade> = [];
   recentSearches: Array<string> = [];
+  pagination: Pagination = new Pagination(0, 4);
   lastZipCode: string;
+  showMoreActivated: boolean = false;
+  mediaQuery: any;
+  swiper: Swiper;
+
 
   constructor(private serviceTypeService: ServiceTypeService,
               private questionaryControlService: QuestionaryControlService,
@@ -51,6 +57,7 @@ export class FindProfessionalsComponent implements OnInit {
               public projectActionService: ProjectActionService,
               public constants: Constants,
               public media: MediaQueryService,
+              private changeDetectorRef: ChangeDetectorRef,
               public findProfessionalService: FindProfessionalService) {
     let group: any = {};
 
@@ -64,7 +71,7 @@ export class FindProfessionalsComponent implements OnInit {
     this.selectionCtrl = group.selectionCtrl;
     this.zipCodeCtrl = group.zipCodeCtrl;
 
-    this.getPopularTrades();
+    this.getSuggestedTrades();
     this.getPopularServiceTypes();
 
     this.customerSuggestionService.onZipChange.subscribe(zip => this.zipCodeCtrl.setValue(zip));
@@ -82,6 +89,7 @@ export class FindProfessionalsComponent implements OnInit {
     );
 
     this.media.screen.subscribe(media => {
+      this.mediaQuery = media;
       if (media.xs || media.sm) {
         this.popularServiceSize = 8;
       }
@@ -92,7 +100,32 @@ export class FindProfessionalsComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    this.findProfessionalService.visibilityState.subscribe( show => {
+      if (show){
+        setTimeout(()=> {
+          this.swiper = new Swiper('.find-professional-swiper', {
+            slidesPerView: 4,
+            nextButton: '.next',
+            prevButton: '.previous',
+            spaceBetween: 30,
+            speed: 300,
+            loop: true,
+            breakpoints: {
+              1100: {
+                slidesPerView: 3,
+                spaceBetween: 25
+              },
+              820: {
+                slidesPerView: 2,
+                spaceBetween: 30
+              }
+            }
+          });
+        },);
+      } else {
+        this.showMoreActivated = false;
+      }
+    });
   }
 
 
@@ -114,10 +147,10 @@ export class FindProfessionalsComponent implements OnInit {
       );
   }
 
-  getPopularTrades() {
-    this.tradeService.popular$
+  getSuggestedTrades() {
+		this.customerSuggestionService.suggestedTrades$
       .subscribe(
-        popularTrades => this.popularTrades = popularTrades,
+        popularTrades => this.suggestedTrades = popularTrades
       );
   }
 
@@ -161,6 +194,10 @@ export class FindProfessionalsComponent implements OnInit {
 
   selectTrackBy(index: number, item: ServiceType): number {
     return item.id;
+  }
+
+  showMore(){
+    this.showMoreActivated = true;
   }
 
   mouseleave(event: Event): void {

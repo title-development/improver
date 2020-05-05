@@ -25,7 +25,7 @@ export class OverlayRef {
 
   renderer: Renderer2;
   $updateDropdownPosition: Subject<void> = new Subject<void>();
-  $isUpDirection: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  $isDropdownOpenedTop: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private OVERLAY_ID: string = 'cv-popup-overlay';
   private OVERLAY_SDK: string = 'cdk-overlay-container';
   private OVERLAY_SCROLL_BLOCK: string = 'cdk-global-scrollblock';
@@ -196,11 +196,11 @@ export class OverlayRef {
     if (this.upDirection || this.isUpDirection(this.targetElement)) {
       element.style.bottom = `${ this.window.innerHeight - elementBoundaries.top - pageScr.y}px`;
       element.style.top = 'auto';
-      this.$isUpDirection.next(true);
+      this.$isDropdownOpenedTop.next(true);
     } else {
       element.style.top = `${elementBoundaries.top + pageScr.y + elementBoundaries.height}px`;
       element.style.bottom = 'auto';
-      this.$isUpDirection.next(false);
+      this.$isDropdownOpenedTop.next(false);
     }
     if(this.backdropType == BackdropType.popup || this.backdropType == BackdropType.noEvent) {
       if(element.offsetWidth + elementBoundaries.left > this.window.innerWidth) {

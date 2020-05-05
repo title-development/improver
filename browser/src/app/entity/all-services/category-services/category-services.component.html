@@ -1,48 +1,66 @@
-<div class="category-services-wrapper">
-  <div class="category-services">
-
-    <div class="main-block" >
-
-      <div class="category-services-card card" *ngIf="trade">
-
-        <div class="trade-header">
-
-          <img class="trade-icon" [src]="'assets/trades/icons/' + trade.name + '.svg'" onerror="this.src='assets/trades/icons/default.svg';">
-
-          <div class="description">
-            <div class="title">{{trade.name}}</div>
-            <div class="hint">Tell us what you need and we’ll help you</div>
-          </div>
-
-
+<div class="category-services-header-content">
+    <div class="category-services-header-search">
+        <div class="left-header">
+            <div class="header-title-content" *ngIf="trade">
+                <img class="trade-icon" [src]="'assets/trades/icons/' + trade.name + '.svg'"
+                     onerror="this.src='assets/trades/icons/default.svg';">
+                <div class="header-title-text">
+                    <div class="title">{{trade.name}}</div>
+                    <div class="sub-title">Simply check/uncheck services you provide specify exactly what job you
+                        do/don’t do so you always receive work you interested in.
+                    </div>
+                </div>
+            </div>
+            <div class="search-wrapper">
+                <div class="search-content">
+                    <input cv-input trim placeholder="Pipe, carpet, paint etc." class="services-filter"
+                           [(ngModel)]="model"
+                           (ngModelChange)="onFilter($event)">
+                    <button class="search-button" type="submit" (click)="onFilter(model)">Search</button>
+                </div>
+            </div>
         </div>
 
-
-
-        <input cv-input trim placeholder="Pipe, carpet, paint etc." class="services-filter" (input)="onFilter($event.target.value)">
-
-        <div class="main-wrapper">
-
-            <div class="trade-wrapper">
-
-              <!--<div class="trade-name">{{trade.name}}</div>-->
-
-              <ng-template ngFor [ngForOf]="filteredServices" let-service [ngForTrackBy]="trackByFn">
-                <div class="service-type-wrapper">
-                  <div class="service-type-name" (click)="projectActionService.openQuestionaryWithLastZipCode(service)">{{service.name}}</div>
+        <div class="right-header" *ngIf="mediaQuery.lg || mediaQuery.xlg">
+            <div class="swiper-container pagination-bulet">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide" *ngFor="let trade of tradeImages">
+                        <div class="image"
+                             [ngStyle]="trade.image && trade.image != '' && {'background-image':'url(' + trade.image + ')'} || {'background-image':'url(https://via.placeholder.com/2000x1000)'}"></div>
+                    </div>
                 </div>
-              </ng-template>
 
+                <!-- Pagination -->
+                <div class="swiper-pagination"></div>
             </div>
 
         </div>
-
-      </div>
-
     </div>
-
-  </div>
 </div>
+
+<div class="category-services-wrapper">
+    <div class="category-services">
+
+        <div class="no-results-message-block" *ngIf="searchResultMessageText != ''">{{searchResultMessageText}}</div>
+
+        <div class="main-block">
+            <div class="category-services-card card" *ngIf="trade">
+                <div class="main-wrapper">
+                    <div class="trade-wrapper">
+                        <ng-template ngFor [ngForOf]="filteredServices" let-service [ngForTrackBy]="trackByFn">
+                            <div class="service-type-wrapper">
+                                <div class="service-type-name"
+                                     (click)="projectActionService.openQuestionaryWithLastZipCode(service)">{{service.name}}</div>
+                            </div>
+                        </ng-template>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<layout-footer></layout-footer>
 
 
 

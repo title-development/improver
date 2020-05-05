@@ -17,7 +17,7 @@
             {{typed.zip}}
           </p>
         </div>
-        <button cv-button-empty type="submit" (click)="closeModal()">Use different Address</button>
+        <button cv-button-empty class="rounded" type="submit" (click)="closeModal()">Use different address</button>
       </div>
       <div class="col-sm-6 col-xs-12">
         <div class="address apply" (click)="save(suggested)">
@@ -30,7 +30,7 @@
             {{suggested.zip}}
           </p>
         </div>
-        <button cv-button type="submit" (click)="save(suggested)">Use suggested</button>
+        <button cv-button class="rounded" type="submit" (click)="save(suggested)">Use suggested</button>
       </div>
     </div>
     <span *ngIf="validationMessage">*{{validationMessage}}</span>

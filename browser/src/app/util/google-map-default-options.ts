@@ -1,5 +1,5 @@
 import { MapOptions } from '@agm/core/services/google-maps-types';
-import { mapStyles } from '../layout/map.style';
+import { mapStyles } from '../map.style';
 import { InfoWindowInt } from '../entity/contractor/contractor-leads-search/intefaces/infoWindowInt';
 
 export const defaultMapOptions: MapOptions = {

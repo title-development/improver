@@ -1,33 +1,41 @@
 <div class="popular-services">
-  <div class="row">
-    <div class="col-xs-12">
+  <div class="header">
+    <div class="title-block">
       <div class="title">Find the service you need</div>
+      <div class="title-hint">The Home Improve Guarantee gives you peace of mind for all of your home improvement projects</div>
     </div>
-    <div class="col-xs-12">
-      <div class="row">
+    <button routerLink="/services" class="see-all-service">See All services</button>
+  </div>
+  <div class="content" *ngIf="items.length > 0">
 
-        <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3" *ngFor="let item of advertised"
-             (click)="projectActionService.openQuestionaryWithLastZipCode(item)">
-          <div class="popular-services-card-content">
+    <div class="list-wrapper" (swipeleft)="moveLeft()" (swiperight)="moveRight()">
+      <div class="list" @blockInitialRenderAnimation>
 
-            <div class="popular-services-image">
-              <div class="cover" [ngStyle]="item.image && {'background-image':'url(' + item.image + ')'} || {'background-image':'url(' + 'http://via.placeholder.com/267x323?text=NO+SERVICE+IMAGE' + ')'}"></div>
-
-              <div class="popular-services-text">
-                {{item.name}}
-              </div>
-            </div>
-          </div>
-
+        <div *ngFor="let item of items; index as i;" [@animator]="{value: i, params: {transformX: transformX}}" (@animator.done)="animationDone($event)">
+          <advertisement-block-element [item]="item" [ngClass]="{'hoverable': i == 0 || i == 1 && !media.md}"></advertisement-block-element>
         </div>
 
       </div>
     </div>
 
-    <div class="col-xs-12">
-      <a class="see-all-services-button" routerLink="/services">
-        <div class="see-all-services-button-text">See All Services</div>
-      </a>
+    <div class="controls-wrapper">
+
+      <div class="separator"></div>
+
+      <div class="controls noselect">
+        <div class="next" (click)="moveLeft()">
+          <span class="material-icons">navigate_next</span>
+        </div>
+        <div class="previous" (click)="moveRight()">
+          <span class="material-icons">navigate_before</span>
+        </div>
+      </div>
     </div>
+
+    <button routerLink="/services" class="see-all-service mobile">See All Services</button>
+
   </div>
+
+
+
 </div>

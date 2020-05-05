@@ -14,6 +14,16 @@ export const questionaryDialogConfig: MatDialogConfig = {
 };
 
 export const mobileMainDialogBarConfig: MatDialogConfig = {
+  panelClass: 'mobile-main-search-bar',
+  width: '100%',
+  height: '',
+  hasBackdrop: false,
+  position: {
+    top: '',
+    bottom: '',
+    left: '',
+    right: ''
+  }
 };
 
 export const customerProjectRequestDialogConfig: MatDialogConfig = {

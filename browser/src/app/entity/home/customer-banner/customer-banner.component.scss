@@ -1,145 +1,157 @@
-@import "../../../../improver-mixins.scss";
+@import "improver-mixins.scss";
 
 :host {
-  width: 100%;
-}
-
-.customer-banner-wrapper {
-  height: 437px;
-  width: 100%;
-  background: url(../../../../assets/img/customer-banner.jpg) no-repeat center center;
-  background-size: cover;
+  background-color: white;
 
   @include response-to(sm) {
-    height: auto;
+    padding: 0px 24px;
   }
+
+  @include response-to(xs) {
+    padding: 0px 0px 0px 20px;
+  }
+
 }
 
-.customer-banner-container {
-  background-color: rgba(0, 0, 0, 0.4);
-  width: 100%;
+.swiper-container {
+  position: relative;
   height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  max-width: $content-grid-max-width;
+  border-radius: 16px;
 
-  .customer-banner-content {
-    font-weight: 500;
-    padding: 0 15px;
-    color: $white;
+  @include response-to(xs) {
+    border-bottom-right-radius: 0px;
+    border-top-right-radius: 0px;
+  }
+
+  @include response-from(md) {
+    width: calc(100% - 48px);
+  }
+
+  .swiper-slide {
+    text-align: center;
+    font-size: 18px;
+    background: white;
+
+    .image {
+      height: 360px;
+      width: 100%;
+      background-size: cover;
+
+      .banner-content {
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.6) 34.9%, rgba(255, 255, 255, 0) 51.56%);
+        padding: 70px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        @include response-to(sm) {
+          padding: 38px 30px;
+          background: linear-gradient(90deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.6) 50.52%, rgba(255, 255, 255, 0) 100%);
+        }
+
+        .info-block {
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-start;
+          align-items: flex-start;
+
+          .title {
+            font-family: Merriweather;
+            font-weight: bold;
+            font-size: 36px;
+            line-height: 140%;
+            color: $dark;
+            margin-bottom: 24px;
+
+            @include response-to(sm) {
+              font-size: 22px;
+            }
+
+          }
+
+          .description {
+            font-style: normal;
+            font-weight: normal;
+            font-size: 18px;
+            line-height: 140%;
+            color: $dark;
+            opacity: 0.8;
+            max-width: 430px;
+            text-align: left;
+
+            @include response-to(sm) {
+              font-size: 14px;
+            }
+          }
+
+        }
+
+        .button-wrapper {
+          display: flex;
+          button {
+            background: $dark-primary;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 18px;
+            color: white;
+            border-style: none;
+            padding: 14px 20px;
+
+            @include response-to(sm) {
+              width: 100%;
+            }
+
+          }
+        }
+
+      }
+    }
+
+  }
+
+  .controls {
+    z-index: 100;
+    position: absolute;
+    top: 24px;
+    right: 24px;
     display: flex;
-    flex-direction: column;
-    width: 100%;
-    max-width: 1200px;
+    flex-direction: row;
 
-
-    @include response-to(sm) {
-      width: 100%;
-      margin-top: 36px;
-      margin-bottom: 36px;
+    @include response-to(xs) {
+      display: none;
     }
 
-    .main-header {
-      font-size: 36px;
-      line-height: 1.33;
-      width: 700px;
-      margin-bottom: 24px;
-
-      @include response-to(md) {
-        font-size: 30px;
-      }
-
-      @include response-to(sm) {
-        width: 100%;
-        font-size: 23px;
-      }
-
-      @include response(xs){
-        font-size: 18px;
-      }
-    }
-
-    .secondary-header {
-      font-size: 16px;
-      line-height: 1.5;
-      width: 535px;
-
-      @include response-to(sm) {
-        width: 100%;
-        font-size: 14px;
-      }
-    }
-
-    .buttons-block {
-      margin-top: 24px;
-      width: 100%;
+    .previous {
+      cursor: pointer;
       display: flex;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      color: grey;
+      margin-right: 10px;
+    }
 
-      @include response(xs) {
-        flex-direction: column;
-        align-items: center;
-      }
-
-
-      .learn-more-button {
-        width: 128px;
-        height: 49px;
-        cursor: pointer;
-        border: solid 2px $white;
-        font-size: 14px;
-        text-align: center;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
-        @include response(xs) {
-          margin-bottom: 16px;
-        }
-
-        &:hover {
-          background-color: $white;
-          border: solid 2px $white;
-          color: #333333;
-        }
-
-        &:active {
-          background-color: #f1f1f1;
-          border: solid 2px #f1f1f1;
-          color: #333333;
-        }
-
-      }
-
-      .buttons-separator {
-        margin-left: 24px;
-
-        @include response(xs) {
-          margin-bottom: 16px;
-          margin-left: 0;
-        }
-      }
-
-      .connect-with-us-button {
-        color: $white;
-        cursor: pointer;
-        font-size: 14px;
-        margin-left: 24px;
-
-        @include response(xs) {
-          margin-left: 0;
-        }
-
-
-        &:hover {
-          text-decoration: underline;
-        }
-
-      }
-
+    .next {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid white;
+      color: white;
     }
 
   }
 
+  ::ng-deep .swiper-pagination-bullet-active {
+    background: $blue-primary;
+  }
+
 }
+

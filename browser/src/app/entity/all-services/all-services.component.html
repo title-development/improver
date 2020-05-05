@@ -1,14 +1,27 @@
+
+<div class="all-services-header-content">
+  <div class="all-services-header-search">
+    <div class="title">All Services</div>
+    <div class="search-wrapper">
+      <div class="search-content">
+        <input cv-input trim placeholder="Pipe, carpet, paint etc."
+               class="services-filter"
+               [(ngModel)]="model"
+               (ngModelChange)="onFilter($event)">
+        <button class="search-button" type="submit" (click)="onFilter(model)">Search</button>
+      </div>
+    </div>
+    </div>
+</div>
+
 <div class="all-services-wrapper">
   <div class="all-services">
+
+    <div class="no-results-message-block" *ngIf="searchResultMessageText != ''">{{searchResultMessageText}}</div>
 
     <div class="main-block">
 
       <div class="all-services-card card">
-
-        <div class="title">All Services</div>
-
-        <input cv-input trim placeholder="Pipe, carpet, paint etc." class="services-filter" [ngModel]="model"
-               (ngModelChange)="onFilter($event)">
 
         <div class="main-wrapper">
 
@@ -40,6 +53,8 @@
 
   </div>
 </div>
+
+<layout-footer></layout-footer>
 
 
 

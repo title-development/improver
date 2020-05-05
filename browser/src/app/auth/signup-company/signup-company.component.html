@@ -248,8 +248,8 @@
              [cvSpinnerSize]="30"
              [cvSpinnerBackground]="true"
              cvSpinnerBackgroundColor="white">
-          <button cv-button-flat [flatStyle]="'dark'" type="button" (click)="cancelRegistration()">Cancel</button>
-          <button cv-button class="button-next" type="submit"
+          <button cv-button-flat [flatStyle]="'dark'" class="rounded" type="button" (click)="cancelRegistration()">Cancel</button>
+          <button cv-button class="button-next rounded" type="submit"
                   [disabled]="addressValidationProcessing">Next Step
           </button>
         </div>
@@ -319,9 +319,9 @@
             novalidate>
 
         <div class="footer">
-          <button cv-button-flat flatStyle="dark" class="button-back" (click)="previousStep()" type="button">Back
+          <button cv-button-flat flatStyle="dark" class="button-back rounded" (click)="previousStep()" type="button">Back
           </button>
-          <button cv-button class="button-next" type="submit" [disabled]="isServiceAreaStepDisabled$ | async">Next Step</button>
+          <button cv-button class="button-next rounded" type="submit" [disabled]="isServiceAreaStepDisabled$ | async">Next Step</button>
         </div>
 
       </form>
@@ -370,9 +370,9 @@
              [cvSpinnerSize]="30"
              [cvSpinnerBackground]="true"
              cvSpinnerBackgroundColor="white">
-          <button cv-button-flat flatStyle="dark" class="button-back" (click)="previousStep()" type="button">Back
+          <button cv-button-flat flatStyle="dark" class="button-back rounded" (click)="previousStep()" type="button">Back
           </button>
-          <button cv-button class="button-next" type="submit">Submit</button>
+          <button cv-button class="button-next rounded" type="submit">Submit</button>
         </div>
 
       </form>

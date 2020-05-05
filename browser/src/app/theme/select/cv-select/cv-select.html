@@ -42,7 +42,7 @@
   cv-overlay
   [cvOverlayOpen]="opened">
   <div class="host"
-       [ngClass]="{'-items-showed': isItemsShowed, '-border': border, '-up': (overlayRef.$isUpDirection | async)}"
+       [ngClass]="{'-items-showed': isItemsShowed, '-border': border, '-up': (overlayRef.$isDropdownOpenedTop | async)}"
        (@dropDownAnimationState.done)="animationEnd($event)" [@dropDownAnimationState]="dropDownAnimationState">
     <ng-container *ngIf="items">
       <!--simple dropdown or with autocomplate-->

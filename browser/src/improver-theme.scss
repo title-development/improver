@@ -25,7 +25,7 @@
 
 .container-wide {
   @extend .container;
-  max-width: (1170px + $grid-gutter-width);
+  max-width: ($content-grid-max-width + $grid-gutter-width);
 }
 
 div[class^='col-'] {

@@ -1,65 +1,182 @@
 @import "../../../improver-mixins.scss";
 
+layout-footer {
+  background-color: #E7F6FE;;
+}
+
+:host {
+  background-color: $white;
+}
+
 .all-services-wrapper {
-  max-width: 1020px;
+  max-width: 1170px;
   width: 100%;
-  margin: 0px auto 0;
-  padding: 0 12px;
+  margin: 0 auto 52px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  @include response-to(sm) {
-    max-width: 100%;
+
+  @include response-to(lg) {
+    padding: 0 24px;
   }
 
-  @include response-to(xs) {
-    padding: 0px;
+  @include response(sm) {
+    margin: 0 auto 48px;
+  }
+
+  @include response(xs) {
+    padding: 0 20px;
+    margin: 0 auto 48px;
   }
 
 }
 
+.no-results-message-block {
+  margin-top: -20px;
+  width: 100%;
+  font-size: 22px;
+  color: $grey-600;
+
+  @include response-to(sm) {
+    font-size: 18px;
+  }
+}
+
+.all-services-header-content {
+  background: #E7F6FD;
+  height: 310px;
+  width: 100%;
+  justify-content: center;
+
+  @include response-to(lg) {
+    padding: 0 24px;
+  }
+
+  @include response(xs) {
+    padding: 0 20px;
+    height: 260px;
+  }
+
+  @include response(sm) {
+    padding: 0 24px;
+    height: 260px;
+  }
+
+  .all-services-header-search {
+    max-width: 1170px;
+    display: flex;
+    flex-direction: column;
+    margin: 72px auto;
+
+    @include response(xs, sm) {
+      margin: 34px auto;
+    }
+  }
+}
+
+.title {
+  font-family: Merriweather;
+  font-size: 36px;
+  font-weight: 700;
+  color: $black-800;
+  margin-bottom: 40px;
+
+  @include response(xs, sm) {
+    margin-bottom: 25px;
+    font-size: 24px;
+  }
+}
+
+.search-wrapper {
+  width: 100%;
+}
+
+.search-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  height: 80px;
+  width: 100%;
+  max-width: 1000px;
+  border-radius: 20px;
+  box-shadow: 0 10px 20px rgba(38, 47, 86, 0.12);
+
+  @include response(xs, sm) {
+    flex-direction: column;
+    justify-content: center;
+    height: auto;
+    box-shadow: none;
+  }
+
+  .services-filter {
+    height: 100%;
+    font-size: 24px;
+    padding-left: 30px;
+    width: 80%;
+    max-width: 800px;
+    border: none;
+    border-radius: 20px 0 0 20px;
+
+    &:active {
+      border-color: $primary-600;
+    }
+
+    @include response(xs, sm) {
+      font-size: 14px;
+      height: 50px;
+      width: 100%;
+      border-radius: 12px;
+      padding-left: 20px;
+      box-shadow: 0 5px 15px rgba(38, 47, 86, 0.12);
+    }
+
+    @include response-from(md) {
+      min-width: 600px;
+    }
+
+  }
+
+  .search-button {
+    max-width: 200px;
+    width: 20%;
+    height: 100%;
+    border: none;
+    border-radius: 0 20px 20px 0;
+    background-color: $blue-primary;
+    color: $white;
+    font-weight: bold;
+    font-size: 24px;
+
+    @include response(xs, sm) {
+      margin-top: 20px;
+      font-size: 18px;
+      border-radius: 12px;
+      max-width: 100%;
+      width: 100%;
+      height: 50px;
+    }
+  }
+}
+
 .all-services {
-  padding-top: 24px;
+  padding-top: 70px;
+  width: 100%;
+
   @include response-to(md) {
     width: 100%;
   }
 
+  @include response(xs, sm) {
+    padding-top: 40px;
+  }
+
   .main-block {
-    max-width: 996px;
     width: 100%;
 
-
     .all-services-card {
-      padding: 24px;
-      //text-align: center;
+      justify-content: space-between;
       @include response(xs) {
         width: 100%;
-      }
-
-      .title {
-        font-size: 24px;
-        font-weight: 700;
-        color: $black-800;
-        margin-bottom: 24px;
-        //text-align: center;
-      }
-
-      .services-filter {
-        height: 59px;
-        font-size: 16px;
-        margin-bottom: 48px;
-        max-width: 600px;
-        //border-color: $orange-primary;
-        border-width: 2px;
-
-        &:active {
-          border-color: $primary-600;
-        }
-
-        @include response-from(md) {
-          min-width: 600px;
-        }
-
       }
 
       .main-wrapper {
@@ -84,21 +201,21 @@
 
           .trade-icon {
             cursor: pointer;
-            margin-bottom: 8px;
-            //width: 60px;
-            height: 60px;
-          }
-
-          @include response-to(xs) {
-            text-align: center;
+            margin-bottom: 24px;
+            width: 80px;
+            height: 80px;
           }
 
           .trade-name {
             cursor: pointer;
-            font-size: 18px;
+            font-size: 24px;
             font-weight: 600;
-            color: $black-800;
-            margin-bottom: 6px;
+            color: $dark;
+            margin-bottom: 22px;
+
+            @include response(xs, sm) {
+              font-size: 16px;
+            }
           }
 
           .service-type-wrapper {
@@ -110,27 +227,22 @@
               }
             }
             .service-type-name {
-              //margin-bottom: 4px;
-              color: $grey-600;
-              font-size: 14px;
+              color: rgba(39, 49, 73, 0.8);
+              font-size: 16px;
               text-align: left;
+
               @include response-to(xs) {
                 border-left: none;
-                text-align: center;
               }
 
+              @include response(xs, sm) {
+                font-size: 14px;
+              }
             }
           }
         }
-
       }
-
     }
-
   }
-
 }
 
-.card {
-  margin-bottom: 24px;
-}

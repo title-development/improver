@@ -1,0 +1,43 @@
+@import "src/improver-mixins";
+
+:host {
+  position: absolute;
+  top: $header-height;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  @include response-to(md) {
+    top: $header-tablet-height;
+  }
+
+  @include response-to(sm) {
+    top: $header-mobile-height;
+  }
+
+}
+
+.scroll-holder {
+  flex-grow: 1;
+  overflow-y: auto;
+  /*height: 100%;*/
+}
+
+router-outlet ::ng-deep + * {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - #{$header-height});
+
+  @include response-to(md) {
+    min-height: calc(100vh - #{$header-tablet-height});
+  }
+
+  @include response-to(sm) {
+    min-height: calc(100vh - #{$header-mobile-height});
+  }
+
+}
+
+router-outlet ::ng-deep + * > .container {
+  flex-grow: 1;
+}

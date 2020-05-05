@@ -146,7 +146,7 @@
                             [paddingV]="12" [paddingH]="16"
                             [showIcon]="false" (onHide)="onMessageHide($event)"></response-message>
 
-          <button cv-button class="full-width auth-form-submit-button" type="submit">
+          <button cv-button class="full-width auth-form-submit-button rounded" type="submit">
             Sign up
           </button>
 
@@ -157,8 +157,8 @@
           <social-buttons [processing]="registrationProcessing"
                           (responseMessageType)="messageType = $event;"
                           (responseMessage)="messageText = $event;"
-                          (showMessage)="showMessage = $event;"
-          ></social-buttons>
+                          (showMessage)="showMessage = $event;">
+          </social-buttons>
 
           <div class="captcha-reminder">This site is protected by reCAPTCHA and the Google
             <a href="https://policies.google.com/privacy">Privacy Policy</a> and

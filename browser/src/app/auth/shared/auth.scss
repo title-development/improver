@@ -354,6 +354,11 @@
         input {
           padding-left: 48px;
         }
+
+        button {
+          border-bottom-left-radius: 0px;
+          border-top-left-radius: 0px;
+        }
       }
 
     }

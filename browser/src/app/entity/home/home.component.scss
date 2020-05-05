@@ -1,7 +1,6 @@
 @import "../../../improver-mixins.scss";
 
-main-guide {
-  @include response-to(sm) {
-    display: none;
-  }
+
+layout-footer {
+  background-color: #E7F6FE !important;
 }

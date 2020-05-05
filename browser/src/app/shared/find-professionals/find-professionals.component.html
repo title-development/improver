@@ -3,8 +3,11 @@
     <div class="find-professionals-button"
          [class.opened]="findProfessionalService.visibilityState | async"
          (click)="findProfessionalService.toggle();">
-      <span class="xs-none sm-none">Find Professionals</span>
-      <button class="mobile-menu-button mat-button md-none lg-none xlg-none">
+      <span class="desktop-button xs-none sm-none">
+        <i class="material-icons">search</i>
+        <span >Find Professionals</span>
+      </span>
+      <button class="mobile-header-button mat-button md-none lg-none xlg-none">
         <span>
           <i class="material-icons" *ngIf="!(findProfessionalService.visibilityState | async)">search</i>
           <i class="material-icons" *ngIf="findProfessionalService.visibilityState | async">close</i>
@@ -20,9 +23,10 @@
               [formGroup]="mainSearchFormGroup"
               (ngSubmit)="searchServiceType(mainSearchFormGroup)"
               (mouseleave)="mouseleave($event)">
+          <div class="search-inputs-content">
           <div class="service-type-form-group">
             <cv-select class="main-search-service-input"
-                       label="Find service or professionals"
+                       label="Pipe, carpet, paint, etc."
                        [formControl]="selectionCtrl"
                        [items]="filteredServiceTypes"
                        [disableItemsMatch]="true"
@@ -36,10 +40,8 @@
                        (autocompleteSearch)="autocompleteSearch($event)"
                        (onClose)="mouseleave($event)"></cv-select>
 
-            <div class="messages-block"
-                 *ngIf="mainSearchFormGroup.get('selectionCtrl').dirty || mainSearchFormGroup.get('selectionCtrl').touched">
-              <div class="main-input-message mat-error"
-                   *ngIf="mainSearchFormGroup.get('selectionCtrl').errors?.required">
+            <div class="error-holder service-type-error" *ngIf="mainSearchFormGroup.get('selectionCtrl').errors && (mainSearchFormGroup.get('selectionCtrl').dirty || mainSearchFormGroup.get('selectionCtrl').touched)">
+              <div *ngIf="mainSearchFormGroup.get('selectionCtrl').errors?.required">
                 Please tell us what do you need
               </div>
             </div>
@@ -59,45 +61,73 @@
 
             </div>
 
-            <div class="messages-block"
-                 *ngIf="mainSearchFormGroup.get('zipCodeCtrl').dirty || mainSearchFormGroup.get('zipCodeCtrl').touched">
-              <div class="zip-input-message mat-error" *ngIf="mainSearchFormGroup.get('zipCodeCtrl').errors?.required">
+            <div class="error-holder zipcode-eroor" *ngIf="mainSearchFormGroup.get('zipCodeCtrl') && (mainSearchFormGroup.get('zipCodeCtrl').dirty || mainSearchFormGroup.get('zipCodeCtrl').touched)">
+              <div *ngIf="mainSearchFormGroup.get('zipCodeCtrl').errors?.required">
                 Zip code is required
               </div>
-
-              <div class="zip-input-message mat-error" *ngIf="mainSearchFormGroup.get('zipCodeCtrl').errors?.pattern">
+              <div *ngIf="mainSearchFormGroup.get('zipCodeCtrl').errors?.pattern">
                 Please enter a valid ZIP code
               </div>
             </div>
           </div>
-
-          <button class="search-button" type="submit">
-            <span>
-              <mat-icon>search</mat-icon>
-            </span>
-          </button>
+          </div>
+          <div class="submit-button-form-group">
+            <button type="submit">Search</button>
+          </div>
         </form>
 
-        <div class="categories-wrapper noselect">
+        <div class="categories-wrapper" *ngIf="!mediaQuery.xs || !mediaQuery.sm">
           <div class="category-wrapper">
             <div class="header">
-              <span class="name">Popular Services</span>
-              <a class="action" routerLink="/services" (click)="findProfessionalService.toggle()">see all</a>
+              <span class="name">Popular Categories</span>
             </div>
 
-            <div class="items row">
-              <div class="col-xs-12 col-sm-6 col-md-3"
-                   *ngFor="let serviceType of popularServiceTypes | cutarraylength:popularServiceSize">
-                <div class="item"
-                     (click)="findProfessionalService.close(); projectActionService.openQuestionaryWithLastZipCode(serviceType)">
-                  {{serviceType.name}}
+            <div class="swiper-container find-professional-swiper">
+              <div class="swiper-wrapper">
+                <div class="swiper-slide" *ngFor="let trade of suggestedTrades">
+                  <div class="trade-content">
+                    <div class="text-content">
+                      <div class="trade-title">{{trade.name}}</div>
+                      <div class="services-count">{{trade.services.length}} services</div>
+                    </div>
+
+                    <div class="image-content" [ngStyle]="{'background-image':'url(' + trade.image + ')'}"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="controls">
+                <div class="previous" (click)="swiper.slidePrev()">
+                  <img src="../../../assets/img/find-professionals/previous-action.svg" alt="Arrow left">
+                </div>
+                <div class="next" (click)="swiper.slideNext()">
+                  <img src="../../../assets/img/find-professionals/next-action.svg" alt="Arrow right">
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="categories-wrapper noselect" *ngIf="recentSearches.length != 0">
+        <div class="categories-wrapper noselect">
+          <div class="category-wrapper">
+            <div class="header">
+              <span class="name">Popular Services</span>
+              <a class="action" *ngIf="!mediaQuery.xs" routerLink="/services" (click)="findProfessionalService.toggle()">See All Services</a>
+            </div>
+
+            <div class="items row" [ngClass]="showMoreActivated? 'show-more-actions': ''">
+              <div *ngFor="let serviceType of popularServiceTypes | cutarraylength:popularServiceSize">
+                <div class="item"
+                     (click)="findProfessionalService.close(); projectActionService.openQuestionaryWithLastZipCode(serviceType)">
+                  {{serviceType.name}}
+                </div>
+              </div>
+              <div *ngIf="mediaQuery.xs && !showMoreActivated" class="show-more-button" (click)="showMore()">See All</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="categories-wrapper noselect" *ngIf="false">
           <div class="category-wrapper">
             <div class="header">
               <span class="name">Recent Searches</span>
@@ -107,23 +137,6 @@
               <div *ngFor="let recentSearch of recentSearches">
                 <div class="item">
                   <a (click)="searchServiceTypeByRecentSearch(recentSearch)">{{recentSearch}}</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="categories-wrapper noselect xs-none sm-none" *ngIf="recentSearches.length == 0">
-          <div class="category-wrapper">
-            <div class="header">
-              <span class="name">Popular Category</span>
-              <a class="action" routerLink="/services" (click)="findProfessionalService.toggle()">see all</a>
-            </div>
-
-            <div class="items row">
-              <div class="col-xs-12 col-sm-6 col-md-3" *ngFor="let trade of popularTrades">
-                <div class="item">
-                  <a [routerLink]="['/', 'category', trade.id]" (click)="findProfessionalService.close()">{{trade.name}}</a>
                 </div>
               </div>
             </div>

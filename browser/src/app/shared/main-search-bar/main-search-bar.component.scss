@@ -6,74 +6,129 @@
 .main-search-form {
   position: relative;
   font-size: 16px;
-  box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.15);
   display: flex;
   justify-content: center;
-  width: 770px;
-  margin: 0 auto;
+  width: 1000px;
+  max-width: 100%;
+  border-radius: 20px;
+  box-shadow: 0px 10px 20px rgba(38, 47, 86, 0.12);
 
   @include response-to(md) {
     width: 100%;
   }
 
-  @include response(xs){
+  @include response-to(sm) {
+    box-shadow: none;
     flex-direction: column;
     max-width: 100%;
   }
 }
 
+.up-direction {
+  cv-select ::ng-deep {
+    .cv-input {
+      &:focus {
+        -webkit-transition: none;
+        transition: none;
+        border-radius: 0 0 0 20px;
+      }
+    }
+  }
+}
+
+.bottom-direction {
+  cv-select ::ng-deep {
+    .cv-input {
+      &:focus {
+        -webkit-transition: none;
+        transition: none;
+        border-radius: 20px 0 0 0;
+      }
+    }
+  }
+
+}
+
 .service-type-form-group {
-  width: 57%;
+  width: 79%;
   z-index: 30;
   position: relative;
 
   @include response-to(sm) {
     width: 100%;
-  }
-  @include response(xs){
     border-bottom: 1px solid $grey-300;
   }
 
   cv-select ::ng-deep {
     .cv-input {
+      padding-left: 30px;
       border-color: $white;
-      height: 59px;
-      font-size: 16px;
-      border-radius: 0;
-      @include response(xs){
-        border: 0;
-        font-size: 16px;
-        height: 45px;
+      height: 80px;
+      font-size: 24px;
+      border-radius: 20px 0 0 20px;
+      -webkit-transition: border-radius 0.2s 0.2s linear;
+      transition: border-radius 0.2s 0.2s linear;
+
+      @include response-to(md) {
+        font-size: 18px;
+      }
+
+      @include response-to(sm) {
+        border-radius: 12px 12px 0 0;
+        font-size: 14px;
+        height: 50px;
       }
     }
+  }
+}
+
+.search-inputs-content {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+
+  @include response-to(sm) {
+    display: flex;
+    flex-direction: column;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(38, 47, 86, 0.12);
+    margin-bottom: 25px;
   }
 }
 
 .mobile-main-search-form {
   position: relative;
   font-size: 16px;
-  box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.15);
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
   width: 100%;
-  height: 45px;
   padding: 0;
   margin: 0 auto;
 }
 
+.mobile-inputs-content {
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 5px 15px rgba(38, 47, 86, 0.12);
+  border-radius: 12px;
+  margin-bottom: 25px;
+}
+
 .mobile-submit-button-form-group {
-  width: 25%;
+  width: 100%;
   z-index: 30;
   position: relative;
 
   button {
-    font-size: 13px;
-    background-image: linear-gradient(to bottom, $primary-400, $primary-600 85%);
+    font-size: 18px;
+    font-weight: bold;
+    background-color: $blue-primary;
     border: none;
-    height: 100%;
+    height: 50px;
     color: $white;
     width: 100%;
+    border-radius: 12px;
 
     &:hover {
       background-image: linear-gradient(to top, $primary-400, $primary-600 85%);
@@ -86,12 +141,14 @@
 }
 
 .mobile-service-type-form-group {
-  width: 75%;
+  width: 100%;
+  height: 50px;
   z-index: 30;
   position: relative;
   border-bottom: 1px solid $grey-300;
 
   .mobile-main-search-service-input {
+    border-radius: 12px;
     border: 0;
     font-size: 16px;
     padding: 0;
@@ -102,19 +159,17 @@
 }
 
 .zip-code-form-group {
+  z-index: 1;
   min-width: 106px;
-  width: 20%;
+  width: 21%;
   position: relative;
 
   @include response-to(sm) {
-  }
-
-  @include response(xs){
     width: 100%;
-    border-bottom: 1px solid $grey-300;
   }
 
   .main-search-zip-input-wrapper {
+    z-index: 3;
     display: flex;
     flex-direction: row;
     justify-items: center;
@@ -122,6 +177,11 @@
     padding: 0 15px;
     background-color: white;
     border-left: solid 1px $grey-250;
+
+    @include response-to(sm) {
+      border: none;
+      border-radius: 0 0 12px 12px;
+    }
 
     mat-icon {
       margin-top: -5px;
@@ -133,44 +193,51 @@
     .main-search-zip-input {
       width: 100%;
       border: none;
-      height: 59px;
-      font-size: 16px;
+      height: 80px;
+      font-size: 24px;
       border-radius: 0;
 
-      @include response-to(sm) {
+      @include response-to(md) {
+        font-size: 18px;
       }
 
-      @include response(xs){
+      @include response-to(sm) {
         width: 100%;
-        font-size: 16px;
-        height: 45px;
+        font-size: 14px;
+        height: 50px;
       }
     }
-
   }
 }
 
 .submit-button-form-group {
-  width: 24%;
+  width: 21%;
   z-index: 30;
   position: relative;
   min-width: 130px;
 
-  @include response(xs) {
+  @include response-to(sm) {
     width: 100%;
   }
 
   button {
-    font-size: 16px;
-    background-image: linear-gradient(to bottom, $primary-400, $primary-600 85%);
+    font-weight: bold;
+    font-size: 24px;
+    background-color: $blue-primary;
     border: none;
-    height: 59px;
+    height: 80px;
     color: $white;
     width: 100%;
+    border-radius: 0 20px 20px 0;
 
-    @include response(xs){
-      height: 45px;
-      font-size: 13px;
+    @include response-to(md) {
+      font-size: 20px;
+    }
+
+    @include response-to(sm) {
+      height: 50px;
+      font-size: 18px;
+      border-radius: 12px;
     }
 
     &:hover {
@@ -180,25 +247,61 @@
     &:active {
       background: $primary-500 none;
     }
-
   }
+}
 
+.service-type-error {
+  padding-left: 20px;
+  border-bottom-left-radius: 20px;
+  box-shadow: 0 20px 20px -10px rgba(38, 47, 86, 0.12);
+}
+
+.zip-error {
+  z-index: -1 !important;
+  border-bottom-right-radius: 20px;
+  border-left: 1px solid $grey-250;
+  box-shadow: 0 10px 20px rgba(38, 47, 86, 0.12);
+}
+
+.main-search-service-input {
+  z-index: 2;
+  border-radius: 20px 0 0 20px;
 }
 
 .error-holder {
-  z-index: 10;
-  font-size: 10px;
-  background-color: $grey-100;
+  z-index: 1;
+  height: 50px;
+  font-size: 12px;
+  background-color: #FFFFFF;
   position: absolute;
   left: 0;
+  line-height: 60px;
   right: 0;
-  bottom: 0;
+  top: 10px;
   transform: translateY(100%);
+
   >div {
     padding: 5px;
     color: $red;
-    &:last-child {
-      border-left: 1px solid $grey-250;
-    }
   }
 }
+
+.service-type-box-shadow-line {
+  width: calc(100% - 3px);
+  height: 20px;
+  background-color: #FFFFFF;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 0 0 0 20px;
+  box-shadow: 0 6px 10px rgba(38, 47, 86, 0.12);
+}
+
+.zip-box-shadow-line {
+  width: 100%;
+  height: 1px;
+  position: absolute;
+  top: 10px;
+  box-shadow: 0 6px 10px rgba(38, 47, 86, 0.12);
+}
+
