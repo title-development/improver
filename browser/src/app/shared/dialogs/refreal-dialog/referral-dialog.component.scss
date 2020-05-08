@@ -38,12 +38,22 @@
   justify-content: center;
 
   .cv-button {
+    width: 25%;
+
+    @include response-to(xs) {
+      width: 33%;
+    }
+
     &:not(:first-child) {
       margin-left: 8px;
     }
-    width: 25%;
-    @include response-to(xs) {
-      width: 33%;
+
+    ::ng-deep .button-inner{
+      align-items: baseline !important;
+
+      cv-icon {
+        margin-right: 4px;
+      }
     }
   }
 

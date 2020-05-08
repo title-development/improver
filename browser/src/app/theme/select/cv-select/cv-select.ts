@@ -5,7 +5,8 @@ import {
   ElementRef,
   EmbeddedViewRef,
   EventEmitter,
-  forwardRef, HostListener,
+  forwardRef,
+  HostListener,
   Inject,
   Input,
   OnDestroy,
@@ -151,6 +152,13 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
     }
 
   }
+
+  // ngAfterViewInit(): void {
+  //   this.overlayRef.$isDropdownOpenedTop.subscribe(isUpDirection => {
+  //     this.isDropdownOpenedTop = isUpDirection;
+  //     this.changeDetectorRef.detectChanges();
+  //   });
+  // }
 
   @HostListener('ngModelChange', ['$event']) onModelChange(value: any) {
     if (!value) {

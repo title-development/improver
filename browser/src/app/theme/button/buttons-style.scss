@@ -3,7 +3,7 @@
   font-size: 14px;
   font-weight: 400;
   border: none;
-  border-radius: 2px;
+  border-radius: 8px;
   padding: 8px 16px;
   margin: 0;
   outline: none;
@@ -48,8 +48,5 @@
     height: 11px;
     display: inline-block;
     margin-left: 5px;
-  }
-  &.rounded {
-    border-radius: 8px;
   }
 }

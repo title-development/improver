@@ -1,5 +1,5 @@
 <div class="select-open" #targetElement
-     [ngClass]="{'-opened': opened, '-tags': tags, '-default-autocomplete': !multiple && autocomplete && !tags}"
+     [ngClass]="{'-opened': opened, '-tags': tags, '-default-autocomplete': !multiple && autocomplete && !tags, '-overlay-on-top': (overlayRef.$isDropdownOpenedTop | async)}"
      (click)="openDropdown()">
   <ng-container *ngIf="!multiple && !autocomplete && !tags">
     <div class="select-label" [ngClass]="{'-has-items': selectedItemsCount > 0}">{{ selectedLabel ? selectedLabel :

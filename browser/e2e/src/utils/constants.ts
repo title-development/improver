@@ -81,7 +81,7 @@ export const signUpProHints = {
   coverageRadius: "You can adjust the center of the coverage by clicking and dragging it elsewhere.",
   offeredServices: "Select services you offer and want to receive leads for. You can always change offered services in your account settings later.",
   businessCategories: "Services are grouped into Trades for easier configuration. Add the entire Trades or select particular Services.",
-  checkService: "Please check any Service Type that applies to you"
+  checkService: "Please check any Service that applies to you"
 };
 
 export const validPaymentCard = {

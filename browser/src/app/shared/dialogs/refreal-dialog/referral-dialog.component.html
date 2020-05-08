@@ -9,8 +9,8 @@
     <div [cvSpinner]="fetching" [cvSpinnerSize]="24" [cvSpinnerBackground]="true">
       <div class="content" >
         <p>Introduce a friend to Home Improve.
-          They'll get {{constants.REFERRAL_BONUS_AMOUNT / 100 | currency:'USD':'symbol':'0.0-0'}} when they sign up and do first purchase,
-          and you'll get {{constants.REFERRAL_BONUS_AMOUNT / 100 | currency:'USD':'symbol':'0.0-0'}} credit once they complete their first purchase. Only for new Home Improve members</p>
+          They'll get <b>{{constants.REFERRAL_BONUS_AMOUNT / 100 | currency:'USD':'symbol':'0.0-0'}}</b> when they sign up and do first purchase,
+          and you'll get <b>{{constants.REFERRAL_BONUS_AMOUNT / 100 | currency:'USD':'symbol':'0.0-0'}}</b> credit once they complete their first purchase.</p>
       </div>
       <div class="actions">
         <button cv-button ngxClipboard [cbContent]="referralUrl">Copy url</button>

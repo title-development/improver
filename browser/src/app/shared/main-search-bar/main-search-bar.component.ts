@@ -1,15 +1,15 @@
 import {
-	AfterViewInit,
-	ChangeDetectorRef,
-	Component,
-	ElementRef,
-	EventEmitter,
-	Input,
-	OnChanges,
-	OnInit,
-	Output,
-	SimpleChanges,
-	ViewChild
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+  ViewChild
 } from '@angular/core';
 import { markAsTouched } from '../../util/functions';
 import { ServiceType } from '../../model/data-model';
@@ -30,7 +30,6 @@ import { MediaQuery, MediaQueryService } from "../../util/media-query.service";
 import { takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
 import { mobileMainDialogBarConfig } from "../dialogs/dialogs.configs";
-import { OverlayRef } from "../../theme/util/overlayRef";
 import { MobileMenuService } from "../../util/mobile-menu-service";
 
 @Component({
@@ -54,11 +53,9 @@ export class MainSearchBarComponent implements OnInit, OnChanges, AfterViewInit 
   mobileSearchDialogRef: MatDialogRef<any>;
   lastZipCode: string;
   media: MediaQuery;
-  isDropdownOpenedTop: boolean = false;
   private readonly destroyed$ = new Subject<void>();
 
   constructor(public dialog: MatDialog,
-              public overlayRef: OverlayRef,
               public projectActionService: ProjectActionService,
               public constants: Constants,
               public userService: UserService,
@@ -81,10 +78,6 @@ export class MainSearchBarComponent implements OnInit, OnChanges, AfterViewInit 
   }
 
   ngAfterViewInit(): void {
-		this.overlayRef.$isDropdownOpenedTop.subscribe(isUpDirection => {
-			this.isDropdownOpenedTop = isUpDirection;
-			this.changeDetectorRef.detectChanges();
-		});
 	}
 
 	ngOnInit(): void {

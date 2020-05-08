@@ -19,7 +19,7 @@
   font-weight: 500;
   line-height: 16px;
   border: 1px solid $grey-300;
-  border-radius: 2px;
+  border-radius: 8px;
   padding: 11px 16px;
   padding-right: 35px;
   margin: 0;
@@ -44,6 +44,28 @@
   }
   &.-opened {
     border-color: $primary-500;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+
+    .cv-input {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    &.-overlay-on-top {
+      border-bottom-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+
+      .cv-input {
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+      }
+    }
+
     .dropdown-icon {
       &:after {
         transform: rotate(180deg);
@@ -71,7 +93,7 @@
     position: relative;
     display: flex;
     flex-direction: row;
-    border-radius: 1px;
+    border-radius: 8px;
     margin-bottom: 9px;
     span {
       line-height: 12px;
