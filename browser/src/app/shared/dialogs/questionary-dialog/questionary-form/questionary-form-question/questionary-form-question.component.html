@@ -138,9 +138,9 @@
   </div>
 
   <div class="questionary-dialog-footer" fxLayoutAlign="end center">
-    <button class="questionary-previous-button" (click)="questionaryControlService.previousQuestion()" type="button" *ngIf="!questionaryControlService.withZip || !questionaryControlService.withServiceType || index > 0">Back</button>
+    <button cv-button class="questionary-previous-button" (click)="questionaryControlService.previousQuestion()" type="button" *ngIf="!questionaryControlService.withZip || !questionaryControlService.withServiceType || index > 0">Back</button>
     <div fxFlex=""></div>
-    <button class="questionary-next-button" (click)="nextQuestion()" type="button">Next</button>
+    <button cv-button class="questionary-next-button" (click)="nextQuestion()" type="button">Next</button>
   </div>
 
 </div>

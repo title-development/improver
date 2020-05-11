@@ -18,8 +18,8 @@
     </div>
 
     <div class="questionary-dialog-footer">
-      <button class="questionary-previous-button" (click)="questionaryControlService.previousQuestion()" *ngIf="!questionaryControlService.withZip || questionaryControlService.trade || questionaryControlService.currentQuestionIndex >= 1" type="button">Back</button>
-      <button class="questionary-next-button" (click)="nextQuestion('startExpectation')" type="button">Next</button>
+      <button cv-button-empty class="questionary-previous-button" (click)="questionaryControlService.previousQuestion()" *ngIf="!questionaryControlService.withZip || questionaryControlService.trade || questionaryControlService.currentQuestionIndex >= 1" type="button">Back</button>
+      <button cv-button class="questionary-next-button" (click)="nextQuestion('startExpectation')" type="button">Next</button>
     </div>
 
   </div>
@@ -49,8 +49,8 @@
     </div>
 
     <div class="questionary-dialog-footer">
-      <button class="questionary-previous-button" (click)="questionaryControlService.previousQuestion()" type="button">Back</button>
-      <button class="questionary-next-button" (click)="nextQuestion('notes')" type="button">Next</button>
+      <button cv-button-empty class="questionary-previous-button" (click)="questionaryControlService.previousQuestion()" type="button">Back</button>
+      <button cv-button class="questionary-next-button" (click)="nextQuestion('notes')" type="button">Next</button>
     </div>
 
   </div>
@@ -160,18 +160,18 @@
 
     <div class="questionary-dialog-footer" [cvSpinner]="postOrderProcessing"
          [cvSpinnerSize]="20">
-      <button class="questionary-previous-button" (click)="questionaryControlService.previousQuestion()" type="button"
+      <button cv-button-empty class="questionary-previous-button" (click)="questionaryControlService.previousQuestion()" type="button"
               *ngIf="!hideNextAction && !postOrderProcessing">Back
       </button>
       <button *ngIf="(securityService.hasRole(Role.ANONYMOUS) && !hideNextAction && !postOrderProcessing) ||
                      (securityService.hasRole(Role.CUSTOMER) && !hideNextAction && !postOrderProcessing && !questionaryControlService.customerHasPhone)"
-              class="questionary-next-button"
+              cv-button class="questionary-next-button"
               (click)="nextQuestion('projectLocation', validateLocation)" type="button"
               [disabled]="disabledNextAction">
         Next
       </button>
       <button *ngIf="securityService.hasRole(Role.CUSTOMER) && !hideNextAction && !postOrderProcessing && questionaryControlService.customerHasPhone"
-              class="questionary-next-button"
+              cv-button class="questionary-next-button"
               (click)="onSubmit('projectLocation', validateLocation)" type="button" [disabled]="disabledNextAction">
         Submit
       </button>
@@ -263,14 +263,14 @@
     <phone-validation *ngIf="processingPhoneValidation" [showEditButton]="true" [phoneNumber]="defaultQuestionaryForm.get('customerPersonalInfo.phone').value" (onSuccess)="onPhoneValidated()" (onPhoneNumberChangeClick)="editPhoneAgain()"></phone-validation>
 
     <div class="questionary-dialog-footer" *ngIf="!processingPhoneValidation" [cvSpinner]="postOrderProcessing" [cvSpinnerSize]="20">
-      <button class="questionary-previous-button" (click)="questionaryControlService.previousQuestion()" type="button" [disabled]="postOrderProcessing">Back</button>
-      <button *ngIf="securityService.hasRole(Role.ANONYMOUS)" class="questionary-next-button"
+      <button cv-button-empty class="questionary-previous-button" (click)="questionaryControlService.previousQuestion()" type="button" [disabled]="postOrderProcessing">Back</button>
+      <button *ngIf="securityService.hasRole(Role.ANONYMOUS)" cv-button class="questionary-next-button"
               (click)="nextQuestion('customerPersonalInfo', validatePhone); checkEmail(defaultQuestionaryForm.get('customerPersonalInfo.email').value)"
               type="button">Next
       </button>
 
       <button *ngIf="securityService.hasRole(Role.CUSTOMER) && !questionaryControlService.customerHasPhone"
-              class="questionary-next-button"
+              cv-button class="questionary-next-button"
               (click)="onSubmit('customerPersonalInfo', validatePhone)" type="button" [disabled]="disabledNextAction">
         Submit
       </button>
@@ -316,15 +316,15 @@
 
     <div class="questionary-dialog-footer" fxLayoutAlign="end center" [cvSpinner]="postOrderProcessing"
          [cvSpinnerSize]="20">
-      <button class="questionary-previous-button" (click)="questionaryControlService.previousQuestion()" type="button"
+      <button cv-button-empty class="questionary-previous-button" (click)="questionaryControlService.previousQuestion()" type="button"
               *ngIf="((emailIsChecked && emailIsUnique) || emailIsUnique == undefined) && !postOrderProcessing">Back
       </button>
       <div fxFlex=""></div>
-      <button class="questionary-next-button" (click)="close()" type="button"
+      <button cv-button class="questionary-next-button" (click)="close()" type="button"
               *ngIf="emailIsChecked && !emailIsUnique && !postOrderProcessing">
         Ok
       </button>
-      <button class="questionary-next-button" (click)="onSubmit()" type="button"
+      <button cv-button class="questionary-next-button" (click)="onSubmit()" type="button"
               *ngIf="emailIsChecked && emailIsUnique && !postOrderProcessing">Submit
       </button>
     </div>

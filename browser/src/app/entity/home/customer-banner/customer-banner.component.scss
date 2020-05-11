@@ -4,12 +4,14 @@
   background-color: white;
 
   @include response-to(sm) {
-    padding: 0px 24px;
+    padding: 8px 24px 40px;
   }
 
   @include response-to(xs) {
-    padding: 0px 0px 0px 20px;
+    padding: 8px 20px 36px;
   }
+
+  padding-bottom: 60px;
 
 }
 
@@ -18,11 +20,6 @@
   height: 100%;
   max-width: $content-grid-max-width;
   border-radius: 16px;
-
-  @include response-to(xs) {
-    border-bottom-right-radius: 0px;
-    border-top-right-radius: 0px;
-  }
 
   @include response-from(md) {
     width: calc(100% - 48px);
@@ -149,8 +146,26 @@
 
   }
 
+}
+
+
+::ng-deep .swiper-pagination {
+  position: relative;
+  margin-top: 24px;
+
+  ::ng-deep .swiper-pagination-bullet {
+    width: 10px;
+    height: 10px;
+    text-align: center;
+    line-height: 20px;
+    background: rgba($dark, 0.2);
+    opacity: 0.45;
+    margin: 0px 10px;
+  }
+
   ::ng-deep .swiper-pagination-bullet-active {
-    background: $blue-primary;
+    background: rgba($dark, 0.2);
+    opacity: 1;
   }
 
 }

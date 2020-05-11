@@ -65,7 +65,7 @@
     </div>
 
     <div class="questionary-dialog-footer">
-      <button *ngIf="!questionaryControlService.withServiceType" class="questionary-previous-button" (click)="questionaryControlService.previousQuestion()" type="button"
+      <button *ngIf="!questionaryControlService.withServiceType" cv-button-empty class="questionary-previous-button" (click)="questionaryControlService.previousQuestion()" type="button"
               [disabled]="defaultQuestionaryForm.get('projectLocation.zip').invalid">
         Back
       </button>

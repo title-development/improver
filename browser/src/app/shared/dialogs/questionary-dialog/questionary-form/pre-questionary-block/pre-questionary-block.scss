@@ -100,45 +100,10 @@
   min-height: 33px;
 
   .questionary-previous-button {
-    padding: 8px 16px;
-    font-size: 14px;
-    border: none;
-    color: #6a6969;
-    background-color: transparent;
-
-    &:hover {
-      color: #333333;
-    }
-
-    &:active {
-      color: #333333;
-    }
   }
 
   .questionary-next-button {
     margin-left: auto;
-    font-size: 14px;
-    background-image: linear-gradient(to bottom, $primary-500, $primary-600);
-    border: none;
-    padding: 8px 16px;
-    color: $white;
-    box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.15);
-
-    &:hover {
-      background-image: linear-gradient(to top, $primary-500, $primary-600);
-    }
-
-    &:disabled, &[disabled] {
-      background: $primary-300;
-      box-shadow: none;
-      cursor: not-allowed;
-      color: $white;
-    }
-
-    &:active {
-      background: $primary-500 none;
-    }
-
   }
 
 }
