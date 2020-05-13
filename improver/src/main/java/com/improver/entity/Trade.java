@@ -4,6 +4,8 @@ import com.improver.model.admin.AdminTrade;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,7 +31,9 @@ public class Trade {
     @Column(columnDefinition = "boolean default false")
     private boolean isAdvertised = false;
 
-    private String imageUrl;
+    @Column(columnDefinition = "varchar(1000)")
+    private String imageUrls;
+
 
     @ManyToMany
     @JoinTable(name = "trades_service_types",
@@ -41,11 +45,11 @@ public class Trade {
     @ManyToMany(mappedBy = "trades", fetch = FetchType.LAZY)
     private List<Company> companies;
 
-    public Trade(AdminTrade adminTrade, String imageUrl, List<ServiceType> serviceTypes) {
+    public Trade(AdminTrade adminTrade, String imageUrls, List<ServiceType> serviceTypes) {
         this.name = adminTrade.getName();
         this.description = adminTrade.getDescription();
         this.rating = adminTrade.getRating();
-        this.imageUrl = imageUrl;
+        this.imageUrls = imageUrls;
         this.isAdvertised = adminTrade.getIsAdvertised();
         this.serviceTypes = serviceTypes;
     }
@@ -53,5 +57,13 @@ public class Trade {
     public void removeServiceTypeById(long id) {
         getServiceTypes().removeIf(serviceType -> serviceType.getId() == id);
         serviceTypes = serviceTypes.stream().filter(serviceType -> serviceType.getId() != id).collect(Collectors.toList());
+    }
+
+    public List<String> getImageUrlsFromString() {
+        if (this.imageUrls != null) {
+            return new ArrayList<>(Arrays.asList(this.imageUrls.split(",")));
+        }
+
+        return new ArrayList<>();
     }
 }

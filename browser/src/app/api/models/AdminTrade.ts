@@ -4,15 +4,15 @@ export class AdminTrade {
    id: number;
    name: string;
    description: string;
-   imageUrl: string;
+   imageUrls: Array<string>;
    rating: number;
    isAdvertised: boolean;
    services: Array<ServiceType>;
 
-  constructor(name: string, description: string, imageUrl: string, rating: number, isAdvertised: boolean, services: Array<ServiceType>) {
+  constructor(name: string, description: string, imageUrl: Array<string>, rating: number, isAdvertised: boolean, services: Array<ServiceType>) {
     this.name = name;
     this.description = description;
-    this.imageUrl = imageUrl;
+    this.imageUrls = imageUrl;
     this.rating = rating;
     this.isAdvertised = isAdvertised;
     this.services = services;

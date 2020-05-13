@@ -3,13 +3,11 @@ package com.improver.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.improver.model.admin.AdminTrade;
 import com.improver.repository.TradeRepository;
+import com.improver.security.annotation.AdminAccess;
 import com.improver.security.annotation.StaffAccess;
 import com.improver.security.annotation.SupportAccess;
 import com.improver.service.TradeService;
 import com.improver.util.annotation.PageableSwagger;
-import com.improver.security.annotation.AdminAccess;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 import static com.improver.application.properties.Path.*;
 import static com.improver.util.serializer.SerializationUtil.fromJson;
@@ -46,6 +46,20 @@ public class TradeController {
         return new ResponseEntity<>(trades, HttpStatus.OK);
     }
 
+    @PutMapping(ID_PATH_VARIABLE + IMAGES)
+    public ResponseEntity<List<String>> updateTradeImages(@PathVariable long id,
+                                                          @RequestParam(value = "index") int index,
+                                                          @RequestPart(value = "file") MultipartFile file){
+        List<String> imageUrls = tradeService.updateTradeImages(id, index, file);
+        return new ResponseEntity<>(imageUrls, HttpStatus.OK);
+    }
+
+    @DeleteMapping(ID_PATH_VARIABLE + IMAGES)
+    public ResponseEntity<Void> deleteTradeImage(@PathVariable long id,
+                                                 @RequestParam String imageUrl){
+        tradeService.deleteTradeImageByImageUrl(id, imageUrl);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
     @GetMapping(ID_PATH_VARIABLE)
     public ResponseEntity<AdminTrade> getTradeById(@PathVariable long id) {
@@ -58,11 +72,10 @@ public class TradeController {
     @AdminAccess
     @PutMapping(value = ID_PATH_VARIABLE)
     ResponseEntity<Void> updateTrade(@PathVariable long id,
-                                     @RequestPart(value = "data") String data,
-                                     @RequestPart(value = "file", required = false) MultipartFile image) {
+                                     @RequestPart(value = "data") String data) {
         AdminTrade adminTrade = fromJson(new TypeReference<AdminTrade>() {
         }, data);
-        tradeService.updateTrade(id, adminTrade, image);
+        tradeService.updateTrade(id, adminTrade);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

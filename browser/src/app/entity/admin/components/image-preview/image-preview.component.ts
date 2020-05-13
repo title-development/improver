@@ -1,7 +1,21 @@
-import { Component, ElementRef, EventEmitter, Inject, Input, Output, Renderer2, ViewChild } from '@angular/core';
+import {
+	AfterViewInit,
+	ChangeDetectorRef,
+	Component,
+	ElementRef,
+	EventEmitter,
+	Inject,
+	Input,
+	OnDestroy,
+	Output,
+	Renderer2,
+	ViewChild
+} from '@angular/core';
 import { ALLOWED_FILE_EXTENTIONS, MAX_FILE_SIZE } from '../../../../util/file-parameters';
 import { ConfirmationService } from 'primeng';
 import { PopUpMessageService } from "../../../../util/pop-up-message.service";
+import { DragulaService } from "ng2-dragula";
+import { Subject } from "rxjs";
 
 let index: number = 0;
 
@@ -10,37 +24,55 @@ let index: number = 0;
   templateUrl: './image-preview.component.html',
   styleUrls: ['./image-preview.component.scss']
 })
-export class ImagePreviewComponent {
+export class ImagePreviewComponent implements OnDestroy, AfterViewInit {
 
-  @Input() image: string;
+  @Input() images: Array<string> = [];
+  @Input() maxImagesNumber = 1;
   @Input() previewSize: number = 120;
   @Input() disabled: boolean = false;
   @Input() confirmTitle: string = 'Delete image';
-  @Output() fileChange: EventEmitter<File> = new EventEmitter<File>();
+  @Output() fileChange: EventEmitter<any> = new EventEmitter<any>();
+  @Output() sortedImageUrls: EventEmitter<Array<string>> = new EventEmitter<Array<string>>();
   @Output() delete: EventEmitter<any> = new EventEmitter<any>();
   @ViewChild('file') fileInput: ElementRef;
 
+	private readonly destroyed$ = new Subject<void>();
+  mainImageSize = this.previewSize + 30;
   index = index++;
+  imageIndex: number;
   hash: number;
 
   constructor(private popUpService: PopUpMessageService,
               private renderer: Renderer2,
               private confirmationService: ConfirmationService,
+              public changeDetectorRef: ChangeDetectorRef,
+              private dragulaService: DragulaService,
               @Inject('Window') private window: Window,) {
     this.hash = Math.floor(1000 + Math.random() * 9000);
+
+    this.dragulaService.createGroup('images-drag-group', {
+      direction: 'horizontal'
+    });
+  }
+
+  setTargetIndex(index: number){
+    this.imageIndex = index;
   }
 
   onFileChange(event): void {
     if (event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
       if (this.validateFile(file)) {
-        this.fileChange.emit(file);
-        this.readImage(file);
+        let imageIndex = this.imageIndex >= 0? this.imageIndex: this.images.length + 1;
+        this.fileChange.emit({index: imageIndex, file: file});
+        this.readImage(file, imageIndex);
+        this.imageIndex = undefined;
+        this.changeDetectorRef.detectChanges();
       }
     }
   }
 
-  readImage(file) {
+  readImage(file, index: number) {
     let reader = new FileReader();
     let img = new Image();
     let resized = new Image();
@@ -62,9 +94,14 @@ export class ImagePreviewComponent {
         rtr.drawImage(img, 0, 0, resizeCanvas.width, resizeCanvas.height);
 
         resizeCanvas.toBlob(blob => {
-          this.fileChange.emit(new File([blob], 'image.jpg', {type: 'image/jpeg', lastModified: Date.now()}));
+          this.fileChange.emit({index: index, file: new File([blob], file.name, {type: 'image/jpeg', lastModified: Date.now()}), lastChange: true });
         }, 'image/jpeg', 0.7);
-        this.image = canvas.toDataURL('image/jpeg', 0.7);
+        if (this.maxImagesNumber == 1) {
+          this.images = [canvas.toDataURL('image/jpeg', 0.7)];
+        } else {
+          this.images.splice(index, 1, canvas.toDataURL('image/jpeg', 0.7));
+          this.changeDetectorRef.detectChanges();
+        }
       };
     };
 
@@ -73,15 +110,17 @@ export class ImagePreviewComponent {
     }
   }
 
-  removeImage(event: Event): void {
+  removeImage(event): void {
     this.confirmationService.confirm({
       header: this.confirmTitle,
       message: `Do you want to delete image?`,
       accept: () => {
-        this.fileChange.emit(null);
+        if (this.maxImagesNumber == 1) {
+          this.fileChange.emit({index: null, file: null});
+          this.images = [];
+        }
         this.fileInput.nativeElement.value = '';
-        this.delete.emit();
-        this.image = null;
+        this.delete.emit(event);
       }
     });
   }
@@ -123,4 +162,20 @@ export class ImagePreviewComponent {
 
     return canvas;
   }
+
+	ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
+    this.dragulaService.destroy('images-drag-group');
+  }
+
+  ngAfterViewInit(): void {
+    this.images.forEach( image => {
+      if (this.images.length == 1 && image == null) {
+        this.images = [];
+        this.changeDetectorRef.detectChanges();
+      }
+    });
+  }
+
 }

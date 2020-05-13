@@ -1,14 +1,15 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TradeService } from '../../../../api/services/trade.service';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { ServiceTypeService } from '../../../../api/services/service-type.service';
-import { ServiceType } from '../../../../model/data-model';
+import { ServiceType, SystemMessageType } from '../../../../model/data-model';
 import { SelectItem } from 'primeng/api';
 import { AdminTrade } from '../../../../api/models/AdminTrade';
 import { first, switchMap } from "rxjs/internal/operators";
 import { PopUpMessageService } from "../../../../util/pop-up-message.service";
 import { Location } from '@angular/common';
+import { getErrorMessage } from "../../../../util/functions";
 
 @Component({
   selector: 'trade-edit',
@@ -22,12 +23,14 @@ export class TradesEditComponent {
   mode: 'new' | 'view' | 'edit';
   previousName: string;
   private newImage: File;
+  private readonly destroyed$ = new Subject<void>();
 
   constructor(private route: ActivatedRoute,
               private router: Router,
               private tradeService: TradeService,
               private serviceTypeService: ServiceTypeService,
               private popUpService: PopUpMessageService,
+							public changeDetectorRef: ChangeDetectorRef,
               public location: Location) {
     this.route.params.pipe(
       first(),
@@ -36,7 +39,7 @@ export class TradesEditComponent {
         if (params['id']) {
           return this.tradeService.getTradeById(params['id']);
         } else {
-          return of(new AdminTrade('', '', '', 0, false, []));
+          return of(new AdminTrade('', '', [], 0, false, []));
         }
       }),
       switchMap((trade: AdminTrade) => {
@@ -67,9 +70,6 @@ export class TradesEditComponent {
 
   addUpdateTrade(): void {
     const formData: FormData = new FormData();
-    if (this.newImage) {
-      formData.append('file', this.newImage);
-    }
     formData.append('data', JSON.stringify(this.trade));
     if (this.trade && this.trade.id) {
       this.tradeService.updateTradeById(this.trade.id, formData).subscribe(res => {
@@ -97,10 +97,43 @@ export class TradesEditComponent {
     });
   }
 
-  addImage(event: File): void {
-    if (!event) {
-      this.trade.imageUrl = null;
-    }
-    this.newImage = event;
+  addNewImage(image){
+  	if (image.file){
+			this.newImage = image.file;
+			if (image.lastChange) {
+				this.updateTradeImages(image.index);
+			}
+		}
+  }
+
+	updateTradeImages(index: number) {
+      let data = new FormData();
+      data.append('file', this.newImage);
+      this.tradeService.updateTradeImages(this.trade.id, data, index.toString()).subscribe(response => {
+        this.trade.imageUrls = response;
+        this.newImage = null;
+				this.changeDetectorRef.detectChanges();
+      }, error => this.popUpService.showError(getErrorMessage(error)));
+	}
+
+	deleteImage(imageUrl: string) {
+  	this.tradeService.deleteTradeImage(this.trade.id, imageUrl).subscribe(response => {
+  		let index = this.trade.imageUrls.indexOf(imageUrl);
+  		this.trade.imageUrls.splice(index, 1);
+  		this.changeDetectorRef.detectChanges();
+			this.popUpService.showMessage(
+				{
+					text: 'Image has been deleted.',
+					type: SystemMessageType.INFO,
+					timeout: 5000
+				}
+			);
+			this.changeDetectorRef.detectChanges();
+		}, error => this.popUpService.showError(getErrorMessage(error)));
+	}
+
+  ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 }

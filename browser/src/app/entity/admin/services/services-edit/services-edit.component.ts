@@ -18,6 +18,7 @@ import { Location } from '@angular/common';
 export class ServicesEditComponent {
   pageTitle: string = '';
   serviceType: AdminServiceType;
+  imageUrl: string;
   trades: Array<SelectItem>;
   mode: 'new' | 'view' | 'edit';
   previousName: string;
@@ -45,6 +46,7 @@ export class ServicesEditComponent {
           serviceType.leadPrice /= 100;
           this.serviceType = serviceType;
           this.previousName = serviceType.name;
+          this.imageUrl = serviceType.imageUrl;
 
           return this.tradeService.getAllAsModel();
         } else {
@@ -104,10 +106,10 @@ export class ServicesEditComponent {
     });
   }
 
-  addImage(event: File): void {
-    if (!event) {
+  addImage(event): void {
+    if (!event.file) {
       this.serviceType.imageUrl = null;
     }
-    this.newImage = event;
+    this.newImage = event.file;
   }
 }

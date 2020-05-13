@@ -12,6 +12,7 @@ export class TradeService {
   private catalogUrl = 'api/catalog';
   private tradesCatalogUrl = `${this.catalogUrl}/trades`;
   private tradesUrl = 'api/trades';
+  private imagesUrl = '/images';
 
   private _popular$: ReplaySubject<Array<ServiceType>> = new ReplaySubject<Array<ServiceType>>(1);
   private _trades$: ReplaySubject<Array<ServiceType>> = new ReplaySubject<Array<ServiceType>>(1);
@@ -41,6 +42,14 @@ export class TradeService {
   updateTradeById(id: number, formData: FormData): Observable<any> {
     return this.http.put(`${this.tradesUrl}/${id}`, formData);
   }
+
+  updateTradeImages(id: number, data: FormData, index: string): Observable<Array<string>> {
+    return this.http.put<Array<string>>(`${this.tradesUrl}/${id}${this.imagesUrl}`, data, {params: {'index': index}});
+  }
+
+  deleteTradeImage(id: number, imageUrl: string): Observable<any> {
+  	return this.http.delete(`${this.tradesUrl}/${id}${this.imagesUrl}`, {params: {'imageUrl': imageUrl}})
+	}
 
   createTrade(formData: FormData): Observable<any> {
     return this.http.post(this.tradesUrl, formData);

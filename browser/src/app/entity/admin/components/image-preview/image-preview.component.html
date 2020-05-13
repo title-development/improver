@@ -1,15 +1,26 @@
-<div class="preview" *ngIf="image" [ngStyle]="{'background-image': 'url('+image+')', 'width': previewSize + 'px', 'height': previewSize + 'px'}">
-  <div class="actions" *ngIf="!disabled">
-    <label for="file{{index}}" pButton type="button" icon="fa fa-pencil" class="ui-button-info"></label>
-    <button pButton type="button" icon="fa fa-trash" class="ui-button-danger" (click)="removeImage($event)"></button>
-  </div>
-</div>
-<div *ngIf="!disabled">
-  <label pButton for="file{{index}}" label="Add Image" *ngIf="!image"></label>
-  <input type="file" id="file{{index}}" #file (change)="onFileChange($event)" [disabled]="disabled">
+<div class="draggable-wrapper" [dragula]="'images-drag-group'" [(dragulaModel)]="images" (dragulaModelChange)="sortedImageUrls.emit($event)">
+    <ng-container *ngFor="let image of images; let i=index">
+        <div class="preview-wrapper">
+            <div class="preview" *ngIf="image"
+                 [ngStyle]="{'background-image': 'url('+image+')', 'width': i == 0? mainImageSize + 'px' :previewSize + 'px', 'height': i == 0? mainImageSize + 'px': previewSize + 'px'}"></div>
+            <div class="actions-content">
+                <div class="actions" *ngIf="!disabled">
+                    <label for="file{{index}}" pButton type="button" icon="fa fa-pencil" class="ui-button-info" (click)="setTargetIndex(i)"></label>
+                    <button pButton type="button" icon="fa fa-trash" class="ui-button-danger"
+                            (click)="removeImage(image)"></button>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="disabled && !image">
+            No image
+        </div>
+    </ng-container>
+
+    <p-confirmDialog [header]="confirmTitle" icon="pi pi-question-circle" [key]="'delete-image'+hash+index"
+                     width="425"></p-confirmDialog>
 </div>
 
-<div *ngIf="disabled && !image">
-  No image
+<div *ngIf="!disabled">
+    <label pButton for="file{{index}}" label="Add Image" *ngIf="images.length < maxImagesNumber"></label>
+    <input type="file" id="file{{index}}" #file (change)="onFileChange($event)" [disabled]="disabled">
 </div>
-<p-confirmDialog [header]="confirmTitle" icon="pi pi-question-circle" [key]="'delete-image'+hash+index" width="425"></p-confirmDialog>

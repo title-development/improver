@@ -9,6 +9,7 @@ import { PopUpMessageService } from "../../../util/pop-up-message.service";
 import { getErrorMessage } from "../../../util/functions";
 import { takeUntil } from "rxjs/operators";
 import { MediaQuery, MediaQueryService } from "../../../util/media-query.service";
+import { AdminTrade } from "../../../api/models/AdminTrade";
 
 @Component({
   selector: 'category-services-page',
@@ -19,7 +20,7 @@ export class CategoryServicesComponent implements OnInit, AfterViewInit {
 
   searchResultMessageText: string = '';
   private readonly destroyed$ = new Subject<void>();
-  trade: Trade;
+  trade: AdminTrade;
   filteredServices: ServiceType[] = [];
   private routeParamsSubscription: Subscription;
   categoryId: any;
@@ -27,14 +28,6 @@ export class CategoryServicesComponent implements OnInit, AfterViewInit {
   model: string = '';
 
   swiper: Swiper;
-
-  //TODO add an image from trade
-  tradeImages = [
-    {image: 'assets/img/customer-banner-1.png'},
-    {image: 'assets/img/customer-banner-2.png'},
-    {image: 'assets/img/customer-banner-3.png'},
-    {image: 'assets/img/customer-banner-3.png'},
-  ];
 
   constructor(private serviceTypesService: ServiceTypeService,
               private tradeService: TradeService,

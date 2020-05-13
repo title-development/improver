@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 @Service
 public class TradeService {
 
+    private static final int MAX_NUMBER_IMAGES = 5;
     @Autowired private TradeRepository tradeRepository;
     @Autowired private ServiceTypeRepository serviceTypeRepository;
     @Autowired private ImageService imageService;
@@ -76,20 +77,9 @@ public class TradeService {
         return new AdminTrade(trade, serviceTypes);
     }
 
-    public void updateTrade(long id, AdminTrade adminTrade, MultipartFile file) {
+    public void updateTrade(long id, AdminTrade adminTrade) {
         Trade existedTrade = tradeRepository.findById(id)
             .orElseThrow(NotFoundException::new);
-
-        String newImageUrl;
-        if (file != null) {
-            newImageUrl = imageService.updateImage(file, existedTrade.getImageUrl());
-        } else if ((existedTrade.getImageUrl() != null && !existedTrade.getImageUrl().isEmpty())
-            && (adminTrade.getImageUrl() == null || adminTrade.getImageUrl().isEmpty())) {
-            imageService.silentDelete(existedTrade.getImageUrl());
-            newImageUrl = null;
-        } else {
-            newImageUrl = adminTrade.getImageUrl();
-        }
 
         if (!tradeRepository.isTradeNameFree(adminTrade.getName()) && !existedTrade.getName().equals(adminTrade.getName())) {
             throw new ConflictException("Trade with name " + adminTrade.getName() + " already exist");
@@ -102,7 +92,7 @@ public class TradeService {
         existedTrade.setDescription(adminTrade.getDescription());
         existedTrade.setRating(adminTrade.getRating());
         existedTrade.setServiceTypes(serviceTypes);
-        existedTrade.setImageUrl(newImageUrl);
+        existedTrade.setImageUrls(String.join(",", adminTrade.getImageUrls()));
         existedTrade.setAdvertised(adminTrade.getIsAdvertised());
 
         tradeRepository.save(existedTrade);
@@ -126,7 +116,7 @@ public class TradeService {
         Trade trade = tradeRepository.findById(id)
             .orElseThrow(NotFoundException::new);
 
-        String imageUrl = trade.getImageUrl();
+        String imageUrl = trade.getImageUrls();
         if (imageUrl != null && !imageUrl.isEmpty()) {
             imageService.silentDelete(imageUrl);
         }
@@ -152,7 +142,7 @@ public class TradeService {
                 return new TradeModel()
                     .setId(t.getId())
                     .setName(t.getName())
-                    .setImage(t.getImageUrl())
+                    .setImage(t.getImageUrls())
                     .setServices(suggestedServiceTypes);
 
             }).collect(Collectors.toList());
@@ -161,5 +151,48 @@ public class TradeService {
 
     public boolean isNameFree(String tradeName) {
         return tradeRepository.isTradeNameFree(tradeName);
+    }
+
+    public List<String> updateTradeImages(long tradeId, int index, MultipartFile image) {
+
+        Trade trade = tradeRepository.findById(tradeId)
+                                     .orElseThrow(NotFoundException::new);
+        List<String> imageUrls = trade.getImageUrlsFromString();
+        if (imageUrls.size() >= MAX_NUMBER_IMAGES && index > imageUrls.size() - 1){
+            throw new IllegalArgumentException("Max slider size " + MAX_NUMBER_IMAGES);
+        }
+        String newImageUrl = image != null ? imageService.saveImage(image) : null;
+        if (newImageUrl != null && (imageUrls.isEmpty() || index > imageUrls.size() - 1)) {
+            imageUrls.add(newImageUrl);
+        } else {
+            String imageUrl = imageUrls.get(index);
+            imageService.silentDelete(imageUrl);
+            imageUrls.remove(index);
+            imageUrls.add(index, newImageUrl);
+        }
+        imageUrls = validateAllImageUrls(imageUrls);
+        trade.setImageUrls(String.join(",", imageUrls));
+        tradeRepository.save(trade);
+        return imageUrls;
+    }
+
+    public void deleteTradeImageByImageUrl(long id, String imageUrl) {
+        Trade trade = tradeRepository.findById(id)
+                                     .orElseThrow(NotFoundException::new);
+        List<String> imageUrls = trade.getImageUrlsFromString();
+        if (!imageUrls.contains(imageUrl)){
+            throw new IllegalArgumentException("Image has already deleted");
+        }
+        imageUrls.remove(imageUrl);
+        trade.setImageUrls(String.join(",", validateAllImageUrls(imageUrls)));
+        imageService.silentDelete(imageUrl);
+        tradeRepository.save(trade);
+    }
+
+    private List<String> validateAllImageUrls(List<String> imageUrls) {
+        while (imageUrls.contains("")){
+            imageUrls.remove("");
+        }
+        return imageUrls;
     }
 }

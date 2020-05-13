@@ -33,7 +33,7 @@ export class TradesListComponent {
 
   columns = [
     {field: 'id', header: 'Id', active: true},
-    {field: 'imageUrl', header: 'Image', active: true},
+    {field: 'imageUrls', header: 'Image', active: true},
     {field: 'name', header: 'Name', active: true},
     {field: 'description', header: 'Description', active: true},
     {field: 'isAdvertised', header: 'Advertised', active: true},

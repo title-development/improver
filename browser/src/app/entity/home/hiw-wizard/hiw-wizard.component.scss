@@ -83,11 +83,15 @@
   align-items: flex-start;
 
   @include response-to(md) {
-    max-width: 800px;
+    max-width: 650px;
     width: 100%;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-between;
+  }
+
+  @include response-to(sm) {
+    max-width: 800px;
   }
 
   @include response(xs) {

@@ -637,8 +637,8 @@ public class TestDataInitializer {
 
         List<Trade> trades = tradeRepository.findAll();
         for (Trade trade : trades) {
-                String imageUrl = saveImage(images.get(trade.getName()));
-                trade.setImageUrl(imageUrl);
+                String imageUrls = saveImage(images.get(trade.getName()));
+                trade.setImageUrls(String.join(",", imageUrls));
         }
         this.tradeRepository.saveAll(trades);
     }

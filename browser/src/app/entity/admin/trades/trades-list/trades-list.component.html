@@ -92,9 +92,9 @@
           {{row[col.field]}}
         </span>
 
-        <span *ngSwitchCase="'imageUrl'" class="table-row-image-wrapper">
-          <div *ngIf="row[col.field]" class="box-image" (click)="showTradeImage($event, row, op3)" [ngStyle]="row[col.field] && row[col.field] != '' && {'background-image':'url(' + row[col.field] + ')'} || {'background-image':'url(/assets/img/company-logo-placeholder.png)'}"></div>
-          <div *ngIf="!row[col.field]">No image</div>
+        <span *ngSwitchCase="'imageUrls'" class="table-row-image-wrapper">
+          <div *ngIf="row[col.field][0]" class="box-image" (click)="showTradeImage($event, row, op3)" [ngStyle]="row[col.field][0] && row[col.field][0] != '' && {'background-image':'url(' + row[col.field][0] + ')'} || {'background-image':'url(/assets/img/company-logo-placeholder.png)'}"></div>
+          <div *ngIf="!row[col.field][0]">No image</div>
         </span>
 
         <span *ngSwitchCase="'isAdvertised'">
@@ -124,5 +124,5 @@
 <p-contextMenu #cm [model]="contextMenuItems"></p-contextMenu>
 
 <p-overlayPanel #op3 class="image-zoomer-overlay">
-  <img [src]="selectedTrade.imageUrl" *ngIf="selectedTrade"/>
+  <img [src]="selectedTrade.imageUrls[0]" *ngIf="selectedTrade"/>
 </p-overlayPanel>

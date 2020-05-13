@@ -1,25 +1,55 @@
+
+:host {
+  display: flex;
+  flex-direction: row;
+}
+
 input[type=file] {
   display: none;
 }
-.preview {
-  background-size: cover;
-  position: relative;
-  &:hover {
 
-  }
-}
-.actions {
-  position: absolute;
-  top: 0;
-  right: 0;
+.draggable-wrapper {
+  position: relative;
   display: flex;
-  .ui-button {
-    width: 25px;
-    font-size: 12px;
-    min-height: 25px;
-    margin: 0;
+}
+
+.preview-wrapper {
+  margin-right: 20px;
+  margin-bottom: 20px;
+
+  &.gu-transit {
+    opacity: .3;
+  }
+
+  .preview {
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+
+    &:hover {
+
+    }
+  }
+
+  .actions-content {
+    position: relative;
+    width: 100%;
+
+    .actions {
+      position: absolute;
+      top: 0;
+      right: 0;
+      display: flex;
+      .ui-button {
+        width: 25px;
+        font-size: 12px;
+        min-height: 25px;
+        margin: 0;
+      }
+    }
   }
 }
+
 
 .ui-button {
   width: 115px;

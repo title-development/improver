@@ -30,7 +30,7 @@ public interface TradeRepository extends JpaRepository<Trade, Long> {
     @Query("SELECT new com.improver.model.NameIdTuple(t.id, t.name) FROM com.improver.entity.Trade t ORDER BY t.name ASC")
     List<NameIdTuple> getAllAsModels();
 
-    @Query("SELECT new com.improver.model.out.NameIdImageTuple(t.id, t.name, t.imageUrl, COUNT(p) AS popularity) " +
+    @Query("SELECT new com.improver.model.out.NameIdImageTuple(t.id, t.name, t.imageUrls, COUNT(p) AS popularity) " +
         "FROM com.improver.entity.Trade t " +
         "LEFT JOIN t.serviceTypes st " +
         "LEFT JOIN st.projects p " +
