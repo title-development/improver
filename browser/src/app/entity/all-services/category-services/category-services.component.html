@@ -21,10 +21,10 @@
             </div>
         </div>
 
-        <div class="right-header" *ngIf="mediaQuery.lg || mediaQuery.xlg">
+        <div class="right-header" *ngIf="trade.imageUrls && trade.imageUrls.length > 0 && (mediaQuery.lg || mediaQuery.xlg)">
             <div class="swiper-container pagination-bulet">
                 <div class="swiper-wrapper">
-                    <div class="swiper-slide" *ngFor="let image of trade.sliderImageUrls">
+                    <div class="swiper-slide" *ngFor="let image of trade.imageUrls">
                         <div class="image"
                              [ngStyle]="image && image != '' && {'background-image':'url(' + image + ')'} || {'background-image':'url(https://via.placeholder.com/2000x1000)'}"></div>
                     </div>

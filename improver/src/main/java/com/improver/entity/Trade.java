@@ -60,7 +60,7 @@ public class Trade {
     }
 
     public List<String> getImageUrlsFromString() {
-        if (this.imageUrls != null) {
+        if (this.imageUrls != null && !this.imageUrls.isEmpty()) {
             return new ArrayList<>(Arrays.asList(this.imageUrls.split(",")));
         }
 
