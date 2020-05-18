@@ -40,6 +40,7 @@ import { MatCardModule } from "@angular/material/card";
 import { MatInputModule } from "@angular/material/input";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatButtonModule } from "@angular/material/button";
+import { TestimonialsComponent } from "./testimonials/testimonials.component";
 
 @NgModule({
   imports: [
@@ -87,7 +88,8 @@ import { MatButtonModule } from "@angular/material/button";
     ServicesSelectorComponent,
     FindProfessionalsComponent,
     SubscriptionComponent,
-    PhoneValidationComponent
+    PhoneValidationComponent,
+    TestimonialsComponent
   ],
   exports: [
     CommonModule,
@@ -130,7 +132,8 @@ import { MatButtonModule } from "@angular/material/button";
     SharedDirectivesModule,
     SubscriptionComponent,
     PhoneValidationComponent,
-    NgTruncatePipeModule
+    NgTruncatePipeModule,
+    TestimonialsComponent
   ],
   providers: [
   ]

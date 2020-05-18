@@ -1,207 +1,68 @@
-<header class="-dark -space">
+<div class="title-block">
   <div class="container">
-    <div class="row -align-center">
-      <div class="col-md-6 col-xs-12">
-        <img src="../../../assets/img/landing/man.png" alt="Man">
-      </div>
-      <div class="col-md-6 col-xs-12">
-        <h1>
-          Grow your business with <br>
-          Home Improve is easy!
-        </h1>
-        <h3>Get your free account and start <br>
-          getting more work now</h3>
-        <button routerLink="/signup-pro">Get Started</button>
+    <div class="content">
+      <h1>Grow your business with Home Improve is easy!</h1>
+      <h3>Get your free account and start getting more work now</h3>
+
+      <div class="buttons">
+        <button class="main-action-button" routerLink="/signup-pro" (click)="gTagTrackClick()">Get started</button>
+        <button class="secondary-action-button" (click)="scrollService.scrollToElementById('guide')">More info</button>
       </div>
     </div>
-  </div>
-</header>
-<section class="how-it-works -space">
-  <div class="container">
-    <h2>How it works</h2>
-    <div class="steps-content">
 
-      <div class="wizard-step step-1" [ngClass]="{'animate': step >= 1}" (mouseleave)="step = 1"
-           (mouseenter)="step = 1">
-        <div class="wizard-step-content">
-          <div class="wizard-step-image-block">
-          </div>
-          <div class="wizard-step-text-block">
-            <div class="wizard-step-title">Find more customers</div>
-            <div class="wizard-step-text">Homeowner visit Home Improve from all over the places</div>
-          </div>
-        </div>
-        <div class="wizard-step-border-bottom"></div>
-        <div class="wizard-step-border-bottom-fill"></div>
-      </div>
+    <div class="background">
+      <div class="main-banner"></div>
 
-      <div class="arrow-wrapper" [ngClass]="{'animate': step == 2, 'hover': step > 1}" (mouseenter)="step = 1"
-           (mouseleave)="step = 1">
-        <div class="line -top"></div>
-        <div class="line -bottom"></div>
-      </div>
-
-      <div class="wizard-step step-2" [ngClass]="{'animate': step == 2, 'hover': step >= 2}" (mouseleave)="step = 1"
-           (mouseenter)="step = 2">
-        <div class="wizard-step-content">
-          <div class="wizard-step-image-block">
-          </div>
-          <div class="wizard-step-text-block">
-            <div class="wizard-step-title">Get job you want</div>
-            <div class="wizard-step-text">Configure filter for leads by your preferences</div>
-          </div>
-        </div>
-        <div class="wizard-step-border-bottom"></div>
-        <div class="wizard-step-border-bottom-fill"></div>
-      </div>
-
-      <div class="arrow-wrapper" [ngClass]="{'animate': step >= 3, 'hover': step > 2}" (mouseenter)="step = 2"
-           (mouseleave)="step = 1">
-        <div class="line -top"></div>
-        <div class="line -bottom"></div>
-      </div>
-
-      <div class="wizard-step step-3" [ngClass]="{'animate': step == 3, 'hover': step >= 3}" (mouseleave)="step = 1"
-           (mouseenter)="step = 3">
-        <div class="wizard-step-content">
-          <div class="wizard-step-image-block">
-          </div>
-          <div class="wizard-step-text-block">
-            <div class="wizard-step-title">Get hired</div>
-            <div class="wizard-step-text">Our services make it easy to work with homeowners to win the job</div>
-          </div>
-        </div>
-        <div class="wizard-step-border-bottom"></div>
-        <div class="wizard-step-border-bottom-fill"></div>
-      </div>
-
-      <div class="arrow-wrapper" [ngClass]="{'animate': step >= 4, 'hover': step > 3}" (mouseenter)="step = 3"
-           (mouseleave)="step = 1">
-        <div class="line -top"></div>
-        <div class="line -bottom"></div>
-      </div>
-
-      <div class="wizard-step step-4" [ngClass]="{'animate': step == 4, 'hover': step >= 4}" (mouseleave)="step = 1"
-           (mouseenter)="step = 4">
-        <div class="wizard-step-content">
-          <div class="wizard-step-image-block">
-          </div>
-          <div class="wizard-step-text-block">
-            <div class="wizard-step-title">Grow your business</div>
-            <div class="wizard-step-text">Enhance your business approach using analyze and statistic tools form Home
-              Improve
-            </div>
-          </div>
-        </div>
-        <div class="wizard-step-border-bottom"></div>
-        <div class="wizard-step-border-bottom-fill"></div>
-      </div>
     </div>
+
   </div>
-</section>
-<section class="get-leads -dark -space-top">
-  <div class="container">
-    <h2>Get leads on your terms</h2>
-    <div class="row">
-      <div class="col-md-6 col-xs-12">
-        <ul>
-          <li><div class="checkmark"></div>
-            <span class="benefit-text">You only pay for the leads you receive, and if you get any bad
-            lead we’ll return your money back</span>
-          </li>
-          <li><div class="checkmark"></div><span class="benefit-text">Choose exactly which leads to buy</span></li>
-          <li><div class="checkmark"></div><span class="benefit-text">Plan your monthly workload and receive a steady stream of leads leads automatically</span></li>
-          <li><div class="checkmark"></div><span class="benefit-text">Browse leads to take on extra work as you have time</span></li>
-          <li><div class="checkmark"></div><span class="benefit-text">Get first access to leads on subscription</span></li>
-          <li><div class="checkmark"></div><span class="benefit-text">Home Improve offers you 24 hours phone and email support</span></li>
-        </ul>
-      </div>
-      <div class="col-md-6 col-xs-12 lead-card-wrapper">
-        <!--<img src="../../../assets/img/landing/arrows.png" alt="Arrows">-->
-        <img class="lead-cards" src="../../../assets/img/landing/pro-lead-cards.png" alt="">
-      </div>
+
+  <div class="clouds">
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+  </div>
+
+</div>
+
+<div id="guide" class="guide">
+  <div class="step step-1">
+    <div class="main-block">
+      <img src="assets/img/became-pro-guide/step_1.svg" alt="Find more customers">
+      <div class="title">Find more customers</div>
     </div>
+    <div class="description">Homeowner visit Home Improve from all over the places</div>
   </div>
-</section>
-<section class="coverage -space">
-  <div class="container ">
-    <h2>Get relevant leads for you</h2>
-    <div class="row -align-center">
-      <div class="col-md-6 col-xs-12"><img src="../../../assets/img/landing/map.png" alt="Map"></div>
-      <div class="col-md-6 col-xs-12">
-        <h3>Choose exactly where you want jobs</h3>
-        <p>Select your targeted counties, cities, and ZIP codes so you can get the most relevant leads. As your
-          business changes, you can refine your service area any time.</p>
-        <h3>Customize the kind of work you want</h3>
-        <p>Simply check/uncheck services you provide specify exactly what job you do/don’t do so you always receive work
-          you interested in.</p>
-        <span class="-checked">Kitchen redesign </span>
-        <span>Stonework </span>
-        <span class="-checked">Animal removal service  </span>
-        <span class="-checked">Architect</span>
-        <span>Interior Painting</span>
-        <span>Oven Repair</span>
-      </div>
+  <div class="step step-3">
+    <div class="main-block">
+      <img src="assets/img/became-pro-guide/step_2.svg" alt="Get job you want">
+      <div class="title">Get job you want</div>
     </div>
+    <div class="description">Configure filter for leads by your preferences</div>
   </div>
-</section>
-<section class="testimonials -dark -space-top">
-  <div class="container">
-    <h2>PRO's who joined us saying</h2>
-    <div class="testimonials-slider">
-      <div class="swiper-container testimonials-nav">
-        <div class="swiper-wrapper">
-          <div class="swiper-slide">
-            <i class="icon"></i>
-          </div>
-          <div class="swiper-slide">
-            <i class="icon"></i>
-          </div>
-          <div class="swiper-slide">
-            <i class="icon"></i>
-          </div>
-        </div>
-      </div>
-      <div class="navigation">
-        <div class="arr -left" (click)="prevSlide()">
-          <i class="imp-icon-angle-left"></i>
-        </div>
-        <div class="arr -right" (click)="nextSlide()">
-          <i class="imp-icon-angle-right"></i>
-        </div>
-        <div class="swiper-container testimonials-body">
-          <div class="swiper-wrapper">
-            <div class="swiper-slide">
-              <h5>Arthur Rose</h5>
-              <p>“I have got problem with me pipe long time. But suddenly I heard about Home Improve and their beautiful
-                service. All I did is fil right fields and voila, in few days I got my Pipe fixed for a very reasonsble
-                price. I recommend Home Improve services to everybody and definitely will use it again.”</p>
-            </div>
-            <div class="swiper-slide">
-              <h5>Arthur Rose 2</h5>
-              <p>“I have got problem with me pipe long time. But suddenly I heard about Home Improve and their beautiful
-                service. All I did is fil right fields and voila, in few days I got my Pipe fixed for a very reasonsble
-                price. I recommend Home Improve services to everybody and definitely will use it again.”</p>
-            </div>
-            <div class="swiper-slide">
-              <h5>Arthur Rose 3</h5>
-              <p>“I have got problem with me pipe long time. But suddenly I heard about Home Improve and their beautiful
-                service. All I did is fil right fields and voila, in few days I got my Pipe fixed for a very reasonsble
-                price. I recommend Home Improve services to everybody and definitely will use it again.”</p>
-            </div>
-          </div>
-          <div class="swiper-pagination"></div>
-        </div>
-      </div>
+  <div class="step step-4">
+    <div class="main-block">
+      <img src="assets/img/became-pro-guide/step_3.svg" alt="Get hired">
+      <div class="title">Get hired</div>
     </div>
+    <div class="description">Our services make it easy to work with homeowners to win the job</div>
   </div>
-</section>
-<section class="get-started -space">
-  <div class="container">
-    <h2>Ready to get started?</h2>
-    <p>After you register free Home Improve business profile, you'll be set up to start receiving lead notifications for
-      jobs in your area, within your scope of work</p>
-    <button routerLink="/signup-pro" (click)="gTagTrackClick()">Get Started</button>
+  <div class="step step-5">
+    <div class="main-block">
+      <img src="assets/img/became-pro-guide/step_4.svg" alt="Grow your business">
+      <div class="title">Grow your business</div>
+    </div>
+    <div class="description">Enhance your business approach using analyze and statistic tools form Home Improve</div>
   </div>
-</section>
+</div>
+
+<div class="benefits">BENEFITS</div>
+<div class="configuration-hints">CONFIGURATION HINTS</div>
+
+<div class="testimonials-wrapper">
+  <testimonials [testimonials]="testimonials"></testimonials>
+</div>
+
+
+
 <layout-footer></layout-footer>

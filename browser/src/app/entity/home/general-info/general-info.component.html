@@ -20,47 +20,7 @@
 
   <div class="testimonials-wrapper">
 
-    <div class="block-title">Testimonials</div>
-
-    <div class="testimonials-content">
-      <div class="list-wrapper" (swipeleft)="moveLeft()" (swiperight)="moveRight()">
-        <div class="list" @blockInitialRenderAnimation>
-
-          <div *ngFor="let testimonial of testimonials; index as i;" [@animator]="{value: i, params: {transformX: transformX}}" (@animator.done)="animationDone($event)">
-            <div class="testimonial">
-
-              <div class="body">{{testimonial.text}}</div>
-              <div class="author">
-                <div class="logo">
-                  <mat-icon>account_box</mat-icon>
-                </div>
-                <div class="info">
-                  <div class="name">{{testimonial.fullName}}</div>
-                  <div class="additional-info">
-                    {{testimonial.description}}, {{testimonial.state}}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <div class="controls-wrapper">
-
-        <div class="separator"></div>
-
-        <div class="controls noselect">
-          <div class="next" (click)="moveLeft()">
-            <span class="material-icons">navigate_next</span>
-          </div>
-          <div class="previous" (click)="moveRight()">
-            <span class="material-icons">navigate_before</span>
-          </div>
-        </div>
-      </div>
-    </div>
+    <testimonials [testimonials]="testimonials"></testimonials>
 
   </div>
 

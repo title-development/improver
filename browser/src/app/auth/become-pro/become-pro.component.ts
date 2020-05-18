@@ -2,81 +2,55 @@ import { AfterViewInit, Component } from '@angular/core';
 import { SecurityService } from '../security.service';
 import { Constants } from '../../util/constants';
 import { Messages } from 'app/util/messages';
-import * as Swiper from 'swiper/dist/js/swiper.min';
 import { GoogleAnalyticsService } from '../../util/google-analytics.service';
 import { HotJarService } from '../../util/hotjar.service';
+import { ScrollService } from "../../util/scroll.service";
 
 @Component({
   selector: 'become-pro-page',
   templateUrl: 'become-pro.component.html',
-  styleUrls: ['become-pro.component.scss', './pro-steps.scss']
+  styleUrls: ['become-pro.component.scss']
 })
 
 
 export class BecomeProComponent implements AfterViewInit {
-  step = 1;
-  private swiperConfigOne: SwiperOptions = {
-    spaceBetween: 0,
-    centeredSlides: true,
-    slidesPerView: 1,
-    touchRatio: 0.2,
-    loop: false,
-    pagination: '.swiper-pagination',
-    paginationClickable: true,
-    keyboardControl: false,
-    initialSlide: 1,
-    onSlideChangeStart: (swiper: Swiper) => {
-      if(this.swiperNav) {
-        this.swiperNav.slideTo(swiper.realIndex);
-      }
-    }
-  };
-  private swiperConfigNav: SwiperOptions = {
-    spaceBetween: 0,
-    centeredSlides: true,
-    slidesPerView: 3,
-    touchRatio: 0.2,
-    loop: false,
-    loopedSlides: 3,
-    initialSlide: 1,
-    onClick: (swiper: Swiper) => {
-      if(this.swiperBody) {
-        this.swiperBody.slideTo(swiper.clickedIndex);
-      }
-    }
-  };
-  private swiperNav: Swiper;
-  private swiperBody: Swiper;
+
+  testimonials = [
+    {
+      fullName: "Nico Funk 0",
+      description: "Residence owner",
+      state: "NY",
+      text: "We can’t thank Home Improve enough for how simple it has been to find more leads in our service area. We used to struggle to track down quality leads, but the Home Improve process has helped us find new clients who actually need our services!"
+    },
+    {
+      fullName: "Nico Funk 1",
+      description: "Residence owner",
+      state: "NY",
+      text: "Signing up for Home Improve is one of the best things we’ve ever done for our home renovation company. Only paying for the leads we need has made it easy to beef-up our schedule when we want to and scale back if our circumstances dictate doing so."
+    },
+    {
+      fullName: "Nico Funk 2",
+      description: "Residence owner",
+      state: "NY",
+      text: "We love Home Improve! Our plumbing business has taken off since we create our PRO profile. We now have more clients than we know what to do with (a great “problem” to have!)"
+    },
+  ];
+
 
   constructor(public securityService: SecurityService,
               public constants: Constants,
               public messages: Messages,
               private googleAnalyticsService: GoogleAnalyticsService,
-              private hotJarService: HotJarService
-              ) {
-
-  }
-
-  nextSlide(): void {
-    this.swiperNav.slideNext();
-    this.swiperBody.slideNext();
-  }
-
-  prevSlide(): void {
-    this.swiperNav.slidePrev();
-    this.swiperBody.slidePrev();
+              private hotJarService: HotJarService,
+              public scrollService: ScrollService) {
   }
 
   ngAfterViewInit(): void {
-    this.swiperBody = new Swiper('.testimonials-body', this.swiperConfigOne);
-    this.swiperBody.disableMousewheelControl();
-    this.swiperNav = new Swiper('.testimonials-nav', this.swiperConfigNav);
-    this.swiperNav.disableMousewheelControl();
-    this.swiperNav.disableTouchControl();
     this.hotJarService.tagRecording(['become a pro']);
   }
 
   gTagTrackClick(): void {
     this.googleAnalyticsService.event('seen/read become a pro', {event_category:'Seen', description: 'seen or read content'})
   }
+
 }

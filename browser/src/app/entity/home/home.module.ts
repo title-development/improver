@@ -21,17 +21,17 @@ import { AdvertisementBlockElementComponent } from './advertisement-block/advert
 import { NgTakePipeModule } from "angular-pipes";
 
 @NgModule({
-    imports: [
-        RouterModule,
-        FormsModule,
-        ReactiveFormsModule,
-        SharedModule,
-        MatAutocompleteModule,
-        MatCardModule,
-        LayoutModule,
-        CvSelectModule,
-        NgTakePipeModule
-    ],
+  imports: [
+    RouterModule,
+    FormsModule,
+    ReactiveFormsModule,
+    SharedModule,
+    MatAutocompleteModule,
+    MatCardModule,
+    LayoutModule,
+    CvSelectModule,
+    NgTakePipeModule
+  ],
   declarations: [
     HomeComponent,
     MainSearchComponent,

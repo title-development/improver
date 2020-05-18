@@ -2,7 +2,7 @@
 
 .auth-wrapper {
   width: 100%;
-  background-color: #fafafa;
+  background-color: white;
   display: flex;
   max-height: 100%;
   justify-content: flex-start;
@@ -131,7 +131,7 @@
 
           span {
             position: relative;
-            background: $grey-100;
+            background: white;
             padding: 0 10px;
           }
         }
