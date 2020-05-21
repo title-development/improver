@@ -306,8 +306,8 @@ export class ImagesUploaderComponent implements OnInit {
         text = `The file ${item.name} has failed to upload. Maximum upload file size ${MAX_FILE_SIZE.megabytes} Mb.`;
         break;
       case 'queueLimit':
-        text = `Query limit. You can add only ${IMAGE_UPLOADER_QUERY_LIMIT} images to upload query.`;
-        break;
+        console.info(`Query limit. You can add only ${IMAGE_UPLOADER_QUERY_LIMIT} images to upload query.`);
+        return;
       default:
         text = 'Could not add image to upload query';
         break;

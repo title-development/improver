@@ -201,7 +201,7 @@ public class Transaction {
      * @param transactionNumber - base36 value of transactionId
      */
     public static long getIdFromNumber(String transactionNumber) {
-        return DecimalConverter.base36ToDecimal(transactionNumber);
+        return DecimalConverter.baseXToDecimal(transactionNumber);
     }
 
     /**
@@ -211,7 +211,7 @@ public class Transaction {
      *         "0000" - zeros to fill standard of transactions number length
      */
     public String getTransactionNumber() {
-        String base36Id = DecimalConverter.decimalToBase36(this.id);
+        String base36Id = DecimalConverter.decimalToBaseX(this.id);
         StringBuilder stringWithZeros = new StringBuilder();
         char[] hexadecimalCharArray = base36Id.toCharArray();
         if (hexadecimalCharArray.length < TRANSACTIONS_NUMBER_MAX_LENGTH) {

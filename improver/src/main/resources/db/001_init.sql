@@ -611,8 +611,6 @@ INSERT INTO trades_service_types (trade_id, service_type_id) VALUES ((SELECT cur
 INSERT INTO trades (name) VALUES ('Handyman Services');
 INSERT INTO service_types (name, lead_price, image_url) SELECT 'Carpentry', 2400, null WHERE NOT EXISTS (SELECT name FROM service_types WHERE service_types.name = 'Carpentry');
 INSERT INTO trades_service_types (trade_id, service_type_id) VALUES ((SELECT currval(pg_get_serial_sequence('trades','id'))), (SELECT id FROM service_types WHERE service_types.name = 'Carpentry'));
-INSERT INTO service_types (name, lead_price, image_url) SELECT 'Painting', 1900, null WHERE NOT EXISTS (SELECT name FROM service_types WHERE service_types.name = 'Painting');
-INSERT INTO trades_service_types (trade_id, service_type_id) VALUES ((SELECT currval(pg_get_serial_sequence('trades','id'))), (SELECT id FROM service_types WHERE service_types.name = 'Painting'));
 INSERT INTO service_types (name, lead_price, image_url) SELECT 'Plumbing', 900, '' WHERE NOT EXISTS (SELECT name FROM service_types WHERE service_types.name = 'Plumbing');
 INSERT INTO trades_service_types (trade_id, service_type_id) VALUES ((SELECT currval(pg_get_serial_sequence('trades','id'))), (SELECT id FROM service_types WHERE service_types.name = 'Plumbing'));
 INSERT INTO service_types (name, lead_price, image_url) SELECT 'Roofing', 900, '' WHERE NOT EXISTS (SELECT name FROM service_types WHERE service_types.name = 'Roofing');
