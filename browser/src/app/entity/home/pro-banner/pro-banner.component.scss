@@ -61,11 +61,10 @@
 
       @include response-to(sm) {
         flex-direction: column !important;
-        align-items: center;
       }
 
 
-      .text {
+      .title {
         font-family: Merriweather;
         margin-top: 100px;
         font-size: 36px;
@@ -164,10 +163,12 @@
 
   img {
     max-width: 100%;
+    border-radius: 20px;
   }
 }
 
 .button {
+  width: max-content;
   display: block;
   margin-top: 50px;
 
@@ -177,6 +178,7 @@
 
   @include response-to(sm) {
     margin: 20px auto;
+    width: 100%;
   }
 
   .become-a-pro-button {

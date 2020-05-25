@@ -7,25 +7,24 @@
       <div class="pro-banner-blocks">
 
       <div class="pro-banner-main-block">
-        <div class="text">
-          Find new customers and grow your business
-          with Home Improve
+        <div class="title">
+          {{bannerConfig.title}}
         </div>
       </div>
 
       <div class="pro-banner-secondary-block">
         <div class="text" >
-          Whether you’re scaling your business, filling the gaps in your schedule, or just starting out, Home Improve will help you find the right customers.
+          {{bannerConfig.text}}
         </div>
       </div>
 
-      <a class="button" routerLink="/become-pro" *ngIf="!securityService.hasRole(Role.CONTRACTOR)">
-        <div class="become-a-pro-button">Become a PRO</div>
+      <a class="button" [routerLink]="bannerConfig.routerLink" *ngIf="!securityService.hasRole(Role.CONTRACTOR)">
+        <div class="become-a-pro-button">{{bannerConfig.button}}</div>
       </a>
       </div>
 
       <div class="pro-banner-image">
-        <img src="../../../../assets/img/pro-banner.png" alt="pro">
+        <img src="../../../../assets/img/{{bannerConfig.image}}" alt="pro">
       </div>
 
     </div>

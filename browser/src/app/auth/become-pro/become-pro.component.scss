@@ -2,6 +2,7 @@
 
 :host {
   background: white;
+  overflow-x: hidden;
 }
 
 .title-block {
@@ -234,7 +235,7 @@
   display: flex;
   align-items: flex-start;
   flex-direction: row;
-  margin: 120px auto;
+  margin: 80px auto;
   position: relative;
   max-width: $content-grid-max-width;
   justify-content: space-between;
@@ -319,58 +320,494 @@
 }
 
 .benefits {
-  margin-bottom: 120px;
-  margin-left: auto;
-  margin-right: auto;
   position: relative;
-  max-width: $content-grid-max-width;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 40px;
   width: 100%;
-  height: 300px;
-  background: rgba(0, 128, 0, 0.2);
-}
-
-.configuration-hints {
-  margin-bottom: 120px;
-  margin-left: auto;
-  margin-right: auto;
-  position: relative;
-  max-width: $content-grid-max-width;
-
   display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 40px;
-  width: 100%;
-  height: 300px;
-  background: rgba(0, 0, 255, 0.2);;
-}
+  flex-direction: column;
 
-.testimonials-wrapper {
+  .benefits-wrapper {
+    margin: 0 auto;
     margin-bottom: 120px;
-    margin-left: auto;
-    margin-right: auto;
-    position: relative;
+    width: 100%;
     max-width: $content-grid-max-width;
+
     @include response-to(lg) {
       padding-left: 24px;
     }
 
     @include response-to(md) {
+      padding-top: 80px;
       margin-bottom: 80px;
     }
 
     @include response-to(sm) {
-      margin-bottom: 40px;
+      padding-top: 50px;
+      margin-bottom: 50px;
     }
 
     @include response-to(xs) {
       padding-left: 20px;
     }
 
+    .title {
+      font-family: Merriweather;
+      font-weight: bold;
+      font-size: 36px;
+
+      @include response-to(lg) {
+        font-size: 30px;
+      }
+
+      @include response-to(md) {
+        font-size: 28px;
+      }
+
+      @include response-to(sm) {
+        font-size: 22px;
+      }
+    }
+
+    .image-background {
+      position: absolute;
+      top: 110px;
+      left: 20px;
+      border-radius: 20px;
+      width: 100%;
+      height: 400px;
+      background-color: #E7F6FD;
+
+      @include response(xs) {
+        background-image: url("../../../assets/img/became-pro-benefits/mobile/phone.png");
+        background-repeat: no-repeat;
+        background-position: 52px;
+      }
+    }
+
+    .benefits-content {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: row;
+
+      .active-part-wrapper {
+        max-width: 600px;
+        width: 50%;
+        padding-top: 48px;
+        margin-right: 20px;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+
+        .benefit-item {
+          padding: 10px;
+          cursor: pointer;
+          width: 270px;
+          height: 150px;
+          border-radius: 8px;
+
+          @include response(lg) {
+            width: 240px;
+            height: 130px;
+          }
+
+          @include response-to(md) {
+            width: 180px;
+            height: 120px;
+          }
+
+          &:hover {
+            background-color: rgba(43, 79, 110, 0.05);
+          }
+
+          .item-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: $black;
+            margin-bottom: 12px;
+
+            @include response-to(md) {
+              font-size: 18px;
+            }
+          }
+
+          .item-text {
+            font-size: 16px;
+            color: rgba(39, 49, 73, 0.6);
+
+            @include response(md) {
+              font-size: 14px;
+            }
+          }
+        }
+
+      }
+
+      .image-wrapper {
+        position: relative;
+
+        .image-block {
+          position: absolute;
+          top: 0;
+          left: 0;
+          height: 510px;
+          width: 50vw;
+          overflow: hidden;
+          background-color: #E7F6FD;
+          border-radius: 20px;
+
+          @include response-to(lg) {
+            height: 440px;
+          }
+
+          @include response-to(md) {
+            height: 400px;
+          }
+        }
+
+        .image {
+          overflow: hidden;
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
+          border: 10px solid $white;
+          box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+          border-radius: 20px;
+          position: absolute;
+          top: 50px;
+          left: 50px;
+          height: 510px;
+          width: 50vw;
+
+          @include response-to(lg) {
+            top: 40px;
+            left: 40px;
+            height: 440px;
+          }
+
+          @include response-to(md) {
+            top: 30px;
+            left: 30px;
+            height: 400px;
+          }
+        }
+
+      }
+    }
   }
+}
+
+.swiper-container {
+  width: 100%;
+  position: relative;
+  height: 100%;
+  margin-top: 50px;
+}
+
+.swiper-slide {
+  display: flex;
+  flex-direction: column;
+  min-width: 260px;
+
+  .slider-image {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 1px solid #D6D5D1;
+    width: 165px;
+    height: 290px;
+    margin-left: 73px;
+    margin-top: 20px;
+    margin-bottom: 100px;
+    border-radius: 3px;
+  }
+
+  .trade-content {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 170px;
+    background: rgba(43, 79, 110, 0.05);
+    border-radius: 8px;
+
+    @include response-to(lg) {
+      width: 100%;
+      min-width: 210px;
+      max-width: 300px;
+    }
+
+    .text-content {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+
+      .item-title {
+        margin-bottom: 20px;
+        font-size: 20px;
+        font-weight: bold;
+      }
+
+      .item-text {
+        font-size: 16px;
+        color: rgba(39, 49, 73, 0.4);
+      }
+    }
+  }
+}
+
+.configuration-hints {
+  position: relative;
+  width: 100%;
+
+  .hints-wrapper {
+    padding-bottom: 120px;
+    width: 100%;
+    max-width: $content-grid-max-width;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+
+    @include response-to(lg) {
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+
+    @include response-to(md) {
+      padding-top: 40px;
+      padding-bottom: 80px;
+      margin: auto;
+    }
+
+    @include response-to(sm) {
+      padding-top: 50px;
+      padding-bottom: 50px;
+      margin: auto;
+    }
+
+    @include response-to(xs) {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .title {
+      font-size: 36px;
+      font-weight: bold;
+      color: $black;
+      font-family: Merriweather;
+      margin-bottom: 48px;
+
+      @include response-to(lg) {
+        font-size: 28px;
+      }
+    }
+
+    .hints-content {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+
+      @include response-to(sm) {
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .hints {
+        width: 570px;
+        height: 520px;
+        background: rgba(43, 79, 110, 0.05);
+        border-radius: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-items: center;
+        justify-content: center;
+        text-align: center;
+
+        @include response-to(lg) {
+          width: 48%;
+        }
+
+        @include response-to(sm) {
+          width: 100%;
+          height: 515px;
+        }
+
+        .hint-image-wrapper {
+          position: relative;
+          margin: 0 auto;
+          border-radius: 50%;
+          width: 215px;
+          height: 215px;
+          margin-bottom: 34px;
+
+          @include response-to(sm) {
+            width: 170px;
+            height: 170px;
+          }
+
+          @include response(xs) {
+            margin: 0;
+            margin-left: 15%;
+            margin-bottom: 28px;
+          }
+
+          .hint-image {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            background-repeat: no-repeat;
+          }
+
+          .step-1 {
+            width: 237px;
+            height: 245px;
+            background-image: url(../../../assets/img/became-pro-hints/hints_1.png);
+            background-size: 207px 245px;
+            background-position: 30px 0;
+            border-radius: 0 0 55% 45%;
+
+            @include response-to(sm) {
+              width: 195px;
+              height: 194px;
+              background-size: 175px 194px;
+              background-position: 20px 0;
+              border-radius: 0 0 60% 45%;
+            }
+          }
+
+          .step-2 {
+            width: 200px;
+            height: 255px;
+            background-image: url(../../../assets/img/became-pro-hints/hints_2.png);
+            background-size: 128px 255px;
+            background-position: 45px 4px;
+            border-radius: 0 0 42% 50%;
+
+            @include response-to(sm) {
+              width: 170px;
+              height: 194px;
+              background-size: 110px 194px;
+              background-position: 30px 0;
+              border-radius: 0 0 50% 50%;
+            }
+          }
+        }
+
+        .hint-image-wrapper-1 {
+          background-color: $blue-primary;
+        }
+
+        .hint-image-wrapper-2 {
+          background-color: $red-primary;
+        }
+
+        .hints-title {
+          font-size: 24px;
+          font-weight: bold;
+          color: $black;
+          margin-bottom: 15px;
+
+          @include response-to(md) {
+            font-size: 20px;
+          }
+
+          @include response-to(xs) {
+            text-align: left;
+          }
+        }
+
+        .hints-text {
+          margin: 0 auto;
+          font-size: 16px;
+          max-width: 430px;
+          line-height: 140%;
+          color: rgba(39, 49, 73, 0.6);
+
+          @include response-to(md) {
+            max-width: 330px;
+          }
+
+          @include response-to(sm) {
+            width: 100%;
+          }
+
+          @include response(xs) {
+            margin: 0;
+            text-align: left;
+          }
+        }
+      }
+
+      .radius-1 {
+
+        @include response-to(sm) {
+          border-radius: 20px 20px 0 0;
+          padding: 20px;
+          height: 560px !important;
+        }
+
+        .hint1-title {
+
+          @include response-to(sm) {
+            font-family: Merriweather;
+            font-size: 22px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 100px;
+          }
+
+          @include response(xs) {
+            text-align: left;
+            margin-bottom: 85px;
+          }
+        }
+      }
+
+      .radius-2 {
+
+        @include response-to(sm) {
+          border-radius: 0 0 20px 20px;
+          padding: 20px;
+          height: 430px !important;
+        }
+      }
+    }
+  }
+}
+
+.testimonials-wrapper {
+  margin-bottom: 120px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  max-width: $content-grid-max-width;
+  @include response-to(lg) {
+    padding-left: 24px;
+  }
+
+  @include response-to(md) {
+    margin-bottom: 80px;
+  }
+
+  @include response-to(sm) {
+    margin-bottom: 40px;
+  }
+
+  @include response-to(xs) {
+    padding-left: 20px;
+  }
+
+}
+
+.pro-banner-content {
+  ::ng-deep .pro-banner-image {
+
+    @include response-to(xs) {
+      padding-left: 20px;
+      padding-right: 20px;
+      margin: 0 !important;
+    }
+  }
+}
 
