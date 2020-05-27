@@ -18,6 +18,7 @@ import { finalize, first } from "rxjs/internal/operators";
 import { UserService } from "../../../../../api/services/user.service";
 import { AccountService } from "../../../../../api/services/account.service";
 import { TradeService } from "../../../../../api/services/trade.service";
+import { MetricsEventService } from "../../../../../util/metrics-event.service";
 
 @Component({
   selector: 'default-questionary-block',
@@ -67,7 +68,8 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
               public popUpMessageService: PopUpMessageService,
               private accountService: AccountService,
               private router: Router,
-              private locationValidate: LocationValidateService) {
+              private locationValidate: LocationValidateService,
+              private metricsEventService: MetricsEventService) {
     this.constants = constants;
     this.messages = messages;
     this.emailIsChecked = false;
@@ -143,7 +145,10 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     const requestOrder = RequestOrder.build(this.questionaryControlService.mainForm.getRawValue(), this.questionaryControlService.serviceType);
     this.postOrderProcessing = true;
       this.projectService.postOrder(requestOrder).subscribe(
-        result => this.orderSuccess(requestOrder),
+        result => {
+          this.orderSuccess(requestOrder);
+          this.metricsEventService.fireProjectRequestedEvent();
+        },
         err => {
           this.popUpMessageService.showError(getErrorMessage(err));
           this.postOrderProcessing = false;

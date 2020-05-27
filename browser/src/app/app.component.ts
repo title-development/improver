@@ -6,8 +6,7 @@ import { PopUpMessageService } from './util/pop-up-message.service';
 import { SecurityService } from './auth/security.service';
 import { SwUpdate } from '@angular/service-worker';
 import { NavigationEnd, Router } from '@angular/router';
-import { GoogleAnalyticsService } from './util/google-analytics.service';
-import { HotJarService } from './util/hotjar.service';
+import { MetricsEventService } from "./util/metrics-event.service";
 import 'hammerjs';
 import '../../extend';
 
@@ -28,8 +27,7 @@ export class AppComponent implements OnInit, AfterViewInit {
               private securityService: SecurityService,
               private renderer: Renderer2,
               private router: Router,
-              private googleAnalyticsService: GoogleAnalyticsService,
-              private hotJarService: HotJarService) {
+              private metricsEventService: MetricsEventService) {
 
     popUpMessageService.renderer = renderer;
   }

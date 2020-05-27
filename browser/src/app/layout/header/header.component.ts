@@ -13,6 +13,7 @@ import { takeUntil, tap } from 'rxjs/operators';
 import { RequestOrder } from "../../model/order-model";
 import { AccountService } from "../../api/services/account.service";
 import { MobileMenuService } from "../../util/mobile-menu-service";
+import { MetricsEventService } from "../../util/metrics-event.service";
 
 @Component({
   selector: 'layout-header',
@@ -34,7 +35,8 @@ export class HeaderComponent {
               public securityService: SecurityService,
               public mediaQueryService: MediaQueryService,
               public accountService: AccountService,
-              public mobileMenuService: MobileMenuService) {
+              public mobileMenuService: MobileMenuService,
+              private metricsEventService: MetricsEventService) {
 
     this.subscribeForMediaScreen();
 
@@ -89,7 +91,10 @@ export class HeaderComponent {
         this.accountService.getAccount(this.securityService.getLoginModel().id).subscribe(account => {
           if (project.defaultQuestionaryGroup.email.toLowerCase() == account.email.toLowerCase() && diffDays <= maxExpirationDays) {
             this.projectService.postUnsavedProjects(project)
-              .pipe(tap( () => localStorage.removeItem('unsavedProjects')))
+              .pipe(tap( () => {
+                localStorage.removeItem('unsavedProjects')
+                this.metricsEventService.fireProjectRequestedEvent();
+              }))
               .subscribe();
           }
         });

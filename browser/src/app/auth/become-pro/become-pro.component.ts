@@ -2,12 +2,12 @@ import { AfterViewInit, ChangeDetectorRef, Component } from '@angular/core';
 import { SecurityService } from '../security.service';
 import { Constants } from '../../util/constants';
 import { Messages } from 'app/util/messages';
-import { GoogleAnalyticsService } from '../../util/google-analytics.service';
 import { HotJarService } from '../../util/hotjar.service';
 import { ScrollService } from "../../util/scroll.service";
 import { MediaQuery, MediaQueryService } from "../../util/media-query.service";
 import { takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
+import { MetricsEventService } from "../../util/metrics-event.service";
 
 @Component({
   selector: 'become-pro-page',
@@ -95,11 +95,11 @@ export class BecomeProComponent implements AfterViewInit {
   constructor(public securityService: SecurityService,
               public constants: Constants,
               public messages: Messages,
-              private googleAnalyticsService: GoogleAnalyticsService,
               private hotJarService: HotJarService,
               public scrollService: ScrollService,
 							private changeDetectorRef: ChangeDetectorRef,
-							private mediaQueryService: MediaQueryService) {
+							private mediaQueryService: MediaQueryService,
+              private metricsEventService: MetricsEventService) {
 
 		this.mediaQueryService.screen
 				.pipe(takeUntil(this.destroyed$))
@@ -115,7 +115,7 @@ export class BecomeProComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.hotJarService.tagRecording(['become a pro']);
+    this.metricsEventService.fireBecameProPageViewEvent();
   }
 
   createSwipers() {
@@ -169,7 +169,7 @@ export class BecomeProComponent implements AfterViewInit {
   }
 
   gTagTrackClick(): void {
-    this.googleAnalyticsService.event('seen/read become a pro', {event_category:'Seen', description: 'seen or read content'})
+    this.metricsEventService.fireBecameProRegistrationClickEvent();
   }
 
 }
