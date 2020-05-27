@@ -27,6 +27,7 @@ export class BecomeProComponent implements AfterViewInit {
 		routerLink: '/signup-pro'
 	};
 	swiper: Swiper;
+	imageSwiper: Swiper;
 	mediaQuery: MediaQuery;
 	private readonly destroyed$: Subject<void> = new Subject();
 
@@ -104,34 +105,11 @@ export class BecomeProComponent implements AfterViewInit {
 				.pipe(takeUntil(this.destroyed$))
 				.subscribe(mediaQuery => {
 					this.mediaQuery = mediaQuery;
-					if (mediaQuery.sm || mediaQuery.xs){
-						setTimeout(()=> {
-							this.swiper = new Swiper('.benefits-swiper', {
-								slidesPerView: 1.2,
-								spaceBetween: 30,
-								speed: 300,
-								loop: true,
-								breakpoints: {
-									450: {
-										slidesPerView: 1.2,
-										spaceBetween: 30
-									},
-									550: {
-										slidesPerView: 1.5,
-										spaceBetween: 30
-									},
-									650: {
-										slidesPerView: 1.8,
-										spaceBetween: 30
-									},
-									770: {
-										slidesPerView: 2,
-										spaceBetween: 30
-									}
-								}
-							});
-							this.changeDetectorRef.detectChanges();
-						},);
+					if (mediaQuery.sm || mediaQuery.xs) {
+						this.createSwipers();
+					} else if ((this.swiper || this.imageSwiper) !== undefined) {
+						this.swiper = undefined;
+						this.imageSwiper = undefined;
 					}
 				});
   }
@@ -139,6 +117,51 @@ export class BecomeProComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.hotJarService.tagRecording(['become a pro']);
   }
+
+  createSwipers() {
+  	if ((this.swiper || this.imageSwiper) === undefined) {
+			setTimeout(() => {
+				this.imageSwiper = new Swiper('.image-swiper', {
+					slidesPerView: 1,
+					spaceBetween: 30,
+					speed: 300,
+					loop: true,
+				});
+			},);
+			setTimeout(() => {
+				this.swiper = new Swiper('.benefits-swiper', {
+					slidesPerView: 1.2,
+					spaceBetween: 30,
+					speed: 300,
+					loop: true,
+					control: this.imageSwiper,
+					breakpoints: {
+						340: {
+							slidesPerView: 1.2,
+							spaceBetween: 20
+						},
+						450: {
+							slidesPerView: 1.3,
+							spaceBetween: 30
+						},
+						550: {
+							slidesPerView: 1.5,
+							spaceBetween: 30
+						},
+						650: {
+							slidesPerView: 1.8,
+							spaceBetween: 30
+						},
+						770: {
+							slidesPerView: 2,
+							spaceBetween: 30
+						}
+					}
+				});
+				this.imageSwiper.params.control = this.swiper;
+			},);
+		}
+	}
 
   selectBenefitImage(item) {
     this.selectedBenefitImageUrl = item.desktopImage;

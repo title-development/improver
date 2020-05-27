@@ -77,17 +77,25 @@
 
         </div>
 
-        <div class="image-background" *ngIf="mediaQuery.sm || mediaQuery.xs"></div>
+        <div class="phone-wrapper" *ngIf="mediaQuery.sm || mediaQuery.xs">
+            <div class="phone-image">
+                <div class="swiper-container image-swiper" *ngIf="mediaQuery.sm || mediaQuery.xs">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide image-slide" *ngFor="let item of benefits">
+                            <div class="image" [ngStyle]="{'background-image':'url(' + 'assets/img/became-pro-benefits/mobile/'+ item.mobileImage + ')'}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="swiper-container benefits-swiper" *ngIf="mediaQuery.sm || mediaQuery.xs">
             <div class="swiper-wrapper">
                 <div class="swiper-slide" *ngFor="let item of benefits">
-                    <div class="slider-image" [ngStyle]="{'background-image':'url(' + 'assets/img/became-pro-benefits/mobile/'+ item.mobileImage + ')'}"></div>
-
                     <div class="trade-content">
                         <div class="text-content">
                             <div class="item-title">{{item.title}}</div>
-                            <div class="item-text">{{item.text}} services</div>
+                            <div class="item-text">{{item.text}}</div>
                         </div>
                     </div>
                 </div>
