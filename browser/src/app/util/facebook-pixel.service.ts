@@ -21,7 +21,7 @@ export class FacebookPixelService {
       t.src = v; s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s)
     })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
     (window as any).fbq('init', '3320760744600703');
-    (window as any).fbq('track', 'PageView');
+    (window as any).fbq('track', 'Landing (page view)');
     this.fbq = fbq;
   }
 
