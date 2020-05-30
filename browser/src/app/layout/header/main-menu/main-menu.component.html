@@ -23,7 +23,7 @@
         <a routerLink="/my/projects" (click)="close()">My Projects</a>
       </div>
       <a routerLink="/my/settings/account" (click)="close()">User Account</a>
-      <a routerLink="/my/settings/notifications" (click)="close()">Notification Settings</a>
+      <a routerLink="/my/settings/notifications" (click)="close()">Email Settings</a>
     </div>
     <div class="user-role" *ngIf="securityService.isAuthenticated() && securityService.hasRole(Role.CONTRACTOR)">
       <div class="user-role-child md-none lg-none xlg-none">
@@ -31,14 +31,14 @@
       </div>
       <a routerLink="/pro/settings/account" (click)="close()">User Account</a>
       <a [routerLink]="'/companies/' + securityService.getLoginModel().company" (click)="close()">Company Profile</a>
-      <a routerLink="/pro/settings/info" (click)="close()">Company Info</a>
-      <a routerLink="/pro/settings/services" (click)="close()">Provided Services</a>
+      <!--<a routerLink="/pro/settings/info" (click)="close()">Company Info</a>-->
+      <a routerLink="/pro/settings/services" (click)="close()">Lead Preferences</a>
       <a routerLink="/pro/settings/coverage" (click)="close()">Service Area</a>
       <a routerLink="/pro/settings/billing" (click)="close()">Billing</a>
       <a (click)="close(); toggleReferralDialog()">Give {{constants.REFERRAL_BONUS_AMOUNT / 100 | currency:'USD':'symbol':'0.0-0'}}, Get {{constants.REFERRAL_BONUS_AMOUNT / 100 | currency:'USD':'symbol':'0.0-0'}}</a>
-      <a routerLink="/pro/settings/notifications" (click)="close()">Notification Settings</a>
-      <a routerLink="/pro/settings/quick-reply" (click)="close()">Auto Reply</a>
-      <a routerLink="/pro/settings/scheduling-availability" (click)="close()">Vacation Schedule</a>
+      <a routerLink="/pro/settings/notifications" (click)="close()">Communication Settings</a>
+      <!--<a routerLink="/pro/settings/quick-reply" (click)="close()">Auto Reply</a>
+      <a routerLink="/pro/settings/scheduling-availability" (click)="close()">Vacation Schedule</a>-->
     </div>
     <div class="user-role" *ngIf="securityService.isAuthenticated() && (securityService.hasRole(Role.ADMIN) || securityService.hasRole(Role.SUPPORT) || securityService.hasRole(Role.STAKEHOLDER))">
       <a routerLink="/admin" (click)="close()">Admin Panel</a>

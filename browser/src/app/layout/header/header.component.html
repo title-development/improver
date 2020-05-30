@@ -70,14 +70,14 @@
 
 
       <!--Balance information-->
-      <a class="balance-bar xs-none sm-none"
+      <!--<a class="balance-bar xs-none sm-none"
          *ngIf="securityService.isAuthenticated() && securityService.hasRole(Role.CONTRACTOR)"
          routerLink="/pro/settings/billing">
         <div>
           <div class="balance-header-label">Balance:</div>
           <div class="balance-header-value">{{ billingService.billing.balance /100 | currency:'USD':'symbol'}}</div>
         </div>
-      </a>
+      </a>-->
 
       <div class="nav navbar-nav">
         <a class="app-menu-button account-menu" title="{{securityService.getLoginModel().name}}"

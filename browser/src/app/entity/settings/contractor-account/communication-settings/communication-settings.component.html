@@ -9,12 +9,15 @@
       <div class="account-nav-wrapper">
 
         <div class="account-top-line">
-          <div class="account-nav-title">Notification Settings</div>
+          <div class="account-nav-title">Communication Settings</div>
         </div>
         <div [cvSpinner]="!notificationSettings" [cvSpinnerSize]="24">
           <div class="notification-settings-card card" *ngIf="notificationSettings">
 
-            <div class="notification-settings-title">Choose the emails you want to receive from Home Improve:</div>
+            <div class="account-title-wrapper">
+              <div class="account-title">Email Settings</div>
+              <div class="account-subtitle">Choose the emails you want to receive from Home Improve:</div>
+            </div>
 
             <div class="notification-methods-wrapper" fxLayout="column" fxLayoutAlign="start end">
 
@@ -61,6 +64,8 @@
           </div>
         </div>
       </div>
+
+      <quick-reply></quick-reply>
 
     </div>
   </div>

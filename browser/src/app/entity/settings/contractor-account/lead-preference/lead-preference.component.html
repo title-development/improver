@@ -9,11 +9,17 @@
     <div class="content-wrapper col-md-9 col-sm-12">
 
       <div class="account-top-line">
-        <div class="account-nav-title">Provided Services</div>
+        <div class="account-nav-title">Lead Preferences</div>
       </div>
 
       <div [cvSpinner]="!tradesAndServiceTypes" [cvSpinnerSize]="24">
         <div class="trades-and-services-card card">
+
+          <div class="account-title-wrapper">
+            <div class="account-title">Provided Services</div>
+            <div class="account-subtitle">Select services you offer and want to receive leads for. Add the entire Trades or select particular Services.</div>
+          </div>
+
 
           <div class="card-content">
 
@@ -25,6 +31,12 @@
           </div>
         </div>
       </div>
+
+      <div class="card subscription-card">
+        <subscription></subscription>
+      </div>
+
+      <scheduling-availability></scheduling-availability>
 
     </div>
 

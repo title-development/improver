@@ -63,31 +63,31 @@ export class BecomeProComponent implements AfterViewInit {
       title: 'Free choice',
       text: 'Choose exactly which leads to buy',
 			desktopImage: 'benefit_2.png',
-			mobileImage: 'mobile_benefit_2.png'
+			mobileImage: ''
     },
     {
       title: 'Flexible schedule',
       text: 'Plan your monthly workload and receive a steady stream of leads leads automatically',
 			desktopImage: 'benefit_3.png',
-			mobileImage: 'mobile_benefit_3.png'
+			mobileImage: ''
     },
     {
       title: 'A lot of work',
       text: 'Browse leads to take on extra work as you have time',
-			desktopImage: 'benefit_1.png',
-			mobileImage: 'mobile_benefit_1.png'
+			desktopImage: 'benefit_4.png',
+			mobileImage: ''
     },
     {
       title: 'Fast access',
       text: 'Get first access to leads on subscription',
-			desktopImage: 'benefit_2.png',
-			mobileImage: 'mobile_benefit_2.png'
+			desktopImage: 'benefit_5.png',
+			mobileImage: ''
     },
     {
       title: 'Ongoing support',
       text: 'Home Improve offers you 24 hours phone and email support',
-			desktopImage: 'benefit_3.png',
-			mobileImage: 'mobile_benefit_3.png'
+			desktopImage: 'benefit_6.png',
+			mobileImage: ''
     }
   ];
 

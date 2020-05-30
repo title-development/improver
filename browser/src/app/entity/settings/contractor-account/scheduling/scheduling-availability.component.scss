@@ -1,4 +1,9 @@
 @import "../../../../../improver-mixins.scss";
+@import "../../account.component.scss";
+
+.scheduling-wrapper {
+  width: 100%;
+}
 
 .account-top-line {
   display: flex;

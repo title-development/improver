@@ -43,7 +43,7 @@ const routes: Routes = [
           },
           {
             path: 'services',
-            loadChildren: () => import('./contractor-account/trades-and-services/trades-and-services.module').then(m => m.TradesAndServicesModule)
+            loadChildren: () => import('./contractor-account/lead-preference/lead-preference.module').then(m => m.LeadPreferenceModule)
           },
           {
             path: 'coverage',
@@ -55,16 +55,8 @@ const routes: Routes = [
           },
           {
             path: 'notifications',
-            loadChildren: () => import('./contractor-account/contractor-notifications/contractor-notifications.module').then(m => m.ContractorNotificationsModule)
-          },
-          {
-            path: 'quick-reply',
-            loadChildren: () => import('./contractor-account/quick-reply/quick-reply.module').then(m => m.QuickReplyModule)
-          },
-          {
-            path: 'scheduling-availability',
-            loadChildren: () => import('./contractor-account/scheduling/scheduling-availability.module').then(m => m.SchedulingAvailabilityModule)
-          },
+            loadChildren: () => import('./contractor-account/communication-settings/communication-settings.module').then(m => m.CommunicationSettingsModule)
+          }
         ]
       }
     ]

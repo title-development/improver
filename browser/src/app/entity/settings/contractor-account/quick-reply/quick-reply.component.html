@@ -1,20 +1,15 @@
 <div class="container">
   <div class="row">
 
-    <div class="col-md-3 sm-none xs-none">
-      <div class="account-top-line"></div>
-      <account-nav></account-nav>
-    </div>
-
-    <div class="col-md-9 col-sm-12">
-
-      <div class="account-top-line">
-        <div class="account-nav-title">Auto Reply</div>
-      </div>
+    <div class="quick-replay-wrapper">
 
       <div [cvSpinner]="fetching" [cvSpinnerSize]="24">
 
         <div class="quick-reply-card card" *ngIf="!fetching">
+
+          <div class="account-title-wrapper">
+            <div class="account-title">Auto Reply</div>
+          </div>
 
           <form class="quick-reply-form"
                 name="quick-reply-form"
@@ -77,5 +72,3 @@
 
   </div>
 </div>
-
-<layout-footer></layout-footer>

@@ -6,12 +6,13 @@ import { EqualValidator } from "../../../../validators/equal-validator.directive
 
 import { MatCardModule } from "@angular/material/card";
 
-import { ContractorNotificationsComponent } from "./contractor-notifications.component";
+import { CommunicationSettingsComponent } from "./communication-settings.component";
 import { SharedModule } from '../../../../shared/shared.module';
 import { LayoutModule } from "../../../../layout/layout.module";
+import { QuickReplyComponent } from "../quick-reply/quick-reply.component";
 
 const routing: ModuleWithProviders = RouterModule.forChild([
-  { path: '', component: ContractorNotificationsComponent },
+  { path: '', component: CommunicationSettingsComponent },
 ]);
 
 @NgModule({
@@ -24,12 +25,16 @@ const routing: ModuleWithProviders = RouterModule.forChild([
     LayoutModule
   ],
   declarations: [
-    ContractorNotificationsComponent
+    CommunicationSettingsComponent,
+    QuickReplyComponent
   ],
-  exports: [EqualValidator],
+  exports: [
+    EqualValidator,
+    QuickReplyComponent
+  ],
   providers: []
 })
-export class ContractorNotificationsModule {}
+export class CommunicationSettingsModule {}
 
 
 

@@ -10,12 +10,12 @@ import { getErrorMessage } from "../../../../util/functions";
 import { ContractorNotificationSettings } from "../../../../api/models/NotificationSettings";
 
 @Component({
-  selector: 'notifications',
-  templateUrl: './contractor-notifications.component.html',
-  styleUrls: ['./contractor-notifications.component.scss']
+  selector: 'communication-settings',
+  templateUrl: './communication-settings.component.html',
+  styleUrls: ['./communication-settings.component.scss']
 })
 
-export class ContractorNotificationsComponent {
+export class CommunicationSettingsComponent {
 
   notificationSettings: ContractorNotificationSettings;
 

@@ -13,7 +13,7 @@ import { getErrorMessage } from "../../../../util/functions";
 import { UserService } from "../../../../api/services/user.service";
 
 @Component({
-  selector: 'notifications',
+  selector: 'communication-settings',
   templateUrl: './customer-notifications.component.html',
   styleUrls: ['./customer-notifications.component.scss']
 })

@@ -34,7 +34,7 @@
 
     <div class="selected-trades-list" *ngIf="tradesAndServiceTypes && tradesAndServiceTypes.services.length > 0">
 
-      <div class="trades-title">Trades and Services you provide</div>
+      <div class="trades-title" *ngIf="securityService.hasRole(Role.INCOMPLETE_PRO)">Trades and Services you provide</div>
 
         <ng-template ngFor [ngForOf]="tradesAndServiceTypes?.trades" let-trade let-i="index" [ngForTrackBy]="trackById">
           <div class="collapse-content">

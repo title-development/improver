@@ -16,6 +16,7 @@ import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { UserSearchService } from "../../api/services/user-search.service";
 import { takeUntil } from "rxjs/operators";
 import { MediaQuery, MediaQueryService } from "../../util/media-query.service";
+import { Role } from "../../model/security-model";
 
 
 @Component({
@@ -28,6 +29,7 @@ export class ServicesSelectorComponent implements OnInit {
 
   @Input()
   initialData;
+  Role = Role;
 
   tradesAndServiceTypes = {
     trades: [],

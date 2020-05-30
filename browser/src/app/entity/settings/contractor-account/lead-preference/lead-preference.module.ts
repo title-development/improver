@@ -1,8 +1,8 @@
-import { ModuleWithProviders, NgModule,  } from '@angular/core';
+import { ModuleWithProviders, NgModule, } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FlexLayoutModule } from "@angular/flex-layout";
-import { FormsModule} from "@angular/forms";
+import { FormsModule } from "@angular/forms";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
@@ -14,14 +14,21 @@ import { MatInputModule } from "@angular/material/input";
 import { MatRadioModule } from "@angular/material/radio";
 import { MatSelectModule } from "@angular/material/select";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
-import { QuickReplyComponent } from "./quick-reply.component";
+import { LeadPreferenceComponent } from "./lead-preference.component";
 import { SharedModule } from '../../../../shared/shared.module';
 import { LayoutModule } from "../../../../layout/layout.module";
+import { CvCollapseModule } from "../../../../theme/collapse/cv-collapse.module";
+import { CvSelectModule } from "../../../../theme/select/cv-select-module";
+import { CvCheckboxModule } from "../../../../theme/checkbox/checkbox.module";
+import { ComponentCanDeactivateGuard } from "../../../../auth/router-guards/component-can-deactivate.guard";
+import { SchedulingAvailabilityComponent } from "../scheduling/scheduling-availability.component";
+import { UnavailabilityPeriodService } from "../../../../api/services/unavailability-period.service";
 
 const routing: ModuleWithProviders = RouterModule.forChild([
   {
     path: '',
-    component: QuickReplyComponent
+    component: LeadPreferenceComponent,
+    canDeactivate: [ComponentCanDeactivateGuard]
   }
 ]);
 
@@ -43,14 +50,21 @@ const routing: ModuleWithProviders = RouterModule.forChild([
     FormsModule,
     MatAutocompleteModule,
     SharedModule,
+    CvCollapseModule,
+    CvSelectModule,
+    CvCheckboxModule,
     LayoutModule
   ],
   declarations: [
-    QuickReplyComponent
+    LeadPreferenceComponent,
+    SchedulingAvailabilityComponent
   ],
   exports: [
+    SchedulingAvailabilityComponent
   ],
-  providers: []
+  providers: [
+    UnavailabilityPeriodService
+  ]
 })
 
-export class QuickReplyModule {}
+export class LeadPreferenceModule {}

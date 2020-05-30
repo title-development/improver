@@ -12,12 +12,12 @@ import { ComponentCanDeactivate } from "../../../../auth/router-guards/component
 import { Observable } from "rxjs";
 
 @Component({
-  selector: 'trades-and-services',
-  templateUrl: './trades-and-services.component.html',
-  styleUrls: ['./trades-and-services.component.scss']
+  selector: 'lead-preference',
+  templateUrl: './lead-preference.component.html',
+  styleUrls: ['./lead-preference.component.scss']
 })
 
-export class TradesAndServicesComponent implements OnInit, ComponentCanDeactivate {
+export class LeadPreferenceComponent implements OnInit, ComponentCanDeactivate {
 
   tradesAndServiceTypes;
   selectorInitialized = false;

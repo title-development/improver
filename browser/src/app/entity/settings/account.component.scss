@@ -19,6 +19,32 @@
   }
 }
 
+.account-title-wrapper {
+  display: flex;
+  flex-direction: column;
+
+  .account-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: $black-800;
+    margin-bottom: 10px;
+  }
+
+  .account-subtitle {
+    font-size: 14px;
+    color: $grey-700;
+    margin-bottom: 12px;
+  }
+}
+
+//.nav-width {
+//  width: 27%;
+//}
+//
+//.card-width {
+//  width: 73%;
+//}
+
 .account-page-container {
 
   margin-top: 24px;
