@@ -22,12 +22,13 @@
 
             <cv-input-field>
               <cv-field-label>Message</cv-field-label>
-              <textarea cv-input placeholder="Text of message that will be sent to Customer after submitting a new project."
+              <textarea cv-input
+                        placeholder="Text of message that will be sent to Customer after submitting a new project."
                         #quickReplayMessage="ngModel"
                         name="quickReplayMessage"
                         type="text"
-                        trim
                         [(ngModel)]="quickReply.text"
+                        [(cv_trim)]="quickReply.description"
                         required
                         rows="4"
                         minlength="20"

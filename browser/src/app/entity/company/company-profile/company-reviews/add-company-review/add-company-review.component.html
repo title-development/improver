@@ -32,9 +32,12 @@
           <cv-input-field>
             <textarea #companyReview="ngModel" class="review-post-message"  rows="5"
                       cv-input
-                      trim
                       [placeholder]="'Tell something about your experience with ' + companyProfile.name"
-                      name="review" [minlength]="constants.REVIEW_MESSAGE_MIN_LENGTH" [maxlength]="constants.REVIEW_MESSAGE_MAX_LENGTH" [(ngModel)]="newReview.description"
+                      name="review"
+                      [minlength]="constants.REVIEW_MESSAGE_MIN_LENGTH"
+                      [maxlength]="constants.REVIEW_MESSAGE_MAX_LENGTH"
+                      [(ngModel)]="newReview.description"
+                      [(cv_trim)]="newReview.description"
                       required></textarea>
             <cv-field-hint>{{companyReview.value ? companyReview.value.length : 0}}/{{constants.REVIEW_MESSAGE_MAX_LENGTH}}</cv-field-hint>
             <cv-field-error *ngIf="companyReview.dirty || companyReview.touched || reviewPostForm.submitted">

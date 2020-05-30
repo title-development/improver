@@ -119,13 +119,13 @@
                 <cv-input-field>
                   <cv-field-label>Company description</cv-field-label>
                   <textarea cv-input
+                            [(cv_trim)]="companyRegistration.company.description"
                             placeholder="Add a few sentences describing your company, background, expertise, years in business, and anything else that helps you stand out."
                             #companyDescription="ngModel"
                             name="companyDescription"
                             type="text"
                             [(ngModel)]="companyRegistration.company.description"
                             required
-                            trim
                             rows="5"
                             minlength="20"
                             maxlength="2500">

@@ -33,10 +33,12 @@
     <div class="text-input-group fill-flex-space">
       <cv-input-field>
         <cv-field-label>Project details</cv-field-label>
-        <textarea cv-input placeholder="Describe your project for professional"
+        <textarea cv-input
+                  placeholder="Describe your project for professional"
                   formControlName="notes"
+                  [cv_trim]="defaultQuestionaryForm.get('notes').value"
+                  (cv_trimChange)="defaultQuestionaryForm.get('notes').setValue($event)"
                   rows="4"
-                  trim
                   type="text"
                   maxlength="1500"
                   [required]="questionaryControlService.questionaryLength == 0"></textarea>

@@ -90,13 +90,14 @@
 
             <cv-input-field>
               <cv-field-label>Message</cv-field-label>
-              <textarea cv-input placeholder="Tell us more"
+              <textarea cv-input
+                        placeholder="Tell us more"
                         #description="ngModel"
                         name="description"
                         type="text"
                         [(ngModel)]="ticket.description"
+                        [(cv_trim)]="ticket.description"
                         required
-                        trim
                         rows="4"
                         minlength="20"
                         maxlength="2500">

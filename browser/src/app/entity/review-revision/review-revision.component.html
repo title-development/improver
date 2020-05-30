@@ -21,12 +21,15 @@
           </div>
         </div>
         <cv-input-field>
-          <textarea cv-input class="review-post-message" rows="5" trim
+          <textarea cv-input
+                    class="review-post-message"
+                    rows="5"
                     #description="ngModel"
                     [placeholder]="'Tell something about your experience with ' + review.company.name"
                     name="review" [minlength]="constants.REVIEW_MESSAGE_MIN_LENGTH"
                     [maxlength]="constants.REVIEW_MESSAGE_MAX_LENGTH"
                     [(ngModel)]="review.description"
+                    [(cv_trim)]="review.description"
                     required></textarea>
           <cv-field-hint>{{description.value ? description.value.length : 0}}/{{constants.REVIEW_MESSAGE_MAX_LENGTH}}</cv-field-hint>
           <cv-field-error

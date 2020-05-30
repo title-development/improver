@@ -19,9 +19,17 @@
     -->
     <cv-input-field>
       <cv-field-label>Emails (comma-separated)</cv-field-label>
-      <textarea maxlength="500" multipleEmailsValidator #emailsEl="ngModel"
-                placeholder="client1@mail.com, client2@mail.com, client3@mail.com" trim required cv-input name="emails"
-                cols="30" rows="2" [(ngModel)]="emails"></textarea>
+      <textarea maxlength="500"
+                multipleEmailsValidator
+                #emailsEl="ngModel"
+                placeholder="client1@mail.com, client2@mail.com, client3@mail.com"
+                required
+                cv-input
+                name="emails"
+                cols="30"
+                rows="2"
+                [(ngModel)]="emails"
+                [(cv_trim)]="emails"></textarea>
       <cv-field-hint>{{emailsEl.value ? emailsEl.value.length : 0}}/500</cv-field-hint>
       <cv-field-error *ngIf="emailsEl.dirty || emailsEl.touched || form.submitted">
         <span *ngIf="emailsEl.errors?.required">{{messages.errors.default.required}}</span>
@@ -41,7 +49,7 @@
     </cv-input-field>
     <cv-input-field >
       <cv-field-label>Message</cv-field-label>
-      <textarea #messageEl="ngModel" minlength="10" maxlength="255" required trim cv-input name="message" id=""
+      <textarea #messageEl="ngModel" minlength="10" maxlength="255" required cv-input name="message" id=""
                 cols="30" rows="6" [(ngModel)]="message"></textarea>
       <cv-field-hint>{{messageEl.value ? messageEl.value.length : 0}}/255</cv-field-hint>
       <cv-field-error *ngIf="messageEl.dirty || messageEl.touched || form.submitted">

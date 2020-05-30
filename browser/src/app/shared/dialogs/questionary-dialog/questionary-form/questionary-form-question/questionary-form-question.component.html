@@ -43,8 +43,8 @@
       <textarea cv-input
                 [placeholder]="question.label"
                 [formControlName]="question.name"
+                [(cv_trim)]="question.name"
                 rows="4"
-                trim
                 type="text"
                 maxlength="500"
                 required>

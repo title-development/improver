@@ -1,8 +1,15 @@
 import {
-  Component, ElementRef, HostBinding, Input, OnInit, Optional, Self,
-  ViewEncapsulation
+	Component,
+	ElementRef,
+	EventEmitter,
+	HostBinding,
+	Input, OnChanges,
+	Optional,
+	Output,
+	Self, SimpleChanges,
+	ViewEncapsulation
 } from '@angular/core';
-import { NgControl } from '@angular/forms';
+import { FormControl, NgControl } from '@angular/forms';
 import { coerceBooleanProperty } from '../../util/util';
 
 @Component({
@@ -14,6 +21,7 @@ import { coerceBooleanProperty } from '../../util/util';
     'class': 'cv-input',
     '[disabled]': 'disabled',
     '[readonly]': 'readonly',
+		'(blur)': 'onBlur()',
     '[class.-disabled]': 'disabled',
     '[class.-readonly]': 'readonly',
     '[class.-submitted]': 'isSubmitted()'
@@ -26,6 +34,9 @@ export class CvInputComponent {
 
   @HostBinding('class.-icon') private _icon: boolean;
   @HostBinding('class.-hint') private _hint: boolean;
+
+  @Input() cv_trim: string;
+  @Output() cv_trimChange: EventEmitter<string> = new EventEmitter<string>();
 
   @Input()
   set disabled(value: any) {
@@ -69,6 +80,12 @@ export class CvInputComponent {
   ) {
 
   }
+
+	onBlur() {
+		if (this.cv_trim){
+			this.cv_trimChange.emit(this.cv_trim.replace(/ {2,}/g, ' ').trim());
+		}
+	}
 
   isRequired(): boolean {
     return this.required != undefined;
