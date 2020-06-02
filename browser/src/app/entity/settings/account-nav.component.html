@@ -21,10 +21,10 @@
       <div>User Account</div>
     </button>
 
-<!--    <button routerLink="/pro/settings/info" routerLinkActive="active" fxLayout="row" fxLayoutAlign="start center">
+    <button [routerLink]="'/companies/' + securityService.getLoginModel().company" routerLinkActive="active" fxLayout="row" fxLayoutAlign="start center">
       <mat-icon class="md-none">business</mat-icon>
-      <div>Company Info</div>
-    </button>-->
+      <div>Company Profile</div>
+    </button>
 
     <button routerLink="/pro/settings/services" routerLinkActive="active" fxLayout="row"
             fxLayoutAlign="start center">
@@ -45,14 +45,6 @@
       <mat-icon class="md-none">chat</mat-icon>
       <div>Communication Settings</div>
     </button>
-<!--    <button routerLink="/pro/settings/quick-reply" routerLinkActive="active" fxLayout="row" fxLayoutAlign="start center">
-      <mat-icon class="md-none">message</mat-icon>
-      <div>Auto Reply</div>
-    </button>-->
-<!--    <button routerLink="/pro/settings/scheduling-availability" routerLinkActive="active" fxLayout="row" fxLayoutAlign="start center">
-      <mat-icon class="md-none">date_range</mat-icon>
-      <div>Vacation Schedule</div>
-    </button>-->
 
   </ng-container>
 

@@ -83,7 +83,10 @@ export class CvInputComponent {
 
 	onBlur() {
 		if (this.cv_trim){
-			this.cv_trimChange.emit(this.cv_trim.replace(/ {2,}/g, ' ').trim());
+			// Trim text and replace all multiple spaces and multiple empty lines to single space and single empty line
+			this.cv_trimChange.emit(this.cv_trim.replace(/\s {2,}/g, ' ')
+																					.replace(/^\s*[\r\n]{2,}/gm, '\n')
+																					.trim());
 		}
 	}
 
