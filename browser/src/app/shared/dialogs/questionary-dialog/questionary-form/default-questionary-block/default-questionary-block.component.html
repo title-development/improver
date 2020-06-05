@@ -40,12 +40,14 @@
                   (cv_trimChange)="defaultQuestionaryForm.get('notes').setValue($event)"
                   rows="4"
                   type="text"
+                  [minlength]="questionaryControlService.questionaryLength == 0 ? constants.PROJECT_DESCRIPTION_MIN_LENGTH : undefined"
                   maxlength="1500"
-                  [required]="questionaryControlService.questionaryLength == 0"></textarea>
+                  [required]="questionaryControlService.questionaryLength == 0 ? 'required' : undefined"></textarea>
         <cv-field-hint>{{defaultQuestionaryForm.get('notes').value.length}}/1500</cv-field-hint>
         <cv-field-error
           *ngIf="defaultQuestionaryForm.get('notes').dirty || defaultQuestionaryForm.get('notes').touched ">
           <span *ngIf="defaultQuestionaryForm.get('notes').errors?.required">Required</span>
+          <span *ngIf="defaultQuestionaryForm.get('notes').errors?.minlength">{{constants.PROJECT_DESCRIPTION_MIN_LENGTH}} characters minimum</span>
         </cv-field-error>
       </cv-input-field>
     </div>
@@ -165,17 +167,11 @@
       <button cv-button-empty class="questionary-previous-button" (click)="questionaryControlService.previousQuestion()" type="button"
               *ngIf="!hideNextAction && !postOrderProcessing">Back
       </button>
-      <button *ngIf="(securityService.hasRole(Role.ANONYMOUS) && !hideNextAction && !postOrderProcessing) ||
-                     (securityService.hasRole(Role.CUSTOMER) && !hideNextAction && !postOrderProcessing && !questionaryControlService.customerHasPhone)"
+      <button *ngIf="!hideNextAction"
               cv-button class="questionary-next-button"
               (click)="nextQuestion('projectLocation', validateLocation)" type="button"
               [disabled]="disabledNextAction">
         Next
-      </button>
-      <button *ngIf="securityService.hasRole(Role.CUSTOMER) && !hideNextAction && !postOrderProcessing && questionaryControlService.customerHasPhone"
-              cv-button class="questionary-next-button"
-              (click)="onSubmit('projectLocation', validateLocation)" type="button" [disabled]="disabledNextAction">
-        Submit
       </button>
     </div>
 
@@ -183,8 +179,7 @@
   </div>
 
   <div #defaultQuestion class="form-element-wrapper text-input-wrapper" [formGroupName]="'defaultQuestionaryGroup'"
-       *ngIf="(securityService.hasRole(Role.ANONYMOUS) && (questionaryControlService.currentQuestionIndex == questionaryControlService.questionaryLength + 3))
-              || (securityService.hasRole(Role.CUSTOMER) && (questionaryControlService.currentQuestionIndex == questionaryControlService.questionaryLength + 3))">
+       *ngIf="personalInfoRequired() && (questionaryControlService.currentQuestionIndex == questionaryControlService.questionaryLength + 3)">
     <h2 class="question-title" *ngIf="securityService.hasRole(Role.ANONYMOUS)">Let's get acquainted</h2>
     <h2 class="question-title" *ngIf="securityService.hasRole(Role.CUSTOMER)">Please add your phone number</h2>
     <div class="text-input-group fill-flex-space" [formGroupName]="'customerPersonalInfo'" *ngIf="!processingPhoneValidation">
@@ -273,15 +268,73 @@
 
       <button *ngIf="securityService.hasRole(Role.CUSTOMER) && !questionaryControlService.customerHasPhone"
               cv-button class="questionary-next-button"
-              (click)="onSubmit('customerPersonalInfo', validatePhone)" type="button" [disabled]="disabledNextAction">
-        Submit
+              (click)="nextQuestion('customerPersonalInfo', validatePhone)" type="button" [disabled]="disabledNextAction">
+        Next
       </button>
+
     </div>
 
   </div>
 
   <div #defaultQuestion class="form-element-wrapper text-input-wrapper" [formGroupName]="'defaultQuestionaryGroup'"
-       *ngIf="securityService.hasRole(Role.ANONYMOUS) && (questionaryControlService.currentQuestionIndex == questionaryControlService.questionaryLength + 4)">
+       *ngIf="questionaryControlService.currentQuestionIndex == questionaryControlService.questionaryLength + 3 + (personalInfoRequired() ? 1 : 0)">
+    <h2 class="question-title">Lets check you {{questionaryControlService.serviceType.name}} request</h2>
+
+    <div class="fill-flex-space">
+
+      <div class="project-summary">
+        <div class="project-details-group" *ngIf="!securityService.isAuthenticated()">
+          <div class="label">Phone:</div>
+          <div class="value main">{{defaultQuestionaryForm.get('customerPersonalInfo.phone').value}}</div>
+        </div>
+        <div class="project-details-group">
+          <div class="label">Location:</div>
+          <div class="value main">
+            {{originalAddress?.streetAddress}},
+            {{originalAddress?.city}},
+            {{originalAddress?.state}}
+            {{originalAddress?.zip}}
+          </div>
+        </div>
+        <div class="project-details-group">
+          <div class="label">When do you need your project started:</div>
+          <div class="value main">{{defaultQuestionaryForm.get('startExpectation').value}}</div>
+        </div>
+
+        <div class="project-details-group">
+          <div class="label">Notes:</div>
+          <div class="value main">{{defaultQuestionaryForm.get('notes').value}}</div>
+        </div>
+        <ng-template ngFor let-question [ngForOf]="questionaryAnswers">
+          <div class="project-details-group">
+            <div class="label">{{question.key}}:</div>
+            <div class="value">
+              <ng-template ngFor let-value [ngForOf]="question.value">
+                <span>{{value}}</span>
+              </ng-template>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+
+    <div class="questionary-dialog-footer" fxLayoutAlign="end center">
+      <button cv-button-empty class="questionary-previous-button" (click)="questionaryControlService.previousQuestion()" type="button">Back
+      </button>
+      <div fxFlex=""></div>
+      <button *ngIf="securityService.hasRole(Role.ANONYMOUS)" cv-button class="questionary-next-button" (click)="nextStep()" type="button">Confirm
+      </button>
+      <button *ngIf="securityService.hasRole(Role.CUSTOMER)" cv-button class="questionary-next-button" (click)="onSubmit()" type="button" [loading]="postOrderProcessing">Confirm
+      </button>
+    </div>
+
+  </div>
+
+
+
+</div>
+
+  <div #defaultQuestion class="form-element-wrapper text-input-wrapper" [formGroupName]="'defaultQuestionaryGroup'"
+       *ngIf="securityService.hasRole(Role.ANONYMOUS) && (questionaryControlService.currentQuestionIndex == questionaryControlService.questionaryLength + 4 + (personalInfoRequired() ? 1 : 0))">
     <h2 class="question-title">One more step to go</h2>
 
     <div class="text-input-group customer-explanation fill-flex-space">
@@ -334,4 +387,3 @@
   </div>
 
 </div>
-

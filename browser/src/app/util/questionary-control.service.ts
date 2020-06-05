@@ -13,9 +13,9 @@ import { finalize } from "rxjs/operators";
 @Injectable()
 export class QuestionaryControlService {
 
-  public DEFAULT_QUESTIONARY_LENGTH = 6;
-  public DEFOULT_QUESTIONARY_LENGTH_NOTEXIST_CUSTOMER_PHONE = 5;
-  public DEFAULT_QUESTIONARY_LENGTH_CUSTOMER = 4;
+  public DEFAULT_QUESTIONARY_LENGTH = 7;
+  public DEFOULT_QUESTIONARY_LENGTH_AUTHORIZED_NO_PHONE = 6;
+  public DEFAULT_QUESTIONARY_LENGTH_AUTHORIZED = 5;
 
   public defaultQuestionaryLength = this.DEFAULT_QUESTIONARY_LENGTH;
 
@@ -148,9 +148,9 @@ export class QuestionaryControlService {
     this.customerHasPhone = hasPhone;
 
     if (this.securityService.hasRole(Role.CUSTOMER) && hasPhone) {
-      this.defaultQuestionaryLength = this.DEFAULT_QUESTIONARY_LENGTH_CUSTOMER;
+      this.defaultQuestionaryLength = this.DEFAULT_QUESTIONARY_LENGTH_AUTHORIZED;
     } else if (this.securityService.hasRole(Role.CUSTOMER) && !hasPhone) {
-      this.defaultQuestionaryLength = this.DEFOULT_QUESTIONARY_LENGTH_NOTEXIST_CUSTOMER_PHONE;
+      this.defaultQuestionaryLength = this.DEFOULT_QUESTIONARY_LENGTH_AUTHORIZED_NO_PHONE;
     } else {
       this.defaultQuestionaryLength = this.DEFAULT_QUESTIONARY_LENGTH;
     }
@@ -158,10 +158,10 @@ export class QuestionaryControlService {
     this.totalQuestionaryLength = this.questionaryLength + this.defaultQuestionaryLength;
   }
 
-  previousQuestion() {
+  previousQuestion(decrementIndex = 1) {
 
-    if (this.currentQuestionIndex > this.firstQuestionIndex) {
-      this.currentQuestionIndex--;
+    if (this.currentQuestionIndex >= this.firstQuestionIndex + decrementIndex) {
+      this.currentQuestionIndex -= decrementIndex;
     }
 
     if (!this.withServiceType && (this.currentQuestionIndex == -1 && this.withZip || this.currentQuestionIndex == -2 && !this.withZip)) {

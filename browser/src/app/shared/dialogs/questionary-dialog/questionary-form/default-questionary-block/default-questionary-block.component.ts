@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, ElementRef, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { QuestionaryControlService } from '../../../../../util/questionary-control.service';
 import { RequestOrder } from '../../../../../model/order-model';
@@ -13,7 +13,7 @@ import { LocationValidateService } from '../../../../../api/services/location-va
 import { PopUpMessageService } from '../../../../../util/pop-up-message.service';
 import { Router } from '@angular/router';
 import { ProjectActionService } from '../../../../../util/project-action.service';
-import { getErrorMessage, markAsTouched } from '../../../../../util/functions';
+import { capitalize, getErrorMessage, markAsTouched } from '../../../../../util/functions';
 import { finalize, first } from "rxjs/internal/operators";
 import { UserService } from "../../../../../api/services/user.service";
 import { AccountService } from "../../../../../api/services/account.service";
@@ -53,6 +53,8 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
   disabledNextAction: boolean;
   postOrderProcessing = false;
   nextStepFn: Function;
+  currentQuestionName;
+  questionaryAnswers;
 
   @ViewChildren('defaultQuestion') defaultQuestions: QueryList<ElementRef>;
 
@@ -85,6 +87,11 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
   }
 
   nextQuestion(name, handler?: Function) {
+    this.currentQuestionName = name;
+
+    if(name == 'customerPersonalInfo') {
+      this.getQuestionaryAnswers();
+    }
 
     if (this.isValid(name)) {
       if (handler !== undefined) {
@@ -168,11 +175,11 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     }
   }
 
-  nextStep(): void {
-    if (this.questionaryControlService.currentQuestionIndex
+  nextStep(incrementIndex = 1): void {
+    if (this.questionaryControlService.currentQuestionIndex + incrementIndex
       <
-      this.questionaryControlService.questionaryLength - 1 + this.questionaryControlService.defaultQuestionaryLength) {
-      this.questionaryControlService.currentQuestionIndex++;
+      this.questionaryControlService.questionaryLength + this.questionaryControlService.defaultQuestionaryLength) {
+      this.questionaryControlService.currentQuestionIndex += incrementIndex;
     }
   }
 
@@ -232,15 +239,9 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
   resetLocationQuestion(): void {
     this.locationInvalid = false;
     this.hideNextAction = false;
-    this.disabledNextAction = true;
+    this.disabledNextAction = false;
+    this.locationValidation = '';
     const location: FormGroup = this.defaultQuestionaryForm.get('projectLocation');
-    location.valueChanges
-      .pipe(first())
-      .subscribe(res => {
-        this.locationValidation = '';
-        this.disabledNextAction = false;
-      }
-    );
   }
 
   chooseAddress(address: any): void {
@@ -259,7 +260,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     } else if (this.securityService.hasRole(Role.CUSTOMER) && !this.questionaryControlService.customerHasPhone) {
       this.nextStep();
     } else {
-      this.saveProject();
+      this.nextStep();
     }
 
   }
@@ -280,7 +281,28 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     this.disabledNextAction = false;
     this.processingPhoneValidation = false;
     this.phoneValid = true;
-    this.nextStepFn.call(this,"customerPersonalInfo")
+    this.nextStepFn.call(this)
+  }
+
+  personalInfoRequired() {
+    return (this.securityService.hasRole(Role.ANONYMOUS)  || (this.securityService.hasRole(Role.CUSTOMER) && !this.questionaryControlService.customerHasPhone))
+  }
+
+  getQuestionaryAnswers() {
+    let questionaryAnswers = [];
+    for (const field in this.questionaryControlService.mainForm.get('questionaryGroup').controls) { // 'field' is a string
+      let control = this.questionaryControlService.mainForm.get('questionaryGroup').get(field); // 'control' is a FormControl
+      let key: any = field.split('_');
+      key.shift()
+      key = capitalize(key.join(' '));
+      let value = control.value;
+      if(!Array.isArray(value)) {
+        value = [value]
+      }
+      questionaryAnswers.push({key: key, value: value})
+    }
+    this.questionaryAnswers = questionaryAnswers
+    return questionaryAnswers;
   }
 
 }
