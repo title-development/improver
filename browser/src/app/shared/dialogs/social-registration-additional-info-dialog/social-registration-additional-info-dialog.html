@@ -23,6 +23,7 @@
         <cv-input-field *ngIf="emailMissing">
           <input cv-input type="text" placeholder="Email"
                  name="email"
+                 inputmode="email"
                  #email="ngModel"
                  [(ngModel)]="additionalUserInfo.email"
                  (ngModelChange)="showMessage = false"
@@ -40,6 +41,7 @@
         </cv-input-field>
         <cv-input-field *ngIf="phoneMissing">
           <input cv-input type="text"
+                 inputmode="tel"
                  placeholder="Phone"
                  #phone="ngModel"
                  name="phone"

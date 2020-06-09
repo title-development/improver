@@ -20,6 +20,8 @@
           <input cv-input class="code" minlength="4" maxlength="4"
                  #code="ngModel"
                  name="code"
+                 type="text"
+                 inputmode="numeric"
                  [(ngModel)]="phoneValidationConfirm.code"
                  (ngModelChange)="onInput()"
                  placeholder="xxxx"

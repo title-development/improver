@@ -73,6 +73,7 @@ export class PreQuestionaryBlock implements OnInit {
 
   ngOnInit(): void {
     this.defaultQuestionaryForm = this.questionaryControlService.mainForm.get('defaultQuestionaryGroup');
+    this.defaultQuestionaryForm.get('projectLocation.zip').setValue(this.lastZipCode);
   }
 
   isValid(name) {

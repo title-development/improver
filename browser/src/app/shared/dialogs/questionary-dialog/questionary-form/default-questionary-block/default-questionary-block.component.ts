@@ -229,10 +229,10 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
           );
       }
     }, err => {
-        console.error(err)
-      this.processingAddressValidation = false;
-      this.locationValidation = 'Address Not found';
-      this.resetLocationQuestion();
+      	console.error(err);
+      	this.processingAddressValidation = false;
+      	this.locationValidation = 'Address Not found';
+      	this.resetLocationQuestion();
     });
   }
 
@@ -293,7 +293,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     for (const field in this.questionaryControlService.mainForm.get('questionaryGroup').controls) { // 'field' is a string
       let control = this.questionaryControlService.mainForm.get('questionaryGroup').get(field); // 'control' is a FormControl
       let key: any = field.split('_');
-      key.shift()
+      key.shift();
       key = capitalize(key.join(' '));
       let value = control.value;
       if(!Array.isArray(value)) {

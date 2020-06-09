@@ -46,6 +46,7 @@
                         <cv-input-field>
                           <cv-editable-input #email="ngModel"
                                              name="email"
+                                             inputmode="email"
                                              [(ngModel)]="accountEmail"
                                              [emailUniqueValidator]="currentEmail"
                                              required

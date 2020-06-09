@@ -83,7 +83,9 @@
               </div>
               <div class="col-md-6 col-sm-6 col-xs-12">
                 <cv-input-field>
-                  <input cv-input type="email"
+                  <input cv-input
+                         type="text"
+                         inputmode="email"
                          placeholder="Email"
                          name="email"
                          #email="ngModel"
@@ -113,6 +115,7 @@
                          name="phone"
                          [(ngModel)]="user.phone"
                          phoneMask
+                         inputmode="tel"
                          maxlength="14"
                          [pattern]="constants.patterns.phone"
                          required>

@@ -19,7 +19,10 @@
 
           <div class="auth-form-title">Log in to Home Improve</div>
           <cv-input-field>
-            <input cv-input type="text" placeholder="Email"
+            <input cv-input
+                   type="text"
+                   placeholder="Email"
+                   inputmode="email"
                    name="email"
                    #email="ngModel"
                    [(ngModel)]="credentials.email"

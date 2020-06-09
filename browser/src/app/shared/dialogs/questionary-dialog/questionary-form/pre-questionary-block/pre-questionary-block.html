@@ -9,7 +9,9 @@
          [cvSpinnerBackground]="true">
       <cv-input-field>
         <input [(ngModel)]="serviceSearch" [ngModelOptions]="{standalone: true}"
-               cv-input type="text"
+               cv-input
+               type="text"
+               inputmode="search"
                placeholder="Type to filter services..."
                name="serviceSearch" (ngModelChange)="autocompleteServiceSelectionSearch($event)">
         <cv-field-error
@@ -28,7 +30,7 @@
     </div>
 
     <div class="questionary-dialog-footer">
-      <button class="questionary-next-button" (click)="submitServiceTypeSelection()" type="button"
+      <button cv-button class="questionary-next-button" (click)="submitServiceTypeSelection()" type="button"
               [disabled]="defaultQuestionaryForm.get('serviceType').invalid">
         Next
       </button>
@@ -37,7 +39,7 @@
   </div>
 
 
-  <div #defaultQuestion class="form-element-wrapper text-input-wrapper" [formGroupName]="'defaultQuestionaryGroup'"
+  <form #defaultQuestion class="form-element-wrapper text-input-wrapper" [formGroupName]="'defaultQuestionaryGroup'"
        *ngIf="projectActionService.zipIsSupported && !questionaryControlService.withZip && questionaryControlService.serviceType">
     <h2 class="question-title">Where do you need a {{questionaryControlService.serviceType?.name}}?</h2>
     <div class="text-input-group zip-check-group fill-flex-space" [formGroupName]="'projectLocation'"
@@ -46,8 +48,9 @@
          [cvSpinnerBackground]="true">
       <cv-input-field>
         <cv-field-label>Zip</cv-field-label>
-        <input [(ngModel)]="lastZipCode"
-               cv-input type="text"
+        <input cv-input
+               type="text"
+               inputmode="numeric"
                placeholder="Zip"
                name="zip"
                maxlength="5"
@@ -69,13 +72,11 @@
               [disabled]="defaultQuestionaryForm.get('projectLocation.zip').invalid">
         Back
       </button>
-      <button class="questionary-next-button" (click)="submitZip()" type="button"
-              [disabled]="defaultQuestionaryForm.get('projectLocation.zip').invalid">
-        Next
-      </button>
+      <button cv-button class="questionary-next-button" (click)="submitZip()" type="submit"
+              [disabled]="defaultQuestionaryForm.get('projectLocation.zip').invalid">Next</button>
     </div>
 
-  </div>
+  </form>
 
   <div #defaultQuestion class="form-element-wrapper text-input-wrapper"
        *ngIf="!projectActionService.zipIsSupported && !questionaryControlService.withZip && (questionaryControlService.currentQuestionIndex == -1)">
@@ -86,7 +87,7 @@
     </div>
 
     <div class="questionary-dialog-footer">
-      <button class="questionary-next-button" (click)="close()" type="button"
+      <button cv-button class="questionary-next-button" (click)="close()" type="button"
               [disabled]="defaultQuestionaryForm.get('projectLocation.zip').invalid">
         Ok
       </button>

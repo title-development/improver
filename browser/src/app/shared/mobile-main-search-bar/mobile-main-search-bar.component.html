@@ -37,8 +37,13 @@
       <div class="zip-code-form-group">
         <div class="main-search-zip-input-wrapper">
           <mat-icon class="location-icon">room</mat-icon>
-          <input #zipCode [formControl]='zipCodeCtrl' class="main-search-zip-input" numericMask type="text"
-                 placeholder="Zip code" maxlength="5">
+          <input #zipCode [formControl]='zipCodeCtrl'
+                 class="main-search-zip-input"
+                 type="text"
+                 inputmode="numeric"
+                 numericMask
+                 placeholder="Zip code"
+                 maxlength="5">
         </div>
         <div class="error-holder"
              *ngIf="mainSearchFormGroup.get('zipCodeCtrl').errors && (mainSearchFormGroup.get('zipCodeCtrl').dirty || mainSearchFormGroup.get('zipCodeCtrl').touched || mainSearchFormGroup.get('selectionCtrl').valid)">
