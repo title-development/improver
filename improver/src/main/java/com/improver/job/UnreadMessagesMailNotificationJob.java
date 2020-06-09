@@ -28,7 +28,7 @@ public class UnreadMessagesMailNotificationJob implements OnesPerNodeTask {
     @Scheduled(cron = "${job.unread.messages.cron}")
     @SchedulerLock(name = "unreadMessagesMailNotification", lockAtLeastFor = MAX_CLOCK_DIFF_BETWEEN_NODES, lockAtMostFor = MAX_TASK_DELAY)
     public void unreadMessagesMailNotification(){
-        log.info("Job 1 started| Unread messages mail");
+        log.info("Job 1 started => Unread messages mail");
         ZonedDateTime now = ZonedDateTime.now();
 
         List<UnreadProjectMessageInfo> customersUnreadMessages = projectMessageRepository.getCustomersWithUnreadMessagesByCreatedDateBetween(
@@ -47,7 +47,7 @@ public class UnreadMessagesMailNotificationJob implements OnesPerNodeTask {
             .collect(Collectors.groupingBy(UnreadProjectMessageInfo::getRecipientEmail))
             .forEach((email, messages) -> mailService.sendUnreadMessageNotificationEmails(email, messages, false));
 
-        log.info("Job 1 ended | Unread messages mail");
+        log.info("Job 1 ended   <= Unread messages mail");
     }
 
 }
