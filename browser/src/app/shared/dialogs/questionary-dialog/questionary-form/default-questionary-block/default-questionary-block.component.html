@@ -291,10 +291,10 @@
         <div class="project-details-group">
           <div class="label">Location:</div>
           <div class="value main">
-            {{originalAddress?.streetAddress}},
-            {{originalAddress?.city}},
-            {{originalAddress?.state}}
-            {{originalAddress?.zip}}
+            {{defaultQuestionaryForm.get('projectLocation').value?.streetAddress}},
+            {{defaultQuestionaryForm.get('projectLocation').value?.city}},
+            {{defaultQuestionaryForm.get('projectLocation').value?.state}}
+            {{defaultQuestionaryForm.get('projectLocation').value?.zip}}
           </div>
         </div>
         <div class="project-details-group">
