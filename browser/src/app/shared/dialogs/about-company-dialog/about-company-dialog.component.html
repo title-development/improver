@@ -1,0 +1,115 @@
+<div class="dialog-content-wrapper">
+    <div class="dialog-content-container">
+
+        <div class="header">
+            <mat-icon class="close-modal" color="accent" (click)="close()">clear</mat-icon>
+            <div class="header-content">Edit Company Info</div>
+        </div>
+
+        <div class="spinner-wrapper" *ngIf="spinnerProcessing">
+            <mat-progress-spinner
+                    class="example-margin"
+                    mode="indeterminate"
+                    diameter="30">
+            </mat-progress-spinner>
+        </div>
+
+
+        <form #companyInfoForm="ngForm"
+              class="company-info-form"
+              name="company-info-form"
+              (ngSubmit)="companyInfoForm.valid && companyInfoService.updateCompanyInfo(companyInfo)"
+              novalidate>
+
+            <div class="content" *ngIf="!spinnerProcessing">
+
+                <div class="editable-group">
+                <div class="group-wrapper">
+                    <cv-input-field>
+                        <cv-field-label>Company name</cv-field-label>
+                        <input cv-input type="text"
+                               placeholder="Company name"
+                               #name="ngModel"
+                               name="name"
+                               disabled
+                               [(ngModel)]="companyInfo.name"
+                               required>
+                        <cv-field-error *ngIf="name.dirty || name.touched || companyInfoForm.submitted">
+                            <span *ngIf="name.errors?.required">Required</span>
+                        </cv-field-error>
+                    </cv-input-field>
+                </div>
+                    <button cv-button type="button" (click)="changeCompanyName()">
+                        <mat-icon *ngIf="mediaQuery.xs || mediaQuery.sm" class="edit">edit</mat-icon>
+                        <span *ngIf="!mediaQuery.sm && !mediaQuery.xs">Change</span>
+                    </button>
+                </div>
+
+                <div class="editable-group">
+                <div class="group-wrapper">
+                    <cv-input-field>
+                        <cv-field-label>Founded</cv-field-label>
+                        <input cv-input type="text"
+                               placeholder="Founded year"
+                               name="founded"
+                               #founded="ngModel"
+                               disabled
+                               [(ngModel)]="companyInfo.founded"
+                               required>
+                        <cv-field-error *ngIf="founded.dirty || founded.touched || companyInfoForm.submitted">
+                            <span *ngIf="founded.errors?.required">Required</span>
+                        </cv-field-error>
+                    </cv-input-field>
+                </div>
+                    <button cv-button type="button" (click)="changeCompanyFounded()">
+                        <mat-icon *ngIf="mediaQuery.xs || mediaQuery.sm" class="edit">edit</mat-icon>
+                        <span *ngIf="!mediaQuery.sm && !mediaQuery.xs">Change</span>
+                    </button>
+                </div>
+
+
+                <div class="group-wrapper">
+                    <cv-input-field>
+                        <cv-field-label>Company website</cv-field-label>
+                        <input cv-input
+                               type="text"
+                               inputmode="url"
+                               trim
+                               placeholder="Website"
+                               #siteUrl="ngModel"
+                               name="siteUrl"
+                               [(ngModel)]="companyInfo.siteUrl">
+                        <cv-field-error *ngIf="siteUrl.dirty || siteUrl.touched || companyInfoForm.submitted">
+                            <span *ngIf="siteUrl.errors?.required">Required</span>
+                        </cv-field-error>
+                    </cv-input-field>
+                </div>
+
+                <div class="group-wrapper">
+                    <cv-input-field>
+                        <cv-field-label>Description</cv-field-label>
+                        <textarea cv-input
+                                  placeholder="Description"
+                                  #description="ngModel"
+                                  name="description"
+                                  rows="6"
+                                  type="text"
+                                  maxlength="2500"
+                                  [(ngModel)]="companyInfo.description"
+                                  [(cv_trim)]="companyInfo.description"
+                                  required></textarea>
+                        <cv-field-hint>{{description.value ? description.value.length : 0}}/2500</cv-field-hint>
+                        <cv-field-error *ngIf="description.dirty || description.touched || companyInfoForm.submitted">
+                            <span *ngIf="description.errors?.required">Required</span>
+                        </cv-field-error>
+                    </cv-input-field>
+                </div>
+
+                <div class="buttons-wrapper">
+                    <button cv-button-flat flatStyle="dark" type="button" (click)="close()">Cancel</button>
+                    <button cv-button type="submit">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

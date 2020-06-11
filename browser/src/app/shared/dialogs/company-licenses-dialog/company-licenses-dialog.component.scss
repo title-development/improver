@@ -1,0 +1,154 @@
+@import "../../../../improver-mixins.scss";
+
+.dialog-content-wrapper {
+  min-height: 300px;
+  position: relative;
+
+  .spinner-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+  }
+
+
+  .header {
+
+    .header-content {
+      padding: 16px 48px 16px 24px;
+      background-color: $grey-100;
+      font-size: 20px;
+      font-weight: 600;
+      text-align: left;
+      color: $grey-600;
+    }
+
+  }
+
+  .content {
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.92);
+    padding: 24px;
+
+    @include response-to(sm) {
+      padding: 20px;
+    }
+
+    span {
+      font-size: 18px;
+      color: $grey-600;
+    }
+  }
+}
+
+.buttons-wrapper {
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.no-licenses-button-wrapper {
+  margin-top: 50px;
+  display: flex;
+  justify-content: center;
+
+  button {
+    font-size: 20px !important;
+    padding: 12px 24px !important;
+  }
+}
+
+.close-modal {
+  position: relative;
+  right: 32px;
+  top: 32px;
+}
+
+.company-license-item {
+  line-height: 140%;
+  padding: 11px 24px;
+  border-bottom: 1px solid $grey-300;
+  color: $grey-600;
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  @include response-to(sm) {
+    padding: 11px 12px;
+    align-items: normal;
+  }
+
+  .company-license-info {
+    display: flex;
+
+    @include response-to(sm) {
+      flex-direction: column;
+      margin-bottom: 8px;
+    }
+
+    .company-license-title {
+      color: $black;
+      width: 135px;
+      font-weight: 600;
+    }
+    .company-license-value {
+
+    }
+  }
+
+  .company-license-actions {
+    display: flex;
+
+    @include response-to(sm) {
+      height: max-content;
+
+      .company-license-edit, .company-license-remove {
+        display: block;
+        cursor: pointer;
+        width: initial;
+        margin-left: 8px;
+      }
+    }
+  }
+
+  &:hover {
+    background-color: $grey-100;
+
+    .company-license-name {
+      color: $black;
+      font-weight: 600;
+    }
+
+    @include response(md, xlg){
+      .company-license-edit, .company-license-remove {
+        display: block;
+        cursor: pointer;
+        width: initial;
+        margin-left: 8px;
+      }
+    }
+  }
+
+  .mat-icon {
+    font-size: 19px;
+  }
+
+  .company-license-status {
+    color: $primary-500;
+  }
+
+  .company-license-edit, .company-license-remove {
+    display: none;
+    cursor: pointer;
+    width: initial;
+    color: $grey-400;
+
+    &:hover {
+      color: $grey-500;
+    }
+
+  }
+
+}

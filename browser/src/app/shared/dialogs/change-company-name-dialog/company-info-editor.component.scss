@@ -1,0 +1,46 @@
+@import "../../../../improver-mixins.scss";
+
+.dialog-content-wrapper {
+  position: relative;
+  min-height: 300px;
+
+  .header {
+
+    .header-content {
+      padding: 16px 48px 16px 24px;
+      background-color: $grey-100;
+      font-size: 20px;
+      font-weight: 600;
+      text-align: left;
+      color: $grey-600;
+    }
+
+  }
+
+  .content {
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.92);
+    padding: 24px;
+
+    @include response-to(sm) {
+      padding: 20px;
+    }
+  }
+}
+
+.group-wrapper {
+  margin-bottom: 24px;
+}
+
+.buttons-wrapper {
+  margin-top: 50px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.close-modal {
+  position: relative;
+  right: 32px;
+  top: 32px;
+}

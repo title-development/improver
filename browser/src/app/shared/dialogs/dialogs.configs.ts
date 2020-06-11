@@ -146,6 +146,30 @@ export const locationSuggestDialogConfig: MatDialogConfig = {
   }
 };
 
+export const mobileMediaDialogConfig = {
+  panelClass: 'dialog-fix-position',
+  width: '100vw',
+  height: '100vh',
+  position: {
+    top: '',
+    bottom: '',
+    left: '',
+    right: ''
+  }
+};
+
+export const companyInfoDialogConfig: MatDialogConfig = {
+  panelClass: 'dialog-fix-position',
+  width: '545px',
+  height: '',
+  position: {
+    top: '',
+    bottom: '',
+    left: '',
+    right: ''
+  }
+};
+
 export const unavailabilityPeriodDialogConfig: MatDialogConfig = {
   panelClass: 'dialog-fix-position',
   width: '545px',

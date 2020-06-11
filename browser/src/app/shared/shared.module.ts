@@ -41,6 +41,8 @@ import { MatInputModule } from "@angular/material/input";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatButtonModule } from "@angular/material/button";
 import { TestimonialsComponent } from "./testimonials/testimonials.component";
+import { SuggestedLocationComponent } from './suggested-location/suggested-location.component';
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 
 @NgModule({
   imports: [
@@ -58,6 +60,7 @@ import { TestimonialsComponent } from "./testimonials/testimonials.component";
     MatTooltipModule,
     MatDialogModule,
     MatProgressBarModule,
+    MatProgressSpinnerModule,
     FlexLayoutModule,
     PipesModule,
     MessengerModule,
@@ -89,7 +92,8 @@ import { TestimonialsComponent } from "./testimonials/testimonials.component";
     FindProfessionalsComponent,
     SubscriptionComponent,
     PhoneValidationComponent,
-    TestimonialsComponent
+    TestimonialsComponent,
+    SuggestedLocationComponent
   ],
   exports: [
     CommonModule,
@@ -133,7 +137,8 @@ import { TestimonialsComponent } from "./testimonials/testimonials.component";
     SubscriptionComponent,
     PhoneValidationComponent,
     NgTruncatePipeModule,
-    TestimonialsComponent
+    TestimonialsComponent,
+    SuggestedLocationComponent
   ],
   providers: [
   ]

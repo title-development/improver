@@ -28,6 +28,11 @@ import { ClipboardModule } from 'ngx-clipboard';
 import { MatDialogModule } from '@angular/material/dialog';
 import { PreQuestionaryBlock } from "./questionary-dialog/questionary-form/pre-questionary-block/pre-questionary-block";
 import { NgReplacePipeModule } from "angular-pipes";
+import { CompanyLocationDialogComponent } from './company-location-dialog/company-location-dialog.component';
+import { CompanyInfoService } from "../../api/services/company-info.service";
+import { CompanyLicensesDialogComponent } from './company-licenses-dialog/company-licenses-dialog.component';
+import { AboutCompanyDialogComponent } from './about-company-dialog/about-company-dialog.component';
+import { CompanyInfoEditorComponent } from './change-company-name-dialog/company-info-editor.component';
 
 @NgModule({
   imports: [
@@ -60,6 +65,10 @@ import { NgReplacePipeModule } from "angular-pipes";
     DefaultQuestionaryBlockComponent,
     PreQuestionaryBlock,
     ...dialogs,
+    CompanyLocationDialogComponent,
+    CompanyLicensesDialogComponent,
+    AboutCompanyDialogComponent,
+    CompanyInfoEditorComponent,
   ],
   entryComponents: [
     ...dialogs
@@ -67,7 +76,8 @@ import { NgReplacePipeModule } from "angular-pipes";
   providers: [
     LocationValidateService,
     BoundariesService,
-    ReferralService
+    ReferralService,
+    CompanyInfoService
   ]
 })
 export class DialogsModule {

@@ -24,12 +24,15 @@ import { CustomerProjectRequestDialogAboutComponent } from '../../entity/custome
 import { CustomerProjectRequestDialogReviewsComponent } from '../../entity/customer/customer-project-request-dialog/customer-project-request-dialog-reviews/customer-project-request-dialog-reviews.component';
 import { EmailConfirmDialogComponent } from './email-confirm-dialog/email-confirm-dialog.component';
 import { RequestReviewRevisionDialogComponent } from './request-review-revision-dialog/request-review-revision-dialog.component';
-
 import { ReferralDialogComponent } from './refreal-dialog/referral-dialog.component';
 import { InfoWindowDialogComponent } from './info-window-dialog';
 import { MobileMainSearchBarComponent } from "../mobile-main-search-bar/mobile-main-search-bar.component";
 import { PhoneValidationDialogComponent } from "./phone-validation-dialog/phone-validation-dialog.component";
 import { SocialRegistrationAdditionalInfoDialog } from "./social-registration-additional-info-dialog/social-registration-additional-info-dialog";
+import { CompanyLocationDialogComponent } from "./company-location-dialog/company-location-dialog.component";
+import { CompanyLicensesDialogComponent } from "./company-licenses-dialog/company-licenses-dialog.component";
+import { AboutCompanyDialogComponent } from "./about-company-dialog/about-company-dialog.component";
+import { CompanyInfoEditorComponent } from "./change-company-name-dialog/company-info-editor.component";
 
 export const dialogs = [
   QuestionaryDialogComponent,
@@ -93,5 +96,9 @@ export const dialogsMap = {
   'referral-dialog': ReferralDialogComponent,
   'info-window-dialog': InfoWindowDialogComponent,
   'phone-validation-dialog': PhoneValidationDialogComponent,
-  'mobile-main-search-bar': MobileMainSearchBarComponent
+  'mobile-main-search-bar': MobileMainSearchBarComponent,
+  'company-location-dialog': CompanyLocationDialogComponent,
+  'company-licenses-dialog': CompanyLicensesDialogComponent,
+  'about-company-dialog': AboutCompanyDialogComponent,
+  'company-info-editor': CompanyInfoEditorComponent
 };

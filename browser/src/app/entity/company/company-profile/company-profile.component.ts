@@ -6,7 +6,7 @@ import { CompanyService } from '../../../api/services/company.service';
 import { MapOptions } from '@agm/core/services/google-maps-types';
 import { PopUpMessageService } from '../../../util/pop-up-message.service';
 import {
-  addLicenseDialogConfig,
+  addLicenseDialogConfig, companyInfoDialogConfig, mobileMediaDialogConfig,
   personalPhotoDialogConfig,
   unavailabilityPeriodDialogConfig
 } from '../../../shared/dialogs/dialogs.configs';
@@ -30,6 +30,7 @@ import { Company } from '../../../api/models/Company';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { ScrollService } from '../../../util/scroll.service';
 import { CeoService } from "../../../util/ceo.service";
+import { CompanyInfoService } from "../../../api/services/company-info.service";
 
 @Component({
   selector: 'customer-profile-page',
@@ -63,6 +64,7 @@ export class CompanyProfileComponent implements OnInit, OnDestroy {
   private requestReviewDialogRef: MatDialogRef<any>;
   private scrollHolder: Element = document.getElementsByClassName('scroll-holder')[0];
   scrollHandler = () => this.onScroll();
+  public companyInfoDialogRef: MatDialogRef<any>;
 
   constructor(@Inject('Window') private window: Window,
               private renderer: Renderer2,
@@ -70,6 +72,7 @@ export class CompanyProfileComponent implements OnInit, OnDestroy {
               public route: ActivatedRoute,
               public securityService: SecurityService,
               public companyService: CompanyService,
+              public companyInfoService: CompanyInfoService,
               public dialog: MatDialog,
               public mediaQueryService: MediaQueryService,
               public reviewService: ReviewService,
@@ -78,41 +81,10 @@ export class CompanyProfileComponent implements OnInit, OnDestroy {
               private scrollService: ScrollService,
               private errorHandler: ErrorHandler,
               private ceoService: CeoService) {
-    this.route.queryParams.subscribe(params => {
-      if (params['review-token']) {
-        localStorage.setItem('review-token', params['review-token']);
-      }
-    });
 
-    this.route.params
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(params => {
-      if (params['companyId'].toString()) {
-        this.companyId = params['companyId'].toString();
-
-        this.getCompanyProfile(this.companyId);
-      } else {
-        this.router.navigate(['404']);
-      }
-    });
-
-    this.route.fragment
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(fragment => {
-      this.hashFragment = fragment;
-    });
-
-    this.mediaQueryService.screen
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe((mediaQuery: MediaQuery) => {
-      this.mediaQuery = mediaQuery;
-      if (mediaQuery.xs || mediaQuery.sm) {
-        this.boxGlue = false;
-      } else {
-        this.boxGlue = true;
-      }
-    });
-
+    this.routerSubscriptions();
+    this.subscribeForMediaQuery();
+    this.updateCompanyProfile();
     this.scrollHolder.addEventListener('scroll', this.scrollHandler);
   }
 
@@ -122,6 +94,51 @@ export class CompanyProfileComponent implements OnInit, OnDestroy {
     } else {
       this.fixProfileHeader = false;
     }
+  }
+
+  updateCompanyProfile() {
+    this.companyInfoService.companyLicensesAdd$.subscribe( changed => {
+      this.getCompanyProfile(this.companyId);
+    });
+  }
+
+  routerSubscriptions() {
+    this.route.queryParams.subscribe(params => {
+      if (params['review-token']) {
+        localStorage.setItem('review-token', params['review-token']);
+      }
+    });
+
+    this.route.params
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe(params => {
+          if (params['companyId'].toString()) {
+            this.companyId = params['companyId'].toString();
+
+            this.getCompanyProfile(this.companyId);
+          } else {
+            this.router.navigate(['404']);
+          }
+        });
+
+    this.route.fragment
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe(fragment => {
+          this.hashFragment = fragment;
+        });
+  }
+
+  subscribeForMediaQuery() {
+    this.mediaQueryService.screen
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe((mediaQuery: MediaQuery) => {
+          this.mediaQuery = mediaQuery;
+          if (mediaQuery.xs || mediaQuery.sm) {
+            this.boxGlue = false;
+          } else {
+            this.boxGlue = true;
+          }
+        });
   }
 
   ngOnInit(): void {
@@ -172,6 +189,18 @@ export class CompanyProfileComponent implements OnInit, OnDestroy {
 
   }
 
+  openCompanyInfoDialog(dialog: string){
+    this.dialog.closeAll();
+    let dialogConfig = (this.mediaQuery.xs || this.mediaQuery.sm)? mobileMediaDialogConfig : companyInfoDialogConfig;
+    this.companyInfoDialogRef = this.dialog.open(dialogsMap[dialog], dialogConfig);
+    this.companyInfoDialogRef
+        .afterClosed()
+        .subscribe(result => {
+          this.companyInfoDialogRef = null;
+          this.getCompanyProfile(this.companyId);
+        });
+  }
+
   showMoreContent(truncate: number, variable): void {
     variable = truncate;
   }
@@ -202,7 +231,7 @@ export class CompanyProfileComponent implements OnInit, OnDestroy {
     );
   }
 
-  openLicenseDialog(licenseId?): void {
+  openNewLicenseDialog(licenseId?): void {
     this.dialog.closeAll();
     this.licenseDialogRef = this.dialog.open(dialogsMap['add-license-dialog'], addLicenseDialogConfig);
     this.licenseDialogRef

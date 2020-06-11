@@ -1,0 +1,52 @@
+<div class="address-validation-wrapper" *ngIf="startValidateLocation | async">
+
+    <div class="spinner-wrapper" *ngIf="spinnerProcessing">
+        <mat-progress-spinner
+                class="example-margin"
+                mode="indeterminate"
+                diameter="30">
+        </mat-progress-spinner>
+    </div>
+
+    <div class="address-validation" *ngIf="!spinnerProcessing">
+
+        <div class="holder">
+            <div class="content">
+                <div class="row">
+                    <div class="col-sm-6 col-xs-12">
+                        <div class="address">
+                            <h4>You entered:</h4>
+                            <p>
+                                {{originalAddress?.streetAddress}}<br>
+                                {{originalAddress?.city}},
+                                {{originalAddress?.state}}
+                                {{originalAddress?.zip}}
+                            </p>
+                        </div>
+                        <button cv-button-empty class="rounded" type="submit" (click)="choseDifferentAddress()">Use
+                            different address
+                        </button>
+                    </div>
+                    <div class="col-sm-6 col-xs-12">
+                        <div class="address apply" (click)="saveSuggested(suggestedAddress)">
+                            <div class="overlay"><i></i></div>
+                            <h4>Suggested address:</h4>
+                            <p>
+                                {{suggestedAddress?.streetAddress}}<br>
+                                {{suggestedAddress?.city}},
+                                {{suggestedAddress?.state}}
+                                {{suggestedAddress?.zip}}
+                            </p>
+                        </div>
+                        <button cv-button class="rounded" type="submit" (click)="saveSuggested(suggestedAddress)">Use
+                            suggested
+                        </button>
+                    </div>
+                </div>
+                <span *ngIf="validationMessage">*{{validationMessage}}</span>
+            </div>
+        </div>
+
+    </div>
+
+</div>

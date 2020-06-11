@@ -20,6 +20,7 @@ import { dialogsMap } from '../../../../shared/dialogs/dialogs.state';
 import { getErrorMessage } from '../../../../util/functions';
 import { first } from "rxjs/internal/operators";
 import { switchMap } from "rxjs/operators";
+import { CompanyInfoService } from "../../../../api/services/company-info.service";
 
 export enum Tabs {
   MAIN = 'MAIN',
@@ -61,6 +62,7 @@ export class CompanyInfoComponent implements OnInit {
               public tricksService: TricksService,
               private dialog: MatDialog,
               private companyService: CompanyService,
+              private companyInfoService: CompanyInfoService,
               public popupService: PopUpMessageService,
               private licenseService: LicenseService,
               private locationValidate: LocationValidateService,
@@ -69,12 +71,21 @@ export class CompanyInfoComponent implements OnInit {
     this.messages = messages;
     this.getCompanyInfo();
     this.getCompanyLicenses();
+    this.subscribeCompanyLicensesChanged();
     this.filteredStates = constants.states;
     this.years = this.tricksService.fillArrayWithNumbers(this.constants.COMPANY_FOUNDATION_MIN_YEAR, new Date().getFullYear(), false);
+
   }
 
 
   ngOnInit() {
+  }
+
+  subscribeCompanyLicensesChanged(){
+    this.companyInfoService.companyLicensesChanged$.subscribe( () => {
+        this.getCompanyLicenses();
+
+    })
   }
 
   autocompleteSearch(search) {

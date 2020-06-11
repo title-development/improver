@@ -1,0 +1,112 @@
+<div class="dialog-content-wrapper">
+    <div class="dialog-content-container">
+
+        <div class="header">
+            <mat-icon class="close-modal" color="accent" (click)="close()">clear</mat-icon>
+            <div class="header-content">Company Location</div>
+        </div>
+
+        <div class="content">
+            <form class="company-location-form"
+                  name="company-location-form"
+                  #companyLocationForm="ngForm"
+                  (ngSubmit)="companyLocationForm.valid && validateLocation(true)"
+                  novalidate>
+
+                <div class="row group-wrapper">
+
+                    <div class="col-xs-12">
+                        <cv-input-field>
+                            <cv-field-label>Address</cv-field-label>
+                            <input cv-input type="text"
+                                   placeholder="Address"
+                                   #address="ngModel"
+                                   name="streetAddress"
+                                   [(ngModel)]="companyLocation.streetAddress"
+                                   trim
+                                   required>
+                            <cv-field-error *ngIf="address.dirty || address.touched || companyLocationForm.submitted">
+                                <span *ngIf="address.errors?.required">Required</span>
+                            </cv-field-error>
+                        </cv-input-field>
+                    </div>
+
+                </div>
+
+                <div class="row group-wrapper">
+
+                    <div class="col-xs-12 col-sm-4 col-md-5 -bottom-space">
+                        <cv-input-field>
+                            <cv-field-label>City</cv-field-label>
+                            <input type="text"
+                                   cv-input
+                                   required
+                                   name="city"
+                                   placeholder="City"
+                                   [(ngModel)]="companyLocation.city"
+                                   #city="ngModel">
+                            <cv-field-error *ngIf="city.dirty || city.touched || companyLocationForm.submitted">
+                                <span *ngIf="city.errors?.required">Required</span>
+                            </cv-field-error>
+                        </cv-input-field>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-4 -bottom-space">
+                        <cv-input-field>
+                            <cv-field-label>State</cv-field-label>
+                            <cv-select [multiple]="false" [tags]="false" [autocomplete]="true"
+                                       (autocompleteSearch)="autocompleteSearch($event)"
+                                       [items]="filteredStates"
+                                       valueKey="value"
+                                       labelKey="value"
+                                       name="state"
+                                       #state="ngModel"
+                                       [(ngModel)]="companyLocation.state"
+                                       required
+                                       label="Choose state">
+                            </cv-select>
+                            <cv-field-error *ngIf="state.dirty || state.touched || companyLocationForm.submitted">
+                                <span *ngIf="state.errors?.required">Required</span>
+                            </cv-field-error>
+                        </cv-input-field>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-4 col-md-3 -bottom-space">
+                        <cv-input-field>
+                            <cv-field-label>Zip</cv-field-label>
+                            <input cv-input type="text"
+                                   placeholder="Zip"
+                                   #zip="ngModel"
+                                   name="zip"
+                                   [(ngModel)]="companyLocation.zip"
+                                   maxlength="5"
+                                   numericMask
+                                   required>
+                            <cv-field-error *ngIf="zip.dirty || zip.touched || companyLocationForm.submitted">
+                                <span *ngIf="zip.errors?.required">Required</span>
+                            </cv-field-error>
+                        </cv-input-field>
+                    </div>
+
+                </div>
+                <cv-field-error>{{locationValidation | lowercase}}</cv-field-error>
+
+                <div class="location-wrapper">
+                <suggested-location
+                        [startValidateLocation]="startValidateLocation"
+                        [form]="companyLocationForm"
+                        [(locationValidation)]="locationValidation"
+                        (saveLocation)="companyInfoService.updateCompanyLocation($event); onSuccess.emit()"></suggested-location>
+                </div>
+
+                <div class="buttons-wrapper">
+                    <button cv-button-flat flatStyle="dark" type="button" (click)="close()">Cancel</button>
+                    <button cv-button type="submit">Save</button>
+                </div>
+
+            </form>
+        </div>
+
+
+    </div>
+</div>
