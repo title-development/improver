@@ -70,7 +70,7 @@ export class AddPaymentCardDialogComponent implements OnInit, AfterViewInit, OnD
       base: {
         lineHeight: '20px',
         fontSmoothing: 'antialiased',
-        fontSize: '15px'
+        fontSize: '16px'
       }
     };
 

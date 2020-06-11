@@ -223,7 +223,9 @@
 
       <cv-input-field *ngIf="securityService.hasRole(Role.ANONYMOUS)">
         <cv-field-label>Email</cv-field-label>
-        <input cv-input type="text"
+        <input cv-input
+               type="text"
+               inputmode="email"
                placeholder="Email"
                formControlName="email"
                name="email"
@@ -240,7 +242,9 @@
 
       <cv-input-field *ngIf="!processingPhoneValidation && !postOrderProcessing">
         <cv-field-label>Phone number</cv-field-label>
-        <input cv-input type="text"
+        <input cv-input
+               type="text"
+               inputmode="tel"
                placeholder="Phone number"
                formControlName="phone"
                name="phone"

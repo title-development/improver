@@ -64,6 +64,10 @@
       font-size: 14px;
       padding: 10px 16px 10px 40px;
       border-radius: 2px;
+
+      @include response-to(sm) {
+        font-size: 16px;
+      }
       &::placeholder {
         color: $grey-400 !important;
         display: block;

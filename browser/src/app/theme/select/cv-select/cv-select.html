@@ -9,6 +9,7 @@
   <ng-container *ngIf="!multiple && autocomplete && !tags">
     <input cv-input name="search" [(ngModel)]="search" (ngModelChange)="autocompleteSearchHandler($event)"
            autocomplete="off"
+           inputmode="search"
            placeholder="{{label}}"
            (focus)="openDropdown()"
     />
