@@ -228,9 +228,8 @@
   border: solid 1px #d8d8d8;
   top: 0;
   min-width: 170px;
-  width: 90%;
+  width: max-content;
   position: absolute;
-  left: 48px;
   opacity: 0;
   z-index: 9999;
   .menu-body {
