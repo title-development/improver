@@ -36,7 +36,7 @@ public class MvcConfiguration implements WebMvcConfigurer {
         registry.addViewController(UI_RESTORE_PASSWORD + "/**/{token:.+}").setViewName(LAYOUT);
         // handles generic (all other) urls
         registry.addViewController("/**/{[path:[^\\.]*}").setViewName(LAYOUT);
-        // required to handle WebSocket mappings first1
+        // required to handle WebSocket mappings first
         registry.setOrder(2);
     }
 

@@ -1,6 +1,7 @@
 package com.improver.application.config;
 
 import com.improver.application.properties.SecurityProperties;
+import com.improver.filter.MDCFilter;
 import com.improver.security.*;
 import com.improver.service.ReCaptchaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired JwtUtil jwtUtil;
     @Autowired SecurityProperties securityProperties;
     @Autowired ReCaptchaService reCaptchaService;
+    @Autowired MDCFilter mdcFilter;
 
     private LoginFilter loginFilter() throws Exception {
         return new LoginFilter(LOGIN_PATH, authenticationManager(), userSecurityService, reCaptchaService, securityProperties);
@@ -117,10 +119,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .anyRequest().permitAll()
             .and()
             // And filter other requests to check the presence of JWT in header
+            .addFilterBefore(mdcFilter, AnonymousAuthenticationFilter.class)
             .addFilterBefore(jwtAuthenticationFilter(), AnonymousAuthenticationFilter.class)
-            .addFilterBefore(loginFilter(), JwtAuthenticationFilter.class)
-            .addFilterBefore(new LogoutFilter(LOGOUT_PATH, userSecurityService), JwtAuthenticationFilter.class)
-            .addFilterBefore(refreshAccessTokenFilter(), JwtAuthenticationFilter.class);
+            .addFilterAt(loginFilter(), JwtAuthenticationFilter.class)
+            .addFilterAt(new LogoutFilter(LOGOUT_PATH, userSecurityService), JwtAuthenticationFilter.class)
+            .addFilterBefore(refreshAccessTokenFilter(), JwtAuthenticationFilter.class)
+        ;
     }
 
     @Override

@@ -39,10 +39,10 @@ public class WsSecurityInterceptor implements ChannelInterceptor {
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         final StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
         if (StompCommand.CONNECT.equals(accessor.getCommand())) {
-            log.debug("WS: Connection attempt");
+            log.trace("WS: Connection attempt");
             String authorization = accessor.getFirstNativeHeader("authorization");
             if(authorization == null || authorization.isEmpty()){
-                log.debug("WS: Authorization header is empty");
+                log.error("WS: Authorization header is empty");
                 sendError(accessor, INVALID_TOKEN_ERROR);
                 return null;
             }

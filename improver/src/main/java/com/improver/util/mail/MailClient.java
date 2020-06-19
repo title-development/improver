@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import java.time.Duration;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -28,7 +29,7 @@ public class MailClient {
 
     @Value("${mail.sendername}") private String senderName;
     @Value("${mail.resend.maxattempts}") private Integer maxResendAttempts;
-    @Value("${task.mail.resend.timeout}") private int mailResendTimeout;
+    @Value("${task.mail.resend.timeout}") private Duration mailResendTimeout;
 
     @Async
     public void sendMailsSeparate(String subject, String template, Context context, MailHolder.MessageType messageType, String... recipients) {
@@ -85,7 +86,7 @@ public class MailClient {
             return;
         }
         log.debug("Failed to send email: \"{}\" to recipients: {}", subject, recipient);
-        scheduledExecutorService.schedule(() -> sendUnsentEmail(mailHolder, subject, recipient), mailResendTimeout, TimeUnit.MINUTES);
+        scheduledExecutorService.schedule(() -> sendUnsentEmail(mailHolder, subject, recipient), mailResendTimeout.getSeconds(), TimeUnit.SECONDS);
     }
 
     private void sendUnsentEmail(MailHolder mailHolder, String subject, String... recipient) {

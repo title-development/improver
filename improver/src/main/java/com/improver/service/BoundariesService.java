@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -57,6 +58,7 @@ public class BoundariesService {
 
     public String searchZipCodesInBbox(String southWest, String northEast) throws ThirdPartyException {
         HttpUriRequest request;
+        log.debug("Zipcodes bbox area=" +  areaOfBbox(southWest, northEast));
         try {
             URI uri = new URIBuilder(BASE_URL + BBOX_ZIP_SEARCH_URL)
                 .setParameter("southWest", southWest)
@@ -73,9 +75,8 @@ public class BoundariesService {
 
     public String getZipBoundaries(String... zipCodes) throws ThirdPartyException {
         HttpUriRequest request;
-        if (zipCodes.length > 200) {
-            log.debug("ZIP Code array size=" + zipCodes.length);
-        }
+        log.trace("ZIP Codes array size=" + zipCodes.length);
+
         try {
             URI uri = new URIBuilder(BASE_URL + ZIP_SEARCH_URL)
                 .setParameter("ids", String.join(",", zipCodes))
@@ -122,6 +123,7 @@ public class BoundariesService {
 
     public String searchCountiesInBbox(String southWest, String northEast) throws ThirdPartyException {
         HttpUriRequest request;
+        log.debug("Counties bbox area=" +  areaOfBbox(southWest, northEast));
         try {
             URI uri = new URIBuilder(BASE_URL + BBOX_COUNTY_SEARCH_URL)
                 .setParameter("southWest", southWest)
@@ -165,7 +167,7 @@ public class BoundariesService {
     }
 
     private String makeRequestToMapreflex(HttpUriRequest request) throws ThirdPartyException {
-        log.debug("Sending '" + request.getMethod() + "' request to URL : " + request.getURI());
+        log.trace("Sending '" + request.getMethod() + "' request to URL : " + request.getURI());
         HttpResponse response;
         String result;
 
@@ -204,6 +206,40 @@ public class BoundariesService {
         } catch (IOException e) {
             throw new ThirdPartyException("Error parsing response from searchZipInRadius()", e);
         }
+    }
+
+
+    /**
+     * Perimeter in miles of bounding box
+     */
+    private double areaOfBbox(String sw, String ne){
+        double[] southWest = Arrays.stream(sw.split(","))
+            .mapToDouble(Double::parseDouble)
+            .toArray();
+        double[] northEast = Arrays.stream(ne.split(","))
+            .mapToDouble(Double::parseDouble)
+            .toArray();
+        double[] northwest = {northEast[0], southWest[1]};
+        double a = distanceFrom(southWest[0], southWest[1], northwest[0], northwest[1]);
+        double b = distanceFrom(northwest[0], northwest[1], northEast[0], northEast[1]);
+        return a *b;
+    }
+
+
+    /**
+     * Distance in miles
+     */
+    private double distanceFrom(double lat1, double lng1, double lat2, double lng2) {
+        double earthRadius = 6371000; //meters
+        double dLat = Math.toRadians(lat2-lat1);
+        double dLng = Math.toRadians(lng2-lng1);
+        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                Math.sin(dLng/2) * Math.sin(dLng/2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        double dist = (earthRadius * c);
+        dist /= 1609.344; // convert meters to miles
+        return dist;
     }
 
 }

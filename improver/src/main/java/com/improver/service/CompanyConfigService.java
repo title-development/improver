@@ -208,7 +208,7 @@ public class CompanyConfigService {
         List<String> allServedZips = servedZipRepository.getAllServedZips();
         toAdd.removeIf(zip -> !allServedZips.contains(zip));
         areaRepository.updateAreasForCompany(company, toAdd, toRemove);
-        log.debug("Company={} Coverage: Added={}; Removed={}", company.getId(), toAdd, toRemove);
+        log.info("Company={} Coverage: Added={}; Removed={}", company.getId(), toAdd, toRemove);
     }
 
 }

@@ -4,6 +4,7 @@ import com.improver.application.properties.SecurityProperties;
 import com.improver.exception.handler.RestError;
 import com.improver.util.serializer.SerializationUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.CredentialsExpiredException;
@@ -24,6 +25,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,10 +33,10 @@ import java.util.Optional;
 import static com.improver.security.JwtUtil.AUTHORIZATION_HEADER_NAME;
 import static com.improver.security.JwtUtil.BEARER_TOKEN_PREFIX;
 import static com.improver.util.ErrorMessages.BAD_CREDENTIALS_MSG;
-import static com.improver.util.ErrorMessages.SESSION_TIMED_OUT_MSG;
 
 @Slf4j
 public class JwtAuthenticationFilter extends GenericFilterBean {
+    private static final String MDC_USERNAME_KEY = "username";
 
     private AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource = new WebAuthenticationDetailsSource();
     private JwtUtil jwtUtil;
@@ -67,14 +69,9 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         return this;
     }
 
-    @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        HttpServletRequest request = (HttpServletRequest) servletRequest;
-        HttpServletResponse response = (HttpServletResponse) servletResponse;
 
-        if (requestMatcher.matches(request)) {
-            //log.debug(request.getMethod() + " " + request.getRequestURI() + Optional.ofNullable(request.getQueryString()).map(q -> "?" + q).orElse(""));
-            Authentication authentication;
+    public void doAuthentication(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        Authentication authentication;
             try {
                 authentication = attemptAuthentication(request, response);
             } catch (CredentialsExpiredException e) {
@@ -90,15 +87,44 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
                 unsuccessfulAuthentication(response, BAD_CREDENTIALS_MSG);
                 return;
             }
-
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            filterChain.doFilter(servletRequest, servletResponse);
-        }
-        else {
-            filterChain.doFilter(servletRequest, servletResponse);
-        }
+    }
 
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        HttpServletRequest request = (HttpServletRequest) servletRequest;
+        HttpServletResponse response = (HttpServletResponse) servletResponse;
+        if (requestMatcher.matches(request)) {
+            //log.trace(request.getMethod() + " " + request.getRequestURI() + Optional.ofNullable(request.getQueryString()).map(q -> "?" + q).orElse(""));
+            try {
+                Authentication authentication;
+                try {
+                    authentication = attemptAuthentication(request, response);
+                } catch (CredentialsExpiredException e) {
+                    log.trace("Token has expired");
+                    unsuccessfulAuthentication(response, "Token has expired");
+                    return;
+                } catch (BadCredentialsException e) {
+                    log.trace("Invalid Token", e);
+                    unsuccessfulAuthentication(response, BAD_CREDENTIALS_MSG);
+                    return;
+                }  catch (Exception e) {
+                    log.error("Generic error during authorization", e);
+                    unsuccessfulAuthentication(response, BAD_CREDENTIALS_MSG);
+                    return;
+                }
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                String name = Optional.ofNullable(authentication).map(Principal::getName).orElse("anonymous");
+                MDC.put(MDC_USERNAME_KEY, name);
 
+                filterChain.doFilter(request, response);
+            } finally {
+                MDC.remove(MDC_USERNAME_KEY);
+            }
+
+        } else {
+            filterChain.doFilter(request, response);
+        }
     }
 
 
