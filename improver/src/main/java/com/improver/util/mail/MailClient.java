@@ -8,12 +8,12 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import java.util.concurrent.*;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
@@ -24,10 +24,11 @@ public class MailClient {
     @Autowired private TemplateEngine templateEngine;
     @Autowired private JavaMailSender mailSenderNoreply;
     @Autowired private JavaMailSender mailSenderSupport;
+    @Autowired private ScheduledExecutorService scheduledExecutorService;
 
     @Value("${mail.sendername}") private String senderName;
     @Value("${mail.resend.maxattempts}") private Integer maxResendAttempts;
-    private CopyOnWriteArraySet<MailHolder> unsentMails = new CopyOnWriteArraySet<>();
+    @Value("${task.mail.resend.timeout}") private int mailResendTimeout;
 
     @Async
     public void sendMailsSeparate(String subject, String template, Context context, MailHolder.MessageType messageType, String... recipients) {
@@ -56,8 +57,7 @@ public class MailClient {
         try {
             send(mailHolder);
         } catch (MailException e) {
-            log.error("Could not send mail. Mail is going to que", e);
-            unsentMails.add(mailHolder);
+            scheduledUnsentMail(mailHolder, subject, recipient);
         }
     }
 
@@ -80,30 +80,23 @@ public class MailClient {
             }
     }
 
-    /**
-     * Schedule resending of unsent emails
-     */
-    //TODO: this should be removed in future
-    @Deprecated
-    @Scheduled(fixedDelayString="${job.mail.resend.timeout}")
-    public void sendUnsentEmails() {
-        log.trace("Job 4 started => Check unsent emails que");
-        unsentMails.forEach(mailHolder -> {
-            try {
-                if (mailHolder.getAttempts() > maxResendAttempts) {
-                    unsentMails.remove(mailHolder);
-                    return;
-                }
-                log.debug("Sending unsent email");
-                send(mailHolder);
-                log.debug("Email sent");
-                unsentMails.remove(mailHolder);
-            } catch (MailException e) {
-                log.error("Could not resend mail", e);
-                mailHolder.setAttempts(mailHolder.getAttempts() + 1);
-            }
-        });
-        log.trace("Job 4 ended   <= Check unsent emails que");
+    private void scheduledUnsentMail(MailHolder mailHolder, String subject, String... recipient) {
+        if (mailHolder.getAttempts() > maxResendAttempts) {
+            return;
+        }
+        log.debug("Failed to send email: \"{}\" to recipients: {}", subject, recipient);
+        scheduledExecutorService.schedule(() -> sendUnsentEmail(mailHolder, subject, recipient), mailResendTimeout, TimeUnit.MINUTES);
+    }
+
+    private void sendUnsentEmail(MailHolder mailHolder, String subject, String... recipient) {
+        try {
+            log.debug("Sending unsent email");
+            send(mailHolder);
+            log.debug("Email sent");
+        } catch (MailException e) {
+            mailHolder.setAttempts(mailHolder.getAttempts() + 1);
+            scheduledUnsentMail(mailHolder, subject, recipient);
+        }
     }
 
 }

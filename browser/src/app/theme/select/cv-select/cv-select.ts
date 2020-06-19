@@ -141,6 +141,8 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
         this.itemMinHeight = ItemMinHeight.xs;
       } else if (res.sm) {
         this.itemMinHeight = ItemMinHeight.sm;
+      } else {
+        this.itemMinHeight = ItemMinHeight.other;
       }
       this.mediaQuery = res;
     });
