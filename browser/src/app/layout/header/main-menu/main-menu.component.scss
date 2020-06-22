@@ -20,21 +20,25 @@
   z-index: 9998;
 }
 
+.dark-background {
+  top: $header-mobile-height;
+  background: rgba(39, 49, 73, 0.2);
+}
+
 .mobile-menu {
-  border-bottom-right-radius: 8px;
   position: absolute;
   left: 0;
-  top: 0;
+  top: $header-mobile-height;
   background: #fff;
   display: flex;
   flex-direction: column;
-  width: 293px;
+  width: 100vw;
   height: auto;
   z-index: 9999;
-  box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.23);
+  box-shadow: 0px 5px 5px rgba(38, 47, 86, 0.12);
   opacity: 0;
   &.anonymous {
-    width: 67%;
+    width: 100vw;
   }
 
   .menu-header {
@@ -103,7 +107,7 @@
       .became-a-pro {
         margin: 24px;
         font-size: 14px;
-        text-align: left;
+        text-align: center;
         width: 120px;
         height: 33px;
         background: linear-gradient(to bottom, $primary-400, $primary-600 85%);
@@ -167,10 +171,11 @@
       }
 
       h4, a {
-        font-size: 13px;
-        padding: 12px 24px;
-        text-align: left;
-        text-transform: uppercase;
+        font-size: 18px;
+        padding: 15px 24px;
+        text-align: center;
+        justify-content: center;
+        color: $dark
       }
 
       h4 {
@@ -181,7 +186,7 @@
       }
 
       a {
-        font-weight: 700;
+        font-weight: normal;
         letter-spacing: 0.3px;
         color: #2d2d2d;
       }
@@ -191,32 +196,42 @@
   .menu-footer {
     display: flex;
     align-items: center;
-    border-top: 1px solid #eaeaea;
+    border-top: 1px solid rgba(0, 0, 0, 0.23);
     position: relative;
 
     &:hover, &:focus, &:active {
       background-color: #f7f7f7;
     }
 
+    span {
+      margin-right: 15px;
+      color: $dark;
+      opacity: 0.4;
+    }
+
     i {
-      color: #565656;
-      font-size: 20px;
-      margin-right: -8px;
+      font-size: 18px;
     }
 
     a {
+      color: $dark;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      font-size: 13px;
+      justify-content: center;
+      font-size: 18px;
       letter-spacing: 0.2px;
       padding: 16px 24px;
-      text-transform: uppercase;
-      color: #565656;
       cursor: pointer;
       width: 100%;
     }
   }
+}
+
+.logout-wrapper {
+  width: 20px;
+  height: 20px;
+  opacity: 1;
+  background: url("../../../../assets/icons/logout.png");
 }
 
 .desktop-menu {
@@ -298,7 +313,7 @@
       justify-content: space-between;
       font-size: 14px;
       font-weight: 500;
-      text-align: left;
+      text-align: center;
       color: $dark;
       padding: 11px 15px;
       cursor: pointer;
@@ -319,8 +334,8 @@
 
     a {
       font-weight: 500!important;
-      color: $black-900!important;
-      padding: 12px 24px!important;
+      color: $dark !important;
+      opacity: 0.4 !important;
       &:hover {
         background-color: $grey-100;
       }

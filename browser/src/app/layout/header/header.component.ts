@@ -61,6 +61,7 @@ export class HeaderComponent {
       return;
     }
 
+    this.mobileMenuService.mobileMenuOpened = false;
     this.dialog.closeAll();
     this.dialogRef = this.dialog.open(dialogsMap['mobile-main-search-bar'], mobileMainDialogBarConfig);
     this.mobileMenuService.findProfessionalsOpened = true;

@@ -1,10 +1,11 @@
-<div class="header" [ngClass]="mobileMenuService.findProfessionalsOpened? 'header-without-shadow' : ''">
+<div class="header" [ngClass]="(mobileMenuService.findProfessionalsOpened || mobileMenuService.mobileMenuOpened)? 'header-without-shadow' : ''">
   <div class="header-content">
     <!--TODO: rework menu items with separate components?-->
     <div class="header-left">
       <!--Mobile menu button-->
       <button class="mobile-header-button menu-button md-none lg-none xlg-none" mat-button (click)="mobileMenuService.mobileMenuOpened = !mobileMenuService.mobileMenuOpened">
-        <mat-icon class="mobile-menu-icon">menu</mat-icon>
+        <mat-icon class="mobile-menu-icon" *ngIf="!mobileMenuService.mobileMenuOpened">menu</mat-icon>
+        <i class="material-icons" *ngIf="mobileMenuService.mobileMenuOpened">close</i>
       </button>
 
       <div class="nav navbar-nav navbar-left">
@@ -79,19 +80,34 @@
         </div>
       </a>-->
 
-      <div class="nav navbar-nav">
-        <a class="app-menu-button account-menu" title="{{securityService.getLoginModel().name}}"
-           *ngIf="securityService.isAuthenticated()" (click)="mobileMenuService.mobileMenuOpened = !mobileMenuService.mobileMenuOpened">
-          <div class="account-icon" [ngClass]="{'mobile': mediaQuery.xs || mediaQuery.sm}"
-               [ngStyle]="securityService.getLoginModel().iconUrl && securityService.getLoginModel().iconUrl != '' && {'background-image':'url(' + securityService.getLoginModel().iconUrl + ')'} || securityService.getLoginModel().company && {'background-image':'url(/assets/img/company-logo-placeholder.png)'} || {'background-image':'url(/assets/img/user-logo-placeholder.png)'}"></div>
-          <div class="user-name xs-none sm-none md-none" *ngIf="securityService.isAuthenticated()">
-            {{securityService.getLoginModel().name | truncate:18: '...'}}
-          </div>
-        </a>
-        <div class="holder">
-          <main-menu [(toggle)]="mobileMenuService.mobileMenuOpened"></main-menu>
+        <div class="nav navbar-nav">
+
+            <!--Desktop account icon-->
+            <a class="app-menu-button account-menu" title="{{securityService.getLoginModel().name}}"
+               *ngIf="securityService.isAuthenticated() && (!mediaQuery.xs && !mediaQuery.sm)"
+               (click)="mobileMenuService.mobileMenuOpened = !mobileMenuService.mobileMenuOpened">
+                <div class="account-icon" [ngClass]="{'mobile': mediaQuery.xs || mediaQuery.sm}"
+                     [ngStyle]="securityService.getLoginModel().iconUrl && securityService.getLoginModel().iconUrl != '' && {'background-image':'url(' + securityService.getLoginModel().iconUrl + ')'} || securityService.getLoginModel().company && {'background-image':'url(/assets/img/company-logo-placeholder.png)'} || {'background-image':'url(/assets/img/user-logo-placeholder.png)'}"></div>
+                <div class="user-name xs-none sm-none md-none" *ngIf="securityService.isAuthenticated()">
+                    {{securityService.getLoginModel().name | truncate:18: '...'}}
+                </div>
+            </a>
+
+            <!--Mobile account icon-->
+            <a class="app-menu-button account-menu" title="{{securityService.getLoginModel().name}}"
+               *ngIf="securityService.isAuthenticated() && (mediaQuery.xs || mediaQuery.sm)"
+               [routerLink]="securityService.hasRole(Role.CONTRACTOR)? '/companies/' + securityService.getLoginModel().company : '/my/settings/account'">
+                <div class="account-icon" [ngClass]="{'mobile': mediaQuery.xs || mediaQuery.sm}"
+                     [ngStyle]="securityService.getLoginModel().iconUrl && securityService.getLoginModel().iconUrl != '' && {'background-image':'url(' + securityService.getLoginModel().iconUrl + ')'} || securityService.getLoginModel().company && {'background-image':'url(/assets/img/company-logo-placeholder.png)'} || {'background-image':'url(/assets/img/user-logo-placeholder.png)'}"></div>
+                <div class="user-name xs-none sm-none md-none" *ngIf="securityService.isAuthenticated()">
+                    {{securityService.getLoginModel().name | truncate:18: '...'}}
+                </div>
+            </a>
+            
+            <div class="holder">
+                <main-menu [(toggle)]="mobileMenuService.mobileMenuOpened"></main-menu>
+            </div>
         </div>
-      </div>
 
       <!--Right menu on desktop for ANONYMOUS-->
       <div class="navbar-right xs-none sm-none"

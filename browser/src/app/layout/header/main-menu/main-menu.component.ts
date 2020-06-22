@@ -19,6 +19,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { dialogsMap } from '../../../shared/dialogs/dialogs.state';
 import { confirmDialogConfig } from '../../../shared/dialogs/dialogs.configs';
 import { ReferralDialogComponent } from '../../../shared/dialogs/refreal-dialog/referral-dialog.component';
+import { MobileMenuService } from "../../../util/mobile-menu-service";
 
 
 @Component({
@@ -64,7 +65,8 @@ export class MainMenuComponent implements OnChanges, OnDestroy {
               private query: MediaQueryService,
               private renderer: Renderer2,
               public constants: Constants,
-              private dialog: MatDialog
+              private dialog: MatDialog,
+              private mobileMenuService: MobileMenuService
   ) {
     this.mediaWatcher = this.query.screen.pipe(
       distinctUntilChanged()
@@ -84,6 +86,8 @@ export class MainMenuComponent implements OnChanges, OnDestroy {
       } else {
         this.renderer.removeClass(el, '-glue');
       }
+      this.mobileMenuService.findProfessionalsOpened = false;
+      this.dialog.closeAll();
       this.animationState = 'active';
     } else {
       this.animationState = (this.mediaQuery.xs || this.mediaQuery.sm) ? 'inactive-mobile' : 'inactive';

@@ -98,6 +98,7 @@ export class CustomerDashboardComponent implements OnDestroy {
   }
 
   openMobileDialog(key): void {
+    this.mobileMenuService.mobileMenuOpened = false;
     this.dialog.closeAll();
     this.mobileMenuService.findProfessionalsOpened = true;
     this.dialogRef = this.dialog.open(dialogsMap[key], mobileMainDialogBarConfig);
