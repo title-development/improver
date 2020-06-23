@@ -1,15 +1,15 @@
 import {
-	Component,
-	ElementRef,
-	EventEmitter,
-	HostBinding,
-	Input, OnChanges,
-	Optional,
-	Output,
-	Self, SimpleChanges,
-	ViewEncapsulation
+  Component,
+  ElementRef,
+  EventEmitter,
+  HostBinding,
+  Input,
+  Optional,
+  Output,
+  Self,
+  ViewEncapsulation
 } from '@angular/core';
-import { FormControl, NgControl } from '@angular/forms';
+import { NgControl } from '@angular/forms';
 import { coerceBooleanProperty } from '../../util/util';
 
 @Component({
@@ -44,7 +44,13 @@ export class CvInputComponent {
   }
 
   get disabled() {
-    return this.ngControl ? this.ngControl.disabled : this._disabled;
+    if (this._disabled !== undefined) {
+      return this._disabled
+    } else if (this.ngControl) {
+      return this.ngControl.disabled
+    } else {
+      return undefined
+    }
   }
 
   @Input()

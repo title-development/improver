@@ -1,11 +1,11 @@
-import { Component, ElementRef, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { QuestionaryControlService } from '../../../../../util/questionary-control.service';
 import { RequestOrder } from '../../../../../model/order-model';
 import { Constants } from '../../../../../util/constants';
 import { Messages } from '../../../../../util/messages';
 import { MatDialog } from '@angular/material/dialog';
-import { Role } from '../../../../../model/security-model';
+import { Credentials, LoginModel, Role } from '../../../../../model/security-model';
 import { SecurityService } from '../../../../../auth/security.service';
 import { ProjectService } from '../../../../../api/services/project.service';
 import { ValidatedLocation } from '../../../../../api/models/LocationsValidation';
@@ -19,6 +19,10 @@ import { UserService } from "../../../../../api/services/user.service";
 import { AccountService } from "../../../../../api/services/account.service";
 import { TradeService } from "../../../../../api/services/trade.service";
 import { MetricsEventService } from "../../../../../util/metrics-event.service";
+import { takeUntil } from "rxjs/operators";
+import { SystemMessageType } from "../../../../../model/data-model";
+import { Subject } from "rxjs";
+import { RecaptchaComponent } from "ng-recaptcha";
 
 @Component({
   selector: 'default-questionary-block',
@@ -27,6 +31,8 @@ import { MetricsEventService } from "../../../../../util/metrics-event.service";
 })
 
 export class DefaultQuestionaryBlockComponent implements OnInit {
+
+  private readonly destroyed$ = new Subject<void>();
 
   startExpectationOptions = [
     "I'm flexible",
@@ -40,11 +46,12 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
   defaultQuestionaryForm;
   emailIsUnique;
   emailIsChecked = false;
+  emailIsChecking = false;
   filteredStates = [];
   locationValidation: string = '';
   validationMessage: string = '';
   processingAddressValidation: boolean;
-  processingPhoneValidation: boolean;
+  waitingPhoneConfirmation: boolean;
   originalAddress: any = {};
   suggestedAddress: any = {};
   locationInvalid: boolean;
@@ -55,8 +62,12 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
   nextStepFn: Function;
   currentQuestionName;
   questionaryAnswers;
+  loginProcessing = false
+  loginMessageText;
+  loginMessageType;
+  showLoginMessage = false;
 
-  @ViewChildren('defaultQuestion') defaultQuestions: QueryList<ElementRef>;
+  @ViewChild(RecaptchaComponent, { static: false }) captcha: RecaptchaComponent;
 
   constructor(public questionaryControlService: QuestionaryControlService,
               public projectService: ProjectService,
@@ -76,6 +87,10 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     this.messages = messages;
     this.emailIsChecked = false;
     this.filteredStates = constants.states;
+
+    securityService.onUserInit.subscribe(() => {
+      this.phoneValid = false;
+    })
   }
 
   ngOnInit(): void {
@@ -125,18 +140,23 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
   }
 
   checkEmail(email) {
-    if (email){
-      this.emailIsUnique = true;
-      this.emailIsChecked = false;
-
+    this.emailIsChecking = true;
+    this.captcha.reset();
       this.userService.isEmailFree(email)
-        .pipe(finalize(() => this.emailIsChecked = true))
+        .pipe(finalize(() => {
+          this.emailIsChecked = true
+          this.emailIsChecking = false;
+        }))
         .subscribe(() => {
-        }, () => {
-          this.emailIsUnique = false;
-          this.saveProjectToStorage();
+          this.emailIsUnique = true;
+        }, error => {
+          console.log(error)
+          if (error.status == 409) {
+            this.emailIsUnique = false;
+          } else {
+            this.popUpMessageService.showError(getErrorMessage(error))
+          }
         });
-    }
   }
 
   saveProjectToStorage() {
@@ -268,24 +288,25 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
   validatePhone(formGroupName: string, callback?: Function) {
     this.nextStepFn = callback;
     this.disabledNextAction = true;
-    this.processingPhoneValidation = true;
+    this.waitingPhoneConfirmation = true;
   }
 
   editPhoneAgain() {
     this.nextStepFn = null;
     this.disabledNextAction = false;
-    this.processingPhoneValidation = false;
+    this.waitingPhoneConfirmation = false;
   }
 
   onPhoneValidated() {
     this.disabledNextAction = false;
-    this.processingPhoneValidation = false;
+    this.waitingPhoneConfirmation = false;
     this.phoneValid = true;
+    this.questionaryControlService.updateQuestionaryParams(undefined, true)
     this.nextStepFn.call(this)
   }
 
   personalInfoRequired() {
-    return (this.securityService.hasRole(Role.ANONYMOUS)  || (this.securityService.hasRole(Role.CUSTOMER) && !this.questionaryControlService.customerHasPhone))
+    return (this.securityService.hasRole(Role.ANONYMOUS) || (this.securityService.hasRole(Role.CUSTOMER) && !this.questionaryControlService.customerHasPhone))
   }
 
   getQuestionaryAnswers() {
@@ -303,6 +324,69 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     }
     this.questionaryAnswers = questionaryAnswers
     return questionaryAnswers;
+  }
+
+  resolveCaptcha(captcha) {
+    if(captcha) {
+      this.login(captcha);
+    } else {
+      this.loginProcessing = false;
+    }
+  }
+
+  login(captcha?) {
+    let credentials = new Credentials(this.defaultQuestionaryForm.get('customerPersonalInfo.email').value, this.defaultQuestionaryForm.get('customerPersonalInfo.password').value, captcha)
+    this.loginProcessing = true;
+    this.securityService.sendLoginRequest(credentials)
+      .pipe(
+        takeUntil(this.destroyed$),
+        finalize(() => this.captcha.reset())
+      )
+      .subscribe(response => {
+        this.securityService.loginUser(response.body as LoginModel, response.headers.get('authorization'), false);
+        this.phoneValid = false;
+        this.questionaryControlService.customerHasPhone = false;
+        this.questionaryControlService.onAccountDataLoaded
+          .pipe(first(), finalize(() => { this.loginProcessing = false; }))
+          .subscribe(account => {
+          if (account) {
+            if(!this.personalInfoRequired()) {
+              this.nextStep();
+            }
+          }
+        })
+
+      }, err => {
+        if (err.status == 401) {
+          this.securityService.logoutFrontend();
+        }
+        this.showLoginResponseMessage(getErrorMessage(err), SystemMessageType.ERROR);
+        this.loginProcessing = false;
+      })
+  }
+
+  showLoginResponseMessage(messageText, messageType) {
+    this.loginMessageText = messageText;
+    this.loginMessageType = messageType;
+    this.showLoginMessage = true;
+  }
+
+  onLoginMessageHide(event) {
+    this.showLoginMessage = event;
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
+    if(this.captcha) {
+      this.captcha.reset()
+    }
+  }
+
+  resetCaptcha() {
+    if (this.captcha) {
+      this.captcha.reset()
+    }
   }
 
 }

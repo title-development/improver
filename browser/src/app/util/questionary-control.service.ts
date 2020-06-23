@@ -9,13 +9,15 @@ import { getErrorMessage } from "./functions";
 import { ServiceTypeService } from "../api/services/service-type.service";
 import { PopUpMessageService } from "./pop-up-message.service";
 import { finalize } from "rxjs/operators";
+import { AccountService } from "../api/services/account.service";
+import { ReplaySubject } from "rxjs";
 
 @Injectable()
 export class QuestionaryControlService {
 
-  public DEFAULT_QUESTIONARY_LENGTH = 7;
-  public DEFOULT_QUESTIONARY_LENGTH_AUTHORIZED_NO_PHONE = 6;
-  public DEFAULT_QUESTIONARY_LENGTH_AUTHORIZED = 5;
+  public DEFAULT_QUESTIONARY_LENGTH = 5;
+  public DEFAULT_QUESTIONARY_LENGTH_AUTHORIZED_NO_PHONE = 5;
+  public DEFAULT_QUESTIONARY_LENGTH_AUTHORIZED = 4;
 
   public defaultQuestionaryLength = this.DEFAULT_QUESTIONARY_LENGTH;
 
@@ -40,13 +42,28 @@ export class QuestionaryControlService {
     lastName: '',
     phone: '',
   };
+  private customerAccountDataFilled = false;
+  public customerAccountIsLoading = false;
 
   mainForm;
   questionary: ServiceQuestionaryModel;
 
+  public onAccountDataLoaded: ReplaySubject<any> = new ReplaySubject(1);
+
   constructor(private securityService: SecurityService,
               private serviceTypeService: ServiceTypeService,
+              private accountService: AccountService,
               private popUpService: PopUpMessageService) {
+
+    securityService.onUserInit.subscribe(() => {
+      this.getAccountData()
+    })
+
+    securityService.onLogout.subscribe(() => {
+      this.resetCustomerAccount()
+      this.clearAccountData()
+    })
+
   }
 
   toFormGroup(questions: QuestionaryBlock[] = []) {
@@ -82,7 +99,7 @@ export class QuestionaryControlService {
         .subscribe(
         (questionary: ServiceQuestionaryModel )=> {
           this.questionary = questionary;
-          this.updateQuestionaryTotalLength(this.questionary.questions.length, this.questionary.hasPhone);
+          this.updateQuestionaryParams(this.questionary.questions.length, this.questionary.hasPhone);
           this.mainForm = this.toFormGroup(this.questionary.questions);
           this.showQuestionary = true;
         },
@@ -108,6 +125,7 @@ export class QuestionaryControlService {
     customerPersonalInfoGroup.lastName = new FormControl(this.customerAccount.lastName, Validators.required);
     customerPersonalInfoGroup.email = new FormControl(this.customerAccount.email, Validators.required);
     customerPersonalInfoGroup.phone = new FormControl(this.customerAccount.phone, Validators.required);
+    customerPersonalInfoGroup.password = new FormControl('');
     group.customerPersonalInfo = new FormGroup(customerPersonalInfoGroup);
 
     let projectLocationGroup: any = {};
@@ -131,26 +149,18 @@ export class QuestionaryControlService {
     this.defaultQuestionaryLength = this.DEFAULT_QUESTIONARY_LENGTH;
     this.withZip = false;
     this.withServiceType = false;
-
-    this.customerAccount = {
-      id: 0,
-      iconUrl: '',
-      email: '',
-      firstName: '',
-      lastName: '',
-      phone: '',
-    };
-
+    this.customerAccountDataFilled = true;
+    this.resetCustomerAccount();
   }
 
-  updateQuestionaryTotalLength(questionaryLength, hasPhone) {
+  updateQuestionaryParams(questionaryLength = this.questionaryLength, hasPhone = this.customerHasPhone) {
     this.questionaryLength = questionaryLength;
     this.customerHasPhone = hasPhone;
 
     if (this.securityService.hasRole(Role.CUSTOMER) && hasPhone) {
       this.defaultQuestionaryLength = this.DEFAULT_QUESTIONARY_LENGTH_AUTHORIZED;
     } else if (this.securityService.hasRole(Role.CUSTOMER) && !hasPhone) {
-      this.defaultQuestionaryLength = this.DEFOULT_QUESTIONARY_LENGTH_AUTHORIZED_NO_PHONE;
+      this.defaultQuestionaryLength = this.DEFAULT_QUESTIONARY_LENGTH_AUTHORIZED_NO_PHONE;
     } else {
       this.defaultQuestionaryLength = this.DEFAULT_QUESTIONARY_LENGTH;
     }
@@ -168,6 +178,64 @@ export class QuestionaryControlService {
       this.serviceType = null;
     }
 
+  }
+
+  getAccountData() {
+    this.customerAccountIsLoading = true;
+    this.accountService
+      .getAccount(this.securityService.getLoginModel().id)
+      .pipe(finalize(() => this.customerAccountIsLoading = false))
+      .subscribe(
+        account => {
+          this.customerAccount = account;
+          this.updateQuestionaryParams(undefined, !!this.customerAccount.phone)
+          this.fillCustomerAccountData()
+          this.onAccountDataLoaded.next(this.customerAccount)
+        },
+        err => {
+          this.onAccountDataLoaded.next(null)
+          console.error(err);
+        }
+      );
+  }
+
+  fillCustomerAccountData(account = this.customerAccount) {
+   if (!this.customerAccountDataFilled && this.mainForm) {
+      this.mainForm.get('defaultQuestionaryGroup').get('customerPersonalInfo').patchValue({
+        email: account.email,
+        firstName: account.firstName,
+        lastName: account.lastName,
+        phone: account.phone
+      });
+      this.customerAccountDataFilled = true;
+    }
+  }
+
+  clearAccountData() {
+    this.customerAccountDataFilled = false;
+
+    if(this.mainForm) {
+      this.mainForm.get('defaultQuestionaryGroup').get('customerPersonalInfo').patchValue({
+        email: '',
+        firstName: '',
+        lastName: '',
+        phone: ''
+      });
+
+    }
+
+  }
+
+  resetCustomerAccount() {
+    this.customerHasPhone = false;
+    this.customerAccount = {
+      id: 0,
+      iconUrl: '',
+      email: '',
+      firstName: '',
+      lastName: '',
+      phone: '',
+    };
   }
 
 }

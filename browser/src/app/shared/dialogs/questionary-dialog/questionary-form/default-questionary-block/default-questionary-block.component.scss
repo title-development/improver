@@ -280,14 +280,15 @@ cv-radio-group {
   }
 }
 
-.new-customer-explanation {
-  .terms-line {
-    color: $grey-400;
-    font-size: 12px;
-    text-align: center;
+.terms-line {
+  color: $grey-400;
+  font-size: 12px;
+  text-align: center;
+  margin-top: 12px;
+  a {
+    color: $primary-400;
   }
 }
-
 .form-row {
   width: 100%;
 }
@@ -338,4 +339,52 @@ cv-radio-group {
     }
 
   }
+}
+
+.auth-social-title {
+  font-size: 14px;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.38);
+  width: 100%;
+  margin: 0px 0 24px;
+  position: relative;
+}
+
+.email-auth-hint {
+  font-size: 14px;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.38);
+  width: 100%;
+  margin: 8px 0 12px;
+  position: relative;
+
+  &:before {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    height: 1px;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.38);
+  }
+
+  span {
+    position: relative;
+    background: white;
+    padding: 0 10px;
+  }
+}
+
+.captcha-reminder {
+  text-align: left;
+  margin-bottom: 16px;
+  font-size: 10px;
+  color: rgba(0, 0, 0, 0.54);
+
+  a {
+    cursor: pointer;
+    color: inherit;
+  }
+
 }

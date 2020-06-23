@@ -9,7 +9,6 @@ import { ProjectService } from '../../api/services/project.service';
 import { getErrorMessage } from '../../util/functions';
 import { RecaptchaComponent } from 'ng-recaptcha';
 import { Subject } from 'rxjs';
-import { environment } from "../../../environments/environment";
 import { finalize, takeUntil } from "rxjs/operators";
 
 @Component({
@@ -30,7 +29,6 @@ export class LoginComponent implements OnDestroy {
     captcha: ''
   };
 
-  captchaEnabled: boolean = true;
   processing: boolean = false;
   showMessage: boolean = false;
   messageType: string;
@@ -42,7 +40,6 @@ export class LoginComponent implements OnDestroy {
     public constants: Constants,
     public messages: Messages,
   ) {
-    this.captchaEnabled = environment.captchaEnabled;
   }
 
   resolveCaptcha(captcha) {
@@ -56,7 +53,7 @@ export class LoginComponent implements OnDestroy {
   onSubmit(form: NgForm) {
     this.showMessage = false;
     this.processing = true;
-    if (this.captchaEnabled) {
+    if (this.securityService.captchaEnabled) {
       this.recaptcha.execute();
     } else {
       this.login();

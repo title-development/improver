@@ -33,6 +33,8 @@ import { CompanyInfoService } from "../../api/services/company-info.service";
 import { CompanyLicensesDialogComponent } from './company-licenses-dialog/company-licenses-dialog.component';
 import { AboutCompanyDialogComponent } from './about-company-dialog/about-company-dialog.component';
 import { CompanyInfoEditorComponent } from './change-company-name-dialog/company-info-editor.component';
+import { SocialButtonsModule } from "../../auth/social-buttons/social-buttons.module";
+import { RecaptchaModule } from "ng-recaptcha";
 
 @NgModule({
   imports: [
@@ -57,7 +59,9 @@ import { CompanyInfoEditorComponent } from './change-company-name-dialog/company
     ClipboardModule,
     MatDialogModule,
     MatProgressSpinnerModule,
-    NgReplacePipeModule
+    NgReplacePipeModule,
+    SocialButtonsModule,
+    RecaptchaModule
   ],
   declarations: [
     QuestionaryFormComponent,

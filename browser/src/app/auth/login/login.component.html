@@ -84,7 +84,7 @@
 
         </form>
 
-        <re-captcha *ngIf="captchaEnabled" [size]="'invisible'" (resolved)="resolveCaptcha($event)"></re-captcha>
+        <re-captcha *ngIf="securityService.captchaEnabled" [size]="'invisible'" (resolved)="resolveCaptcha($event)"></re-captcha>
 
       </div>
 

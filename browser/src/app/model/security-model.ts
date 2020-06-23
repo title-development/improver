@@ -3,6 +3,13 @@ import { Location, OfferedServiceType, Trade } from './data-model';
 export class Credentials {
   email: string;
   password: string;
+  captcha: string;
+
+  constructor(email?, password?, captcha?) {
+    this.email = email;
+    this.password = password;
+    this.captcha = captcha;
+  }
 }
 
 export class LoginModel {

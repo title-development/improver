@@ -9,6 +9,7 @@ import * as jwt_decode from 'jwt-decode';
 import { JWT } from './Jwt.inteface';
 import { OverlayRef } from '../theme/util/overlayRef';
 import { MatDialog } from "@angular/material/dialog";
+import { environment } from "../../environments/environment";
 
 @Injectable()
 export class SecurityService {
@@ -26,6 +27,8 @@ export class SecurityService {
   localStorageHandler = (e) => this.onLocalStorageChange(e);
   private _returnUrl: string;
 
+  captchaEnabled: boolean = true;
+
   constructor(private http: HttpClient,
               private companyService: CompanyService,
               private router: Router,
@@ -37,6 +40,7 @@ export class SecurityService {
     if (this.isAuthenticated()) {
       this.window.addEventListener('storage', this.localStorageHandler, false);
     }
+    this.captchaEnabled = environment.captchaEnabled;
   }
 
   /**

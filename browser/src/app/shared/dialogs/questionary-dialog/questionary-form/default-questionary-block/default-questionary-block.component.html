@@ -180,48 +180,27 @@
   </form>
 
   <form #defaultQuestion class="form-element-wrapper text-input-wrapper" [formGroupName]="'defaultQuestionaryGroup'"
-       *ngIf="personalInfoRequired() && (questionaryControlService.currentQuestionIndex == questionaryControlService.questionaryLength + 3)">
+       *ngIf="(securityService.hasRole(Role.ANONYMOUS) || personalInfoRequired()) && (questionaryControlService.currentQuestionIndex == questionaryControlService.questionaryLength + 3)">
     <h2 class="question-title" *ngIf="securityService.hasRole(Role.ANONYMOUS)">Let's get acquainted</h2>
-    <h2 class="question-title" *ngIf="securityService.hasRole(Role.CUSTOMER)">Please add your phone number</h2>
-    <div class="text-input-group fill-flex-space" [formGroupName]="'customerPersonalInfo'" *ngIf="!processingPhoneValidation">
+    <h2 class="question-title" *ngIf="securityService.hasRole(Role.CUSTOMER) && !questionaryControlService.customerAccountIsLoading">Please add your phone number</h2>
 
-      <cv-input-field *ngIf="securityService.hasRole(Role.ANONYMOUS)">
-        <cv-field-label>First name</cv-field-label>
-        <input cv-input type="text"
-               placeholder="First name"
-               formControlName="firstName"
-               name="firstName"
-               trim
-               minlength="2"
-               [pattern]="constants.patterns.name"
-               required>
-        <cv-field-error
-          *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.firstName').dirty || defaultQuestionaryForm.get('customerPersonalInfo.firstName').touched">
-          <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.firstName').errors?.required">{{messages.errors.firstName.required}}</span>
-          <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.firstName').errors?.minlength">{{messages.errors.firstName.minlength}}</span>
-          <span *ngIf="!defaultQuestionaryForm.get('customerPersonalInfo.firstName').errors?.minlength && defaultQuestionaryForm.get('customerPersonalInfo.firstName').errors?.pattern">{{messages.errors.name.notValid}}</span>
-        </cv-field-error>
-      </cv-input-field>
+    <div class="text-input-group fill-flex-space" [formGroupName]="'customerPersonalInfo'">
 
-      <cv-input-field *ngIf="securityService.hasRole(Role.ANONYMOUS)">
-        <cv-field-label>Last name</cv-field-label>
-        <input cv-input type="text"
-               placeholder="Last name"
-               formControlName="lastName"
-               name="lastName"
-               trim
-               minlength="2"
-               [pattern]="constants.patterns.name"
-               required>
-        <cv-field-error
-          *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.lastName').dirty || defaultQuestionaryForm.get('customerPersonalInfo.lastName').touched">
-          <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.lastName').errors?.required">{{messages.errors.lastName.required}}</span>
-          <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.lastName').errors?.minlength">{{messages.errors.lastName.minlength}}</span>
-          <span *ngIf="!defaultQuestionaryForm.get('customerPersonalInfo.lastName').errors?.minlength && defaultQuestionaryForm.get('customerPersonalInfo.lastName').errors?.pattern">{{messages.errors.name.notValid}}</span>
-        </cv-field-error>
-      </cv-input-field>
+      <div class="auth-block" *ngIf="!emailIsChecked && securityService.hasRole(Role.ANONYMOUS)">
 
-      <cv-input-field *ngIf="securityService.hasRole(Role.ANONYMOUS)">
+        <div class="auth-social-title">
+          <span>Make it quickly with your social network</span>
+        </div>
+
+        <social-buttons></social-buttons>
+
+        <div class="email-auth-hint" *ngIf="securityService.hasRole(Role.ANONYMOUS)">
+          <span>or continue with Email</span>
+        </div>
+
+      </div>
+
+      <cv-input-field *ngIf="securityService.hasRole(Role.ANONYMOUS) && !waitingPhoneConfirmation">
         <cv-field-label>Email</cv-field-label>
         <input cv-input
                type="text"
@@ -231,7 +210,8 @@
                name="email"
                required
                trim
-               [pattern]="constants.patterns.email">
+               [pattern]="constants.patterns.email"
+               [disabled]="emailIsChecked">
         <cv-field-error
           *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.email').dirty || defaultQuestionaryForm.get('customerPersonalInfo.email').touched">
           <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.email').errors?.required">{{messages.errors.email.required}}</span>
@@ -240,40 +220,119 @@
         </cv-field-error>
       </cv-input-field>
 
-      <cv-input-field *ngIf="!processingPhoneValidation && !postOrderProcessing">
-        <cv-field-label>Phone number</cv-field-label>
+      <cv-input-field *ngIf="securityService.hasRole(Role.ANONYMOUS) && emailIsChecked && !emailIsUnique">
+        <cv-field-label>Password</cv-field-label>
         <input cv-input
-               type="text"
-               inputmode="tel"
-               placeholder="Phone number"
-               formControlName="phone"
-               name="phone"
-               phoneMask
-               maxlength="14"
-               [pattern]="constants.patterns.phone"
+               type="password"
+               placeholder="Password"
+               name="password"
+               formControlName="password"
+               (ngModelChange)="resetCaptcha()"
                required>
-        <cv-field-error
-          *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.phone').dirty || defaultQuestionaryForm.get('customerPersonalInfo.phone').touched">
-          <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.phone').errors?.required">{{messages.errors.phone.required}}</span>
-          <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.phone').errors?.pattern">{{messages.errors.phone.pattern}}</span>
-          <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.phone').errors?.allZeros">{{messages.errors.phone.pattern}}</span>
-        </cv-field-error>
       </cv-input-field>
+
+      <div class="captcha-reminder" *ngIf="securityService.hasRole(Role.ANONYMOUS) && emailIsChecked && !emailIsUnique">This site is protected by reCAPTCHA and the Google
+        <a href="https://policies.google.com/privacy">Privacy Policy</a> and
+        <a href="https://policies.google.com/terms">Terms of Service</a> apply.
+      </div>
+
+      <response-message *ngIf="showLoginMessage && emailIsChecked" [type]="loginMessageType" [message]="loginMessageText"
+                        [paddingV]="12" [paddingH]="24"
+                        marginTop="0"
+                        [showIcon]="false" (onHide)="onLoginMessageHide($event)"></response-message>
+
+      <div class="personal-data-info" *ngIf="!waitingPhoneConfirmation && (emailIsChecked && emailIsUnique || securityService.isAuthenticated()) && !questionaryControlService.customerAccountIsLoading && personalInfoRequired() ">
+
+        <cv-input-field *ngIf="securityService.hasRole(Role.ANONYMOUS)">
+          <cv-field-label>First name</cv-field-label>
+          <input cv-input type="text"
+                 placeholder="First name"
+                 formControlName="firstName"
+                 name="firstName"
+                 trim
+                 minlength="2"
+                 [pattern]="constants.patterns.name"
+                 required>
+          <cv-field-error
+            *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.firstName').dirty || defaultQuestionaryForm.get('customerPersonalInfo.firstName').touched">
+            <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.firstName').errors?.required">{{messages.errors.firstName.required}}</span>
+            <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.firstName').errors?.minlength">{{messages.errors.firstName.minlength}}</span>
+            <span *ngIf="!defaultQuestionaryForm.get('customerPersonalInfo.firstName').errors?.minlength && defaultQuestionaryForm.get('customerPersonalInfo.firstName').errors?.pattern">{{messages.errors.name.notValid}}</span>
+          </cv-field-error>
+        </cv-input-field>
+
+        <cv-input-field *ngIf="securityService.hasRole(Role.ANONYMOUS)">
+          <cv-field-label>Last name</cv-field-label>
+          <input cv-input type="text"
+                 placeholder="Last name"
+                 formControlName="lastName"
+                 name="lastName"
+                 trim
+                 minlength="2"
+                 [pattern]="constants.patterns.name"
+                 required>
+          <cv-field-error
+            *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.lastName').dirty || defaultQuestionaryForm.get('customerPersonalInfo.lastName').touched">
+            <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.lastName').errors?.required">{{messages.errors.lastName.required}}</span>
+            <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.lastName').errors?.minlength">{{messages.errors.lastName.minlength}}</span>
+            <span *ngIf="!defaultQuestionaryForm.get('customerPersonalInfo.lastName').errors?.minlength && defaultQuestionaryForm.get('customerPersonalInfo.lastName').errors?.pattern">{{messages.errors.name.notValid}}</span>
+          </cv-field-error>
+        </cv-input-field>
+
+        <cv-input-field *ngIf="!questionaryControlService.customerHasPhone" [cvSpinner]="questionaryControlService.customerAccountIsLoading"
+                        [cvSpinnerSize]="20" [cvSpinnerBackground]="true">
+          <cv-field-label>Phone number</cv-field-label>
+          <input cv-input
+                 type="text"
+                 inputmode="tel"
+                 placeholder="Phone number"
+                 formControlName="phone"
+                 name="phone"
+                 phoneMask
+                 maxlength="14"
+                 [pattern]="constants.patterns.phone"
+                 required>
+          <cv-field-error
+            *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.phone').dirty || defaultQuestionaryForm.get('customerPersonalInfo.phone').touched">
+            <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.phone').errors?.required">{{messages.errors.phone.required}}</span>
+            <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.phone').errors?.pattern">{{messages.errors.phone.pattern}}</span>
+            <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.phone').errors?.allZeros">{{messages.errors.phone.pattern}}</span>
+          </cv-field-error>
+        </cv-input-field>
+
+        <div class="terms-line" *ngIf="!securityService.isAuthenticated()">By proceeding you are accepting our <a target="_blank" href="/terms-of-use">Terms of Use</a> and <a
+          target="_blank" href="/privacy-policy">Privacy Policy</a></div>
+
+      </div>
+
+      <phone-validation *ngIf="waitingPhoneConfirmation" [showEditButton]="true" [phoneNumber]="defaultQuestionaryForm.get('customerPersonalInfo.phone').value" (onSuccess)="onPhoneValidated()" (onPhoneNumberChangeClick)="editPhoneAgain()"></phone-validation>
 
     </div>
 
-    <phone-validation *ngIf="processingPhoneValidation" [showEditButton]="true" [phoneNumber]="defaultQuestionaryForm.get('customerPersonalInfo.phone').value" (onSuccess)="onPhoneValidated()" (onPhoneNumberChangeClick)="editPhoneAgain()"></phone-validation>
+    <re-captcha #captchaRef *ngIf="securityService.captchaEnabled && securityService.hasRole(Role.ANONYMOUS)" [size]="'invisible'" (resolved)="resolveCaptcha($event)"></re-captcha>
 
-    <div class="questionary-dialog-footer" *ngIf="!processingPhoneValidation" [cvSpinner]="postOrderProcessing" [cvSpinnerSize]="20">
-      <button cv-button-empty class="questionary-previous-button" (click)="questionaryControlService.previousQuestion()" type="button" [disabled]="postOrderProcessing">Back</button>
-      <button *ngIf="securityService.hasRole(Role.ANONYMOUS)" cv-button class="questionary-next-button"
-              (click)="nextQuestion('customerPersonalInfo', validatePhone); checkEmail(defaultQuestionaryForm.get('customerPersonalInfo.email').value)"
-              type="submit">Next
+    <div class="questionary-dialog-footer" [cvSpinner]="emailIsChecking || loginProcessing || questionaryControlService.customerAccountIsLoading" [cvSpinnerSize]="20" [cvSpinnerBackground]="true">
+
+      <button cv-button-empty class="questionary-previous-button" *ngIf="!emailIsChecked && !waitingPhoneConfirmation" (click)="questionaryControlService.previousQuestion();" type="button" [disabled]="questionaryControlService.customerAccountIsLoading">Back</button>
+
+      <button cv-button-empty class="questionary-previous-button" *ngIf="emailIsChecked && !waitingPhoneConfirmation" (click)="emailIsChecked = false; emailIsUnique = undefined; showLoginMessage = false; editPhoneAgain(); resetCaptcha()" type="button" [disabled]="questionaryControlService.customerAccountIsLoading" >Back</button>
+
+      <button *ngIf="securityService.hasRole(Role.ANONYMOUS) && !emailIsChecked"
+              cv-button class="questionary-next-button"
+              (click)="checkEmail(defaultQuestionaryForm.get('customerPersonalInfo.email').value)"
+              type="submit" [disabled]="disabledNextAction">
+        Next
       </button>
 
-      <button *ngIf="securityService.hasRole(Role.CUSTOMER) && !questionaryControlService.customerHasPhone"
+      <button *ngIf="securityService.hasRole(Role.ANONYMOUS) && emailIsChecked && !emailIsUnique"
               cv-button class="questionary-next-button"
-              (click)="nextQuestion('customerPersonalInfo', validatePhone)" type="submit" [disabled]="disabledNextAction">
+              (click)="captcha.execute(); loginProcessing = true" type="submit" [disabled]="disabledNextAction">
+        Next
+      </button>
+
+      <button *ngIf="(securityService.hasRole(Role.CUSTOMER) || emailIsChecked && emailIsUnique) && personalInfoRequired()"
+              cv-button class="questionary-next-button"
+              (click)="nextQuestion('customerPersonalInfo', !questionaryControlService.customerHasPhone && !phoneValid ? validatePhone : undefined)" type="submit" [disabled]="disabledNextAction">
         Next
       </button>
 
@@ -283,11 +342,9 @@
 
   <div #defaultQuestion class="form-element-wrapper text-input-wrapper" [formGroupName]="'defaultQuestionaryGroup'"
        *ngIf="questionaryControlService.currentQuestionIndex == questionaryControlService.questionaryLength + 3 + (personalInfoRequired() ? 1 : 0)">
-    <h2 class="question-title">Lets check you {{questionaryControlService.serviceType.name}} request</h2>
+    <h2 class="question-title">Let's check you {{questionaryControlService.serviceType.name}} request</h2>
 
-    <div class="fill-flex-space">
-
-      <div class="project-summary">
+    <div class="project-summary fill-flex-space">
         <div class="project-details-group" *ngIf="!securityService.isAuthenticated()">
           <div class="label">Phone:</div>
           <div class="value main">{{defaultQuestionaryForm.get('customerPersonalInfo.phone').value}}</div>
@@ -323,72 +380,11 @@
       </div>
 
     <div class="questionary-dialog-footer" fxLayoutAlign="end center">
-      <button cv-button-empty class="questionary-previous-button" (click)="questionaryControlService.previousQuestion()" type="button">Back
-      </button>
+      <button cv-button-empty class="questionary-previous-button" (click)="questionaryControlService.previousQuestion()" type="button">Back</button>
       <div fxFlex=""></div>
-      <button *ngIf="securityService.hasRole(Role.ANONYMOUS)" cv-button class="questionary-next-button" (click)="nextStep()" type="button">Confirm
-      </button>
-      <button *ngIf="securityService.hasRole(Role.CUSTOMER)" cv-button class="questionary-next-button" (click)="onSubmit()" type="button" [loading]="postOrderProcessing">Confirm
-      </button>
+      <button cv-button class="questionary-next-button" (click)="onSubmit()" type="button" [loading]="postOrderProcessing">Confirm</button>
     </div>
-
-  </div>
-
-
 
 </div>
-
-  <div #defaultQuestion class="form-element-wrapper text-input-wrapper" [formGroupName]="'defaultQuestionaryGroup'"
-       *ngIf="securityService.hasRole(Role.ANONYMOUS) && (questionaryControlService.currentQuestionIndex == questionaryControlService.questionaryLength + 4 + (personalInfoRequired() ? 1 : 0))">
-    <h2 class="question-title">One more step to go</h2>
-
-    <div class="text-input-group customer-explanation fill-flex-space">
-
-      <div class="new-customer-explanation" *ngIf="emailIsUnique && emailIsChecked">
-        <div>Please verify your email, so we can start searching the right Pros for you.</div>
-        <div>We will send you a confirmation mail after submission.</div>
-        <br>
-        <br>
-        <div class="terms-line">By proceeding you are accepting our <a target="_blank" href="/terms-of-use">Terms of Use</a> and <a
-          target="_blank" href="/privacy-policy">Privacy Policy</a></div>
-      </div>
-
-      <div class="existing-customer-explanation" *ngIf="!emailIsUnique && emailIsChecked">
-        <div>Account with email <span class="existing-customer-email">{{defaultQuestionaryForm.get('customerPersonalInfo.email').value}}</span>
-          already exist
-        </div>
-        <div> If you are the owner of this account just <a routerLink="/login" (click)="dialog.closeAll()">Log in </a>
-          and we will submit your project request.
-        </div>
-      </div>
-
-      <div class="loading-spinner-wrapper" *ngIf="!emailIsChecked">
-        <div class="background">
-          <mat-progress-spinner
-            class="example-margin"
-            mode="indeterminate"
-            diameter="30">
-          </mat-progress-spinner>
-        </div>
-      </div>
-
-    </div>
-
-    <div class="questionary-dialog-footer" fxLayoutAlign="end center" [cvSpinner]="postOrderProcessing"
-         [cvSpinnerSize]="20">
-      <button cv-button-empty class="questionary-previous-button" (click)="questionaryControlService.previousQuestion()" type="button"
-              *ngIf="((emailIsChecked && emailIsUnique) || emailIsUnique == undefined) && !postOrderProcessing">Back
-      </button>
-      <div fxFlex=""></div>
-      <button cv-button class="questionary-next-button" (click)="close()" type="button"
-              *ngIf="emailIsChecked && !emailIsUnique && !postOrderProcessing">
-        Ok
-      </button>
-      <button cv-button class="questionary-next-button" (click)="onSubmit()" type="button"
-              *ngIf="emailIsChecked && emailIsUnique && !postOrderProcessing">Submit
-      </button>
-    </div>
-
-  </div>
 
 </div>
