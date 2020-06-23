@@ -20,6 +20,9 @@ public class BusinessProperties {
     public static final int MIN_INVITATION_BONUS = 100 *100;
     public static final int MAX_INVITATION_BONUS = 999 *100;
 
+    public static final int SIMILAR_PROJECT_COUNT = 3;
+    public static final int DEFAULT_SUBSCRIPTION_DISCOUNT = 20;         // 20% discount
+
     public static final int DAYS_TO_ACCEPT_REFUND = 30;                 // After this period no refunds will be allowed
     public static final int RELAPSE_PROJECT_COUNT = 15;                 // Count of projects that will be scanned for relapse of issue
     public static final int RELAPSE_TERM_DAYS = 30;                     // Past period to scan projects for relapse of issue

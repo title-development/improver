@@ -14,6 +14,12 @@ import static com.improver.application.properties.SystemProperties.TRANSACTIONS_
 @Entity(name = "transactions")
 @Accessors(chain = true)
 public class Transaction {
+    public static final String BALANCE_SOURCE = "Balance";
+    public static final String PURCHASE_DESC = "Purchase";
+    public static final String BONUS_DESC = "Bonus";
+    public static final String SUBSCRIPTION_REPLENISH_DESC = "Subscription balance top-up";
+    public static final String SUBSCRIPTION_RESERVE_DESC = "Subscription budget reservation";
+    public static final String TOP_UP_DESC = "Balance top-up";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,23 +43,18 @@ public class Transaction {
 
     // Project
     private boolean isManualLead;
-    private String customer;
     private Location location;
     private String service;
     private boolean isRefunded;
 
     // Billing
     private int amount;
+    private int discount = 0;
     private int balance;
     private String paymentMethod;
     private String chargeId;
 
-    public static final String BALANCE_SOURCE = "Balance";
-    public static final String PURCHASE_DESC = "Purchase";
-    public static final String BONUS_DESC = "Bonus";
-    public static final String SUBSCRIPTION_REPLENISH_DESC = "Subscription balance top-up";
-    public static final String SUBSCRIPTION_RESERVE_DESC = "Subscription budget reservation";
-    public static final String TOP_UP_DESC = "Balance top-up";
+
 
     private Transaction() {
     }

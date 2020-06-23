@@ -15,20 +15,17 @@ import com.improver.util.mail.MailService;
 import com.improver.util.serializer.SerializationUtil;
 import com.stripe.model.Card;
 import com.stripe.model.Charge;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.repository.Lock;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.LockModeType;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -36,13 +33,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.improver.application.properties.BusinessProperties.SIMILAR_PROJECT_COUNT;
+import static com.improver.application.properties.BusinessProperties.DEFAULT_SUBSCRIPTION_DISCOUNT;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
+@Slf4j
 @Service
 public class LeadService {
-
-    private final Logger log = LoggerFactory.getLogger(getClass());
-    private final static int SIMILAR_PROJECT_COUNT = 3;
 
     @Autowired private ProjectRepository projectRepository;
     @Autowired private TransactionRepository transactionRepository;
@@ -51,11 +48,9 @@ public class LeadService {
     @Autowired private BillRepository billRepository;
     @Autowired private PaymentService paymentService;
     @Autowired private MailService mailService;
-    @Autowired private ContractorRepository contractorRepository;
     @Autowired private CompanyRepository companyRepository;
-    @Autowired private UserRepository userRepository;
-    // Required for same instance Transactional method call
-    @Lazy @Autowired private LeadService self;
+    @Lazy @Autowired private LeadService self;  // Required for same instance Transactional method call
+
 
     /**
      *
@@ -70,28 +65,26 @@ public class LeadService {
         } else {
             leads = projectRepository.getLeadsInCoverageAndBbox(contractor.getCompany().getId(), statuses, searchTerm, northEast[0], northEast[1], southWest[0], southWest[1], pageable);
         }
-
-
-
         return leads;
     }
 
-    @Async
+
     public void sendSubscriptionLead(Company company){
         Page<Project> page = getSuitableLeads(company, 1, company.getBilling().getSubscription().getReserve());
-        if(!page.getContent().isEmpty()){
-            subscriptionLeadPurchase(page.getContent().get(0), 0, company);
+        if(page.getContent().isEmpty()){
+            log.info("No Subscription Leads found for company id={}", company.getId());
+        } else {
+            subscriptionLeadPurchase(page.getContent().get(0), DEFAULT_SUBSCRIPTION_DISCOUNT, company);
         }
     }
 
 
     public Page<Project> getSuitableLeads(Company company, int count, int maxPrice) {
-        return projectRepository.getSuitableLeads(company.getId(), Project.Status.forPurchase(), maxPrice, PageRequest.of(0, count, Sort.by(Sort.Direction.DESC, "created")));
+        return projectRepository.getSuitableLeads(company.getId(), Project.Status.forPurchase(), maxPrice,
+            PageRequest.of(0, count, Sort.by(Sort.Direction.DESC, "created")));
     }
 
-    /**
-     *
-     */
+
     public List<ShortLead> getSimilarLeads(long leadId, Contractor contractor) {
         Project project = projectRepository.findById(leadId)
             .orElse(null);
@@ -135,7 +128,6 @@ public class LeadService {
 
 
     public Lead getLead(long leadId, Company company) {
-
         Project project = projectRepository.getLeadNotPurchasedByCompany(leadId, company.getId())
             .orElseThrow(() -> new NotFoundException("Lead is not available"));
         return new Lead(project);
@@ -144,8 +136,9 @@ public class LeadService {
 
     private void subscriptionLeadPurchase(Project lead, int discount, Company company) {
         Contractor assignment = company.getContractors().get(0);
-        log.info("Auto assigned contractor={} to lead={}", assignment.getEmail(), lead.getId());
-        purchaseLeadAndNotify(lead, discount, company, assignment, false, false);
+        log.debug("Auto assigned contractor={} to lead={}", assignment.getEmail(), lead.getId());
+        ProjectRequest projectRequest = purchaseLeadAndNotify(lead, discount, company, assignment, false, false);
+        log.info("Lead id={} Subscription assignment. ProjectRequest id={}", lead.getId(), projectRequest.getId());
     }
 
 
@@ -154,6 +147,7 @@ public class LeadService {
         Project lead = projectRepository.getLeadNotPurchasedByCompany(leadId, company.getId())
             .orElseThrow(() -> new NotFoundException("Lead is no longer available"));
         ProjectRequest projectRequest = purchaseLeadAndNotify(lead, 0, company, contractor, true, fromCard);
+        log.info("Lead id={} purchased manually. ProjectRequest id={}", leadId, projectRequest.getId());
         return projectRequest.getId();
     }
 
@@ -198,35 +192,42 @@ public class LeadService {
         if (!isManual && fromCard) {
             throw new IllegalArgumentException("Automatic purchase not allowed from card");
         }
-        if (discount < 0 || discount > lead.getLeadPrice()) {
+        if (discount < 0 || discount > 100) {
             throw new IllegalArgumentException("Illegal Discount value=" + discount);
         }
 
-        String paymentMethod = "Balance";
-        int leadPrice = lead.getLeadPrice() - discount;
+        int discountDelta = 0;
+        if (discount > 0) {
+            discountDelta = lead.getLeadPrice() * discount / 100;
+        }
+        int priceAfterDiscount = lead.getLeadPrice() - discountDelta;
         Billing bill = company.getBilling();
         String serviceType = lead.getServiceName();
         String chargeId = null;
+        String paymentMethod = "Balance";
         if (fromCard) {
-            Charge charge = chargeToCard(bill, leadPrice, serviceType);
+            log.debug("Performing Lead id={} purchase from card", lead.getId());
+            Charge charge = chargeToCard(bill, priceAfterDiscount, serviceType);
             chargeId = charge.getId();
             Card card = (Card) charge.getSource();
             paymentMethod = card.getBrand() + " ending in " + card.getLast4();
         } else {
-            chargeToBalance(bill, leadPrice, isManual);
+            log.debug("Performing Lead id={} purchase from balance", lead.getId());
+            chargeToBalance(bill, priceAfterDiscount, isManual);
             billRepository.save(bill);
         }
 
-        ProjectRequest projectRequest = projectRequestService.createProjectRequest(assignment, lead, leadPrice, isManual);
+        ProjectRequest projectRequest = projectRequestService.createProjectRequest(assignment, lead, priceAfterDiscount, isManual);
         transactionRepository.save(Transaction.purchase(company,
             serviceType,
             lead.getLocation(),
             projectRequest,
-            leadPrice,
+            priceAfterDiscount,
             paymentMethod,
             chargeId,
             isManual,
             bill.getBalance())
+            .setDiscount(discountDelta)
         );
         return projectRequest;
     }
@@ -235,10 +236,14 @@ public class LeadService {
     @Async
     public void matchLeadWithSubscribers(Project lead) {
         List<Company> companies = getLastForSubs(lead, Project.SUBS_MAX_CONNECTIONS);
+        if (companies.isEmpty()) {
+            log.info("No subscribers found for Lead id={} ", lead.getId());
+            return;
+        }
         for (Company subscriber : companies) {
             log.info("Assign subscriber={} to lead={}", subscriber.getId(), lead.getId());
             try {
-                subscriptionLeadPurchase(lead, 0, subscriber);
+                subscriptionLeadPurchase(lead, DEFAULT_SUBSCRIPTION_DISCOUNT, subscriber);
             } catch (Exception e) {
                 log.error("Couldn't assign subscriber={} to lead={}", subscriber.getId(), lead.getId());
             }
@@ -255,7 +260,9 @@ public class LeadService {
         List<Long> eligibleIds = eligibleForSubs.stream().map(Company::getId).collect(Collectors.toList());
         // TODO: fix in the future. Hibernate exception when converting to Company entity
         List<Long> ids = companyRepository.getLastSubsPurchased(eligibleIds, limit);
-        return ids.stream().map(id -> companyRepository.findById(id).get()).collect(Collectors.toList());
+        return ids.stream()
+            .map(id -> companyRepository.findById(id).get())
+            .collect(Collectors.toList());
     }
 
 

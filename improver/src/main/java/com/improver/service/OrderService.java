@@ -43,6 +43,7 @@ public class OrderService {
 
     public void postOrder(Order order, Customer customer) {
         Project income = validateOrder(order);
+        log.debug("Project order {} validated", income.getServiceName());
         customer = Optional.ofNullable(customer)
             .orElseGet(() -> getExistingOrRegister(order));
 
@@ -55,16 +56,20 @@ public class OrderService {
         List<QuestionAnswer> questionAnswers;
         if(customer.isActivated()) {
             lead = saveProjectOrder(income.setCustomer(customer));
+            log.info("Lead id={} saved and put to market", lead.getId());
             questionAnswers = SerializationUtil.fromJson(new TypeReference<List<QuestionAnswer>>() {}, lead.getDetails());
             mailService.sendOrderSubmitMail(customer, lead, order.getDetails(), questionAnswers, true);
         } else {
             income.setLead(false);
             lead = saveProjectOrder(income.setCustomer(customer));
+            log.info("Project id={} saved, but require customer activation", lead.getId());
             questionAnswers = SerializationUtil.fromJson(new TypeReference<List<QuestionAnswer>>() {}, lead.getDetails());
             mailService.sendAutoRegistrationConfirmEmail(customer, lead, order.getDetails(), questionAnswers, true);
         }
 
+
         if (lead.isLead()){
+            log.info("Lead id={} is about to match with subscribers", lead.getId());
             leadService.matchLeadWithSubscribers(lead);
         }
 

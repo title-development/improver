@@ -40,7 +40,7 @@ public class ChatService {
         boolean isReadEvent = EVENT.equals(message.getType())
             && (READ.equals(message.getEvent()) || IS_TYPING.equals(message.getEvent()));
         if (!isReadEvent) {
-            log.debug("Broadcast message from user " + message.getSender());
+            log.trace("Broadcast message from user " + message.getSender());
         }
 
         ProjectRequest projectRequest = getWithSecurityCheck(projectRequestId, !isReadEvent);
@@ -91,7 +91,7 @@ public class ChatService {
     }
 
     private void handleReadEvent(String sender, ZonedDateTime time, ProjectRequest projectRequest) {
-        log.debug("ProjectRequest {} | user {} | last read at {}", projectRequest.getId(), sender, time.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        log.trace("ProjectRequest {} | user {} | last read at {}", projectRequest.getId(), sender, time.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         projectMessageRepository.markAsReadAfter(projectRequest.getId(), sender, time);
     }
 }

@@ -15,12 +15,12 @@ import com.improver.util.mail.MailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class SubscriptionService {
@@ -33,6 +33,7 @@ public class SubscriptionService {
     @Autowired private TransactionRepository transactionRepository;
     @Autowired private LeadService leadService;
     @Autowired private BusinessProperties businessProperties;
+    @Autowired private ScheduledExecutorService scheduledExecutorService;
 
 
     public Billing subscribe(Contractor contractor, Company company, int budget, int timeZoneOffset) {
@@ -41,7 +42,7 @@ public class SubscriptionService {
         Subscription subscription = billing.getSubscription();
         boolean isNewSubscription = !subscription.isActive();
         if (isNewSubscription) {
-            log.info("New Subscription");
+            log.debug("New Subscription for Company id={}", company.getId());
             newWithBudget(budget, subscription);
             if(billing.getBalance() < budget){
                 paymentService.autoChargeForSubscription(company, budget - billing.getBalance(), budget);
@@ -51,13 +52,13 @@ public class SubscriptionService {
             log.info("Company={} is subscribed for {}", company.getId(), SerializationUtil.formatUsd(budget));
 
         }
-        // new Subscription
+        // update/resume
         else {
             if(!subscription.isAutoContinue()) {
-                log.info("Resubscription");
+                log.info("Resume Subscription for Company id={}", company.getId());
                 subscription.setAutoContinue(true);
             } else {
-                log.info("Updating existing subscription");
+                log.info("Updating existing subscription for Company id={}", company.getId());
             }
             subscription.setNextBudget(budget)
                 .setUpdated(ZonedDateTime.now());
@@ -66,7 +67,8 @@ public class SubscriptionService {
 
         Billing updatedBilling = billRepository.save(billing.setSubscription(subscription));
         if (isNewSubscription) {
-            leadService.sendSubscriptionLead(company);
+            log.info("Schedule Subscription Lead matching for Company id={}", company.getId());
+            scheduledExecutorService.schedule(() -> leadService.sendSubscriptionLead(company), 1, TimeUnit.MINUTES);
         }
         mailService.sendSubscriptionNotification(company, timeZoneOffset, isNewSubscription);
         return updatedBilling;
@@ -89,27 +91,28 @@ public class SubscriptionService {
                 comment = "Reserved "+ SerializationUtil.formatUsd(budget) + " on balance for Subscription Budget of $ " + SerializationUtil.centsToUsd(budget);
                 logBalanceSubscription(company, budget);
             }
-            log.info("Company={} | " + comment, company.getName());
+            log.info("Company={} | {}", company.getName(), comment);
             prolong(subscription);
             billRepository.save(billing);
             mailService.sendSubscriptionProlongation(company, toCharge, budget, subscription.getNextBillingDate());
         } catch (PaymentFailureException e){
-            log.error("Subscription payment failure for company=" + company.getName(), e);
-            ZonedDateTime endDate = subscription.getNextBillingDate();
             int failures = subscription.getChargeFailureCount() +1;
+            log.error("Subscription payment attempt={} failed for Company={}. ", failures, company.getName(), e);
+            ZonedDateTime endDate = subscription.getNextBillingDate();
             boolean tryAgain = (failures <= BusinessProperties.SUBSCRIPTION_CHARGE_ATTEMPTS);
             if (tryAgain) {
                 subscription.setChargeFailureCount(failures);
                 billRepository.save(billing);
+                log.info("Subscription payment attempt for Company id={} scheduled for next run", company.getId());
             }
             else {
                 subscription.reset();
                 billRepository.save(billing);
-                log.info("Subscription automatically canceled for company=" + company.getName());
+                log.info("Subscription automatically canceled for company={}", company.getName());
             }
             mailService.sendSubscriptionProlongationFailure(company, endDate, budget, tryAgain);
         } catch (Exception e){
-            log.error("Could not proceed subscription payment for company=" + company.getName(), e);
+            log.error("Could not proceed subscription payment for company={} due to unexpected error.", company.getName(), e);
         }
     }
 

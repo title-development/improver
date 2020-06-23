@@ -59,7 +59,7 @@ public class WsSecurityInterceptor implements ChannelInterceptor {
                 log.debug("WS: Invalid token");
                 return null;
             }
-            log.debug("WS | Connected");
+            log.trace("WS: Connected");
             accessor.setUser(principal);
         }
         return message;

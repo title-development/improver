@@ -19,15 +19,9 @@ public class Location {
     private String state;
     private String city;
     private String streetAddress;
-    private String address2;
     @Pattern(regexp = ZIP_PATTERN_STRING)
     private String zip;
 
-
-    public Location(String streetAddress, String address2, String city, String state, String zip) {
-        this(streetAddress, city, state, zip);
-        this.address2 = address2;
-    }
 
     public Location(String streetAddress, String city, String state, String zip) {
         this.state = state;
