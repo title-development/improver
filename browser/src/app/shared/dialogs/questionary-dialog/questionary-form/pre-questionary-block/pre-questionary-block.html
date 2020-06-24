@@ -39,7 +39,7 @@
   </div>
 
 
-  <form #defaultQuestion class="form-element-wrapper text-input-wrapper" [formGroupName]="'defaultQuestionaryGroup'"
+  <div #defaultQuestion class="form-element-wrapper text-input-wrapper" [formGroupName]="'defaultQuestionaryGroup'"
        *ngIf="projectActionService.zipIsSupported && !questionaryControlService.withZip && questionaryControlService.serviceType">
     <h2 class="question-title">Where do you need a {{questionaryControlService.serviceType?.name}}?</h2>
     <div class="text-input-group zip-check-group fill-flex-space" [formGroupName]="'projectLocation'"
@@ -72,11 +72,11 @@
               [disabled]="defaultQuestionaryForm.get('projectLocation.zip').invalid">
         Back
       </button>
-      <button cv-button class="questionary-next-button" (click)="submitZip()" type="submit"
+      <button cv-button class="questionary-next-button" (click)="submitZip()" type="button"
               [disabled]="defaultQuestionaryForm.get('projectLocation.zip').invalid">Next</button>
     </div>
 
-  </form>
+  </div>
 
   <div #defaultQuestion class="form-element-wrapper text-input-wrapper"
        *ngIf="!projectActionService.zipIsSupported && !questionaryControlService.withZip && (questionaryControlService.currentQuestionIndex == -1)">
