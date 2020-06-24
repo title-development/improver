@@ -23,6 +23,7 @@ import { takeUntil } from "rxjs/operators";
 import { SystemMessageType } from "../../../../../model/data-model";
 import { Subject } from "rxjs";
 import { RecaptchaComponent } from "ng-recaptcha";
+import { CaptchaTrackingService } from "../../../../../api/services/captcha-tracking.service";
 
 @Component({
   selector: 'default-questionary-block',
@@ -79,6 +80,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
               public constants: Constants,
               public messages: Messages,
               public popUpMessageService: PopUpMessageService,
+              public captchaTrekkingService: CaptchaTrackingService,
               private accountService: AccountService,
               private router: Router,
               private locationValidate: LocationValidateService,
@@ -309,6 +311,15 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     return (this.securityService.hasRole(Role.ANONYMOUS) || (this.securityService.hasRole(Role.CUSTOMER) && !this.questionaryControlService.customerHasPhone))
   }
 
+  captchaValidations() {
+    this.captcha.execute();
+    this.loginProcessing = true;
+    this.captchaTrekkingService.captchaDialogChange().subscribe( () => {
+      this.captcha.reset();
+      this.loginProcessing = false;
+    })
+  }
+
   getQuestionaryAnswers() {
     let questionaryAnswers = [];
     for (const field in this.questionaryControlService.mainForm.get('questionaryGroup').controls) { // 'field' is a string
@@ -335,7 +346,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
   }
 
   login(captcha?) {
-    let credentials = new Credentials(this.defaultQuestionaryForm.get('customerPersonalInfo.email').value, this.defaultQuestionaryForm.get('customerPersonalInfo.password').value, captcha)
+    let credentials = new Credentials(this.defaultQuestionaryForm.get('customerPersonalInfo.email').value, this.defaultQuestionaryForm.get('customerPersonalInfo.password').value, captcha);
     this.loginProcessing = true;
     this.securityService.sendLoginRequest(credentials)
       .pipe(

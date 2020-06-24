@@ -10,6 +10,7 @@ import { getErrorMessage } from '../../util/functions';
 import { RecaptchaComponent } from 'ng-recaptcha';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from "rxjs/operators";
+import { CaptchaTrackingService } from "../../api/services/captcha-tracking.service";
 
 @Component({
   selector: 'login-page',
@@ -39,6 +40,7 @@ export class LoginComponent implements OnDestroy {
     public projectService: ProjectService,
     public constants: Constants,
     public messages: Messages,
+		public captchaTrekkingService: CaptchaTrackingService
   ) {
   }
 
@@ -50,11 +52,17 @@ export class LoginComponent implements OnDestroy {
       }
   }
 
+
+
   onSubmit(form: NgForm) {
     this.showMessage = false;
     this.processing = true;
     if (this.securityService.captchaEnabled) {
       this.recaptcha.execute();
+      this.captchaTrekkingService.captchaDialogChange().subscribe( () => {
+      	this.recaptcha.reset();
+      	this.processing = false;
+			});
     } else {
       this.login();
     }

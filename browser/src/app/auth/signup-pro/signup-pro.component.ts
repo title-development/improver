@@ -17,6 +17,7 @@ import { RecaptchaComponent } from 'ng-recaptcha';
 import { dialogsMap } from "../../shared/dialogs/dialogs.state";
 import { phoneValidationDialogConfig } from "../../shared/dialogs/dialogs.configs";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { CaptchaTrackingService } from "../../api/services/captcha-tracking.service";
 
 
 @Component({
@@ -60,6 +61,7 @@ export class SignupProComponent implements OnDestroy {
               public tricksService: TricksService,
               public popUpMessageService: PopUpMessageService,
               public registrationService: RegistrationService,
+              public captchaTrekkingService: CaptchaTrackingService,
               private mediaQueryService: MediaQueryService,
               private route: ActivatedRoute,
               private dialog: MatDialog,
@@ -79,6 +81,10 @@ export class SignupProComponent implements OnDestroy {
   registerContractor() {
     this.processing = true;
     this.recaptcha.execute();
+    this.captchaTrekkingService.captchaDialogChange().subscribe(() => {
+      this.recaptcha.reset();
+      this.processing = false;
+    });
     this.recaptcha.resolved.pipe(
       timeoutWith(this.constants.ONE_MINUTE, throwError({error: {message: 'Timeout error please try again later'}})),
       mergeMap((captcha: string | null) => {

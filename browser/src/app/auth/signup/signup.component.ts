@@ -12,6 +12,7 @@ import { mergeMap, takeUntil, timeoutWith } from 'rxjs/operators';
 import { Subject, throwError } from 'rxjs';
 import { ActivatedRoute, Router } from "@angular/router";
 import { getErrorMessage } from "../../util/functions";
+import { CaptchaTrackingService } from "../../api/services/captcha-tracking.service";
 
 @Component({
   selector: 'login-page',
@@ -53,6 +54,7 @@ export class SignupComponent implements OnDestroy {
   constructor(public securityService: SecurityService,
               public constants: Constants,
               public messages: Messages,
+              public captchaTrekkingService: CaptchaTrackingService,
               private router: Router,
               private route: ActivatedRoute,
               private registrationService: RegistrationService,
@@ -70,6 +72,10 @@ export class SignupComponent implements OnDestroy {
   registerCustomer() {
     this.registrationProcessing = true;
     this.recaptcha.execute();
+    this.captchaTrekkingService.captchaDialogChange().subscribe(() => {
+      this.recaptcha.reset();
+      this.registrationProcessing = false;
+    });
     this.recaptcha.resolved.pipe(
       timeoutWith(this.constants.ONE_MINUTE, throwError({error: {message: 'Timeout error please try again later'}})),
       mergeMap((captcha: string | null) => {

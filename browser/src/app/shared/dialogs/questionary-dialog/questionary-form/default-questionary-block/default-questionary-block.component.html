@@ -326,7 +326,7 @@
 
       <button *ngIf="securityService.hasRole(Role.ANONYMOUS) && emailIsChecked && !emailIsUnique"
               cv-button class="questionary-next-button"
-              (click)="captcha.execute(); loginProcessing = true" type="button" [disabled]="disabledNextAction">
+              (click)="captchaValidations()" type="button" [disabled]="disabledNextAction">
         Next
       </button>
 

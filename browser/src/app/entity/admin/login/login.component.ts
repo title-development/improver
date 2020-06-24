@@ -8,6 +8,7 @@ import { mergeMap, takeUntil, timeoutWith } from 'rxjs/internal/operators';
 import { RecaptchaComponent } from 'ng-recaptcha';
 import { Subject, throwError } from 'rxjs';
 import { MessageService } from "primeng";
+import { CaptchaTrackingService } from "../../../api/services/captcha-tracking.service";
 
 @Component({
   selector: 'admin-login',
@@ -30,7 +31,8 @@ export class AdminLoginComponent implements OnDestroy {
   constructor(private securityService: SecurityService,
               public constants: Constants,
               public messages: Messages,
-              private messageService: MessageService) {
+              private messageService: MessageService,
+              public captchaTrekkingService: CaptchaTrackingService) {
 
   }
 
@@ -41,6 +43,9 @@ export class AdminLoginComponent implements OnDestroy {
 
   submit(form: NgForm): void {
     this.recaptcha.execute();
+    this.captchaTrekkingService.captchaDialogChange().subscribe( () => {
+      this.recaptcha.reset();
+    });
     this.recaptcha.resolved.pipe(
       timeoutWith(this.constants.ONE_MINUTE, throwError({error:{message: 'Timeout error please try again later'}})),
       mergeMap((captcha: string | null) => {
