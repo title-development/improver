@@ -26,6 +26,7 @@
     height: 100%;
     min-height: 140px;
     padding-top: 20px;
+    border-top: 1px solid $grey-300;
   }
 }
 
@@ -99,7 +100,6 @@
   overflow: hidden;
 
   .popular-service-title {
-    font-family: Merriweather;
     font-size: 18px;
     font-weight: bold;
     margin-bottom: 20px;

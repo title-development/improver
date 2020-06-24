@@ -89,7 +89,7 @@
                 <div class="account-icon" [ngClass]="{'mobile': mediaQuery.xs || mediaQuery.sm}"
                      [ngStyle]="securityService.getLoginModel().iconUrl && securityService.getLoginModel().iconUrl != '' && {'background-image':'url(' + securityService.getLoginModel().iconUrl + ')'} || securityService.getLoginModel().company && {'background-image':'url(/assets/img/company-logo-placeholder.png)'} || {'background-image':'url(/assets/img/user-logo-placeholder.png)'}"></div>
                 <div class="user-name xs-none sm-none md-none" *ngIf="securityService.isAuthenticated()">
-                    {{securityService.getLoginModel().name | truncate:18: '...'}}
+                    {{securityService.getLoginModel().name | truncate:22: '...'}}
                 </div>
             </a>
 

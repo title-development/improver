@@ -33,7 +33,17 @@
   z-index: 9999;
   box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.23);
   opacity: 0;
-  border-top-left-radius: 8px;
+  border-radius: 8px;
+
+  @include response-to(sm) {
+    border-radius: 0 0 0 8px;
+
+    ::ng-deep perfect-scrollbar{
+      .ps {
+        border-radius: 0 0 0 8px!important;
+      }
+    }
+  }
 
   @include response(xs) {
     width: 320px;

@@ -9,38 +9,96 @@
     <!--Customers menu-->
     <div class="user-role" *ngIf="securityService.isAuthenticated() && securityService.hasRole(Role.CUSTOMER)">
       <div class="user-role-child md-none lg-none xlg-none">
-        <a routerLink="/my/projects" (click)="close()">My projects</a>
+        <a routerLink="/my/projects" (click)="close()">
+          <mat-icon>apps</mat-icon>
+          <div>My projects</div>
+        </a>
       </div>
-      <a routerLink="/my/settings/account" (click)="close()">User account</a>
-      <a routerLink="/my/settings/notifications" (click)="close()">Email settings</a>
+      <div class="user-role-child">
+      <a routerLink="/my/settings/account" (click)="close()">
+        <mat-icon>person</mat-icon>
+        <div>User account</div>
+      </a>
+      </div>
+      <div class="user-role-child">
+      <a routerLink="/my/settings/notifications" (click)="close()">
+        <mat-icon>email</mat-icon>
+        <div>Email settings</div>
+      </a>
+      </div>
     </div>
 
     <!--Contractors menu-->
     <div class="user-role" *ngIf="securityService.isAuthenticated() && securityService.hasRole(Role.CONTRACTOR)">
       <div class="user-role-child md-none lg-none xlg-none">
-        <a routerLink="/pro/dashboard" (click)="close()">Dashboard</a>
+        <a routerLink="/pro/dashboard" (click)="close()">
+          <mat-icon>dashboard</mat-icon>
+          <div>Dashboard</div>
+        </a>
       </div>
-      <a routerLink="/pro/settings/account" (click)="close()">User account</a>
-      <a [routerLink]="'/companies/' + securityService.getLoginModel().company" (click)="close()">Company Profile</a>
-      <a routerLink="/pro/settings/services" (click)="close()">Lead preferences</a>
-      <a routerLink="/pro/settings/coverage" (click)="close()">Service area</a>
-      <a routerLink="/pro/settings/billing" (click)="close()">Billing</a>
-      <a (click)="close(); toggleReferralDialog()">Give {{constants.REFERRAL_BONUS_AMOUNT / 100 | currency:'USD':'symbol':'0.0-0'}}, get {{constants.REFERRAL_BONUS_AMOUNT / 100 | currency:'USD':'symbol':'0.0-0'}}</a>
-      <a routerLink="/pro/settings/notifications" (click)="close()">Communication settings</a>
+      <div class="user-role-child">
+        <a routerLink="/pro/settings/account" (click)="close()">
+          <mat-icon>person</mat-icon>
+          <div>User account</div>
+        </a>
+      </div>
+      <div class="user-role-child">
+        <a [routerLink]="'/companies/' + securityService.getLoginModel().company" (click)="close()">
+          <mat-icon>business</mat-icon>
+          <div>Company Profile</div>
+        </a>
+      </div>
+      <div class="user-role-child">
+        <a routerLink="/pro/settings/services" (click)="close()">
+          <mat-icon>settings</mat-icon>
+          <div>Lead preferences</div>
+        </a>
+      </div>
+      <div class="user-role-child">
+        <a routerLink="/pro/settings/coverage" (click)="close()">
+          <mat-icon>map</mat-icon>
+          <div>Service area</div>
+        </a>
+      </div>
+      <div class="user-role-child">
+        <a routerLink="/pro/settings/billing" (click)="close()">
+          <mat-icon>payment</mat-icon>
+          <div>Billing</div>
+        </a>
+      </div>
+      <div class="user-role-child">
+        <a (click)="close(); toggleReferralDialog()">
+          <mat-icon>share</mat-icon>
+          <div>Give {{constants.REFERRAL_BONUS_AMOUNT / 100 | currency:'USD':'symbol':'0.0-0'}}, get {{constants.REFERRAL_BONUS_AMOUNT / 100 | currency:'USD':'symbol':'0.0-0'}}</div>
+        </a>
+      </div>
+      <div class="user-role-child">
+        <a routerLink="/pro/settings/notifications" (click)="close()">
+          <mat-icon>chat</mat-icon>
+          <div>Communication settings</div>
+        </a>
+      </div>
     </div>
+
+    <!--Admin menu-->
     <div class="user-role" *ngIf="securityService.isAuthenticated() && (securityService.hasRole(Role.ADMIN) || securityService.hasRole(Role.SUPPORT) || securityService.hasRole(Role.STAKEHOLDER))">
       <a routerLink="/admin" (click)="close()">Admin panel</a>
     </div>
 
     <!--Anonymous menu-->
-    <div class="user-role unauthorized-menu" *ngIf="!securityService.isAuthenticated() && ( securityService.hasRole(Role.ANONYMOUS) || securityService.hasRole(Role.INCOMPLETE_PRO))">
-        <div class="menu-body">
+    <div class="user-role unauthorized-menu"
+         *ngIf="!securityService.isAuthenticated() && ( securityService.hasRole(Role.ANONYMOUS) || securityService.hasRole(Role.INCOMPLETE_PRO))">
+      <div class="menu-body">
+        <div class="unauthorized-link">
           <a routerLink="/login" (click)="close()">Log in</a>
+        </div>
+        <div class="unauthorized-link">
           <a routerLink="/signup" (click)="close()">Sign up</a>
         </div>
-        <div class="menu-footer">
-          <a routerLink="/become-pro" (click)="close()">Become a Pro</a>
-        </div>
+      </div>
+      <div class="menu-footer">
+        <a routerLink="/become-pro" (click)="close()">Become a Pro</a>
+      </div>
     </div>
   </div>
 
