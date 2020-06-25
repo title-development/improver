@@ -162,7 +162,7 @@ public class BillingController {
     @DeleteMapping(CARDS + ID_PATH_VARIABLE)
     public ResponseEntity<Void> deleteCard(@PathVariable long companyId, @PathVariable String id) {
         Company company = companyRepository.findById(companyId)
-            .orElseThrow(ValidationException::new);
+            .orElseThrow(NotFoundException::new);
         paymentService.deleteCard(company, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }

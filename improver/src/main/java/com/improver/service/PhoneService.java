@@ -72,7 +72,7 @@ public class PhoneService {
 
     public void confirmPhoneValidation(PhoneValidationConfirm phoneValidationConfirm) {
         PhoneValidation phoneValidation = phoneValidationRepository.findByMessageSidAndCode(phoneValidationConfirm.getMessageSid(), phoneValidationConfirm.getCode())
-            .orElseThrow(ValidationException::new);
+            .orElseThrow(() -> new ValidationException("Phone validation code is wrong, or validation record not found"));
         phoneValidationRepository.delete(phoneValidation);
     }
 

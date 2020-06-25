@@ -174,7 +174,7 @@ public class CustomerProjectService {
 
         if (projectRequestId > 0) {
             projectRequest = projectRequestRepository.findByIdAndProjectId(projectRequestId, project.getId())
-                .orElseThrow(ValidationException::new);
+                .orElseThrow(() -> new ValidationException("ProjectRequest=" + projectRequestId + " not associated with Project=" + project.getId()));
         } else {
             List<ProjectRequest> list = projectRequestRepository.findByStatusAndProjectId(ProjectRequest.Status.HIRED, project.getId());
             projectRequest = list.size() == 1 ? list.get(0) : null;

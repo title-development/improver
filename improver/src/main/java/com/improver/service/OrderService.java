@@ -129,7 +129,7 @@ public class OrderService {
         }
 
         Centroid centroid = servedZipRepository.findByZip(orderDetails.getLocation().getZip())
-            .orElseThrow(ValidationException::new)
+            .orElseThrow(() -> new ValidationException(orderDetails.getLocation().getZip() + " ZIP Code is not in service area"))
             .getCentroid();
 
         return new Project()

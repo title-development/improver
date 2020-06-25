@@ -185,7 +185,7 @@ public class TestDataInitializer {
         Order order = OrderHelper.generateFor(serviceName);
         OrderDetails details = order.getDetails();
         Centroid centroid = servedZipRepository.findByZip(details.getLocation().getZip())
-            .orElseThrow(ValidationException::new)
+            .orElseThrow(() -> new ValidationException("zip not found"))
             .getCentroid();
         Project project = new Project()
             .setCentroid(centroid)
