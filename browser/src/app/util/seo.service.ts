@@ -3,7 +3,7 @@ import { Meta, Title } from "@angular/platform-browser";
 import { CompanyProfile } from "../model/data-model";
 
 @Injectable({providedIn: 'root'})
-export class CeoService {
+export class SeoService {
 
   private title = 'Home Improve';
   private description = 'Online service for any kind of home improvement';

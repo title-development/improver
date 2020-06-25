@@ -1,0 +1,90 @@
+@import "improver-mixins.scss";
+
+:host {
+
+  .main-wrapper {
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+    width: 421px;
+    font-size: 14px;
+    text-align: center;
+    color: #757575;
+    background-color: $white;
+  }
+
+  .top-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 24px 0px;
+
+
+    .image-wrapper {
+      align-self: center;
+      margin-bottom: 24px;
+      height: 80px;
+      width: 80px;
+    }
+
+    .title {
+      font-size: 20px;
+      font-weight: 600;
+      text-align: center;
+      color: $black-800;
+      margin-bottom: 24px;
+    }
+
+    .explanation {
+      margin-bottom: 24px;
+      .registered-email {
+        color: $primary-500;
+      }
+    }
+
+    .resend-confirm-block {
+      color: $grey-500;
+      margin-bottom: 16px;
+      .resend-confirm-button {
+        color: $primary-500;
+        border: none;
+        background-color: transparent;
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+
+  .bottom-block {
+    border-top: 1px solid #e8e8e8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 24px 24px;
+
+    .change-email-explanation {
+      color: $grey-500;
+      margin-bottom: 24px;
+    }
+
+    .change-email-input-wrapper {
+
+      ::ng-deep .input-holder {
+        display: flex;
+
+        input {
+          padding-left: 48px;
+          border-bottom-right-radius: 0px;
+          border-top-right-radius: 0px;
+        }
+
+        button {
+          border-bottom-left-radius: 0px;
+          border-top-left-radius: 0px;
+        }
+      }
+
+    }
+  }
+}

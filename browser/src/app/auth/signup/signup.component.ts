@@ -4,14 +4,12 @@ import { SecurityService } from '../security.service';
 import { Constants } from '../../util/constants';
 import { Messages } from 'app/util/messages';
 import { RegistrationService } from '../../api/services/registration.service';
-import { PopUpMessageService } from '../../util/pop-up-message.service';
-import { SystemMessageType } from '../../model/data-model';
 import { RegistrationUserModel, RegistrationUserProps } from '../../model/security-model';
 import { RecaptchaComponent } from 'ng-recaptcha';
 import { mergeMap, takeUntil, timeoutWith } from 'rxjs/operators';
 import { Subject, throwError } from 'rxjs';
 import { ActivatedRoute, Router } from "@angular/router";
-import { getErrorMessage } from "../../util/functions";
+import { RegistrationHelper } from "../../util/registration-helper";
 import { CaptchaTrackingService } from "../../api/services/captcha-tracking.service";
 
 @Component({
@@ -36,18 +34,12 @@ export class SignupComponent implements OnDestroy {
     confirmPassword: '',
   };
 
-  correctEmailModel = {
-    correctEmail: ''
-  };
-
-  readonly confirmationResendBlockingTime: number = 15000;
+  // readonly confirmationResendBlockingTime: number = 15000;
   showMessage: boolean;
   messageType: string;
   messageText: string;
   step: number = 1;
   registrationProcessing = false;
-
-  isResendBlocked: boolean = false;
 
   private readonly destroyed$ = new Subject<void>();
 
@@ -58,14 +50,7 @@ export class SignupComponent implements OnDestroy {
               private router: Router,
               private route: ActivatedRoute,
               private registrationService: RegistrationService,
-              private popUpMessageService: PopUpMessageService) {
-    this.route.queryParams.subscribe(params => {
-      if (params['email']) {
-        this.user.email = params['email'];
-        this.step = 2;
-        this.router.navigate([], {replaceUrl: true});
-      }
-    });
+              private registrationHelper: RegistrationHelper) {
 
   }
 
@@ -91,7 +76,9 @@ export class SignupComponent implements OnDestroy {
       .subscribe(
         response => {
           this.registrationProcessing = false;
-          this.step = 2;
+          this.registrationHelper.email = this.user.email;
+          this.registrationHelper.isEmailEditable = true;
+          this.router.navigate(['/signup/email-verification'])
         },
         err => {
           this.recaptcha.reset();
@@ -101,51 +88,6 @@ export class SignupComponent implements OnDestroy {
           this.messageText = err.message;
           this.messageType = 'ERROR';
         });
-  }
-
-  setResendConfirmationTimeout(){
-      setTimeout(() => {
-        this.isResendBlocked = false;
-      }, this.confirmationResendBlockingTime);
-  }
-
-  resendConfirmation() {
-    if (!this.isResendBlocked) {
-      this.setResendConfirmationTimeout();
-      this.isResendBlocked = true;
-      this.registrationService.resendActivationMail(null, this.user.email).subscribe(
-        response => {
-          this.popUpMessageService.showMessage({
-            type: SystemMessageType.SUCCESS,
-            text: 'A confirmation link has been resent to your email'
-          });
-        },
-        err => {
-          console.error(err);
-          this.isResendBlocked = false;
-          this.popUpMessageService.showError(getErrorMessage(err));
-        }
-      );
-    }
-  }
-
-  changeConfirmationEmail() {
-    this.registrationService.changeActivationMail({
-      oldValue: this.user.email,
-      newValue: this.correctEmailModel.correctEmail
-    }).subscribe(
-      response => {
-        this.popUpMessageService.showMessage({
-          type: SystemMessageType.SUCCESS,
-          text: 'A confirmation link has been sent to your corrected email'
-        });
-        this.user.email = this.correctEmailModel.correctEmail;
-      },
-      err => {
-        console.error(err);
-        this.popUpMessageService.showError(getErrorMessage(err));
-      }
-    );
   }
 
   ngOnDestroy(): void {

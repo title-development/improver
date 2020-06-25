@@ -24,6 +24,7 @@ import { SystemMessageType } from "../../../../../model/data-model";
 import { Subject } from "rxjs";
 import { RecaptchaComponent } from "ng-recaptcha";
 import { CaptchaTrackingService } from "../../../../../api/services/captcha-tracking.service";
+import { RegistrationHelper } from "../../../../../util/registration-helper";
 
 @Component({
   selector: 'default-questionary-block',
@@ -84,7 +85,8 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
               private accountService: AccountService,
               private router: Router,
               private locationValidate: LocationValidateService,
-              private metricsEventService: MetricsEventService) {
+              private metricsEventService: MetricsEventService,
+              private registrationHelper: RegistrationHelper) {
     this.constants = constants;
     this.messages = messages;
     this.emailIsChecked = false;
@@ -193,6 +195,8 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
       this.router.navigate(['my','projects']);
       this.popUpMessageService.showSuccess('Your <b>' + requestOrder.serviceName + '</b> request is submitted successfully!');
     } else {
+      this.registrationHelper.email = this.defaultQuestionaryForm.get('customerPersonalInfo.email').value;
+      this.router.navigate(['/signup/email-verification'])
       this.popUpMessageService.showSuccess('Your <b>' + requestOrder.serviceName + '</b> request is saved. Please check your email.');
     }
   }

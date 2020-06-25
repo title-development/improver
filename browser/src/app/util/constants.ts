@@ -18,6 +18,7 @@ export class Constants {
   readonly MIN_COVERAGE_RADIUS = 5;
   readonly MAX_COVERAGE_RADIUS = 50;
   readonly ZIPCODES_BATCH_SIZE = 500;
+  readonly CONFIRMATION_RESEND_BLOCK_TIMEOUT: number = 15000;
   patterns: any;
   projectStatuses: Array<any>;
   months: string[];

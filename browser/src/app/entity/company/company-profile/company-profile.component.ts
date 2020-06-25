@@ -6,7 +6,9 @@ import { CompanyService } from '../../../api/services/company.service';
 import { MapOptions } from '@agm/core/services/google-maps-types';
 import { PopUpMessageService } from '../../../util/pop-up-message.service';
 import {
-  addLicenseDialogConfig, companyInfoDialogConfig, mobileMediaDialogConfig,
+  addLicenseDialogConfig,
+  companyInfoDialogConfig,
+  mobileMediaDialogConfig,
   personalPhotoDialogConfig,
   unavailabilityPeriodDialogConfig
 } from '../../../shared/dialogs/dialogs.configs';
@@ -29,7 +31,7 @@ import { ErrorHandler } from '../../../util/error-handler';
 import { Company } from '../../../api/models/Company';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { ScrollService } from '../../../util/scroll.service';
-import { CeoService } from "../../../util/ceo.service";
+import { SeoService } from "../../../util/seo.service";
 import { CompanyInfoService } from "../../../api/services/company-info.service";
 
 @Component({
@@ -80,7 +82,7 @@ export class CompanyProfileComponent implements OnInit, OnDestroy {
               public router: Router,
               private scrollService: ScrollService,
               private errorHandler: ErrorHandler,
-              private ceoService: CeoService) {
+              private seoService: SeoService) {
 
     this.routerSubscriptions();
     this.subscribeForMediaQuery();
@@ -147,7 +149,7 @@ export class CompanyProfileComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.scrollHolder.removeEventListener('scroll', this.scrollHandler);
-    this.ceoService.reset();
+    this.seoService.reset();
     this.destroyed$.next();
     this.destroyed$.complete();
   }
@@ -170,7 +172,7 @@ export class CompanyProfileComponent implements OnInit, OnDestroy {
             this.router.navigate(['404']);
             return;
           } else {
-            this.ceoService.companyProfile(companyProfile)
+            this.seoService.companyProfile(companyProfile)
           }
           if (this.hashFragment && this.hashFragment.length > 0) {
             setTimeout(() => {

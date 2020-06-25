@@ -74,6 +74,10 @@
     border: none;
     background: transparent;
     color: $primary-500;
+
+    &:disabled {
+      opacity: 0.5;
+    }
   }
 
 }

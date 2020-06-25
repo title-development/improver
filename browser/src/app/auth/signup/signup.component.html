@@ -171,51 +171,9 @@
       </div>
 
       <div *ngIf="step == 2" class="content">
-        <div class="success-card">
 
-          <div class="top-block">
+        <email-verification-card [email]="user.email" [isEmailEditable]="true"></email-verification-card>
 
-            <img class="image-wrapper" src="/assets/img/round-icons/confirmation-envelope.png">
-            <div class="title">Verify your email to proceed</div>
-            <div class="explanation">We've just sent an email to <span
-              class="registered-email">{{user.email}}.</span>
-              Please check your mailbox and click on the link provided to verify your email.
-            </div>
-            <div class="resend-confirm-block">Didn't receive a confirmation email?
-              <button class="resend-confirm-button" (click)="resendConfirmation()">Resend</button>
-            </div>
-
-          </div>
-
-          <div class="bottom-block">
-            <div class="change-email-explanation">Entered the wrong email address? Change it here</div>
-            <div class="change-email-input-wrapper">
-              <cv-input-field>
-                <cv-icon icon="imp-icon-at"></cv-icon>
-                <input cv-input type="email" placeholder="Correct email"
-                       #correctEmail="ngModel"
-                       name="correctEmail"
-                       [(ngModel)]="correctEmailModel.correctEmail"
-                       required
-                       pattern="{{constants.patterns.email}}"
-                       emailUniqueValidator>
-                <cv-field-error *ngIf="correctEmail.dirty || correctEmail.touched">
-                  <span *ngIf="correctEmail.errors?.required">
-                    {{messages.errors.email.required}}
-                  </span>
-                  <span *ngIf="correctEmail.errors?.pattern">
-                  {{messages.errors.email.pattern}}
-                  </span>
-                  <span *ngIf="correctEmail.errors?.emailUnique">
-                    {{messages.errors.email.emailUnique}}
-                  </span>
-                </cv-field-error>>
-                <button cv-button (click)="correctEmail.valid && changeConfirmationEmail()">Send</button>
-              </cv-input-field>
-            </div>
-          </div>
-
-        </div>
       </div>
 
       <div class="footer">
