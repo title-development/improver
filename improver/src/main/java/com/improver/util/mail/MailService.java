@@ -66,9 +66,6 @@ public class MailService {
     private static final String BODY_BEFORE_AREA = "bodyBeforeArea";
     private static final String BODY_AFTER_AREA = "bodyAfterArea";
 
-    // Template CSS Keys
-    private static final String CONTENT_ALIGN = "contentAlign";
-
     @Autowired private MailClient mailClient;
     @Autowired private TemplateEngine templateEngine;
     @Autowired private PaymentService paymentService;
@@ -87,7 +84,6 @@ public class MailService {
         context.setVariable("homeImproveFullName", HOME_IMPROVE_FULL_NAME);
         context.setVariable("homeImproveStreetAddress", HOME_IMPROVE_STREET_ADDRESS);
         context.setVariable("homeImproveAddress", HOME_IMPROVE_ADDRESS);
-        context.setVariable(CONTENT_ALIGN, "center");
         return context;
     }
 
@@ -302,7 +298,6 @@ public class MailService {
     public void sendReviewRevisionRequest(Company company, Review review, String serviceType, String comment) {
         Context context = contextTemplate();
         String publishDate = review.getPublishDate().format(DateTimeFormatter.ISO_LOCAL_DATE);
-        context.setVariable(CONTENT_ALIGN, "left");
         context.setVariable(TITLE, "Your have new review revision request");
         context.setVariable(BODY_BEFORE_AREA, String.format("%s would like you to revise your review on %s project. Till %s the Pro may contact you to fix outstanding problems if any.",
             highlight(company.getName()), highlight(serviceType), highlight(publishDate)));
@@ -348,7 +343,6 @@ public class MailService {
 
     public void sendTicketSubmitted(Ticket ticket) {
         Context context = contextTemplate();
-        context.setVariable(CONTENT_ALIGN, "left");
         context.setVariable(TITLE, "Ticket is submitted");
         context.setVariable(BODY,highlight("Subject: ") + ticket.getSubject().getValue() + "<br/>" +
             highlight("Comment: ") + ticket.getDescription() + "<br/><br/>" +
@@ -377,7 +371,6 @@ public class MailService {
      */
     public void sendRequestReviewForNewUser(Contractor pro, String subject, String message, String email, String token) {
         Context context = contextTemplate();
-        context.setVariable(CONTENT_ALIGN, "left");
         context.setVariable(TITLE, subject);
         context.setVariable(BODY, message);
         context.setVariable(CONFIRM_URL, siteUrl + COMPANIES + SLASH + pro.getCompany().getId() + "?review-token=" + token);
@@ -395,7 +388,6 @@ public class MailService {
     public void sendNewRequestReview(Company company, ProjectRequest projectRequest, String email) {
         Context context = contextTemplate();
         String messageText = String.format("Could you please share your experience with %s on your recent project %s? It only takes a few seconds, and would really help us.", company.getName(), projectRequest.getProject().getServiceType().getName());
-        context.setVariable(CONTENT_ALIGN, "left");
         context.setVariable(TITLE, String.format("How was your experience with %s?", company.getName()));
         context.setVariable(BODY, messageText);
         context.setVariable(CONFIRM_URL, siteUrl + UI_CUSTOMER_BASE_PATH + PROJECTS + SLASH + projectRequest.getProject().getId() + "#" + projectRequest.getId());
@@ -633,7 +625,6 @@ public class MailService {
 
     public void sendNewReviewReceivedMail(Company company, Review review) {
         Context context = contextTemplate();
-        context.setVariable(CONTENT_ALIGN, "left");
         context.setVariable(TITLE, "Your company received a new review");
         context.setVariable(BODY_BEFORE_AREA, String.format("%s has been rated with %d star(s) by %s" ,
             highlight(company.getName()), review.getScore(), highlight(review.getCustomer().getDisplayName())));
@@ -646,7 +637,6 @@ public class MailService {
 
     public void sendReviewPublishedMail(Company company, Review review) {
         Context context = contextTemplate();
-        context.setVariable(CONTENT_ALIGN, "left");
         context.setVariable(TITLE, "A review has been published");
         context.setVariable(BODY_BEFORE_AREA, String.format("A review from %s with rating of %s star(s) has been published at %s profile page",
             highlight(review.getCustomer().getDisplayName()), highlight(String.valueOf(review.getScore())), highlight(company.getName())));
@@ -660,7 +650,6 @@ public class MailService {
     public void sendNewNegativeReviewMail(Company company, Review review, Customer customer) {
         Context context = contextTemplate();
         String publishDate = review.getPublishDate().format(DateTimeFormatter.ISO_LOCAL_DATE);
-        context.setVariable(CONTENT_ALIGN, "left");
         context.setVariable(TITLE, "Your company has received a low rating review");
         context.setVariable(BODY_BEFORE_AREA, String.format("%1$s has been rated with %4$s star(s) by %2$s." +
                 " A low rating review will not be published on your profile page until %3$s.",
@@ -731,7 +720,6 @@ public class MailService {
 
     public void sendNewTicketReceived(Ticket ticket) {
         Context context = contextTemplate();
-        context.setVariable(CONTENT_ALIGN, "left");
         context.setVariable(TITLE, "New ticket is received");
         addTicketToContext(context, ticket);
         String [] emails  = (String[]) adminRepository.findAll().stream().map(Admin::getEmail).toArray();
@@ -740,7 +728,6 @@ public class MailService {
 
     public void sendNewTicketAssignee(Ticket ticket) {
         Context context = contextTemplate();
-        context.setVariable(CONTENT_ALIGN, "left");
         context.setVariable(TITLE, "You have new assigned ticket");
         addTicketToContext(context, ticket);
         mailClient.sendMail("New ticket", CONFIRMATION_STAFF_TEMPLATE, context, MailHolder.MessageType.NOREPLY, ticket.getAssignee().getEmail());

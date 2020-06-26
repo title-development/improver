@@ -9,24 +9,24 @@
          width="100%"
          style="max-width: 600px;">
     <tr>
-      <td  style="font-family: 'Trebuchet MS', sans-serif">
+      <td align="left" style="font-family: 'Trebuchet MS', sans-serif">
         <div
           style="background-color: #ffffff; width: 600px; color: #3d3d3d; box-shadow: 2px 4px 21px -8px rgba(0,0,0,0.8);
           font-size: 14px;">
           <div style="border: 1px solid #dedede; padding: 24px; margin-top: 36px; margin-bottom: 36px;">
 
-            <div style="text-align: center; font-size: 20px; margin-bottom: 24px">
+            <div style="text-align: left; font-size: 20px; margin-bottom: 24px">
               <span th:if="${userName != null}">Hi</span>
               <b th:if="${userName != null}" th:text="${userName + '.'}"></b>
               <span th:utext="${title}"></span>
             </div>
-            <div th:utext="${body}" th:style="${'font-size: 14px; white-space: pre-line; text-align: ' + contentAlign}"></div>
+            <div th:utext="${body}" th:style="${'font-size: 14px; white-space: pre-line; text-align: left'}"></div>
 
-            <div th:if="${message != null}" th:utext="${message}" style="margin-bottom: 24px; text-align: center;"></div>
+            <div th:if="${message != null}" th:utext="${message}" style="margin-bottom: 24px; text-align: left;"></div>
 
             <table style="margin-bottom: 24px; font-size: 14px; text-align: left">
               <tr>
-                <td align="left" style=" padding-bottom: 14px;">Project details</td>
+                <td align="left">Project details:</td>
               </tr>
 
               <tr>
@@ -70,11 +70,14 @@
             </table>
 
             <a
-              style="display: block; background: #009ede; padding: 12px; text-align: center; border-radius: 2px;
+              style="display: block; background: #009ede; padding: 12px; text-align: center; border-radius: 8px;
             color: white; font-size: 14px; font-weight: 500; width: max-content; min-width: 180px; text-decoration: none; margin: 0 auto;
             box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1); cursor: pointer;"
               th:href="${confirmUrl}"
               th:text="${confirmBtnText}"></a>
+
+            <div style="margin-top: 36px">If the button does not work for you, please copy and paste this following URL into your browser:</div>
+            <div th:text="${confirmUrl}"></div>
 
           </div>
 

@@ -9,7 +9,7 @@
          width="100%"
          style="max-width: 600px;">
     <tr>
-      <td align="center" width="100%" style="font-family: 'Trebuchet MS', sans-serif">
+      <td align="left" width="100%" style="font-family: 'Trebuchet MS', sans-serif">
         <div
           style="background-color: #ffffff; width: 100%; color: #3d3d3d; box-shadow: 2px 4px 21px -8px rgba(0,0,0,0.8);
            font-size: 14px; margin-top: 36px; margin-bottom: 36px;">
@@ -19,7 +19,7 @@
               <b th:if="${userName != null}" th:text="${userName + '.'}"></b>
               <span th:utext="${title}"></span>
             </div>
-            <div th:utext="${body}" th:style="${'font-size: 14px; margin-bottom: 24px; white-space: pre-line; text-align: ' + contentAlign}"></div>
+            <div th:utext="${body}" th:style="${'font-size: 14px; margin-bottom: 24px; white-space: pre-line; text-align: left'}"></div>
             <a
               style="display: block; background: #009ede; padding: 12px; text-align: center; border-radius: 2px;
             color: white; font-size: 14px; font-weight: 500; width: max-content; min-width: 180px; text-decoration: none; margin: 0 auto;
