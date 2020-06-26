@@ -181,8 +181,9 @@
 
   <div #defaultQuestion class="form-element-wrapper text-input-wrapper" [formGroupName]="'defaultQuestionaryGroup'"
        *ngIf="(securityService.hasRole(Role.ANONYMOUS) || personalInfoRequired()) && (questionaryControlService.currentQuestionIndex == questionaryControlService.questionaryLength + 3)">
-    <h2 class="question-title" *ngIf="securityService.hasRole(Role.ANONYMOUS)">Let's get acquainted</h2>
-    <h2 class="question-title" *ngIf="securityService.hasRole(Role.CUSTOMER) && !questionaryControlService.customerAccountIsLoading">Please add your phone number</h2>
+    <h2 class="question-title" *ngIf="securityService.hasRole(Role.ANONYMOUS) && !waitingPhoneConfirmation">Let's get acquainted</h2>
+    <h2 class="question-title" *ngIf="waitingPhoneConfirmation">Verify your phone</h2>
+    <h2 class="question-title" *ngIf="securityService.hasRole(Role.CUSTOMER) && !questionaryControlService.customerAccountIsLoading && !waitingPhoneConfirmation">Please add your phone number</h2>
 
     <div class="text-input-group fill-flex-space" [formGroupName]="'customerPersonalInfo'">
 
