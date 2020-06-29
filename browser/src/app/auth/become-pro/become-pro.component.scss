@@ -298,6 +298,7 @@
         margin-bottom: 16px;
 
         @include response-to(xs) {
+          font-size: 20px;
           margin-left: 16px;
         }
       }

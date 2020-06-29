@@ -68,10 +68,6 @@
     margin-bottom: 0;
     font-size: 16px;
   }
-
-  @include response-to(sm) {
-    font-size: 14px;
-  }
 }
 
 .hiw-wizard-content {
@@ -115,6 +111,7 @@
 
   @include response-to(sm) {
     margin-top: 12px;
+    padding-right: 0;
   }
 
   @include response-to(xs) {
@@ -154,8 +151,6 @@
 
     @include response-to(sm) {
       border-radius: 12px;
-      height: 40px;
-      width: 40px;
     }
 
     & > span {
@@ -163,11 +158,6 @@
       font-weight: bold;
       font-size: 24px;
       color: $white;
-
-      @include response-to(sm) {
-        font-size: 18px;
-        line-height: 40px;
-      }
     }
   }
 
@@ -178,14 +168,22 @@
     margin-top: 24px;
 
     @include response-to(sm) {
-      font-size: 16px;
+      font-size: 20px;
       margin-top: 0px;
-      margin-left: 20px;
+      margin-left: 16px;
     }
   }
 }
 
+.wizard-step-text-block {
+  width: 100%;
+  height: 100%;
 
+  .wizard-step-text {
+    font-size: 16px;
+    color: rgba(39, 49, 73, 0.6);
+  }
+}
 
 .step-1 {
   background-color: $dark-primary;
@@ -201,18 +199,4 @@
 
 .step-4 {
   background-color: $green-primary;
-}
-
-.wizard-step-text-block {
-  width: 100%;
-  height: 100%;
-
-  .wizard-step-text {
-    font-size: 16px;
-    color: rgba(39, 49, 73, 0.6);
-
-    @include response-to(sm) {
-      font-size: 14px;
-    }
-  }
 }
