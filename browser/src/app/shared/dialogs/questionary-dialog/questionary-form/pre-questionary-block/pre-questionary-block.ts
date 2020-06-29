@@ -18,6 +18,7 @@ import { UserService } from "../../../../../api/services/user.service";
 import { AccountService } from "../../../../../api/services/account.service";
 import { CustomerSuggestionService } from "../../../../../api/services/customer-suggestion.service";
 import { TradeService } from "../../../../../api/services/trade.service";
+import { DeviceControlService } from "../../../../../util/device-control.service";
 
 @Component({
   selector: 'pre-questionary-block',
@@ -47,6 +48,7 @@ export class PreQuestionaryBlock implements OnInit {
               public messages: Messages,
               public popUpMessageService: PopUpMessageService,
               public customerSuggestionService: CustomerSuggestionService,
+              public deviceControlService: DeviceControlService,
               private accountService: AccountService,
               private router: Router,
               private locationValidate: LocationValidateService,

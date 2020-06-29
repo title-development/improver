@@ -54,6 +54,8 @@
                placeholder="Zip"
                name="zip"
                maxlength="5"
+               (blur)="deviceControlService.isIOS() && submitZip()"
+               (keypress)="deviceControlService.isAndroid($event) && submitZip()"
                [formControlName]="'zip'"
                numericMask
                pattern="{{constants.patterns.zipcode}}"

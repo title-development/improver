@@ -25,6 +25,7 @@ import { Subject } from "rxjs";
 import { RecaptchaComponent } from "ng-recaptcha";
 import { CaptchaTrackingService } from "../../../../../api/services/captcha-tracking.service";
 import { RegistrationHelper } from "../../../../../util/registration-helper";
+import { DeviceControlService } from "../../../../../util/device-control.service";
 
 @Component({
   selector: 'default-questionary-block',
@@ -82,6 +83,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
               public messages: Messages,
               public popUpMessageService: PopUpMessageService,
               public captchaTrekkingService: CaptchaTrackingService,
+              public deviceControlService: DeviceControlService,
               private accountService: AccountService,
               private router: Router,
               private locationValidate: LocationValidateService,
@@ -94,7 +96,17 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
 
     securityService.onUserInit.subscribe(() => {
       this.phoneValid = false;
-    })
+    });
+  }
+
+  submitUserInfo() {
+    if (this.securityService.hasRole(Role.ANONYMOUS) && !this.emailIsChecked) {
+      this.checkEmail(this.defaultQuestionaryForm.get('customerPersonalInfo.email').value)
+    } else if (this.securityService.hasRole(Role.ANONYMOUS) && this.emailIsChecked && !this.emailIsUnique){
+      this.captchaValidations()
+    } else if ((this.securityService.hasRole(Role.CUSTOMER) || this.emailIsChecked && this.emailIsUnique) && this.personalInfoRequired()) {
+      this.nextQuestion('customerPersonalInfo', !this.questionaryControlService.customerHasPhone && !this.phoneValid ? this.validatePhone : undefined)
+    }
   }
 
   ngOnInit(): void {
