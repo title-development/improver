@@ -1,7 +1,7 @@
-<div class="category-services-header-content">
+<div class="category-services-header-content" *ngIf="trade">
     <div class="category-services-header-search">
         <div class="left-header">
-            <div class="header-title-content" *ngIf="trade">
+            <div class="header-title-content">
                 <img class="trade-icon" [src]="'assets/trades/icons/' + trade.name + '.svg'"
                      onerror="this.src='assets/trades/icons/default.svg';">
                 <div class="header-title-text">

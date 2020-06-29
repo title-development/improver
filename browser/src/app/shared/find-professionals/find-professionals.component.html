@@ -84,7 +84,7 @@
 
             <div class="swiper-container find-professional-swiper">
               <div class="swiper-wrapper">
-                <div class="swiper-slide" *ngFor="let trade of suggestedTrades">
+                <div class="swiper-slide" *ngFor="let trade of suggestedTrades" (click)="findProfessionalService.toggle()" [routerLink]="['category', trade.id]">
                   <div class="trade-content">
                     <div class="text-content">
                       <div class="trade-title">{{trade.name}}</div>

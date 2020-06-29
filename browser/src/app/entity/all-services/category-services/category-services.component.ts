@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, OnInit } from "@angular/core";
-import { ServiceType, Trade } from "../../../model/data-model";
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { ServiceType } from "../../../model/data-model";
 import { ServiceTypeService } from "../../../api/services/service-type.service";
 import { TradeService } from "../../../api/services/trade.service";
 import { ProjectActionService } from "../../../util/project-action.service";
@@ -16,7 +16,7 @@ import { AdminTrade } from "../../../api/models/AdminTrade";
   templateUrl: './category-services.component.html',
   styleUrls: ['./category-services.component.scss']
 })
-export class CategoryServicesComponent implements OnInit, AfterViewInit {
+export class CategoryServicesComponent implements OnInit {
 
   searchResultMessageText: string = '';
   private readonly destroyed$ = new Subject<void>();
@@ -33,6 +33,7 @@ export class CategoryServicesComponent implements OnInit, AfterViewInit {
               private tradeService: TradeService,
               private popUpService: PopUpMessageService,
               private router: Router,
+              private changeDetectorRef: ChangeDetectorRef,
               public route: ActivatedRoute,
               public projectActionService: ProjectActionService,
               public mediaQueryService: MediaQueryService) {
@@ -53,7 +54,7 @@ export class CategoryServicesComponent implements OnInit, AfterViewInit {
   ngOnInit() {
   }
 
-  ngAfterViewInit(): void {
+  swiperInitializer() {
     this.swiper = new Swiper('.swiper-container', {
       pagination: '.swiper-pagination',
       paginationClickable: true,
@@ -68,6 +69,8 @@ export class CategoryServicesComponent implements OnInit, AfterViewInit {
     this.tradeService.getTradeById(tradeId).subscribe(
       trade => {
         this.trade = trade;
+        this.changeDetectorRef.detectChanges();
+        this.swiperInitializer();
         this.onFilter('');
       },
       err => {
