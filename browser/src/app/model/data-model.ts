@@ -122,7 +122,7 @@ export class OfferedServiceType {
   id: number;
   name: string;
   enabled: boolean;
-  parentId: number;
+  tradeId: number;
   leadPrice?: number;
 }
 

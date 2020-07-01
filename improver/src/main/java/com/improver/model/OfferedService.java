@@ -15,7 +15,7 @@ public class OfferedService {
     private String name;
     private Boolean enabled;
     private int leadPrice;
-    private long parentId;
+    private long tradeId;
 
     public OfferedService(long id, String name, int leadPrice) {
         this.id = id;
@@ -23,10 +23,10 @@ public class OfferedService {
         this.leadPrice = leadPrice;
     }
 
-    public OfferedService(long id, String name, int leadPrice, long parentId) {
+    public OfferedService(long id, String name, int leadPrice, long tradeId) {
         this.id = id;
         this.name = name;
         this.leadPrice = leadPrice;
-        this.parentId = parentId;
+        this.tradeId = tradeId;
     }
 }

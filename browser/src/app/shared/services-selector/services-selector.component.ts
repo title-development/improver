@@ -97,10 +97,10 @@ export class ServicesSelectorComponent implements OnInit {
       if (service.id == item.id) {
         service.enabled = !service.enabled;
 
-        if (item.parentId == service.parentId)
+        if (item.tradeId == service.tradeId)
           return;
 
-        let tradeIndex = this.tradesAndServiceTypes.trades.findIndex((obj => obj.id == service.parentId));
+        let tradeIndex = this.tradesAndServiceTypes.trades.findIndex((obj => obj.id == service.tradeId));
         let tradeName = this.tradesAndServiceTypes.trades[tradeIndex].name;
         let innerServiceIndex = this.tradesControl.controls[tradeName].value.indexOf(service.id);
         if (innerServiceIndex < 0) {
@@ -125,14 +125,14 @@ export class ServicesSelectorComponent implements OnInit {
   private isLastServiceInTrade(item: OfferedServiceType){
     let allTradeServices: Array<OfferedServiceType> = [];
     this.tradesAndServiceTypes.services.forEach( (service: OfferedServiceType) => {
-      if (service.parentId == item.parentId){
+      if (service.tradeId == item.tradeId){
         allTradeServices.push(service);
       }
     });
 
     if (allTradeServices.every(service => service.enabled == false)) {
       this.tradesAndServiceTypes.trades.forEach((trade: Trade) => {
-        if (trade.id == item.parentId) {
+        if (trade.id == item.tradeId) {
           this.removeTrade(trade);
         }
       });
@@ -148,7 +148,7 @@ export class ServicesSelectorComponent implements OnInit {
   private activateServiceCheckbox(item) {
       this.tradesAndServiceTypes.services.forEach((service, index) => {
         if (service.id == item.id) {
-          let tradeIndex = this.tradesAndServiceTypes.trades.findIndex((obj => obj.id == service.parentId));
+          let tradeIndex = this.tradesAndServiceTypes.trades.findIndex((obj => obj.id == service.tradeId));
           let tradeName = this.tradesAndServiceTypes.trades[tradeIndex].name;
           service.enabled = true;
           setTimeout(() => {
@@ -169,8 +169,8 @@ export class ServicesSelectorComponent implements OnInit {
     }
 
     for (let service of this.tradesAndServiceTypes.services) {
-      if (tradesMap[service.parentId]) {
-        tradesMap[service.parentId].services.push(service);
+      if (tradesMap[service.tradeId]) {
+        tradesMap[service.tradeId].services.push(service);
       } else {
         if (!tradesMap[0]) {
           tradesMap[0] = {
@@ -299,7 +299,7 @@ export class ServicesSelectorComponent implements OnInit {
             trade.services = [];
             for (let service of services) {
               service.enabled = true;
-              service.parentId = trade.id;
+              service.tradeId = trade.id;
               this.tradesAndServiceTypes.services.push(service);
               trade.services.push(service);
               if (!others) continue;
@@ -370,7 +370,7 @@ export class ServicesSelectorComponent implements OnInit {
         if (tradeIndex >= 0) {
           this.tradesAndServiceTypes.trades.splice(tradeIndex, 1);
           this.tradesAndServiceTypes.services = this.tradesAndServiceTypes.services.filter(function (item) {
-            return (item.parentId != trade.id);
+            return (item.tradeId != trade.id);
           });
         }
         this.updateTradesAndServices();

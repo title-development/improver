@@ -10,6 +10,7 @@ import { PopUpMessageService } from '../../../../util/pop-up-message.service';
 import { getErrorMessage } from '../../../../util/functions';
 import { ComponentCanDeactivate } from "../../../../auth/router-guards/component-can-deactivate.guard";
 import { Observable } from "rxjs";
+import { TradesAndServiceTypes } from "../../../../model/data-model";
 
 @Component({
   selector: 'lead-preference',
@@ -42,8 +43,7 @@ export class LeadPreferenceComponent implements OnInit, ComponentCanDeactivate {
 
   getCompanyTradesAndServiceTypes() {
     this.companyService.getCompanyTradesAndServiceTypes(this.securityService.getLoginModel().company)
-      .subscribe(
-        tradesAndServiceTypes => {
+      .subscribe((tradesAndServiceTypes: TradesAndServiceTypes) => {
           this.tradesAndServiceTypes = tradesAndServiceTypes;
           this.tradesAndServiceTypes.trades.forEach(trade => trade.collapsed = false);
         },
