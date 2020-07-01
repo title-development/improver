@@ -133,7 +133,7 @@ export class ProjectsComponent implements OnDestroy {
     let request;
 
     if (tab.type == TabType.NEW) {
-      request = this.leadService.getAll(this.searchTerm.toLowerCase(), pagination);
+      request = this.leadService.getAllInCoverage(this.searchTerm.toLowerCase(), pagination);
     } else {
       request = this.projectService.getAllForContractor(tab.type == TabType.IN_PROGRESS, this.searchTerm.toLowerCase(), pagination)
     }
@@ -159,7 +159,7 @@ export class ProjectsComponent implements OnDestroy {
     this.showMoreFetching = true;
     let request;
     if (tab.type == TabType.NEW) {
-      request = this.leadService.getAll(null, tab.pagination.nextPage());
+      request = this.leadService.getAllInCoverage(this.searchTerm.toLowerCase(), tab.pagination.nextPage());
     } else {
       request = this.projectService.getAllForContractor(tab.type == TabType.IN_PROGRESS, this.searchTerm.toLowerCase(), tab.pagination.nextPage())
     }

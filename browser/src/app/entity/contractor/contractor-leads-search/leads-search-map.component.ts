@@ -1,5 +1,15 @@
 import { GoogleMapsAPIWrapper } from '@agm/core';
-import { ApplicationRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import {
+  ApplicationRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  SimpleChanges
+} from '@angular/core';
 import { InfoWindowInt } from './intefaces/infoWindowInt';
 
 import { BoundariesService } from '../../../api/services/boundaries.service';
@@ -18,16 +28,19 @@ import { catchError, debounceTime, mergeMap, publishReplay, refCount, takeUntil,
 import { CompanyCoverageConfig } from '../../../api/models/CompanyCoverageConfig';
 import { RestPage } from '../../../api/models/RestPage';
 import { Constants } from '../../../util/constants';
+import { FilterByPipe } from "../../../pipes/filter.pipe";
 
 @Component({
   selector: 'imp-leads-search-map',
   template: '',
   styles: [],
 })
-export class LeadsSearchMapComponent implements OnInit, OnDestroy {
+export class LeadsSearchMapComponent implements OnInit, OnDestroy, OnChanges {
 
+  @Input() searchTerm: string;
+  @Input() inCoverageOnly: boolean;
   @Output() showInfoWindow: EventEmitter<InfoWindowInt> = new EventEmitter<InfoWindowInt>();
-  @Output() updateLeads: EventEmitter<ShortLead[]> = new EventEmitter<ShortLead[]>();
+  @Output() updateLeads: EventEmitter<ShortLead[]> = new EventEmitter<ShortLead[]>(true);
   @Output() mapIsLoadingChange: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() areasChange: EventEmitter<string[]> = new EventEmitter<string[]>();
   @Output() companyCoverageConfig: EventEmitter<CompanyCoverageConfig> = new EventEmitter<CompanyCoverageConfig>();
@@ -37,6 +50,7 @@ export class LeadsSearchMapComponent implements OnInit, OnDestroy {
   private _mapIsLoading: boolean;
   private companyLocation: { lat: number, lng: number };
   private pagination =  new Pagination(0, 100);
+  private leads = [];
 
   @Input()
   get mapIsLoading(): boolean {
@@ -69,7 +83,8 @@ export class LeadsSearchMapComponent implements OnInit, OnDestroy {
               private markersStore: MapMarkersStore,
               private popUpMessageService: PopUpMessageService,
               private constants: Constants,
-              private gMapUtils: GoogleMapUtilsService) {
+              private gMapUtils: GoogleMapUtilsService,
+              private filterByPipe: FilterByPipe) {
 
   }
 
@@ -78,10 +93,11 @@ export class LeadsSearchMapComponent implements OnInit, OnDestroy {
   }
 
   initMap(): void {
-    this.leadService.getAll(null, this.pagination).pipe(
+    this.leadService.getAllInCoverage(null, this.pagination).pipe(
       takeUntil(this.destroyed$),
     ).subscribe((leads: RestPage<ShortLead>) => {
-      this.updateLeads.emit(leads.content);
+      this.leads = leads.content;
+      this.updateLeads.emit(this.filterLeads(leads.content));
     });
 
     const companyCoverageConfig$ = this.companyService.getCoverageConfig(this.securityService.getLoginModel().company)
@@ -132,7 +148,7 @@ export class LeadsSearchMapComponent implements OnInit, OnDestroy {
         const southWest: string = [this.gMap.getBounds().getSouthWest().lat(), this.gMap.getBounds().getSouthWest().lng()].join();
         const northEast: string = [this.gMap.getBounds().getNorthEast().lat(), this.gMap.getBounds().getNorthEast().lng()].join();
 
-        return this.leadService.getAllInBoundingBox(null, this.pagination, southWest, northEast).pipe(
+        return this.leadService.getAllInBoundingBox(null, false, southWest, northEast, this.pagination).pipe(
           catchError((err) => {
               this.popUpMessageService.showError('Error requesting leads');
               this.mapIsLoading = false;
@@ -147,9 +163,7 @@ export class LeadsSearchMapComponent implements OnInit, OnDestroy {
             return of(null);
           }
           this.mapIsLoading = false;
-          this.updateLeads.emit(leads.content);
-          const groupLeadsByZipCode = this.groupLeadsByZipCode(leads.content);
-          this.drawLeadMarkers(groupLeadsByZipCode);
+          this.groupAndDrawLeads(leads.content)
         },
       ),
       takeUntil(this.destroyed$),
@@ -181,6 +195,14 @@ export class LeadsSearchMapComponent implements OnInit, OnDestroy {
     });
   }
 
+  groupAndDrawLeads(leads) {
+    this.leads = leads;
+    leads = this.filterLeads(leads);
+    this.updateLeads.emit(leads);
+    const groupLeadsByZipCode = this.groupLeadsByZipCode(leads);
+    this.drawLeadMarkers(groupLeadsByZipCode);
+  }
+
   private drawLeadMarkers(groupLeadsByZipCode: Map<string, ShortLead[]>) {
     this.gMapUtils.clearLeadsMarkers();
     Array.from(groupLeadsByZipCode.entries())
@@ -204,4 +226,28 @@ export class LeadsSearchMapComponent implements OnInit, OnDestroy {
 
     return grouped;
   }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if ((changes.searchTerm && !changes.searchTerm.firstChange || changes.inCoverageOnly && !changes.inCoverageOnly.firstChange) && this.gMap) {
+      this.groupAndDrawLeads(this.leads);
+    }
+  }
+
+  filterLeads(leads) {
+    const inArea = [];
+    const notInArea = [];
+
+    leads.map((lead: ShortLead) => {
+      if (this.areas.includes(lead.location.zip.toString())) {
+        inArea.push(lead);
+        lead.inCoverage = true;
+      } else {
+        notInArea.push(lead);
+      }
+    });
+    leads = this.inCoverageOnly ? inArea : inArea.concat(notInArea);
+    leads = this.searchTerm ? this.filterByPipe.transform(leads, {serviceType: this.searchTerm}) : leads
+    return leads
+  }
+
 }

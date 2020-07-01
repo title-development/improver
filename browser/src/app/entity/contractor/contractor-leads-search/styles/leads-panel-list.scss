@@ -13,27 +13,40 @@
   }
   .search-field-holder {
     display: flex;
+    flex-direction: column;
     background-color: $grey-200;
     width: 100%;
     padding: 12px 12px 8px;
-    .field {
+
+    .search-row {
+      display: flex;
       position: relative;
       flex: 1;
-    }
-    .search-icon {
-      position: absolute;
-      top: 8px;
-      left: 6px;
-      width: 21px;
-      font-size: 21px;
-      height: 21px;
-      color: rgba(#000, .36);
-
-      &.clear {
-        cursor: pointer;
+      .field {
+        position: relative;
+        flex: 1;
       }
+      .search-icon {
+        position: absolute;
+        top: 8px;
+        left: 6px;
+        width: 21px;
+        font-size: 21px;
+        height: 21px;
+        color: rgba(#000, .36);
 
+        &.clear {
+          cursor: pointer;
+        }
+
+      }
     }
+
+    .config-row {
+      margin-top: 12px;
+      padding-left: 6px;
+    }
+
     input {
       border-radius: 2px;
       background-color: $white;
@@ -58,6 +71,21 @@
     overflow-y: auto;
     ::ng-deep .ps {
       height: 100%;
+    }
+    .no-leads-found-message {
+      color: $grey-500;
+      .important {
+        color: $black-800;
+      }
+      button {
+        display: inline;
+        border: none;
+        color: $primary-400;
+        cursor: pointer;
+        padding: 0px;
+        font-size: 16px;
+        background: none;
+      }
     }
   }
   .lead {

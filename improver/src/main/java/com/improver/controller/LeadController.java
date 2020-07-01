@@ -32,12 +32,13 @@ public class LeadController {
 
     @GetMapping
     public ResponseEntity<Page<ShortLead>> getProLeads(
+        @RequestParam  (required = false) boolean inCoverageOnly,
         @RequestParam (required = false) double[] southWest,
         @RequestParam (required = false) double[] northEast,
         @RequestParam(required = false) String searchTerm,
         @PageableDefault(sort = "created", page = 0, size = 5, direction = Sort.Direction.DESC) Pageable pageRequest) {
 
-        Page<ShortLead> leads = leadService.getLeads(userSecurityService.currentPro(), true, searchTerm, pageRequest, southWest, northEast);
+        Page<ShortLead> leads = leadService.getLeads(userSecurityService.currentPro(), true, inCoverageOnly, searchTerm, southWest, northEast, pageRequest);
         return new ResponseEntity<>(leads, HttpStatus.OK);
     }
 

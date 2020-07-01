@@ -27,9 +27,10 @@ import { CompanyCoverageConfig } from '../../../api/models/CompanyCoverageConfig
 export class ContractorLeadsSearchComponent implements OnDestroy {
   mapContentIsLoading: boolean = true;
   areas: string[] = [];
-  search: string = '';
+  searchTerm: string;
+  inCoverageOnly = false;
   isSidebarOpen: boolean = true;
-  sortedLeads: Lead[] = [];
+  sortedLeads: ShortLead[] = [];
   selectedLeadId: string = '';
   selectedLead: Lead = null;
   infoWindowData: InfoWindowInt = infoWindowDefaults;
@@ -161,16 +162,7 @@ export class ContractorLeadsSearchComponent implements OnDestroy {
    * @param {Array<Lead>} leads
    */
   onLeadsUpdate(leads: ShortLead[]): void {
-    const inArea = [];
-    const notInArea = [];
-    leads.map((lead: ShortLead) => {
-      if (this.areas.includes(lead.location.zip.toString())) {
-        inArea.push(lead);
-      } else {
-        notInArea.push(lead);
-      }
-    });
-    this.sortedLeads = inArea.concat(notInArea);
+    this.sortedLeads = leads;
   }
 
   onShowInfoWindow(infoWindowData: InfoWindowInt): void {
@@ -236,4 +228,10 @@ export class ContractorLeadsSearchComponent implements OnDestroy {
       return 0;
     }
   }
+
+  resetFilters() {
+    this.searchTerm = undefined;
+    this.inCoverageOnly = false;
+  }
+
 }

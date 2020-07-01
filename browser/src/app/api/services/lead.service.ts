@@ -17,13 +17,14 @@ export class LeadService {
     this.constants = constants;
   }
 
-  getAll(searchTerm: string, pagination: Pagination): Observable<RestPage<ShortLead>> {
-    return this.getAllInBoundingBox(searchTerm, pagination, '','')
+  getAllInCoverage(searchTerm: string, pagination: Pagination): Observable<RestPage<ShortLead>> {
+    return this.getAllInBoundingBox(searchTerm, true, undefined, undefined, pagination)
   }
 
-  getAllInBoundingBox(searchTerm: string, pagination: Pagination, southWest: string = '', northEast: string = ''): Observable<RestPage<ShortLead>> {
+  getAllInBoundingBox(searchTerm: string, inCoverageOnly: boolean = false, southWest: string = '', northEast: string = '', pagination: Pagination): Observable<RestPage<ShortLead>> {
     const params = toHttpParams(pagination)
       .set('searchTerm', searchTerm ? searchTerm : '')
+      .set('inCoverageOnly', inCoverageOnly.toString())
       .set('southWest', southWest)
       .set('northEast', northEast);
 
@@ -50,7 +51,6 @@ export class LeadService {
   }
 
   getSimilarLeads(leadId: number): Observable<Array<Lead>> {
-
     return this.httpClient.get<Array<Lead>>(`${this.leadsUrl}/${leadId}/similar`);
   }
 }

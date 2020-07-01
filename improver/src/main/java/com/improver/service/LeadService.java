@@ -9,7 +9,10 @@ import com.improver.exception.ValidationException;
 import com.improver.model.in.Order;
 import com.improver.model.out.project.Lead;
 import com.improver.model.out.project.ShortLead;
-import com.improver.repository.*;
+import com.improver.repository.BillRepository;
+import com.improver.repository.CompanyRepository;
+import com.improver.repository.ProjectRepository;
+import com.improver.repository.TransactionRepository;
 import com.improver.util.mail.MailService;
 import com.improver.util.serializer.SerializationUtil;
 import com.stripe.model.Card;
@@ -32,8 +35,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.improver.application.properties.BusinessProperties.SIMILAR_PROJECT_COUNT;
 import static com.improver.application.properties.BusinessProperties.DEFAULT_SUBSCRIPTION_DISCOUNT;
+import static com.improver.application.properties.BusinessProperties.SIMILAR_PROJECT_COUNT;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
 @Slf4j
@@ -52,14 +55,17 @@ public class LeadService {
 
 
     /**
-     *
+     * @param contractor target Contractor
+     * @param eligibleForPurchase get only eligible for purchase leads
+     * @param inCoverageOnly get leads only in Contractor service coverage
      * @param southWest coordinate of Bbox
      * @param northEast coordinate of Bbox
      */
-    public Page<ShortLead> getLeads(Contractor contractor, boolean eligibleForPurchase, String searchTerm, Pageable pageable, double[] southWest, double[] northEast) {
+    public Page<ShortLead> getLeads(Contractor contractor, boolean eligibleForPurchase, boolean inCoverageOnly, String searchTerm, double[] southWest, double[] northEast, Pageable pageable) {
         Page<ShortLead> leads;
         List<Project.Status> statuses = eligibleForPurchase ? Project.Status.forPurchase() : Project.Status.getActive();
-        if (southWest == null || southWest.length == 0 || northEast == null || northEast.length == 0) {
+        boolean withoutBBox = southWest == null || southWest.length == 0 || northEast == null || northEast.length == 0;
+        if (inCoverageOnly || withoutBBox) {
             leads = projectRepository.getLeadsInCoverage(contractor.getCompany().getId(), statuses, searchTerm, pageable);
         } else {
             leads = projectRepository.getLeadsInCoverageAndBbox(contractor.getCompany().getId(), statuses, searchTerm, northEast[0], northEast[1], southWest[0], southWest[1], pageable);
@@ -93,7 +99,7 @@ public class LeadService {
         /**
          * #1  All services in coverage
          */
-        List<ShortLead> formCoverage = getLeads(contractor, true, null, null, new double[2], new double[2]).stream()
+        List<ShortLead> formCoverage = getLeads(contractor, true, true, null, null, null, null).stream()
             .filter(lead -> lead.getId() != projectId)
             .collect(Collectors.toList());
         if (formCoverage.size() <= SIMILAR_PROJECT_COUNT) {

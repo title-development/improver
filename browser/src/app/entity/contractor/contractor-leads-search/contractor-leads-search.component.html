@@ -4,22 +4,28 @@
 
     <div class="leads-panel" #leadsPanel>
       <div class="search-field-holder">
-        <div class="field">
-          <mat-icon class="search-icon" color="primary" *ngIf="!search || search == ''">search</mat-icon>
-          <mat-icon class="search-icon clear" color="primary" *ngIf="search && search != ''" (click)="search = ''">close</mat-icon>
-          <input type="text" placeholder="Type to search..." [(ngModel)]="search"/>
+        <div class="search-row">
+          <div class="field">
+            <mat-icon class="search-icon" color="primary" *ngIf="!searchTerm || searchTerm == ''">search</mat-icon>
+            <mat-icon class="search-icon clear" color="primary" *ngIf="searchTerm && searchTerm != ''" (click)="searchTerm = undefined;">close</mat-icon>
+            <input type="text" placeholder="Type to search..." [(ngModel)]="searchTerm" [disabled]="!gMap"/>
+          </div>
+          <ng-container *ngIf="mediaQuery?.xs || mediaQuery?.sm || mediaQuery?.md">
+            <mat-icon class="close-sidenav" color="primary" (click)="sidenav.close()" *ngIf="sidenav.opened" title="Hide">
+              keyboard_arrow_left
+            </mat-icon>
+          </ng-container>
         </div>
-        <ng-container *ngIf="mediaQuery?.xs || mediaQuery?.sm || mediaQuery?.md">
-          <mat-icon class="close-sidenav" color="primary" (click)="sidenav.close()" *ngIf="sidenav.opened" title="Hide">
-            keyboard_arrow_left
-          </mat-icon>
-        </ng-container>
-
+        <div class="config-row">
+          <cv-checkbox name="inCoverageOnly" [(ngModel)]="inCoverageOnly" [disabled]="!gMap">
+            <div class="label noselect">Only in my area</div>
+          </cv-checkbox>
+        </div>
       </div>
       <perfect-scrollbar class="leads-list" *ngIf="sortedLeads">
-        <h4 *ngIf="!mapContentIsLoading && sortedLeads.length == 0">There are no new leads in selected area. You can discover new leads in neighbor areas using map tools.</h4>
+        <h4 *ngIf="!mapContentIsLoading && sortedLeads.length == 0" class="no-leads-found-message">No new leads found according to your configuration. You can use map tool to find more leads in the neighbor areas or <button (click)="resetFilters()">remove filters</button> to see more results.</h4>
         <div class="lead"
-             *ngFor="let lead of sortedLeads | filterBy: {serviceType: search} let index = index"
+             *ngFor="let lead of sortedLeads; let index = index"
              (click)="getLead(lead, index)"
              [ngClass]="{'-selected': (selectedLeadId == lead.id) && selectedLead, 'in-coverage' : areas.includes(lead.location.zip)}">
           <div class="description">
@@ -33,9 +39,9 @@
                 {{lead.location.state}}
                 {{lead.location.zip}}
               </span>
-              <div class="timestamp" *ngIf="!areas.includes(lead.location.zip)">{{lead.created | timeAgo | async}}</div>
+              <div class="timestamp" *ngIf="!lead.inCoverage">{{lead.created | timeAgo | async}}</div>
             </div>
-            <div class="bottom-line" *ngIf="areas.includes(lead.location.zip)">
+            <div class="bottom-line" *ngIf="lead.inCoverage">
               <div class="in-area">In your area</div>
               <div class="timestamp">{{lead.created | timeAgo | async}}</div>
             </div>
@@ -106,7 +112,8 @@
            [disableDefaultUI]="true"
            [zoomControl]="false"
            (mapReady)="onMapReady($event)">
-    <imp-leads-search-map (showInfoWindow)="onShowInfoWindow($event)"
+    <imp-leads-search-map [searchTerm]="searchTerm" [inCoverageOnly]="inCoverageOnly"
+                      (showInfoWindow)="onShowInfoWindow($event)"
                       (updateLeads)="onLeadsUpdate($event)"
                       (companyCoverageConfig)="onCompanyCoverageConfig($event)"
                       [(mapIsLoading)]="mapContentIsLoading"

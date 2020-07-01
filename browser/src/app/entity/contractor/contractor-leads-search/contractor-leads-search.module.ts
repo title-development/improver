@@ -21,6 +21,8 @@ import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { CvSpinnerModule } from '../../../theme/spinner/cv-spinner.module';
 import { CvButtonModule } from '../../../theme/button/cv-button.module';
 import { GoogleMapSidebarModule } from '../../../shared/google-map-sidebar/google-map-sidebar.module';
+import { CvCheckboxModule } from "../../../theme/checkbox/checkbox.module";
+import { FilterByPipe } from "../../../pipes/filter.pipe";
 
 const contractorLeadsSearchRouting: ModuleWithProviders = RouterModule.forChild([
   {
@@ -46,6 +48,7 @@ const contractorLeadsSearchRouting: ModuleWithProviders = RouterModule.forChild(
     PerfectScrollbarModule,
     CvSpinnerModule,
     CvButtonModule,
+    CvCheckboxModule,
     GoogleMapSidebarModule
   ],
   declarations: [
@@ -57,7 +60,8 @@ const contractorLeadsSearchRouting: ModuleWithProviders = RouterModule.forChild(
     GoogleMapsAPIWrapper,
     DataLayerManager,
     MarkerManager,
-    InfoWindowManager
+    InfoWindowManager,
+    FilterByPipe
   ]
 })
 

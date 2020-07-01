@@ -1,4 +1,3 @@
-
 import { Project } from '../api/models/Project';
 import { ProjectRequest } from '../api/models/ProjectRequest';
 import { Centroid } from '../api/models/ZipBoundaries';
@@ -354,6 +353,7 @@ export class ShortLead {
   price: number;
   serviceType: string;
   centroid: Centroid;
+  inCoverage: boolean;
 }
 
 export class GoogleMapMarker {
