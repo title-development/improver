@@ -4,8 +4,6 @@ import com.improver.entity.SocialConnection;
 import com.improver.entity.User;
 import com.improver.model.out.LoginModel;
 import com.improver.model.socials.SocialUserInfo;
-import com.improver.repository.SocialConnectionRepository;
-import com.improver.repository.UserRepository;
 import com.improver.security.UserSecurityService;
 import com.improver.service.FacebookSocialService;
 import com.improver.service.GoogleSocialService;
@@ -33,7 +31,7 @@ public class SocialLoginController {
 
     @PostMapping("/facebook/register/customer")
     public ResponseEntity<LoginModel> registerCustomerWithFacebook(@RequestBody @Valid SocialUserInfo socialUserInfo, HttpServletResponse res) {
-        return new ResponseEntity<>(facebookSocialService.register(socialUserInfo, res), HttpStatus.OK);
+        return new ResponseEntity<>(facebookSocialService.registerCustomer(socialUserInfo, res), HttpStatus.OK);
     }
 
     @PostMapping("/facebook/register/pro")

@@ -58,7 +58,8 @@ public class FacebookSocialService {
         return userSecurityService.performUserLogin(user, res);
     }
 
-    public LoginModel register(SocialUserInfo socialUserInfo, HttpServletResponse res) {
+    //TODO:
+    public LoginModel registerCustomer(SocialUserInfo socialUserInfo, HttpServletResponse res) {
         LoginModel loginModel = null;
         boolean socialProfileHasEmail = true;
         SocialUser socialUser = getSocialUser(socialUserInfo.getAccessToken());

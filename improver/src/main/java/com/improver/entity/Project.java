@@ -132,6 +132,7 @@ public class Project implements ImageContainable {
      *  Project Status
      */
     public enum Status {
+        PENDING("PENDING"),         // wait for customer to confirm email
         VALIDATION("VALIDATION"),   // saved, ready for validation
         ACTIVE("ACTIVE"),           // validated by system or manager
         INVALID ("INVALID"),        // invalid
@@ -155,7 +156,7 @@ public class Project implements ImageContainable {
         }
 
         public static List<Status> getActive() {
-            return Arrays.asList(VALIDATION, ACTIVE, IN_PROGRESS);
+            return Arrays.asList(VALIDATION, ACTIVE, IN_PROGRESS, PENDING);
         }
 
         public static List<Status> getArchived() {

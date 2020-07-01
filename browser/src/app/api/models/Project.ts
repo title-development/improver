@@ -53,6 +53,7 @@ export namespace Project {
   }
 
   export enum Status {
+    PENDING = 'PENDING',
     VALIDATION = 'VALIDATION',
     ACTIVE = 'ACTIVE',
     INVALID = 'INVALID',
@@ -66,7 +67,7 @@ export namespace Project {
   }
 
   export function isActive(status: Project.Status) {
-    return status === Status.ACTIVE || status === Status.IN_PROGRESS || status === Status.VALIDATION;
+    return status === Status.ACTIVE || status === Status.IN_PROGRESS || status === Status.VALIDATION || status === Status.PENDING;
   }
 
   export class ValidationRequest {

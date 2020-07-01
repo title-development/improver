@@ -61,9 +61,11 @@ public class OrderService {
             mailService.sendOrderSubmitMail(customer, lead, order.getDetails(), questionAnswers, true);
         } else {
             income.setLead(false);
+            income.setStatus(Project.Status.PENDING);
             lead = saveProjectOrder(income.setCustomer(customer));
             log.info("Project id={} saved, but require customer activation", lead.getId());
             questionAnswers = SerializationUtil.fromJson(new TypeReference<List<QuestionAnswer>>() {}, lead.getDetails());
+            //TODO: TARAS: if user has facebook account but not email - no need to create password
             mailService.sendAutoRegistrationConfirmEmail(customer, lead, order.getDetails(), questionAnswers, true);
         }
 

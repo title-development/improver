@@ -2,6 +2,7 @@ package com.improver.controller;
 
 
 import com.improver.entity.Contractor;
+import com.improver.entity.Customer;
 import com.improver.exception.AuthenticationRequiredException;
 import com.improver.exception.BadRequestException;
 import com.improver.model.in.OldNewValue;
@@ -56,14 +57,15 @@ public class RegistrationController {
 
     @PreAuthorize("isAnonymous()")
     @PostMapping(CUSTOMERS)
-    public ResponseEntity registerCustomer(@RequestBody @Valid UserRegistration customer, HttpServletRequest request) {
+    public ResponseEntity<LoginModel> registerCustomer(@RequestBody @Valid UserRegistration customer, HttpServletRequest request, HttpServletResponse res) {
         log.info("Registration of customer = {}", customer.getEmail());
         ReCaptchaResponse reCaptchaResponse = reCaptchaService.validate(customer.getCaptcha(), request.getRemoteAddr());
         if(!reCaptchaResponse.isSuccess()) {
             throw new AuthenticationRequiredException(CAPTCHA_VALIDATION_ERROR_MESSAGE);
         }
-        registrationService.registerCustomer(customer);
-        return new ResponseEntity(HttpStatus.OK);
+        Customer registered = registrationService.registerCustomer(customer);
+        LoginModel loginModel = userSecurityService.performUserLogin(registered, res);
+        return new ResponseEntity<>(loginModel, HttpStatus.OK);
     }
 
 

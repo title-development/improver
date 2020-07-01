@@ -51,31 +51,60 @@ public class UserSecurityService implements UserDetailsService {
     @Value("${spring.profiles.active:Unknown}") private String activeProfile;
     @Value("${server.domain}") private String serverDomain;
 
+
     /**
      * Intended to be used by {@link LoginFilter}.
-     *
+     * Handles {@link User.Role#INCOMPLETE_PRO} activation scenario.
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(username)
             .orElseThrow(() -> new UsernameNotFoundException(String.format("No user found with username '%s'.", username)));
-        return user instanceof Contractor ? ofContractor((Contractor) user)
-            : new UserDetailsImpl(user);
+        if  (user instanceof Contractor) {
+            Contractor contractor = (Contractor) user;
+            User.Role role = contractor.isIncomplete() ? INCOMPLETE_PRO : contractor.getRole();
+            return new UserDetailsImpl(contractor.getEmail(), contractor.getPassword(), !contractor.isDeleted(), !contractor.isBlocked(),
+                contractor.isIncomplete() || contractor.isActivated(),
+                Collections.singletonList(new SimpleGrantedAuthority(role.toString())));
+        }
+        if (user instanceof Customer) {
+            return new UserDetailsImpl(user, true);
+        }
+        return new UserDetailsImpl(user);
     }
 
+
     /**
+     * Performs account security check for given user.
      * Handles {@link User.Role#INCOMPLETE_PRO} activation scenario.
      *
+     * @param user - user to check
+     * @throws DisabledException           - when account not activated
+     * @throws LockedException             - when account is blocked
+     * @throws CredentialsExpiredException - for {@link Staff} only,  when credentials expired
+     * @throws AccountExpiredException     - when account was deleted
      */
-    private UserDetailsImpl ofContractor(Contractor contractor){
-        User.Role role = contractor.isIncomplete()? INCOMPLETE_PRO : contractor.getRole();
-        return new UserDetailsImpl(contractor.getEmail(),
-            contractor.getPassword(),
-            !contractor.isDeleted(),
-            !contractor.isBlocked(),
-            true,
-            contractor.isIncomplete() || contractor.isActivated(),
-            Collections.singletonList(new SimpleGrantedAuthority(role.toString())));
+    public void checkUser(User user) throws DisabledException, LockedException, CredentialsExpiredException, AccountExpiredException {
+        if(!user.isActivated()) {
+            if (user instanceof Contractor && ((Contractor) user).isIncomplete()) {
+                log.debug("Pass through incomplete PRO " + user.getEmail());
+            } else if (user instanceof Customer) {
+                log.debug("Pass through not activated CUSTOMER " + user.getEmail());
+            } else {
+                throw new DisabledException(ACCOUNT_NOT_ACTIVATED_MSG);
+            }
+        }
+        if (user.isBlocked()) {
+            throw new LockedException(ACCOUNT_BLOCKED_MSG);
+        }
+        if (user.isDeleted()) {
+            throw new AccountExpiredException(ACCOUNT_DELETED_MSG);
+        }
+        if (user instanceof Staff) {
+            if (((Staff) user).isCredentialExpired()) {
+                throw new CredentialsExpiredException(CREDENTIALS_EXPIRED_MSG);
+            }
+        }
     }
 
     public User currentUser() throws AuthenticationRequiredException {
@@ -185,36 +214,7 @@ public class UserSecurityService implements UserDetailsService {
         return buildLoginModel(currentUser);
     }
 
-    /**
-     * Performs account security check for given user.
-     * Handles {@link User.Role#INCOMPLETE_PRO} activation scenario.
-     *
-     * @param user - user to check
-     * @throws DisabledException           - when account not activated
-     * @throws LockedException             - when account is blocked
-     * @throws CredentialsExpiredException - for {@link Staff} only,  when credentials expired
-     * @throws AccountExpiredException     - when account was deleted
-     */
-    public void checkUser(User user) throws DisabledException, LockedException, CredentialsExpiredException, AccountExpiredException {
-        if(!user.isActivated()) {
-            if (user instanceof Contractor && ((Contractor) user).isIncomplete()) {
-                log.debug("Pass through incomplete PRO " + user.getEmail());
-            } else {
-                throw new DisabledException(ACCOUNT_NOT_ACTIVATED_MSG);
-            }
-        }
-        if (user.isBlocked()) {
-            throw new LockedException(ACCOUNT_BLOCKED_MSG);
-        }
-        if (user.isDeleted()) {
-            throw new AccountExpiredException(ACCOUNT_DELETED_MSG);
-        }
-        if (user instanceof Staff) {
-            if (((Staff) user).isCredentialExpired()) {
-                throw new CredentialsExpiredException(CREDENTIALS_EXPIRED_MSG);
-            }
-        }
-    }
+
 
 
     /**
@@ -239,7 +239,7 @@ public class UserSecurityService implements UserDetailsService {
                 displayName = company.getName();
             }
         }
-        return new LoginModel(user.getId(), iconUrl, displayName, role, companyId, user.getRefreshId(), user.getEmail());
+        return new LoginModel(user.getId(), iconUrl, displayName, role, user.isActivated(), companyId, user.getRefreshId(), user.getEmail());
     }
 
     private String loggedUserEmail() {

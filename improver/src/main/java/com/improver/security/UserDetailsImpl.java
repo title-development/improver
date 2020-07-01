@@ -15,7 +15,7 @@ public class UserDetailsImpl implements UserDetails {
     private final String password;
     private final boolean isAccountNonExpired;
     private final boolean isAccountNonLocked;
-    private final boolean isCredentialsNonExpired;
+    private final boolean isCredentialsNonExpired = true;
     private final boolean isEnabled;
     private final List<SimpleGrantedAuthority> authorities;
 
@@ -25,8 +25,16 @@ public class UserDetailsImpl implements UserDetails {
         this.password = user.getPassword();
         this.isAccountNonExpired = !user.isDeleted();
         this.isAccountNonLocked = !user.isBlocked();
-        this.isCredentialsNonExpired = true;
         this.isEnabled = user.isActivated();
+        this.authorities = Collections.singletonList(new SimpleGrantedAuthority(user.getRole().toString()));
+    }
+
+    public UserDetailsImpl(User user, boolean isEnabled) {
+        this.username = user.getEmail();
+        this.password = user.getPassword();
+        this.isAccountNonExpired = !user.isDeleted();
+        this.isAccountNonLocked = !user.isBlocked();
+        this.isEnabled = isEnabled;
         this.authorities = Collections.singletonList(new SimpleGrantedAuthority(user.getRole().toString()));
     }
 

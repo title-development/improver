@@ -322,9 +322,10 @@ public class LeadService {
 
 
     public void putPendingOrdersToMarket(Customer customer) {
-        List<Project> projects = projectRepository.findByCustomerIdAndIsLeadAndStatusIn(customer.getId(), false, Project.Status.getActive());
+        List<Project> projects = projectRepository.findByCustomerIdAndIsLeadAndStatusIn(customer.getId(), false, Collections.singletonList(Project.Status.PENDING));
         projects.forEach(lead -> {
-            lead.setLead(true);
+            lead.setLead(true)
+                .setStatus(Project.Status.ACTIVE);
             projectRepository.save(lead);
             // will be executed in the same thread
             matchLeadWithSubscribers(lead);

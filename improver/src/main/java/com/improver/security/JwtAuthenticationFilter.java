@@ -95,7 +95,6 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         if (requestMatcher.matches(request)) {
-            log.debug(request.getMethod() + " " + request.getRequestURI() + Optional.ofNullable(request.getQueryString()).map(q -> "?" + q).orElse(""));
             try {
                 Authentication authentication;
                 try {
@@ -116,6 +115,8 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 String name = Optional.ofNullable(authentication).map(Principal::getName).orElse("anonymous");
                 MDC.put(MDC_USERNAME_KEY, name);
+                log.debug(request.getMethod() + " " + request.getRequestURI() + Optional.ofNullable(request.getQueryString()).map(q -> "?" + q).orElse(""));
+
 
                 filterChain.doFilter(request, response);
             } finally {

@@ -8,6 +8,7 @@ import com.improver.repository.ImageRepository;
 import com.improver.repository.ProjectImageRepository;
 import com.improver.repository.UserRepository;
 import com.improver.service.ImageService;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 import static com.improver.application.properties.Path.*;
 import static com.improver.application.properties.Path.ICON;
 
-
+@Slf4j
 @RestController
 public class ImageController {
     @Autowired private ImageRepository imageRepository;
@@ -70,6 +71,9 @@ public class ImageController {
     public ResponseEntity<Resource> getUserIcon(@PathVariable("id") long id) {
         String iconUrl = userRepository.getIconUrl(id)
             .orElseThrow(NotFoundException::new);
+
+        // TODO: simplify this
+        log.debug("Icon=" + iconUrl);
         return getImageByURL(iconUrl);
     }
 
