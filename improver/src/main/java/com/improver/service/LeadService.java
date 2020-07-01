@@ -6,8 +6,7 @@ import com.improver.exception.ConflictException;
 import com.improver.exception.NotFoundException;
 import com.improver.exception.PaymentFailureException;
 import com.improver.exception.ValidationException;
-import com.improver.model.in.OrderDetails;
-import com.improver.model.in.QuestionAnswer;
+import com.improver.model.in.Order;
 import com.improver.model.out.project.Lead;
 import com.improver.model.out.project.ShortLead;
 import com.improver.repository.*;
@@ -161,15 +160,15 @@ public class LeadService {
         if (isManual) {
             mailService.sendManualLeadPurchaseEmail(assignment, projectRequest);
         } else {
-            List <QuestionAnswer> questionAnswers = SerializationUtil.fromJson(new TypeReference<List<QuestionAnswer>>() {}, lead.getDetails());
-            OrderDetails orderDetails = new OrderDetails()
+            List <Order.QuestionAnswer> questionAnswers = SerializationUtil.fromJson(new TypeReference<>() {}, lead.getDetails());
+            Order.BaseLeadInfo baseLeadInfo = new Order.BaseLeadInfo()
                 .setStartExpectation(lead.getStartDate())
                 .setNotes(lead.getNotes())
                 .setStreetAddress(lead.getLocation().getStreetAddress())
                 .setCity(lead.getLocation().getCity())
                 .setState(lead.getLocation().getState())
                 .setZip(lead.getLocation().getZip());
-            mailService.sendLeadAutoPurchaseEmail(company, lead, projectRequest, orderDetails, questionAnswers, true);
+            mailService.sendLeadAutoPurchaseEmail(company, lead, projectRequest, baseLeadInfo, questionAnswers, true);
             wsNotificationService.newSubscriptionLeadPurchase(assignment, lead.getCustomer(), serviceType, projectRequest.getId());
         }
         mailService.sendNewProposalEmail(company, lead);

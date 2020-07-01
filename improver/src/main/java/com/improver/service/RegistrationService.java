@@ -3,7 +3,7 @@ package com.improver.service;
 import com.improver.entity.*;
 import com.improver.exception.*;
 import com.improver.model.in.OldNewValue;
-import com.improver.model.in.OrderDetails;
+import com.improver.model.in.Order;
 import com.improver.model.in.registration.CompanyDetails;
 import com.improver.model.in.registration.CompanyRegistration;
 import com.improver.model.in.registration.UserRegistration;
@@ -49,12 +49,12 @@ public class RegistrationService {
     /**
      * Used during service order to create new Customer
      */
-    public Customer autoRegisterCustomer(OrderDetails orderDetails) {
+    public Customer autoRegisterCustomer(Order.BaseLeadInfo baseLeadInfo) {
         UserRegistration registration = new UserRegistration()
-            .setEmail(orderDetails.getEmail())
-            .setFirstName(orderDetails.getFirstName())
-            .setLastName(orderDetails.getLastName())
-            .setPhone(orderDetails.getPhone());
+            .setEmail(baseLeadInfo.getEmail())
+            .setFirstName(baseLeadInfo.getFirstName())
+            .setLastName(baseLeadInfo.getLastName())
+            .setPhone(baseLeadInfo.getPhone());
         return customerRepository.save(new Customer(registration).generateValidationKey());
     }
 

@@ -66,6 +66,7 @@ public class BillingController {
     }
 
 
+    //TODO: Move to CompanySettingsController
     @CompanyMemberOrSupportAccess
     @GetMapping(SUBSCRIPTION)
     public ResponseEntity<SubscriptionInfo> getSubscription(@PathVariable long companyId) {
@@ -82,6 +83,7 @@ public class BillingController {
     }
 
 
+    //TODO: Move to CompanySettingsController
     @CompanyMemberOrSupportAccess
     @PutMapping(SUBSCRIPTION)
     public ResponseEntity<Subscription> subscribe(@PathVariable long companyId,
@@ -97,6 +99,7 @@ public class BillingController {
         return new ResponseEntity<>(subscription, HttpStatus.OK);
     }
 
+    //TODO: Move to CompanySettingsController
     @CompanyMemberOrSupportAccess
     @DeleteMapping(SUBSCRIPTION)
     public ResponseEntity<Void> unsubscribe(@PathVariable long companyId, @RequestHeader int timeZoneOffset) {
@@ -168,6 +171,7 @@ public class BillingController {
     }
 
 
+    //TODO: Move to somewhere else
     @CompanyMemberOrSupportAccess
     @GetMapping(LEADS + "/report")
     public ResponseEntity<CompanyLeadsReport> getCompanyLeadsReport(@PathVariable long companyId) {

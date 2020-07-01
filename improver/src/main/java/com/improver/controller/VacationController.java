@@ -16,7 +16,7 @@ import static com.improver.application.properties.Path.*;
 
 @RestController
 @RequestMapping(COMPANIES_PATH)
-public class UnavailabilityPeriodController {
+public class VacationController {
 
     @Autowired private UnavailabilityPeriodService unavailabilityPeriodService;
     @Autowired private CompanyRepository companyRepository;

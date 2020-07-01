@@ -21,13 +21,13 @@ import java.util.UUID;
 public class PhoneService {
 
     public static final int CODE_LENGTH = 4;
-    public static final String MESSAGE = "Home Improve. Verification code: ";
+    public static final String MESSAGE_TAIL = " code for Home Improve.";
     public static final String SIMULATION_CODE = "1111";
 
     @Value("${account.twilio.sid}") private String twilioAccountSid;
     @Value("${account.twilio.auth.token}") private String twilioAuthToken;
-    @Value("${account.twilio.phone.number}") private String twilioPhoneNumber;
-    @Value("${phone.country.code}") private String phoneCountryCode;
+    @Value("${account.twilio.phone.number}") private String twilio;
+    @Value("${phone.country.code}") private String countryCode;
     @Value("${phone.validation.enabled}") private boolean verificationEnabled;
 
     @Autowired private PhoneValidationRepository phoneValidationRepository;
@@ -37,36 +37,30 @@ public class PhoneService {
         Twilio.init(twilioAccountSid, twilioAuthToken);
     }
 
-    public String requestPhoneValidation(String phoneNumber) {
 
+    public String requestPhoneValidation(String phoneNumber) {
         if(!verificationEnabled) {
             return simulatePhoneValidation();
         }
-
         String validationCode = generateRandomNumber(CODE_LENGTH);
-
         Message message = Message
-            .creator(new PhoneNumber(phoneCountryCode + phoneNumber), // to
-                new PhoneNumber(twilioPhoneNumber), // from
-                MESSAGE + validationCode)
+            .creator(new PhoneNumber(countryCode + phoneNumber), // to
+                new PhoneNumber(twilio), // from
+                 validationCode + MESSAGE_TAIL)
             .create();
-
         String messageSid = message.getSid();
-
         phoneValidationRepository.save(new PhoneValidation()
             .setMessageSid(messageSid)
             .setCode(validationCode));
-
         return messageSid;
     }
 
+
     public String simulatePhoneValidation() {
         String messageSid = UUID.randomUUID().toString();
-
         phoneValidationRepository.save(new PhoneValidation()
             .setMessageSid(messageSid)
             .setCode(SIMULATION_CODE));
-
         return messageSid;
     }
 

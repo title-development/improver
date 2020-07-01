@@ -4,7 +4,6 @@ import com.improver.entity.*;
 import com.improver.exception.NotFoundException;
 import com.improver.exception.ValidationException;
 import com.improver.model.in.Order;
-import com.improver.model.in.OrderDetails;
 import com.improver.repository.*;
 import com.improver.service.ReviewService;
 import com.improver.util.enums.State;
@@ -183,7 +182,7 @@ public class TestDataInitializer {
     private Project createLead(String serviceName, Customer customer) {
         ServiceType serviceType = serviceTypeRepository.findByName(serviceName);
         Order order = OrderHelper.generateFor(serviceName);
-        OrderDetails details = order.getDetails();
+        Order.BaseLeadInfo details = order.getBaseLeadInfo();
         Centroid centroid = servedZipRepository.findByZip(details.getLocation().getZip())
             .orElseThrow(() -> new ValidationException("zip not found"))
             .getCentroid();
@@ -197,7 +196,7 @@ public class TestDataInitializer {
             .setLocation(details.getLocation())
             .setStartDate(details.getStartExpectation())
             .setDetails(SerializationUtil.toJson(order.getQuestionary()))
-            .setNotes(order.getDetails().getNotes())
+            .setNotes(order.getBaseLeadInfo().getNotes())
             .setStatus(Project.Status.ACTIVE)
             .setCreated(getFreshRandomDate());
         return projectRepository.save(project);

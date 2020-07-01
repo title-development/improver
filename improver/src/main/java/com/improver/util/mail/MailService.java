@@ -2,8 +2,7 @@ package com.improver.util.mail;
 
 import com.improver.application.properties.BusinessProperties;
 import com.improver.entity.*;
-import com.improver.model.in.OrderDetails;
-import com.improver.model.in.QuestionAnswer;
+import com.improver.model.in.Order;
 import com.improver.model.out.billing.PaymentCard;
 import com.improver.model.tmp.UnreadProjectMessageInfo;
 import com.improver.repository.AdminRepository;
@@ -238,7 +237,7 @@ public class MailService {
      *                                                  CUSTOMER
      ********************************************************************************************************/
 
-    public void sendAutoRegistrationConfirmEmail(Customer customer, Project project, OrderDetails details, List<QuestionAnswer> answers, boolean showAnswers) {
+    public void sendAutoRegistrationConfirmEmail(Customer customer, Project project, Order.BaseLeadInfo details, List<Order.QuestionAnswer> answers, boolean showAnswers) {
         Context context = contextTemplate();
         String serviceType = project.getServiceType().getName();
         context.setVariable(USER_NAME, customer.getFirstName());
@@ -258,7 +257,7 @@ public class MailService {
     }
 
 
-    public void sendOrderSubmitMail(Customer customer, Project project, OrderDetails details, List<QuestionAnswer> answers, boolean showAnswers) {
+    public void sendOrderSubmitMail(Customer customer, Project project, Order.BaseLeadInfo details, List<Order.QuestionAnswer> answers, boolean showAnswers) {
         Context context = contextTemplate();
         String serviceType = project.getServiceType().getName();
         context.setVariable(USER_NAME, customer.getFirstName());
@@ -419,18 +418,18 @@ public class MailService {
      *
      * @param company            contractor that purchased lead
      * @param projectRequest     projectRequest created after purchase
-     * @param orderDetails       lead details from questionary forms
+     * @param baseLeadInfo       lead details from questionary forms
      * @param answers            lead question answer from questionary form
      * @param showAnswers        add answers to context
      */
-    public void sendLeadAutoPurchaseEmail(Company company, Project project, ProjectRequest projectRequest, OrderDetails orderDetails, List<QuestionAnswer> answers, boolean showAnswers) {
+    public void sendLeadAutoPurchaseEmail(Company company, Project project, ProjectRequest projectRequest, Order.BaseLeadInfo baseLeadInfo, List<Order.QuestionAnswer> answers, boolean showAnswers) {
         Context context = contextTemplate();
         context.setVariable(USER_NAME, projectRequest.getContractor().getDisplayName());
         context.setVariable(TITLE, "You received new subscription lead");
         context.setVariable(BODY, highlight(project.getServiceType().getName()) +
             " request from " +
             highlight(project.getCustomer().getDisplayName()));
-        context.setVariable("projectDetails", orderDetails);
+        context.setVariable("projectDetails", baseLeadInfo);
         if (showAnswers){
             context.setVariable("answers", answers);
         }

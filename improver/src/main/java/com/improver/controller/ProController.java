@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import static com.improver.application.properties.Path.ID_PATH_VARIABLE;
 import static com.improver.application.properties.Path.PROS_PATH;
 
-
+@Deprecated
 @RestController
 @RequestMapping(PROS_PATH)
 public class ProController {

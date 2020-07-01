@@ -6,9 +6,6 @@ import com.improver.exception.InvalidAnswerException;
 import com.improver.exception.ThirdPartyException;
 import com.improver.exception.ValidationException;
 import com.improver.model.in.Order;
-import com.improver.model.in.OrderDetails;
-import com.improver.model.in.QuestionAnswer;
-import com.improver.model.in.registration.UserRegistration;
 import com.improver.model.out.ValidatedLocation;
 import com.improver.repository.*;
 import com.improver.util.mail.MailService;
@@ -47,26 +44,24 @@ public class OrderService {
         customer = Optional.ofNullable(customer)
             .orElseGet(() -> getExistingOrRegister(order));
 
-        if (order.getDetails().getPhone() != null){
-            customer.setInternalPhone(order.getDetails().getPhone());
+        if (order.getBaseLeadInfo().getPhone() != null){
+            customer.setInternalPhone(order.getBaseLeadInfo().getPhone());
             customerRepository.save(customer);
         }
 
         Project lead;
-        List<QuestionAnswer> questionAnswers;
+        List<Order.QuestionAnswer> questionAnswers;
         if(customer.isActivated()) {
             lead = saveProjectOrder(income.setCustomer(customer));
             log.info("Lead id={} saved and put to market", lead.getId());
-            questionAnswers = SerializationUtil.fromJson(new TypeReference<List<QuestionAnswer>>() {}, lead.getDetails());
-            mailService.sendOrderSubmitMail(customer, lead, order.getDetails(), questionAnswers, true);
+            questionAnswers = SerializationUtil.fromJson(new TypeReference<>() {}, lead.getDetails());
+            mailService.sendOrderSubmitMail(customer, lead, order.getBaseLeadInfo(), questionAnswers, true);
         } else {
             income.setLead(false);
-            income.setStatus(Project.Status.PENDING);
             lead = saveProjectOrder(income.setCustomer(customer));
             log.info("Project id={} saved, but require customer activation", lead.getId());
-            questionAnswers = SerializationUtil.fromJson(new TypeReference<List<QuestionAnswer>>() {}, lead.getDetails());
-            //TODO: TARAS: if user has facebook account but not email - no need to create password
-            mailService.sendAutoRegistrationConfirmEmail(customer, lead, order.getDetails(), questionAnswers, true);
+            questionAnswers = SerializationUtil.fromJson(new TypeReference<>() {}, lead.getDetails());
+            mailService.sendAutoRegistrationConfirmEmail(customer, lead, order.getBaseLeadInfo(), questionAnswers, true);
         }
 
 
@@ -78,8 +73,8 @@ public class OrderService {
     }
 
     private Customer getExistingOrRegister(Order order) {
-        return customerRepository.findByEmail(order.getDetails().getEmail())
-            .orElseGet(() -> registrationService.autoRegisterCustomer(order.getDetails()));
+        return customerRepository.findByEmail(order.getBaseLeadInfo().getEmail())
+            .orElseGet(() -> registrationService.autoRegisterCustomer(order.getBaseLeadInfo()));
     }
 
 
@@ -103,7 +98,7 @@ public class OrderService {
             .orElseThrow(() -> new ValidationException("ServiceType id = " + order.getServiceId() + " not exist"));
 
         // 2 Questionary
-        List<QuestionAnswer> validated = null;
+        List<Order.QuestionAnswer> validated = null;
         Questionary questionary = serviceType.getQuestionary();
 
         if (questionary != null) {
@@ -117,9 +112,9 @@ public class OrderService {
 
 
         // 3 Address
-        OrderDetails orderDetails = order.getDetails();
+        Order.BaseLeadInfo baseLeadInfo = order.getBaseLeadInfo();
         try {
-            ValidatedLocation validatedAddress = locationService.validate(orderDetails.getLocation(), false, true);
+            ValidatedLocation validatedAddress = locationService.validate(baseLeadInfo.getLocation(), false, true);
             if (!validatedAddress.isValid()) {
                 throw new ValidationException(validatedAddress.getError());
             }
@@ -130,8 +125,8 @@ public class OrderService {
             isSuitableForPurchase = false;
         }
 
-        Centroid centroid = servedZipRepository.findByZip(orderDetails.getLocation().getZip())
-            .orElseThrow(() -> new ValidationException(orderDetails.getLocation().getZip() + " ZIP Code is not in service area"))
+        Centroid centroid = servedZipRepository.findByZip(baseLeadInfo.getLocation().getZip())
+            .orElseThrow(() -> new ValidationException(baseLeadInfo.getLocation().getZip() + " ZIP Code is not in service area"))
             .getCentroid();
 
         return new Project()
@@ -140,9 +135,9 @@ public class OrderService {
             .setServiceType(serviceType)
             .setServiceName(serviceType.getName())
             .setLeadPrice(serviceType.getLeadPrice())
-            .setLocation(orderDetails.getLocation())
-            .setStartDate(orderDetails.getStartExpectation())
-            .setNotes(orderDetails.getNotes())
+            .setLocation(baseLeadInfo.getLocation())
+            .setStartDate(baseLeadInfo.getStartExpectation())
+            .setNotes(baseLeadInfo.getNotes())
             .setDetails(order.getQuestionary()!= null? SerializationUtil.toJson(order.getQuestionary()): null )
             .setStatus(status)
             .setCreated(ZonedDateTime.now())
@@ -154,19 +149,19 @@ public class OrderService {
 
 
 
-    private List<QuestionAnswer> validateQuestionary(List<QuestionAnswer> fromOrder, Questionary questionary) {
-        List<QuestionAnswer> result = new ArrayList<>();
+    private List<Order.QuestionAnswer> validateQuestionary(List<Order.QuestionAnswer> fromOrder, Questionary questionary) {
+        List<Order.QuestionAnswer> result = new ArrayList<>();
         if (fromOrder.size() != questionary.getQuestions().size()){
             throw new ValidationException("Answers for all questions are required");
         }
-        for(QuestionAnswer questionAnswer : fromOrder) {
+        for(Order.QuestionAnswer questionAnswer : fromOrder) {
             Question question = questionary.getQuestionByName(questionAnswer.getName());
             if (question == null) {
                 log.error("Question name=%s not exist!", questionAnswer.getName());
                 throw new ValidationException("Invalid Questionary");
             }
             try {
-                QuestionAnswer validated = validateAnswer(questionAnswer, question);
+                Order.QuestionAnswer validated = validateAnswer(questionAnswer, question);
                 result.add(validated);
             } catch (InvalidAnswerException e) {
                 log.error("Invalid Questionary. " + e.getMessage());
@@ -176,7 +171,7 @@ public class OrderService {
         return result;
     }
 
-    private QuestionAnswer validateAnswer(QuestionAnswer questionAnswer, Question question) throws InvalidAnswerException {
+    private Order.QuestionAnswer validateAnswer(Order.QuestionAnswer questionAnswer, Question question) throws InvalidAnswerException {
         if(question.isMultipleAnswers()) {
             long uniqueAnswers = questionAnswer.getResults().stream().distinct().count();
             if (uniqueAnswers != questionAnswer.getResults().size()) {
@@ -211,7 +206,7 @@ public class OrderService {
             }
         }
 
-        return new QuestionAnswer(question.getTitle(), questionAnswer.getResults());
+        return new Order.QuestionAnswer(question.getTitle(), questionAnswer.getResults());
     }
 
     private boolean containsAnswer(String answerLabel, Question question) {
