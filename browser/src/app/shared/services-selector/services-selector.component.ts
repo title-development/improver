@@ -7,7 +7,7 @@ import { TradeService } from '../../api/services/trade.service';
 import { ServiceTypeService } from '../../api/services/service-type.service';
 import { PopUpMessageService } from '../../util/pop-up-message.service';
 import { getErrorMessage } from '../../util/functions';
-import { ServiceType, Trade } from '../../model/data-model';
+import { OfferedServiceType, ServiceType, Trade } from '../../model/data-model';
 import { dialogsMap } from '../dialogs/dialogs.state';
 import { confirmDialogConfig } from '../dialogs/dialogs.configs';
 import { combineLatest, ReplaySubject, Subject } from 'rxjs';
@@ -48,6 +48,7 @@ export class ServicesSelectorComponent implements OnInit {
   dropdownHeight: number = 3;
   private readonly destroyed$ = new Subject<void>();
   errorMessage: string;
+  canDeleteTrade: EventEmitter<boolean> = new EventEmitter();
   model = {
     addingItem: ''
   };
@@ -91,7 +92,7 @@ export class ServicesSelectorComponent implements OnInit {
     this.tradesControl = new FormGroup(checkboxControlNames);
   }
 
-  onServiceCheck(item) {
+  onServiceCheck(item: OfferedServiceType) {
     this.tradesAndServiceTypes.services.forEach((service, index) => {
       if (service.id == item.id) {
         service.enabled = !service.enabled;
@@ -111,8 +112,40 @@ export class ServicesSelectorComponent implements OnInit {
 
       }
     });
+
     if (this.tradesAndServiceTypes.services.every(service => service.enabled == false)) {
       this.popUpMessageService.showWarning('You should have at least one Service');
+      this.activateServiceCheckbox(item);
+    }
+
+    this.isLastServiceInTrade(item);
+    this.updateTradesAndServices();
+  }
+
+  private isLastServiceInTrade(item: OfferedServiceType){
+    let allTradeServices: Array<OfferedServiceType> = [];
+    this.tradesAndServiceTypes.services.forEach( (service: OfferedServiceType) => {
+      if (service.parentId == item.parentId){
+        allTradeServices.push(service);
+      }
+    });
+
+    if (allTradeServices.every(service => service.enabled == false)) {
+      this.tradesAndServiceTypes.trades.forEach((trade: Trade) => {
+        if (trade.id == item.parentId) {
+          this.removeTrade(trade);
+        }
+      });
+      this.canDeleteTrade.subscribe(canDelete => {
+        if (!canDelete) {
+          this.activateServiceCheckbox(item);
+          this.updateTradesAndServices();
+        }
+      })
+    }
+  }
+
+  private activateServiceCheckbox(item) {
       this.tradesAndServiceTypes.services.forEach((service, index) => {
         if (service.id == item.id) {
           let tradeIndex = this.tradesAndServiceTypes.trades.findIndex((obj => obj.id == service.parentId));
@@ -123,8 +156,6 @@ export class ServicesSelectorComponent implements OnInit {
           }, 0);
         }
       });
-    }
-    this.updateTradesAndServices();
   }
 
   handleCompanyTradesAndServiceTypes() {
@@ -322,6 +353,9 @@ export class ServicesSelectorComponent implements OnInit {
 
     this.confirmDialogRef.componentInstance.properties = properties;
     this.confirmDialogRef.componentInstance.object = trade;
+    this.confirmDialogRef.componentInstance.onCancel.subscribe( () => {
+      this.canDeleteTrade.emit(false);
+    });
     this.confirmDialogRef.componentInstance.onConfirm.subscribe(
       trade => {
         if (trade.id == 0) {
@@ -340,6 +374,7 @@ export class ServicesSelectorComponent implements OnInit {
           });
         }
         this.updateTradesAndServices();
+        this.canDeleteTrade.emit(true);
       },
       err => {
         this.popUpMessageService.showError(getErrorMessage(err));

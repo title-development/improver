@@ -16,7 +16,7 @@
     </div>
 
     <div class="actions" >
-      <button cv-button-flat flatStyle="dark" (click)="close()" *ngIf="!properties.confirmOnly">{{properties.CANCEL}}</button>
+      <button cv-button-flat flatStyle="dark" (click)="cancel()" *ngIf="!properties.confirmOnly">{{properties.CANCEL}}</button>
       <button cv-button (click)="confirm()" class="confirm">{{properties.OK}}</button>
     </div>
 

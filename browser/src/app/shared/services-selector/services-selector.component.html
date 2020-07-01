@@ -28,7 +28,7 @@
         </div>
       </div>
 
-      <mat-icon>search</mat-icon>
+      <mat-icon class="search">search</mat-icon>
 
     </form>
 
@@ -53,6 +53,9 @@
                     <div class="service-type" [ngClass]="{'-highlight': item?.highlight}">
                       <div class="custom-check-box"></div>
                       <div class="service-type-name">{{item.name}}</div>
+                      <div class="service-type-price">
+                        <div>${{item.leadPrice / 100}}</div>
+                      </div>
                     </div>
                   </ng-template>
                 </cv-checkbox-group>

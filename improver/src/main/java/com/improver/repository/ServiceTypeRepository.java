@@ -3,6 +3,7 @@ package com.improver.repository;
 import com.improver.entity.ServiceType;
 import com.improver.model.NameIdParentTuple;
 import com.improver.model.NameIdTuple;
+import com.improver.model.OfferedService;
 import com.improver.model.admin.AdminServiceType;
 import com.improver.model.admin.out.Record;
 import com.improver.model.out.NameIdImageTuple;
@@ -54,13 +55,17 @@ public interface ServiceTypeRepository extends JpaRepository<ServiceType, Long> 
         " INNER JOIN s.trades t WHERE t.id = ?1 ORDER BY s.name ASC")
     List<NameIdTuple> getByTradeId(long id);
 
-    @Query("SELECT new com.improver.model.NameIdTuple(s.id, s.name) FROM com.improver.entity.ServiceType s" +
+    @Query("SELECT new com.improver.model.OfferedService(s.id, s.name, s.leadPrice) FROM com.improver.entity.ServiceType s" +
         " INNER JOIN s.trades t WHERE s.isActive = true AND t.id = ?1 ORDER BY s.name ASC")
-    List<NameIdTuple> getActiveByTradeId(long id);
+    List<OfferedService> getActiveByTradeId(long id);
 
     @Query("SELECT new com.improver.model.NameIdParentTuple(s.id, s.name, t.id) FROM com.improver.entity.ServiceType s" +
         " INNER JOIN s.trades t WHERE s.isActive = true AND t.id IN ?1 ORDER BY s.name ASC")
     List<NameIdParentTuple> getActiveByTradeIds(List<Long> ids);
+
+    @Query("SELECT new com.improver.model.OfferedService(s.id, s.name, s.leadPrice, t.id) FROM com.improver.entity.ServiceType s" +
+            " INNER JOIN s.trades t WHERE s.isActive = true AND t.id IN ?1 ORDER BY s.name ASC")
+    List<OfferedService> getTradeServicesByIds(List<Long> ids);
 
     @Query("SELECT new com.improver.model.NameIdTuple(s.id, s.name) FROM com.improver.entity.ServiceType s" +
         " WHERE s.isActive = true ORDER BY s.name ASC")
@@ -117,19 +122,19 @@ public interface ServiceTypeRepository extends JpaRepository<ServiceType, Long> 
 
     // COMPANY SERVICES
 
-    @Query("SELECT new com.improver.model.NameIdParentTuple(s.id, s.name, t.id) FROM com.improver.entity.ServiceType s" +
-        " INNER JOIN s.trades t ON t.id IN ?2" +
-        " INNER JOIN s.companies c ON c.id = ?1" +
-        " ORDER BY s.name ASC")
-    List<NameIdParentTuple> getByCompanyAndTrades(long companyId, List<Long> tradeIds);
+    @Query("SELECT new com.improver.model.OfferedService(s.id, s.name, s.leadPrice, t.id) FROM com.improver.entity.ServiceType s " +
+           "INNER JOIN s.trades t ON t.id IN ?2 " +
+           "INNER JOIN s.companies c ON c.id = ?1 " +
+           "ORDER BY s.name ASC")
+    List<OfferedService> getByCompanyAndTrades(long companyId, List<Long> tradeIds);
 
-    @Query("SELECT new com.improver.model.NameIdTuple(s.id, s.name) FROM com.improver.entity.ServiceType s" +
-        " INNER JOIN s.companies c ON c.id = ?1 WHERE s.isActive = true AND s.id NOT IN ?2")
-    List<NameIdTuple> getCompanyServicesExcept(long companyId, List<Long> serviceIds);
+    @Query("SELECT new com.improver.model.OfferedService(s.id, s.name, s.leadPrice) FROM com.improver.entity.ServiceType s " +
+           "INNER JOIN s.companies c ON c.id = ?1 WHERE s.isActive = true AND s.id NOT IN ?2")
+    List<OfferedService> getCompanyServicesExcept(long companyId, List<Long> serviceIds);
 
-    @Query("SELECT new com.improver.model.NameIdTuple(s.id, s.name) FROM com.improver.entity.ServiceType s" +
-        " INNER JOIN s.companies c ON c.id = ?1 WHERE s.isActive = true")
-    List<NameIdTuple> getAllCompanyServices(long companyId);
+    @Query("SELECT new com.improver.model.OfferedService(s.id, s.name, s.leadPrice) FROM com.improver.entity.ServiceType s " +
+           "INNER JOIN s.companies c ON c.id = ?1 WHERE s.isActive = true")
+    List<OfferedService> getAllCompanyServices(long companyId);
 
     @Query("SELECT new com.improver.model.NameIdTuple(s.id, s.name) FROM com.improver.entity.Company c " +
         "LEFT JOIN c.serviceTypes s " +

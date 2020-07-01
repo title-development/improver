@@ -4,7 +4,10 @@ import com.improver.entity.*;
 import com.improver.exception.InternalServerException;
 import com.improver.exception.ThirdPartyException;
 import com.improver.exception.ValidationException;
-import com.improver.model.*;
+import com.improver.model.NameIdTuple;
+import com.improver.model.OfferedService;
+import com.improver.model.ProNotificationSettings;
+import com.improver.model.TradesServicesCollection;
 import com.improver.model.out.CompanyCoverageConfig;
 import com.improver.model.out.ValidatedLocation;
 import com.improver.repository.*;
@@ -140,11 +143,11 @@ public class CompanyConfigService {
             .collect(Collectors.toList());
 
         // 2. Services with Trades
-        List<NameIdParentTuple> selectedWithTrades;
-        List<NameIdParentTuple> allServicesFromTrades;
+        List<OfferedService> selectedWithTrades;
+        List<OfferedService> allServicesFromTrades;
         if (!tradeIds.isEmpty()) {
             selectedWithTrades = serviceTypeRepository.getByCompanyAndTrades(company.getId(), tradeIds);
-            allServicesFromTrades = serviceTypeRepository.getActiveByTradeIds(tradeIds);
+            allServicesFromTrades = serviceTypeRepository.getTradeServicesByIds(tradeIds);
         } else {
             selectedWithTrades = Collections.emptyList();
             allServicesFromTrades = Collections.emptyList();
@@ -153,21 +156,21 @@ public class CompanyConfigService {
         List<OfferedService> offeredServices = allServicesFromTrades.stream()
             .map(service -> {
                 boolean enabled = selectedWithTrades.contains(service);
-                return new OfferedService(service.getId(), service.getName(), enabled, service.getParentId());
+                return service.setEnabled(enabled);
             })
             .collect(Collectors.toList());
 
         // 3. Other Services
         List<Long> serviceIds = selectedWithTrades.stream()
-            .map(NameIdParentTuple::getId)
+            .map(OfferedService::getId)
             .collect(Collectors.toList());
-        List<NameIdTuple> otherServices;
+        List<OfferedService> otherServices;
         if (serviceIds.isEmpty()) {
             otherServices = serviceTypeRepository.getAllCompanyServices(company.getId());
         } else {
             otherServices = serviceTypeRepository.getCompanyServicesExcept(company.getId(), serviceIds);
         }
-        otherServices.forEach(service -> offeredServices.add(new OfferedService(service.getId(), service.getName(), true, 0)));
+        otherServices.forEach(service -> offeredServices.add(service.setEnabled(true)));
 
         offeredServices.sort(Comparator.comparing(OfferedService::getName));
         return new TradesServicesCollection()
@@ -181,7 +184,7 @@ public class CompanyConfigService {
             .map(NameIdTuple::getId)
             .collect(Collectors.toList());
         List<Long> serviceIds = tradesServicesCollection.getServices().stream()
-            .filter(OfferedService::isEnabled)
+            .filter(OfferedService::getEnabled)
             .map(OfferedService::getId)
             .collect(Collectors.toList());
         List<Trade> trades = tradeRepository.findByIdIn(tradeIds);

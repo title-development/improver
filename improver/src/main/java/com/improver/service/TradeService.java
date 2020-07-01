@@ -46,10 +46,6 @@ public class TradeService {
         return trades;
     }
 
-    public List<NameIdTuple> getActiveServicesForTrade(long id) {
-        return serviceTypeRepository.getActiveByTradeId(id);
-    }
-
     public List<TradeAndServices> getAllTradesAndServices() {
         List<NameIdTuple> trades = tradeRepository.getAllAsModels();
         List<Long> tradeIds = trades.stream()

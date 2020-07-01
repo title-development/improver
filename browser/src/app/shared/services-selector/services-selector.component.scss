@@ -1,7 +1,7 @@
 @import "../../../improver-mixins.scss";
 
 
-.mat-icon {
+.search {
   position: absolute;
   background-color: transparent;
   border: none;
@@ -169,6 +169,17 @@
                     display: flex;
                     font-size: 14px;
                     font-weight: 400;
+                  }
+
+                  .service-type-price {
+                    margin-left: 5px;
+                    display: flex;
+                    flex-direction: row;
+                    font-size: 14px;
+
+                    .money {
+                      font-size: 16px;
+                    }
                   }
 
                 }

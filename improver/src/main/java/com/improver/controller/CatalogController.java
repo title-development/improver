@@ -3,9 +3,8 @@ package com.improver.controller;
 import com.improver.entity.ServiceType;
 import com.improver.entity.Trade;
 import com.improver.model.NameIdTuple;
-import com.improver.model.out.NameIdImageTuple;
-import com.improver.model.out.TradeAndServices;
-import com.improver.model.out.TradeModel;
+import com.improver.model.OfferedService;
+import com.improver.model.out.*;
 import com.improver.repository.ServiceTypeRepository;
 import com.improver.repository.TradeRepository;
 import com.improver.service.ServiceTypeService;
@@ -112,8 +111,8 @@ public class CatalogController {
     }
 
     @GetMapping(TRADES + ID_PATH_VARIABLE + SERVICES)
-    public ResponseEntity<List<NameIdTuple>> getServices(@PathVariable long id) {
-        List<NameIdTuple> services = tradeService.getActiveServicesForTrade(id);
+    public ResponseEntity<List<OfferedService>> getServices(@PathVariable long id) {
+        List<OfferedService> services = serviceTypeRepository.getActiveByTradeId(id);
         return new ResponseEntity<>(services, HttpStatus.OK);
     }
 

@@ -124,6 +124,7 @@ export class OfferedServiceType {
   name: string;
   enabled: boolean;
   parentId: number;
+  leadPrice?: number;
 }
 
 export class TradesAndServiceTypes {

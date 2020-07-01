@@ -21,6 +21,7 @@ export class ConfirmDialogComponent implements OnInit {
 
   object: any;
   onConfirm :EventEmitter<any> = new EventEmitter<boolean>();
+  onCancel: EventEmitter<any> = new EventEmitter<boolean>();
 
   constructor(public currentDialogRef: MatDialogRef<any>,
               public dialog: MatDialog,
@@ -37,6 +38,11 @@ export class ConfirmDialogComponent implements OnInit {
 
   confirm() {
     this.onConfirm.emit(this.object);
+    this.currentDialogRef.close();
+  }
+
+  cancel() {
+    this.onCancel.emit(this.object);
     this.currentDialogRef.close();
   }
 
