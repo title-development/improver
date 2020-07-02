@@ -177,7 +177,7 @@ public class LeadService {
             mailService.sendLeadAutoPurchaseEmail(company, lead, projectRequest, baseLeadInfo, questionAnswers, true);
             wsNotificationService.newSubscriptionLeadPurchase(assignment, lead.getCustomer(), serviceType, projectRequest.getId());
         }
-        mailService.sendNewProposalEmail(company, lead);
+        mailService.sendNewProjectRequestEmail(company, lead);
         return projectRequest;
     }
 

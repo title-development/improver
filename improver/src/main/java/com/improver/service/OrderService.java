@@ -1,6 +1,5 @@
 package com.improver.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.improver.entity.*;
 import com.improver.exception.InvalidAnswerException;
 import com.improver.exception.ThirdPartyException;
@@ -10,8 +9,7 @@ import com.improver.model.out.ValidatedLocation;
 import com.improver.repository.*;
 import com.improver.util.mail.MailService;
 import com.improver.util.serializer.SerializationUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,11 +20,9 @@ import java.util.Optional;
 
 import static com.improver.util.serializer.SerializationUtil.NUMERIC_PATTERN;
 
+@Slf4j
 @Service
 public class OrderService {
-
-    private final Logger log = LoggerFactory.getLogger(getClass());
-
     @Autowired private ServiceTypeRepository serviceTypeRepository;
     @Autowired private LocationService locationService;
     @Autowired private RegistrationService registrationService;
@@ -44,33 +40,30 @@ public class OrderService {
         customer = Optional.ofNullable(customer)
             .orElseGet(() -> getExistingOrRegister(order));
 
+        //TODO: This will change with saved Customer addresses
         if (order.getBaseLeadInfo().getPhone() != null){
             customer.setInternalPhone(order.getBaseLeadInfo().getPhone());
             customerRepository.save(customer);
         }
 
         Project lead;
-        List<Order.QuestionAnswer> questionAnswers;
         if(customer.isActivated()) {
             lead = saveProjectOrder(income.setCustomer(customer));
-            log.info("Lead id={} saved and put to market", lead.getId());
-            questionAnswers = SerializationUtil.fromJson(new TypeReference<>() {}, lead.getDetails());
-            mailService.sendOrderSubmitMail(customer, lead, order.getBaseLeadInfo(), questionAnswers, true);
+            log.info("Lead id={} saved and put on market to match with subscribers", lead.getId());
+            mailService.sendOrderSubmitMail(customer, lead, order.getBaseLeadInfo(), true);
+            leadService.matchLeadWithSubscribers(lead);
         } else {
             income.setLead(false);
+            if (Project.Status.ACTIVE.equals(income.getStatus())){
+                income.setStatus(Project.Status.PENDING);
+            }
             lead = saveProjectOrder(income.setCustomer(customer));
             log.info("Project id={} saved, but require customer activation", lead.getId());
-            questionAnswers = SerializationUtil.fromJson(new TypeReference<>() {}, lead.getDetails());
-            mailService.sendAutoRegistrationConfirmEmail(customer, lead, order.getBaseLeadInfo(), questionAnswers, true);
+            //TODO: Taras: if user has facebook account but not email - no need to create password
+            mailService.sendAutoRegistrationConfirmEmail(customer, lead, order.getBaseLeadInfo(), true);
         }
-
-
-        if (lead.isLead()){
-            log.info("Lead id={} is about to match with subscribers", lead.getId());
-            leadService.matchLeadWithSubscribers(lead);
-        }
-
     }
+
 
     private Customer getExistingOrRegister(Order order) {
         return customerRepository.findByEmail(order.getBaseLeadInfo().getEmail())
@@ -118,6 +111,7 @@ public class OrderService {
             if (!validatedAddress.isValid()) {
                 throw new ValidationException(validatedAddress.getError());
             }
+        //TODO: Misha: this should be eliminated when use customer saved addresses
         } catch (ThirdPartyException e) {
             log.warn("Could not validate Address");
             systemComment = ProjectAction.systemComment("Address is not validated due to Shippo error");

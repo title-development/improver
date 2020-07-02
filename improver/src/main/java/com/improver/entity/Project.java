@@ -53,7 +53,6 @@ public class Project implements ImageContainable {
 
     private String startDate;
 
-    @JsonRawValue
     @Column(columnDefinition = "varchar(16000)")
     private String details;
 

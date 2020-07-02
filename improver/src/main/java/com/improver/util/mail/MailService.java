@@ -1,5 +1,6 @@
 package com.improver.util.mail;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.improver.application.properties.BusinessProperties;
 import com.improver.entity.*;
 import com.improver.model.in.Order;
@@ -45,7 +46,7 @@ public class MailService {
     private static final String HOME_IMPROVE = "Home Improve";
 
     // Email Subjects
-    private static final String SBJ_CONFIRM_REGISTRATION = " Сonfirm your registration";
+    private static final String SBJ_CONFIRM_REGISTRATION = " Confirm your registration";
 
     // Templates
     private static final String NOTICE_TEMPLATE = "user/notice";
@@ -215,14 +216,12 @@ public class MailService {
             if (isForCustomers) {
                 userProjectRequestPath = siteUrl + CUSTOMER_PROJECTS + message.getProjectId() + "#" + message.getProjectRequestId();
                     body.append(String.format("You have new messages from %1$s in %2$s project <br>",
-                        highlight(message.getCompanyName()),
-                        highlight(message.getServiceTypeName())));
+                        message.getCompanyName(), message.getServiceTypeName()));
                 context.setVariable(CONFIRM_URL, userProjectRequestPath);
             } else {
                 userProjectRequestPath = siteUrl + PRO_PROJECTS + message.getProjectRequestId();
                     body.append(String.format("You have new messages from %1$s in %2$s project <br>",
-                        highlight(message.getClientName()),
-                        highlight(message.getServiceTypeName())));
+                        message.getClientName(), message.getServiceTypeName()));
                 context.setVariable(CONFIRM_URL, userProjectRequestPath);
             }
             context.setVariable(TITLE, title);
@@ -237,16 +236,16 @@ public class MailService {
      *                                                  CUSTOMER
      ********************************************************************************************************/
 
-    public void sendAutoRegistrationConfirmEmail(Customer customer, Project project, Order.BaseLeadInfo details, List<Order.QuestionAnswer> answers, boolean showAnswers) {
+    public void sendAutoRegistrationConfirmEmail(Customer customer, Project project, Order.BaseLeadInfo details, boolean showAnswers) {
         Context context = contextTemplate();
-        String serviceType = project.getServiceType().getName();
         context.setVariable(USER_NAME, customer.getFirstName());
         context.setVariable(TITLE, "Thank you for choosing Home Improve!");
-        context.setVariable("serviceType", serviceType);
-        context.setVariable(BODY, "You've requested request a " + highlight(serviceType));
+        context.setVariable("serviceType", project.getServiceName());
+        context.setVariable(BODY, "You've requested request a " + project.getServiceName());
         context.setVariable("projectDetails", details);
         if (showAnswers){
-            context.setVariable("answers", answers);
+            List<Order.QuestionAnswer> questionAnswers = SerializationUtil.fromJson(new TypeReference<>() {}, project.getDetails());
+            context.setVariable("answers", questionAnswers);
         }
         context.setVariable("message", "We've created a cabinet where you can manage your project and discuss details with Professionals. " +
             "Please confirm you email so we can start searching the best Professionals for your project. "  +
@@ -257,15 +256,15 @@ public class MailService {
     }
 
 
-    public void sendOrderSubmitMail(Customer customer, Project project, Order.BaseLeadInfo details, List<Order.QuestionAnswer> answers, boolean showAnswers) {
+    public void sendOrderSubmitMail(Customer customer, Project project, Order.BaseLeadInfo details, boolean showAnswers) {
         Context context = contextTemplate();
-        String serviceType = project.getServiceType().getName();
         context.setVariable(USER_NAME, customer.getFirstName());
         context.setVariable(TITLE, "Your project has been submitted!");
-        context.setVariable(BODY, "You've requested a " + highlight(serviceType) + ".");
+        context.setVariable(BODY, "You've requested a " + project.getServiceName()  + ".");
         context.setVariable("projectDetails", details);
         if (showAnswers){
-            context.setVariable("answers", answers);
+            List<Order.QuestionAnswer> questionAnswers = SerializationUtil.fromJson(new TypeReference<>() {}, project.getDetails());
+            context.setVariable("answers", questionAnswers);
         }
         context.setVariable("message", "We’re looking for the best Pros for your project. " +
             "This usually takes a few minutes. To view your project request please proceed to Home Improve.");
@@ -280,14 +279,13 @@ public class MailService {
      * @param company contractor that purchased lead
      * @param project project that is purchased
      */
-    public void sendNewProposalEmail(Company company, Project project) {
+    public void sendNewProjectRequestEmail(Company company, Project project) {
         Customer customer = project.getCustomer();
         Context context = contextTemplate();
         context.setVariable(USER_NAME, customer.getFirstName());
         context.setVariable(TITLE, "You have new project request");
-        context.setVariable(BODY, "New request from " +
-            highlight(company.getName()) + " on " +
-            highlight(project.getServiceType().getName()));
+        context.setVariable(BODY, "New request from " + company.getName() + " on " +
+            project.getServiceName());
         context.setVariable(CONFIRM_URL, siteUrl + CUSTOMER_PROJECTS + project.getId());
         context.setVariable(CONFIRM_BTN_TEXT, "View project");
         mailClient.sendMail("New project request from " + company.getName(), CONFIRMATION_TEMPLATE, context, MailHolder.MessageType.NOREPLY, customer.getEmail());
@@ -299,7 +297,7 @@ public class MailService {
         String publishDate = review.getPublishDate().format(DateTimeFormatter.ISO_LOCAL_DATE);
         context.setVariable(TITLE, "Your have new review revision request");
         context.setVariable(BODY_BEFORE_AREA, String.format("%s would like you to revise your review on %s project. Till %s the Pro may contact you to fix outstanding problems if any.",
-            highlight(company.getName()), highlight(serviceType), highlight(publishDate)));
+            company.getName(), serviceType, highlight(publishDate)));
         context.setVariable(TEXT_AREA_TITLE,"Message from Pro:");
         context.setVariable(TEXT_AREA_CONTENT, comment);
         context.setVariable(BODY_AFTER_AREA, String.format("Revision request expires on %1$s and if you would not revise it, your original review won't be changed." +
@@ -315,7 +313,7 @@ public class MailService {
         Context context = contextTemplate();
         context.setVariable(USER_NAME, customer.getFirstName());
         context.setVariable(TITLE, "Project status changed");
-        StringBuilder body = new StringBuilder("Your ").append(highlight(project.getServiceType().getName())).append(" project has been");
+        StringBuilder body = new StringBuilder("Your ").append(project.getServiceName()).append(" project has been");
         switch (project.getStatus()){
             case INVALID:
                 body.append(" invalidated.");
@@ -386,7 +384,7 @@ public class MailService {
      */
     public void sendNewRequestReview(Company company, ProjectRequest projectRequest, String email) {
         Context context = contextTemplate();
-        String messageText = String.format("Could you please share your experience with %s on your recent project %s? It only takes a few seconds, and would really help us.", company.getName(), projectRequest.getProject().getServiceType().getName());
+        String messageText = String.format("Could you please share your experience with %s on your recent project %s? It only takes a few seconds, and would really help us.", company.getName(), projectRequest.getProject().getServiceName());
         context.setVariable(TITLE, String.format("How was your experience with %s?", company.getName()));
         context.setVariable(BODY, messageText);
         context.setVariable(CONFIRM_URL, siteUrl + UI_CUSTOMER_BASE_PATH + PROJECTS + SLASH + projectRequest.getProject().getId() + "#" + projectRequest.getId());
@@ -405,9 +403,7 @@ public class MailService {
         Project project = projectRequest.getProject();
         context.setVariable(USER_NAME, contractor.getFirstName());
         context.setVariable(TITLE, "You've purchased new lead");
-        context.setVariable(BODY, highlight(project.getServiceType().getName()) +
-            " request from " +
-            highlight(project.getCustomer().getDisplayName()));
+        context.setVariable(BODY, project.getServiceName() + " request from " + project.getCustomer().getDisplayName());
         context.setVariable(CONFIRM_URL, siteUrl + PRO_PROJECTS + projectRequest.getId());
         context.setVariable(CONFIRM_BTN_TEXT, "View project");
         mailClient.sendMail("Lead purchase", CONFIRMATION_TEMPLATE, context, MailHolder.MessageType.BILLING, contractor.getEmail());
@@ -426,9 +422,7 @@ public class MailService {
         Context context = contextTemplate();
         context.setVariable(USER_NAME, projectRequest.getContractor().getDisplayName());
         context.setVariable(TITLE, "You received new subscription lead");
-        context.setVariable(BODY, highlight(project.getServiceType().getName()) +
-            " request from " +
-            highlight(project.getCustomer().getDisplayName()));
+        context.setVariable(BODY, project.getServiceName() + " request from " + project.getCustomer().getDisplayName());
         context.setVariable("projectDetails", baseLeadInfo);
         if (showAnswers){
             context.setVariable("answers", answers);
@@ -449,10 +443,8 @@ public class MailService {
         Context context = contextTemplate();
         Project project = projectRequest.getProject();
         context.setVariable(TITLE, "Your offer accepted");
-        context.setVariable(BODY, highlight(project.getCustomer().getDisplayName()) +
-            " accepted your offer on the " +
-            highlight(project.getServiceType().getName()) +
-            " project");
+        context.setVariable(BODY, project.getCustomer().getDisplayName() + " accepted your offer on the " +
+            project.getServiceName() + " project");
         context.setVariable(CONFIRM_URL, siteUrl + PRO_PROJECTS + projectRequest.getId());
         context.setVariable(CONFIRM_BTN_TEXT, "View project");
         mailClient.sendMail("Your offer accepted", CONFIRMATION_TEMPLATE, context, MailHolder.MessageType.NOREPLY, contractor.getEmail());
@@ -597,7 +589,7 @@ public class MailService {
         context.setVariable(BODY, String.format("Return credit request for the project \"%s for %s\" is accepted to review." +
                 " We may contact you to clarify some details regarding this project." +
                 " You can track the status of your return credit request in the PRO Dashboard.",
-            highlight(serviceType), highlight(customer)));
+            serviceType, customer));
         context.setVariable(CONFIRM_URL, siteUrl + PRO + DASHBOARD);
         context.setVariable(CONFIRM_BTN_TEXT, "View in Dashboard");
         mailClient.sendMail("Return credit request in review", CONFIRMATION_TEMPLATE, context, MailHolder.MessageType.NOREPLY, getRecipients(company));
@@ -609,7 +601,7 @@ public class MailService {
         context.setVariable(TITLE, "Return credit request is approved");
         context.setVariable(BODY, String.format("Return credit request for the project \"%s for %s\" is approved." +
                 " We will credit back the lead price to you internal balance at Home Improve",
-            highlight(serviceType), highlight(customer)));
+            serviceType, customer));
         mailClient.sendMail("Return credit request is approved", NOTICE_TEMPLATE, context, MailHolder.MessageType.NOREPLY, getRecipients(company));
     }
 
@@ -618,7 +610,7 @@ public class MailService {
         Context context = contextTemplate();
         context.setVariable(TITLE, "Return credit request is rejected");
         context.setVariable(BODY, String.format("Return credit request for the project \"%s for %s\" is rejected according to Home Improve's %s",
-            highlight(serviceType), highlight(customer), wrapLink("Lead Return Credit Policy", siteUrl + TERMS_OF_USE_URL)));
+            serviceType, customer, wrapLink("Lead Return Credit Policy", siteUrl + TERMS_OF_USE_URL)));
         mailClient.sendMail("Return credit request is rejected", NOTICE_TEMPLATE, context, MailHolder.MessageType.NOREPLY, getRecipients(company));
     }
 
@@ -626,7 +618,7 @@ public class MailService {
         Context context = contextTemplate();
         context.setVariable(TITLE, "Your company received a new review");
         context.setVariable(BODY_BEFORE_AREA, String.format("%s has been rated with %d star(s) by %s" ,
-            highlight(company.getName()), review.getScore(), highlight(review.getCustomer().getDisplayName())));
+            company.getName(), review.getScore(), review.getCustomer().getDisplayName()));
         context.setVariable(TEXT_AREA_TITLE,"Review comment:");
         context.setVariable(TEXT_AREA_CONTENT, review.getDescription());
         context.setVariable(CONFIRM_URL, siteUrl + COMPANIES + SLASH + company.getId());
@@ -638,7 +630,7 @@ public class MailService {
         Context context = contextTemplate();
         context.setVariable(TITLE, "A review has been published");
         context.setVariable(BODY_BEFORE_AREA, String.format("A review from %s with rating of %s star(s) has been published at %s profile page",
-            highlight(review.getCustomer().getDisplayName()), highlight(String.valueOf(review.getScore())), highlight(company.getName())));
+            review.getCustomer().getDisplayName(), String.valueOf(review.getScore()), company.getName()));
         context.setVariable(TEXT_AREA_TITLE,"Review comment:");
         context.setVariable(TEXT_AREA_CONTENT, review.getDescription());
         context.setVariable(CONFIRM_URL, siteUrl + COMPANIES + SLASH + company.getId());
@@ -652,7 +644,7 @@ public class MailService {
         context.setVariable(TITLE, "Your company has received a low rating review");
         context.setVariable(BODY_BEFORE_AREA, String.format("%1$s has been rated with %4$s star(s) by %2$s." +
                 " A low rating review will not be published on your profile page until %3$s.",
-            highlight(company.getName()), highlight(customer.getDisplayName()), highlight(publishDate), highlight(String.valueOf(review.getScore())) ));
+            company.getName(), customer.getDisplayName(), highlight(publishDate), review.getScore()));
         context.setVariable(TEXT_AREA_TITLE,"Review comment:");
         context.setVariable(TEXT_AREA_CONTENT, review.getDescription());
         context.setVariable(BODY_AFTER_AREA, String.format("You can ask client for review revision till publishing date." +
@@ -661,7 +653,7 @@ public class MailService {
                 "<br/><br/>If the client accepts your request, the revised review will be published on your profile." +
                 "<br/>If the client declines your request, or does not respond before %2$s, the original review will be published." +
                 "<br/>We'll let you know the client’s decision immediately by email. Regardless of the outcome of your request, please respect the client’s decision." ,
-            highlight(customer.getDisplayName()), highlight(publishDate)));
+            customer.getDisplayName(), highlight(publishDate)));
         context.setVariable(CONFIRM_URL, siteUrl + COMPANIES + SLASH + company.getId() + "#reviews");
         context.setVariable(CONFIRM_BTN_TEXT, "View at Profile");
         mailClient.sendMail("Low rating review", TEXT_AREA_TEMPLATE, context, MailHolder.MessageType.NOREPLY, getRecipients(company));
