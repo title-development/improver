@@ -1,7 +1,7 @@
-import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Pagination, ServiceType, Trade } from '../../model/data-model';
+import { Pagination, ServiceType, NameIdImageTuple } from '../../model/data-model';
 import { ServiceTypeService } from '../../api/services/service-type.service';
 import { TradeService } from '../../api/services/trade.service';
 import { Constants } from '../../util/constants';
@@ -35,7 +35,7 @@ export class FindProfessionalsComponent implements OnInit {
   popularServiceTypes: Array<ServiceType> = [];
   filteredServiceTypes: Array<ServiceType> = [];
   popularServiceSize: Number;
-  suggestedTrades: Array<Trade> = [];
+  popularTrades: Array<NameIdImageTuple> = [];
   recentSearches: Array<string> = [];
   pagination: Pagination = new Pagination(0, 4);
   lastZipCode: string;
@@ -135,29 +135,22 @@ export class FindProfessionalsComponent implements OnInit {
 
   getRecentSearches() {
     this.customerSuggestionService.getCustomerRecentSearches$()
-        .subscribe(
-          recentSearches => this.recentSearches = recentSearches
-        )
+        .subscribe((recentSearches: Array<string>) => this.recentSearches = recentSearches)
   }
 
   getPopularServiceTypes() {
-    this.customerSuggestionService.popular$
-      .subscribe(
-        popularServiceTypes => this.popularServiceTypes = this.filteredServiceTypes = popularServiceTypes
-      );
+    this.customerSuggestionService.popularServices$
+      .subscribe((popularServiceTypes: Array<ServiceType>) => this.popularServiceTypes = this.filteredServiceTypes = popularServiceTypes);
   }
 
   getSuggestedTrades() {
-		this.customerSuggestionService.suggestedTrades$
-      .subscribe(
-        popularTrades => this.suggestedTrades = popularTrades
-      );
+		this.customerSuggestionService.popularTrades$
+      .subscribe((popularTrades: Array<NameIdImageTuple>) => this.popularTrades = popularTrades);
   }
 
   getLastCustomerZipCode() {
     this.customerSuggestionService.lastCustomerZipCode$
-        .subscribe(
-            lastZipCode => {
+        .subscribe(lastZipCode => {
               this.lastZipCode = lastZipCode;
               this.zipCodeCtrl.setValue(lastZipCode)
             }

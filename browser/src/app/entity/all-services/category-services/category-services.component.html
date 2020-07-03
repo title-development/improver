@@ -21,7 +21,7 @@
             </div>
         </div>
 
-        <div class="right-header" *ngIf="trade.imageUrls && trade.imageUrls.length > 0 && (mediaQuery.lg || mediaQuery.xlg)">
+        <div class="right-header" *ngIf="trade && trade.imageUrls && trade.imageUrls.length > 0 && (mediaQuery.lg || mediaQuery.xlg)">
             <div class="swiper-container pagination-bulet">
                 <div class="swiper-wrapper">
                     <div class="swiper-slide" *ngFor="let image of trade.imageUrls">

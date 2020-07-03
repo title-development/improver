@@ -106,12 +106,21 @@ public interface ServiceTypeRepository extends JpaRepository<ServiceType, Long> 
     ServiceType findByProjectsProjectRequestsReviewId(long reviewId);
 
 
-    @Query("SELECT new com.improver.model.NameIdTuple(st.id, st.name, COUNT(p) AS popularity)  FROM com.improver.entity.ServiceType st " +
+    @Query("SELECT new com.improver.model.NameIdTuple(st.id, st.name)  FROM com.improver.entity.ServiceType st " +
         "LEFT JOIN st.projects p " +
         "WHERE st.isActive = true " +
         "GROUP BY st.id " +
-        "ORDER BY popularity DESC")
+        "ORDER BY COUNT(p) DESC")
     Page<NameIdTuple> getPopularServiceTypes(Pageable pageable);
+
+    @Query("SELECT new com.improver.model.NameIdParentTuple(st.id, st.name, t.id)  FROM com.improver.entity.ServiceType st " +
+            "LEFT JOIN st.projects p " +
+            "LEFT JOIN st.trades t " +
+            "WHERE st.isActive = true " +
+            "AND t.isAdvertised = true " +
+            "GROUP BY st.id, t.id " +
+            "ORDER BY COUNT(p.id) DESC")
+    List<NameIdParentTuple> getSuggestedServices();
 
     @Query("SELECT new  com.improver.model.out.NameIdImageTuple(st.id, st.name, st.imageUrl) FROM com.improver.entity.ServiceType st " +
         "WHERE st.isActive = true " +

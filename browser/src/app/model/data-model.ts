@@ -110,6 +110,12 @@ export class Trade {
   services?: ServiceType [];
 }
 
+export class NameIdImageTuple {
+  id: number;
+  name: string;
+  image: string;
+}
+
 export class ServiceType {
   id: number;
   name: string;

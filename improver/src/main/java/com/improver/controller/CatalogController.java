@@ -12,13 +12,16 @@ import com.improver.service.TradeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.CacheControl;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static com.improver.application.properties.Path.*;
+import static com.improver.application.properties.SystemProperties.tradesCacheDurations;
 
 @RestController
 @RequestMapping(CATALOG_PATH)
@@ -96,8 +99,10 @@ public class CatalogController {
 
     @GetMapping(TRADES + SUGGESTED)
     public ResponseEntity<List<TradeModel>> getSuggestedTrades(@RequestParam(defaultValue = "8") int size) {
-        List<TradeModel> suggested = tradeService.getSuggestedTrades(PageRequest.of(0, size));
-        return new ResponseEntity<>(suggested, HttpStatus.OK);
+        HttpHeaders headers = new HttpHeaders();
+        List<TradeModel> suggested = tradeService.getCachedTrades();
+        headers.setCacheControl(CacheControl.maxAge(tradesCacheDurations.getSeconds(), TimeUnit.SECONDS).getHeaderValue());
+        return new ResponseEntity<>(suggested, headers, HttpStatus.OK);
     }
 
     /**

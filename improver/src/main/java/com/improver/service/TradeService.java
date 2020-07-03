@@ -7,6 +7,7 @@ import com.improver.exception.NotFoundException;
 import com.improver.model.NameIdParentTuple;
 import com.improver.model.NameIdTuple;
 import com.improver.model.admin.AdminTrade;
+import com.improver.model.out.NameIdImageTuple;
 import com.improver.model.out.TradeAndServices;
 import com.improver.model.out.TradeModel;
 import com.improver.repository.CompanyRepository;
@@ -19,9 +20,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Comparator;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.improver.application.properties.SystemProperties.tradesCacheDurations;
 
 /**
  * @author Mykhailo Soltys
@@ -30,7 +33,9 @@ import java.util.stream.Collectors;
 @Service
 public class TradeService {
 
-    private static final int MAX_NUMBER_IMAGES = 5;
+    private static final int MAX_IMAGES_COUNT = 5;
+    private ZonedDateTime tradesCacheExpirationTime;
+    private List<TradeModel> suggestedTradesWithServices;
     @Autowired private TradeRepository tradeRepository;
     @Autowired private ServiceTypeRepository serviceTypeRepository;
     @Autowired private ImageService imageService;
@@ -126,22 +131,37 @@ public class TradeService {
         tradeRepository.delete(trade);
     }
 
-    public List<TradeModel> getSuggestedTrades(Pageable pageable) {
-        return tradeRepository.getSuggested(pageable).getContent().stream()
-            .map(t -> {
+    private void addTradesCacheExpiredTime() {
+        this.tradesCacheExpirationTime = ZonedDateTime.now().plus(tradesCacheDurations);
+    }
 
-                List<NameIdTuple> suggestedServiceTypes = t.getServiceTypes().stream()
-                    .sorted(Comparator.comparing(ServiceType::getName))
-                    .map(st -> new NameIdTuple(st.getId(), st.getName()))
-                    .collect(Collectors.toList());
+    public List<TradeModel> getCachedTrades() {
+        ZonedDateTime now = ZonedDateTime.now();
+        if (this.tradesCacheExpirationTime == null || now.isAfter(this.tradesCacheExpirationTime)) {
+            this.suggestedTradesWithServices = getSuggestedTradeWithServices();
+            addTradesCacheExpiredTime();
+        }
+        return this.suggestedTradesWithServices;
+    }
 
-                return new TradeModel()
-                    .setId(t.getId())
-                    .setName(t.getName())
-                    .setImage(t.getImageUrls())
-                    .setServices(suggestedServiceTypes);
+    private List<TradeModel> getSuggestedTradeWithServices(){
+        List<NameIdParentTuple> allSuggestedService = serviceTypeRepository.getSuggestedServices();
+        List<NameIdImageTuple> allSuggestedTrades = tradeRepository.getSuggestedTrades();
 
-            }).collect(Collectors.toList());
+        return allSuggestedTrades.stream()
+             .map( trade -> {
+                 List<NameIdTuple> tradeSuggestedServices = allSuggestedService.stream()
+                     .filter(suggestedService -> suggestedService.getParentId() == trade.getId())
+                     .map(suggestedService -> new NameIdTuple(suggestedService.getId(), suggestedService.getName()))
+                     .collect(Collectors.toList());
+
+                     return new TradeModel()
+                             .setId(trade.getId())
+                             .setName(trade.getName())
+                             .setImage(trade.getImage())
+                             .setServices(tradeSuggestedServices);
+
+             }).collect(Collectors.toList());
     }
 
 
@@ -154,8 +174,8 @@ public class TradeService {
         Trade trade = tradeRepository.findById(tradeId)
                                      .orElseThrow(NotFoundException::new);
         List<String> imageUrls = trade.getImageUrlsFromString();
-        if (imageUrls.size() >= MAX_NUMBER_IMAGES && index > imageUrls.size() - 1){
-            throw new IllegalArgumentException("Max slider size " + MAX_NUMBER_IMAGES);
+        if (imageUrls.size() >= MAX_IMAGES_COUNT && index > imageUrls.size() - 1){
+            throw new IllegalArgumentException("Max slider size " + MAX_IMAGES_COUNT);
         }
         String newImageUrl = image != null ? imageService.saveImage(image) : null;
         if (newImageUrl != null && (imageUrls.isEmpty() || index > imageUrls.size() - 1)) {

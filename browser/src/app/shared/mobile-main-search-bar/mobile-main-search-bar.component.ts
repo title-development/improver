@@ -129,16 +129,13 @@ export class MobileMainSearchBarComponent implements OnInit, AfterViewInit, OnDe
   }
 
   getPopularServiceTypes() {
-    this.customerSuggestionService.popular$
-      .subscribe(
-        popularServiceTypes => this.popularServiceTypes = this.filteredServiceTypes = this.searchResults = popularServiceTypes
-      );
+    this.customerSuggestionService.popularServices$
+      .subscribe( (popularServiceTypes: Array<ServiceType>) => this.popularServiceTypes = this.filteredServiceTypes = this.searchResults = popularServiceTypes);
   }
 
 	getLastCustomerZipCode() {
 		this.customerSuggestionService.lastCustomerZipCode$
-				.subscribe(
-					lastZipCode => {
+				.subscribe(lastZipCode => {
 						this.lastZipCode = lastZipCode;
 						this.zipCodeCtrl.setValue(lastZipCode)
 					});

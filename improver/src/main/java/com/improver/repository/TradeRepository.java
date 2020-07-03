@@ -30,24 +30,22 @@ public interface TradeRepository extends JpaRepository<Trade, Long> {
     @Query("SELECT new com.improver.model.NameIdTuple(t.id, t.name) FROM com.improver.entity.Trade t ORDER BY t.name ASC")
     List<NameIdTuple> getAllAsModels();
 
-    @Query("SELECT new com.improver.model.out.NameIdImageTuple(t.id, t.name, t.imageUrls, COUNT(p) AS popularity) " +
+    @Query("SELECT new com.improver.model.out.NameIdImageTuple(t.id, t.name, t.imageUrls) " +
         "FROM com.improver.entity.Trade t " +
         "LEFT JOIN t.serviceTypes st " +
         "LEFT JOIN st.projects p " +
         "WHERE st.isActive = true " +
         "GROUP BY t.id " +
-        "ORDER BY popularity DESC")
+        "ORDER BY COUNT(p.id) DESC")
     Page<NameIdImageTuple> getPopular(Pageable pageable);
 
-
-    @Query("SELECT t FROM com.improver.entity.Trade t " +
-        "LEFT JOIN t.serviceTypes st " +
-        "LEFT JOIN st.projects p " +
-        "WHERE st.isActive = true " +
-        "AND t.isAdvertised = true " +
-        "GROUP BY t.id " +
-        "ORDER BY RANDOM()")
-    Page<Trade> getSuggested(Pageable pageable);
+    @Query("SELECT new com.improver.model.out.NameIdImageTuple(t.id, t.name, t.imageUrls) FROM com.improver.entity.Trade t " +
+            "LEFT JOIN t.serviceTypes st " +
+            "WHERE st.isActive = true " +
+            "AND t.isAdvertised = true " +
+            "GROUP BY t.id " +
+            "ORDER BY RANDOM()")
+    List<NameIdImageTuple> getSuggestedTrades();
 
     @Query("SELECT CASE WHEN count(t)> 0 THEN false ELSE true END FROM com.improver.entity.Trade t WHERE LOWER(t.name) = LOWER(?1)")
     boolean isTradeNameFree(String name);

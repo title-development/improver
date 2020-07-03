@@ -79,8 +79,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   getPopularServiceTypes() {
     this.loading = true;
-    this.customerSuggestionService.popular$.subscribe(
-        popularServiceTypes => {
+    this.customerSuggestionService.popularServices$.subscribe((popularServiceTypes: Array<ServiceType>) => {
           this.popularServiceTypes = this.searchResults = popularServiceTypes;
           this.loading = false;
           this.initialized$.next();

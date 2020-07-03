@@ -56,7 +56,7 @@ export class UserSearchService {
   }
 
   getPopularServiceTypes(){
-    this.customerSuggestionService.popular$
+    this.customerSuggestionService.popularServices$
       .subscribe(
         popularServiceTypes => this.popularServiceTypes = popularServiceTypes
       );

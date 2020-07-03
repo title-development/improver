@@ -1,6 +1,6 @@
 import { Observable, ReplaySubject } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { Pagination, ServiceType, Trade } from '../../model/data-model';
+import { Pagination, ServiceType, NameIdImageTuple, Trade } from '../../model/data-model';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { RestPage } from '../models/RestPage';
 import { AdminTrade } from '../models/AdminTrade';
@@ -11,13 +11,12 @@ export class TradeService {
 
   private catalogUrl = 'api/catalog';
   private tradesCatalogUrl = `${this.catalogUrl}/trades`;
+  private suggestedUrl = '/suggested';
+  private popularUrl = '/popular';
   private tradesUrl = 'api/trades';
   private imagesUrl = '/images';
 
-  private _popular$: ReplaySubject<Array<ServiceType>> = new ReplaySubject<Array<ServiceType>>(1);
-  private _trades$: ReplaySubject<Array<ServiceType>> = new ReplaySubject<Array<ServiceType>>(1);
-
-  private popularTradesCached: boolean = false;
+  private _trades$: ReplaySubject<Array<Trade>> = new ReplaySubject<Array<Trade>>(1);
   private tradesCached: boolean = false;
 
   constructor(private http: HttpClient) {
@@ -72,10 +71,10 @@ export class TradeService {
     return this.http.get<Trade[]>(`${this.catalogUrl}`);
   }
 
-  getPopular(size: number): Observable<Array<Trade>> {
+  getPopular(size: number): Observable<Array<NameIdImageTuple>> {
     const params = new HttpParams().set('size', size.toString());
 
-    return this.http.get<Array<Trade>>(`${this.tradesCatalogUrl}/popular`, {params});
+    return this.http.get<Array<NameIdImageTuple>>(`${this.tradesCatalogUrl}${this.popularUrl}`, {params});
   }
 
   isNameFree(tradeName: string): Observable<any> {
@@ -88,7 +87,7 @@ export class TradeService {
   get trades$(): ReplaySubject<Array<Trade>> {
     if (!this.tradesCached) {
       this.tradesCached = true;
-      this.getAllAsModel().subscribe((serviceTypes: Array<ServiceType>) => {
+      this.getAllAsModel().subscribe((serviceTypes: Array<Trade>) => {
         if (!serviceTypes){
           this.tradesCached = false;
         }
@@ -102,26 +101,9 @@ export class TradeService {
     return this._trades$;
   }
 
-  get popular$(): ReplaySubject<Array<Trade>> {
-    if (!this.popularTradesCached) {
-      this.popularTradesCached = true;
-      this.getPopular(16).subscribe((serviceTypes: Array<ServiceType>) => {
-        if (!serviceTypes){
-          this.popularTradesCached = false;
-        }
-        this._popular$.next(serviceTypes);
-      }, err => {
-        this.popularTradesCached = false;
-        console.error(err);
-      });
-    }
-
-    return this._popular$;
-  }
-
   getSuggested(size): Observable<Array<Trade>> {
     const params = new HttpParams().set('size', size);
-    return this.http.get<Array<Trade>>(`${this.tradesCatalogUrl}/suggested`, {params});
+    return this.http.get<Array<Trade>>(`${this.tradesCatalogUrl}${this.suggestedUrl}`, {params});
   }
 
   getRecommended(userId, size: number): Observable<Array<Trade>> {

@@ -1,6 +1,6 @@
 import { EventEmitter, Injectable, Output } from '@angular/core';
 import { ReplaySubject } from "rxjs";
-import { ServiceType, Trade } from "../../model/data-model";
+import { ServiceType, NameIdImageTuple, Trade } from "../../model/data-model";
 import { AccountService } from "./account.service";
 import { ServiceTypeService } from "./service-type.service";
 import { tap } from "rxjs/operators";
@@ -15,17 +15,20 @@ export class CustomerSuggestionService {
   @Output() onZipChange: EventEmitter<string> = new EventEmitter<string>();
 
   private _lastZipCode$: ReplaySubject<string> = new ReplaySubject<string>(1);
-  private _popular$: ReplaySubject<Array<ServiceType>> = new ReplaySubject<Array<ServiceType>>(1);
+  private _popularServices$: ReplaySubject<Array<ServiceType>> = new ReplaySubject<Array<ServiceType>>(1);
+  private _popularTrades$: ReplaySubject<Array<NameIdImageTuple>> = new ReplaySubject<Array<NameIdImageTuple>>(1);
   private _suggestedServiceTypes$: ReplaySubject<Array<ServiceType>> = new ReplaySubject<Array<ServiceType>>(1);
-  private _suggestedTrades$: ReplaySubject<Array<Trade>> = new ReplaySubject<Array<ServiceType>>(1);
+  private _suggestedTrades$: ReplaySubject<Array<Trade>> = new ReplaySubject<Array<Trade>>(1);
   private _recentSearches$: ReplaySubject<Array<string>> = new ReplaySubject<Array<string>>(1);
   private _tradeWithServices$: ReplaySubject<Array<Trade>> = new ReplaySubject<Array<Trade>>(1);
 
   private lastZipCached: boolean = false;
   private popularServiceTypeCached: boolean = false;
   private suggestedServiceTypesCached: boolean = false;
-  private suggestedTradesTypesCached: boolean = false;
+  private suggestedTradesCached: boolean = false;
+  private popularTradesCached: boolean = false;
   private tradeWithServicesCached: boolean = false;
+  public suggestedTradesSize: number = 8;
 
   readonly maxSearchStringSize: number = 150;
 
@@ -53,16 +56,34 @@ export class CustomerSuggestionService {
     return this._suggestedServiceTypes$;
   }
 
+  get popularTrades$(): ReplaySubject<Array<NameIdImageTuple>> {
+    if (!this.popularTradesCached) {
+      this.popularTradesCached = true;
+      this.tradeService.getPopular(16).subscribe((serviceTypes: Array<NameIdImageTuple>) => {
+        if (!serviceTypes){
+          this.popularTradesCached = false;
+        }
+        this._popularTrades$.next(serviceTypes);
+      }, err => {
+        this.popularTradesCached = false;
+        console.error(err);
+      });
+    }
+
+    return this._popularTrades$;
+  }
+
   get suggestedTrades$(): ReplaySubject<Array<Trade>> {
-    if (!this.suggestedServiceTypesCached) {
-      this.suggestedTradesTypesCached = true;
-      this.tradeService.getSuggested(8).subscribe((trades: Array<Trade>) => {
+    if (!this.suggestedTradesCached) {
+      this.suggestedTradesCached = true;
+      this.tradeService.getSuggested(this.suggestedTradesSize).subscribe((trades: Array<Trade>) => {
         if (!trades){
-          this.suggestedTradesTypesCached = false;
+          this.suggestedTradesCached = false;
         }
         this._suggestedTrades$.next(trades);
+        this.resetTradesSize();
       }, err => {
-        this.suggestedTradesTypesCached = false;
+        this.suggestedTradesCached = false;
         console.error(err);
       });
     }
@@ -88,14 +109,6 @@ export class CustomerSuggestionService {
     return this._tradeWithServices$;
   }
 
-  getCustomerRecentSearches$(): ReplaySubject<Array<string>> {
-      this.accountService.getRecentSearches(5).subscribe(
-        (recentSearch: Array<string>) => this._recentSearches$.next(recentSearch),
-        err => console.error(err)
-      );
-    return this._recentSearches$;
-  }
-
   get lastCustomerZipCode$(): ReplaySubject<string> {
     let zipCodeFromStorage = localStorage.getItem('zipCode');
     if (zipCodeFromStorage) {
@@ -114,21 +127,29 @@ export class CustomerSuggestionService {
     return this._lastZipCode$;
   }
 
-  get popular$(): ReplaySubject<Array<ServiceType>> {
+  get popularServices$(): ReplaySubject<Array<ServiceType>> {
     if (!this.popularServiceTypeCached) {
       this.popularServiceTypeCached = true;
       this.serviceTypeService.getPopular(16).subscribe((serviceType: Array<ServiceType>) => {
         if (!serviceType){
           this.popularServiceTypeCached = false;
         }
-        this._popular$.next(serviceType);
+        this._popularServices$.next(serviceType);
       }, err => {
         this.popularServiceTypeCached = false;
         console.error(err);
       });
     }
 
-    return this._popular$;
+    return this._popularServices$;
+  }
+
+  getCustomerRecentSearches$(): ReplaySubject<Array<string>> {
+    this.accountService.getRecentSearches(5).subscribe(
+      (recentSearch: Array<string>) => this._recentSearches$.next(recentSearch),
+      err => console.error(err)
+    );
+    return this._recentSearches$;
   }
 
   saveUserSearchTerm(search: string, zipCode: string, isManual: boolean){
@@ -145,5 +166,10 @@ export class CustomerSuggestionService {
       })
     ).subscribe();
     this.onZipChange.emit(zipCode);
+  }
+
+  resetTradesSize() {
+  	let defaultTradesSize: number = 8;
+    this.suggestedTradesSize = defaultTradesSize;
   }
 }

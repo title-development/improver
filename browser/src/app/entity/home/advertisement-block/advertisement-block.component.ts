@@ -53,7 +53,7 @@ const moveLeft = animate(animationDuration, keyframes([
   ]
 })
 export class AdvertisementBlockComponent implements OnInit {
-  private readonly LOAD_ITEMS_COUNT = 8;
+
   private readonly MOVING_LENGTH = 420;
   private readonly MOBILE_MOVING_LENGTH = 310;
 
@@ -66,19 +66,23 @@ export class AdvertisementBlockComponent implements OnInit {
               public projectActionService: ProjectActionService,
               public mediaQueryService: MediaQueryService) {
 
+    this.customerSuggestionService.suggestedTradesSize = 10;
     this.customerSuggestionService.suggestedTrades$
-      .subscribe(
-        (items: Array<Trade>) => {
-          this.items = items.slice(0, this.LOAD_ITEMS_COUNT);
+      .subscribe((items: Array<Trade>) => {
+          this.items = items;
         });
 
+    this.subscribeForMediaScreen();
+  }
+
+  ngOnInit(): void {
+  }
+
+  subscribeForMediaScreen(){
     this.mediaQueryService.screen.subscribe(media => {
       this.media = media;
       this.transformX = media.xs || media.sm ? this.MOBILE_MOVING_LENGTH : this.MOVING_LENGTH;
     })
-  }
-
-  ngOnInit(): void {
   }
 
   moveRight() {

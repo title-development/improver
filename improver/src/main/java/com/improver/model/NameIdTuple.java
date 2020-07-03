@@ -14,8 +14,4 @@ public class NameIdTuple {
     protected long id;
     protected String name;
 
-    public NameIdTuple(long id, String name, Long popularity) {
-        this.id = id;
-        this.name = name;
-    }
 }

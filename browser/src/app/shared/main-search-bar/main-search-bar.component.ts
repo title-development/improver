@@ -149,16 +149,13 @@ export class MainSearchBarComponent implements OnInit, OnChanges, AfterViewInit 
   }
 
   getPopularServiceTypes() {
-    this.customerSuggestionService.popular$
-        .subscribe(
-          popularServiceTypes => this.popularServiceTypes = this.filteredOptions = popularServiceTypes
-        );
+    this.customerSuggestionService.popularServices$
+        .subscribe( (popularServiceTypes: Array<ServiceType>) => this.popularServiceTypes = this.filteredOptions = popularServiceTypes);
   }
 
   getLastCustomerZipCode() {
     this.customerSuggestionService.lastCustomerZipCode$
-        .subscribe(
-          lastZipCode => {
+        .subscribe(lastZipCode => {
             this.lastZipCode = lastZipCode;
             this.zipCodeCtrl.setValue(lastZipCode)
           }
