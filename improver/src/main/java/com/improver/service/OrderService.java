@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.improver.entity.Project.Status.INVALID;
+import static com.improver.entity.Project.Status.VALIDATION;
 import static com.improver.util.serializer.SerializationUtil.NUMERIC_PATTERN;
 
 @Slf4j
@@ -32,10 +34,12 @@ public class OrderService {
     @Autowired private LeadService leadService;
     @Autowired private ProjectRepository projectRepository;
     @Autowired private ProjectActionRepository projectActionRepository;
+    @Autowired private UserAddressRepository userAddressRepository;
 
 
     public void postOrder(Order order, Customer customer) {
         Project income = validateOrder(order);
+        Project lead;
         log.debug("Project order {} validated", income.getServiceName());
         customer = Optional.ofNullable(customer)
             .orElseGet(() -> getExistingOrRegister(order));
@@ -46,7 +50,16 @@ public class OrderService {
             customerRepository.save(customer);
         }
 
-        Project lead;
+        //TODO: This is integration code. Should be removed after UserAddresses implemented fully
+        if (!VALIDATION.equals(income.getStatus()) || !INVALID.equals(income.getStatus())) {
+            boolean isNew = customer.getAddresses().stream()
+                .noneMatch(userAddress -> userAddress.equalsIgnoreCase(income.getLocation()));
+            if (isNew) {
+                log.debug("Save new user address " + income.getLocation().asTextWithoutStreet() );
+                userAddressRepository.save(new UserAddress(customer, income.getLocation()));
+            }
+        }
+
         if(customer.isActivated()) {
             lead = saveProjectOrder(income.setCustomer(customer));
             log.info("Lead id={} saved and put on market to match with subscribers", lead.getId());
@@ -115,7 +128,7 @@ public class OrderService {
         } catch (ThirdPartyException e) {
             log.warn("Could not validate Address");
             systemComment = ProjectAction.systemComment("Address is not validated due to Shippo error");
-            status = Project.Status.VALIDATION;
+            status = VALIDATION;
             isSuitableForPurchase = false;
         }
 

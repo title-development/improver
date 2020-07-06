@@ -30,6 +30,10 @@ public class Customer extends User {
     @OneToMany(mappedBy = "customer")
     private List<Review> reviews;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "customer")
+    private List<UserAddress> addresses;
+
     @Embedded
     private NotificationSettings notificationSettings = new NotificationSettings();
 

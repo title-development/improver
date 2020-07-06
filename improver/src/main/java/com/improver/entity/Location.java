@@ -5,22 +5,25 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import javax.persistence.Embeddable;
+import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.Pattern;
 
+
+import java.util.Objects;
 
 import static com.improver.util.serializer.SerializationUtil.ZIP_PATTERN_STRING;
 
 @Data
 @Accessors(chain = true)
 @NoArgsConstructor
+@MappedSuperclass
 @Embeddable
 public class Location {
 
-    private String state;
-    private String city;
     private String streetAddress;
-    @Pattern(regexp = ZIP_PATTERN_STRING)
-    private String zip;
+    private String city;
+    private String state;
+    @Pattern(regexp = ZIP_PATTERN_STRING) private String zip;
 
 
     public Location(String streetAddress, String city, String state, String zip) {
@@ -41,5 +44,16 @@ public class Location {
         return city + ", " +
             state + " " +
             zip;
+    }
+
+
+    public <T extends Location> boolean equalsIgnoreCase(T o){
+        if (this == o) return true;
+        if (o == null) return false;
+        Location location = o;
+        return state.equalsIgnoreCase(location.state) &&
+            city.equalsIgnoreCase(location.city) &&
+            streetAddress.equalsIgnoreCase(location.streetAddress) &&
+            zip.equals(location.zip);
     }
 }
