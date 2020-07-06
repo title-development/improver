@@ -8,10 +8,10 @@
 
   .find-professionals-button {
     padding: 0 16px;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 500;
     color: $dark;
-    height: 50px;
+    height: 40px;
     display: flex;
     align-items: center;
     cursor: pointer;
@@ -79,14 +79,6 @@
     text-align: initial;
     background-color: $white;
     padding-bottom: 5px;
-
-    @include response-to(md) {
-      top: $header-tablet-height;
-    }
-
-    @include response-to(sm) {
-      top: $header-mobile-height;
-    }
 
     .dropdown-content {
       display: flex;

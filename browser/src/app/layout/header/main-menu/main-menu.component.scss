@@ -21,14 +21,14 @@
 }
 
 .dark-background {
-  top: $header-mobile-height;
+  top: $header-height;
   background: rgba(39, 49, 73, 0.2);
 }
 
 .mobile-menu {
   position: absolute;
   left: 0;
-  top: $header-mobile-height;
+  top: $header-height;
   background: #fff;
   display: flex;
   flex-direction: column;
@@ -251,7 +251,7 @@
   background-color: #ffffff;
   box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.23);
   border: solid 1px #d8d8d8;
-  top: 0;
+  top: -5px;
   right: 0;
   min-width: 240px;
   width: max-content;

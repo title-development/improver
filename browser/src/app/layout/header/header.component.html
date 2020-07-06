@@ -1,4 +1,4 @@
-<div class="header" [ngClass]="(mobileMenuService.findProfessionalsOpened || mobileMenuService.mobileMenuOpened)? 'header-without-shadow' : ''">
+<div class="header" [ngClass]="{'header-without-shadow' : mobileMenuService.findProfessionalsOpened || mobileMenuService.mobileMenuOpened}">
   <div class="header-content">
     <!--TODO: rework menu items with separate components?-->
     <div class="header-left">
@@ -60,7 +60,7 @@
       <!--Notification icon-->
       <div class="notification-bar navbar-right" *ngIf="securityService.isAuthenticated()">
         <button class="menu-button" mat-button color="accent" (click)="mobileMenuService.notificationsPopupOpened = !mobileMenuService.notificationsPopupOpened">
-          <mat-icon class="mobile-menu-icon">notifications</mat-icon>
+          <mat-icon class="mobile-menu-icon">notifications_none</mat-icon>
           <div class="counter" *ngIf="notificationResource.unreadNotificationsCounter + (notificationResource.unreadMessagesCount$ | async ) > 0"><span>{{notificationResource.unreadNotificationsCounter + (notificationResource.unreadMessagesCount$ | async )}}</span></div>
         </button>
         <div class="holder">
@@ -103,7 +103,7 @@
                     {{securityService.getLoginModel().name | truncate:18: '...'}}
                 </div>
             </a>
-            
+
             <div class="holder">
                 <main-menu [(toggle)]="mobileMenuService.mobileMenuOpened"></main-menu>
             </div>

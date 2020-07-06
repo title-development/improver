@@ -7,14 +7,6 @@
   right: 0;
   bottom: 0;
 
-  @include response-to(md) {
-    top: $header-tablet-height;
-  }
-
-  @include response-to(sm) {
-    top: $header-mobile-height;
-  }
-
 }
 
 .scroll-holder {
@@ -27,14 +19,6 @@ router-outlet ::ng-deep + * {
   display: flex;
   flex-direction: column;
   min-height: calc(100vh - #{$header-height});
-
-  @include response-to(md) {
-    min-height: calc(100vh - #{$header-tablet-height});
-  }
-
-  @include response-to(sm) {
-    min-height: calc(100vh - #{$header-mobile-height});
-  }
 
 }
 

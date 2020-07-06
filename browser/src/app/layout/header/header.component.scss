@@ -21,15 +21,7 @@
   background-color: $white;
   display: flex;
   justify-content: center;
-  box-shadow: 0px 5px 20px rgba(38, 47, 86, 0.12);
-
-  @include response-to(md) {
-    height: $header-tablet-height;
-  }
-
-  @include response-to(sm) {
-    height: $header-mobile-height;
-  }
+  box-shadow: 0 2px 4px 0 rgba(0,0,0,.15);
 
   .header-content {
     display: flex;
@@ -84,15 +76,9 @@
         font-size: 21px;
         background: url(../../../assets/img/logo.png) no-repeat center center;
         background-size: contain;
-        width: 170px;
+        width: 100px;
         height: 60px;
-        margin-top: -4px;
         margin-right: 20px;
-
-        @include response-to(md) {
-          width: 114px;
-        }
-
       }
 
       .navbar-left {
@@ -199,7 +185,7 @@
         font-weight: 500;
         text-align: left;
         color: $dark;
-        
+
         @include response(md) {
           margin-right: 4px;
         }
@@ -220,7 +206,7 @@
       //Desktop links in menu
       a {
         padding: 8px 12px;
-        font-size: 18px;
+        font-size: 16px;
         font-weight: 500;
         text-align: left;
         color: $grey-600;
@@ -239,15 +225,11 @@
           justify-content: center;
           align-items: center;
           color: $dark;
+          font-size: 16px;
 
           &.auth-button {
             opacity: 0.4;
-            margin-left: 26px;
-
-            @include response-to(md) {
-              font-size: 16px;
-              margin-left: 16px;
-            }
+            margin-left: 6px;
 
             &:hover {
               color: $dark;
@@ -256,12 +238,12 @@
           }
 
           &.became-a-pro {
-            padding: 12px 24px;
+            padding: 8px 16px;
             font-weight: 600;
             border-radius: 8px;
-            font-size: 18px;
+            font-size: 16px;
             color: $blue-primary;
-            margin-left: 38px;
+            margin-left: 16px;
             border: 2px solid $blue-primary;
 
             @include response-to(md) {
@@ -308,8 +290,8 @@
         }
 
         .account-icon {
-          width: 50px;
-          height: 50px;
+          width: 35px;
+          height: 35px;
           border-radius: 36px;
           background-size: cover;
           background-position: center;
@@ -411,7 +393,7 @@
         cursor: pointer;
         color: $dark;
         padding: 18px 12px;
-        font-size: 18px;
+        font-size: 16px;
         text-decoration: none;
 
         &.active, &:hover {
@@ -434,7 +416,7 @@
 .find-professionals-wrapper {
   z-index: 1;
   margin-right: 10px;
-  margin-left: 97px;
+  margin-left: 0px;
 
   @include response-to(md) {
     margin-left: 7px;
