@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { DemoProject, Review } from "../../../../model/data-model";
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { DemoProject, Pagination, Review } from "../../../../model/data-model";
 import { DemoProjectService } from "../../../../api/services/demo-project.service";
 import { SecurityService } from "../../../../auth/security.service";
 import { Role } from "../../../../model/security-model";
@@ -9,21 +9,30 @@ import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { dialogsMap } from '../../../../shared/dialogs/dialogs.state';
 import { confirmDialogConfig } from '../../../../shared/dialogs/dialogs.configs';
 import { getErrorMessage } from "../../../../util/functions";
+import { Subject } from "rxjs";
+import { finalize, takeUntil } from "rxjs/operators";
+import { RestPage } from "../../../../api/models/RestPage";
 
 @Component({
   selector: 'demo-projects-gallery',
   templateUrl: './demo-projects-gallery.component.html',
   styleUrls: ['./demo-projects-gallery.component.scss']
 })
-export class DemoProjectsGalleryComponent implements OnInit {
+export class DemoProjectsGalleryComponent implements OnInit, OnDestroy {
   @Input()
   public companyId: any;
   @Input()
   public editMode : boolean = false;
 
-  projects: DemoProject[] = [];
+  private readonly destroyed$ = new Subject<void>();
+	maxItemPerPage: number = 6;
+	contractorDemoProject = {
+		projects: [],
+		pagination: new Pagination(0, this.maxItemPerPage),
+		pageable: new RestPage<DemoProject>()
+	};
+  projectsProcessing: boolean = true;
   Role = Role;
-  preSavingProject = false;
   confirmDialogRef: MatDialogRef<any>;
 
   emptyDemoProject: DemoProject = {
@@ -53,18 +62,43 @@ export class DemoProjectsGalleryComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getDemoProjects();
+    this.getAllDemoProjects();
   }
 
-  getDemoProjects() {
-    this.demoProjectService.getAll(this.companyId).subscribe(
-      (projects) => {
-        this.projects = projects;
+  getAllDemoProjects() {
+    this.projectsProcessing = true;
+    this.demoProjectService.getAllDemoProjects(this.companyId, this.contractorDemoProject.pagination)
+        .pipe(
+          takeUntil(this.destroyed$),
+          finalize( () => this.projectsProcessing = false)
+        )
+        .subscribe((pageable: RestPage<DemoProject>) => {
+        this.contractorDemoProject.projects = pageable.content;
+        this.contractorDemoProject.pageable = pageable;
+        this.projectsProcessing = false;
       },
       err => {
+        this.projectsProcessing = false;
         console.error(err)
       }
     )
+  }
+
+  showMoreProjects(){
+    this.projectsProcessing = true;
+    this.demoProjectService.getAllDemoProjects(this.companyId, this.contractorDemoProject.pagination.nextPage())
+      .pipe(
+        takeUntil(this.destroyed$),
+        finalize( () => this.projectsProcessing = false)
+      )
+      .subscribe( (pageable: RestPage<DemoProject>) => {
+        this.contractorDemoProject.projects = [...this.contractorDemoProject.projects, ...pageable.content];
+        this.contractorDemoProject.pageable = pageable;
+      },
+        err => {
+      	this.popUpMessageService.showError(getErrorMessage(err));
+					this.projectsProcessing = false;
+				})
   }
 
   trackById(index, item: Review) {
@@ -96,15 +130,20 @@ export class DemoProjectsGalleryComponent implements OnInit {
   }
 
   deleteDemoProject(id) {
-    this.demoProjectService.delete(id)
+    this.demoProjectService.delete(this.companyId, id)
       .subscribe(
         response => {
-          this.getDemoProjects()
+          this.getAllDemoProjects()
         },
         err => {
           console.error(err);
           this.popUpMessageService.showError(getErrorMessage(err))
         });
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
 }

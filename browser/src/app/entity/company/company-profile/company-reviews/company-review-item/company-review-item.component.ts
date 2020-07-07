@@ -4,11 +4,9 @@ import { SecurityService } from "../../../../../auth/security.service";
 import { Role } from "../../../../../model/security-model";
 import { ReviewService } from "../../../../../api/services/review.service";
 import { PopUpMessageService } from "../../../../../util/pop-up-message.service";
-import { capitalize, getErrorMessage } from "../../../../../util/functions";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { dialogsMap } from "../../../../../shared/dialogs/dialogs.state";
-import { confirmDialogConfig, unavailabilityPeriodDialogConfig } from "../../../../../shared/dialogs/dialogs.configs";
-import { SocialConnection } from "../../../../../api/models/SocialConnection";
+import { unavailabilityPeriodDialogConfig } from "../../../../../shared/dialogs/dialogs.configs";
 
 @Component({
   selector: 'company-review-item',
@@ -19,10 +17,9 @@ import { SocialConnection } from "../../../../../api/models/SocialConnection";
 export class CompanyReviewItemComponent implements OnInit {
   @Input() review: Review;
 
-  truncateRatio: number = 200;
   Role = Role;
   confirmDialogRef: MatDialogRef<any>;
-
+  truncateRatio: number = 190;
 
   private requestReviewRevisionDialogRef: MatDialogRef<any>;
 

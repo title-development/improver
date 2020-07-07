@@ -5,7 +5,7 @@
     <company-review-item [review]="review" *ngIf="review.published || editMode || review.customer.id === securityService.getLoginModel().id"></company-review-item>
   </ng-template>
   <div class="review-more" *ngIf="!reviewsLoading && !reviewsPage.last">
-    <button class="show-more-button" size="small" (click)="showMoreReviews()" >Show more</button>
+    <button class="show-more" size="small" (click)="showMoreReviews()" >Show more reviews</button>
   </div>
 
   <div class="review-spinner">

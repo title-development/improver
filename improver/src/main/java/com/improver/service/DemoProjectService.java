@@ -7,9 +7,9 @@ import com.improver.repository.CompanyRepository;
 import com.improver.repository.DemoProjectRepository;
 import groovy.util.logging.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Slf4j
 @Service
@@ -19,8 +19,8 @@ public class DemoProjectService {
     @Autowired private DemoProjectRepository demoProjectRepository;
 
 
-    public List<DemoProject> getDemoProjects(long companyId) {
-        return demoProjectRepository.findByCompanyIdOrderByCreatedDesc(companyId);
+    public Page<DemoProject> getDemoProjects(long companyId, Pageable pageable) {
+        return demoProjectRepository.findByCompanyId(companyId, pageable);
     }
 
     public DemoProject getDemoProject(long companyId, long projectId) {
@@ -33,7 +33,7 @@ public class DemoProjectService {
 
     public DemoProject addDemoProject(long companyId, DemoProject demoProject) {
         Company company = companyRepository.findById(companyId)
-            .orElseThrow(NotFoundException::new);
+                                           .orElseThrow(NotFoundException::new);
         return demoProjectRepository.save(demoProject.setCompany(company));
     }
 

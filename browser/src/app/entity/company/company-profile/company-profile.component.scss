@@ -57,9 +57,11 @@ p {
   @include response-to(sm) {
     height: 230px;
   }
+
   .container {
     height: 100%;
   }
+
   &:before {
     position: absolute;
     content: '';
@@ -70,6 +72,7 @@ p {
     width: 100%;
     background-color: rgba(0, 0, 0, 0.4);
   }
+
   .icon {
     &.-edit-background {
       display: block;
@@ -84,6 +87,7 @@ p {
       @include response(sm, md) {
         right: 24px;
       }
+
       .imp-icon-pencil {
         color: #ffffff;
         background-color: $primary-500;
@@ -95,11 +99,13 @@ p {
         justify-content: center;
 
       }
+
       label {
         cursor: pointer;
         display: block;
         height: 100%;
       }
+
       input {
         display: none;
       }
@@ -112,12 +118,15 @@ p {
   background-color: $white;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
   position: relative;
+
   .container {
     height: 100%;
   }
+
   @include response-to(sm) {
     height: auto;
   }
+
   .wrapper {
     position: absolute;
     bottom: 0;
@@ -132,6 +141,7 @@ p {
       left: 24px;
     }
   }
+
   h1 {
     max-width: 300px;
     margin: 18px auto;
@@ -145,6 +155,7 @@ p {
       margin: 18px 0;
     }
   }
+
   .logo {
     display: inline-block;
     width: 107px;
@@ -162,6 +173,7 @@ p {
       top: 0;
     }
   }
+
   .company-info {
     display: none;
     @include response-from(md) {
@@ -179,6 +191,7 @@ p {
   bottom: 8px;
   display: flex;
   flex-direction: column;
+
   .icon {
     cursor: pointer;
     border-radius: 50%;
@@ -187,13 +200,16 @@ p {
     display: flex;
     justify-content: center;
     align-items: center;
+
     &.-delete {
       background-color: $red;
     }
+
     &.-edit {
       margin-top: auto;
       background-color: $primary-500;
     }
+
     .mat-icon {
       color: $white;
       font-size: 16px;
@@ -209,13 +225,16 @@ p {
   @include response-to(sm) {
     display: block;
   }
+
   .container {
     max-width: 500px;
   }
+
   .company-info {
     text-align: center;
     margin-bottom: 15px;
   }
+
   .contacts {
     display: flex;
     justify-content: center;
@@ -223,10 +242,12 @@ p {
     @include response(xs) {
       flex-direction: column;
     }
+
     .info-block {
       padding: 0 12px;
     }
   }
+
   button {
     margin: 16px auto 0;
     display: block;
@@ -237,17 +258,21 @@ p {
   p {
     color: $black-800;
   }
+
   span {
     font-size: 14px;
     color: #a6a6a6;
+
     &:not(:last-child) {
       &:after {
         content: ', ';
       }
     }
   }
+
   .services {
     height: 19px;
+
     @include response-to(sm) {
       height: auto;
     }
@@ -273,11 +298,13 @@ p {
   width: 100%;
   position: relative;
   display: block;
+
   ::ng-deep .agm-map-content {
     position: absolute;
     top: 16px;
     left: 16px;
     display: block;
+
     .update-service-areas-button {
       font-size: 12px;
       color: $white;
@@ -287,6 +314,7 @@ p {
       font-weight: 300;
       transition: opacity .3s ease;
       opacity: 0.9;
+
       &:hover {
         opacity: 1;
       }
@@ -308,12 +336,14 @@ p {
       width: 207px;
     }
   }
+
   .rating-wrapper {
     display: flex;
     margin-bottom: 18px;
     @include response-to(sm) {
       justify-content: center;
     }
+
     .rating {
       width: 28px;
       height: 28px;
@@ -340,9 +370,11 @@ p {
     align-items: center;
     margin-top: -6px;
     margin-bottom: 18px;
+
     .approve-icon {
       margin-right: 8px;
     }
+
     .approve-text {
       font-weight: 500;
       font-size: 11px;
@@ -351,9 +383,11 @@ p {
       color: $green-450;
     }
   }
+
   &.mobile {
     justify-content: center;
     margin-top: 8px;
+
     .approve-mark {
       justify-content: center;
     }
@@ -383,6 +417,8 @@ company-reviews {
   background-color: $white;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
   margin-bottom: 24px;
+  border-radius: 10px;
+
   &.-space {
     padding: 20px 22px;
   }
@@ -392,6 +428,7 @@ company-reviews {
   .info-block {
     padding: 0;
   }
+
   p {
     color: $black-800;
   }
@@ -399,54 +436,79 @@ company-reviews {
 
 .info-block {
   display: flex;
+  flex-wrap: wrap;
+
   @include response(xs) {
     max-width: 240px;
     width: 240px;
     margin: 0 auto;
   }
+
   &:not(:last-child) {
     margin-bottom: 15px;
   }
+
   h5 {
-    margin-bottom: 5px;
+    margin-top: 4px;
   }
+
   a {
     font-size: 14px;
     color: $primary-500;
     word-break: break-all;
+
     &[href^="tel:"] {
       color: $primary-500;
     }
   }
+
   span {
     color: $black-800;
   }
+
   i {
     color: $grey-700;
   }
+
+  p {
+    margin-top: 6px;
+  }
+
   .group {
+    display: flex;
+    align-items: end;
     margin-left: 12px;
+
+    h5 {
+      font-size: 14px;
+    }
   }
 }
 
 .details-list {
   .row {
     margin: 0 -19px;
+
     @include response(xs) {
       margin: 0 -12px;
       flex-wrap: wrap;
     }
+
     > div {
       padding: 0 19px;
+
       @include response(xs) {
         padding: 0 12px;
       }
+
       &:first-child {
         position: relative;
+
         @include response(xs) {
           margin-bottom: 20px;
           padding-bottom: 24px;
         }
+
         &:after {
           content: '';
           display: block;
@@ -458,6 +520,7 @@ company-reviews {
           box-sizing: content-box;
           height: 100%;
           background-color: $grey-250;
+
           @include response(xs) {
             top: auto;
             bottom: 0;
@@ -471,56 +534,93 @@ company-reviews {
       }
     }
   }
+
   .info-group {
-    padding: 21px 19px;
+    padding: 20px 18px 8px 18px;
+
     @include response(xs) {
       padding: 20px 12px;
     }
+
     &:not(:last-child) {
       border-bottom: 1px solid $grey-250;
       color: $grey-250;
     }
   }
+
   .licenses {
+
     @include response(xs) {
       margin: 0 auto;
     }
+
     p {
       &:not(:last-of-type) {
         margin-bottom: 10px;
       }
     }
+
     .show-more-button {
       margin-top: 10px;
     }
   }
+
   .services {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+
     p {
-      width: 50%;
-      margin-bottom: 10px;
-      //cursor: pointer;
+      padding: 4px 8px;
+      margin-right: 8px;
+      margin-bottom: 8px;
+      width: max-content;
+      background-color: $grey-200;
+      border-radius: 8px;
+      color: $dark;
+
       @include response(xs) {
-        width: 100%;
-        text-align: center;
+        padding: 4px;
+        margin-right: 6px;
       }
     }
   }
+
   button {
-    margin: 10px auto 0;
     display: block;
   }
 }
 
+.block-without-border {
+  border: none !important;
+}
+
 .show-more-button {
   font-size: 14px;
-  color: $primary-500;
+  color: $dark;
   cursor: pointer;
   white-space: nowrap;
+  border: none !important;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
   i {
     font-size: 10px;
+  }
+}
+
+.licenses-button {
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  color: $dark;
+  text-align: center;
+  margin-top: 16px;
+
+  &:hover {
+    text-decoration: underline;
   }
 }
 
@@ -529,6 +629,7 @@ company-reviews {
   cursor: pointer;
   font-size: 14px;
   transition: color .3s ease;
+
   &:hover {
     color: $black-800;
   }
@@ -552,17 +653,20 @@ company-reviews {
   right: 30px;
   cursor: pointer;
   z-index: 1;
+
   @include response-to(sm) {
     right: 15px;
     top: auto;
     bottom: 15px;
   }
+
   &:hover {
     span {
       color: $white;
       transform: scale(1, 1);
     }
   }
+
   i {
     width: 48px;
     height: 48px;
@@ -576,6 +680,7 @@ company-reviews {
     color: $white;
     z-index: 1;
   }
+
   span {
     top: 3px;
     right: 50%;
@@ -594,20 +699,23 @@ company-reviews {
   }
 }
 
-.show-more-btn {
-  cursor: pointer;
-  background-color: transparent !important;
-  color: $primary-500 !important;
-  border: none !important;
-  padding: 8px 18px;
-  border-radius: 2px;
-  font-size: 14px;
+.secondary-button {
+  width: 100%;
+  &:hover {
+    background-color: $grey-150 !important;
+  }
+}
+
+.show-more {
+  width: 100%;
+  background: none;
+  color: $dark;
+  border: none;
+  padding: 8px;
+  border-radius: 0 0 8px 8px;
 
   &:hover {
+    //border: 1px solid $grey-300;
+    background-color: $grey-100;
   }
-
-  &:active {
-    background-color: $primary-500;
-  }
-
 }

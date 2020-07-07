@@ -1,11 +1,17 @@
 package com.improver.controller;
 
+import com.improver.entity.Contractor;
 import com.improver.entity.DemoProject;
 import com.improver.repository.DemoProjectRepository;
+import com.improver.security.UserSecurityService;
 import com.improver.service.DemoProjectService;
 import com.improver.service.ImageService;
 import groovy.util.logging.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,44 +31,51 @@ public class DemoProjectController {
     @Autowired private DemoProjectService demoProjectService;
     @Autowired private DemoProjectRepository demoProjectRepository;
     @Autowired private ImageService imageService;
+    @Autowired private UserSecurityService userSecurityService;
 
 
     @GetMapping
-    public ResponseEntity<List<DemoProject>> getDemoProjects(@PathVariable long companyId) {
-        List<DemoProject> demoProjects = demoProjectService.getDemoProjects(companyId);
+    public ResponseEntity<Page<DemoProject>> getDemoProjects(@PathVariable long companyId,
+                                                             @PageableDefault(sort = "created", page = 0, size = 10, direction = Sort.Direction.DESC) Pageable pageRequest) {
+        Page<DemoProject> demoProjects = demoProjectService.getDemoProjects(companyId, pageRequest);
         return new ResponseEntity<>(demoProjects, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<DemoProject> addDemoProject(@PathVariable long companyId, @RequestBody DemoProject demoProject) {
+    public ResponseEntity<DemoProject> addDemoProject(@PathVariable long companyId,
+                                                      @RequestBody DemoProject demoProject) {
         DemoProject project = demoProjectService.addDemoProject(companyId, demoProject);
         return new ResponseEntity<>(project, HttpStatus.OK);
     }
 
 
     @GetMapping(ID_PATH_VARIABLE)
-    public ResponseEntity<DemoProject> getDemoProject(@PathVariable long companyId, @PathVariable long id) {
+    public ResponseEntity<DemoProject> getDemoProject(@PathVariable long companyId,
+                                                      @PathVariable long id) {
         DemoProject demoProject = demoProjectService.getDemoProject(companyId, id);
         return new ResponseEntity<>(demoProject, HttpStatus.OK);
     }
 
 
     @PutMapping(ID_PATH_VARIABLE)
-    public ResponseEntity<DemoProject> updateDemoProject(@PathVariable long companyId, @PathVariable long id,
-                                                  @RequestBody DemoProject demoProject) {
+    public ResponseEntity<DemoProject> updateDemoProject(@PathVariable long companyId,
+                                                         @PathVariable long id,
+                                                         @RequestBody DemoProject demoProject) {
         DemoProject project = demoProjectService.updateDemoProject(companyId, demoProject.setId(id));
         return new ResponseEntity<>(project, HttpStatus.OK);
     }
 
     @DeleteMapping(ID_PATH_VARIABLE)
-    public ResponseEntity<Void> deleteDemoProject(@PathVariable long companyId, @PathVariable long id) {
+    public ResponseEntity<Void> deleteDemoProject(@PathVariable long companyId,
+                                                  @PathVariable long id) {
         demoProjectService.deleteDemoProject(companyId, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
     @GetMapping(ID_PATH_VARIABLE + IMAGES)
-    public ResponseEntity<Collection<String>> getProjectPicturesUrls(@PathVariable long id) {
+    public ResponseEntity<Collection<String>> getProjectPicturesUrls(@PathVariable long companyId,
+                                                                     @PathVariable long id) {
         Collection<String> images = imageService.getDemoProjectImageUrls(id);
         return new ResponseEntity<>(images, HttpStatus.OK);
     }

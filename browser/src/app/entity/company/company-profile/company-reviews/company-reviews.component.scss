@@ -65,27 +65,33 @@ company-review-item {
   margin-bottom: 24px;
 }
 
-.show-more-button {
-  cursor: pointer;
-  background-color: transparent !important;
-  color: $primary-500 !important;
-  border: none !important;
-  padding: 8px 18px;
-  border-radius: 2px;
-  font-size: 14px;
-
-  &:hover {
-  }
-
-  &:active {
-    background-color: $primary-500;
-  }
-
-}
-
 .review-more {
   display: flex;
   justify-content: center;
+
+  @include response-to(sm) {
+    padding: 0 12px;
+  }
+}
+
+.show-more {
+  width: 100%;
+  background: none;
+  color: $dark;
+  border: none;
+  padding: 8px;
+  border-radius: 8px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.secondary-button {
+  width: 100%;
+  &:hover {
+    background-color: $grey-150 !important;
+  }
 }
 
 .review-spiner {

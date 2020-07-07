@@ -163,8 +163,8 @@ export class CompanyDemoProjectEditorComponent implements OnInit, ComponentCanDe
     this.savingData = true;
 
     let request = this.newMode
-      ? this.demoProjectService.post(this.demoProject)
-      : this.demoProjectService.update(this.demoProject.id, this.demoProject);
+      ? this.demoProjectService.post(this.companyId, this.demoProject)
+      : this.demoProjectService.update(this.companyId, this.demoProject.id, this.demoProject);
 
     request.pipe(finalize(() => this.savingData = false))
       .subscribe(demoProject => {
@@ -189,7 +189,7 @@ export class CompanyDemoProjectEditorComponent implements OnInit, ComponentCanDe
   }
 
   deleteDemoProject(id) {
-    this.demoProjectService.delete(id)
+    this.demoProjectService.delete(this.companyId, id)
       .subscribe(
         response => {
           this.router.navigate(['/companies', this.companyId]);

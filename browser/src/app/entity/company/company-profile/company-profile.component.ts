@@ -53,7 +53,7 @@ export class CompanyProfileComponent implements OnInit, OnDestroy {
   map: any;
   companyId: any;
   companyProfile: CompanyProfile;
-  truncateAboutInfo = 300;
+  truncateAboutInfo = 290;
   truncateOfferedServicesInfo = 10;
   fixProfileHeader: boolean = false;
   postReviewDialogRef: MatDialogRef<any>;

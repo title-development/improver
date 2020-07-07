@@ -56,6 +56,8 @@
           <i class="imp-icon-building-2"></i>
           <div class="group">
             <h5>Founded <i *ngIf="editMode" (click)="openCompanyInfoDialog('about-company-dialog')" class="imp-icon-pencil-2 pencil"></i></h5>
+          </div>
+          <div>
             <p><span>{{companyProfile.founded}}</span>
               <ng-container [ngPlural]="companyProfile.yearsInBusiness">
                 <ng-template ngPluralCase="=0"> (less then year in business)</ng-template>
@@ -69,6 +71,8 @@
           <i class="imp-icon-map-marker"></i>
           <div class="group">
             <h5>location: <i *ngIf="editMode" (click)="openCompanyInfoDialog('company-location-dialog')" class="imp-icon-pencil-2 pencil"></i></h5>
+          </div>
+          <div>
             <p>{{companyProfile.location?.streetAddress}}, <br> {{companyProfile.location?.city}},
               {{companyProfile.location?.state}}
               {{companyProfile.location?.zip}}</p>
@@ -132,14 +136,12 @@
             <div class="info-group">
               <h4>About <i *ngIf="editMode" (click)="openCompanyInfoDialog('about-company-dialog')" class="imp-icon-pencil-2 pencil"></i></h4>
               <div class="content">
-                <p class="textarea-formatting">{{companyProfile.description | truncate:truncateAboutInfo:'...'}}
-                  <span class="show-more-button" (click)="truncateAboutInfo = 10000; updateGlueBox(true)"
-                        *ngIf="companyProfile.description.length > 300 && truncateAboutInfo == 300">Show more <i
-                    class="imp-icon-down-open"></i></span>
-                  <span class="show-more-button" (click)="truncateAboutInfo = 300; updateGlueBox(true)"
-                        *ngIf="truncateAboutInfo == 10000">Show less <i class="imp-icon-up-open"></i></span>
-                </p>
-
+                  <p class="textarea-formatting">{{companyProfile.description | truncate:truncateAboutInfo:'...'}}
+                      <span class="show-more-button" (click)="truncateAboutInfo = 10000; updateGlueBox(true)"
+                            *ngIf="companyProfile.description.length > 290 && truncateAboutInfo == 290">Show more <i class="imp-icon-down-open"></i></span>
+                      <span class="show-more-button" (click)="truncateAboutInfo = 290; updateGlueBox(true)"
+                            *ngIf="truncateAboutInfo == 10000">Show less <i class="imp-icon-up-open"></i></span>
+                  </p>
               </div>
             </div>
             <div class="info-group" *ngIf="companyProfile.licenses.length > 0 || companyProfile?.owner">
@@ -153,24 +155,25 @@
                     <ng-container *ngIf="companyProfile && companyProfile.licenses.length == 0">
                       <p>Include your professional license information here to generate up to three times job requests</p>
                     </ng-container>
-                    <div (click)="openNewLicenseDialog()" *ngIf="editMode" class="show-more-button">+ Add new license</div>
+                    <div (click)="openNewLicenseDialog()" *ngIf="editMode" class="licenses-button">+ Add a license</div>
                   </div>
             </div>
-            <div class="info-group">
-              <h4>Services offered <i *ngIf="editMode" routerLink="/pro/settings/services" class="imp-icon-pencil-2 pencil"></i></h4>
-              <div class="content">
-                <div class="services">
-                  <ng-container *ngFor="let service of companyProfile.services; let i = index">
-                    <p [attr.title]="service.name" *ngIf="i < truncateOfferedServicesInfo">{{service.name | truncate:30:'...'}}</p>
-                  </ng-container>
-                </div>
-
-                <button class="show-more-btn" (click)="truncateOfferedServicesInfo = 10000; updateGlueBox(true)"
-                        *ngIf="truncateOfferedServicesInfo == 10 && companyProfile.services.length > 10">Show more </button>
-                <button class="show-more-btn" (click)="truncateOfferedServicesInfo = 10; updateGlueBox(true)"
-                        *ngIf="truncateOfferedServicesInfo == 10000 && companyProfile.services.length > 10">Show less</button>
+              <div>
+                  <div class="info-group block-without-border">
+                      <h4>Services offered <i *ngIf="editMode" routerLink="/pro/settings/services" class="imp-icon-pencil-2 pencil"></i></h4>
+                      <div class="content">
+                          <div class="services">
+                              <ng-container *ngFor="let service of companyProfile.services; let i = index">
+                                  <p [attr.title]="service.name" *ngIf="i < truncateOfferedServicesInfo">{{service.name | truncate:30:'...'}}</p>
+                              </ng-container>
+                          </div>
+                      </div>
+                  </div>
+                  <button class="show-more" (click)="truncateOfferedServicesInfo = 10000; updateGlueBox(true)"
+                          *ngIf="truncateOfferedServicesInfo == 10 && companyProfile.services.length > 10">Show more </button>
+                  <button class="show-more" (click)="truncateOfferedServicesInfo = 10; updateGlueBox(true)"
+                          *ngIf="truncateOfferedServicesInfo == 10000 && companyProfile.services.length > 10">Show less</button>
               </div>
-            </div>
           </div>
         </div>
 
@@ -217,6 +220,8 @@
                   <i class="imp-icon-building-2"></i>
                   <div class="group">
                     <h5>Founded <i *ngIf="editMode" (click)="openCompanyInfoDialog('about-company-dialog')" class="imp-icon-pencil-2 pencil"></i></h5>
+                  </div>
+                  <div>
                     <p><span>{{companyProfile.founded}}</span>
                       <ng-container [ngPlural]="companyProfile.yearsInBusiness">
                         <ng-template ngPluralCase="=0"> (less then year in business)</ng-template>
@@ -230,6 +235,8 @@
                   <i class="imp-icon-map-marker"></i>
                   <div class="group">
                     <h5>Location: <i *ngIf="editMode" (click)="openCompanyInfoDialog('company-location-dialog')" class="imp-icon-pencil-2 pencil"></i></h5>
+                  </div>
+                  <div>
                     <p>{{companyProfile.location?.streetAddress}}, {{companyProfile.location?.city}},
                       {{companyProfile.location?.state}}
                       {{companyProfile.location?.zip}}</p>
