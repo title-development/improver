@@ -7,15 +7,14 @@ import com.improver.entity.User;
 import com.improver.exception.AuthenticationRequiredException;
 import com.improver.exception.ConflictException;
 import com.improver.exception.NotFoundException;
+import com.improver.model.socials.SocialConnectionConfig;
 import com.improver.model.socials.SocialUser;
-import com.improver.model.socials.SocialUserInfo;
 import com.improver.repository.SocialConnectionRepository;
 import com.improver.repository.UserRepository;
 import com.improver.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 
 import javax.validation.ValidationException;
 import java.util.List;
@@ -51,20 +50,20 @@ public class SocialConnectionService {
     }
 
 
-    public User registerUser(SocialUser socialUser, Boolean emailVerificationRequired) {
+    public User registerUser(SocialUser socialUser, boolean emailVerificationRequired, boolean preventConfirmationEmail) {
         Customer customer = Customer.of(socialUser);
-        return registrationService.registerSocialUser(customer, socialUser, emailVerificationRequired);
+        return registrationService.registerSocialUser(customer, socialUser, emailVerificationRequired, preventConfirmationEmail);
     }
 
 
-    public User registerPro(SocialUser socialUser, SocialUserInfo socialUserInfo, String referredBy) throws AuthenticationRequiredException {
+    public User registerPro(SocialUser socialUser, SocialConnectionConfig socialConnectionConfig, String referredBy) throws AuthenticationRequiredException {
         boolean emailVerificationRequired = false;
         SocialConnection connection = socialConnectionRepository.findByProviderId(socialUser.getId());
         if (connection != null) {
             throw new ConflictException(StringUtil.capitalize(socialUser.getProvider().toString()) + " account is already connected to another user");
         }
-        if (nonNull(socialUserInfo.getEmail())) {
-            socialUser.setEmail(socialUserInfo.getEmail());
+        if (nonNull(socialConnectionConfig.getEmail())) {
+            socialUser.setEmail(socialConnectionConfig.getEmail());
             emailVerificationRequired = true;
         }
         if (socialUser.getEmail() == null) {
@@ -74,8 +73,8 @@ public class SocialConnectionService {
         if(user != null) {
             throw new ConflictException("User with email "+socialUser.getEmail()+ " already registered");
         }
-        Contractor contractor = Contractor.of(socialUser, socialUserInfo.getPhone(), referredBy);
-        return registrationService.registerSocialUser(contractor, socialUser, emailVerificationRequired);
+        Contractor contractor = Contractor.of(socialUser, socialConnectionConfig.getPhone(), referredBy);
+        return registrationService.registerSocialUser(contractor, socialUser, emailVerificationRequired, false);
     }
 
 

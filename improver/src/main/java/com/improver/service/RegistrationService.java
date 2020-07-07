@@ -78,7 +78,7 @@ public class RegistrationService {
      * @param socialUser
      * @return user
      */
-    public User registerSocialUser(User user, SocialUser socialUser, boolean emailVerificationRequired) {
+    public User registerSocialUser(User user, SocialUser socialUser, boolean emailVerificationRequired, boolean preventConfirmationEmail) {
         SocialConnection socialConnection = new SocialConnection(socialUser, user);
         user.addSocialConnection(socialConnection);
         if (emailVerificationRequired) {
@@ -91,7 +91,7 @@ public class RegistrationService {
             contractorRepository.save((Contractor) user);
         } else if (user instanceof Customer) {
             customerRepository.save((Customer) user);
-            if (emailVerificationRequired) {
+            if (emailVerificationRequired && !preventConfirmationEmail) {
                 mailService.sendRegistrationConfirmEmail(user);
             }
         } else {

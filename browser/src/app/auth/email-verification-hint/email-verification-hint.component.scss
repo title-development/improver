@@ -1,0 +1,20 @@
+@import "improver-mixins.scss";
+
+:host {
+  display: flex;
+  align-items: center;
+  padding-top: 100px;
+
+  @include response-to(sm){
+    padding-top: 48px;
+  }
+
+  @include response-to(xs){
+    padding-top: 36px;
+  }
+
+  ::ng-deep email-verification-hint-card {
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  }
+
+}

@@ -72,8 +72,7 @@ public class OrderService {
             }
             lead = saveProjectOrder(income.setCustomer(customer));
             log.info("Project id={} saved, but require customer activation", lead.getId());
-            //TODO: Taras: if user has facebook account but not email - no need to create password
-            mailService.sendAutoRegistrationConfirmEmail(customer, lead, order.getBaseLeadInfo(), true);
+            mailService.sendAutoRegistrationConfirmEmail(customer, lead, order.getBaseLeadInfo(), true, !customer.getSocialConnections().isEmpty());
         }
     }
 

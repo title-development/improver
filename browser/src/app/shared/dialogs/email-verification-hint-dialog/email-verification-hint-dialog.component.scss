@@ -1,0 +1,57 @@
+@import "improver-mixins.scss";
+
+.dialog-content-wrapper {
+
+  .header {
+
+    .header-content {
+      padding: 16px 48px 16px 24px;
+      background-color: $grey-100;
+      font-size: 20px;
+      font-weight: 600;
+      text-align: left;
+      color: $grey-600;
+    }
+
+  }
+
+  .content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.92);
+    padding: 0px 24px;
+
+
+    .message {
+      min-height: 36px;
+      margin-top: 16px;
+    }
+
+  }
+
+  .actions {
+    padding: 0px 24px 16px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+  }
+
+  }
+
+
+::ng-deep .mat-dialog-container {
+  padding: 0px;
+}
+
+.close-modal {
+  position: relative;
+  right: 32px;
+  top: 32px;
+}
+
+

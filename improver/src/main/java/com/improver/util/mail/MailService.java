@@ -236,7 +236,7 @@ public class MailService {
      *                                                  CUSTOMER
      ********************************************************************************************************/
 
-    public void sendAutoRegistrationConfirmEmail(Customer customer, Project project, Order.BaseLeadInfo details, boolean showAnswers) {
+    public void sendAutoRegistrationConfirmEmail(Customer customer, Project project, Order.BaseLeadInfo details, boolean showAnswers, boolean isSocialUser) {
         Context context = contextTemplate();
         context.setVariable(USER_NAME, customer.getFirstName());
         context.setVariable(TITLE, "Thank you for choosing Home Improve!");
@@ -250,7 +250,8 @@ public class MailService {
         context.setVariable("message", "We've created a cabinet where you can manage your project and discuss details with Professionals. " +
             "Please confirm you email so we can start searching the best Professionals for your project. "  +
             "<br/> If you didn't do this action, please ignore this mail.");
-        context.setVariable(CONFIRM_URL, siteUrl + CONFIRM + PASSWORD + SLASH + jwtUtil.generateActivationJWT(customer.getValidationKey(), customer.getEmail()));
+        context.setVariable(CONFIRM_URL, siteUrl + CONFIRM + (isSocialUser ? ACTIVATION : PASSWORD) + SLASH +
+            jwtUtil.generateActivationJWT(customer.getValidationKey(), customer.getEmail()));
         context.setVariable(CONFIRM_BTN_TEXT, "Confirm");
         mailClient.sendMail(SBJ_CONFIRM_REGISTRATION, PROJECT_DETAILS_TEMPLATE, context, MailHolder.MessageType.NOREPLY, customer.getEmail());
     }

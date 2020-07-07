@@ -5,7 +5,7 @@ import { RequestOrder } from '../../../../../model/order-model';
 import { Constants } from '../../../../../util/constants';
 import { Messages } from '../../../../../util/messages';
 import { MatDialog } from '@angular/material/dialog';
-import { Credentials, LoginModel, Role } from '../../../../../model/security-model';
+import { Credentials, LoginModel, RegistrationUserModel, Role } from '../../../../../model/security-model';
 import { SecurityService } from '../../../../../auth/security.service';
 import { ProjectService } from '../../../../../api/services/project.service';
 import { ValidatedLocation } from '../../../../../api/models/LocationsValidation';
@@ -26,6 +26,7 @@ import { RecaptchaComponent } from "ng-recaptcha";
 import { CaptchaTrackingService } from "../../../../../api/services/captcha-tracking.service";
 import { RegistrationHelper } from "../../../../../util/registration-helper";
 import { DeviceControlService } from "../../../../../util/device-control.service";
+import { RegistrationService } from "../../../../../api/services/registration.service";
 
 @Component({
   selector: 'default-questionary-block',
@@ -66,6 +67,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
   currentQuestionName;
   questionaryAnswers;
   loginProcessing = false
+  registrationProcessing = false
   loginMessageText;
   loginMessageType;
   showLoginMessage = false;
@@ -88,6 +90,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
               private router: Router,
               private locationValidate: LocationValidateService,
               private metricsEventService: MetricsEventService,
+              private registrationService: RegistrationService,
               private registrationHelper: RegistrationHelper) {
     this.constants = constants;
     this.messages = messages;
@@ -103,7 +106,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     if (this.securityService.hasRole(Role.ANONYMOUS) && !this.emailIsChecked) {
       this.checkEmail(this.defaultQuestionaryForm.get('customerPersonalInfo.email').value)
     } else if (this.securityService.hasRole(Role.ANONYMOUS) && this.emailIsChecked && !this.emailIsUnique){
-      this.captchaValidations()
+      this.captchaValidation()
     } else if ((this.securityService.hasRole(Role.CUSTOMER) || this.emailIsChecked && this.emailIsUnique) && this.personalInfoRequired()) {
       this.nextQuestion('customerPersonalInfo', !this.questionaryControlService.customerHasPhone && !this.phoneValid ? this.validatePhone : undefined)
     }
@@ -156,6 +159,11 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
   }
 
   checkEmail(email) {
+    if(this.defaultQuestionaryForm.get('customerPersonalInfo.email').invalid) {
+      this.defaultQuestionaryForm.get('customerPersonalInfo.email').markAsTouched();
+      return
+    }
+
     this.emailIsChecking = true;
     this.captcha.reset();
       this.userService.isEmailFree(email)
@@ -203,13 +211,14 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     this.postOrderProcessing = false;
     this.projectActionService.projectUpdated();
     this.dialog.closeAll();
-    if (this.securityService.isAuthenticated()) {
-      this.router.navigate(['my','projects']);
-      this.popUpMessageService.showSuccess('Your <b>' + requestOrder.serviceName + '</b> request is submitted successfully!');
-    } else {
+    this.router.navigate(['my','projects']);
+    this.popUpMessageService.showSuccess('Your <b>' + requestOrder.serviceName + '</b> request is submitted successfully!');
+    if (!this.securityService.getLoginModel().emailConfirmed) {
       this.registrationHelper.email = this.defaultQuestionaryForm.get('customerPersonalInfo.email').value;
-      this.router.navigate(['/signup/email-verification'])
-      this.popUpMessageService.showSuccess('Your <b>' + requestOrder.serviceName + '</b> request is saved. Please check your email.');
+      this.registrationHelper.isRegisteredWhileProjectSubmission = true;
+      setTimeout(() => {
+        this.registrationHelper.openEmailVerificationHintDialog()
+      }, 200)
     }
   }
 
@@ -320,19 +329,29 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     this.waitingPhoneConfirmation = false;
     this.phoneValid = true;
     this.questionaryControlService.updateQuestionaryParams(undefined, true)
-    this.nextStepFn.call(this)
+
+    if(!this.securityService.isAuthenticated()) {
+      this.captchaValidation()
+    }
+
   }
 
   personalInfoRequired() {
     return (this.securityService.hasRole(Role.ANONYMOUS) || (this.securityService.hasRole(Role.CUSTOMER) && !this.questionaryControlService.customerHasPhone))
   }
 
-  captchaValidations() {
+  captchaValidation() {
     this.captcha.execute();
-    this.loginProcessing = true;
+    if(this.emailIsChecked && !this.emailIsUnique) {
+      this.loginProcessing = true;
+    } else {
+      this.registrationProcessing = true;
+    }
+
     this.captchaTrekkingService.captchaDialogChange().subscribe( () => {
       this.captcha.reset();
       this.loginProcessing = false;
+      this.registrationProcessing = false;
     })
   }
 
@@ -355,9 +374,14 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
 
   resolveCaptcha(captcha) {
     if(captcha) {
-      this.login(captcha);
+      if(this.emailIsChecked && this.emailIsUnique) {
+        this.register(captcha)
+      } else {
+        this.login(captcha);
+      }
     } else {
       this.loginProcessing = false;
+      this.registrationProcessing = false
     }
   }
 
@@ -389,6 +413,30 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
         }
         this.showLoginResponseMessage(getErrorMessage(err), SystemMessageType.ERROR);
         this.loginProcessing = false;
+      })
+  }
+
+  register(captcha?) {
+    let registrationUserModel: RegistrationUserModel = new RegistrationUserModel();
+    registrationUserModel.captcha = captcha;
+    registrationUserModel.email = this.defaultQuestionaryForm.get('customerPersonalInfo.email').value
+    registrationUserModel.firstName = this.defaultQuestionaryForm.get('customerPersonalInfo.firstName').value
+    registrationUserModel.lastName = this.defaultQuestionaryForm.get('customerPersonalInfo.lastName').value
+    registrationUserModel.phone = this.defaultQuestionaryForm.get('customerPersonalInfo.phone').value
+
+    this.registrationProcessing = true;
+    this.registrationService.registerCustomer(registrationUserModel)
+      .pipe(
+        takeUntil(this.destroyed$),
+        finalize(() => this.captcha.reset())
+      )
+      .subscribe(response => {
+        this.securityService.loginUser(response.body as LoginModel, response.headers.get('authorization'), false);
+        this.phoneValid = true;
+        this.questionaryControlService.customerHasPhone = true;
+        this.registrationProcessing = false;
+      }, error => {
+        this.popUpMessageService.showError(getErrorMessage(error))
       })
   }
 

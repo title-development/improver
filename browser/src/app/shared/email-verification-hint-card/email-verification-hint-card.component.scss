@@ -5,11 +5,10 @@
   .main-wrapper {
     display: flex;
     flex-direction: column;
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-    width: 421px;
+    max-width: 420px;
     font-size: 14px;
     text-align: center;
-    color: #757575;
+    color: $grey-600;
     background-color: $white;
   }
 
@@ -38,7 +37,7 @@
     .explanation {
       margin-bottom: 24px;
       .registered-email {
-        color: $primary-500;
+        color: $black-800;
       }
     }
 
@@ -51,6 +50,9 @@
         background-color: transparent;
         &:hover {
           text-decoration: underline;
+        }
+        &[disabled] {
+          opacity: 0.5;
         }
       }
     }

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { SocialConnection } from '../models/SocialConnection';
-import { SocialUserInfo } from '../../model/security-model';
+import { SocialConnectionConfig } from '../../model/security-model';
 
 @Injectable()
 export class SocialLoginService {
@@ -21,12 +21,12 @@ export class SocialLoginService {
     return this.http.post<any>(`${this.API_URL}/facebook`, accessToken, {observe: 'response'});
   }
 
-  facebookRegisterCustomer(socialUserInfo: SocialUserInfo): Observable<any> {
-    return this.http.post<any>(`${this.API_URL}/facebook/register/customer`, socialUserInfo, {observe: 'response'});
+  facebookRegisterCustomer(socialConnectionConfig: SocialConnectionConfig): Observable<any> {
+    return this.http.post<any>(`${this.API_URL}/facebook/register/customer`, socialConnectionConfig, {observe: 'response'});
   }
 
-  facebookRegisterPro(socialUserInfo: SocialUserInfo): Observable<any> {
-    return this.http.post<any>(`${this.API_URL}/facebook/register/pro`, socialUserInfo, {observe: 'response'});
+  facebookRegisterPro(socialConnectionConfig: SocialConnectionConfig): Observable<any> {
+    return this.http.post<any>(`${this.API_URL}/facebook/register/pro`, socialConnectionConfig, {observe: 'response'});
   }
 
   disconnectFacebook(): Observable<any> {
@@ -41,12 +41,12 @@ export class SocialLoginService {
     return this.http.post<any>(`${this.API_URL}/google`, accessToken, {observe: 'response'});
   }
 
-  googleRegisterPro(socialUserInfo: SocialUserInfo): Observable<any> {
-    return this.http.post<any>(`${this.API_URL}/google/register/pro`, socialUserInfo, {observe: 'response'});
+  googleRegisterPro(socialConnectionConfig: SocialConnectionConfig): Observable<any> {
+    return this.http.post<any>(`${this.API_URL}/google/register/pro`, socialConnectionConfig, {observe: 'response'});
   }
 
-  googleRegisterCustomer(socialUserInfo: SocialUserInfo): Observable<any> {
-    return this.http.post<any>(`${this.API_URL}/google/register/customer`, socialUserInfo, {observe: 'response'});
+  googleRegisterCustomer(socialConnectionConfig: SocialConnectionConfig): Observable<any> {
+    return this.http.post<any>(`${this.API_URL}/google/register/customer`, socialConnectionConfig, {observe: 'response'});
   }
 
   disconnectGoogle(): Observable<any> {

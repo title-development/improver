@@ -59,135 +59,13 @@
 
   </div>
 
-  <div #defaultQuestion class="form-element-wrapper text-input-wrapper"
-        [formGroupName]="'defaultQuestionaryGroup'"
-       *ngIf="questionaryControlService.currentQuestionIndex == questionaryControlService.questionaryLength + 2">
-    <h2 class="question-title">Where do you need a Professional?</h2>
-    <div class="text-input-group fill-flex-space" [formGroupName]="'projectLocation'"
-         [cvSpinner]="processingAddressValidation"
-         [cvSpinnerSize]="50"
-         [cvSpinnerBackground]="true">
-      <cv-input-field>
-        <cv-field-label>Address</cv-field-label>
-        <input cv-input type="text"
-               name="streetAddress"
-               placeholder="Address"
-               [formControlName]="'streetAddress'"
-               [id]="'streetAddress'"
-               required>
-        <cv-field-error
-          *ngIf="defaultQuestionaryForm.get('projectLocation.streetAddress').dirty || defaultQuestionaryForm.get('projectLocation.streetAddress').touched">
-            <span
-              *ngIf="defaultQuestionaryForm.get('projectLocation.streetAddress').errors?.required">Is required</span>
-        </cv-field-error>
-      </cv-input-field>
-      <cv-input-field>
-        <cv-field-label>City</cv-field-label>
-        <input type="text"
-               cv-input
-               name="city"
-               placeholder="City"
-               [id]="'city'"
-               [formControlName]="'city'"
-               required>
-        <cv-field-error
-          *ngIf="defaultQuestionaryForm.get('projectLocation.city').dirty || defaultQuestionaryForm.get('projectLocation.city').touched">
-          <span *ngIf="defaultQuestionaryForm.get('projectLocation.city').errors?.required">Is required</span>
-        </cv-field-error>
-      </cv-input-field>
-      <cv-input-field>
-        <cv-field-label>State</cv-field-label>
-        <cv-select [multiple]="false" [tags]="false" [autocomplete]="true"
-                   (autocompleteSearch)="autocompleteStateSearch($event)" [items]="filteredStates"
-                   [disableItemsMatch]="true"
-                   valueKey="value"
-                   labelKey="value"
-                   name="state"
-                   [formControlName]="'state'"
-                   [id]="'state'"
-                   required
-                   label="Choose state">
-        </cv-select>
-        <cv-field-error
-          *ngIf="defaultQuestionaryForm.get('projectLocation.state').dirty || defaultQuestionaryForm.get('projectLocation.state').touched">
-          <span *ngIf="defaultQuestionaryForm.get('projectLocation.state').errors?.required">Is required</span>
-        </cv-field-error>
-      </cv-input-field>
-      <cv-input-field>
-        <cv-field-label>Zip</cv-field-label>
-        <input cv-input
-               type="text"
-               (blur)="deviceControlService.isIOS() && nextQuestion('projectLocation', validateLocation)"
-               (keypress)="deviceControlService.isAndroid($event) && nextQuestion('projectLocation', validateLocation)"
-               inputmode="numeric"
-               placeholder="Zip"
-               name="zip"
-               maxlength="5"
-               [formControlName]="'zip'"
-               numericMask
-               pattern="{{constants.patterns.zipcode}}"
-               required>
-        <cv-field-error
-          *ngIf="defaultQuestionaryForm.get('projectLocation.zip').dirty || defaultQuestionaryForm.get('projectLocation.zip').touched">
-          <span *ngIf="defaultQuestionaryForm.get('projectLocation.zip').errors?.required">Is required</span>
-          <span
-            *ngIf="defaultQuestionaryForm.get('projectLocation.zip').errors?.pattern">{{messages.errors.zip.pattern}}</span>
-        </cv-field-error>
-      </cv-input-field>
-      <cv-field-error class="location-error">{{locationValidation | lowercase}}</cv-field-error>
-      <div class="address-validation" [ngClass]="{'-invalid': locationInvalid}">
-        <div class="row">
-          <div class="col-xs-12 col-sm-6">
-            <div class="address">
-              <h4>You entered</h4>
-              <p>
-                {{originalAddress?.streetAddress}}<br>
-                {{originalAddress?.city}},
-                {{originalAddress?.state}}
-                {{originalAddress?.zip}}
-              </p>
-            </div>
-            <button cv-button-empty type="button" (click)="resetLocationQuestion()">Use another address</button>
-          </div>
-          <div class="col-xs-12 col-sm-6">
-            <div class="address apply" (click)="chooseAddress(suggestedAddress)">
-              <div class="overlay"><i></i></div>
-              <h4>Suggested address</h4>
-              <p>
-                {{suggestedAddress?.streetAddress}}<br>
-                {{suggestedAddress?.city}},
-                {{suggestedAddress?.state}}
-                {{suggestedAddress?.zip}}
-              </p>
-            </div>
-            <button cv-button type="button" (click)="chooseAddress(suggestedAddress)">Use suggested</button>
-          </div>
-        </div>
-        <span *ngIf="validationMessage">{{validationMessage}}</span>
-      </div>
-    </div>
-
-    <div class="questionary-dialog-footer" [cvSpinner]="postOrderProcessing"
-         [cvSpinnerSize]="20">
-      <button cv-button-empty class="questionary-previous-button" (click)="questionaryControlService.previousQuestion()" type="button"
-              *ngIf="!hideNextAction && !postOrderProcessing">Back
-      </button>
-      <button *ngIf="!hideNextAction"
-              cv-button class="questionary-next-button"
-              (click)="nextQuestion('projectLocation', validateLocation)" type="button"
-              [disabled]="disabledNextAction">
-        Next
-      </button>
-    </div>
-  </div>
-
   <div #defaultQuestion class="form-element-wrapper text-input-wrapper" [formGroupName]="'defaultQuestionaryGroup'"
-       *ngIf="(securityService.hasRole(Role.ANONYMOUS) || personalInfoRequired()) && (questionaryControlService.currentQuestionIndex == questionaryControlService.questionaryLength + 3)">
+       *ngIf="(securityService.hasRole(Role.ANONYMOUS) || personalInfoRequired()) && (questionaryControlService.currentQuestionIndex == questionaryControlService.questionaryLength + 2)">
     <h2 class="question-title" *ngIf="securityService.hasRole(Role.ANONYMOUS) && !waitingPhoneConfirmation">Let's get acquainted</h2>
     <h2 class="question-title" *ngIf="waitingPhoneConfirmation">Verify your phone</h2>
     <h2 class="question-title" *ngIf="securityService.hasRole(Role.CUSTOMER) && !questionaryControlService.customerAccountIsLoading && !waitingPhoneConfirmation">Please add your phone number</h2>
 
-    <div class="text-input-group fill-flex-space" [formGroupName]="'customerPersonalInfo'">
+    <div class="text-input-group fill-flex-space" [formGroupName]="'customerPersonalInfo'" [cvSpinner]="registrationProcessing" [cvSpinnerSize]="50" [cvSpinnerBackground]="true">
 
       <div class="auth-block" *ngIf="!emailIsChecked && securityService.hasRole(Role.ANONYMOUS)">
 
@@ -195,7 +73,7 @@
           <span>Make it quickly with your social network</span>
         </div>
 
-        <social-buttons></social-buttons>
+        <social-buttons [inQuestionary]="true"></social-buttons>
 
         <div class="email-auth-hint" *ngIf="securityService.hasRole(Role.ANONYMOUS)">
           <span>or continue with Email</span>
@@ -320,7 +198,7 @@
 
     <re-captcha #captchaRef *ngIf="securityService.captchaEnabled && securityService.hasRole(Role.ANONYMOUS)" [size]="'invisible'" (resolved)="resolveCaptcha($event)"></re-captcha>
 
-    <div class="questionary-dialog-footer" [cvSpinner]="emailIsChecking || loginProcessing || questionaryControlService.customerAccountIsLoading" [cvSpinnerSize]="20" [cvSpinnerBackground]="true">
+    <div class="questionary-dialog-footer" *ngIf="!registrationProcessing" [cvSpinner]="emailIsChecking || loginProcessing || registrationProcessing || questionaryControlService.customerAccountIsLoading" [cvSpinnerSize]="20" [cvSpinnerBackground]="true">
 
       <button cv-button-empty class="questionary-previous-button" *ngIf="!emailIsChecked && !waitingPhoneConfirmation" (click)="questionaryControlService.previousQuestion();" type="button" [disabled]="questionaryControlService.customerAccountIsLoading">Back</button>
 
@@ -335,7 +213,7 @@
 
       <button *ngIf="securityService.hasRole(Role.ANONYMOUS) && emailIsChecked && !emailIsUnique"
               cv-button class="questionary-next-button"
-              (click)="captchaValidations()" type="button" [disabled]="disabledNextAction">
+              (click)="captchaValidation()" type="button" [disabled]="disabledNextAction">
         Next
       </button>
 
@@ -349,9 +227,131 @@
 
   </div>
 
+  <div #defaultQuestion class="form-element-wrapper text-input-wrapper"
+        [formGroupName]="'defaultQuestionaryGroup'"
+       *ngIf="questionaryControlService.currentQuestionIndex == questionaryControlService.questionaryLength + 2 + (personalInfoRequired() ? 1 : 0)">
+    <h2 class="question-title">Where do you need a Professional?</h2>
+    <div class="text-input-group fill-flex-space" [formGroupName]="'projectLocation'"
+         [cvSpinner]="processingAddressValidation"
+         [cvSpinnerSize]="50"
+         [cvSpinnerBackground]="true">
+      <cv-input-field>
+        <cv-field-label>Address</cv-field-label>
+        <input cv-input type="text"
+               name="streetAddress"
+               placeholder="Address"
+               [formControlName]="'streetAddress'"
+               [id]="'streetAddress'"
+               required>
+        <cv-field-error
+          *ngIf="defaultQuestionaryForm.get('projectLocation.streetAddress').dirty || defaultQuestionaryForm.get('projectLocation.streetAddress').touched">
+            <span
+              *ngIf="defaultQuestionaryForm.get('projectLocation.streetAddress').errors?.required">Is required</span>
+        </cv-field-error>
+      </cv-input-field>
+      <cv-input-field>
+        <cv-field-label>City</cv-field-label>
+        <input type="text"
+               cv-input
+               name="city"
+               placeholder="City"
+               [id]="'city'"
+               [formControlName]="'city'"
+               required>
+        <cv-field-error
+          *ngIf="defaultQuestionaryForm.get('projectLocation.city').dirty || defaultQuestionaryForm.get('projectLocation.city').touched">
+          <span *ngIf="defaultQuestionaryForm.get('projectLocation.city').errors?.required">Is required</span>
+        </cv-field-error>
+      </cv-input-field>
+      <cv-input-field>
+        <cv-field-label>State</cv-field-label>
+        <cv-select [multiple]="false" [tags]="false" [autocomplete]="true"
+                   (autocompleteSearch)="autocompleteStateSearch($event)" [items]="filteredStates"
+                   [disableItemsMatch]="true"
+                   valueKey="value"
+                   labelKey="value"
+                   name="state"
+                   [formControlName]="'state'"
+                   [id]="'state'"
+                   required
+                   label="Choose state">
+        </cv-select>
+        <cv-field-error
+          *ngIf="defaultQuestionaryForm.get('projectLocation.state').dirty || defaultQuestionaryForm.get('projectLocation.state').touched">
+          <span *ngIf="defaultQuestionaryForm.get('projectLocation.state').errors?.required">Is required</span>
+        </cv-field-error>
+      </cv-input-field>
+      <cv-input-field>
+        <cv-field-label>Zip</cv-field-label>
+        <input cv-input
+               type="text"
+               (blur)="deviceControlService.isIOS() && nextQuestion('projectLocation', validateLocation)"
+               (keypress)="deviceControlService.isAndroid($event) && nextQuestion('projectLocation', validateLocation)"
+               inputmode="numeric"
+               placeholder="Zip"
+               name="zip"
+               maxlength="5"
+               [formControlName]="'zip'"
+               numericMask
+               pattern="{{constants.patterns.zipcode}}"
+               required>
+        <cv-field-error
+          *ngIf="defaultQuestionaryForm.get('projectLocation.zip').dirty || defaultQuestionaryForm.get('projectLocation.zip').touched">
+          <span *ngIf="defaultQuestionaryForm.get('projectLocation.zip').errors?.required">Is required</span>
+          <span
+            *ngIf="defaultQuestionaryForm.get('projectLocation.zip').errors?.pattern">{{messages.errors.zip.pattern}}</span>
+        </cv-field-error>
+      </cv-input-field>
+      <cv-field-error class="location-error">{{locationValidation | lowercase}}</cv-field-error>
+      <div class="address-validation" [ngClass]="{'-invalid': locationInvalid}">
+        <div class="row">
+          <div class="col-xs-12 col-sm-6">
+            <div class="address">
+              <h4>You entered</h4>
+              <p>
+                {{originalAddress?.streetAddress}}<br>
+                {{originalAddress?.city}},
+                {{originalAddress?.state}}
+                {{originalAddress?.zip}}
+              </p>
+            </div>
+            <button cv-button-empty type="button" (click)="resetLocationQuestion()">Use another address</button>
+          </div>
+          <div class="col-xs-12 col-sm-6">
+            <div class="address apply" (click)="chooseAddress(suggestedAddress)">
+              <div class="overlay"><i></i></div>
+              <h4>Suggested address</h4>
+              <p>
+                {{suggestedAddress?.streetAddress}}<br>
+                {{suggestedAddress?.city}},
+                {{suggestedAddress?.state}}
+                {{suggestedAddress?.zip}}
+              </p>
+            </div>
+            <button cv-button type="button" (click)="chooseAddress(suggestedAddress)">Use suggested</button>
+          </div>
+        </div>
+        <span *ngIf="validationMessage">{{validationMessage}}</span>
+      </div>
+    </div>
+
+    <div class="questionary-dialog-footer" [cvSpinner]="postOrderProcessing"
+         [cvSpinnerSize]="20">
+      <button cv-button-empty class="questionary-previous-button" (click)="questionaryControlService.previousQuestion()" type="button"
+              *ngIf="!hideNextAction && !postOrderProcessing">Back
+      </button>
+      <button *ngIf="!hideNextAction"
+              cv-button class="questionary-next-button"
+              (click)="nextQuestion('projectLocation', validateLocation)" type="button"
+              [disabled]="disabledNextAction">
+        Next
+      </button>
+    </div>
+  </div>
+
   <div #defaultQuestion class="form-element-wrapper text-input-wrapper" [formGroupName]="'defaultQuestionaryGroup'"
        *ngIf="questionaryControlService.currentQuestionIndex == questionaryControlService.questionaryLength + 3 + (personalInfoRequired() ? 1 : 0)">
-    <h2 class="question-title">Let's check you {{questionaryControlService.serviceType.name}} request</h2>
+    <h2 class="question-title">Let's check your <b>{{questionaryControlService.serviceType.name}}</b> request</h2>
 
     <div class="project-summary fill-flex-space">
         <div class="project-details-group" *ngIf="!securityService.isAuthenticated()">

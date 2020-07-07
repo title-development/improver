@@ -4,7 +4,7 @@ import { CompleteProjectDialogComponent } from './complete-project-dialog/comple
 import { CustomerAddReviewFormComponent } from '../../entity/customer/customer-project-request-dialog/customer-add-review-form/customer-add-review-form.component';
 import { AddLicenseDialogComponent } from './add-license-dialog/add-license-dialog.component';
 import { ChangeDefaultPaymentCardDialogComponent } from './change-default-payment-card-dialog/change-default-payment-card-dialog.component';
-import { LocationSuggestDialogDialog } from './location-suggest.dialog/location-suggest-dialog.component';
+import { LocationSuggestDialogDialog } from './location-suggest-dialog/location-suggest-dialog.component';
 import { AddMoneyDialogComponent } from './add-money-dialog/add-money-dialog.component';
 import { AddCompanyReviewComponent } from '../../entity/company/company-profile/company-reviews/add-company-review/add-company-review.component';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
@@ -33,6 +33,7 @@ import { CompanyLocationDialogComponent } from "./company-location-dialog/compan
 import { CompanyLicensesDialogComponent } from "./company-licenses-dialog/company-licenses-dialog.component";
 import { AboutCompanyDialogComponent } from "./about-company-dialog/about-company-dialog.component";
 import { CompanyInfoEditorComponent } from "./change-company-name-dialog/company-info-editor.component";
+import { EmailVerificationHintDialogComponent } from "./email-verification-hint-dialog/email-verification-hint-dialog.component";
 
 export const dialogs = [
   QuestionaryDialogComponent,
@@ -65,7 +66,12 @@ export const dialogs = [
   ReferralDialogComponent,
   InfoWindowDialogComponent,
   PhoneValidationDialogComponent,
-  MobileMainSearchBarComponent
+  MobileMainSearchBarComponent,
+  CompanyLocationDialogComponent,
+  CompanyLicensesDialogComponent,
+  AboutCompanyDialogComponent,
+  CompanyInfoEditorComponent,
+  EmailVerificationHintDialogComponent
 ];
 
 export const dialogsMap = {
@@ -100,5 +106,6 @@ export const dialogsMap = {
   'company-location-dialog': CompanyLocationDialogComponent,
   'company-licenses-dialog': CompanyLicensesDialogComponent,
   'about-company-dialog': AboutCompanyDialogComponent,
-  'company-info-editor': CompanyInfoEditorComponent
+  'company-info-editor': CompanyInfoEditorComponent,
+  'email-verification-hint-dialog': EmailVerificationHintDialogComponent,
 };

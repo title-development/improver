@@ -5,14 +5,14 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.improver.application.properties.ThirdPartyApis;
 import com.improver.entity.User;
 import com.improver.exception.AuthenticationRequiredException;
 import com.improver.exception.InternalServerException;
 import com.improver.exception.NotFoundException;
 import com.improver.model.out.LoginModel;
-import com.improver.model.socials.SocialUserInfo;
+import com.improver.model.socials.SocialConnectionConfig;
 import com.improver.model.socials.SocialUser;
-import com.improver.application.properties.ThirdPartyApis;
 import com.improver.security.UserSecurityService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,14 +51,14 @@ public class GoogleSocialService {
         return userSecurityService.performUserLogin(user, res);
     }
 
-    public User register(SocialUserInfo socialUserInfo) {
-        SocialUser socialUser = getSocialUser(socialUserInfo.getAccessToken());
-        return socialConnectionService.registerUser(socialUser, false);
+    public User register(SocialConnectionConfig socialConnectionConfig) {
+        SocialUser socialUser = getSocialUser(socialConnectionConfig.getAccessToken());
+        return socialConnectionService.registerUser(socialUser, false, false);
     }
 
-    public User registerPro(SocialUserInfo socialUserInfo) {
-        SocialUser socialUser = getSocialUser(socialUserInfo.getAccessToken());
-        return socialConnectionService.registerPro(socialUser, socialUserInfo, socialUserInfo.getReferralCode());
+    public User registerPro(SocialConnectionConfig socialConnectionConfig) {
+        SocialUser socialUser = getSocialUser(socialConnectionConfig.getAccessToken());
+        return socialConnectionService.registerPro(socialUser, socialConnectionConfig, socialConnectionConfig.getReferralCode());
     }
 
 

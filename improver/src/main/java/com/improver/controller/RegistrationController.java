@@ -45,7 +45,7 @@ public class RegistrationController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @PreAuthorize("isAnonymous() || hasRole('INCOMPLETE_PRO')")
+    @PreAuthorize("isAnonymous() || hasRole('CUSTOMER') || hasRole('INCOMPLETE_PRO')")
     @PostMapping("/resend")
     public ResponseEntity resendConfirmationMail(@RequestParam(required = false) String email, @RequestParam(required = false) Long userId) {
         if((email == null || email.isEmpty()) && userId == null) {

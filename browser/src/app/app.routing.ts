@@ -20,7 +20,7 @@ const routes: Routes = [
       { path: '', component: HomeComponent, canActivate: [ContractorHomeGuard] },
       { path: 'login', loadChildren: () => import('./auth/login/login.module').then(m => m.LoginModule), canActivate: [ NotAuthenticatedGuard ]},
       { path: 'signup', loadChildren: () => import('./auth/signup/signup.module').then(m => m.SignupModule), canActivate: [ NotAuthenticatedGuard ]},
-      { path: 'signup/email-verification', loadChildren: () => import('./auth/email-verification/email-verification.module').then(m => m.EmailVerificationModule), canActivate: [ NotAuthenticatedGuard ]},
+      { path: 'signup/email-verification-hint', loadChildren: () => import('./auth/email-verification-hint/email-verification-hint.module').then(m => m.EmailVerificationHintModule)},
       { path: 'signup-pro', loadChildren: () => import('./auth/signup-pro/signup-pro.module').then(m => m.SignupProModule), canActivate: [ NotAuthenticatedGuard ]},
       { path: 'signup-pro/company', loadChildren: () => import('./auth/signup-company/signup-company.module').then(m => m.SignupCompanyModule), canActivate: [ IncompleteProGuard ]},
       { path: 'become-pro', loadChildren: () => import('./auth/become-pro/become-pro.module').then(m => m.BecomeProModule), canActivate: [ NotAuthenticatedGuard ]},

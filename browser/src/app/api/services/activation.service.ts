@@ -15,11 +15,11 @@ export class ActivationService {
   constructor(private http: HttpClient) {
   }
 
-  activateUser(activationCustomerModel:ActivationCustomerModel): Observable<any> {
+  activateUser(activationCustomerModel: ActivationCustomerModel): Observable<any> {
     return this.http.post<any>(`${this.confirmUrl}${this.activationUrl}`, activationCustomerModel, {observe: 'response'})
   }
 
-  confirmUserEmail(activationCustomerModel:ActivationCustomerModel): Observable<any> {
+  confirmUserEmail(activationCustomerModel: ActivationCustomerModel): Observable<any> {
     return this.http.post<any>(`${this.confirmUrl}${this.emailUrl}`, activationCustomerModel, {observe: 'response'})
   }
 
@@ -32,7 +32,7 @@ export class ActivationService {
   }
 
 
-  checkToken(activationCustomerModel:ActivationCustomerModel): Observable<any> {
+  checkToken(activationCustomerModel: ActivationCustomerModel): Observable<any> {
     return this.http.get<any>(`${this.confirmUrl}${this.checkUrl}`, {params: activationCustomerModel as any})
   }
 

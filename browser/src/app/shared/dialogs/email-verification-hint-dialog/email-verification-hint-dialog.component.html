@@ -1,0 +1,23 @@
+<div class="dialog-content-wrapper">
+  <div class="dialog-content-container">
+
+    <div class="header">
+
+      <mat-icon class="close-modal" color="accent" (click)="close()">clear</mat-icon>
+
+      <div class="header-content" [innerHtml]="'Confirm email'"></div>
+
+    </div>
+
+    <div class="content">
+      <email-verification-hint-card></email-verification-hint-card>
+    </div>
+
+    <div class="actions" >
+      <button cv-button (click)="close()" class="confirm">OK</button>
+    </div>
+
+  </div>
+</div>
+
+

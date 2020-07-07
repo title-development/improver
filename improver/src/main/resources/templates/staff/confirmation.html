@@ -10,11 +10,8 @@
          style="max-width: 600px;">
     <tr>
       <td align="left" width="100%" style="font-family: 'Trebuchet MS', sans-serif">
-        <div
-          style="background-color: #ffffff; width: 100%; color: #3d3d3d; box-shadow: 2px 4px 21px -8px rgba(0,0,0,0.8);
-           font-size: 14px; margin-top: 36px; margin-bottom: 36px;">
-          <div style="padding: 24px; border: 1px solid #dedede;">
-            <div style="font-size: 20px; margin-bottom: 24px">
+
+            <div style="margin-bottom: 24px; font-size: 20px;">
               <span th:if="${userName != null}">Hi</span>
               <b th:if="${userName != null}" th:text="${userName + '.'}"></b>
               <span th:utext="${title}"></span>
@@ -26,8 +23,10 @@
             box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1); cursor: pointer;"
               th:href="${confirmUrl}"
               th:text="${confirmBtnText}"></a>
-          </div>
-        </div>
+
+            <div style="margin-top: 36px; margin-bottom: 8px; font-size: 12px;">If the button does not work for you, please copy and paste this following URL into your browser:</div>
+            <div style="word-break: break-all; font-size: 12px;" th:text="${confirmUrl}"></div>
+
       </td>
     </tr>
   </table>

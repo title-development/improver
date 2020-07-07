@@ -3,7 +3,7 @@ package com.improver.controller;
 import com.improver.entity.SocialConnection;
 import com.improver.entity.User;
 import com.improver.model.out.LoginModel;
-import com.improver.model.socials.SocialUserInfo;
+import com.improver.model.socials.SocialConnectionConfig;
 import com.improver.security.UserSecurityService;
 import com.improver.service.FacebookSocialService;
 import com.improver.service.GoogleSocialService;
@@ -30,13 +30,13 @@ public class SocialLoginController {
     @Autowired private SocialConnectionService socialConnectionService;
 
     @PostMapping("/facebook/register/customer")
-    public ResponseEntity<LoginModel> registerCustomerWithFacebook(@RequestBody @Valid SocialUserInfo socialUserInfo, HttpServletResponse res) {
-        return new ResponseEntity<>(facebookSocialService.registerCustomer(socialUserInfo, res), HttpStatus.OK);
+    public ResponseEntity<LoginModel> registerCustomerWithFacebook(@RequestBody @Valid SocialConnectionConfig socialConnectionConfig, HttpServletResponse res) {
+        return new ResponseEntity<>(facebookSocialService.registerCustomer(socialConnectionConfig, res), HttpStatus.OK);
     }
 
     @PostMapping("/facebook/register/pro")
-    public ResponseEntity<LoginModel> registerProWithFacebook(@RequestBody @Valid SocialUserInfo socialUserInfo, HttpServletResponse res) {
-        User user = facebookSocialService.registerPro(socialUserInfo);
+    public ResponseEntity<LoginModel> registerProWithFacebook(@RequestBody @Valid SocialConnectionConfig socialConnectionConfig, HttpServletResponse res) {
+        User user = facebookSocialService.registerPro(socialConnectionConfig);
         LoginModel loginModel = userSecurityService.performUserLogin(user, res);
         return new ResponseEntity<>(loginModel, HttpStatus.OK);
     }
@@ -61,15 +61,15 @@ public class SocialLoginController {
     }
 
     @PostMapping("/google/register/customer")
-    public ResponseEntity<LoginModel> registerCustomerWithGoogle(@RequestBody @Valid SocialUserInfo socialUserInfo, HttpServletResponse res) {
-        User user = googleSocialService.register(socialUserInfo);
+    public ResponseEntity<LoginModel> registerCustomerWithGoogle(@RequestBody @Valid SocialConnectionConfig socialConnectionConfig, HttpServletResponse res) {
+        User user = googleSocialService.register(socialConnectionConfig);
         LoginModel loginModel = userSecurityService.performUserLogin(user, res);
         return new ResponseEntity<>(loginModel, HttpStatus.OK);
     }
 
     @PostMapping("/google/register/pro")
-    public ResponseEntity<LoginModel> registerProWithGoogle(@RequestBody SocialUserInfo socialUserInfo, HttpServletResponse res) {
-        User user = googleSocialService.registerPro(socialUserInfo);
+    public ResponseEntity<LoginModel> registerProWithGoogle(@RequestBody SocialConnectionConfig socialConnectionConfig, HttpServletResponse res) {
+        User user = googleSocialService.registerPro(socialConnectionConfig);
         LoginModel loginModel = userSecurityService.performUserLogin(user, res);
         return new ResponseEntity<>(loginModel, HttpStatus.OK);
     }

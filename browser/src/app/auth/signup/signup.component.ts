@@ -4,7 +4,7 @@ import { SecurityService } from '../security.service';
 import { Constants } from '../../util/constants';
 import { Messages } from 'app/util/messages';
 import { RegistrationService } from '../../api/services/registration.service';
-import { RegistrationUserModel, RegistrationUserProps } from '../../model/security-model';
+import { LoginModel, RegistrationUserModel, RegistrationUserProps } from '../../model/security-model';
 import { RecaptchaComponent } from 'ng-recaptcha';
 import { mergeMap, takeUntil, timeoutWith } from 'rxjs/operators';
 import { Subject, throwError } from 'rxjs';
@@ -34,11 +34,9 @@ export class SignupComponent implements OnDestroy {
     confirmPassword: '',
   };
 
-  // readonly confirmationResendBlockingTime: number = 15000;
   showMessage: boolean;
   messageType: string;
   messageText: string;
-  step: number = 1;
   registrationProcessing = false;
 
   private readonly destroyed$ = new Subject<void>();
@@ -75,10 +73,9 @@ export class SignupComponent implements OnDestroy {
     )
       .subscribe(
         response => {
-          this.registrationProcessing = false;
           this.registrationHelper.email = this.user.email;
-          this.registrationHelper.isEmailEditable = true;
-          this.router.navigate(['/signup/email-verification'])
+          this.securityService.loginUser(response.body as LoginModel, response.headers.get('authorization'), false);
+          this.router.navigate(['/signup/email-verification-hint'])
         },
         err => {
           this.recaptcha.reset();

@@ -20,11 +20,11 @@ import {
 import { ValidatedLocation } from '../../api/models/LocationsValidation';
 import { finalize, first, takeUntil } from 'rxjs/operators';
 import { getErrorMessage } from '../../util/functions';
-import { SystemMessageType } from '../../model/data-model';
 import { HttpResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { ReplaySubject, Subject } from 'rxjs';
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { RegistrationHelper } from "../../util/registration-helper";
 import LatLng = google.maps.LatLng;
 import Polygon = google.maps.Polygon;
 
@@ -116,7 +116,8 @@ export class SignupCompanyComponent {
               private gMapUtils: GoogleMapUtilsService,
               private applicationRef: ApplicationRef,
               public dialog: MatDialog,
-              private router: Router) {
+              private router: Router,
+              private registrationHelper: RegistrationHelper) {
     this.years = this.tricksService.fillArrayWithNumbers(this.constants.COMPANY_FOUNDATION_MIN_YEAR, new Date().getFullYear(), false);
     this.companyRegistration.company.founded = (new Date()).getFullYear().toString();
     this.getIncompleteCompanyRegistration();
@@ -541,9 +542,10 @@ export class SignupCompanyComponent {
           if ((response.body)) {
             this.securityService.loginUser(JSON.parse(response.body) as LoginModel, response.headers.get('authorization'), true);
           } else {
-            this.nextStep();
-            this.storeUserIdIsSessionStorage(this.securityService.getLoginModel().id);
+            this.storeUserIdInSessionStorage(this.securityService.getLoginModel().id);
             this.securityService.logoutFrontend();
+            this.registrationHelper.withoutEmail = true;
+            this.router.navigate(['/signup/email-verification-hint'])
           }
         }, err => {
           this.popUpMessageService.showError(getErrorMessage(err));
@@ -551,39 +553,6 @@ export class SignupCompanyComponent {
         }
       );
 
-  }
-
-  setResendConfirmationTimeout() {
-    setTimeout(() => {
-      this.isResendBlocked = false;
-    }, this.confirmationResendBlockingTime);
-  }
-
-  resendConfirmation() {
-    if (!this.isResendBlocked) {
-      this.setResendConfirmationTimeout();
-      this.isResendBlocked = true;
-      const userId = sessionStorage.getItem(this.NOT_ACTIVE_USER_KEY);
-      if (userId) {
-        this.registrationService.resendActivationMail(userId)
-          .pipe(takeUntil(this.destroyed$))
-          .subscribe(
-            response => {
-              this.popUpMessageService.showMessage({
-                type: SystemMessageType.SUCCESS,
-                text: 'A confirmation link has been resent to your email'
-              });
-            },
-            err => {
-              console.error(err);
-              this.isResendBlocked = false;
-              this.popUpMessageService.showError(getErrorMessage(err));
-            }
-          );
-      } else {
-        this.popUpMessageService.showError('Resend activation to the email is not available anymore');
-      }
-    }
   }
 
   cancelRegistration(): void {
@@ -613,7 +582,7 @@ export class SignupCompanyComponent {
     );
   }
 
-  private storeUserIdIsSessionStorage(userId: string): void {
+  private storeUserIdInSessionStorage(userId: string): void {
     sessionStorage.setItem(this.NOT_ACTIVE_USER_KEY, userId.toString());
   }
 }

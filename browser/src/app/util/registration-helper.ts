@@ -1,17 +1,33 @@
 import { Injectable } from "@angular/core";
+import { dialogsMap } from "../shared/dialogs/dialogs.state";
+import { confirmDialogConfig } from "../shared/dialogs/dialogs.configs";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 
 @Injectable({providedIn: 'root'})
 export class RegistrationHelper {
 
-  public email: string;
-  public isEmailEditable: boolean;
+  private emailVerificationHintDialogRef: MatDialogRef<any>;
 
-  constructor() {
+  public email: string;
+  public isRegisteredWhileProjectSubmission: boolean;
+  public withoutEmail: boolean;
+
+  constructor(public dialog: MatDialog) {
   }
 
   reset() {
     this.email = null;
-    this.isEmailEditable = null;
+    this.isRegisteredWhileProjectSubmission = null;
+  }
+
+  openEmailVerificationHintDialog() {
+    this.emailVerificationHintDialogRef = this.dialog.open(dialogsMap['email-verification-hint-dialog'], confirmDialogConfig);
+    this.emailVerificationHintDialogRef
+      .afterClosed()
+      .subscribe(result => {
+        this.emailVerificationHintDialogRef = null;
+        this.reset();
+      });
   }
 
 }

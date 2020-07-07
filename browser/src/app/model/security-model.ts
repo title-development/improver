@@ -18,6 +18,7 @@ export class LoginModel {
   role: Role;
   company: string;
   iconUrl: string;
+  emailConfirmed: boolean;
 }
 
 export enum Role {
@@ -90,17 +91,19 @@ export class ActivationCustomerModel {
   password?: string;
 }
 
-export class SocialUserInfo {
+export class SocialConnectionConfig {
   accessToken: string;
   email: string;
   phone: string;
   referralCode: string;
+  preventConfirmationEmail: boolean
 
-  constructor(accessToken?: string, email?: string, phone?: string, referralCode?: string) {
+  constructor(accessToken?: string, email?: string, phone?: string, referralCode?: string, preventConfirmationEmail?: boolean) {
     this.accessToken = accessToken;
     this.email = email;
     this.phone = phone;
     this.referralCode = referralCode;
+    this.preventConfirmationEmail = preventConfirmationEmail;
   }
 }
 

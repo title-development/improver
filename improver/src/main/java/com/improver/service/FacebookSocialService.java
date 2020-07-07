@@ -7,7 +7,7 @@ import com.improver.exception.NotFoundException;
 import com.improver.exception.ThirdPartyException;
 import com.improver.model.out.LoginModel;
 import com.improver.model.socials.FacebookUserProfile;
-import com.improver.model.socials.SocialUserInfo;
+import com.improver.model.socials.SocialConnectionConfig;
 import com.improver.model.socials.SocialUser;
 import com.improver.security.UserSecurityService;
 import com.improver.util.serializer.SerializationUtil;
@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
@@ -58,25 +57,22 @@ public class FacebookSocialService {
         return userSecurityService.performUserLogin(user, res);
     }
 
-    //TODO:
-    public LoginModel registerCustomer(SocialUserInfo socialUserInfo, HttpServletResponse res) {
-        LoginModel loginModel = null;
+    public LoginModel registerCustomer(SocialConnectionConfig socialConnectionConfig, HttpServletResponse res) {
+        LoginModel loginModel;
         boolean socialProfileHasEmail = true;
-        SocialUser socialUser = getSocialUser(socialUserInfo.getAccessToken());
+        SocialUser socialUser = getSocialUser(socialConnectionConfig.getAccessToken());
         if (isNull(socialUser.getEmail())) {
-            socialUser.setEmail(socialUserInfo.getEmail());
+            socialUser.setEmail(socialConnectionConfig.getEmail());
             socialProfileHasEmail = false;
         }
-        User user = socialConnectionService.registerUser(socialUser, !socialProfileHasEmail);
-        if (socialProfileHasEmail) {
-            loginModel = userSecurityService.performUserLogin(user, res);
-        }
+        User user = socialConnectionService.registerUser(socialUser, !socialProfileHasEmail, socialConnectionConfig.isPreventConfirmationEmail());
+        loginModel = userSecurityService.performUserLogin(user, res);
         return loginModel;
     }
 
-    public User registerPro(SocialUserInfo socialUserInfo) {
-        SocialUser socialUser = getSocialUser(socialUserInfo.getAccessToken());
-        return socialConnectionService.registerPro(socialUser, socialUserInfo, socialUserInfo.getReferralCode());
+    public User registerPro(SocialConnectionConfig socialConnectionConfig) {
+        SocialUser socialUser = getSocialUser(socialConnectionConfig.getAccessToken());
+        return socialConnectionService.registerPro(socialUser, socialConnectionConfig, socialConnectionConfig.getReferralCode());
     }
 
 

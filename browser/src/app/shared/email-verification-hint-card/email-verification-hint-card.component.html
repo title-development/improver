@@ -1,19 +1,23 @@
-<div class="main-wrapper" *ngIf="email">
+<div class="main-wrapper" *ngIf="withoutEmail || email">
   <div class="top-block">
 
     <img class="image-wrapper" src="/assets/img/round-icons/confirmation-envelope.png">
-    <div class="title">Confirm email</div>
-    <div class="explanation">We've sent an email to <span
-      class="registered-email">{{email}}.</span>
+    <div class="explanation">
+      <span *ngIf="withoutEmail">We've sent an email to you.</span>
+      <span *ngIf="!withoutEmail">
+        <span *ngIf="isRegisteredAfterProjectSubmit">We've accepted your project and sent an email to </span>
+        <span *ngIf="!isRegisteredAfterProjectSubmit">We've sent an email to </span>
+        <span class="registered-email">{{email}}.</span>
+      </span>
       Click the confirmation in that email to begin using Home Improve.
     </div>
     <div class="resend-confirm-block">Didn't receive a confirmation email?
-      <button class="resend-confirm-button" (click)="resendConfirmation()">Resend</button>
+      <button class="resend-confirm-button" (click)="resendConfirmation()" [disabled]="resendDisabledSeconds > 0">Resend <span *ngIf="resendDisabledSeconds > 0">({{resendDisabledSeconds}})</span></button>
     </div>
 
   </div>
 
-  <div class="bottom-block" *ngIf="isEmailEditable">
+  <div class="bottom-block" *ngIf="emailCorrectionAllowed">
     <div class="change-email-explanation">Entered the wrong email address? Change it here</div>
     <form class="change-email-input-wrapper" #changeEmailForm="ngForm">
       <cv-input-field>
@@ -26,15 +30,15 @@
                pattern="{{constants.patterns.email}}"
                emailUniqueValidator>
         <cv-field-error *ngIf="correctEmailInput.dirty || correctEmailInput.touched">
-                  <span *ngIf="correctEmailInput.errors?.required">
-                    {{messages.errors.email.required}}
-                  </span>
+          <span *ngIf="correctEmailInput.errors?.required">
+            {{messages.errors.email.required}}
+          </span>
           <span *ngIf="correctEmailInput.errors?.pattern">
-                  {{messages.errors.email.pattern}}
-                  </span>
+             {{messages.errors.email.pattern}}
+          </span>
           <span *ngIf="correctEmailInput.errors?.emailUnique">
-                    {{messages.errors.email.emailUnique}}
-                  </span>
+            {{messages.errors.email.emailUnique}}
+          </span>
         </cv-field-error>>
         <button cv-button (click)="correctEmailInput.valid && changeConfirmationEmail()">Send</button>
       </cv-input-field>

@@ -1,11 +1,7 @@
 import { Injectable } from "@angular/core";
-import {
-  CompanyInfoRegistration, CompanyRegistration,
-  RegistrationUserModel
-} from '../../model/security-model';
+import { CompanyRegistration, RegistrationUserModel } from '../../model/security-model';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpParams } from "@angular/common/http";
-
 
 
 @Injectable()
@@ -21,7 +17,7 @@ export class RegistrationService {
   }
 
   registerCustomer (registration :RegistrationUserModel): Observable<any> {
-    return this.http.post(`${this.customerUrl}`, registration , { observe: 'response', responseType: 'text' });
+    return this.http.post(`${this.customerUrl}`, registration , { observe: 'response'});
   }
 
   registerContractor(registration: RegistrationUserModel): Observable<any> {

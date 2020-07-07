@@ -93,7 +93,7 @@ export class ConfirmationComponent implements OnDestroy {
 
   }
 
-  activateUser(activationCustomerModel:any) {
+  activateUser(activationCustomerModel: ActivationCustomerModel) {
     this.processing = true;
     this.activationService.activateUser(activationCustomerModel)
       .pipe(takeUntil(this.destroyed$))
@@ -113,7 +113,7 @@ export class ConfirmationComponent implements OnDestroy {
         });
   }
 
-  confirmEmail(activationCustomerModel:any) {
+  confirmEmail(activationCustomerModel: ActivationCustomerModel) {
     this.processing = true;
     this.activationService.confirmUserEmail(activationCustomerModel)
       .pipe(takeUntil(this.destroyed$))

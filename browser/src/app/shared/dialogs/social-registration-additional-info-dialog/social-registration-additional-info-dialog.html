@@ -29,14 +29,18 @@
                  (ngModelChange)="showMessage = false"
                  required
                  trim
-                 pattern="{{constants.patterns.email}}">
+                 pattern="{{constants.patterns.email}}"
+                 emailUniqueValidator>
           <cv-field-error *ngIf="email.dirty || email.touched || additionalInfoForm.submitted">
-              <span *ngIf="email.errors?.required">
-                {{messages.errors.email.required}}
-              </span>
+            <span *ngIf="email.errors?.required">
+              {{messages.errors.email.required}}
+            </span>
             <span *ngIf="email.errors?.pattern">
-                {{messages.errors.email.pattern}}
-              </span>
+              {{messages.errors.email.pattern}}
+            </span>
+            <span *ngIf="email.errors?.emailUnique">
+              {{messages.errors.email.emailUnique}}
+            </span>
           </cv-field-error>
         </cv-input-field>
         <cv-input-field *ngIf="phoneMissing">

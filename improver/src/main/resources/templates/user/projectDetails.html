@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{templateUser.html}">
 
-<div layout:fragment="content" style="background-color: #fafafa; font-family: 'Trebuchet MS', sans-serif;">
+<div layout:fragment="content">
   <table border="0"
          cellpadding="0"
          cellspacing="0"
@@ -10,28 +10,24 @@
          style="max-width: 600px;">
     <tr>
       <td align="left" style="font-family: 'Trebuchet MS', sans-serif">
-        <div
-          style="background-color: #ffffff; width: 600px; color: #3d3d3d; box-shadow: 2px 4px 21px -8px rgba(0,0,0,0.8);
-          font-size: 14px;">
-          <div style="border: 1px solid #dedede; padding: 24px; margin-top: 36px; margin-bottom: 36px;">
 
-            <div style="text-align: left; font-size: 20px; margin-bottom: 24px">
+            <div style="text-align: left; margin-bottom: 24px; font-size: 20px;">
               <span th:if="${userName != null}">Hi</span>
-              <b th:if="${userName != null}" th:text="${userName + '.'}"></b>
+              <span th:if="${userName != null}" th:text="${userName + '.'}"></span>
               <span th:utext="${title}"></span>
             </div>
-            <div th:utext="${body}" th:style="${'font-size: 14px; white-space: pre-line; text-align: left'}"></div>
+            <div th:utext="${body}" th:style="${'font-size: 16px; white-space: pre-line; text-align: left'}"></div>
 
             <div th:if="${message != null}" th:utext="${message}" style="margin-bottom: 24px; text-align: left;"></div>
 
-            <table style="margin-bottom: 24px; font-size: 14px; text-align: left">
+            <table style="margin-bottom: 24px; font-size: 16px; text-align: left">
               <tr>
                 <td align="left">Project details:</td>
               </tr>
 
               <tr>
                 <td align="left">
-                  <table style="font-size: 14px;"  th:each="quesionAnswer: ${answers}">
+                  <table th:each="quesionAnswer: ${answers}">
                     <tr>
                       <td style="font-weight: bold;" th:text="${quesionAnswer.name}"></td>
                     </tr>
@@ -44,7 +40,7 @@
 
               <tr>
                 <td align="left">
-              <table style="font-size: 14px;">
+              <table style="font-size: 16px;">
               <tr>
                 <td style="font-weight: bold;">Location:</td>
               </tr>
@@ -71,17 +67,14 @@
 
             <a
               style="display: block; background: #009ede; padding: 12px; text-align: center; border-radius: 8px;
-            color: white; font-size: 14px; font-weight: 500; width: max-content; min-width: 180px; text-decoration: none; margin: 0 auto;
+            color: white; font-size: 16px; font-weight: 500; width: max-content; min-width: 180px; text-decoration: none; margin: 0 auto;
             box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1); cursor: pointer;"
               th:href="${confirmUrl}"
               th:text="${confirmBtnText}"></a>
 
-            <div style="margin-top: 36px">If the button does not work for you, please copy and paste this following URL into your browser:</div>
-            <div th:text="${confirmUrl}"></div>
+            <div style="margin-top: 36px; font-size: 12px;">If the button does not work for you, please copy and paste this following URL into your browser:</div>
+            <div style="word-break: break-all; font-size: 12px;" th:text="${confirmUrl}"></div>
 
-          </div>
-
-        </div>
       </td>
     </tr>
   </table>

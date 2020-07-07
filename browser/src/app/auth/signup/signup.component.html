@@ -1,4 +1,4 @@
-<div class="auth-wrapper" [ngClass]="{'-sign' : (step == 1)}">
+<div class="auth-wrapper -sign">
   <div class="auth-container">
     <div class="left-bar">
       <div class="left-bar-container">
@@ -8,7 +8,7 @@
 
     <div class="main-block">
       <div class="header"></div>
-      <div *ngIf="step == 1" class="container">
+      <div class="container">
         <form class="auth-form"
               name="signup-form"
               #signupForm="ngForm"
@@ -170,18 +170,11 @@
         </form>
       </div>
 
-      <div *ngIf="step == 2" class="content">
-
-        <email-verification-card [email]="user.email" [isEmailEditable]="true"></email-verification-card>
-
-      </div>
-
       <div class="footer">
         <div class="footer-content">
           <a class="footer-link" href="/privacy-policy" target="_blank">Privacy Policy</a>
           <a class="footer-link" href="/terms-of-use" target="_blank">Terms of Use</a>
         </div>
-
 
         <div class="copyright md-none lg-none xlg-none">
           <div class="copyright-line">© 2019 Home Improve, Inc</div>

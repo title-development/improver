@@ -149,7 +149,8 @@ export class QuestionaryControlService {
     this.defaultQuestionaryLength = this.DEFAULT_QUESTIONARY_LENGTH;
     this.withZip = false;
     this.withServiceType = false;
-    this.customerAccountDataFilled = true;
+    this.customerAccountDataFilled = false;
+    this.customerAccountIsLoading = false;
     this.resetCustomerAccount();
   }
 

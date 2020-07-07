@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AuthService, SocialUser } from 'angularx-social-login';
 import { HttpResponse } from '@angular/common/http';
-import { AdditionalUserInfo, LoginModel, SocialUserInfo } from '../../model/security-model';
+import { AdditionalUserInfo, LoginModel, SocialConnectionConfig } from '../../model/security-model';
 import { getErrorMessage } from '../../util/functions';
 import { SystemMessageType } from '../../model/data-model';
 import { SocialLoginService } from '../../api/services/social-login.service';
@@ -11,6 +11,7 @@ import { socialRegistrationAdditionalInfoDialogConfig } from '../../shared/dialo
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { PopUpMessageService } from "../../util/pop-up-message.service";
 import { Router } from "@angular/router";
+import { RegistrationHelper } from "../../util/registration-helper";
 
 export enum SocialPlatform {
   FACEBOOK = 'FACEBOOK',
@@ -29,6 +30,7 @@ export class SocialButtonsComponent {
   @Input() disabled: boolean = false;
   @Input() processing: boolean = false;
   @Input() isPro: boolean = false;
+  @Input() inQuestionary: boolean = false;
   @Output() responseMessage: EventEmitter<string> = new EventEmitter<string>();
   @Output() responseMessageType: EventEmitter<SystemMessageType> = new EventEmitter<SystemMessageType>();
   @Output() showMessage: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -43,7 +45,8 @@ export class SocialButtonsComponent {
               public securityService: SecurityService,
               public popUpService: PopUpMessageService,
               private router: Router,
-              public dialog: MatDialog) {
+              public dialog: MatDialog,
+              public registrationHelper: RegistrationHelper) {
   }
 
 
@@ -89,8 +92,9 @@ export class SocialButtonsComponent {
 
   private register(socialUser: SocialUser, additionalUserInfo: AdditionalUserInfo, isPro: boolean) {
     let accessToken = this.retrieveAccessToken(socialUser);
-    let socialUserInfo: SocialUserInfo = new SocialUserInfo(accessToken, additionalUserInfo?.email, additionalUserInfo?.phone, this.referralCode);
-    let observable = this.getRegisterObservable(socialUser.provider, socialUserInfo, isPro);
+    let socialConnectionConfig: SocialConnectionConfig = new SocialConnectionConfig(accessToken, additionalUserInfo?.email, additionalUserInfo?.phone, this.referralCode, this.inQuestionary);
+    console.log(socialConnectionConfig);
+    let observable = this.getRegisterObservable(socialUser.provider, socialConnectionConfig, isPro);
     observable.subscribe((response: HttpResponse<any>) => {
       this.googleFetching = false;
       this.facebookFetching = false;
@@ -98,7 +102,9 @@ export class SocialButtonsComponent {
       if (loginModel) {
         this.securityService.loginUser(loginModel, response.headers.get('authorization'), true);
       } else if (!isPro) {
-        this.router.navigate(['/signup'], {queryParams: {email: additionalUserInfo.email}});
+        this.registrationHelper.email = additionalUserInfo.email;
+        this.registrationHelper.isRegisteredWhileProjectSubmission = true;
+        this.router.navigate(['/signup/email-verification-hint'])
       }
     }, err => {
       this.googleFetching = false;
