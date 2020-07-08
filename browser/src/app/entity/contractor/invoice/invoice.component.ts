@@ -10,6 +10,7 @@ import { Billing, } from "../../../api/models/Billing";
 import TransactionType = Billing.TransactionType;
 import Receipt = Billing.Receipt;
 
+// TODO handle 404/403 exceptions
 enum Mode { trans = 'trans', conn = 'conn' }
 
 @Component({

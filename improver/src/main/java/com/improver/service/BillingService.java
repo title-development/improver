@@ -168,6 +168,7 @@ public class BillingService {
             transaction = source;
         }
 
+
         // 2 Project details
         if (projectRequest != null) {
             receipt.setProjectRequestId(projectRequest.getId())
@@ -181,7 +182,17 @@ public class BillingService {
             }
         }
 
-        // 3 General details
+        // 3 Discount details
+        if (transaction.getDiscount() != 0) {
+            if (refund == null) {
+                receipt.getRecords().add(new Receipt.Record(transaction.getCreated(), Receipt.PURCHASE_RECORD_TYPE, Receipt.PURCHASE_DESC, transaction.getAmount() + transaction.getDiscount()));
+                receipt.getRecords().add(new Receipt.Record(transaction.getCreated(), null, Receipt.DISCOUNT_DESC, transaction.getDiscount() * -1)); // negative number
+            } else {
+                receipt.getRecords().add(1, new Receipt.Record(transaction.getCreated(), null, Receipt.DISCOUNT_DESC, transaction.getDiscount() * -1)); // negative number
+            }
+        }
+
+        // 4 General details
         String type = StringUtil.capitalize(transaction.getType().toString());
         receipt.setDetail(new Receipt.Record(transaction.getCreated(), type, transaction.generateRecordTitle(), transaction.getAmount()))
             .setId(transaction.getTransactionNumber())

@@ -232,6 +232,10 @@
       .amount {
         width: 10%;
         justify-content: flex-end;
+
+        span {
+          margin-right: 3px;
+        }
       }
 
       .total {

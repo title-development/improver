@@ -18,6 +18,7 @@ public class Receipt {
     public static final String RETURN_RECORD_TYPE = "Refund";
     public static final String PURCHASE_DESC = "Lead price";
     public static final String REFUND_DESC = "Credit returned to balance";
+    public static final String DISCOUNT_DESC = "Discount";
 
 
     private String id;
