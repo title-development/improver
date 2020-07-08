@@ -13,8 +13,7 @@ const routes: Routes = [
   },
   {
     path: ':companyId/projects/view/:projectId',
-    loadChildren: () => import('./company-demo-project-viewer/company-demo-project-viewer.module').then(m => m.CompanyDemoProjectViewerModule),
-    canActivate: [AuthGuard]
+    loadChildren: () => import('./company-demo-project-viewer/company-demo-project-viewer.module').then(m => m.CompanyDemoProjectViewerModule)
   },
   {
     path: ':companyId/projects/:mode/:projectId',

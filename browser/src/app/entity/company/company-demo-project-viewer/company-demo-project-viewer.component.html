@@ -1,5 +1,10 @@
 <div class="company-gallery-project-viewer-wrapper">
 
+  <a class="back-link noselect" [routerLink]="['/companies', companyId]">
+    <mat-icon>keyboard_arrow_left</mat-icon>
+    <div fxFlexOffset="5px">Back to Company profile</div>
+  </a>
+
   <div class="container" *ngIf="demoProject">
 
     <div class="top-line">{{demoProject.name}}</div>

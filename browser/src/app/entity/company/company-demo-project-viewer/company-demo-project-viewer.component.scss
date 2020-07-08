@@ -240,7 +240,6 @@
     .project-description {
       font-size: 14px;
       color: $grey-600;
-      //margin-bottom: 16px;
     }
 
     .services-list {
@@ -259,6 +258,24 @@
       }
     }
 
+  }
+
+}
+
+.back-link {
+  margin-top: 30px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  color: $grey-500 !important;
+  justify-content: flex-start;
+  align-items: center;
+
+  &:active {
+    color: $primary-500;
+  }
+
+  & > div {
+    margin-right: 16px;
   }
 
 }

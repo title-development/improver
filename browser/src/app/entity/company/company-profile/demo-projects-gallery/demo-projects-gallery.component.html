@@ -46,7 +46,7 @@
                     {{project.price | currency:'USD':'symbol'}}
                   </div>
 
-                  <div class="more-button">
+                  <div class="more-button" *ngIf="securityService.isAuthenticated() && !securityService.hasRole(Role.CUSTOMER)">
 
                     <button class="project-card-menu-button" mat-icon-button [matMenuTriggerFor]="projectCardMenu">
                       <mat-icon>more_vert</mat-icon>

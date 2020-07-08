@@ -25,25 +25,22 @@ export class CompanyDemoProjectViewerComponent implements OnInit {
   allServiceTypes: ServiceType[];
   selectedServices:  ServiceType[] = [];
   project: DemoProject = new DemoProject();
-  userId: string;
   companyProfile: CompanyProfile;
   projectImages: any[];
   companyId: string;
   projectId: string;
   imagesGalleryDialogRef: MatDialogRef<any>;
 
-  constructor(
-    private route: ActivatedRoute,
-    private serviceTypeService: ServiceTypeService,
-    private demoProjectService: DemoProjectService,
-    private companyService: CompanyService,
-    public popUpMessageService: PopUpMessageService,
-    public dialog: MatDialog,
-    public securityService: SecurityService,
-    public router: Router,
-    public constants: Constants,
-    public messages: Messages) {
-    this.userId = this.securityService.getLoginModel().id;
+  constructor(private route: ActivatedRoute,
+              private serviceTypeService: ServiceTypeService,
+              private demoProjectService: DemoProjectService,
+              private companyService: CompanyService,
+              public popUpMessageService: PopUpMessageService,
+              public dialog: MatDialog,
+              public securityService: SecurityService,
+              public router: Router,
+              public constants: Constants,
+              public messages: Messages) {
 
     this.route.params.subscribe(params => {
 
