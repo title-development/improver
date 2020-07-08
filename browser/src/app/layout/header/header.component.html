@@ -1,4 +1,4 @@
-<user-activation-reminder *ngIf="securityService.getLoginModel()?.emailConfirmed == false"></user-activation-reminder>
+<user-activation-reminder *ngIf="securityService.hasRole(Role.CUSTOMER) && !securityService.getLoginModel().emailConfirmed"></user-activation-reminder>
 
 <div class="header">
   <div class="header-content">

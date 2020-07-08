@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { AuthService, SocialUser } from 'angularx-social-login';
+import { SocialAuthService, SocialUser } from 'angularx-social-login';
 import { HttpResponse } from '@angular/common/http';
 import { AdditionalUserInfo, LoginModel, SocialConnectionConfig } from '../../model/security-model';
 import { getErrorMessage } from '../../util/functions';
@@ -41,7 +41,7 @@ export class SocialButtonsComponent {
   private socialRegistrationAdditionalInfoDialogRef: MatDialogRef<any>;
 
   constructor(private socialLoginService: SocialLoginService,
-              private socialAuthService: AuthService,
+              private socialAuthService: SocialAuthService,
               public securityService: SecurityService,
               public popUpService: PopUpMessageService,
               private router: Router,

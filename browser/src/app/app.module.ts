@@ -1,5 +1,5 @@
 import { LOCALE_ID, ModuleWithProviders, NgModule } from '@angular/core';
-import { BrowserModule, HAMMER_GESTURE_CONFIG, HammerGestureConfig, HammerModule } from '@angular/platform-browser';
+import { BrowserModule, HAMMER_GESTURE_CONFIG, HammerModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouteReuseStrategy, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -65,7 +65,7 @@ import { ScrollHolderService } from './util/scroll-holder.service';
 import { NotificationService } from './api/services/notification.service';
 import { TicketService } from './api/services/ticket.service';
 import { ProjectRequestService } from './api/services/project-request.service';
-import { AuthServiceConfig, FacebookLoginProvider, GoogleLoginProvider } from 'angularx-social-login';
+import { FacebookLoginProvider, GoogleLoginProvider, SocialAuthServiceConfig } from 'angularx-social-login';
 import { SocialLoginService } from './api/services/social-login.service';
 import { AccessDeniedInterceptor } from './util/interceptors/access-denied.interceptor';
 import { InternalServerErrorComponent } from './entity/internal-server-error/internal-server-error.component';
@@ -89,22 +89,6 @@ import { HammerConfig } from "./util/hummer-config";
 
 
 const rootRouting: ModuleWithProviders = RouterModule.forRoot([], {useHash: false});
-
-export function getAuthServiceConfigs() {
-  let config = new AuthServiceConfig(
-    [
-      {
-        id: FacebookLoginProvider.PROVIDER_ID,
-        provider: new FacebookLoginProvider(environment.facebookClientId)
-      },
-      {
-        id: GoogleLoginProvider.PROVIDER_ID,
-        provider: new GoogleLoginProvider(environment.googleClientId)
-      },
-    ]
-  );
-  return config;
-}
 
 
 @NgModule({
@@ -199,8 +183,20 @@ export function getAuthServiceConfigs() {
     PhoneService,
     MyStompService,
     {
-      provide: AuthServiceConfig,
-      useFactory: getAuthServiceConfigs
+      provide: 'SocialAuthServiceConfig',
+      useValue: {
+        autoLogin: false,
+        providers: [
+          {
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider(environment.googleClientId),
+          },
+          {
+            id: FacebookLoginProvider.PROVIDER_ID,
+            provider: new FacebookLoginProvider(environment.facebookClientId),
+          }
+        ],
+      } as SocialAuthServiceConfig,
     },
     {provide: 'Window', useValue: window},
     {provide: LOCALE_ID, useValue: 'en-US'},

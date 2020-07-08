@@ -21,7 +21,7 @@ import { applyPhoneMask, capitalize, getErrorMessage, removePhoneMask } from '..
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { SocialLoginService } from '../../../../api/services/social-login.service';
 import { SocialConnection } from '../../../../api/models/SocialConnection';
-import { AuthService, FacebookLoginProvider, GoogleLoginProvider, SocialUser } from 'angularx-social-login';
+import { FacebookLoginProvider, GoogleLoginProvider, SocialAuthService, SocialUser } from 'angularx-social-login';
 import { from, Observable, Subject, throwError } from 'rxjs';
 
 
@@ -68,7 +68,7 @@ export class PersonalInfoComponent implements OnDestroy {
               public tricksService: TricksService,
               public popupService: PopUpMessageService,
               private socialConnectionService: SocialLoginService,
-              private socialAuthService: AuthService) {
+              private socialAuthService: SocialAuthService) {
     this.getUserAccount();
     this.socialProviders = enumToArrayList(SocialConnection.Provider);
   }
