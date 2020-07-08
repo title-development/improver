@@ -21,6 +21,7 @@ p {
   position: absolute;
   right: 22px;
   top: 16px;
+
   cv-icon {
     color: $grey-400;
     font-size: 14px;
@@ -34,6 +35,7 @@ p {
 
 .content {
   padding: 24px 24px 24px;
+  min-height: 300px;
 }
 
 .actions {

@@ -51,13 +51,11 @@ export class DemoProjectsGalleryComponent implements OnInit, OnDestroy {
     images: []
   };
 
-  constructor (
-    private securityService: SecurityService,
-    private demoProjectService: DemoProjectService,
-    public popUpMessageService: PopUpMessageService,
-    public dialog: MatDialog,
-    public router: Router
-  ) {
+  constructor (private securityService: SecurityService,
+               private demoProjectService: DemoProjectService,
+               public popUpMessageService: PopUpMessageService,
+               public dialog: MatDialog,
+               public router: Router) {
 
   }
 
@@ -75,7 +73,6 @@ export class DemoProjectsGalleryComponent implements OnInit, OnDestroy {
         .subscribe((pageable: RestPage<DemoProject>) => {
         this.contractorDemoProject.projects = pageable.content;
         this.contractorDemoProject.pageable = pageable;
-        this.projectsProcessing = false;
       },
       err => {
         this.projectsProcessing = false;

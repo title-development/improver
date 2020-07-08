@@ -79,9 +79,6 @@ p {
       cursor: pointer;
       width: 24px;
       height: 24px;
-      position: absolute;
-      right: 12px;
-      bottom: 15px;
       font-size: 11px;
       z-index: 1;
       @include response(sm, md) {
@@ -715,7 +712,37 @@ company-reviews {
   border-radius: 0 0 8px 8px;
 
   &:hover {
-    //border: 1px solid $grey-300;
     background-color: $grey-100;
+  }
+}
+
+.edit-content {
+  position: absolute;
+  right: 12px;
+  bottom: 15px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+
+  @include response-to(sm) {
+    flex-direction: column-reverse;
+    right: 24px;
+  }
+}
+
+.cover-hint {
+  cursor: pointer;
+  color: $white;
+  font-size: 14px;
+  margin-right: 12px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  @include response-to(sm) {
+    margin-top: 6px;
+    margin-right: -10px;
+    font-size: 14px;
   }
 }

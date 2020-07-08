@@ -33,9 +33,10 @@ import { switchMap, takeUntil } from 'rxjs/operators';
 import { ScrollService } from '../../../util/scroll.service';
 import { SeoService } from "../../../util/seo.service";
 import { CompanyInfoService } from "../../../api/services/company-info.service";
+import { Role } from "../../../model/security-model";
 
 @Component({
-  selector: 'customer-profile-page',
+  selector: 'company-profile-page',
   templateUrl: './company-profile.component.html',
   styleUrls: ['./company-profile.component.scss']
 })
@@ -50,6 +51,7 @@ export class CompanyProfileComponent implements OnInit, OnDestroy {
   isReviewSend = false;
   projectRequest: ProjectRequest;
   mapOptions: MapOptions = defaultMapOptions;
+  Role = Role;
   map: any;
   companyId: any;
   companyProfile: CompanyProfile;

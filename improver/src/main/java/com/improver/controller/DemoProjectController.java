@@ -1,6 +1,5 @@
 package com.improver.controller;
 
-import com.improver.entity.Contractor;
 import com.improver.entity.DemoProject;
 import com.improver.repository.DemoProjectRepository;
 import com.improver.security.UserSecurityService;
@@ -19,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.ZonedDateTime;
 import java.util.Collection;
-import java.util.List;
 
 import static com.improver.application.properties.Path.*;
 

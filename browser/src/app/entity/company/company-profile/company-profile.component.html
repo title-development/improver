@@ -2,15 +2,21 @@
   <div class="cover"
        [ngStyle]="companyProfile.backgroundUrl && companyProfile.backgroundUrl != '' && {'background-image':'url(' + companyProfile.backgroundUrl + ')'}">
     <div class="container">
-      <div class="icon -edit-background" title="Edit company cover" *ngIf="editMode"
-           [cvSpinner]="backgroundProcessing"
-           [cvSpinnerSize]="30"
-           [cvSpinnerBackground]="false"
-           cvSpinnerBackgroundColor="transparent">
-        <label for="background-file" *ngIf="!backgroundProcessing">
-          <i class="imp-icon-pencil"></i>
+      <div class="edit-content">
+        <label for="background-file" class="cover-hint" *ngIf="securityService.hasRole(Role.CONTRACTOR) && (companyProfile.backgroundUrl == '' || !companyProfile.backgroundUrl)">
+          add background
         </label>
-        <input id="background-file" type="file" accept=".png, .jpg, .bmp" (change)="fileChangeListener($event)">
+
+        <div class="icon -edit-background" title="Edit company cover" *ngIf="editMode"
+             [cvSpinner]="backgroundProcessing"
+             [cvSpinnerSize]="30"
+             [cvSpinnerBackground]="false"
+             cvSpinnerBackgroundColor="transparent">
+          <label for="background-file" *ngIf="!backgroundProcessing">
+            <i class="imp-icon-pencil"></i>
+          </label>
+          <input id="background-file" type="file" accept=".png, .jpg, .bmp" (change)="fileChangeListener($event)">
+        </div>
       </div>
     </div>
   </div>

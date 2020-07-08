@@ -6,6 +6,9 @@ import { ReviewRating } from '../../../../api/models/ReviewRating';
 import { RestPage } from '../../../../api/models/RestPage';
 import { first } from "rxjs/internal/operators";
 import { SecurityService } from "../../../../auth/security.service";
+import { Role } from "../../../../model/security-model";
+import { dialogsMap } from "../../../../shared/dialogs/dialogs.state";
+import { unavailabilityPeriodDialogConfig } from "../../../../shared/dialogs/dialogs.configs";
 
 @Component({
   selector: 'company-reviews',
@@ -19,6 +22,8 @@ export class CompanyReviewsComponent implements OnInit, OnChanges {
   postReviewDialogRef: MatDialogRef<any>;
   pagination: Pagination = new Pagination(0, 3);
   reviewsLoading: boolean = false;
+  Role = Role;
+  requestReviewDialogRef: MatDialogRef<any>;
 
   @Input() companyReviewsSidebar: boolean = false;
   @Input() reviewsTitle = 'Reviews';
@@ -72,6 +77,14 @@ export class CompanyReviewsComponent implements OnInit, OnChanges {
         console.error(err);
       }
     );
+  }
+
+  openRequestReviewDialog(): void {
+    this.requestReviewDialogRef = this.dialog.open(dialogsMap['request-review-dialog'], unavailabilityPeriodDialogConfig);
+    this.requestReviewDialogRef.afterClosed().subscribe( () => {
+      this.requestReviewDialogRef = null;
+    });
+    this.requestReviewDialogRef.componentInstance.companyName = this.companyProfile.name;
   }
 
   trackById(index, item: Review) {
