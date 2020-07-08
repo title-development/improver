@@ -6,7 +6,8 @@ import {
   Input,
   OnChanges,
   OnDestroy,
-  Output, Renderer2
+  Output,
+  Renderer2
 } from '@angular/core';
 import { SecurityService } from '../../../auth/security.service';
 import { animate, state, style, transition, trigger } from '@angular/animations';
@@ -79,13 +80,6 @@ export class MainMenuComponent implements OnChanges, OnDestroy {
 
   ngOnChanges(changes): void {
     if (changes.toggle && changes.toggle.currentValue) {
-      const el = this.elementRef.nativeElement;
-      const elRect = el.getBoundingClientRect();
-      if (elRect.left + this.menuWidth > this.window.innerWidth) {
-        this.renderer.addClass(el, '-glue');
-      } else {
-        this.renderer.removeClass(el, '-glue');
-      }
       this.mobileMenuService.findProfessionalsOpened = false;
       this.dialog.closeAll();
       this.animationState = 'active';

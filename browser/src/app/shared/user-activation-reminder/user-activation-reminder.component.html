@@ -1,0 +1,10 @@
+<div class="wrapper">
+
+  <div>
+    <span>Please confirm your email</span>
+    <button (click)="resendConfirmationEmail()" [disabled]="resendDisabledSeconds > 0">Resend <span *ngIf="resendDisabledSeconds > 0">({{resendDisabledSeconds}})</span></button>
+  </div>
+
+</div>
+
+

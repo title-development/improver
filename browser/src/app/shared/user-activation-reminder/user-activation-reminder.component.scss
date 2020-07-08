@@ -1,0 +1,30 @@
+@import "improver-mixins.scss";
+
+:host {
+  position: fixed;
+  top: $header-height;
+  width: 100%;
+  height: $activation-reminder-height;
+  background-color: #ffeb8e;
+  color: black;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px 0 rgba(0,0,0,.15);
+
+  button {
+    padding: 0px;
+    border: none;
+    background: transparent;
+    color: $primary-400;
+    margin-left: 4px;
+    text-decoration: underline;
+    font-size: 15px;
+
+    &[disabled] {
+      opacity: 0.5;
+    }
+  }
+
+}

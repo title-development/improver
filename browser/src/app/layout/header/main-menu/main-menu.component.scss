@@ -1,13 +1,6 @@
 @import "../../../../improver-mixins.scss";
 
 :host {
-  &.-glue {
-    .desktop-menu {
-      left: inherit;
-      top: 3px;
-      right: 0;
-    }
-  }
 }
 
 .backdrop {

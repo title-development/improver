@@ -2,17 +2,24 @@
 
 :host {
   display: block;
+  z-index: 900;
 }
 
-.header-without-shadow {
-  z-index: 9999 !important;
-  box-shadow: none !important;
+.shadow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 0;
+  height: $header-height;
+  box-shadow: 0 2px 4px 0 rgba(0,0,0,.15);
+  z-index: 80;
+  width: 100%;
 }
 
 .header {
   position: fixed;
   user-select: none;
-  z-index: 900;
   top: 0;
   left: 0;
   right: 0;
@@ -21,7 +28,7 @@
   background-color: $white;
   display: flex;
   justify-content: center;
-  box-shadow: 0 2px 4px 0 rgba(0,0,0,.15);
+  z-index: 100;
 
   .header-content {
     display: flex;

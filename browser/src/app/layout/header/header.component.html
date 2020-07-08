@@ -1,4 +1,6 @@
-<div class="header" [ngClass]="{'header-without-shadow' : mobileMenuService.findProfessionalsOpened || mobileMenuService.mobileMenuOpened}">
+<user-activation-reminder *ngIf="securityService.getLoginModel()?.emailConfirmed == false"></user-activation-reminder>
+
+<div class="header">
   <div class="header-content">
     <!--TODO: rework menu items with separate components?-->
     <div class="header-left">
@@ -119,3 +121,5 @@
     </div>
   </div>
 </div>
+
+<div class="shadow"></div>

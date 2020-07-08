@@ -44,6 +44,7 @@ import { TestimonialsComponent } from "./testimonials/testimonials.component";
 import { SuggestedLocationComponent } from './suggested-location/suggested-location.component';
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { EmailVerificationHintCardComponent } from "./email-verification-hint-card/email-verification-hint-card.component";
+import { UserActivationReminderComponent } from "./user-activation-reminder/user-activation-reminder.component";
 
 @NgModule({
   imports: [
@@ -95,7 +96,8 @@ import { EmailVerificationHintCardComponent } from "./email-verification-hint-ca
     PhoneValidationComponent,
     TestimonialsComponent,
     SuggestedLocationComponent,
-    EmailVerificationHintCardComponent
+    EmailVerificationHintCardComponent,
+    UserActivationReminderComponent
   ],
   exports: [
     CommonModule,
@@ -141,7 +143,8 @@ import { EmailVerificationHintCardComponent } from "./email-verification-hint-ca
     NgTruncatePipeModule,
     TestimonialsComponent,
     SuggestedLocationComponent,
-    EmailVerificationHintCardComponent
+    EmailVerificationHintCardComponent,
+    UserActivationReminderComponent
   ],
   providers: [
   ]
