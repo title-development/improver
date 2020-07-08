@@ -4,7 +4,6 @@ package com.improver.filter;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.slf4j.MDC;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
@@ -16,15 +15,15 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Optional;
 import java.util.UUID;
+
+import static com.improver.application.properties.SystemProperties.MDC_REQUEST_ID_KEY;
+import static com.improver.application.properties.SystemProperties.MDC_USERNAME_KEY;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Component
 public class MDCFilter extends GenericFilterBean {
-
-    private static final String MDC_REQUEST_ID_KEY = "requestId";
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -33,19 +32,16 @@ public class MDCFilter extends GenericFilterBean {
         doFilterInternal(request, response, filterChain);
     }
 
-    protected void doFilterInternal(final HttpServletRequest request, HttpServletResponse response, final FilterChain chain)
-        throws java.io.IOException, ServletException {
+    protected void doFilterInternal(final HttpServletRequest request, HttpServletResponse response, final FilterChain chain) throws java.io.IOException, ServletException {
         try {
-            final String requestId;
-            if (!StringUtils.isEmpty(MDC_REQUEST_ID_KEY) && !StringUtils.isEmpty(request.getHeader(MDC_REQUEST_ID_KEY))) {
-                requestId = request.getHeader(MDC_REQUEST_ID_KEY);
-            } else {
-                requestId = UUID.randomUUID().toString().toUpperCase().replace("-", "");
+            if (StringUtils.isEmpty(MDC.get(MDC_REQUEST_ID_KEY))) {
+                String requestId = UUID.randomUUID().toString().toUpperCase().replace("-", "");
+                MDC.put(MDC_REQUEST_ID_KEY, requestId);
             }
-            MDC.put(MDC_REQUEST_ID_KEY, requestId);
             chain.doFilter(request, response);
         } finally {
             MDC.remove(MDC_REQUEST_ID_KEY);
+            MDC.remove(MDC_USERNAME_KEY);
         }
     }
 }

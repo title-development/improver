@@ -13,10 +13,11 @@ public class JwtPrincipal extends AbstractAuthenticationToken {
     private static final String ROLE_PREFIX = "ROLE_";
 
     private final String email;
+    private final boolean credentialsExpired;
 
 
-    public JwtPrincipal(String email, String role) {
-        this(email, AuthorityUtils.createAuthorityList(ROLE_PREFIX + role));
+    public JwtPrincipal(String email, String role, boolean credentialsExpired) {
+        this(email, AuthorityUtils.createAuthorityList(ROLE_PREFIX + role), credentialsExpired);
     }
 
 
@@ -32,10 +33,15 @@ public class JwtPrincipal extends AbstractAuthenticationToken {
      * @param email
      * @param authorities
      */
-    private JwtPrincipal(String email, Collection<? extends GrantedAuthority> authorities) {
+    private JwtPrincipal(String email, Collection<? extends GrantedAuthority> authorities, boolean credentialsExpired) {
         super(authorities);
         this.email = email;
-        super.setAuthenticated(true);
+        this.credentialsExpired = credentialsExpired;
+        super.setAuthenticated(!credentialsExpired);
+    }
+
+    public boolean isCredentialsExpired() {
+        return credentialsExpired;
     }
 
 

@@ -24,7 +24,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.improver.application.properties.SystemProperties.tradesCacheDurations;
+import static com.improver.application.properties.SystemProperties.POPULAR_TRADES_CACHE_EXPIRATION;
 
 /**
  * @author Mykhailo Soltys
@@ -132,7 +132,7 @@ public class TradeService {
     }
 
     private void addTradesCacheExpiredTime() {
-        this.tradesCacheExpirationTime = ZonedDateTime.now().plus(tradesCacheDurations);
+        this.tradesCacheExpirationTime = ZonedDateTime.now().plus(POPULAR_TRADES_CACHE_EXPIRATION);
     }
 
     public List<TradeModel> getCachedTrades() {

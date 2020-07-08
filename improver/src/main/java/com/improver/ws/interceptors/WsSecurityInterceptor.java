@@ -13,6 +13,9 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.*;
 import org.springframework.security.authentication.CredentialsExpiredException;
 
+import static com.improver.application.properties.SystemProperties.WS_INVALID_TOKEN_ERROR;
+import static com.improver.application.properties.SystemProperties.WS_TOKEN_EXPIRED_ERROR;
+
 /**
  * Used for WS security.
  * Checks if WebSocket connection request contain JWT token.
@@ -22,14 +25,11 @@ import org.springframework.security.authentication.CredentialsExpiredException;
 @Slf4j
 public class WsSecurityInterceptor implements ChannelInterceptor {
 
-    @Autowired
-    @Qualifier("clientOutboundChannel")
+    @Autowired @Qualifier("clientOutboundChannel")
     private MessageChannel clientOutboundChannel;
 
     @Autowired private JwtUtil jwtUtil;
 
-    private static final String INVALID_TOKEN_ERROR = "403 Valid token required";
-    private static final String TOKEN_EXPIRED_ERROR = "401 Token expired";
 
     /**
      * Checks if WebSocket connection request contain JWT token in "authorization header".
@@ -43,7 +43,7 @@ public class WsSecurityInterceptor implements ChannelInterceptor {
             String authorization = accessor.getFirstNativeHeader("authorization");
             if(authorization == null || authorization.isEmpty()){
                 log.error("WS: Authorization header is empty");
-                sendError(accessor, INVALID_TOKEN_ERROR);
+                sendError(accessor, WS_INVALID_TOKEN_ERROR);
                 return null;
             }
             String jwt = authorization.replace("Bearer ", "");
@@ -51,15 +51,15 @@ public class WsSecurityInterceptor implements ChannelInterceptor {
             try {
                 principal = jwtUtil.parseAccessToken(jwt);
             } catch (CredentialsExpiredException e){
-                sendError(accessor, TOKEN_EXPIRED_ERROR);
-                log.debug("WS: Token expired");
+                sendError(accessor, WS_TOKEN_EXPIRED_ERROR);
+                log.info("WS: Token expired");
                 return null;
             } catch (Exception e){
-                sendError(accessor, INVALID_TOKEN_ERROR);
-                log.debug("WS: Invalid token");
+                sendError(accessor, WS_INVALID_TOKEN_ERROR);
+                log.error("WS: Invalid token: {} {}", e.getClass(), e.getMessage());
                 return null;
             }
-            log.trace("WS: Connected");
+            log.debug("WS: Connected");
             accessor.setUser(principal);
         }
         return message;

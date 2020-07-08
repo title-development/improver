@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static com.improver.application.properties.Path.*;
-import static com.improver.application.properties.SystemProperties.tradesCacheDurations;
+import static com.improver.application.properties.SystemProperties.POPULAR_TRADES_CACHE_EXPIRATION;
 
 @RestController
 @RequestMapping(CATALOG_PATH)
@@ -101,7 +101,7 @@ public class CatalogController {
     public ResponseEntity<List<TradeModel>> getSuggestedTrades(@RequestParam(defaultValue = "8") int size) {
         HttpHeaders headers = new HttpHeaders();
         List<TradeModel> suggested = tradeService.getCachedTrades();
-        headers.setCacheControl(CacheControl.maxAge(tradesCacheDurations.getSeconds(), TimeUnit.SECONDS).getHeaderValue());
+        headers.setCacheControl(CacheControl.maxAge(POPULAR_TRADES_CACHE_EXPIRATION.getSeconds(), TimeUnit.SECONDS).getHeaderValue());
         return new ResponseEntity<>(suggested, headers, HttpStatus.OK);
     }
 

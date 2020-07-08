@@ -1,6 +1,7 @@
 package com.improver.security;
 
 import com.improver.application.properties.SecurityProperties;
+import com.improver.application.properties.SystemProperties;
 import com.improver.exception.handler.RestError;
 import com.improver.util.serializer.SerializationUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -30,14 +31,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.improver.application.properties.SystemProperties.MDC_USERNAME_KEY;
 import static com.improver.security.JwtUtil.AUTHORIZATION_HEADER_NAME;
 import static com.improver.security.JwtUtil.BEARER_TOKEN_PREFIX;
 import static com.improver.util.ErrorMessages.BAD_CREDENTIALS_MSG;
 
 @Slf4j
 public class JwtAuthenticationFilter extends GenericFilterBean {
-    private static final String MDC_USERNAME_KEY = "username";
-
     private AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource = new WebAuthenticationDetailsSource();
     private JwtUtil jwtUtil;
     private SecurityProperties securityProperties;
@@ -69,27 +69,6 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         return this;
     }
 
-
-    public void doAuthentication(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        Authentication authentication;
-            try {
-                authentication = attemptAuthentication(request, response);
-            } catch (CredentialsExpiredException e) {
-                log.trace("Token has expired");
-                unsuccessfulAuthentication(response, "Token has expired");
-                return;
-            } catch (BadCredentialsException e) {
-                log.trace("Invalid Token", e);
-                unsuccessfulAuthentication(response, BAD_CREDENTIALS_MSG);
-                return;
-            }  catch (Exception e) {
-                log.error("Generic error during authorization", e);
-                unsuccessfulAuthentication(response, BAD_CREDENTIALS_MSG);
-                return;
-            }
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
-
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
@@ -113,9 +92,6 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
                     return;
                 }
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-                String name = Optional.ofNullable(authentication).map(Principal::getName).orElse("anonymous");
-                MDC.put(MDC_USERNAME_KEY, name);
-                log.debug(request.getMethod() + " " + request.getRequestURI() + Optional.ofNullable(request.getQueryString()).map(q -> "?" + q).orElse(""));
 
 
                 filterChain.doFilter(request, response);
@@ -132,9 +108,14 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     protected Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         String jwt = getAccessToken(request);
         if (jwt == null) {
+            MDC.put(MDC_USERNAME_KEY, "anonymous");
             return null;
         }
-        JwtPrincipal principal = jwtUtil.parseAccessToken(jwt);
+        JwtPrincipal principal = jwtUtil.parseAccessToken(jwt, false);
+        MDC.put(MDC_USERNAME_KEY, principal.getName());
+        if (principal.isCredentialsExpired()) {
+            throw new CredentialsExpiredException("Token expired");
+        }
         principal.setDetails(authenticationDetailsSource.buildDetails(request));
         return principal;
     }
