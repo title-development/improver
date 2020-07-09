@@ -34,9 +34,6 @@ public class JwtUtil {
             .compact();
     }
 
-    public JwtPrincipal parseAccessToken(String token){
-        return parseAccessToken(token, true);
-    }
 
     /**
      * @param token - access JWT
@@ -44,21 +41,17 @@ public class JwtUtil {
      * @throws CredentialsExpiredException - when token has been expired
      * @throws BadCredentialsException     - when token is malformed or not valid
      */
-    public JwtPrincipal parseAccessToken(String token, boolean errorIfExpired) throws CredentialsExpiredException, BadCredentialsException {
+    public JwtPrincipal parseAccessToken(String token) throws CredentialsExpiredException, BadCredentialsException {
         if (token == null) {
             throw new BadCredentialsException("Token is NULL");
         }
-        Claims body = null;
-        boolean expired = false;
+        Claims body;
         try {
             body = Jwts.parser().setSigningKey(securityProperties.getJwtSecret()).parseClaimsJws(token).getBody();
         } catch (SignatureException | MalformedJwtException | UnsupportedJwtException e) {
             throw new BadCredentialsException("Invalid token", e);
         } catch (ExpiredJwtException e){
-            expired = true;
-            if (errorIfExpired) {
-                throw new CredentialsExpiredException(e.getMessage());
-            }
+            throw new CredentialsExpiredException(e.getMessage());
         }
 
         String user = body.getSubject();
@@ -66,7 +59,7 @@ public class JwtUtil {
         if(StringUtil.isNullOrEmpty(user) || StringUtil.isNullOrEmpty(role)) {
             throw new BadCredentialsException("Invalid token: user/role is empty");
         }
-        return new JwtPrincipal(user, role, expired);
+        return new JwtPrincipal(user, role);
     }
 
 

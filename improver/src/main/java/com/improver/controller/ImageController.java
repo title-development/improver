@@ -66,14 +66,14 @@ public class ImageController {
         return getImageByURL(iconUrl);
     }
 
-    //This is called for Notification to display icons
+    //This is invoked for Notification to display icons
     @GetMapping(USERS_PATH + ID_PATH_VARIABLE + ICON)
     public ResponseEntity<Resource> getUserIcon(@PathVariable("id") long id) {
         String iconUrl = userRepository.getIconUrl(id)
             .orElseThrow(NotFoundException::new);
 
-        // TODO: simplify this
         log.debug("Icon=" + iconUrl);
+        // TODO: simplify this
         return getImageByURL(iconUrl);
     }
 

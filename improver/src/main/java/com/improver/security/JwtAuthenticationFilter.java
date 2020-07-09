@@ -111,11 +111,8 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
             MDC.put(MDC_USERNAME_KEY, "anonymous");
             return null;
         }
-        JwtPrincipal principal = jwtUtil.parseAccessToken(jwt, false);
+        JwtPrincipal principal = jwtUtil.parseAccessToken(jwt);
         MDC.put(MDC_USERNAME_KEY, principal.getName());
-        if (principal.isCredentialsExpired()) {
-            throw new CredentialsExpiredException("Token expired");
-        }
         principal.setDetails(authenticationDetailsSource.buildDetails(request));
         return principal;
     }
