@@ -32,7 +32,7 @@ export class AdminLoginComponent implements OnDestroy {
               public constants: Constants,
               public messages: Messages,
               private messageService: MessageService,
-              public captchaTrekkingService: CaptchaTrackingService) {
+              public captchaTrackingService: CaptchaTrackingService) {
 
   }
 
@@ -43,7 +43,7 @@ export class AdminLoginComponent implements OnDestroy {
 
   submit(form: NgForm): void {
     this.recaptcha.execute();
-    this.captchaTrekkingService.captchaDialogChange().subscribe( () => {
+    this.captchaTrackingService.captchaDialogChange().subscribe( () => {
       this.recaptcha.reset();
     });
     this.recaptcha.resolved.pipe(

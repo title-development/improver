@@ -84,7 +84,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
               public constants: Constants,
               public messages: Messages,
               public popUpMessageService: PopUpMessageService,
-              public captchaTrekkingService: CaptchaTrackingService,
+              public captchaTrackingService: CaptchaTrackingService,
               public deviceControlService: DeviceControlService,
               private accountService: AccountService,
               private router: Router,
@@ -348,7 +348,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
       this.registrationProcessing = true;
     }
 
-    this.captchaTrekkingService.captchaDialogChange().subscribe( () => {
+    this.captchaTrackingService.captchaDialogChange().subscribe( () => {
       this.captcha.reset();
       this.loginProcessing = false;
       this.registrationProcessing = false;

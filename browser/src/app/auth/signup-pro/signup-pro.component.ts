@@ -61,7 +61,7 @@ export class SignupProComponent implements OnDestroy {
               public tricksService: TricksService,
               public popUpMessageService: PopUpMessageService,
               public registrationService: RegistrationService,
-              public captchaTrekkingService: CaptchaTrackingService,
+              public captchaTrackingService: CaptchaTrackingService,
               private mediaQueryService: MediaQueryService,
               private route: ActivatedRoute,
               private dialog: MatDialog,
@@ -81,7 +81,7 @@ export class SignupProComponent implements OnDestroy {
   registerContractor() {
     this.processing = true;
     this.recaptcha.execute();
-    this.captchaTrekkingService.captchaDialogChange().subscribe(() => {
+    this.captchaTrackingService.captchaDialogChange().subscribe(() => {
       this.recaptcha.reset();
       this.processing = false;
     });

@@ -34,6 +34,7 @@
       <cv-input-field>
         <cv-field-label>Project details</cv-field-label>
         <textarea cv-input
+                  (blur)="deviceControlService.isIOS() && nextQuestion('notes')"
                   placeholder="Describe your project for professional"
                   formControlName="notes"
                   [cv_trim]="defaultQuestionaryForm.get('notes').value"

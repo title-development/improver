@@ -44,7 +44,7 @@ export class SignupComponent implements OnDestroy {
   constructor(public securityService: SecurityService,
               public constants: Constants,
               public messages: Messages,
-              public captchaTrekkingService: CaptchaTrackingService,
+              public captchaTrackingService: CaptchaTrackingService,
               private router: Router,
               private route: ActivatedRoute,
               private registrationService: RegistrationService,
@@ -55,7 +55,7 @@ export class SignupComponent implements OnDestroy {
   registerCustomer() {
     this.registrationProcessing = true;
     this.recaptcha.execute();
-    this.captchaTrekkingService.captchaDialogChange().subscribe(() => {
+    this.captchaTrackingService.captchaDialogChange().subscribe(() => {
       this.recaptcha.reset();
       this.registrationProcessing = false;
     });

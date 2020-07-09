@@ -40,7 +40,7 @@ export class LoginComponent implements OnDestroy {
     public projectService: ProjectService,
     public constants: Constants,
     public messages: Messages,
-		public captchaTrekkingService: CaptchaTrackingService
+		public captchaTrackingService: CaptchaTrackingService
   ) {
   }
 
@@ -59,7 +59,7 @@ export class LoginComponent implements OnDestroy {
     this.processing = true;
     if (this.securityService.captchaEnabled) {
       this.recaptcha.execute();
-      this.captchaTrekkingService.captchaDialogChange().subscribe( () => {
+      this.captchaTrackingService.captchaDialogChange().subscribe( () => {
       	this.recaptcha.reset();
       	this.processing = false;
 			});
