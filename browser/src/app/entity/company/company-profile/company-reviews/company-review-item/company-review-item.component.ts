@@ -19,7 +19,6 @@ export class CompanyReviewItemComponent implements OnInit {
 
   Role = Role;
   confirmDialogRef: MatDialogRef<any>;
-  truncateRatio: number = 190;
 
   private requestReviewRevisionDialogRef: MatDialogRef<any>;
 

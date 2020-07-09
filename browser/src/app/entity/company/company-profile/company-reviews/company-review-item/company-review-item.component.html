@@ -14,11 +14,7 @@
   </div>
 </div>
 <div class="content">
-  <p class="textarea-formatting">{{review.description | truncate:truncateRatio:'...'}}
-    <span class="show-more-button" (click)="truncateRatio = 10000"
-          *ngIf="review.description.length > 190 && truncateRatio == 190">Show more <i class="imp-icon-down-open"></i></span>
-    <span class="show-more-button" (click)="truncateRatio = 190"
-          *ngIf="truncateRatio == 10000">Show less <i class="imp-icon-up-open"></i></span>
+  <p class="textarea-formatting">{{review.description}}
   </p>
 </div>
 <div class="footer">

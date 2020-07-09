@@ -1,5 +1,5 @@
-<div class="backdrop" [ngClass]="(mediaQuery.xs || mediaQuery.sm)? 'dark-background' : ''" (click)="close()" *ngIf="toggle"></div>
-<div [@toggleMenu]="animationState"
+<div (swipeleft)="close()" class="backdrop" [ngClass]="(mediaQuery.xs || mediaQuery.sm)? 'dark-background' : ''" (click)="close()" *ngIf="toggle"></div>
+<div (swipeleft)="close()" [@toggleMenu]="animationState"
      [ngClass]="{'mobile-menu': (mediaQuery.xs || mediaQuery.sm),
                  'desktop-menu': !(mediaQuery.xs || mediaQuery.sm),
                  'anonymous': !securityService.isAuthenticated() || securityService.hasRole(Role.ADMIN) || securityService.hasRole(Role.SUPPORT)}">
