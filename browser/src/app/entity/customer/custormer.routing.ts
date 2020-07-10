@@ -1,5 +1,4 @@
 import { RouterModule, Routes } from '@angular/router';
-import { ModuleWithProviders } from '@angular/core';
 
 const routes: Routes = [
   { path: '', redirectTo: 'projects', pathMatch: 'full'},
@@ -7,4 +6,4 @@ const routes: Routes = [
   { path: 'projects', loadChildren: () => import('./customer-projects/customer-projects.module').then(m => m.CustomerProjectsModule) },
 ];
 
-export const CUSTOMER_ROUTES: ModuleWithProviders = RouterModule.forChild(routes);
+export const customerRouting = RouterModule.forChild(routes);

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ADMIN_ROUTES } from './admin.routing';
+import { adminRouting } from './admin.routing';
 import { AdminComponent } from './admin.component';
 import { AdminUsersComponent } from './users/users-list/users.component';
 import { AdminLoginComponent } from './login/login.component';
@@ -24,41 +24,6 @@ import { AdminProjectsComponent } from './projects/projects-list/projects-list.c
 import { AdminProjectsValidationComponent } from './projects/projects-validation/projects-validation.component';
 import { QuestionariesService } from '../../api/services/questionaries.service';
 import { UserService } from '../../api/services/user.service';
-
-
-import {
-  AccordionModule,
-  ButtonModule,
-  CalendarModule,
-  CardModule,
-  ChartModule,
-  ChipsModule,
-  ConfirmationService,
-  ConfirmDialogModule,
-  ContextMenuModule,
-  DialogModule,
-  DropdownModule,
-  FileUploadModule,
-  InputSwitchModule,
-  InputTextModule,
-  KeyFilterModule,
-  MenuModule,
-  MessageModule,
-  MessagesModule,
-  OverlayPanelModule,
-  PaginatorModule,
-  PanelModule,
-  ProgressSpinnerModule,
-  RadioButtonModule,
-  SelectButtonModule,
-  SharedModule,
-  SliderModule,
-  SpinnerModule,
-  SplitButtonModule,
-  TabViewModule,
-  TieredMenuModule,
-  ToastModule
-} from 'primeng';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { QuestionPreviewComponent } from './components/question-preview/question-preview.component';
 import { DragulaModule } from 'ng2-dragula';
@@ -106,11 +71,44 @@ import { ProjectCancelComponent } from "./components/project-cancel/project-canc
 import { ProjectCompleteComponent } from "./components/project-complete/project-complete.component";
 import { StatusCapitalize } from "../../pipes/status-capitalize.pipe";
 import { RefundLogComponent } from "./refunds/refund-log/refund-log.component";
+import {
+  AccordionModule,
+  ButtonModule,
+  CalendarModule,
+  CardModule,
+  ChartModule,
+  ChipsModule,
+  ConfirmationService,
+  ConfirmDialogModule,
+  ContextMenuModule,
+  DialogModule,
+  DropdownModule,
+  FileUploadModule,
+  InputSwitchModule,
+  InputTextModule,
+  KeyFilterModule,
+  MenuModule,
+  MessageModule,
+  MessagesModule,
+  OverlayPanelModule,
+  PaginatorModule,
+  PanelModule,
+  ProgressSpinnerModule,
+  RadioButtonModule,
+  SelectButtonModule,
+  SharedModule,
+  SliderModule,
+  SpinnerModule,
+  SplitButtonModule,
+  TabViewModule,
+  TieredMenuModule,
+  ToastModule
+} from "primeng";
 
 
 @NgModule({
   imports: [
-    ADMIN_ROUTES,
+    adminRouting,
     CommonModule,
     SharedModule,
     SharedDirectivesModule,

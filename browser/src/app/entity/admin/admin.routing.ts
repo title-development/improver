@@ -1,5 +1,4 @@
 import { RouterModule, Routes } from '@angular/router';
-import { ModuleWithProviders } from '@angular/core';
 import { AdminComponent } from './admin.component';
 import { AdminDashboardComponent } from './dashboard/dashboard.component';
 import { AdminLoginComponent } from './login/login.component';
@@ -25,7 +24,6 @@ import { RefundsListComponent } from './refunds/refunds-list/refunds-list.compon
 import { RefundsInreviewComponent } from './refunds/inreview/inreview.component';
 import { TicketsListComponent } from './tickets/tickets-list/tickets.component';
 import { TicketsInreviewComponent } from './tickets/inreview/inreview.component';
-import { SupportGuard } from '../../auth/router-guards/support.guard';
 import { ProjectRequestsComponent } from './projects/requests/project-requests.component';
 import { InvitationsComponent } from './invitations/invitations.component';
 import { AddUserComponent } from './users/add-user/add-user.component';
@@ -81,4 +79,4 @@ const routes: Routes = [
   }
 ];
 
-export const ADMIN_ROUTES: ModuleWithProviders = RouterModule.forChild(routes);
+export const adminRouting = RouterModule.forChild(routes);

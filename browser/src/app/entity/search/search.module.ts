@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SearchComponent } from './search.component';
-import { SEARCH_ROUTES } from './search.routing';
+import { searchRouting } from './search.routing';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from '../../shared/shared.module';
 import { CvButtonModule } from '../../theme/button/cv-button.module';
@@ -9,7 +9,7 @@ import { CvButtonModule } from '../../theme/button/cv-button.module';
 @NgModule({
   imports: [
     CommonModule,
-    SEARCH_ROUTES,
+    searchRouting,
     FormsModule,
     CvButtonModule,
     SharedModule

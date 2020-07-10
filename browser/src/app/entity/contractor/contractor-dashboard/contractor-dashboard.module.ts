@@ -1,4 +1,4 @@
-import { ModuleWithProviders, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { ContractorDashboardComponent } from './contractor-dashboard.component';
 import { ProjectsComponent } from './projects/projects.component';
@@ -22,7 +22,7 @@ import { CommonModule } from '@angular/common';
 import { CvSpinnerModule } from '../../../theme/spinner/cv-spinner.module';
 import { CvHintModule } from '../../../theme/hint/cv-hint.module';
 
-const contractorDashboardRouting: ModuleWithProviders = RouterModule.forChild([
+const contractorDashboardRouting = RouterModule.forChild([
     {
       path: '',
       component: ContractorDashboardComponent,

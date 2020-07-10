@@ -1,4 +1,3 @@
-import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { PageNotFoundComponent } from './entity/not-found/not-found.component';
 import { AuthGuard } from './auth/router-guards/auth.guard';
@@ -46,6 +45,6 @@ const routes: Routes = [
   { path: '**', component: PageNotFoundComponent }
 ];
 
-export const routing: ModuleWithProviders = RouterModule.forRoot(routes, { onSameUrlNavigation: 'reload' });
+export const routing = RouterModule.forRoot(routes, { onSameUrlNavigation: 'reload' });
 
 

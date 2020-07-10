@@ -1,4 +1,4 @@
-import { ModuleWithProviders, NgModule, } from '@angular/core';
+import { NgModule, } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
@@ -14,7 +14,7 @@ import { FormsModule } from '@angular/forms';
 import { Constants } from '../../../util/constants';
 import { SharedModule } from '../../../shared/shared.module';
 
-const customerProjectViewRouting: ModuleWithProviders = RouterModule.forChild([
+const customerProjectViewRouting = RouterModule.forChild([
   {
     path: '',
     component: ContractorProjectViewComponent

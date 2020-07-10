@@ -1,4 +1,4 @@
-import { ModuleWithProviders, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BecomeProComponent } from "./become-pro.component";
@@ -11,7 +11,7 @@ import { CvInputFieldModule } from '../../theme/input-field/form-field.module';
 import { CvFieldsModule } from '../../theme/fields/cv-fields.module';
 import { LayoutModule } from '../../layout/layout.module';
 
-const routing: ModuleWithProviders = RouterModule.forChild([
+const routing = RouterModule.forChild([
   {
     path: '',
     component: BecomeProComponent

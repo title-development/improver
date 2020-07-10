@@ -1,4 +1,4 @@
-import { ModuleWithProviders, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FlexLayoutModule } from "@angular/flex-layout";
 import { CommonModule, DatePipe } from "@angular/common";
@@ -14,7 +14,7 @@ import { SharedModule } from "../../../shared/shared.module";
 import { CompanyDemoProjectViewerComponent } from "./company-demo-project-viewer.component";
 import { NgArrayPipesModule, NgTailPipeModule } from "angular-pipes";
 
-const routing: ModuleWithProviders = RouterModule.forChild([
+const routing = RouterModule.forChild([
   {
     path: '',
     component: CompanyDemoProjectViewerComponent

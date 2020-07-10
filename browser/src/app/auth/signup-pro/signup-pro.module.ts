@@ -1,4 +1,4 @@
-import { ModuleWithProviders, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SignupProComponent } from "./signup-pro.component";
@@ -15,7 +15,7 @@ import { AgmSharedModule } from "../../shared/agmShared.module";
 import { SocialButtonsModule } from '../social-buttons/social-buttons.module';
 import { RecaptchaModule } from 'ng-recaptcha';
 
-const signupProRouting: ModuleWithProviders = RouterModule.forChild([
+const signupProRouting = RouterModule.forChild([
   {
     path: '',
     component: SignupProComponent

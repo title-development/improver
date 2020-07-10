@@ -1,4 +1,4 @@
-import { ModuleWithProviders, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ContractorLeadsSearchComponent } from './contractor-leads-search.component';
@@ -24,7 +24,7 @@ import { GoogleMapSidebarModule } from '../../../shared/google-map-sidebar/googl
 import { CvCheckboxModule } from "../../../theme/checkbox/checkbox.module";
 import { FilterByPipe } from "../../../pipes/filter.pipe";
 
-const contractorLeadsSearchRouting: ModuleWithProviders = RouterModule.forChild([
+const contractorLeadsSearchRouting = RouterModule.forChild([
   {
     path: '',
     component: ContractorLeadsSearchComponent

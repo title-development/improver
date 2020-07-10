@@ -1,10 +1,9 @@
 import { NgModule } from '@angular/core';
-import { CUSTOMER_ROUTES } from './custormer.routing';
-import { CvButtonModule } from "../../theme/button/cv-button.module";
+import { customerRouting } from './custormer.routing';
 
 @NgModule({
   imports: [
-    CUSTOMER_ROUTES
+    customerRouting
   ],
   declarations: []
 })

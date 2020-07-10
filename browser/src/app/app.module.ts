@@ -1,4 +1,4 @@
-import { LOCALE_ID, ModuleWithProviders, NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule, HAMMER_GESTURE_CONFIG, HammerModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouteReuseStrategy, RouterModule } from '@angular/router';
@@ -88,8 +88,7 @@ import { MyStompService } from "./util/my-stomp.service";
 import { HammerConfig } from "./util/hummer-config";
 
 
-const rootRouting: ModuleWithProviders = RouterModule.forRoot([], {useHash: false});
-
+const rootRouting = RouterModule.forRoot([], {useHash: false});
 
 @NgModule({
   imports: [

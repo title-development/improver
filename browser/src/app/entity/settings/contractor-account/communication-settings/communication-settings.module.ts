@@ -1,4 +1,4 @@
-import { ModuleWithProviders, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from "@angular/forms";
@@ -11,7 +11,7 @@ import { SharedModule } from '../../../../shared/shared.module';
 import { LayoutModule } from "../../../../layout/layout.module";
 import { QuickReplyComponent } from "../quick-reply/quick-reply.component";
 
-const routing: ModuleWithProviders = RouterModule.forChild([
+const routing = RouterModule.forChild([
   { path: '', component: CommunicationSettingsComponent },
 ]);
 

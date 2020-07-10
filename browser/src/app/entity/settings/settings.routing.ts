@@ -1,4 +1,3 @@
-import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ContractorGuard } from '../../auth/router-guards/contractor.guard';
 import { UserGuard } from '../../auth/router-guards/user.guard';
@@ -63,4 +62,4 @@ const routes: Routes = [
   }
 ];
 
-export const SETTINGS_ROUTES: ModuleWithProviders = RouterModule.forChild(routes);
+export const settingsRouting = RouterModule.forChild(routes);

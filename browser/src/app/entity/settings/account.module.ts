@@ -10,7 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { SharedModule } from '../../shared/shared.module';
-import { SETTINGS_ROUTES } from './settings.routing';
+import { settingsRouting } from './settings.routing';
 import { NotificationGuard } from '../../auth/router-guards/notification.guard';
 
 
@@ -18,7 +18,7 @@ import { NotificationGuard } from '../../auth/router-guards/notification.guard';
   imports: [
     CommonModule,
     MatIconModule,
-    SETTINGS_ROUTES,
+    settingsRouting,
     MatCardModule,
     MatButtonModule,
     MatInputModule,

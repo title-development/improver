@@ -1,7 +1,7 @@
 import { DataLayerManager, GoogleMapsAPIWrapper } from '@agm/core';
 import { AgmSnazzyInfoWindowModule } from '@agm/snazzy-info-window';
 import { CommonModule } from '@angular/common';
-import { ModuleWithProviders, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { BoundariesService } from '../../../../api/services/boundaries.service';
@@ -15,7 +15,7 @@ import { CoverageConfigurationModule } from './modules/coverage-configuration/co
 import { CoverageTutorialComponent } from './components/coverage-tutorial/coverage-tutorial.component';
 import { GoogleMapSidebarModule } from '../../../../shared/google-map-sidebar/google-map-sidebar.module';
 
-const routing: ModuleWithProviders = RouterModule.forChild([
+const routing = RouterModule.forChild([
   {
     path: '',
     component: ServiceAreaComponent,

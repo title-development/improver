@@ -1,4 +1,4 @@
-import { ModuleWithProviders, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CompanyDemoProjectEditorComponent } from "./company-demo-project-editor.component";
 import { FlexLayoutModule } from "@angular/flex-layout";
@@ -24,7 +24,7 @@ import { SharedModule } from "../../../shared/shared.module";
 import { CvDatePickerModule } from "../../../theme/date-picker/cv-date-picker.module";
 import { ComponentCanDeactivateGuard } from '../../../auth/router-guards/component-can-deactivate.guard';
 
-const routing: ModuleWithProviders = RouterModule.forChild([
+const routing = RouterModule.forChild([
   {
     path: '',
     component: CompanyDemoProjectEditorComponent,

@@ -42,7 +42,7 @@
         <!-- UI -->
         <frontend.plugin.version>1.6</frontend.plugin.version>
         <node.version>v12.15.0</node.version>
-        <npm.version>6.13.7</npm.version>
+        <npm.version>6.14.6</npm.version>
 
         <!-- Skip owasp dependency check by default, unless owasp-dependency-check profile is enabled -->
         <owasp.check.skip>true</owasp.check.skip>

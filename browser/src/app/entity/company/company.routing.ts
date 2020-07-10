@@ -1,5 +1,4 @@
 import { RouterModule, Routes } from '@angular/router';
-import { ModuleWithProviders } from '@angular/core';
 import { AuthGuard } from '../../auth/router-guards/auth.guard';
 import { ContractorGuard } from '../../auth/router-guards/contractor.guard';
 
@@ -27,4 +26,4 @@ const routes: Routes = [
   }
 ];
 
-export const COMPANIES_ROUTES: ModuleWithProviders = RouterModule.forChild(routes);
+export const companyRouting = RouterModule.forChild(routes);

@@ -1,6 +1,5 @@
-import { ModuleWithProviders, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { SignupCompanyComponent } from './signup-company.component';
-import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../../shared/shared.module';
@@ -14,7 +13,7 @@ import { CvSelectModule } from '../../theme/select/cv-select-module';
 import { AgmSharedModule } from '../../shared/agmShared.module';
 import { SocialButtonsModule } from '../social-buttons/social-buttons.module';
 
-export const signupCompanyRouting: ModuleWithProviders = RouterModule.forChild([
+export const signupCompanyRouting = RouterModule.forChild([
   {
     path: '',
     component: SignupCompanyComponent

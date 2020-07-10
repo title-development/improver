@@ -1,6 +1,19 @@
-import { Component, ContentChild, ElementRef, HostBinding, HostListener, Input, OnChanges, OnInit, Renderer2, Directive } from '@angular/core';
+import {
+  ContentChild,
+  Directive,
+  ElementRef,
+  HostBinding,
+  HostListener,
+  Input,
+  OnChanges,
+  OnInit,
+  Renderer2
+} from '@angular/core';
 import { CvIconComponent } from '../icon/cv-icon/cv-icon.component';
 
+@Directive({
+    selector: 'button[cv-button], a[cv-button], label[cv-button], cv-button',
+})
 export class Button implements OnInit, OnChanges {
 
   @Input('size') size: 'small' | 'medium' | 'large' | string = 'medium';
@@ -12,9 +25,7 @@ export class Button implements OnInit, OnChanges {
   @HostBinding('class.icon-right') iconAlignRight: boolean = false;
   @HostBinding('class.icon-left') iconAlignLeft: boolean = false;
   @HostBinding('class.-dark') darkStyle: boolean = false;
-  @Input()
-  @HostBinding('class.-loading')
-  loading: boolean = false;
+  @Input() @HostBinding('class.-loading') loading: boolean = false;
 
   @HostListener('click', ['$event']) onClick(event: Event): void {
     (event.target as HTMLElement).blur();

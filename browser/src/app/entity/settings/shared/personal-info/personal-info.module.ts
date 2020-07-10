@@ -1,4 +1,4 @@
-import { ModuleWithProviders, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FlexLayoutModule } from "@angular/flex-layout";
@@ -21,7 +21,7 @@ import { CvEditableInputModule } from '../../../../theme/editable-input/editable
 import { CvIconModule } from '../../../../theme/icon/cv-icon-module';
 import { NgCapitalizePipeModule } from "angular-pipes";
 
-const routing: ModuleWithProviders = RouterModule.forChild([
+const routing = RouterModule.forChild([
   { path: '', component: PersonalInfoComponent },
 ]);
 

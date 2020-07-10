@@ -1,4 +1,4 @@
-import { ModuleWithProviders, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { ConfirmationComponent } from './confirmation.component';
 import { SharedModule } from '../../shared/shared.module';
@@ -11,7 +11,7 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatCardModule } from "@angular/material/card";
 import { MatButtonModule } from "@angular/material/button";
 
-const customerActivationRouting: ModuleWithProviders = RouterModule.forChild([
+const customerActivationRouting = RouterModule.forChild([
   {
     path: '',
     component: ConfirmationComponent

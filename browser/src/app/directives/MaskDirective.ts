@@ -1,6 +1,7 @@
-import { ElementRef, Inject, OnChanges, Renderer2, SimpleChanges } from '@angular/core';
+import { Directive, ElementRef, Inject, OnChanges, Renderer2, SimpleChanges } from '@angular/core';
 import { ControlValueAccessor } from '@angular/forms';
 
+@Directive()
 export class MaskDirective implements ControlValueAccessor, OnChanges {
 
   public inputElement: HTMLInputElement;

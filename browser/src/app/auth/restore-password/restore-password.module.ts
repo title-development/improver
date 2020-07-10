@@ -1,4 +1,4 @@
-import { ModuleWithProviders, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RestorePasswordComponent } from "./restore-password.component";
@@ -10,7 +10,7 @@ import { CvIconModule } from "../../theme/icon/cv-icon-module";
 import { CvButtonModule } from "../../theme/button/cv-button.module";
 import { CvInputModule } from "../../theme/input/cv-input.module";
 
-const restorePasswordRouting: ModuleWithProviders = RouterModule.forChild([
+const restorePasswordRouting = RouterModule.forChild([
   {
     path: '',
     component: RestorePasswordComponent

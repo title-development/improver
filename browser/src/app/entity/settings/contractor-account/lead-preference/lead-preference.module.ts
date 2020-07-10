@@ -1,4 +1,4 @@
-import { ModuleWithProviders, NgModule, } from '@angular/core';
+import { NgModule, } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FlexLayoutModule } from "@angular/flex-layout";
@@ -24,7 +24,7 @@ import { ComponentCanDeactivateGuard } from "../../../../auth/router-guards/comp
 import { SchedulingAvailabilityComponent } from "../scheduling/scheduling-availability.component";
 import { UnavailabilityPeriodService } from "../../../../api/services/unavailability-period.service";
 
-const routing: ModuleWithProviders = RouterModule.forChild([
+const routing = RouterModule.forChild([
   {
     path: '',
     component: LeadPreferenceComponent,

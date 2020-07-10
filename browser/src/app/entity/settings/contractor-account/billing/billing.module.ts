@@ -1,4 +1,4 @@
-import { ModuleWithProviders, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { BillingComponent } from './billing.component';
@@ -14,7 +14,6 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
-import { SubscriptionComponent } from '../../../../shared/billing-subscription/subscription.component';
 import { SharedModule } from '../../../../shared/shared.module';
 import { CvButtonModule } from '../../../../theme/button/cv-button.module';
 import { CvInputModule } from '../../../../theme/input/cv-input.module';
@@ -22,9 +21,8 @@ import { CvInputFieldModule } from '../../../../theme/input-field/form-field.mod
 import { CvFieldsModule } from '../../../../theme/fields/cv-fields.module';
 import { CvIconModule } from '../../../../theme/icon/cv-icon-module';
 import { LayoutModule } from '../../../../layout/layout.module';
-import { SubscriptionActionsService } from "../../../contractor/subscription-actions/subscription-actions.service";
 
-const routing: ModuleWithProviders = RouterModule.forChild([
+const routing = RouterModule.forChild([
   {
     path: '',
     component: BillingComponent

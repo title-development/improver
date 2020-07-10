@@ -1,9 +1,9 @@
-import { ModuleWithProviders, NgModule,  } from '@angular/core';
+import { NgModule, } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { CompanyInfoComponent } from "./company-info.component";
 import { FlexLayoutModule } from "@angular/flex-layout";
-import { FormsModule} from "@angular/forms";
+import { FormsModule } from "@angular/forms";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
@@ -25,7 +25,7 @@ import { CvFieldsModule } from "../../../../theme/fields/cv-fields.module";
 import { LayoutModule } from "../../../../layout/layout.module";
 import { LocationValidateService } from '../../../../api/services/location-validate.service';
 
-const routing: ModuleWithProviders = RouterModule.forChild([
+const routing = RouterModule.forChild([
   {
     path: '',
     component: CompanyInfoComponent

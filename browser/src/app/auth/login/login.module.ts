@@ -1,4 +1,4 @@
-import { ModuleWithProviders, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LoginComponent } from './login.component';
@@ -12,7 +12,7 @@ import { CvFieldsModule } from '../../theme/fields/cv-fields.module';
 import { SocialButtonsModule } from '../social-buttons/social-buttons.module';
 import { RecaptchaModule } from 'ng-recaptcha';
 
-const loginRouting: ModuleWithProviders = RouterModule.forChild([
+const loginRouting = RouterModule.forChild([
   {
     path: '',
     component: LoginComponent
