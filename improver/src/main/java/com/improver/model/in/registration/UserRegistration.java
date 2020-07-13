@@ -37,4 +37,6 @@ public class UserRegistration {
     private String captcha;
 
     private String referralCode;
+
+    private boolean preventConfirmationEmail;
 }

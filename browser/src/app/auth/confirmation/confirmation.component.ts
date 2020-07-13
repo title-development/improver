@@ -46,10 +46,6 @@ export class ConfirmationComponent implements OnDestroy {
               public securityService: SecurityService,
               private dialog: MatDialog) {
 
-    if (this.securityService.isAuthenticated()) {
-      this.securityService.logoutFrontend();
-    }
-
     this.route.params.pipe(takeUntil(this.destroyed$)).subscribe(params => {
 
       params['token'] ? this.token = params['token'] : this.token = "";
@@ -101,6 +97,7 @@ export class ConfirmationComponent implements OnDestroy {
         response => {
           this.step = 2;
           this.activationSuccess = true;
+          this.securityService.logoutFrontend();
           this.securityService.loginUser(response.body as LoginModel, response.headers.get('authorization'), true)
             .then(() => this.openSuccessDialog('Thank you for choosing Home Improve!'))
         },

@@ -423,6 +423,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     registrationUserModel.firstName = this.defaultQuestionaryForm.get('customerPersonalInfo.firstName').value
     registrationUserModel.lastName = this.defaultQuestionaryForm.get('customerPersonalInfo.lastName').value
     registrationUserModel.phone = this.defaultQuestionaryForm.get('customerPersonalInfo.phone').value
+    registrationUserModel.preventConfirmationEmail = true;
 
     this.registrationProcessing = true;
     this.registrationService.registerCustomer(registrationUserModel)

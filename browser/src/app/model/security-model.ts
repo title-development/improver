@@ -47,6 +47,7 @@ export class RegistrationUserModelBase {
   phone?: string;
   role?: string;
   referralCode?: string;
+  preventConfirmationEmail?: boolean;
 }
 
 export class RegistrationUserModel extends RegistrationUserModelBase {

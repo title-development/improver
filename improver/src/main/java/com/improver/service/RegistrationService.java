@@ -41,7 +41,9 @@ public class RegistrationService {
      */
     public Customer registerCustomer(UserRegistration registration) {
         Customer customer = customerRepository.save(new Customer(registration).generateValidationKey());
-        mailService.sendRegistrationConfirmEmail(customer);
+        if(!registration.isPreventConfirmationEmail()) {
+            mailService.sendRegistrationConfirmEmail(customer);
+        }
         return customer;
     }
 

@@ -57,13 +57,13 @@ public class RegistrationController {
 
     @PreAuthorize("isAnonymous()")
     @PostMapping(CUSTOMERS)
-    public ResponseEntity<LoginModel> registerCustomer(@RequestBody @Valid UserRegistration customer, HttpServletRequest request, HttpServletResponse res) {
-        log.info("Registration of customer = {}", customer.getEmail());
-        ReCaptchaResponse reCaptchaResponse = reCaptchaService.validate(customer.getCaptcha(), request.getRemoteAddr());
+    public ResponseEntity<LoginModel> registerCustomer(@RequestBody @Valid UserRegistration customerRegistration, HttpServletRequest request, HttpServletResponse res) {
+        log.info("Registration of customer = {}", customerRegistration.getEmail());
+        ReCaptchaResponse reCaptchaResponse = reCaptchaService.validate(customerRegistration.getCaptcha(), request.getRemoteAddr());
         if(!reCaptchaResponse.isSuccess()) {
             throw new AuthenticationRequiredException(CAPTCHA_VALIDATION_ERROR_MESSAGE);
         }
-        Customer registered = registrationService.registerCustomer(customer);
+        Customer registered = registrationService.registerCustomer(customerRegistration);
         LoginModel loginModel = userSecurityService.performUserLogin(registered, res);
         return new ResponseEntity<>(loginModel, HttpStatus.OK);
     }
