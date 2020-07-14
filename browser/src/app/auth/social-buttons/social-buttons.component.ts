@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { SocialAuthService, SocialUser } from 'angularx-social-login';
 import { HttpResponse } from '@angular/common/http';
-import { AdditionalUserInfo, LoginModel, SocialConnectionConfig } from '../../model/security-model';
+import { AdditionalUserInfo, LoginModel, Role, SocialConnectionConfig } from '../../model/security-model';
 import { getErrorMessage } from '../../util/functions';
 import { SystemMessageType } from '../../model/data-model';
 import { SocialLoginService } from '../../api/services/social-login.service';
@@ -120,10 +120,14 @@ export class SocialButtonsComponent {
     });
   }
 
-  private showError(socialPlatform: SocialPlatform): void {
+  private showError(socialPlatform: SocialPlatform, message?: string): void {
     this.googleFetching = false;
     this.facebookFetching = false;
-    this.responseMessage.emit(`Cannot connect to ${socialPlatform} api`);
+    if (message) {
+      this.responseMessage.emit(message);
+    } else {
+      this.responseMessage.emit(`Cannot connect to ${socialPlatform} api`);
+    }
     this.responseMessageType.emit(SystemMessageType.ERROR);
     this.showMessage.emit(true);
   }
@@ -132,8 +136,17 @@ export class SocialButtonsComponent {
     this.socialAuthService.signIn(socialPlatform)
       .then((socialUser: SocialUser) => {
           let observable = this.getLoginObservable(socialPlatform, socialUser);
-          observable.subscribe((response: HttpResponse<any>) => {
+          observable.subscribe(response => {
+            let loginModel: LoginModel = response.body as LoginModel;
+            if (this.inQuestionary && loginModel.role != Role.CUSTOMER) {
+              console.info(loginModel.role + " cannot  request a project")
+              this.securityService.cleanUserLoginData();
+              this.popUpService.showError("Only customers can request a project");
+              // TODO: Taras, error message are not shown
+              this.showError(null, "Only customers can request a project");
+            } else {
               this.securityService.loginUser(response.body as LoginModel, response.headers.get('authorization'), true);
+            }
             }, err => {
               if (err.status == 404) {
                 this.socialSignIn(socialUser);

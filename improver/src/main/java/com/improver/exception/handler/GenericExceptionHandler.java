@@ -46,7 +46,7 @@ public class GenericExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({AccessDeniedException.class})
     public ResponseEntity<Object> handleAccessDenied(AccessDeniedException e, WebRequest request) {
-        log.error("Access Denied ", e);
+        log.error("Access Denied: "+ e.getMessage());
         return new ResponseEntity<>(new RestError(403, e.getMessage()), FORBIDDEN);
     }
 
@@ -69,7 +69,7 @@ public class GenericExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({ValidationException.class})
     public ResponseEntity<Object> handleValidationException(ValidationException e, WebRequest request) {
-        log.error("Validation Error", e);
+        log.error("Validation Error: " + e.getMessage());
         return new ResponseEntity<>(new RestError(422, e.getMessage()), UNPROCESSABLE_ENTITY);
     }
 

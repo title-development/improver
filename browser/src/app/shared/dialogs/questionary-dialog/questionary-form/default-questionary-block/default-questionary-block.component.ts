@@ -166,6 +166,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
 
     this.emailIsChecking = true;
     this.captcha.reset();
+    // TODO: change this
       this.userService.isEmailFree(email)
         .pipe(finalize(() => {
           this.emailIsChecked = true
@@ -377,7 +378,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
       if(this.emailIsChecked && this.emailIsUnique) {
         this.register(captcha)
       } else {
-        this.login(captcha);
+        this.loginCustomer(captcha);
       }
     } else {
       this.loginProcessing = false;
@@ -385,7 +386,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     }
   }
 
-  login(captcha?) {
+  loginCustomer(captcha?) {
     let credentials = new Credentials(this.defaultQuestionaryForm.get('customerPersonalInfo.email').value, this.defaultQuestionaryForm.get('customerPersonalInfo.password').value, captcha);
     this.loginProcessing = true;
     this.securityService.sendLoginRequest(credentials)
@@ -401,7 +402,10 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
           .pipe(first(), finalize(() => { this.loginProcessing = false; }))
           .subscribe(account => {
           if (account) {
-            if(!this.personalInfoRequired()) {
+            if (this.securityService.getRole() != Role.CUSTOMER) {
+              this.securityService.logoutFrontend();
+              this.showLoginResponseMessage('Only customers can request a project', SystemMessageType.ERROR);
+            } else if(!this.personalInfoRequired()) {
               this.nextStep();
             }
           }

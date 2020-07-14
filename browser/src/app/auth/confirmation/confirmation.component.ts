@@ -97,7 +97,7 @@ export class ConfirmationComponent implements OnDestroy {
         response => {
           this.step = 2;
           this.activationSuccess = true;
-          this.securityService.logoutFrontend();
+          this.securityService.cleanUserLoginData();
           this.securityService.loginUser(response.body as LoginModel, response.headers.get('authorization'), true)
             .then(() => this.openSuccessDialog('Thank you for choosing Home Improve!'))
         },

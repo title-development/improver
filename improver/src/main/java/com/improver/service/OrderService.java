@@ -62,7 +62,7 @@ public class OrderService {
 
         if(customer.isActivated()) {
             lead = saveProjectOrder(income.setCustomer(customer));
-            log.info("Lead id={} saved and put on market to match with subscribers", lead.getId());
+            log.info("'{}' in {} leadId={} saved and put on market to match with subscribers", lead.getServiceName(), lead.getLocation().getZip(), lead.getId());
             mailService.sendOrderSubmitMail(customer, lead, order.getBaseLeadInfo(), true);
             leadService.matchLeadWithSubscribers(lead);
         } else {
@@ -71,6 +71,7 @@ public class OrderService {
                 income.setStatus(Project.Status.PENDING);
             }
             lead = saveProjectOrder(income.setCustomer(customer));
+            log.info("'{}' in {} leadId={} saved, but require customer activation", lead.getServiceName(), lead.getLocation().getZip(), lead.getId());
             log.info("Project id={} saved, but require customer activation", lead.getId());
             mailService.sendAutoRegistrationConfirmEmail(customer, lead, order.getBaseLeadInfo(), true, !customer.getSocialConnections().isEmpty());
         }

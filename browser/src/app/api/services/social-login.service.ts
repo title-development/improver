@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { SocialConnection } from '../models/SocialConnection';
 import { SocialConnectionConfig } from '../../model/security-model';
 
@@ -17,7 +17,7 @@ export class SocialLoginService {
     return this.http.get<Array<SocialConnection>>(this.API_URL);
   }
 
-  facebookLogin(accessToken: string): Observable<any> {
+  facebookLogin(accessToken: string): Observable<HttpResponse<any>> {
     return this.http.post<any>(`${this.API_URL}/facebook`, accessToken, {observe: 'response'});
   }
 

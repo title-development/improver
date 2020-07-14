@@ -5,11 +5,12 @@
     <div class="explanation">
       <span *ngIf="withoutEmail">We've sent an email to you.</span>
       <span *ngIf="!withoutEmail">
-        <span *ngIf="isRegisteredAfterProjectSubmit">We've accepted your project and sent an email to </span>
+        <span *ngIf="isRegisteredAfterProjectSubmit">We've saved your request and sent an email to </span>
         <span *ngIf="!isRegisteredAfterProjectSubmit">We've sent an email to </span>
         <span class="registered-email">{{email}}.</span>
+        <br/>
       </span>
-      Click the confirmation in that email to begin using Home Improve.
+      Click the confirmation in that email to begin using <span style="white-space: nowrap;">Home Improve.</span>
     </div>
     <div class="resend-confirm-block">Didn't receive a confirmation email?
       <button class="resend-confirm-button" (click)="resendConfirmation()" [disabled]="resendDisabledSeconds > 0">Resend <span *ngIf="resendDisabledSeconds > 0">({{resendDisabledSeconds}})</span></button>

@@ -242,15 +242,15 @@ public class LeadService {
     public void matchLeadWithSubscribers(Project lead) {
         List<Company> companies = getLastForSubs(lead, Project.SUBS_MAX_CONNECTIONS);
         if (companies.isEmpty()) {
-            log.info("No subscribers found for Lead id={} ", lead.getId());
+            log.info("No subscribers found for '{}' in {}, leadId={} ",lead.getServiceName(), lead.getLocation().getZip(), lead.getId());
             return;
         }
         for (Company subscriber : companies) {
-            log.info("Assign subscriber={} to lead={}", subscriber.getId(), lead.getId());
+            log.info("Assign subscriber='{}' to '{}' zip={} in lead={}", subscriber.getName(), lead.getServiceName(), lead.getLocation().getZip(), lead.getId());
             try {
                 subscriptionLeadPurchase(lead, DEFAULT_SUBSCRIPTION_DISCOUNT, subscriber);
             } catch (Exception e) {
-                log.error("Couldn't assign subscriber={} to lead={}", subscriber.getId(), lead.getId());
+                log.error("Couldn't assign subscriber='{}' to lead={}", subscriber.getName(), lead.getId(), e);
             }
         }
     }

@@ -56,7 +56,7 @@ public class Notification {
         this.isNewMessage = true;
         this.icon = companyIconURL(companyId);
         this.link = CUSTOMER_PROJECTS + projectId + "#" + projectRequestId;
-        this.payload = String.format("New messages from <b>%s</b> on <b>%s</b> project", companyName, serviceTypeName);
+        this.payload = String.format("New message from <b>%s</b> in %s", companyName, serviceTypeName);
         this.created = created;
     }
 
@@ -72,42 +72,42 @@ public class Notification {
         this.isNewMessage = true;
         this.icon = customerIconURL(customerId);
         this.link = PRO_PROJECTS + projectRequestId;
-        this.payload = String.format("New messages from <b>%s</b> on <b>%s</b> project", customerName, serviceTypeName);
+        this.payload = String.format("New message from <b>%s</b> in %s", customerName, serviceTypeName);
         this.created = created;
     }
 
     public static Notification newProjectRequest(User receiver, String company, long companyId, String serviceType, long projectId){
         return new Notification().setUser(receiver)
             .setIcon(companyIconURL(companyId))
-            .setPayload(String.format("<b>%s</b> sent you a project request for <b>%s</b>", company, serviceType))
+            .setPayload(String.format("<b>%s</b> sent you a project request for %s", company, serviceType))
             .setLink(CUSTOMER_PROJECTS + projectId);
     }
 
     public static Notification proLeftProject(User receiver, String company, long companyId, String serviceType, long projectId){
         return new Notification().setUser(receiver)
             .setIcon(companyIconURL(companyId))
-            .setPayload(String.format("<b>%s</b> left the <b>%s</b> project", company, serviceType))
+            .setPayload(String.format("<b>%s</b> left the %s project", company, serviceType))
             .setLink(CUSTOMER_PROJECTS + projectId);
     }
 
     public static Notification newSubscriptionLeadPurchase(User receiver, String client, long customerId, String serviceType, long projectRequestId){
         return new Notification().setUser(receiver)
             .setIcon(customerIconURL(customerId))
-            .setPayload(String.format("New subscription project <b>%s</b> for <b>%s</b>",  serviceType, client))
+            .setPayload(String.format("New subscription project %s for <b>%s</b>",  serviceType, client))
             .setLink(PRO_PROJECTS + projectRequestId);
     }
 
     public static Notification customerHired(User receiver, String client, long customerId, String serviceType, long projectRequestId){
         return new Notification().setUser(receiver)
             .setIcon(customerIconURL(customerId))
-            .setPayload(String.format("<b>%s</b> accepted your offer on the <b>%s</b> project", client, serviceType))
+            .setPayload(String.format("<b>%s</b> accepted your offer in the %s", client, serviceType))
             .setLink(PRO_PROJECTS + projectRequestId);
     }
 
     public static Notification customerCloseProject(User receiver, String client, long customerId, String serviceType, long projectRequestId){
         return new Notification().setUser(receiver)
             .setIcon(customerIconURL(customerId))
-            .setPayload(String.format("<b>%s</b> closed the <b>%s</b> project", client, serviceType))
+            .setPayload(String.format("<b>%s</b> closed the %s project", client, serviceType))
             .setLink(PRO_PROJECTS + projectRequestId);
     }
 
@@ -137,28 +137,28 @@ public class Notification {
     public static Notification projectInvalidated(User receiver, String serviceType, long projectId){
         return new Notification().setUser(receiver)
             .setIcon(SYSTEM_NOTIFICATION_ICON)
-            .setPayload(String.format("Your <b>%s</b> project has been invalidated", serviceType))
+            .setPayload(String.format("Project <b>%s</b> has been invalidated", serviceType))
             .setLink(CUSTOMER_PROJECTS + projectId);
     }
 
     public static Notification projectToValidation(User receiver, String serviceType, long projectId){
         return new Notification().setUser(receiver)
             .setIcon(SYSTEM_NOTIFICATION_ICON)
-            .setPayload(String.format("Your <b>%s</b> project sent to validation", serviceType))
+            .setPayload(String.format("Project <b>%s</b> sent to validation", serviceType))
             .setLink(CUSTOMER_PROJECTS + projectId);
     }
 
     public static Notification projectValidated(User receiver, String serviceType, long projectId){
         return new Notification().setUser(receiver)
             .setIcon(SYSTEM_NOTIFICATION_ICON)
-            .setPayload(String.format("Your <b>%s</b> project has been validated", serviceType))
+            .setPayload(String.format("Project <b>%s</b> has been validated", serviceType))
             .setLink(CUSTOMER_PROJECTS + projectId);
     }
 
     public static Notification bonusReceived(User receiver, int amount){
         return new Notification().setUser(receiver)
             .setIcon(SYSTEM_NOTIFICATION_ICON)
-            .setPayload(String.format("You have been received <b>$%d</b> bonus", amount / 100))
+            .setPayload(String.format("You received bonus <b>$%d</b>", amount / 100))
             .setLink(BILLING_URL);
     }
 

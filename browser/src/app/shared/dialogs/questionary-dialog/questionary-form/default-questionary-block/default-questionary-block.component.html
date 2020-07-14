@@ -26,10 +26,8 @@
 
   <div #defaultQuestion class="form-element-wrapper radio-button-wrapper" [formGroupName]="'defaultQuestionaryGroup'"
        *ngIf="questionaryControlService.currentQuestionIndex == questionaryControlService.questionaryLength + 1">
-    <h2 class="question-title" *ngIf="questionaryControlService.questionaryLength == 0">Please provide some project
-      details for Professional</h2>
-    <h2 class="question-title" *ngIf="questionaryControlService.questionaryLength != 0">Anything else Professional
-      should know about your project</h2>
+    <h2 class="question-title" *ngIf="questionaryControlService.questionaryLength == 0">Add more project details for Professional</h2>
+    <h2 class="question-title" *ngIf="questionaryControlService.questionaryLength != 0">Anything else Professional should know about your project</h2>
     <div class="text-input-group fill-flex-space">
       <cv-input-field>
         <cv-field-label>Project details</cv-field-label>
@@ -62,22 +60,22 @@
 
   <div #defaultQuestion class="form-element-wrapper text-input-wrapper" [formGroupName]="'defaultQuestionaryGroup'"
        *ngIf="(securityService.hasRole(Role.ANONYMOUS) || personalInfoRequired()) && (questionaryControlService.currentQuestionIndex == questionaryControlService.questionaryLength + 2)">
-    <h2 class="question-title" *ngIf="securityService.hasRole(Role.ANONYMOUS) && !waitingPhoneConfirmation">Let's get acquainted</h2>
+    <h2 class="question-title" *ngIf="securityService.hasRole(Role.ANONYMOUS) && !emailIsChecked && !waitingPhoneConfirmation">Let's get acquainted</h2>
     <h2 class="question-title" *ngIf="waitingPhoneConfirmation">Verify your phone</h2>
-    <h2 class="question-title" *ngIf="securityService.hasRole(Role.CUSTOMER) && !questionaryControlService.customerAccountIsLoading && !waitingPhoneConfirmation">Please add your phone number</h2>
-
+    <h2 class="question-title" *ngIf="securityService.hasRole(Role.CUSTOMER) && !questionaryControlService.customerAccountIsLoading && !waitingPhoneConfirmation">Add your phone for professionals to contact you</h2>
+    <h2 class="question-title" *ngIf="securityService.hasRole(Role.ANONYMOUS) && emailIsChecked && !emailIsUnique">Please login to your account</h2>
     <div class="text-input-group fill-flex-space" [formGroupName]="'customerPersonalInfo'" [cvSpinner]="registrationProcessing" [cvSpinnerSize]="50" [cvSpinnerBackground]="true">
 
       <div class="auth-block" *ngIf="!emailIsChecked && securityService.hasRole(Role.ANONYMOUS)">
 
         <div class="auth-social-title">
-          <span>Make it quickly with your social network</span>
+          <span>One click to continue with Facebook or Google</span>
         </div>
 
         <social-buttons [inQuestionary]="true"></social-buttons>
 
         <div class="email-auth-hint" *ngIf="securityService.hasRole(Role.ANONYMOUS)">
-          <span>or continue with Email</span>
+          <span>or continue with email</span>
         </div>
 
       </div>
@@ -113,7 +111,6 @@
                placeholder="Password"
                name="password"
                formControlName="password"
-               (ngModelChange)="resetCaptcha()"
                required>
       </cv-input-field>
 
@@ -352,7 +349,7 @@
 
   <div #defaultQuestion class="form-element-wrapper text-input-wrapper" [formGroupName]="'defaultQuestionaryGroup'"
        *ngIf="questionaryControlService.currentQuestionIndex == questionaryControlService.questionaryLength + 3 + (personalInfoRequired() ? 1 : 0)">
-    <h2 class="question-title">Let's check your <b>{{questionaryControlService.serviceType.name}}</b> request</h2>
+    <h2 class="question-title">You are requesting {{questionaryControlService.serviceType.name}}</h2>
 
     <div class="project-summary fill-flex-space">
         <div class="project-details-group" *ngIf="!securityService.isAuthenticated()">

@@ -157,6 +157,16 @@ export class SecurityService {
     this.router.navigate(['/']);
   }
 
+  public cleanUserLoginData() {
+    if (this.isUserExistInLocalStorage()) {
+      localStorage.removeItem(SecurityService.TOKEN_STORAGE_KEY);
+      localStorage.removeItem(SecurityService.USER_STORAGE_KEY);
+      this.window.removeEventListener('storage', this.localStorageHandler, false);
+      this.onLogout.emit();
+    }
+    this.logoutBackend()
+  }
+
 
   public logoutFrontend() {
     if (this.isUserExistInLocalStorage()) {

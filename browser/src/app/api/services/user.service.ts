@@ -60,6 +60,7 @@ export class UserService {
     return this.http.put(`${this.url}/${userId}/restore`, {});
   }
 
+  // TODO: this should be changed
   isEmailFree(email: string): Observable<any> {
     return this.http
       .get(`${this.url}/isEmailFree/?email=${email}`, { observe: 'response', responseType: 'text' });
