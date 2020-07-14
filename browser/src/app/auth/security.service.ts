@@ -149,25 +149,19 @@ export class SecurityService {
 
 
   public logout(): void {
-    this.logoutFrontend();
+    this.cleanUserLoginData();
     this.returnUrl = '';
-    this.logoutBackend();
     this.dialog.closeAll();
     this.overlayRef.removeBackdrop();
     this.router.navigate(['/']);
   }
 
   public cleanUserLoginData() {
-    if (this.isUserExistInLocalStorage()) {
-      localStorage.removeItem(SecurityService.TOKEN_STORAGE_KEY);
-      localStorage.removeItem(SecurityService.USER_STORAGE_KEY);
-      this.window.removeEventListener('storage', this.localStorageHandler, false);
-      this.onLogout.emit();
-    }
+    this.logoutFrontend();
     this.logoutBackend()
   }
 
-
+  // TODO: Check usage of this method, replace to cleanUserLoginData() if needed
   public logoutFrontend() {
     if (this.isUserExistInLocalStorage()) {
       localStorage.removeItem(SecurityService.TOKEN_STORAGE_KEY);

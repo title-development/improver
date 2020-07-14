@@ -51,7 +51,7 @@
                  name="phone"
                  [(ngModel)]="additionalUserInfo.phone"
                  phoneMask
-                 maxlength="14"
+                 [maxlength]="constants.PHONE_MAX_LENGTH"
                  [pattern]="constants.patterns.phone"
                  required>
           <cv-field-error *ngIf="phone.dirty || phone.touched || additionalInfoForm.submitted">

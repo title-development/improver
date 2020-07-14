@@ -72,7 +72,16 @@
           <span>One click to continue with Facebook or Google</span>
         </div>
 
-        <social-buttons [inQuestionary]="true"></social-buttons>
+        <social-buttons [inQuestionary]="true"
+                        (responseMessageType)="socialButtonsMessageType = $event;"
+                        (responseMessage)="socialButtonsMessageText = $event;"
+                        (showMessage)="socialButtonsShowMessage = $event;">
+        </social-buttons>
+
+        <response-message *ngIf="socialButtonsShowMessage" [type]="socialButtonsMessageType" [message]="socialButtonsMessageText"
+                          [paddingV]="12" [paddingH]="24"
+                          marginTop="0"
+                          [showIcon]="false" (onHide)="onSocialButtonsMessageHide($event)"></response-message>
 
         <div class="email-auth-hint" *ngIf="securityService.hasRole(Role.ANONYMOUS)">
           <span>or continue with email</span>
@@ -93,7 +102,8 @@
                required
                trim
                [pattern]="constants.patterns.email"
-               [disabled]="emailIsChecked">
+               [disabled]="emailIsChecked"
+               (ngModelChange)="socialButtonsShowMessage = false">
         <cv-field-error
           *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.email').dirty || defaultQuestionaryForm.get('customerPersonalInfo.email').touched">
           <span *ngIf="defaultQuestionaryForm.get('customerPersonalInfo.email').errors?.required">{{messages.errors.email.required}}</span>
@@ -111,6 +121,7 @@
                placeholder="Password"
                name="password"
                formControlName="password"
+               (ngModelChange)="showLoginMessage = false"
                required>
       </cv-input-field>
 
@@ -124,7 +135,8 @@
                         marginTop="0"
                         [showIcon]="false" (onHide)="onLoginMessageHide($event)"></response-message>
 
-      <div class="personal-data-info" *ngIf="!waitingPhoneConfirmation && (emailIsChecked && emailIsUnique || securityService.isAuthenticated()) && !questionaryControlService.customerAccountIsLoading && personalInfoRequired() ">
+      <div class="personal-data-info" *ngIf="!waitingPhoneConfirmation && (emailIsChecked && emailIsUnique || securityService.isAuthenticated()) && !questionaryControlService.customerAccountIsLoading && personalInfoRequired()"
+           [cvSpinner]="registrationProcessing" [cvSpinnerSize]="50" [cvSpinnerBackground]="true">
 
         <cv-input-field *ngIf="securityService.hasRole(Role.ANONYMOUS)">
           <cv-field-label>First name</cv-field-label>
@@ -174,7 +186,7 @@
                  formControlName="phone"
                  name="phone"
                  phoneMask
-                 maxlength="14"
+                 [maxlength]="constants.PHONE_MAX_LENGTH"
                  [pattern]="constants.patterns.phone"
                  required>
           <cv-field-error
@@ -198,7 +210,7 @@
 
     <div class="questionary-dialog-footer" *ngIf="!registrationProcessing" [cvSpinner]="emailIsChecking || loginProcessing || registrationProcessing || questionaryControlService.customerAccountIsLoading" [cvSpinnerSize]="20" [cvSpinnerBackground]="true">
 
-      <button cv-button-empty class="questionary-previous-button" *ngIf="!emailIsChecked && !waitingPhoneConfirmation" (click)="questionaryControlService.previousQuestion();" type="button" [disabled]="questionaryControlService.customerAccountIsLoading">Back</button>
+      <button cv-button-empty class="questionary-previous-button" *ngIf="!emailIsChecked && !waitingPhoneConfirmation" (click)="questionaryControlService.previousQuestion(); socialButtonsShowMessage = false" type="button" [disabled]="questionaryControlService.customerAccountIsLoading">Back</button>
 
       <button cv-button-empty class="questionary-previous-button" *ngIf="emailIsChecked && !waitingPhoneConfirmation" (click)="emailIsChecked = false; emailIsUnique = undefined; showLoginMessage = false; editPhoneAgain(); resetCaptcha()" type="button" [disabled]="questionaryControlService.customerAccountIsLoading" >Back</button>
 

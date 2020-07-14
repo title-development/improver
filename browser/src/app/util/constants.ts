@@ -6,19 +6,20 @@ import { Question } from '../api/models/Question';
 
 @Injectable()
 export class Constants {
-  COMPANY_FOUNDATION_MIN_YEAR = 1900;
-  REVIEW_MESSAGE_MAX_LENGTH: number = 1500;
-  REVIEW_MESSAGE_MIN_LENGTH: number = 10;
-  ADMIN_PROJECT_VALIDATION_COMMENT_MIN_SIZE: number = 10;
-  ADMIN_PROJECT_VALIDATION_COMMENT_MAX_SIZE: number = 500;
-  PROJECT_DESCRIPTION_MIN_LENGTH: number = 30;
-  REFERRAL_BONUS_AMOUNT: number = 10000;
+  readonly COMPANY_FOUNDATION_MIN_YEAR = 1900;
+  readonly REVIEW_MESSAGE_MAX_LENGTH: number = 1500;
+  readonly REVIEW_MESSAGE_MIN_LENGTH: number = 10;
+  readonly ADMIN_PROJECT_VALIDATION_COMMENT_MIN_SIZE: number = 10;
+  readonly ADMIN_PROJECT_VALIDATION_COMMENT_MAX_SIZE: number = 500;
+  readonly PROJECT_DESCRIPTION_MIN_LENGTH: number = 30;
+  readonly REFERRAL_BONUS_AMOUNT: number = 10000;
   readonly METERS_IN_MILES = 1609.344;
   readonly COVERAGE_RADIUS_STEP = 1;
   readonly MIN_COVERAGE_RADIUS = 5;
   readonly MAX_COVERAGE_RADIUS = 50;
   readonly ZIPCODES_BATCH_SIZE = 500;
   readonly CONFIRMATION_RESEND_BLOCK_TIMEOUT: number = 60;
+  readonly PHONE_MAX_LENGTH = 12;
   patterns: any;
   projectStatuses: Array<any>;
   months: string[];

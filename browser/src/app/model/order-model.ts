@@ -20,6 +20,7 @@ export class RequestOrder {
   serviceName: string;
 
   static build(formData: any, serviceType: ServiceType): RequestOrder {
+    delete formData?.defaultQuestionaryGroup?.customerPersonalInfo?.password
     const requestOrder = new RequestOrder();
     requestOrder.serviceId = serviceType.id;
     requestOrder.serviceName = serviceType.name;

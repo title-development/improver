@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
 import { SocialAuthService, SocialUser } from 'angularx-social-login';
 import { HttpResponse } from '@angular/common/http';
 import { AdditionalUserInfo, LoginModel, Role, SocialConnectionConfig } from '../../model/security-model';
@@ -12,6 +12,8 @@ import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { PopUpMessageService } from "../../util/pop-up-message.service";
 import { Router } from "@angular/router";
 import { RegistrationHelper } from "../../util/registration-helper";
+import { takeUntil } from "rxjs/operators";
+import { Subject } from "rxjs";
 
 export enum SocialPlatform {
   FACEBOOK = 'FACEBOOK',
@@ -23,7 +25,9 @@ export enum SocialPlatform {
   templateUrl: './social-buttons.component.html',
   styleUrls: ['./social-buttons.component.scss']
 })
-export class SocialButtonsComponent {
+export class SocialButtonsComponent implements OnDestroy {
+
+  private readonly destroyed$ = new Subject<void>();
 
   @Input() referralCode: string;
   @Input() preventLogin: boolean = false;
@@ -93,41 +97,30 @@ export class SocialButtonsComponent {
   private register(socialUser: SocialUser, additionalUserInfo: AdditionalUserInfo, isPro: boolean) {
     let accessToken = this.retrieveAccessToken(socialUser);
     let socialConnectionConfig: SocialConnectionConfig = new SocialConnectionConfig(accessToken, additionalUserInfo?.email, additionalUserInfo?.phone, this.referralCode, this.inQuestionary);
-    console.log(socialConnectionConfig);
     let observable = this.getRegisterObservable(socialUser.provider, socialConnectionConfig, isPro);
-    observable.subscribe((response: HttpResponse<any>) => {
-      this.googleFetching = false;
-      this.facebookFetching = false;
-      let loginModel = response.body as LoginModel;
-      if (loginModel) {
-        this.securityService.loginUser(loginModel, response.headers.get('authorization'), true);
-      } else if (!isPro) {
-        this.registrationHelper.email = additionalUserInfo.email;
-        this.registrationHelper.isRegisteredWhileProjectSubmission = true;
-        this.router.navigate(['/signup/email-verification-hint'])
-      }
-    }, err => {
-      this.googleFetching = false;
-      this.facebookFetching = false;
-      if (err.status == 401) {
-        this.securityService.logoutFrontend();
-        this.responseMessage.emit(getErrorMessage(err));
-      } else {
-        this.responseMessage.emit(getErrorMessage(err));
-      }
-      this.responseMessageType.emit(SystemMessageType.ERROR);
-      this.showMessage.emit(true);
-    });
+    observable
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((response: HttpResponse<any>) => {
+        let loginModel = response.body as LoginModel;
+        if (loginModel) {
+          this.securityService.loginUser(loginModel, response.headers.get('authorization'), true);
+        } else if (!isPro) {
+          this.registrationHelper.email = additionalUserInfo.email;
+          this.registrationHelper.isRegisteredWhileProjectSubmission = true;
+          this.router.navigate(['/signup/email-verification-hint'])
+        }
+      }, err => {
+        if (err.status == 401) {
+          this.securityService.logoutFrontend();
+        }
+        this.showError(undefined, getErrorMessage(err))
+      });
   }
 
-  private showError(socialPlatform: SocialPlatform, message?: string): void {
+  private showError(socialPlatform: SocialPlatform, message: string = `Cannot connect to ${socialPlatform} api`): void {
     this.googleFetching = false;
     this.facebookFetching = false;
-    if (message) {
-      this.responseMessage.emit(message);
-    } else {
-      this.responseMessage.emit(`Cannot connect to ${socialPlatform} api`);
-    }
+    this.responseMessage.emit(message);
     this.responseMessageType.emit(SystemMessageType.ERROR);
     this.showMessage.emit(true);
   }
@@ -136,13 +129,12 @@ export class SocialButtonsComponent {
     this.socialAuthService.signIn(socialPlatform)
       .then((socialUser: SocialUser) => {
           let observable = this.getLoginObservable(socialPlatform, socialUser);
-          observable.subscribe(response => {
+          observable
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe(response => {
             let loginModel: LoginModel = response.body as LoginModel;
             if (this.inQuestionary && loginModel.role != Role.CUSTOMER) {
-              console.info(loginModel.role + " cannot  request a project")
               this.securityService.cleanUserLoginData();
-              this.popUpService.showError("Only customers can request a project");
-              // TODO: Taras, error message are not shown
               this.showError(null, "Only customers can request a project");
             } else {
               this.securityService.loginUser(response.body as LoginModel, response.headers.get('authorization'), true);
@@ -152,9 +144,7 @@ export class SocialButtonsComponent {
                 this.socialSignIn(socialUser);
               } else {
                 console.error(err);
-                this.popUpService.showError(getErrorMessage(err));
-                this.googleFetching = false;
-                this.facebookFetching = false;
+                this.showError(null, getErrorMessage(err));
               }
             }
           );
@@ -212,6 +202,11 @@ export class SocialButtonsComponent {
       default:
         throw Error("Social provider not allowed")
     }
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
 }

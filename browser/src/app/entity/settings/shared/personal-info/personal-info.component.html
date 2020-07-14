@@ -84,8 +84,10 @@
                             <input cv-input
                                    type="text"
                                    placeholder="Phone number"
+                                   inputmode="tel"
                                    phoneMask
-                                   maxlength="14">
+                                   [maxlength]="constants.PHONE_MAX_LENGTH"
+                                   [pattern]="constants.patterns.phone">
                           </cv-editable-input>
                           <cv-field-error *ngIf="phone.dirty || phone.touched || personalInfoForm.submitted">
                             <span *ngIf="phone.errors?.pattern">

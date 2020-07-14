@@ -72,6 +72,10 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
   loginMessageType;
   showLoginMessage = false;
 
+  socialButtonsMessageType
+  socialButtonsMessageText
+  socialButtonsShowMessage
+
   @ViewChild(RecaptchaComponent, { static: false }) captcha: RecaptchaComponent;
 
   constructor(public questionaryControlService: QuestionaryControlService,
@@ -182,14 +186,6 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
             this.popUpMessageService.showError(getErrorMessage(error))
           }
         });
-  }
-
-  saveProjectToStorage() {
-    let requestOrder = RequestOrder.build(this.questionaryControlService.mainForm.getRawValue(), this.questionaryControlService.serviceType);
-    let unsavedProjects = {};
-    let date = new Date().toISOString();
-    unsavedProjects[date] = requestOrder;
-    localStorage.setItem('unsavedProjects', JSON.stringify(unsavedProjects));
   }
 
   saveProject(): void {
@@ -395,20 +391,21 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
         finalize(() => this.captcha.reset())
       )
       .subscribe(response => {
+        let loginModel: LoginModel = response.body as LoginModel;
+
+        if (loginModel.role != Role.CUSTOMER) {
+          this.securityService.cleanUserLoginData();
+          this.showLoginResponseMessage('Only customers can request a project', SystemMessageType.ERROR);
+          return;
+        }
+
         this.securityService.loginUser(response.body as LoginModel, response.headers.get('authorization'), false);
         this.phoneValid = false;
         this.questionaryControlService.customerHasPhone = false;
+        this.defaultQuestionaryForm.get('customerPersonalInfo.password').value = '';
         this.questionaryControlService.onAccountDataLoaded
           .pipe(first(), finalize(() => { this.loginProcessing = false; }))
           .subscribe(account => {
-          if (account) {
-            if (this.securityService.getRole() != Role.CUSTOMER) {
-              this.securityService.logoutFrontend();
-              this.showLoginResponseMessage('Only customers can request a project', SystemMessageType.ERROR);
-            } else if(!this.personalInfoRequired()) {
-              this.nextStep();
-            }
-          }
         })
 
       }, err => {
@@ -417,6 +414,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
         }
         this.showLoginResponseMessage(getErrorMessage(err), SystemMessageType.ERROR);
         this.loginProcessing = false;
+        this.resetCaptcha();
       })
   }
 
@@ -442,6 +440,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
         this.registrationProcessing = false;
       }, error => {
         this.popUpMessageService.showError(getErrorMessage(error))
+        this.resetCaptcha();
       })
   }
 
@@ -458,15 +457,17 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
   ngOnDestroy(): void {
     this.destroyed$.next();
     this.destroyed$.complete();
-    if(this.captcha) {
-      this.captcha.reset()
-    }
+    this.resetCaptcha();
   }
 
   resetCaptcha() {
     if (this.captcha) {
       this.captcha.reset()
     }
+  }
+
+  onSocialButtonsMessageHide(event) {
+    this.socialButtonsShowMessage = event;
   }
 
 }

@@ -116,7 +116,7 @@
                          [(ngModel)]="user.phone"
                          phoneMask
                          inputmode="tel"
-                         maxlength="14"
+                         [maxlength]="constants.PHONE_MAX_LENGTH"
                          [pattern]="constants.patterns.phone"
                          required>
                   <cv-field-error *ngIf="phone.dirty || phone.touched || accountForm.submitted">

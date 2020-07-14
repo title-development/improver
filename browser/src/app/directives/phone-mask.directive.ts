@@ -1,6 +1,4 @@
-import {
-  Directive, ElementRef, forwardRef, Inject, Provider, Renderer2
-} from "@angular/core";
+import { Directive, ElementRef, forwardRef, Inject, Provider, Renderer2 } from "@angular/core";
 import { NG_VALUE_ACCESSOR } from "@angular/forms";
 import { MaskDirective } from "./MaskDirective";
 
@@ -19,8 +17,15 @@ export const MASK_VALUE_ACCESSOR: Provider = {
 })
 export class PhoneMask extends MaskDirective {
 
+  private readonly PHONE_NUMBER_LENGTH = 10;
+
   applyMask(value): any {
     value = value.toString().replace(/\D/g, '');
+
+    if(value.length > this.PHONE_NUMBER_LENGTH) {
+      value = value.slice(value.length - this.PHONE_NUMBER_LENGTH)
+    }
+
     if (value.length == 0) {
       return '';
     } else if (value.length <= 3) {
@@ -29,8 +34,6 @@ export class PhoneMask extends MaskDirective {
       return value.replace(/^(\d{0,3})(\d{0,3})/, '$1-$2');
     } else if (value.length <= 10) {
       return value.replace(/^(\d{0,3})(\d{0,3})(.*)/, '$1-$2-$3');
-    } else {
-      return this.lastValue;
     }
   }
 
