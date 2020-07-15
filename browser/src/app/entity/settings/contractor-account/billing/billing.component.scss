@@ -1,12 +1,5 @@
-@import "../../../../../improver-mixins.scss";
+@import "improver-mixins.scss";
 @import "../../account.component.scss";
-
-.account-top-line {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  height: 72px;
-}
 
 .billing-content {
   @include response(xs, sm){

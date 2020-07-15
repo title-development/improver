@@ -1,16 +1,12 @@
-@import "../../../../../improver-mixins.scss";
+@import "improver-mixins.scss";
 @import "../../account.component.scss";
 
 .quick-replay-wrapper {
   width: 100%;
-  padding-bottom: 24px;
-}
-
-.account-top-line {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  height: 72px;
+  margin-bottom: 24px;
+  @include response-to(xs) {
+    margin-bottom: 12px;
+  }
 }
 
 .account-nav-title {
@@ -53,7 +49,7 @@
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
 
   @include response-to(xs) {
-    padding: 8px;
+    padding: 12px;
   }
 
   h3 {

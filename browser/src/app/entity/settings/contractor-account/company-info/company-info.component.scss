@@ -1,4 +1,4 @@
-@import "../../../../../improver-mixins.scss";
+@import "improver-mixins.scss";
 @import "../../account.component.scss";
 
 :host {
@@ -128,13 +128,6 @@
       }
     }
 
-  }
-
-  .account-top-line {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    height: 72px;
   }
 
   .account-nav-title {

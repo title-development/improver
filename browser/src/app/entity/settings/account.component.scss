@@ -1,4 +1,26 @@
-@import "../../../improver-mixins.scss";
+@import "improver-mixins.scss";
+
+.account-top-line {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  height: 72px;
+
+  @include response-to(sm) {
+    display: none;
+  }
+}
+
+.account-content-wrapper {
+  @include response-to(sm) {
+    margin-top: 18px;
+  }
+  @include response-to(xs) {
+    margin-top: 12px;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+}
 
 .account-page-wrapper {
   width: 960px;
@@ -28,6 +50,10 @@
     font-weight: 600;
     color: $black-800;
     margin-bottom: 10px;
+
+    @include response-to(xs) {
+      font-size: 18px;
+    }
   }
 
   .account-subtitle {

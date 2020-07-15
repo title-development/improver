@@ -1,12 +1,5 @@
 @import "../../account.component.scss";
-@import "../../../../../improver-mixins";
-
-.account-top-line {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  height: 72px;
-}
+@import "improver-mixins";
 
 .account-nav-title {
   font-size: 24px;
@@ -16,13 +9,14 @@
 
 .card {
   background-color: $white;
-  border-radius: 2px;
+  border-radius: 10px;
   padding: 24px;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
   margin-bottom: 24px;
 
   @include response-to(xs) {
     padding: 8px;
+    margin-bottom: 12px;
   }
 
   h3 {
@@ -51,6 +45,11 @@
     background-color: $white;
     box-shadow: 0px 1px 5px 0 rgba(0, 0, 0, 0.24);
     position: relative;
+
+    @include response-to(xs) {
+      margin-bottom: 18px;
+    }
+
     .avatar {
       width: 80px;
       height: 80px;
@@ -106,6 +105,9 @@
 
     ::ng-deep .row > div[class^='col-'] {
       margin-bottom: 24px;
+      @include response-to(xs) {
+        margin-bottom: 18px;
+      }
     }
 
     .edit-buttons {
@@ -220,6 +222,9 @@
     &:hover {
       color: $black-800;
     }
+    @include response-to(xs) {
+      margin-top: 12px;
+    }
   }
 }
 
@@ -273,7 +278,7 @@
       display: flex;
       width: 38px;
       height: 38px;
-      border-radius: 2px;
+      border-radius: 10px;
       align-items: center;
       justify-content: center;
       font-size: 14px;

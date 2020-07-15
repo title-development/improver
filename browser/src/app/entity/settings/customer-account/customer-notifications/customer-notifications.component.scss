@@ -1,12 +1,5 @@
-@import "../../../../../improver-mixins";
+@import "improver-mixins";
 @import "../../account.component";
-
-.account-top-line {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  height: 72px;
-}
 
 .account-nav-title {
   font-size: 24px;
@@ -39,7 +32,7 @@
   margin-top: 24px;
 
   @include response-to(xs) {
-    padding: 8px;
+    padding: 12px;
   }
 
   cv-checkbox {
@@ -128,5 +121,3 @@
   }
 
 }
-
-

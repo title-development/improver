@@ -1,18 +1,10 @@
-@import "../../../../../improver-mixins.scss";
+@import "improver-mixins.scss";
 @import "../../account.component.scss";
-
-.account-top-line {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  height: 72px;
-}
 
 .account-nav-title {
   font-size: 24px;
   font-weight: 600;
   color: $black-800;
-  margin-bottom: 10px;
 }
 
 .trades-and-services-card {
@@ -36,13 +28,14 @@
 }
 
 .card {
-  border-radius: 2px;
+  border-radius: 10px;
   background-color: $white;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
   margin-bottom: 24px;
 
   @include response-to(xs) {
-    padding: 8px;
+    padding: 12px;
+    margin-bottom: 12px;
   }
 }
 
@@ -50,4 +43,12 @@
   @include response-to(sm) {
     width: 100%;
   }
+
+  ::ng-deep {
+    .cv-spinner-holder.-background {
+      border-radius: 10px;
+    }
+  }
+
 }
+
