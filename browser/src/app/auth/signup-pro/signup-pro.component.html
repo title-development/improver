@@ -132,56 +132,53 @@
                   </cv-field-error>
                 </cv-input-field>
               </div>
-              <input type="password" style="display: none;">
-              <div class="col-md-6 col-sm-6 col-xs-12">
-                <cv-input-field>
-                  <input cv-input autocomplete="new-password" placeholder="Password (at least 8 symbols)"
-                         #passwordEl="ngModel"
-                         name="password"
-                         type="password"
-                         [(ngModel)]="user.password"
-                         validateEqual="confirmPassword"
-                         validationEqualReverse="true"
-                         minlength="8"
-                         maxlength="32"
-                         trim
-                         pattern="{{constants.patterns.password}}"
-                         required>
-                  <cv-field-error *ngIf="passwordEl.dirty || passwordEl.touched || accountForm.submitted">
-                      <span *ngIf="passwordEl.errors?.required">
-                       {{messages.errors.password.required}}
-                      </span>
-                    <span *ngIf="passwordEl.errors?.minlength">
-                          {{messages.errors.password.minlength}}
-                      </span>
-                    <span *ngIf="passwordEl.errors?.pattern && !passwordEl.errors?.minlength">
-                        {{messages.errors.password.pattern}}
-                      </span>
-                  </cv-field-error>
-                </cv-input-field>
-              </div>
-              <div class="col-md-6 col-sm-6 col-xs-12">
-                <cv-input-field>
-                  <input cv-input placeholder="Confirm password"
-                         #confirmPassword="ngModel"
-                         name="confirmPassword"
-                         type="password"
-                         [(ngModel)]="registerProps.confirmPassword"
-                         validateEqual="password"
-                         validationEqualReverse="false"
-                         required>
-                  <cv-field-error *ngIf="confirmPassword.dirty || confirmPassword.touched || accountForm.submitted">
-                      <span *ngIf="confirmPassword.errors?.required">
-                        {{messages.errors.passwordConfirm.required}}
-                      </span>
-                    <span *ngIf="confirmPassword.errors?.validateEqual && !confirmPassword.errors?.required">
-                        {{messages.errors.passwordConfirm.validateEqual}}
-                      </span>
-                  </cv-field-error>
-                </cv-input-field>
-              </div>
+
+                <input type="password" style="display: none;">
+                <div class="password-with-hints col-md-6 col-sm-6 col-xs-12">
+                    <cv-input-field>
+                        <input cv-input autocomplete="new-password" placeholder="Password (at least 8 symbols)"
+                               #passwordEl="ngModel"
+                               #passwordInput
+                               name="password"
+                               type="password"
+                               [(ngModel)]="user.password"
+                               validateEqual="confirmPassword"
+                               validationEqualReverse="true"
+                               minlength="8"
+                               maxlength="32"
+                               trim
+                               pattern="{{constants.patterns.password}}"
+                               required>
+                        <cv-field-error>
+                            <cv-password-hint [checkedInputRef]="passwordInput">
+                            </cv-password-hint>
+                        </cv-field-error>
+                    </cv-input-field>
+                </div>
+
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <cv-input-field>
+                        <input cv-input placeholder="Confirm password"
+                               #confirmPassword="ngModel"
+                               name="confirmPassword"
+                               type="password"
+                               [(ngModel)]="registerProps.confirmPassword"
+                               validateEqual="password"
+                               validationEqualReverse="false"
+                               required>
+                        <cv-field-error *ngIf="confirmPassword.dirty || confirmPassword.touched || accountForm.submitted">
+                            <span *ngIf="confirmPassword.errors?.required">
+                                {{messages.errors.passwordConfirm.required}}
+                            </span>
+                            <span *ngIf="confirmPassword.errors?.validateEqual && !confirmPassword.errors?.required">
+                                {{messages.errors.passwordConfirm.validateEqual}}
+                            </span>
+                        </cv-field-error>
+                    </cv-input-field>
+                </div>
             </div>
           </div>
+
           <div class="col-md-4 col-sm-12 col-xs-12">
 
             <div class="auth-social-hint" [ngClass]="{'invisible': mediaQuery.md || mediaQuery.lg || mediaQuery.xlg}">

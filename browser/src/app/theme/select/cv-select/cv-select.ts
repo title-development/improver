@@ -220,11 +220,11 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
       this.highlightedItemIndex = -1;
       this.search = value;
       this.overlayRef.$updateDropdownPosition.next();
+      this.changeDetectorRef.detectChanges();
       this.changeDetectorRef.markForCheck();
     }
 
     this.autocompleteSearch.next(this.search);
-    this.changeDetectorRef.detectChanges();
     if (!this.opened && this.allowAnyValue) {
       this.openDropdown();
     }

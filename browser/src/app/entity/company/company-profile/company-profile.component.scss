@@ -1,4 +1,4 @@
-@import "../../../../improver-mixins.scss";
+@import "improver-mixins.scss";
 
 :host {
   display: block;
@@ -19,6 +19,7 @@ h4 {
   color: $black-800;
   font-weight: 600;
   margin-bottom: 16px;
+
   @include response(xs) {
     text-align: center;
   }
@@ -37,6 +38,7 @@ p {
 
 .container {
   max-width: 826px;
+
   @include response(sm, md) {
     padding-left: 24px;
     padding-right: 24px;
@@ -81,6 +83,7 @@ p {
       height: 24px;
       font-size: 11px;
       z-index: 1;
+
       @include response(sm, md) {
         right: 24px;
       }
@@ -128,12 +131,14 @@ p {
     position: absolute;
     bottom: 0;
     left: 12px;
+
     @include response-to(sm) {
       left: 0;
       right: 0;
       text-align: center;
       bottom: -45px;
     }
+
     @include response(md) {
       left: 24px;
     }
@@ -142,10 +147,12 @@ p {
   h1 {
     max-width: 300px;
     margin: 18px auto;
+
     @include response-to(sm) {
       max-width: 100%;
       padding: 0 15px;
     }
+
     @include response-from(md) {
       padding-left: 133px;
       box-sizing: content-box;
@@ -163,6 +170,7 @@ p {
     box-shadow: elevation(1);
     border-radius: 50%;
     position: relative;
+
     @include response-from(md) {
       display: block;
       position: absolute;
@@ -173,6 +181,7 @@ p {
 
   .company-info {
     display: none;
+
     @include response-from(md) {
       display: block;
       padding-bottom: 5px;
@@ -219,6 +228,7 @@ p {
   padding-top: 56px;
   padding-bottom: 28px;
   background-color: #fff;
+
   @include response-to(sm) {
     display: block;
   }
@@ -236,6 +246,7 @@ p {
     display: flex;
     justify-content: center;
     margin: 0 -12px;
+
     @include response(xs) {
       flex-direction: column;
     }
@@ -278,9 +289,11 @@ p {
 
 .company-profile-page {
   margin: 33px auto 0;
+
   @include response-to(md) {
     margin-top: 24px;
   }
+
   @include response(xs) {
     margin-top: 0;
     padding-left: 0;
@@ -326,6 +339,7 @@ p {
 }
 
 .rating-block {
+
   @include response-to(sm) {
     padding: 25px 12px;
     text-align: center;
@@ -337,6 +351,7 @@ p {
   .rating-wrapper {
     display: flex;
     margin-bottom: 18px;
+
     @include response-to(sm) {
       justify-content: center;
     }
@@ -391,8 +406,9 @@ p {
   }
 }
 
-company-projects-gallery {
+.company-projects-gallery {
   margin-top: 45px;
+
   @include response(xs) {
     margin-top: 24px;
   }
@@ -410,7 +426,6 @@ company-reviews {
 }
 
 .card {
-  border-radius: 2px;
   background-color: $white;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
   margin-bottom: 24px;
@@ -469,7 +484,7 @@ company-reviews {
 
   .group {
     display: flex;
-    align-items: end;
+    align-items: flex-end;
     margin-left: 12px;
 
     h5 {
@@ -694,6 +709,7 @@ company-reviews {
 
 .secondary-button {
   width: 100%;
+
   &:hover {
     background-color: $grey-150 !important;
   }
@@ -705,6 +721,7 @@ company-reviews {
   color: $dark;
   border: none;
   padding: 8px;
+  font-size: 14px;
   border-radius: 0 0 8px 8px;
 
   &:hover {

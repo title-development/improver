@@ -170,6 +170,18 @@ export const companyInfoDialogConfig: MatDialogConfig = {
   }
 };
 
+export const passwordEditorDialogConfig: MatDialogConfig = {
+  panelClass: 'dialog-fix-position',
+  width: '400px',
+  height: '',
+  position: {
+    top: '',
+    bottom: '',
+    left: '',
+    right: ''
+  }
+};
+
 export const unavailabilityPeriodDialogConfig: MatDialogConfig = {
   panelClass: 'dialog-fix-position',
   width: '545px',

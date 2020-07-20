@@ -20,7 +20,9 @@ import {
   ValidationErrors,
   Validator
 } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
+import { MediaQuery, MediaQueryService } from "../../../util/media-query.service";
+import { takeUntil } from "rxjs/operators";
 
 export const EDITABLE_INPUT_VALUE_ACCESSOR: Provider = {
   provide: NG_VALUE_ACCESSOR,
@@ -49,12 +51,25 @@ export class EditableInputComponent implements ControlValueAccessor, Validator, 
   disabled: boolean = false;
   editMode: boolean = false;
   disableSaveButton: boolean = true;
+  mediaQuery: MediaQuery;
   private savedValue: any;
   private value: any;
   private ngControl: NgControl;
   private validationStatusChanges$: Subscription;
 
-  constructor(private injector: Injector) {
+  private readonly destroyed$ = new Subject<void>();
+
+  constructor(private injector: Injector,
+              private mediaQueryService: MediaQueryService) {
+    this.subscribeForMediaQuery();
+  }
+
+  subscribeForMediaQuery(){
+    this.mediaQueryService.screen
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe((mediaQuery: MediaQuery) => {
+          this.mediaQuery = mediaQuery;
+        });
   }
 
   edit(event?): void {
@@ -88,6 +103,8 @@ export class EditableInputComponent implements ControlValueAccessor, Validator, 
   ngOnDestroy(): void {
     this.input.elementRef.nativeElement.removeEventListener('input', this.inputHandler);
     this.validationStatusChanges$.unsubscribe();
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
   registerOnChange(fn: any): void {

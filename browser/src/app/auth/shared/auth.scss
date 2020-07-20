@@ -275,6 +275,20 @@
   }
 }
 
+.input-with-hints {
+
+  @include response-to(sm) {
+    ::ng-deep .error-wrapper {
+      padding-top: 0 !important;
+      padding-bottom: 12px;
+    }
+  }
+
+  ::ng-deep .hint-holder {
+    padding-right: 0 !important;
+  }
+}
+
 .content {
   display: flex;
   align-items: center;

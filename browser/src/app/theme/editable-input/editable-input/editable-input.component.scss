@@ -1,4 +1,5 @@
-@import "../../scss/variables";
+@import "variables.scss";
+@import "improver-mixins.scss";
 
 :host {
   display: flex;
@@ -35,5 +36,9 @@ button {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
     min-width: 82px;
+
+    @include response-to(sm) {
+      min-width: 0;
+    }
   }
 }

@@ -6,8 +6,9 @@ import { ActivatedRoute } from '@angular/router';
 import { SecurityService } from '../../../../auth/security.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import {
+  companyInfoDialogConfig,
   completeProjectDialogConfig,
-  confirmDialogConfig,
+  confirmDialogConfig, mobileMediaDialogConfig, passwordEditorDialogConfig,
   personalPhotoDialogConfig,
   phoneValidationDialogConfig
 } from '../../../../shared/dialogs/dialogs.configs';
@@ -18,11 +19,12 @@ import { Role } from '../../../../model/security-model';
 import { dialogsMap } from '../../../../shared/dialogs/dialogs.state';
 import { NgForm } from '@angular/forms';
 import { applyPhoneMask, capitalize, getErrorMessage, removePhoneMask } from '../../../../util/functions';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { SocialLoginService } from '../../../../api/services/social-login.service';
 import { SocialConnection } from '../../../../api/models/SocialConnection';
 import { FacebookLoginProvider, GoogleLoginProvider, SocialAuthService, SocialUser } from 'angularx-social-login';
 import { from, Observable, Subject, throwError } from 'rxjs';
+import { MediaQuery, MediaQueryService } from "../../../../util/media-query.service";
 
 
 @Component({
@@ -39,12 +41,13 @@ export class PersonalInfoComponent implements OnDestroy {
   confirmDialogRef: MatDialogRef<any>;
   photoDialogRef: MatDialogRef<any>;
   deleteAccountDialogRef: MatDialogRef<any>;
+  passwordEditorDialogRef: MatDialogRef<any>;
 
   currentEmail: string;
   currentPhone: string;
 
   oldNewPassword = {
-    password: '',
+    oldPassword: '',
     newPassword: '',
     confirmNewPassword: ''
   };
@@ -56,6 +59,7 @@ export class PersonalInfoComponent implements OnDestroy {
   socialConnections: Array<SocialConnection> = [];
   socialProviders: Array<string> = [];
   showEmailChangeMessage: boolean = false;
+  mediaQuery: MediaQuery;
 
   private readonly destroyed$ = new Subject<void>();
 
@@ -67,15 +71,46 @@ export class PersonalInfoComponent implements OnDestroy {
               public accountService: AccountService,
               public tricksService: TricksService,
               public popupService: PopUpMessageService,
+              private mediaQueryService: MediaQueryService,
               private socialConnectionService: SocialLoginService,
               private socialAuthService: SocialAuthService) {
     this.getUserAccount();
+    this.subscribeForMediaQuery();
     this.socialProviders = enumToArrayList(SocialConnection.Provider);
   }
 
   ngOnDestroy(): void {
     this.destroyed$.next();
     this.destroyed$.complete();
+  }
+
+  openPasswordEditor() {
+    this.dialog.closeAll();
+    let dialogConfig = (this.mediaQuery.xs || this.mediaQuery.sm) ? mobileMediaDialogConfig : passwordEditorDialogConfig;
+    this.passwordEditorDialogRef = this.dialog.open(dialogsMap['password-editor-dialog'], dialogConfig);
+    this.passwordEditorDialogRef
+        .afterClosed()
+        .subscribe(result => {
+          this.passwordEditorDialogRef = null;
+        });
+    let properties = {
+      title: 'Change password',
+      oldNewPassword: this.oldNewPassword,
+      passwordUpdateProcessing: this.passwordUpdateProcessing
+    };
+    this.passwordEditorDialogRef.componentInstance.properties = properties;
+    this.passwordEditorDialogRef.componentInstance.onSuccess.subscribe(() => {
+      this.oldNewPassword = this.passwordEditorDialogRef.componentInstance.properties.oldNewPassword;
+      this.changePassword();
+    });
+  }
+
+  subscribeForMediaQuery(){
+    this.mediaQueryService.screen
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe((mediaQuery: MediaQuery) => {
+          this.mediaQuery = mediaQuery;
+        });
   }
 
 
@@ -183,20 +218,26 @@ export class PersonalInfoComponent implements OnDestroy {
     }
   }
 
-  changePassword(form: NgForm) {
+  changePassword() {
     this.passwordUpdateProcessing = true;
-    let oldNewValue: OldNewValue = {oldValue: this.oldNewPassword.password, newValue: this.oldNewPassword.newPassword};
+    this.passwordEditorDialogRef.componentInstance.properties.passwordUpdateProcessing = this.passwordUpdateProcessing;
+    let oldNewValue: OldNewValue = {oldValue: this.oldNewPassword.oldPassword, newValue: this.oldNewPassword.newPassword};
     this.accountService
       .changePassword(oldNewValue)
+      .pipe(finalize(()=> {
+        this.passwordUpdateProcessing = false;
+        this.passwordEditorDialogRef.componentInstance.properties.passwordUpdateProcessing = this.passwordUpdateProcessing;
+      }))
       .subscribe(
         response => {
           this.popupService.showSuccess('Your password has been changed successfully!');
-          form.resetForm();
-          this.passwordUpdateProcessing = false;
+          this.dialog.closeAll();
+					this.oldNewPassword.oldPassword = null;
+					this.oldNewPassword.newPassword = null;
+					this.oldNewPassword.confirmNewPassword = null;
         },
         err => {
           this.popupService.showError(getErrorMessage(err));
-          this.passwordUpdateProcessing = false;
         }
       );
   }

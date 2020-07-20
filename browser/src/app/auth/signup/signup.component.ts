@@ -13,7 +13,7 @@ import { RegistrationHelper } from "../../util/registration-helper";
 import { CaptchaTrackingService } from "../../api/services/captcha-tracking.service";
 
 @Component({
-  selector: 'login-page',
+  selector: 'signup-page',
   templateUrl: 'signup.component.html',
   styleUrls: ['../shared/auth.scss']
 })

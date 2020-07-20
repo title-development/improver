@@ -33,6 +33,13 @@
   }
 }
 
+.avatar-content {
+
+  @include response-to(sm) {
+    margin-bottom: 12px;
+  }
+}
+
 .account-wrapper {
   min-height: 80px;
 }
@@ -99,9 +106,12 @@
       margin-top: 0px;
     }
 
-    //::ng-deep.input-holder {
-    //  margin-bottom: 24px;
-    //}
+    ::ng-deep .-medium {
+
+      @include response-to(sm) {
+        padding: 5px 8px !important;
+      }
+    }
 
     ::ng-deep .row > div[class^='col-'] {
       margin-bottom: 24px;
@@ -112,10 +122,8 @@
 
     .edit-buttons {
       display: block;
-      //margin-top: 7px;
 
       button.cv-button {
-        //padding: 4px 16px;
         margin-left: -12px;
         width: 60px;
 
@@ -141,69 +149,11 @@
 
 }
 
-.change-password-card {
-  padding: 24px;
-
-  @include response-to(xs) {
-    padding: 8px;
-  }
-
-  .change-password-hints-block {
-    padding: 16px;
-    background-color: rgba(190, 190, 190, 0.17);
-    margin-bottom: 32px;
-
-    @include response-from(sm) {
-      min-height: 168px;
-    }
-
-    .hints-title {
-      font-size: 14px;
-      color: rgba(0, 0, 0, 0.54);
-      margin-bottom: 24px;
-    }
-
-    .hint-block {
-      margin-bottom: 16px;
-      .square {
-        width: 8px;
-        min-width: 8px;
-        height: 8px;
-        background-color: $primary-500;
-        margin-top: 3px;
-        margin-right: 6px;
-      }
-      .hint-text {
-        font-size: 12px;
-        color: rgba(0, 0, 0, 0.54);
-      }
-    }
-
-  }
-
-  .change-password-form {
-    flex-direction: column;
-    display: flex;
-    max-width: 100%;
-
-    .change-password-form-content {
-
-      ::ng-deep .row > div[class^='col-'] {
-        margin-bottom: 24px;
-      }
-
-    }
-
-    .buttons-wrapper {
-      display: flex;
-
-      button {
-        display: flex;
-        margin-left: auto;
-      }
-
-    }
-  }
+.input-label {
+  width: 100%;
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: $grey-600;
 }
 
 .spacer {
@@ -301,4 +251,63 @@
       display: none;
     }
   }
+}
+
+.password-hints-wrapper {
+  min-height: 168px;
+  background-color: $grey-100;
+  padding: 16px;
+
+  ::ng-deep .error-message {
+    padding-bottom: 8px;
+  }
+}
+
+.password-hints-wrapper {
+  ::ng-deep .error-wrapper {
+    padding-top: 0 !important;
+  }
+}
+
+.editable-group {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .row-group {
+    display: flex;
+    flex-direction: row;
+  }
+
+  input {
+    border-radius: 8px 0 0 8px;
+
+    &::placeholder {
+      color: $grey-500 !important;
+    }
+  }
+
+  button {
+    border-radius:  0 8px 8px 0;
+    height: max-content;
+
+    ::ng-deep .cv-spinner-holder {
+      background-color: $blue-primary!important;
+      border-radius: 0 8px 8px 0;
+
+      .cv-spinner {
+        border-color: $white;
+      }
+    }
+
+    @include response-to(sm){
+      font-size: 16px;
+      padding: 5px 8px;
+    }
+  }
+}
+
+.group-wrapper {
+  width: 100%;
+  margin-bottom: 24px;
 }

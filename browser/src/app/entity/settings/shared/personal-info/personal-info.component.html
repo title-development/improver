@@ -16,7 +16,7 @@
             <h3>User information</h3>
             <div class="row">
 
-              <div *ngIf="!securityService.hasRole(Role.CONTRACTOR)" class="col-md-3 col-sm-3 col-xs-12">
+              <div *ngIf="!securityService.hasRole(Role.CONTRACTOR)" class="avatar-content col-md-3 col-sm-3 col-xs-12">
                 <div class="avatar-wrapper" fxLayout="row" fxLayoutAlign="center center">
                   <div class="avatar" *ngIf="securityService.isAuthenticated()"
                        [ngStyle]="account.iconUrl && account.iconUrl != '' && {'background-image':'url(' + account.iconUrl + ')'} || securityService.getLoginModel().company && {'background-image':'url(/assets/img/contractor-logo-placeholder.png)'} || {'background-image':'url(/assets/img/user-logo-placeholder.png)'}"></div>
@@ -43,6 +43,7 @@
                   <div class="personal-info-form-content">
                     <div class="row">
                       <div class="col-xs-12">
+                          <div class="input-label">Email</div>
                         <cv-input-field>
                           <cv-editable-input #email="ngModel"
                                              name="email"
@@ -70,9 +71,35 @@
                       </div>
                     </div>
 
+                    <div class="editable-group">
+
+                        <div class="input-label">Password</div>
+
+                        <div class="row-group">
+                            <div class="group-wrapper">
+                                <cv-input-field>
+                                    <input cv-input type="password" placeholder="Change password" value="**********" disabled>
+                                </cv-input-field>
+                            </div>
+
+                            <button [cvSpinner]="passwordUpdateProcessing"
+                                    [cvSpinnerSize]="20"
+                                    [cvSpinnerBackground]="true"
+                                    cv-button
+                                    type="button"
+                                    (click)="openPasswordEditor()">
+                                <mat-icon *ngIf="mediaQuery.xs || mediaQuery.sm" class="edit">edit</mat-icon>
+                                <span *ngIf="!mediaQuery.sm && !mediaQuery.xs">Change</span>
+                            </button>
+                        </div>
+
+                    </div>
+
                     <div class="row">
 
                       <div class="col-xs-12">
+
+                        <div class="input-label">Phone</div>
 
                         <cv-input-field>
                           <cv-editable-input #phone="ngModel"
@@ -104,6 +131,8 @@
 
                       <div class="col-xs-12 col-sm-6">
 
+                        <div class="input-label">First name</div>
+
                         <cv-input-field>
                           <input cv-input type="text"
                                  trim
@@ -130,6 +159,9 @@
                       </div>
 
                       <div class="col-xs-12 col-sm-6">
+
+                        <div class="input-label">Last name</div>
+
                         <cv-input-field>
                           <input cv-input type="text"
                                  trim
@@ -179,137 +211,6 @@
 
             </div>
 
-          </div>
-
-          <div class="change-password-card card" *ngIf="account && account.nativeUser">
-            <form class="change-password-form"
-                  name="change-password-form"
-                  #changePasswordForm="ngForm"
-                  (ngSubmit)="changePasswordForm.valid && changePassword(changePasswordForm)"
-                  novalidate
-                  autocomplete="off">
-              <h3>Change password</h3>
-              <div class="row">
-                <div class="col-sm-6 col-xs-12">
-                  <div class="change-password-hints-block">
-                    <div class="hints-title">Your password must contain the following:</div>
-                    <div class="hint-block" fxLayout="row">
-                      <div class="square"></div>
-                      <div class="hint-text">At least 8 characters in length (a strong password has at least 14
-                        characters)
-                      </div>
-                    </div>
-                    <div class="hint-block" fxLayout="row">
-                      <div class="square"></div>
-                      <div class="hint-text">At least 1 letter and at least 1 number</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-sm-6 col-xs-12">
-
-                  <input type="password" style="display: none;">
-                  <div class="change-password-form-content" fxLayout="column">
-
-                    <div class="change-password-form-group" fxLayout="column">
-
-                      <div class="row">
-
-                        <div class="col-xs-12">
-
-                          <cv-input-field>
-                            <input cv-input
-                                   placeholder="Old password"
-                                   #password="ngModel"
-                                   name="oldPassword"
-                                   type="password"
-                                   [(ngModel)]="oldNewPassword.password"
-                                   required>
-                            <cv-field-error *ngIf="password.dirty || password.touched || changePasswordForm.submitted">
-                          <span *ngIf="password.errors?.required">
-                            {{messages.errors.password.required}}
-                          </span>
-                            </cv-field-error>
-                          </cv-input-field>
-
-                        </div>
-
-                      </div>
-
-                      <div class="row">
-
-                        <div class="col-xs-12">
-
-                          <cv-input-field>
-                            <input cv-input
-                                   placeholder="New password"
-                                   #newPassword="ngModel"
-                                   name="newPassword"
-                                   type="password"
-                                   [(ngModel)]="oldNewPassword.newPassword"
-                                   validateEqual="confirmNewPassword"
-                                   validationEqualReverse="true"
-                                   required
-                                   minlength="8"
-                                   maxlength="32"
-                                   pattern="{{constants.patterns.password}}">
-                            <cv-field-error
-                              *ngIf="newPassword.dirty || newPassword.touched || changePasswordForm.submitted">
-                          <span *ngIf="newPassword.errors?.required">
-                            {{messages.errors.password.required}}
-                          </span>
-                              <span *ngIf="newPassword.errors?.minlength">
-                                  {{messages.errors.password.minlength}}
-                          </span>
-                              <span *ngIf="newPassword.errors?.pattern && !newPassword.errors?.minlength">
-                                  {{messages.errors.password.pattern}}
-                          </span>
-                            </cv-field-error>
-                          </cv-input-field>
-
-                        </div>
-
-                      </div>
-
-                      <div class="row">
-
-                        <div class="col-xs-12">
-
-                          <cv-input-field>
-                            <input cv-input
-                                   placeholder="Confirm password"
-                                   #confirmNewPassword="ngModel"
-                                   name="confirmNewPassword"
-                                   type="password"
-                                   [(ngModel)]="oldNewPassword.confirmNewPassword"
-                                   validateEqual="newPassword"
-                                   validationEqualReverse="false"
-                                   required>
-                            <cv-field-error
-                              *ngIf="confirmNewPassword.dirty || confirmNewPassword.touched || changePasswordForm.submitted">
-                            <span *ngIf="confirmNewPassword.errors?.required">
-                              {{messages.errors.passwordConfirm.required}}
-                            </span>
-                              <span
-                                *ngIf="confirmNewPassword.errors?.validateEqual && !confirmNewPassword.errors?.required">
-                                    {{messages.errors.passwordConfirm.validateEqual}}
-                            </span>
-                            </cv-field-error>
-                          </cv-input-field>
-
-                        </div>
-
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="buttons-wrapper" [cvSpinner]="passwordUpdateProcessing"
-                   [cvSpinnerSize]="20"
-                   [cvSpinnerBackground]="true">
-                <button cv-button size="small" type="submit">Save</button>
-              </div>
-            </form>
           </div>
 
           <div class="social-connection card">

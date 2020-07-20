@@ -40,8 +40,21 @@ export class Constants {
 
       // at least 8 characters
       // at least 1 numeric character
-      // at least 1 lowercase or uppercase letter
+      // at least 1 lowercase and uppercase letter
       password: '^(?=.*?[A-Za-z])(?=.*?[0-9]).{8,}$',
+
+      // at least 8 characters
+      // at least 1 numeric character
+      // at least 1 lowercase and uppercase letter
+      // at least one special character
+      complexPassword: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$',
+
+      minLength: '.{8,}',                           // min length 8
+      number: '(?=.*\\d)',                          // has at least one number
+      letter: '(?=\w*[a-zA-Z]\\w*)',                // has at least one letter
+      lowercase: '(?=.*[a-z])',                     // has at least one lower case letter
+      uppercase: '(?=.*[A-Z])',                     // has at least one upper case letter
+      specialCharacter: '[!@#$%^&*(),.?\":{}|<>]',  // has at least one special character
 
       zipcode: '(^\\d{5}$)' + // XXXXX (X is digit)
         '|' + // or

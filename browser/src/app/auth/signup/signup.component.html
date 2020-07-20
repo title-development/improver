@@ -47,11 +47,15 @@
               </span>
             </cv-field-error>
           </cv-input-field>
+
+          <!--prevent password autofill-->
           <input type="password" style="display: none;">
-          <cv-input-field>
+
+          <cv-input-field class="input-with-hints">
 
             <input cv-input placeholder="Password (at least 8 symbols)"
                    #password="ngModel"
+                   #passwordInput
                    name="password"
                    type="password"
                    autocomplete="new-password"
@@ -62,16 +66,8 @@
                    minlength="8"
                    maxlength="32"
                    pattern="{{constants.patterns.password}}">
-            <cv-field-error *ngIf="password.dirty || password.touched || signupForm.submitted">
-               <span *ngIf="password.errors?.required">
-               {{messages.errors.password.required}}
-              </span>
-              <span *ngIf="password.errors?.minlength">
-                {{messages.errors.password.minlength}}
-              </span>
-              <span *ngIf="password.errors?.pattern && !password.errors?.minlength">
-                {{messages.errors.password.pattern}}
-              </span>
+            <cv-field-error>
+               <cv-password-hint [checkedInputRef]="passwordInput"></cv-password-hint>
             </cv-field-error>
           </cv-input-field>
 

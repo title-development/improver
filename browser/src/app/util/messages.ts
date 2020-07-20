@@ -57,8 +57,11 @@ export class Messages {
 
     password: {
       required: "Password is required",
-      minlength: "Should contain 8 symbols",
-      pattern: "Should contain letters and numbers"
+      minlength: "Have at least 8 characters",
+      letters: "Have at least 1 letter (a, b, c...)",
+      number: "Have at least 1 number (1, 2, 3...)",
+      specialCharacter: "Have at least 1 special character",
+      letterCase: "Upper case and Lower case characters"
     },
 
     passwordConfirm: {

@@ -34,6 +34,7 @@ import { CompanyLicensesDialogComponent } from "./company-licenses-dialog/compan
 import { AboutCompanyDialogComponent } from "./about-company-dialog/about-company-dialog.component";
 import { CompanyInfoEditorComponent } from "./change-company-name-dialog/company-info-editor.component";
 import { EmailVerificationHintDialogComponent } from "./email-verification-hint-dialog/email-verification-hint-dialog.component";
+import { PasswordEditorComponent } from "./password-editor/password-editor.component";
 
 export const dialogs = [
   QuestionaryDialogComponent,
@@ -71,7 +72,8 @@ export const dialogs = [
   CompanyLicensesDialogComponent,
   AboutCompanyDialogComponent,
   CompanyInfoEditorComponent,
-  EmailVerificationHintDialogComponent
+  EmailVerificationHintDialogComponent,
+	PasswordEditorComponent
 ];
 
 export const dialogsMap = {
@@ -108,4 +110,5 @@ export const dialogsMap = {
   'about-company-dialog': AboutCompanyDialogComponent,
   'company-info-editor': CompanyInfoEditorComponent,
   'email-verification-hint-dialog': EmailVerificationHintDialogComponent,
+  'password-editor-dialog': PasswordEditorComponent
 };

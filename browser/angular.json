@@ -210,7 +210,6 @@
     "@schematics/angular:component": {
       "styleext": "scss"
     },
-    "@schematics/angular:directive": {
-    }
+    "@schematics/angular:directive": {}
   }
 }

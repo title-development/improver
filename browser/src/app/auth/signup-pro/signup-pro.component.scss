@@ -1,4 +1,4 @@
-@import "../../../improver-mixins.scss";
+@import "improver-mixins.scss";
 
 :host {
 }
@@ -265,4 +265,11 @@ cv-input-field {
     color: inherit;
   }
 
+}
+
+.password-with-hints {
+
+  ::ng-deep .hint-holder {
+    padding-right: 0 !important;
+  }
 }

@@ -45,6 +45,7 @@ import { SuggestedLocationComponent } from './suggested-location/suggested-locat
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { EmailVerificationHintCardComponent } from "./email-verification-hint-card/email-verification-hint-card.component";
 import { UserActivationReminderComponent } from "./user-activation-reminder/user-activation-reminder.component";
+import { CvPasswordHintModule } from "../theme/hint/cv-password-hint/cv-password-hint-module";
 
 @NgModule({
   imports: [
@@ -78,6 +79,7 @@ import { UserActivationReminderComponent } from "./user-activation-reminder/user
     CvFieldsModule,
     CvInputModule,
     CvInputFieldModule,
+    CvPasswordHintModule,
     CvRadioModule,
     SharedDirectivesModule,
     NgTruncatePipeModule
@@ -133,6 +135,7 @@ import { UserActivationReminderComponent } from "./user-activation-reminder/user
     CvFieldsModule,
     CvInputModule,
     CvInputFieldModule,
+    CvPasswordHintModule,
     CvRadioModule,
     MainSearchBarComponent,
     ServicesSelectorComponent,

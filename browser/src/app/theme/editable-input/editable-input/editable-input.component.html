@@ -1,4 +1,7 @@
 <ng-content select="[cv-input]"></ng-content>
-<button cv-button type="button" class="-edit" *ngIf="!editMode" (click)="edit($event)">{{buttonEditLabel}}</button>
+<button cv-button type="button" class="-edit" *ngIf="!editMode" (click)="edit($event)">
+    <mat-icon *ngIf="mediaQuery.xs || mediaQuery.sm" class="edit">edit</mat-icon>
+    <span *ngIf="!mediaQuery.xs && !mediaQuery.sm">{{buttonEditLabel}}</span>
+</button>
 <button cv-button type="button" class="-save" *ngIf="editMode" [disabled]="disableSaveButton" (click)="save($event)">{{buttonSaveLabel}}</button>
 <button cv-button type="button" class="-cancel" *ngIf="editMode" (click)="cancel($event)">Cancel</button>

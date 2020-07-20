@@ -1,4 +1,4 @@
-import { Component, OnDestroy, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 
 import { SecurityService } from '../security.service';
 import { Constants } from '../../util/constants';

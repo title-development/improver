@@ -39,7 +39,7 @@
                 {{messages.errors.password.minlength}}
               </span>
             <span *ngIf="currentPassword.errors?.pattern && !currentPassword.errors?.minlength">
-                {{messages.errors.password.pattern}}
+                {{messages.errors.password.letterCase}}
               </span>
           </cv-field-error>
         </cv-input-field>

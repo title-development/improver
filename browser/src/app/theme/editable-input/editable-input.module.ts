@@ -4,9 +4,10 @@ import { EditableInputComponent } from './editable-input/editable-input.componen
 import { CvButtonModule } from '../button/cv-button.module';
 import { CvInputModule } from '../input/cv-input.module';
 import { FormsModule } from '@angular/forms';
+import { MatIconModule } from "@angular/material/icon";
 
 @NgModule({
-  imports: [CommonModule, CvButtonModule, CvInputModule, FormsModule],
+  imports: [CommonModule, CvButtonModule, CvInputModule, FormsModule, MatIconModule],
   declarations: [EditableInputComponent],
   exports: [EditableInputComponent],
 })

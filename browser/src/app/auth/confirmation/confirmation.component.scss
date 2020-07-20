@@ -1,4 +1,4 @@
-@import "../../../improver-mixins.scss";
+@import "improver-mixins.scss";
 
 :host {
   margin-top: 65px;
@@ -25,6 +25,12 @@
   .confirmation-form {
     max-width: 290px;
     margin: auto;
+
+    @include response-to(sm) {
+      padding: 0 20px;
+      width: 100%;
+      max-width: 400px;
+    }
 
     .title {
       margin-bottom: 24px;
@@ -64,6 +70,25 @@
 
   .home-button {
     margin-top: 24px;
+  }
+
+}
+
+.confirmation-button {
+  width: 100%;
+}
+
+.input-with-hints {
+
+  @include response-to(sm) {
+    ::ng-deep .error-wrapper {
+      padding-top: 0 !important;
+      padding-bottom: 12px;
+    }
+  }
+
+  ::ng-deep .hint-holder {
+    padding-right: 0 !important;
   }
 
 }
