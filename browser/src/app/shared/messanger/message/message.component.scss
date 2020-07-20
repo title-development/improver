@@ -76,7 +76,6 @@
         display: inline-table;
         text-align: left;
         white-space: pre-line;
-        word-break: keep-all;
         word-break: break-word;
 
         a {
@@ -102,6 +101,7 @@
       text-align: right;
       margin-left: 20%;
       margin-right: 16px;
+
       .message {
         background-color: #e3f3fe;
         color: #181818;
@@ -111,8 +111,9 @@
 
     &.system {
       .message {
-        color: $white;
-        background-color: #999999;
+        color: $dark;
+        background: none;
+
         .message-content {
           white-space: initial;
         }

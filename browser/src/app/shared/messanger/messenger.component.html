@@ -13,6 +13,10 @@
               <span class="date-separator">{{item.created | date :'longDate'}}</span>
             </div>
 
+            <div class="unread-messages-line" *ngIf="item.unreadLine">
+              <span class="unread-message">Unread messages</span>
+            </div>
+
             <message [message]="item" (afterViewInit)="scrollMessengerToBottom()" [customerName]="customerName"
                      [userIcon]="targetUserIcon" [contractorName]="contractorName"
                      [companyName]="companyName"></message>

@@ -122,6 +122,9 @@ export class MessengerComponent implements OnInit, OnDestroy {
               this.messages.push(item);
             }
           });
+
+          this.addUnreadMessagesLine();
+
           setTimeout(() => {
             this.sendReadEvent();
           }, this.READ_MESSAGES_DEBOUNCE_TIME)
@@ -170,8 +173,19 @@ export class MessengerComponent implements OnInit, OnDestroy {
       this.messages.splice(this.messages.length - 1, 1);
     }
     this.messages.push(newMessage);
+    this.addUnreadMessagesLine();
     this.isTyping = false;
   };
+
+  addUnreadMessagesLine() {
+    let hasUnreadLine = false;
+    this.messages.forEach( message => {
+      if (!hasUnreadLine && message.read == false && message.sender != this.securityService.getLoginModel().id) {
+        (message as any).unreadLine = true;
+        hasUnreadLine = true;
+      }
+    });
+  }
 
   /**
    * Checks that two messages need to be glued
@@ -277,9 +291,20 @@ export class MessengerComponent implements OnInit, OnDestroy {
       } else if (!own && this.securityService.getLoginModel().id != message.sender) {
         message.read = true;
       }
+
+      this.deleteUnreadMessagesLine(message);
       return message;
     });
   }
+
+	// delete "Unread Messages" line from chat
+  deleteUnreadMessagesLine(message) {
+		setTimeout( () => {
+			if ((message as any).unreadLine) {
+				(message as any).unreadLine = false;
+			}
+		},this.READ_MESSAGES_DEBOUNCE_TIME);
+	}
 
   /**
    * Move send button 11px right when scrollbar appear

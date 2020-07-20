@@ -1,4 +1,4 @@
-@import "../../../improver-mixins.scss";
+@import "improver-mixins";
 @import '../../../../node_modules/perfect-scrollbar/css/perfect-scrollbar.css';
 
 :host {
@@ -184,6 +184,21 @@
       }
     }
 
+  }
+}
+
+.unread-messages-line {
+  font-size: 12px;
+  text-align: center;
+  color: $blue-primary;
+  width: 85%;
+  border-bottom: 1px solid $blue-primary;
+  line-height: 0.1em;
+  margin: 18px auto;
+
+  .unread-message {
+    background: $grey-100;
+    padding: 0 10px;
   }
 }
 
