@@ -429,7 +429,7 @@ company-reviews {
   background-color: $white;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
   margin-bottom: 24px;
-  border-radius: 10px;
+  border-radius: 8px;
 
   &.-space {
     padding: 20px 22px;
@@ -580,6 +580,7 @@ company-reviews {
 
     p {
       padding: 4px 8px;
+      padding-bottom: 2px;
       margin-right: 8px;
       margin-bottom: 8px;
       width: max-content;

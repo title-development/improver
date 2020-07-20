@@ -7,25 +7,6 @@
   color: $black-800;
 }
 
-.card {
-  background-color: $white;
-  border-radius: 8px;
-  padding: 24px;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
-  h3 {
-    font-size: 20px;
-    text-align: left;
-    font-weight: 500;
-    padding: 0;
-    color: $black-800;
-    margin-top: 0px;
-    margin-bottom: 18px;
-    @include response-to(xs) {
-      margin: 8px 8px 16px 8px;
-    }
-  }
-}
-
 .notification-settings-card {
   padding: 24px;
   margin-bottom: 24px;

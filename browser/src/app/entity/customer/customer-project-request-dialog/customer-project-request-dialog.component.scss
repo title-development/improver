@@ -1,4 +1,4 @@
-@import "../../../../improver-mixins.scss";
+@import "improver-mixins.scss";
 
 ::ng-deep .customer-project-request-dialog {
   padding: 16px 0;
@@ -597,6 +597,7 @@
   z-index: 124;
   padding: 23px 15px 14px 17px;
   margin-bottom: 20px;
+  border-radius: 8px;
 
   @include response-to(md) {
     left: 0;

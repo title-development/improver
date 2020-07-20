@@ -29,8 +29,8 @@ export class ContractorLeadPurchaseComponent implements OnInit, OnDestroy {
   leadUID: string;
   lead: Lead;
   LEAD_NOT_FOUND_MESSAGE = 'The lead you searching is not available. You can search more leads suitable for you.';
-  leadErrorHeader: string;
-  leadErrorMessage: string;
+  leadErrorHeader: string = 'Unknown error';
+  leadErrorMessage: string = 'Oops, something went wrong';
   leadError = false;
   leadTryAgainAvailable = false;
   leadProcessing = true;
@@ -129,6 +129,8 @@ export class ContractorLeadPurchaseComponent implements OnInit, OnDestroy {
             this.leadProcessing = false;
             break;
           }
+          default:
+            this.popUpMessageService.showError(getErrorMessage(err));
         }
 
       });
@@ -148,6 +150,7 @@ export class ContractorLeadPurchaseComponent implements OnInit, OnDestroy {
           this.step = 2;
         },
         err => {
+          console.error(err);
           this.leadTryAgainAvailable = false;
           this.leadProcessing = false;
           this.billingService.getBalance();
@@ -170,6 +173,8 @@ export class ContractorLeadPurchaseComponent implements OnInit, OnDestroy {
               this.leadErrorMessage = this.LEAD_NOT_FOUND_MESSAGE;
               break;
             }
+            default:
+              this.popUpMessageService.showError(getErrorMessage(err));
 
           }
 

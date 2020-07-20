@@ -1,4 +1,4 @@
-@import "../../../../improver-mixins.scss";
+@import "improver-mixins.scss";
 
 .customer-project-view {
   display: flex;
@@ -6,7 +6,7 @@
   flex: 1;
 
   .main-content-wrapper {
-    border-radius: 2px;
+    border-radius: 8px;
     background-color: $white;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
     margin-bottom: 24px;
@@ -218,7 +218,7 @@
           padding: 11px 12px;
           cursor: pointer;
           margin-top: 16px;
-          border-radius: 2px;
+          border-radius: 8px;
           background-color: $white;
           box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.24);
           opacity: 1;
@@ -330,7 +330,6 @@
           &:hover {
             opacity: 1;
             transition: 0.3s;
-            border-radius: 2px;
             background-color: $grey-200;
             box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.24);
 
@@ -459,7 +458,7 @@
   }
 
   .description-block {
-    border-radius: 2px;
+    border-radius: 8px;
     background-color: $white;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
     padding: 24px 24px 18px;
@@ -512,7 +511,7 @@
 
   .mat-menu-content {
     padding: 0px;
-    border-radius: 2px;
+    border-radius: 8px;
     box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.23);
 
     .mat-menu-item {
@@ -538,7 +537,7 @@
 
   .mat-menu-content {
     padding: 0px;
-    border-radius: 2px;
+    border-radius: 8px;
     box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.23);
 
     .mat-menu-item {
@@ -557,7 +556,7 @@
 }
 
 .image-uploader {
-  border-radius: 2px;
+  border-radius: 8px;
   background-color: $white;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
   margin-bottom: 24px;

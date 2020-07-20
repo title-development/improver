@@ -3,10 +3,6 @@
 
 .quick-replay-wrapper {
   width: 100%;
-  margin-bottom: 24px;
-  @include response-to(xs) {
-    margin-bottom: 12px;
-  }
 }
 
 .account-nav-title {
@@ -40,28 +36,4 @@
 .buttons-wrapper {
   display: flex;
   justify-content: space-between;
-}
-
-.card {
-  background-color: $white;
-  border-radius: 2px;
-  padding: 24px;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
-
-  @include response-to(xs) {
-    padding: 12px;
-  }
-
-  h3 {
-    font-size: 20px;
-    text-align: left;
-    font-weight: 500;
-    padding: 0;
-    color: $black-800;
-    margin-top: 0px;
-    margin-bottom: 18px;
-    @include response-to(xs) {
-      margin: 8px 8px 16px 8px;
-    }
-  }
 }

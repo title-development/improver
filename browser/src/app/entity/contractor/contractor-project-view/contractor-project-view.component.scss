@@ -1,4 +1,4 @@
-@import "../../../../improver-mixins.scss";
+@import "improver-mixins.scss";
 
 :host {
   display: block;
@@ -26,12 +26,18 @@
 
 .conversation-wrapper {
   position: fixed;
-  top: 180px;
+  top: calc(60px + #{$header-height});
   bottom: 0;
   min-height: 148px;
   left: 0;
   width: 66.6666%;
   padding: 0 12px 24px;
+
+  ::ng-deep messenger {
+    border-radius: 8px;
+    overflow: auto;
+  }
+
   @include response-to(sm) {
     top: 130px;
     padding-left: 0;
@@ -238,6 +244,7 @@ hr {
     background-size: cover;
     position: relative;
     cursor: pointer;
+    border-radius: 8px;
     &:hover {
       &:after {
         opacity: 1;
@@ -259,6 +266,7 @@ hr {
       justify-content: center;
       transition: opacity .3s ease;
       background-color: rgba(#000, .6);
+      border-radius: 8px;
     }
   }
 }
@@ -347,7 +355,7 @@ hr {
 
 ::ng-deep .mat-menu-panel.project-menu {
   padding: 0px;
-  border-radius: 2px;
+  border-radius: 8px;
   box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.23);
   .mat-menu-content {
     padding: 0;
@@ -366,7 +374,7 @@ hr {
 }
 
 .card {
-  border-radius: 2px;
+  border-radius: 8px;
   background-color: $white;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
   margin-bottom: 24px;

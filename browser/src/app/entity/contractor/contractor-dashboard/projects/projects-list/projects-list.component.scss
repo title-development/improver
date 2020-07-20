@@ -225,11 +225,10 @@
   position: relative;
   overflow: visible !important;
   box-shadow: none;
-  //margin-top: 60px;
 
   .mat-menu-content {
     padding: 0px;
-    border-radius: 2px;
+    border-radius: 8px;
     box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.23);
 
     .mat-menu-item {

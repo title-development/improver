@@ -69,10 +69,10 @@
         position: relative;
         padding: 11px 16px;
         background-color: $grey-150;
-        /* box-shadow: 0px 2px 4px 0 rgba(0, 0, 0, 0.16); */
         font-size: 14px;
         line-height: 1.43;
         color: #8c8c8c;
+        border-radius: 8px;
 
         &.input-hint {
           margin-top: 19px;
@@ -82,6 +82,7 @@
 
       .balance-block {
         border: solid 1px $grey-200;
+        border-radius: 8px;
 
         &:last-child {
           border-bottom: solid 1px transparent;

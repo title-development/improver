@@ -96,7 +96,7 @@
            *ngIf="!leadError">
 
         <div class="lead-actions-content-wrapper" *ngIf="lead && !leadProcessing && !cardProcessing">
-          <div class="lead-actions-card card" [cvSpinner]="!lead" [cvSpinnerSize]="32">
+          <div [cvSpinner]="!lead" [cvSpinnerSize]="32">
 
             <div class="lead-actions-header">
               Confirm Lead Purchase

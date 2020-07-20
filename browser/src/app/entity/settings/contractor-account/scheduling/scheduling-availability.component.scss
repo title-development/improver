@@ -11,19 +11,6 @@
   color: $black-800;
 }
 
-.card {
-  border-radius: 10px;
-  background-color: $white;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
-  margin-bottom: 24px;
-  padding: 24px;
-
-  @include response-to(xs) {
-    padding: 12px;
-    margin-bottom: 12px;
-  }
-}
-
 p {
   margin: 0;
   font-size: 14px;
@@ -31,8 +18,10 @@ p {
 }
 
 .periods {
-  box-shadow: 0px 2px 4px 0 rgba(0, 0, 0, 0.15);
+  box-shadow: 0px 1px 4px 0 rgba(0, 0, 0, 0.15);
   margin-top: 18px;
+  border-radius: 8px;
+  overflow: auto;
 }
 
 button {
@@ -83,7 +72,7 @@ button {
       left: 0;
       right: 0;
       height: 1px;
-      background-color: $grey-300;
+      background-color: $grey-200;
     }
   }
   span {

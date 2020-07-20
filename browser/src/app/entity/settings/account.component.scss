@@ -63,14 +63,6 @@
   }
 }
 
-//.nav-width {
-//  width: 27%;
-//}
-//
-//.card-width {
-//  width: 73%;
-//}
-
 .account-page-container {
 
   margin-top: 24px;
@@ -171,18 +163,6 @@
     }
   }
 
-  .account-page {
-
-    .card {
-      border-radius: 2px;
-      background-color: $white;
-      box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
-      margin-bottom: 24px;
-      overflow: hidden;
-    }
-
-  }
-
 }
 
 ::ng-deep .mat-menu-panel.account-menu {
@@ -209,5 +189,32 @@
       }
     }
 
+  }
+}
+
+:host {
+  .card {
+    background-color: $white;
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
+    margin-bottom: 24px;
+
+    h3 {
+      font-size: 20px;
+      text-align: left;
+      font-weight: 500;
+      padding: 0;
+      color: $black-800;
+      margin-top: 0px;
+      margin-bottom: 18px;
+      @include response-to(xs) {
+        margin: 8px 8px 16px 8px;
+      }
+    }
+    @include response-to(xs) {
+      padding: 12px;
+      margin-bottom: 12px;
+    }
   }
 }

@@ -1,4 +1,4 @@
-@import "../../../../../improver-mixins.scss";
+@import "improver-mixins.scss";
 
 :host {
   height: 100%;
@@ -9,7 +9,6 @@
 agm-map::ng-deep {
   .agm-map-container-inner {
     height: 100%;
-    //height: calc(100% - 88px);
   }
 }
 
@@ -57,5 +56,5 @@ agm-map::ng-deep {
 mat-progress-bar {
   position: absolute;
   width: 100%;
-  z-index: 9999;
+  z-index: 99;
 }

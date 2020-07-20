@@ -28,27 +28,29 @@
 }
 
 .card {
-  border-radius: 10px;
-  background-color: $white;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
-  margin-bottom: 24px;
+  &.subscription-card {
+    padding: 0px;
 
-  @include response-to(xs) {
-    padding: 12px;
-    margin-bottom: 12px;
+    ::ng-deep .subscription-wrapper {
+      .header {
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+      }
+    }
+
   }
 }
 
 .content-wrapper {
-  @include response-to(sm) {
-    width: 100%;
-  }
+@include response-to(sm) {
+width: 100%;
+}
 
-  ::ng-deep {
-    .cv-spinner-holder.-background {
-      border-radius: 10px;
-    }
-  }
+::ng-deep {
+.cv-spinner-holder.-background {
+  border-radius: 10px;
+}
+}
 
 }
 

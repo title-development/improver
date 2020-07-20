@@ -1,4 +1,4 @@
-@import "../../../improver-mixins";
+@import "improver-mixins";
 
 .find-professionals {
 
@@ -11,7 +11,7 @@
     font-size: 16px;
     font-weight: 500;
     color: $dark;
-    height: 40px;
+    height: $header-height;
     display: flex;
     align-items: center;
     cursor: pointer;
