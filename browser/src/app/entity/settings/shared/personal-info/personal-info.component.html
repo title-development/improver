@@ -80,17 +80,18 @@
                                 <cv-input-field>
                                     <input cv-input type="password" placeholder="Change password" value="**********" disabled>
                                 </cv-input-field>
-                            </div>
-
-                            <button [cvSpinner]="passwordUpdateProcessing"
-                                    [cvSpinnerSize]="20"
-                                    [cvSpinnerBackground]="true"
-                                    cv-button
-                                    type="button"
-                                    (click)="openPasswordEditor()">
+                              <button [cvSpinner]="passwordUpdateProcessing"
+                                      [cvSpinnerSize]="20"
+                                      [cvSpinnerBackground]="true"
+                                      cv-button
+                                      type="button"
+                                      (click)="openPasswordEditor()">
                                 <mat-icon *ngIf="mediaQuery.xs || mediaQuery.sm" class="edit">edit</mat-icon>
                                 <span *ngIf="!mediaQuery.sm && !mediaQuery.xs">Change</span>
-                            </button>
+                              </button>
+                            </div>
+
+
                         </div>
 
                     </div>

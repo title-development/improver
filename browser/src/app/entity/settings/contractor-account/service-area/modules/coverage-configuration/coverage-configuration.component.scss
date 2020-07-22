@@ -1,4 +1,4 @@
-@import "../../../../../../../improver-mixins";
+@import "improver-mixins";
 
 :host {
   position: absolute;
@@ -86,6 +86,7 @@ h4 {
     ::ng-deep .input-holder {
       .cv-input {
         border-radius: 8px 0 0 8px;
+        min-width: 0;
       }
       button {
         border-radius: 0 8px 8px 0;

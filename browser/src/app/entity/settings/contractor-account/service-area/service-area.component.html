@@ -6,8 +6,8 @@
   (showTutorial)="onShowCoverageTutorial()"
   (onCirclePropsChanged)="onCompanyCirclePropsChanged($event)"
   (onZipCodeFound)="onZipCodeFound($event)"
-  (modeChange)="onModeChanged($event)"
-></imp-coverage-configuration>
+  (modeChange)="onModeChanged($event)">
+</imp-coverage-configuration>
 
 <imp-gmap-sidebar
   [gMap]="gMap"
@@ -17,8 +17,8 @@
   [zipHistory]="zipsHistory"
   [isUnsavedChanges]="unsavedChanges$ | async"
   [center]="companyCoverageConfig?.getCompanyLocationCenter()"
-  (undoHistory)="undo($event)"
-></imp-gmap-sidebar>
+  (undoHistory)="undo($event)">
+</imp-gmap-sidebar>
 
 <imp-coverage-tutorial></imp-coverage-tutorial>
 
