@@ -142,9 +142,9 @@ public class AccountService {
     public void resetPasswordRequest(String email) {
         User user;
         try {
-            user = getUserWithCheck(email);
+            user = getUserWithCheck(email.toLowerCase());
         } catch (Exception e) {
-            log.info("Could not reset password for {}. {}", email, e.getMessage());
+            log.info("Could not reset password for {}. {}", email.toLowerCase(), e.getMessage());
             return;
         }
 

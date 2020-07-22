@@ -35,15 +35,14 @@ export class RestorePasswordComponent {
   showMessage: boolean;
   messageText: string;
 
-  constructor (
-    public securityService: SecurityService,
-    public userService: UserService,
-    public activationService: ActivationService,
-    public constants: Constants,
-    public messages: Messages,
-    public popUpMessageService: PopUpMessageService,
-    private accountService: AccountService,
-    private route: ActivatedRoute) {
+  constructor (public securityService: SecurityService,
+               public userService: UserService,
+               public activationService: ActivationService,
+               public constants: Constants,
+               public messages: Messages,
+               public popUpMessageService: PopUpMessageService,
+               private accountService: AccountService,
+               private route: ActivatedRoute) {
 
     this.sub = this.route.params.subscribe(params => {
       params['token'] ? this.token = params['token'].toString() : this.token = "";
@@ -55,7 +54,7 @@ export class RestorePasswordComponent {
   }
 
   restorePasswordRequest(form: NgForm) {
-    this.accountService.restorePasswordRequest(this.credentials.email).subscribe(response => {
+    this.accountService.restorePasswordRequest(this.credentials.email.toLowerCase()).subscribe(response => {
       this.step = 2;
     }, err => {
       this.popUpMessageService.showError(getErrorMessage(err));
