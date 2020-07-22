@@ -3,7 +3,7 @@ import { ContractorProjectShort, Lead, Pagination } from '../../../../model/data
 import { ProjectService } from '../../../../api/services/project.service';
 import { ProjectActionService } from '../../../../util/project-action.service';
 import { RestPage } from '../../../../api/models/RestPage';
-import { getErrorMessage, reCalculatePageable } from '../../../../util/functions';
+import { getErrorMessage } from '../../../../util/functions';
 import { Subject, Subscription } from 'rxjs';
 import { LeadService } from "../../../../api/services/lead.service";
 import { finalize, takeUntil } from "rxjs/operators";
@@ -121,14 +121,13 @@ export class ProjectsComponent implements OnDestroy {
 
   }
 
-  getProjects(tab: Tab, forUpdate: Pagination = undefined): void {
+  getProjects(tab: Tab, update?: boolean): void {
     this.tabs.forEach(item => item.active = false);
     tab.active = true;
     this.fetching = true;
-    if (!tab.pageable.first) {
-      forUpdate = new Pagination(0, tab.projects.length);
-    }
-    const pagination = forUpdate ? forUpdate : tab.pagination;
+
+    let itemsCount = update ? tab.projects.length : this.maxItemPerPage;
+    let pagination = new Pagination(0, itemsCount);
 
     let request;
 
@@ -148,7 +147,10 @@ export class ProjectsComponent implements OnDestroy {
       )
       .subscribe(
       (pageable: RestPage<any>) => {
-        tab.pageable = forUpdate ? reCalculatePageable(tab.pageable, pageable, this.maxItemPerPage) : pageable;
+        if(!update) {
+          tab.pageable = pageable
+          tab.pagination = pagination;
+        }
         tab.projects = pageable.content;
       },
       err => this.popUpService.showError(getErrorMessage(err))
@@ -182,18 +184,15 @@ export class ProjectsComponent implements OnDestroy {
 
   }
 
-  filter(): void {
+  filter() {
     clearTimeout(this.filterTimeout);
-    this.filterTimeout = setTimeout(this.updateTab, 300);
+    this.filterTimeout = setTimeout(() => {
+      this.getProjects(this.tabs.find(item => item.active))
+    }, 300);
   }
 
-  updateTab = () => {
-    const tab: Tab = this.tabs.find(item => item.active);
-    if (!tab.pageable.first) {
-      this.getProjects(tab, new Pagination(0, tab.projects.length));
-    } else {
-      this.getProjects(tab, new Pagination(0, this.maxItemPerPage));
-    }
+  updateTab() {
+    this.getProjects(this.tabs.find(item => item.active), true);
   }
 
   ngOnDestroy() {
