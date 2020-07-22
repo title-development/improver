@@ -72,14 +72,12 @@ public class ProjectService {
         return projects;
     }
 
-    public void updateLocation(Project project, Location location, User support) {
-
-        if (project.getStatus() != Project.Status.VALIDATION || project.getFreePositions() != Project.MAX_CONNECTIONS) {
+    public void updateLocation(Project project, Location location, boolean isManual, User support) {
+        if (project.getStatus() != Project.Status.VALIDATION) {
             throw new ValidationException("Location update is not allowed for current project state");
         }
-
         try {
-            if (!locationService.validate(location, false, true).isValid()) {
+            if (!locationService.validate(location, false, true, isManual).isValid()) {
                 throw new ValidationException(location.asText() + " invalid location");
             }
             projectRepository.save(project.setLocation(location).setUpdated(ZonedDateTime.now()));

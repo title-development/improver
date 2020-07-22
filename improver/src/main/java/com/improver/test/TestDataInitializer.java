@@ -76,8 +76,7 @@ public class TestDataInitializer {
     private static final String TILE_INSTALLATION = "Tile Installation";
     private static final String ARCHITECTURAL_SERVICES = "Architectural Services";
     private static final String DEMO_PASS = "2019bestHOMEimprove";
-    private static final String ADMIN_DEMO_PASS = "adDOmeafavor2019!";
-    private static final String SUPPORT_DEMO_PASS = "supDOmeafavor2019";
+    private static final String ADMIN_DEMO_PASS = DEMO_PASS + "!";
 
     private static final String DEMO_PHONE = "9231231234";
     private static final String VISA_ENDING_IN_1132 = "Visa ending in 1132";
@@ -332,11 +331,11 @@ public class TestDataInitializer {
             .setCreated(ZonedDateTime.now().minusYears(1).minusMonths(4))
         );
 
-        supportRepository.save(new Support("John", "Wick", SUPPORT_1, SUPPORT_DEMO_PASS, DEMO_PHONE)
+        supportRepository.save(new Support("John", "Wick", SUPPORT_1, DEMO_PASS, DEMO_PHONE)
             .setActivated(true)
         );
 
-        supportRepository.save(new Support("Edvard", "Norton", SUPPORT_2, SUPPORT_DEMO_PASS, DEMO_PHONE)
+        supportRepository.save(new Support("Edvard", "Norton", SUPPORT_2, DEMO_PASS, DEMO_PHONE)
             .setActivated(true)
         );
 

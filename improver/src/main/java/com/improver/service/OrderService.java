@@ -119,8 +119,9 @@ public class OrderService {
 
         // 3 Address
         Order.BaseLeadInfo baseLeadInfo = order.getBaseLeadInfo();
+        boolean isManual = false;
         try {
-            ValidatedLocation validatedAddress = locationService.validate(baseLeadInfo.getLocation(), false, true);
+            ValidatedLocation validatedAddress = locationService.validate(baseLeadInfo.getLocation(), false, true, isManual);
             if (!validatedAddress.isValid()) {
                 throw new ValidationException(validatedAddress.getError());
             }

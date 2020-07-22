@@ -116,7 +116,7 @@ public class CompanyConfigService {
     public void updateCompanyLocation(Company company, Location location, Admin currentAdmin) {
         ValidatedLocation result;
         try {
-            result = locationService.validate(location, true, true);
+            result = locationService.validate(location, true, true, false);
             if (!result.isValid()) {
                 throw new ValidationException(result.getError());
             }

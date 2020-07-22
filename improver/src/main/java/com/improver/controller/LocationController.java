@@ -25,10 +25,11 @@ public class LocationController {
                                                                 @RequestParam String state,
                                                                 @RequestParam String zip,
                                                                 @RequestParam(defaultValue = "false") boolean coordinates,
-                                                                @RequestParam(defaultValue = "false") boolean checkCoverage) {
+                                                                @RequestParam(defaultValue = "false") boolean checkCoverage,
+                                                                @RequestParam(defaultValue = "false") boolean isManual) {
         ValidatedLocation validated = null;
         try {
-            validated = locationService.validate(new Location(streetAddress, city, state, zip), coordinates, checkCoverage);
+            validated = locationService.validate(new Location(streetAddress, city, state, zip), coordinates, checkCoverage, isManual);
         } catch (ThirdPartyException e) {
             throw new InternalServerException("Could not validate Address", e);
         }

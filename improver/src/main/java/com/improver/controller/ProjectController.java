@@ -16,7 +16,6 @@ import com.improver.repository.ProjectRequestRepository;
 import com.improver.security.UserSecurityService;
 import com.improver.security.annotation.SupportAccess;
 import com.improver.service.CustomerProjectService;
-import com.improver.service.ImageService;
 import com.improver.service.OrderService;
 import com.improver.service.ProjectService;
 import com.improver.util.annotation.PageableSwagger;
@@ -44,7 +43,6 @@ public class ProjectController {
     @Autowired private ProjectService projectService;
     @Autowired private OrderService orderService;
     @Autowired private ProjectRepository projectRepository;
-    @Autowired private ImageService imageService;
     @Autowired private UserSecurityService userSecurityService;
     @Autowired private ProjectRequestRepository projectRequestRepository;
     @Autowired private CustomerProjectService customerProjectService;
@@ -89,11 +87,12 @@ public class ProjectController {
     @SupportAccess
     @PutMapping(ID_PATH_VARIABLE + "/location")
     public ResponseEntity<Void> updateLocation(@PathVariable long id, @RequestBody Location location ){
-
+        //TODO: fix after migration to new ordering flow
+        boolean isManual = false;
         Project project = projectRepository.findById(id)
             .orElseThrow(NotFoundException::new);
         User support = userSecurityService.currentUser();
-        projectService.updateLocation(project, location, support);
+        projectService.updateLocation(project, location, isManual, support);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

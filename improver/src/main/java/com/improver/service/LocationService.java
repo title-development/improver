@@ -27,6 +27,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.improver.util.StringUtil.capitalize;
 
@@ -37,11 +38,11 @@ public class LocationService {
     private static final String SUGGESTION_MSG = "Some parts of address were corrected to be valid";
     private static final String INCORRECT_ADDRESS_ERROR = "Provided address seems not valid or formatted incorrectly";
     private static final String UNSUPPORTED_AREA = "Sorry, we do not support this area yet.";
-    private static final double MIN_ADDRESS_SIMILARITY_SCORE = 0.9;
+    private static final double STREET_ADDRESS_MIN_SIMILARITY_SCORE = 0.9;
 
     @Autowired private ServedZipRepository servedZipRepository;
     @Autowired private ThirdPartyApis thirdPartyApis;
-    private StringSimilarityService service = new StringSimilarityServiceImpl(new JaroWinklerStrategy());
+    private final StringSimilarityService similarityService = new StringSimilarityServiceImpl(new JaroWinklerStrategy());
 
     @PostConstruct
     public void init() {
@@ -49,7 +50,8 @@ public class LocationService {
     }
 
 
-    public ValidatedLocation validate(@Valid Location toValidate, boolean includeCoordinates, boolean checkCoverage) throws ThirdPartyException {
+
+    public ValidatedLocation validate(@Valid Location toValidate, boolean includeCoordinates, boolean checkCoverage, boolean isManual) throws ThirdPartyException {
 
         try {
             Address address = Address.create(addressMap(toValidate.getStreetAddress(), toValidate.getCity(), toValidate.getState(), toValidate.getZip()));
@@ -58,8 +60,18 @@ public class LocationService {
             }
             String validationMsg = SUGGESTION_MSG;
 
-            if (address.getIsComplete() && address.getValidationResults().getIsValid()) {
-                ExtendedLocation suggested = new ExtendedLocation()
+            if (!address.getIsComplete() || !address.getValidationResults().getIsValid()) {
+                // code = "Ambiguous Address"
+                // text = "Multiple addresses were found for the information you entered, and no default exists."
+                String msg = Optional.ofNullable(address.getValidationResults().getValidationMessages().get(0).getText())
+                    .orElse(INCORRECT_ADDRESS_ERROR);
+                address.getValidationResults().getValidationMessages()
+                    .forEach(message -> log.debug("Validation: " + message.getCode() + " : "  + message.getText()));
+                return ValidatedLocation.invalid(msg);
+            }
+
+            else {
+                ExtendedLocation validated = new ExtendedLocation()
                     .setStreetAddress(capitalize((String) address.getStreet1()))
                     .setCity(capitalize((String) address.getCity()))
                     .setState((String) address.getState())
@@ -67,36 +79,38 @@ public class LocationService {
 
                 // check the address
                 String errorMsg;
-                if (!suggested.getState().equalsIgnoreCase(toValidate.getState())) {
+                if (!validated.getState().equalsIgnoreCase(toValidate.getState())) {
                     log.debug("State doesn't match");
                     errorMsg = "State is not valid for provided address";
-                    return suggestion(suggested, errorMsg, validationMsg, checkCoverage);
+                    return suggestion(validated, errorMsg, validationMsg, checkCoverage);
                 }
-                if (!suggested.getCity().equalsIgnoreCase(toValidate.getCity())) {
+                if (!validated.getCity().equalsIgnoreCase(toValidate.getCity())) {
                     log.debug("City doesn't match");
                     errorMsg = "City is not valid for provided address";
-                    return suggestion(suggested, errorMsg, validationMsg, checkCoverage);
+                    return suggestion(validated, errorMsg, validationMsg, checkCoverage);
                 }
-                if (!suggested.getZip().equalsIgnoreCase(toValidate.getZip())) {
+                if (!validated.getZip().equalsIgnoreCase(toValidate.getZip())) {
                     log.debug("Zip doesn't match");
                     errorMsg = "Zip code is not valid for provided address";
-                    return suggestion(suggested, errorMsg, validationMsg, checkCoverage);
+                    return suggestion(validated, errorMsg, validationMsg, checkCoverage);
                 }
-                String suggestedStreet = suggested.getStreetAddress().toLowerCase();
+
+                String suggestedStreet = validated.getStreetAddress().toLowerCase();
                 String inputStreet = toValidate.getStreetAddress().toLowerCase();
-                double similarityScore = service.score(inputStreet, suggestedStreet);
-                if (similarityScore < MIN_ADDRESS_SIMILARITY_SCORE) {
-                    log.debug("Street Address doesn't match");
-                    errorMsg = "Street address is not fully valid or formatted incorrectly";
-                    return suggestion(suggested, errorMsg, validationMsg, checkCoverage);
+                double similarityScore = similarityService.score(inputStreet, suggestedStreet);
+                if (similarityScore < STREET_ADDRESS_MIN_SIMILARITY_SCORE) {
+                    if (isManual && similarityScore >= 0.7) {
+                        log.debug("Manual address");
+                        validationMsg = "";
+                        return valid(includeCoordinates, validated.withOutCoordinates(), validationMsg, checkCoverage);
+                    } else {
+                        log.debug("Street Address doesn't match");
+                        errorMsg = "Street address is not fully valid or formatted incorrectly";
+                        return suggestion(validated, errorMsg, validationMsg, checkCoverage);
+                    }
                 }
 
-                return valid(includeCoordinates, suggested.withOutCoordinates(), validationMsg, checkCoverage);
-            }
-
-            // not valid
-            else {
-                return ValidatedLocation.invalid(INCORRECT_ADDRESS_ERROR);
+                return valid(includeCoordinates, validated.withOutCoordinates(), validationMsg, checkCoverage);
             }
 
         } catch (ShippoException e) {
@@ -120,7 +134,7 @@ public class LocationService {
             LatLng latLng = geocoding(toValidate);
             full = new ExtendedLocation(toValidate, latLng.lat, latLng.lng);
         }
-        return new ValidatedLocation(true, full, infoMsg, null);
+        return ValidatedLocation.valid(full, infoMsg);
     }
 
 
