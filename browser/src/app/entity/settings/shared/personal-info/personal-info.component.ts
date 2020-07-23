@@ -36,7 +36,7 @@ import { MediaQuery, MediaQueryService } from "../../../../util/media-query.serv
 export class PersonalInfoComponent implements OnDestroy {
 
   account: Account;
-  accountEmail: string;
+  newEmail: string;
   accountPhone: string;
   confirmDialogRef: MatDialogRef<any>;
   photoDialogRef: MatDialogRef<any>;
@@ -120,7 +120,7 @@ export class PersonalInfoComponent implements OnDestroy {
       .subscribe(
         account => {
           this.account = account;
-          this.accountEmail = this.currentEmail = account.email;
+          this.newEmail = this.currentEmail = account.email;
           this.accountPhone = this.currentPhone = this.account.phone = account.phone ? applyPhoneMask(account.phone) : "";
         },
         err => {
@@ -159,7 +159,7 @@ export class PersonalInfoComponent implements OnDestroy {
   }
 
   changeEmailConfirm(value) {
-    if (this.currentEmail != this.accountEmail) {
+    if (this.currentEmail != this.newEmail) {
       let properties = {
         title: 'Please confirm email change',
         message: '',
@@ -167,7 +167,7 @@ export class PersonalInfoComponent implements OnDestroy {
         CANCEL: 'Cancel'
       };
       this.confirmDialogRef = this.dialog.open(dialogsMap['email-confirm-dialog'], confirmDialogConfig);
-      this.confirmDialogRef.componentInstance.email = this.account.email;
+      this.confirmDialogRef.componentInstance.email = this.newEmail;
       this.confirmDialogRef.componentInstance.account = this.account;
       this.confirmDialogRef
         .afterClosed()
@@ -183,7 +183,7 @@ export class PersonalInfoComponent implements OnDestroy {
         });
       this.confirmDialogRef.componentInstance.onCancel.subscribe(
         () => {
-          this.account.email = this.currentEmail;
+          this.newEmail = this.account.email = this.currentEmail;
         }
       );
     }

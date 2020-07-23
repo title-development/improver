@@ -47,14 +47,13 @@
                         <cv-input-field>
                           <cv-editable-input #email="ngModel"
                                              name="email"
-                                             inputmode="email"
-                                             [(ngModel)]="accountEmail"
+                                             [(ngModel)]="newEmail"
                                              [emailUniqueValidator]="currentEmail"
                                              required
                                              trim
                                              pattern="{{constants.patterns.email}}"
                                              (onSave)="changeEmailConfirm($event)">
-                            <input cv-input type="text" placeholder="Email">
+                            <input cv-input type="text" inputmode="email" placeholder="Email">
                           </cv-editable-input>
                           <cv-field-error *ngIf="email.dirty || email.touched || personalInfoForm.submitted">
                             <span *ngIf="email.errors?.required">
