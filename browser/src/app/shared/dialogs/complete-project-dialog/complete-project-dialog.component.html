@@ -32,7 +32,7 @@
                      fxLayoutAlign="start center"
                      [ngClass]="{'selected': projectRequest.id == selectedVariant?.contractorId}">
                   <div class="icon"
-                       [ngStyle]="projectRequest.image != '' && {'background-image':'url(' + projectRequest.image + ')'} || {'background-image':'url(' + 'http://via.placeholder.com/36x36' + ')'}"></div>
+                       [ngStyle]="(projectRequest.image && projectRequest.image != '' || projectRequest.image != null) && {'background-image':'url(' + projectRequest.image + ')'} || {'background-image':'url(assets/img/company-logo-placeholder.png)'}"></div>
                   <div class="value-wrapper" fxLayout="row" fxLayoutAlign="space-between center" >
                     <div class="value">{{projectRequest.name}}</div>
                     <div class="status">
