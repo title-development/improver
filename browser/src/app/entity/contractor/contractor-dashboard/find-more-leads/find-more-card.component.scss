@@ -132,6 +132,8 @@ ul {
 }
 
 .footer {
+  display: flex;
+  justify-content: center;
   padding: 16px;
   background-color: rgba(245, 245, 245, 0.58);
   &.-white {
@@ -150,6 +152,11 @@ ul {
     border: none;
     color: $white;
     width: 100%;
+
+    @include response-to(md) {
+      max-width: 200px;
+    }
+
     &:hover {
       background-image: linear-gradient(to top, $primary-400, $primary-600 85%);
     }

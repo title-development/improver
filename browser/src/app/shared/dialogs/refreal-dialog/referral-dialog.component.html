@@ -8,14 +8,48 @@
     </div>
     <div [cvSpinner]="fetching" [cvSpinnerSize]="24" [cvSpinnerBackground]="true">
       <div class="content" >
-        <p>Introduce a colleague to Home Improve.
+
+        <div class="explanation">
+          Introduce a colleague to Home Improve.
           They'll get <b>{{constants.REFERRAL_BONUS_AMOUNT / 100 | currency:'USD':'symbol':'0.0-0'}}</b> when they sign up and do first purchase,
-          and you'll get <b>{{constants.REFERRAL_BONUS_AMOUNT / 100 | currency:'USD':'symbol':'0.0-0'}}</b> credit once they complete their first purchase.</p>
+          and you'll get <b>{{constants.REFERRAL_BONUS_AMOUNT / 100 | currency:'USD':'symbol':'0.0-0'}}</b> credit once they complete their first purchase.
+        </div>
+
       </div>
       <div class="actions">
-        <button cv-button ngxClipboard [cbContent]="referralUrl">Copy url</button>
-        <!--<button cv-button (click)="shareByFacebook()"><cv-icon icon="imp-icon-social-facebook"></cv-icon>Facebook</button>-->
-        <a [href]="mailTo" cv-button ><cv-icon icon="imp-icon-mail"></cv-icon>Email</a>
+
+        <div class="mail-block">
+          <div class="block-label">Send via email</div>
+
+          <form #sendViaEmail="ngForm" (ngSubmit)="sendViaEmail.valid && sendLinkVieEmail()" class="input-group">
+            <cv-input-field>
+              <input type="email" style="display: none;" name="fakeemail">
+              <input type="password" style="display: none;" name="fakepassword">
+              <input cv-input #email="ngModel" name="email" type="email" [(ngModel)]="recipientEmail" required placeholder="Your colleague email" email autocomplete="off">
+              <cv-field-error *ngIf="email.dirty || email.touched || sendViaEmail.submitted">
+              <span *ngIf="email.errors?.required">
+                {{messages.errors.email.required}}
+              </span>
+                <span *ngIf="email.errors?.email">
+                {{messages.errors.email.pattern}}
+              </span>
+              </cv-field-error>
+            </cv-input-field>
+            <button cv-button  [disabled]="emailClientOpening"><cv-icon icon="imp-icon-mail"></cv-icon>Email</button>
+          </form>
+        </div>
+
+        <div class="share-block">
+          <div class="block-label">Or share your referral link</div>
+          <div class="input-group">
+            <cv-input-field>
+              <input cv-input type="text" readonly [(ngModel)]="referralUrl">
+            </cv-input-field>
+            <button cv-button ngxClipboard [cbContent]="referralUrl" (cbOnSuccess)="referralLinkCopied($event)"><cv-icon icon="imp-icon-link-1"></cv-icon>Copy</button>
+          </div>
+        </div>
+
+<!--        <button cv-button (click)="shareByFacebook()" class="facebook-share-button"><cv-icon icon="imp-icon-social-facebook"></cv-icon>Share on Facebook</button>-->
       </div>
     </div>
   </div>

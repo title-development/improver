@@ -1077,6 +1077,18 @@
       "css": "credit-card",
       "code": 128179,
       "src": "fontawesome"
+    },
+    {
+      "uid": "1fb8776fe6f1d3bbf970996fdfcf0f94",
+      "css": "link",
+      "code": 61563,
+      "src": "mfglabs"
+    },
+    {
+      "uid": "815503841e980c848f55e0271deacead",
+      "css": "link-1",
+      "code": 59432,
+      "src": "entypo"
     }
   ]
 }

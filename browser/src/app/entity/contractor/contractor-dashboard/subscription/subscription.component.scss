@@ -1,4 +1,4 @@
-@import "../../../../../improver-mixins.scss";
+@import "improver-mixins";
 
 :host {
   display: flex;
@@ -7,7 +7,7 @@
   min-height: 110px;
 
   @include response(sm){
-    min-height: 117px;
+    min-height: 120px;
   }
 }
 

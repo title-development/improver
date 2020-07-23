@@ -18,7 +18,7 @@ import { distinctUntilChanged } from 'rxjs/internal/operators';
 import { Constants } from '../../../util/constants';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { dialogsMap } from '../../../shared/dialogs/dialogs.state';
-import { confirmDialogConfig } from '../../../shared/dialogs/dialogs.configs';
+import { referralDialogConfig } from '../../../shared/dialogs/dialogs.configs';
 import { ReferralDialogComponent } from '../../../shared/dialogs/refreal-dialog/referral-dialog.component';
 import { MobileMenuService } from "../../../util/mobile-menu-service";
 
@@ -108,7 +108,7 @@ export class MainMenuComponent implements OnChanges, OnDestroy {
   }
 
   toggleReferralDialog(): void {
-    this.referralDialogRef = this.dialog.open(dialogsMap['referral-dialog'], confirmDialogConfig);
+    this.referralDialogRef = this.dialog.open(dialogsMap['referral-dialog'], referralDialogConfig);
     this.referralDialogRef.afterClosed()
       .subscribe(() => {
         this.referralDialogRef = null;

@@ -9,13 +9,23 @@
 
   &.map,&.money {
     height: calc(100% - 24px);
+
+    @include response-to(sm) {
+      height: calc(100% - 16px);
+    }
+
     @include response-to(xs) {
       height: calc(100% - 12px);
     }
+
   }
 
   &.money {
     overflow: unset;
+  }
+
+  @include response-to(sm) {
+    margin-bottom: 16px;
   }
 
   @include response-to(xs) {

@@ -205,3 +205,14 @@ export const phoneValidationDialogConfig: MatDialogConfig = {
     right: ''
   }
 };
+
+export const referralDialogConfig: MatDialogConfig = {
+  width: '530px',
+  height: '',
+  position: {
+    top: '',
+    bottom: '',
+    left: '',
+    right: ''
+  }
+};
