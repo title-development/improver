@@ -8,7 +8,7 @@
     padding: 24px 24px;
     border-bottom: 1px solid $grey-200;
     @include response(xs) {
-      padding: 24px 12px;
+      padding: 24px 16px;
     }
 
     .content {
@@ -55,7 +55,7 @@
     padding: 24px 24px;
 
     @include response(xs) {
-      padding: 24px 12px;
+      padding: 24px 16px;
     }
 
     @include response-to(xs) {

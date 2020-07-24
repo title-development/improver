@@ -19,19 +19,25 @@
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
   margin-bottom: 24px;
   padding: 16px 24px;
+  @include response-to(xs) {
+    margin-bottom: 16px;
+    margin-left: 12px;
+    margin-right: 12px;
+  }
 }
 
 .top-line {
   display: flex;
   justify-content: center;
   flex-direction: column;
-  height: 72px;
+  padding: 20px 24px;
   font-size: 24px;
   font-weight: 600;
   color: $black-800;
 
   @include response-to(xs) {
     text-align: center;
+    padding: 16px 24px;
   }
 
 }
@@ -110,6 +116,11 @@
     background-repeat: no-repeat;
     background-size: cover;
     cursor: pointer;
+    border-radius: 8px;
+    @include response-to(xs) {
+      margin: -4px 8px;
+      margin-bottom: 8px;
+    }
     &:hover {
       &:after {
         background-color: rgba(0, 0, 0, 0.54);
@@ -117,6 +128,7 @@
       }
     }
     &:after {
+      border-radius: 8px;
       transition: background-color .3s ease;
       content: 'View';
       display: flex;
@@ -135,6 +147,9 @@
   .project-photos-wrapper {
     margin-top: 4px;
     margin-bottom: -4px;
+    @include response-to(xs) {
+      margin: 0px 20px -8px;
+    }
     .row {
       margin-left: -16px;
       margin-right: -16px;
@@ -148,7 +163,7 @@
           background-position: center;
           background-repeat: no-repeat;
           background-size: cover;
-
+          border-radius: 8px;
           &:hover {
             &:after {
               background-color: rgba(0, 0, 0, 0.54);
@@ -156,6 +171,7 @@
             }
           }
           &:after {
+            border-radius: 8px;
             transition: background-color .3s ease;
             content: 'View';
             display: flex;
@@ -269,6 +285,9 @@
   color: $grey-500 !important;
   justify-content: flex-start;
   align-items: center;
+  @include response-to(xs) {
+    margin-top: 24px;
+  }
 
   &:active {
     color: $primary-500;

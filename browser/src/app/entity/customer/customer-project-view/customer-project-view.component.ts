@@ -9,10 +9,12 @@ import { ProjectActionService } from '../../../util/project-action.service';
 import { Project } from '../../../api/models/Project';
 import { ProjectRequest } from '../../../api/models/ProjectRequest';
 import { SomePipe } from 'angular-pipes';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { ComponentCanDeactivate } from '../../../auth/router-guards/component-can-deactivate.guard';
 import { ImagesUploaderComponent } from '../../../shared/image-uploader/image-uploader.component';
 import { NavigationHelper } from "../../../util/navigation-helper";
+import { NotificationResource } from "../../../util/notification.resource";
+import { filter, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: 'customer-project-view',
@@ -22,14 +24,14 @@ import { NavigationHelper } from "../../../util/navigation-helper";
 
 export class CustomerProjectViewComponent implements OnInit, OnDestroy, ComponentCanDeactivate {
 
+  private readonly destroyed$ = new Subject<void>();
+
   projectId: number;
   project: CustomerProject;
   ProjectRequest = ProjectRequest;
   Project = Project;
   @ViewChild(ImagesUploaderComponent) imageUploader;
   private hashFragment: string;
-  private onProjectsUpdate$: Subscription;
-  private onProjectDialogClose$: Subscription;
   private projectRequestRouterParams$: Subscription;
   private projectDialogOpened: boolean = false;
 
@@ -42,6 +44,7 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy, Componen
               public router: Router,
               public somePipe: SomePipe,
               public navigationHelper: NavigationHelper,
+              private notificationResource: NotificationResource,
               private changeDetectorRef: ChangeDetectorRef) {
 
     this.route.params.subscribe(params => {
@@ -54,16 +57,30 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy, Componen
 
     );
 
-    this.onProjectsUpdate$ = this.projectActionService.onProjectsUpdate.subscribe(() => {
+    this.projectActionService.onProjectsUpdate
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(() => {
       if (!this.projectDialogOpened) {
         this.getProject();
       }
     });
-    this.onProjectDialogClose$ = this.projectActionService.onCloseProjectRequestDialog.subscribe(() => {
+
+    this.projectActionService.onCloseProjectRequestDialog
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(() => {
       this.projectDialogOpened = false;
       this.navigationHelper.removeHash();
       this.getProject();
     });
+
+    this.notificationResource.notifiedProjectId$
+      .pipe(takeUntil(this.destroyed$), filter(projectId => projectId && this.projectId == projectId))
+      .subscribe(projectId => {
+      if (!this.projectDialogOpened) {
+        this.getProject();
+      }
+    });
+
   }
 
   ngOnInit() {
@@ -81,12 +98,8 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy, Componen
   }
 
   ngOnDestroy(): void {
-    if (this.onProjectsUpdate$) {
-      this.onProjectsUpdate$.unsubscribe();
-    }
-    if (this.onProjectDialogClose$) {
-      this.onProjectDialogClose$.unsubscribe();
-    }
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
   openProjectRequest(projectRequest: ProjectRequest) {
@@ -109,6 +122,7 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy, Componen
   getProject() {
     this.projectService
       .getForCustomer(this.projectId)
+      .pipe(takeUntil(this.destroyed$))
       .subscribe(
         (project: CustomerProject) => {
           this.projectActionService.project = this.project = project;

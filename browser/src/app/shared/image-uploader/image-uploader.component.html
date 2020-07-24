@@ -1,6 +1,6 @@
 <div class="header">
-  <h3 class="title" *ngIf="title">{{title}}</h3>
-  <h4 *ngIf="subtitle">{{subtitle}}</h4>
+  <div class="title" *ngIf="title">{{title}}</div>
+  <div class="subtitle" *ngIf="subtitle">{{subtitle}}</div>
 </div>
 <div class="row content">
   <ng-template ngFor let-photo let-index="index" let-last="last" [ngForOf]="projectImages">

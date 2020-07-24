@@ -1,5 +1,6 @@
 export class Notification {
   id: number;
+  projectId: number;
   icon: string;
   created: string;
   link: string;

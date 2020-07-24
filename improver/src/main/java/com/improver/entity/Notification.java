@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import org.hibernate.annotations.Immutable;
 
 import javax.persistence.*;
 import java.time.ZonedDateTime;
@@ -22,7 +21,9 @@ public class Notification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
+
+    private Long projectId;
 
     private String payload;
 
@@ -58,6 +59,7 @@ public class Notification {
         this.link = CUSTOMER_PROJECTS + projectId + "#" + projectRequestId;
         this.payload = String.format("New message from <b>%s</b> in %s", companyName, serviceTypeName);
         this.created = created;
+        this.projectId = projectId;
     }
 
     /**
@@ -76,9 +78,14 @@ public class Notification {
         this.created = created;
     }
 
+    /********************************************************************************************************
+     *                                                  CUSTOMER
+     ********************************************************************************************************/
+
     public static Notification newProjectRequest(User receiver, String company, long companyId, String serviceType, long projectId){
         return new Notification().setUser(receiver)
             .setIcon(companyIconURL(companyId))
+            .setProjectId(projectId)
             .setPayload(String.format("<b>%s</b> sent you a project request for %s", company, serviceType))
             .setLink(CUSTOMER_PROJECTS + projectId);
     }
@@ -86,9 +93,38 @@ public class Notification {
     public static Notification proLeftProject(User receiver, String company, long companyId, String serviceType, long projectId){
         return new Notification().setUser(receiver)
             .setIcon(companyIconURL(companyId))
+            .setProjectId(projectId)
             .setPayload(String.format("<b>%s</b> left the %s project", company, serviceType))
             .setLink(CUSTOMER_PROJECTS + projectId);
     }
+
+    public static Notification projectInvalidated(User receiver, String serviceType, long projectId){
+        return new Notification().setUser(receiver)
+            .setIcon(SYSTEM_NOTIFICATION_ICON)
+            .setProjectId(projectId)
+            .setPayload(String.format("Project <b>%s</b> has been invalidated", serviceType))
+            .setLink(CUSTOMER_PROJECTS + projectId);
+    }
+
+    public static Notification projectToValidation(User receiver, String serviceType, long projectId){
+        return new Notification().setUser(receiver)
+            .setIcon(SYSTEM_NOTIFICATION_ICON)
+            .setProjectId(projectId)
+            .setPayload(String.format("Project <b>%s</b> sent to validation", serviceType))
+            .setLink(CUSTOMER_PROJECTS + projectId);
+    }
+
+    public static Notification projectValidated(User receiver, String serviceType, long projectId){
+        return new Notification().setUser(receiver)
+            .setIcon(SYSTEM_NOTIFICATION_ICON)
+            .setProjectId(projectId)
+            .setPayload(String.format("Project <b>%s</b> has been validated", serviceType))
+            .setLink(CUSTOMER_PROJECTS + projectId);
+    }
+
+    /********************************************************************************************************
+     *                                                  PRO
+     ********************************************************************************************************/
 
     public static Notification newSubscriptionLeadPurchase(User receiver, String client, long customerId, String serviceType, long projectRequestId){
         return new Notification().setUser(receiver)
@@ -111,7 +147,6 @@ public class Notification {
             .setLink(PRO_PROJECTS + projectRequestId);
     }
 
-
     public static Notification reviewed(User receiver, String client, long customerId, long companyId){
         return new Notification().setUser(receiver)
             .setIcon(customerIconURL(customerId))
@@ -133,28 +168,6 @@ public class Notification {
             .setLink(COMPANIES + SLASH + companyId + "#reviews");
     }
 
-
-    public static Notification projectInvalidated(User receiver, String serviceType, long projectId){
-        return new Notification().setUser(receiver)
-            .setIcon(SYSTEM_NOTIFICATION_ICON)
-            .setPayload(String.format("Project <b>%s</b> has been invalidated", serviceType))
-            .setLink(CUSTOMER_PROJECTS + projectId);
-    }
-
-    public static Notification projectToValidation(User receiver, String serviceType, long projectId){
-        return new Notification().setUser(receiver)
-            .setIcon(SYSTEM_NOTIFICATION_ICON)
-            .setPayload(String.format("Project <b>%s</b> sent to validation", serviceType))
-            .setLink(CUSTOMER_PROJECTS + projectId);
-    }
-
-    public static Notification projectValidated(User receiver, String serviceType, long projectId){
-        return new Notification().setUser(receiver)
-            .setIcon(SYSTEM_NOTIFICATION_ICON)
-            .setPayload(String.format("Project <b>%s</b> has been validated", serviceType))
-            .setLink(CUSTOMER_PROJECTS + projectId);
-    }
-
     public static Notification bonusReceived(User receiver, int amount){
         return new Notification().setUser(receiver)
             .setIcon(SYSTEM_NOTIFICATION_ICON)
@@ -169,6 +182,7 @@ public class Notification {
     private static String companyIconURL(long companyId){
         return COMPANIES_PATH + SLASH + companyId + ICON;
     }
+
 }
 
 

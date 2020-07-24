@@ -12,13 +12,14 @@ import { Project } from '../../../api/models/Project';
 import { RestPage } from '../../../api/models/RestPage';
 import { getErrorMessage, reCalculatePageable } from '../../../util/functions';
 import { ProjectRequest } from '../../../api/models/ProjectRequest';
-import { finalize, takeUntil } from "rxjs/operators";
+import { filter, finalize, takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
 import { MediaQuery, MediaQueryService } from "../../../util/media-query.service";
 import { dialogsMap } from "../../../shared/dialogs/dialogs.state";
 import { mobileMainDialogBarConfig } from "../../../shared/dialogs/dialogs.configs";
 import { TradeService } from "../../../api/services/trade.service";
 import { MobileMenuService } from "../../../util/mobile-menu-service";
+import { NotificationResource } from "../../../util/notification.resource";
 
 interface Tab {
   label: string;
@@ -75,6 +76,7 @@ export class CustomerDashboardComponent implements OnDestroy {
               private projectService: ProjectService,
               private serviceTypeService: ServiceTypeService,
               private tradeService: TradeService,
+              private notificationResource: NotificationResource,
               public mobileMenuService: MobileMenuService) {
     this.getProjects(this.tabs[0]);
     this.getRecommendedTrades();
@@ -82,6 +84,22 @@ export class CustomerDashboardComponent implements OnDestroy {
     this.onProjectsUpdate$ = this.projectActionService.onProjectsUpdate
       .pipe(takeUntil(this.destroyed$))
       .subscribe(() => this.updateTab());
+
+    this.notificationResource.notifiedProjectId$
+      .pipe(
+        takeUntil(this.destroyed$),
+        filter(projectId => {
+          return this.tabs
+            .find(item => item.active)
+            .projects
+            .map(project => project.id)
+            .includes(projectId);
+        })
+      )
+      .subscribe(projectId => {
+        this.updateTab()
+      });
+
   }
 
   ngOnDestroy(): void {
@@ -151,7 +169,6 @@ export class CustomerDashboardComponent implements OnDestroy {
       )
       .subscribe((pageable: RestPage<CustomerProjectShort>) => {
           tab.pageable = pageable;
-          // this.moveHiredContractorsToFirstPosition(pageable.content);
           tab.projects = [...tab.projects, ...pageable.content];
         },
         err => this.popUpMessageService.showError(getErrorMessage(err))
@@ -169,16 +186,6 @@ export class CustomerDashboardComponent implements OnDestroy {
         },
         err => this.popUpMessageService.showError(getErrorMessage(err))
       )
-  }
-
-  restoreProject() {
-    this.popUpMessageService.showMessage(this.popUpMessageService.METHOD_NOT_IMPLEMENTED);
-    throw new Error('Method not implemented.');
-  }
-
-  openQuestionary() {
-    this.popUpMessageService.showMessage(this.popUpMessageService.METHOD_NOT_IMPLEMENTED);
-    throw new Error('Method not implemented.');
   }
 
   private updateTab(): void {

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { Notification } from '../api/models/Notification';
 import { NotificationService } from '../api/services/notification.service';
@@ -14,6 +14,7 @@ export class NotificationResource {
 
   unreadMessages$: BehaviorSubject<Array<Notification>> = new BehaviorSubject<Array<Notification>>([]);
   unreadMessagesCount$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+  notifiedProjectId$: EventEmitter<number> = new EventEmitter<number>()
   public newUnreadNotifications: BehaviorSubject<Notification[]> = new BehaviorSubject<Notification[]>([]);
   public unreadNotificationsCounter: number = 0;
   private notificationsObservable: Observable<any>;
@@ -55,6 +56,7 @@ export class NotificationResource {
           case Notification.Type.PLAIN:
             this.newUnreadNotifications.next([notification.body]);
             this.unreadNotificationsCounter++;
+            this.notifiedProjectId$.emit(notification.body.projectId)
             break;
           case Notification.Type.BILLING:
             this.billingService.billing = notification.body;
