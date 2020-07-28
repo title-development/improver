@@ -61,24 +61,30 @@ export class ContractorLeadsSearchComponent implements OnDestroy {
     this.mapOptions.minZoom = 8;
     this.mapOptions.zoom = 10;
 
-    router.events
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe((val) => {
-      if (val instanceof NavigationEnd) {
-        if (!this.mdSidebar.opened) {
-          this.mdSidebar.open();
-        }
-      }
-    });
+    this.subscribeOnRouterEvents();
+    this.subscribeOnMediaScreen();
+  }
 
+	subscribeOnRouterEvents() {
+		this.router.events
+				.pipe(takeUntil(this.destroyed$))
+				.subscribe((val) => {
+					if (val instanceof NavigationEnd) {
+						if (!this.mdSidebar.opened) {
+							this.mdSidebar.open();
+						}
+					}
+				});
+	}
+
+  subscribeOnMediaScreen() {
     this.mediaQueryService.screen
-      .pipe(
-        takeUntil(this.destroyed$),
-      ).subscribe((mediaQuery: MediaQuery) => {
+        .pipe(
+          takeUntil(this.destroyed$),
+        ).subscribe((mediaQuery: MediaQuery) => {
       this.mediaQuery = mediaQuery;
     });
   }
-
 
   get defaultZoom(): number {
     if (!this.mediaQuery) {
@@ -152,8 +158,9 @@ export class ContractorLeadsSearchComponent implements OnDestroy {
       .pipe(takeUntil(this.destroyed$))
       .subscribe((unsupportedArea: ZipBoundaries) => {
           this.gMapUtils.drawZipBoundaries(this.gMap, unsupportedArea);
-          this.companyLocationsLatLng = this.companyCoverageConfig.getCompanyLocationCenter()
-        }
+          this.companyLocationsLatLng = this.companyCoverageConfig.getCompanyLocationCenter();
+					this.gMap.setCenter(this.companyCoverageConfig.getCompanyCoverageCenter());
+      }
       );
   }
 
