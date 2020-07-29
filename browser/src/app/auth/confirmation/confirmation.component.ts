@@ -8,8 +8,6 @@ import { SecurityService } from '../security.service';
 import { getErrorMessage } from '../../util/functions';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { IInfoWindowDialogData, InfoWindowDialogComponent } from '../../shared/dialogs/info-window-dialog';
-import { dialogsMap } from '../../shared/dialogs/dialogs.state';
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
@@ -99,7 +97,6 @@ export class ConfirmationComponent implements OnDestroy {
           this.activationSuccess = true;
           this.securityService.cleanUserLoginData();
           this.securityService.loginUser(response.body as LoginModel, response.headers.get('authorization'), true)
-            .then(() => this.openSuccessDialog('Thank you for choosing Home Improve!'))
         },
         err => {
           console.error(err);
@@ -118,8 +115,8 @@ export class ConfirmationComponent implements OnDestroy {
         response => {
           this.step = 2;
           this.emailConfirmationSuccess = true;
+          this.securityService.cleanUserLoginData();
           this.securityService.loginUser(response.body as LoginModel, response.headers.get('authorization'), true)
-            .then(()=> this.openSuccessDialog('Email confirmed'))
         },
         err => {
           console.error(err);
@@ -138,19 +135,6 @@ export class ConfirmationComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.destroyed$.next();
     this.destroyed$.complete();
-  }
-
-  private openSuccessDialog(message: string): void {
-    this.dialog.open<InfoWindowDialogComponent, IInfoWindowDialogData>
-    (dialogsMap['info-window-dialog'], {
-      minWidth: 460,
-      panelClass: 'dialog-fix-position',
-      data: {
-        message: message,
-        buttonTitle: 'OK',
-        iconUrl: 'assets/img/round-icons/confirmation-envelope.png'
-      }
-    });
   }
 
 }
