@@ -2,7 +2,6 @@ package com.improver.service;
 
 
 import com.improver.entity.*;
-import com.improver.entity.Image;
 import com.improver.exception.InternalServerException;
 import com.improver.exception.NotFoundException;
 import com.improver.exception.ValidationException;
@@ -14,10 +13,21 @@ import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.http.CacheControl;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.*;
+import java.net.URI;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static com.improver.application.properties.Path.IMAGES_PATH;
@@ -29,12 +39,14 @@ public class ImageService {
 
     private static final char COMMA = ',';
     private static final char FILE_EXTENSION_SEPARATOR = '.';
+    private static final int CACHE_CONTROL_AGE = 30; // value in days
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired private ImageRepository imageRepository;
     @Autowired private ProjectImageRepository projectImageRepository;
     @Autowired private CompanyImageRepository companyImageRepository;
+    @Autowired private ResourceLoader resourceLoader;
 
 
 
@@ -131,7 +143,31 @@ public class ImageService {
         }
         return imageContainable.getCoverUrl();
     }
+    
 
+    public ResponseEntity<Resource> getImageByURL(String imageUrl) {
+        String imageName = getImageNameFromURL(imageUrl);
+        return getImageByName(imageName);
+    }
+
+    public ResponseEntity<Resource> getImageByName(String name) {
+        Image image = imageRepository.findByName(name)
+                                     .orElseThrow(NotFoundException::new);
+        byte[] media = image.getData();
+        return addCacheControl(media);
+    }
+
+    public ResponseEntity redirectToResourceURL(String iconUrl) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(URI.create(iconUrl));
+        return new ResponseEntity(headers, HttpStatus.MOVED_PERMANENTLY);
+    }
+
+    public ResponseEntity<Resource> addCacheControl(byte[] media) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setCacheControl(CacheControl.maxAge(CACHE_CONTROL_AGE, TimeUnit.DAYS).getHeaderValue());
+        return new ResponseEntity<>(new ByteArrayResource(media), headers, HttpStatus.OK);
+    }
 
     private String saveGenericImage(Image image) {
         imageRepository.save(image);
@@ -141,7 +177,7 @@ public class ImageService {
 
     private String saveProjectImage(Project project, Image image) {
         projectImageRepository.save(new ProjectImage(image, project));
-        return ProjectImage.toProjectImageUrl(image.getName());
+        return ProjectImage.toProjectImageUrl(project.getId(), image.getName());
     }
 
     private String saveDemoProjectImage(DemoProject project, Image image) {
@@ -162,7 +198,7 @@ public class ImageService {
 
     public Collection<String> getProjectImageUrls(long projectId) {
         return projectImageRepository.getImageUrlsByProject(projectId).stream()
-            .map(ProjectImage::toProjectImageUrl)
+            .map(image -> ProjectImage.toProjectImageUrl(projectId, image))
             .collect(Collectors.toList());
     }
 
@@ -225,6 +261,5 @@ public class ImageService {
     public String getImageNameFromURL(String imageUrl) {
         return imageUrl.substring(imageUrl.lastIndexOf(SLASH) + 1);
     }
-
 
 }

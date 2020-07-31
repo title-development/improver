@@ -9,9 +9,7 @@ import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import static com.improver.application.properties.Path.IMAGES_PATH;
-import static com.improver.application.properties.Path.PROJECTS;
-import static com.improver.application.properties.Path.SLASH;
+import static com.improver.application.properties.Path.*;
 
 @Entity(name = "project_images")
 @Data
@@ -41,7 +39,7 @@ public class ProjectImage extends Image {
         this.isTitle = isTitle;
     }
 
-    public static String toProjectImageUrl(String imageName) {
-        return IMAGES_PATH + PROJECTS + SLASH + imageName;
+    public static String toProjectImageUrl(Long projectId, String imageName) {
+        return PROJECTS_PATH +SLASH + projectId +  IMAGES + SLASH + imageName;
     }
 }

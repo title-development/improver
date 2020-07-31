@@ -31,7 +31,7 @@
         </div>
         <ng-container *ngIf="tab?.pageable?.numberOfElements > 0 || tab.type == TabType.NEW">
           <div *ngIf="i > 0; else newLeads">
-            <projects-list [(list)]="tab.projects"></projects-list>
+            <projects-list [list]="tab.projects"></projects-list>
             <button class="secondary-button"
                     [cvSpinner]="showMoreFetching"
                     [cvSpinnerSize]="24"
