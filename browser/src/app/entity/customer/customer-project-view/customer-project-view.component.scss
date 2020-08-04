@@ -1,5 +1,23 @@
 @import "improver-mixins.scss";
 
+.container {
+  .top-page-navigation-wrapper {
+    @include response-to(sm) {
+      margin-left: 0px;
+      margin-right: 0px;
+    }
+  }
+
+  .customer-project-view-wrapper {
+    min-height: 200px;
+    & > .row {
+      margin-left: 0px;
+      margin-right: 0px;
+    }
+  }
+
+}
+
 .customer-project-view {
   display: flex;
   flex-direction: column;
@@ -11,6 +29,10 @@
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
     margin-bottom: 24px;
 
+    @include response-to(sm) {
+      margin-bottom: 16px;
+    }
+
     .header {
       padding: 24px 24px;
       border-bottom: 1px solid #e8e8e8;
@@ -19,8 +41,6 @@
       align-items: center;
 
       @include response-to(sm) {
-        align-items: flex-start;
-        flex-direction: column;
         padding: 12px;
       }
 
@@ -28,15 +48,21 @@
 
         .top-line {
           display: flex;
-          align-items: center;
+
+          @include response-to(sm) {
+            display: block;
+            word-break: break-word;
+          }
 
           .title {
             font-size: 24px;
             font-weight: 600;
             text-align: left;
             color: $black-800;
+            margin-right: 16px;
 
             @include response-to(sm) {
+              display: inline;
               font-size: 21px;
             }
 
@@ -54,10 +80,15 @@
             background-color: #aaaaaa;
             text-align: left;
             color: $white;
-            margin-left: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
+
+            @include response-to(sm) {
+              display: inline;
+              white-space: nowrap;
+              vertical-align: middle;
+            }
 
             &:first-letter {
               text-transform: uppercase;
@@ -98,30 +129,18 @@
           }
         }
 
+
       }
 
       .right-part {
         display: flex;
-
+        align-self: start;
+        justify-self: start;
+        margin-right: -16px;
+        margin-top: -8px;
         @include response-to(sm) {
-          margin-top: 16px;
-        }
-
-        .mat-icon {
-          font-size: 14px;
-          color: $primary-500;
-          margin-right: 5px;
-        }
-
-        .location {
-          font-size: 14px;
-          line-height: 1.29;
-          text-align: right;
-          color: $grey-600;
-
-          @include response(xs) {
-            font-size: 12px;
-          }
+          margin-right: -8px;
+          margin-top: -4px;
         }
       }
 
@@ -189,7 +208,11 @@
             *display: inline;
             *vertical-align: auto;
             position: relative;
-            padding: 0 54px;
+            padding: 0 48px;
+
+            @include response-to(xs) {
+              padding: 0 24px;
+            }
 
             &:before, &:after {
               content: '';
@@ -231,6 +254,12 @@
           @include response-to(xs) {
             flex-direction: column;
             height: auto;
+          }
+
+          &.inactive, &.closed, &.declined {
+            .company-name {
+              opacity: 0.5;
+            }
           }
 
           .projectRequest-left {
@@ -465,7 +494,8 @@
     margin-bottom: 24px;
 
     @include response-to(sm) {
-      padding: 24px 12px 18px;
+      margin-bottom: 16px;
+      padding: 16px 12px 18px;
     }
 
     .header {
@@ -502,12 +532,15 @@
 
 }
 
+.project-menu-button {
+  color: $grey-500;
+}
+
 ::ng-deep .mat-menu-panel.projectRequest-menu {
   position: relative;
   overflow: visible !important;
   box-shadow: none;
-  //margin-top: 50px;
-  //margin-right: -9px;
+  border-radius: 8px;
 
   .mat-menu-content {
     padding: 0px;
@@ -532,8 +565,7 @@
   position: relative;
   overflow: visible !important;
   box-shadow: none;
-
-
+  border-radius: 8px;
 
   .mat-menu-content {
     padding: 0px;
@@ -563,8 +595,9 @@
   padding: 24px 24px 0;
 
   @include response-to(sm) {
-    padding: 24px 12px 0;
+    padding: 16px 12px 0;
   }
+
 }
 
 .top-page-navigation {
@@ -584,6 +617,11 @@
     color: $grey-500 !important;
     justify-content: flex-start;
     align-items: center;
+    padding-left: 16px;
+
+    @include response-to(sm) {
+      padding-left: 0px;
+    }
 
     &:active {
       color: $primary-500;
@@ -599,5 +637,21 @@
 
 ::ng-deep button.cancel-button.mat-menu-item {
   color: $red !important;
+}
+
+::ng-deep .mat-menu-content {
+  .mat-menu-item {
+
+    &:first-child {
+      border-top-right-radius: 8px;
+      border-top-left-radius: 8px;
+    }
+
+    &:last-child {
+      border-bottom-right-radius: 8px;
+      border-bottom-left-radius: 8px;
+    }
+
+  }
 }
 

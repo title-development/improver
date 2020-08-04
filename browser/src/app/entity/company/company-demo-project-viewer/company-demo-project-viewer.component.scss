@@ -20,9 +20,15 @@
   margin-bottom: 24px;
   padding: 16px 24px;
   @include response-to(xs) {
-    margin-bottom: 16px;
+    margin-bottom: 12px;
     margin-left: 12px;
     margin-right: 12px;
+  }
+}
+
+.reviews-wrapper {
+  @include response-to(xs) {
+    margin-top: 24px;
   }
 }
 
@@ -285,6 +291,8 @@
   color: $grey-500 !important;
   justify-content: flex-start;
   align-items: center;
+  padding-left: 8px;
+
   @include response-to(xs) {
     margin-top: 24px;
   }

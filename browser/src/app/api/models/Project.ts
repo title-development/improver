@@ -1,7 +1,6 @@
-import { ProjectDetail, UserInfo } from '../../model/data-model';
+import { CustomerProjectShort, Location, ProjectDetail, UserInfo } from '../../model/data-model';
 import { ProjectRequest } from './ProjectRequest';
 import { ProjectAction } from './ProjectAction';
-import { Location } from '../../model/data-model';
 
 export class Project {
   id: number;
@@ -74,6 +73,18 @@ export namespace Project {
     reason?: Reason;
     status?: Status;
     comment?: string
+  }
+
+  export function moveHiredContractorsToFirstPosition(projects: CustomerProjectShort[]) {
+    for (let project of projects) {
+      if (project.projectRequests.length === 0) continue;
+      let index = project.projectRequests.findIndex(projectRequest =>
+        ProjectRequest.isHiredOrCompleted(projectRequest.status));
+      if (index < 0) continue;
+      let hired = project.projectRequests[index];
+      project.projectRequests.splice(index,1);
+      project.projectRequests.unshift(hired);
+    }
   }
 
 }

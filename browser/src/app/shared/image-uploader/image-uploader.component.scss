@@ -31,6 +31,11 @@
     color: $grey-600;
     margin-bottom: 24px;
   }
+
+  @include response-to(sm) {
+    margin-bottom: 16px;
+  }
+
 }
 
 input[type=file] {

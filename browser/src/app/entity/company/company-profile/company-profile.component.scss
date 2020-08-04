@@ -415,9 +415,9 @@ p {
 }
 
 company-reviews {
-  margin-top: 21px;
+  margin-top: 24px;
   @include response(xs) {
-    margin-top: 0;
+    margin-top: 12px;
   }
 }
 

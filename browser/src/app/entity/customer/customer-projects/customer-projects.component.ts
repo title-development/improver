@@ -20,6 +20,7 @@ import { mobileMainDialogBarConfig } from "../../../shared/dialogs/dialogs.confi
 import { TradeService } from "../../../api/services/trade.service";
 import { MobileMenuService } from "../../../util/mobile-menu-service";
 import { NotificationResource } from "../../../util/notification.resource";
+import moveHiredContractorsToFirstPosition = Project.moveHiredContractorsToFirstPosition;
 
 interface Tab {
   label: string;
@@ -154,7 +155,7 @@ export class CustomerDashboardComponent implements OnDestroy {
       .subscribe(
       (pageable: RestPage<CustomerProjectShort>) => {
         tab.pageable = forUpdate ? reCalculatePageable(tab.pageable, pageable, this.maxItemPerPage) : pageable;
-        this.moveHiredContractorsToFirstPosition(pageable.content);
+        moveHiredContractorsToFirstPosition(pageable.content);
         tab.projects = pageable.content;
       },
         err => this.popUpMessageService.showError(getErrorMessage(err))
@@ -194,18 +195,6 @@ export class CustomerDashboardComponent implements OnDestroy {
       this.getProjects(tab, new Pagination(0, tab.projects.length));
     } else {
       this.getProjects(tab, new Pagination(0, this.maxItemPerPage));
-    }
-  }
-
-  moveHiredContractorsToFirstPosition(projects: CustomerProjectShort[]) {
-    for (let project of projects) {
-      if (project.projectRequests.length === 0) continue;
-      let index = project.projectRequests.findIndex(projectRequest =>
-        ProjectRequest.isHiredOrCompleted(projectRequest.status));
-      if (index < 0) continue;
-      let hired = project.projectRequests[index];
-      project.projectRequests.splice(index,1);
-      project.projectRequests.unshift(hired);
     }
   }
 

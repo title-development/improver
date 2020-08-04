@@ -17,6 +17,10 @@
 .company-gallery-project {
   padding-top: 24px;
 
+  @include response-to(sm) {
+    padding-top: 16px;
+  }
+
   .gallery-project-card {
     padding: 24px;
 
@@ -100,10 +104,20 @@
 }
 
 .card {
-  border-radius: 2px;
+  border-radius: 8px;
   background-color: $white;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
   margin-bottom: 24px;
+
+  @include response-to(sm) {
+    margin-bottom: 16px;
+  }
+
+  @include response-to(xs) {
+    border-radius: 0px;
+    margin-bottom: 0px;
+    box-shadow: none;
+  }
 }
 
 .group-wrapper {

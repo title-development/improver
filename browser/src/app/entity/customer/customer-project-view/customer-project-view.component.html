@@ -1,30 +1,15 @@
-<div class="container -top-space">
+<div class="container -top-space" >
 
-  <div class="row">
+  <div class="row top-page-navigation-wrapper" *ngIf="project">
     <div class="top-page-navigation">
       <a class="back-link noselect" routerLink="/my/projects">
         <mat-icon>keyboard_arrow_left</mat-icon>
         <div fxFlexOffset="5px">Back to Projects</div>
       </a>
-      <div class="more-button-wrapper"
-           *ngIf="project && Project.isActive(project.status)">
-        <button class="project-menu-button" mat-icon-button [matMenuTriggerFor]="projectMenu"
-                (click)="$event.stopPropagation()">
-          <mat-icon>more_vert</mat-icon>
-        </button>
-        <mat-menu class="project-menu" #projectMenu="matMenu" yPosition="below" xPosition="before">
-          <button mat-menu-item (click)="projectActionService.completeProjectConfirm(project)">
-            Complete Project
-          </button>
-          <button mat-menu-item (click)="projectActionService.cancelProjectConfirm(project)"
-                  class="cancel-button">Cancel Project
-          </button>
-        </mat-menu>
-      </div>
     </div>
   </div>
 
-  <div [cvSpinner]="!project" [cvSpinnerSize]="24">
+  <div [cvSpinner]="!project" [cvSpinnerSize]="24" class="customer-project-view-wrapper">
     <div class="row">
       <div class="customer-project-view" *ngIf="project">
         <div class="main-content-wrapper">
@@ -39,16 +24,24 @@
               </div>
             </div>
             <div class="right-part">
-              <div>
-                <mat-icon>location_on</mat-icon>
-              </div>
-              <div>
-                <div class="location">{{project.location.streetAddress}} {{project.location.city}} ,
-                  {{project.location.state}} {{project.location.zip}}
-                </div>
+              <div class="more-button-wrapper"
+                   *ngIf="project && Project.isActive(project.status)">
+                <button class="project-menu-button" mat-icon-button [matMenuTriggerFor]="projectMenu"
+                        (click)="$event.stopPropagation()">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu class="project-menu" #projectMenu="matMenu" yPosition="below" xPosition="before">
+                  <button mat-menu-item (click)="projectActionService.completeProjectConfirm(project)">
+                    Complete Project
+                  </button>
+                  <button mat-menu-item (click)="projectActionService.cancelProjectConfirm(project)"
+                          class="cancel-button">Cancel Project
+                  </button>
+                </mat-menu>
               </div>
             </div>
           </div>
+
           <div class="projectRequests" *ngIf="project.projectRequests.length > 0">
             <div class="content">
 
@@ -117,7 +110,7 @@
               </div>
 
               <ng-template ngFor let-projectRequest [ngForOf]="project.projectRequests" let-i="index">
-                <div class="projectRequest"
+                <div class="projectRequest {{projectRequest.status | toclassname}}"
                      (click)="openProjectRequest(projectRequest)"
                      *ngIf="ProjectRequest.isInactive(projectRequest.status)">
                   <div class="projectRequest-left">
@@ -132,6 +125,7 @@
                           <img class="approve-icon" src="assets/icons/approve.svg" alt="" title="Approved by Home Improve">
                         </div>
                       </div>
+                      <div class="additional-info hired" *ngIf="!ProjectRequest.proLeft(projectRequest.status) && ProjectRequest.isHiredOrCompleted(projectRequest.status)">You hired this Pro</div>
                       <div class="additional-info" *ngIf="projectRequest.status == ProjectRequest.Status.DECLINED">You declined this Pro</div>
                       <div class="additional-info" *ngIf="ProjectRequest.proLeft(projectRequest.status)">This Pro left the project</div>
                     </div>
@@ -189,6 +183,14 @@
             </div>
           </div>
           <div class="content">
+
+            <div class="question-block">
+              <div class="question">Location</div>
+              <div class="answers">
+                <div class="answer">{{project.location.streetAddress}} {{project.location.city}} ,
+                  {{project.location.state}} {{project.location.zip}}</div>
+              </div>
+            </div>
 
             <div class="question-block">
               <div class="question">Start date</div>

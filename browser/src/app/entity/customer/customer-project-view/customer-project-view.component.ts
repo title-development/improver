@@ -15,6 +15,7 @@ import { ImagesUploaderComponent } from '../../../shared/image-uploader/image-up
 import { NavigationHelper } from "../../../util/navigation-helper";
 import { NotificationResource } from "../../../util/notification.resource";
 import { filter, takeUntil } from "rxjs/operators";
+import moveHiredContractorsToFirstPosition = Project.moveHiredContractorsToFirstPosition;
 
 @Component({
   selector: 'customer-project-view',
@@ -135,6 +136,7 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy, Componen
           if (!this.changeDetectorRef['destroyed']) {
             this.changeDetectorRef.detectChanges();
           }
+          moveHiredContractorsToFirstPosition([project]);
         },
         err => {
           console.error(err);
