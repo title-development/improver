@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -30,25 +32,25 @@ public class ConfirmationController {
 
 
     @PostMapping(ACTIVATION)
-    public ResponseEntity<LoginModel> activateUser(@RequestBody @Valid UserActivation userActivation, HttpServletResponse res) {
+    public ResponseEntity<LoginModel> activateUser(@RequestBody @Valid UserActivation userActivation, HttpServletRequest req, HttpServletResponse res) {
         User user = accountService.activateUser(userActivation);
-        LoginModel loginModel = userSecurityService.performUserLogin(user, res);
+        LoginModel loginModel = userSecurityService.performUserLogin(user, req, res);
         return new ResponseEntity<>(loginModel, HttpStatus.OK);
     }
 
 
     @PostMapping(EMAIL)
-    public ResponseEntity<LoginModel> confirmEmailChange(@RequestBody UserActivation userActivation, HttpServletResponse res) {
+    public ResponseEntity<LoginModel> confirmEmailChange(@RequestBody UserActivation userActivation, HttpServletRequest req, HttpServletResponse res) {
         User user = accountService.confirmUserEmail(userActivation);
-        LoginModel loginModel = userSecurityService.performUserLogin(user, res);
+        LoginModel loginModel = userSecurityService.performUserLogin(user, req, res);
         return new ResponseEntity<>(loginModel, HttpStatus.OK);
     }
 
 
     @PostMapping("/password-reset")
-    public ResponseEntity<LoginModel> resetPassword(@RequestBody UserActivation userActivation, HttpServletResponse res) {
+    public ResponseEntity<LoginModel> resetPassword(@RequestBody UserActivation userActivation, HttpServletRequest req, HttpServletResponse res) {
         User user = accountService.resetPassword(userActivation);
-        LoginModel loginModel = userSecurityService.performUserLogin(user, res);
+        LoginModel loginModel = userSecurityService.performUserLogin(user, req, res);
         return new ResponseEntity<>(loginModel, HttpStatus.OK);
     }
 

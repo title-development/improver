@@ -41,6 +41,7 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse res) throws AuthenticationException, IOException, ServletException {
         String userIp = req.getRemoteAddr();
+        logger.debug("Attempt to login from "+ userIp);
         Credentials creds = new ObjectMapper().readValue(req.getInputStream(), Credentials.class);
 
         if (securityProperties.isCaptchaEnabled()){
@@ -62,7 +63,7 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
     @Override
     protected void successfulAuthentication(HttpServletRequest req, HttpServletResponse res, FilterChain chain, Authentication auth) throws IOException, ServletException {
         User user = userSecurityService.getByEmail(auth.getName());
-        LoginModel loginModel = userSecurityService.performUserLogin(user, res);
+        LoginModel loginModel = userSecurityService.performUserLogin(user, req, res);
         SerializationUtil.mapper().writeValue(res.getOutputStream(), loginModel);
     }
 

@@ -57,41 +57,41 @@ public class RegistrationController {
 
     @PreAuthorize("isAnonymous()")
     @PostMapping(CUSTOMERS)
-    public ResponseEntity<LoginModel> registerCustomer(@RequestBody @Valid UserRegistration customerRegistration, HttpServletRequest request, HttpServletResponse res) {
+    public ResponseEntity<LoginModel> registerCustomer(@RequestBody @Valid UserRegistration customerRegistration, HttpServletRequest req, HttpServletResponse res) {
         log.info("Registration of customer = {}", customerRegistration.getEmail());
-        ReCaptchaResponse reCaptchaResponse = reCaptchaService.validate(customerRegistration.getCaptcha(), request.getRemoteAddr());
+        ReCaptchaResponse reCaptchaResponse = reCaptchaService.validate(customerRegistration.getCaptcha(), req.getRemoteAddr());
         if(!reCaptchaResponse.isSuccess()) {
             throw new AuthenticationRequiredException(CAPTCHA_VALIDATION_ERROR_MESSAGE);
         }
         Customer registered = registrationService.registerCustomer(customerRegistration);
-        LoginModel loginModel = userSecurityService.performUserLogin(registered, res);
+        LoginModel loginModel = userSecurityService.performUserLogin(registered, req, res);
         return new ResponseEntity<>(loginModel, HttpStatus.OK);
     }
 
 
     @PreAuthorize("isAnonymous()")
     @PostMapping(CONTRACTORS)
-    public ResponseEntity<LoginModel> registerContractor(@RequestBody @Valid UserRegistration registration, HttpServletResponse res, HttpServletRequest request) {
+    public ResponseEntity<LoginModel> registerContractor(@RequestBody @Valid UserRegistration registration, HttpServletResponse res, HttpServletRequest req) {
         log.info("Registration of PRO = {}", registration.getEmail());
-        ReCaptchaResponse reCaptchaResponse = reCaptchaService.validate(registration.getCaptcha(), request.getRemoteAddr());
+        ReCaptchaResponse reCaptchaResponse = reCaptchaService.validate(registration.getCaptcha(), req.getRemoteAddr());
         if(!reCaptchaResponse.isSuccess()) {
             throw new AuthenticationRequiredException(CAPTCHA_VALIDATION_ERROR_MESSAGE);
         }
         Contractor contractor = registrationService.registerContractor(registration);
-        LoginModel loginModel = userSecurityService.performUserLogin(contractor, res);
+        LoginModel loginModel = userSecurityService.performUserLogin(contractor, req, res);
         return new ResponseEntity<>(loginModel, HttpStatus.OK);
     }
 
 
     @PreAuthorize("hasRole('INCOMPLETE_PRO')")
     @PostMapping(COMPANIES)
-    public ResponseEntity<LoginModel> registerCompany(@RequestBody @Valid CompanyRegistration registration, HttpServletResponse res) {
+    public ResponseEntity<LoginModel> registerCompany(@RequestBody @Valid CompanyRegistration registration, HttpServletRequest req, HttpServletResponse res) {
         log.info("Registration of Company = {}", registration.getCompany().getName());
         Contractor contractor = userSecurityService.currentPro();
         registrationService.registerCompany(registration, contractor);
         LoginModel loginModel = null;
         if (!contractor.isNativeUser() && contractor.isActivated()) {
-            loginModel = userSecurityService.performUserLogin(contractor, res);
+            loginModel = userSecurityService.performUserLogin(contractor, req, res);
         } else {
             userSecurityService.performLogout(contractor,res);
         }

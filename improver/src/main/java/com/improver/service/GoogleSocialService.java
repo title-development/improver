@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
@@ -42,13 +43,13 @@ public class GoogleSocialService {
             .build();
     }
 
-    public LoginModel login(String idToken, HttpServletResponse res) {
+    public LoginModel login(String idToken, HttpServletRequest req, HttpServletResponse res) {
         SocialUser socialUser = getSocialUser(idToken);
         User user = socialConnectionService.findExistingUser(socialUser);
         if (isNull(user)) {
             throw new NotFoundException("User is not found");
         }
-        return userSecurityService.performUserLogin(user, res);
+        return userSecurityService.performUserLogin(user, req, res);
     }
 
     public User register(SocialConnectionConfig socialConnectionConfig) {

@@ -31,6 +31,15 @@ public class User implements Principal {
     @Column(unique = true)
     protected String email;
 
+    @OneToMany(mappedBy = "user")
+    protected List<Notification> notifications;
+
+    @OneToMany(mappedBy = "user")
+    protected List<SocialConnection> socialConnections;
+
+    @OneToMany(mappedBy = "user")
+    protected List<UserSession> sessions;
+
     @Column(unique = true)
     protected String newEmail;
 
@@ -62,17 +71,15 @@ public class User implements Principal {
 
     protected String refreshId;
 
-    @OneToMany(mappedBy = "user")
-    protected List<Notification> notifications;
-
-    @OneToMany(mappedBy = "user")
-    protected List<SocialConnection> socialConnections;
-
+    //TODO: Remove binding
     @OneToMany(mappedBy = "author")
     protected List<Ticket> createdTickets;
 
+    //TODO: Remove binding
     @OneToMany(mappedBy = "user")
     protected List<UserTutorial> userTutorials;
+
+
 
     protected User() {
     }

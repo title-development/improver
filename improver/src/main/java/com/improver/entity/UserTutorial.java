@@ -24,7 +24,7 @@ public class UserTutorial {
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "user_tutorial_user_fkey"))
+    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "user_tutorials_fkey"))
     private User user;
 
     @NotNull

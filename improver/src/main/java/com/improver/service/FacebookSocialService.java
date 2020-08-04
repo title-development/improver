@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -47,17 +48,17 @@ public class FacebookSocialService {
             .build();
     }
 
-    public LoginModel login(String authToken, HttpServletResponse res) {
+    public LoginModel login(String authToken, HttpServletRequest req, HttpServletResponse res) {
         SocialUser socialUser = getSocialUser(authToken);
         User user = socialConnectionService.findExistingUser(socialUser);
         if (isNull(user)) {
             throw new NotFoundException("User is not found");
         }
         userSecurityService.checkUser(user);
-        return userSecurityService.performUserLogin(user, res);
+        return userSecurityService.performUserLogin(user, req, res);
     }
 
-    public LoginModel registerCustomer(SocialConnectionConfig socialConnectionConfig, HttpServletResponse res) {
+    public LoginModel registerCustomer(SocialConnectionConfig socialConnectionConfig, HttpServletRequest req, HttpServletResponse res) {
         LoginModel loginModel;
         boolean socialProfileHasEmail = true;
         SocialUser socialUser = getSocialUser(socialConnectionConfig.getAccessToken());
@@ -66,7 +67,7 @@ public class FacebookSocialService {
             socialProfileHasEmail = false;
         }
         User user = socialConnectionService.registerUser(socialUser, !socialProfileHasEmail, socialConnectionConfig.isPreventConfirmationEmail());
-        loginModel = userSecurityService.performUserLogin(user, res);
+        loginModel = userSecurityService.performUserLogin(user, req, res);
         return loginModel;
     }
 

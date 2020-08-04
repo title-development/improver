@@ -50,6 +50,7 @@ public class UserSecurityService implements UserDetailsService {
     @Autowired private SecurityProperties securityProperties;
     @Value("${spring.profiles.active:Unknown}") private String activeProfile;
     @Value("${server.domain}") private String serverDomain;
+    @Autowired private UserSessionRepository userSessionRepository;
 
 
     /**
@@ -175,6 +176,7 @@ public class UserSecurityService implements UserDetailsService {
     /**
      * Login user into system:
      * - update lastLogin time,
+     * - saves userSession data
      * - sets "Authorization" header with JWT,
      * - adds refresh cookie.
      *
@@ -182,19 +184,21 @@ public class UserSecurityService implements UserDetailsService {
      * @param res  HttpServletResponse
      * @return model of logged in user
      */
-    public LoginModel performUserLogin(User user, HttpServletResponse res) {
+    public LoginModel performUserLogin(User user, HttpServletRequest req, HttpServletResponse res) {
         //updateLastLogin
         log.info("User {} logged in", user.getEmail());
-        return performUserLogin(user, res, false);
+        return performUserLogin(user, req,  res, false);
     }
 
 
-    public LoginModel performUserLogin(User user, HttpServletResponse res, boolean isReauthentication) {
+    public LoginModel performUserLogin(User user, HttpServletRequest req, HttpServletResponse res, boolean isReauthentication) {
         if (isReauthentication) {
             log.debug("Re-authentication user=" + user.getEmail());
         }
         //updateLastLogin
-        User updated = userRepository.save(user.setLastLogin(ZonedDateTime.now()).setRefreshId(UUID.randomUUID().toString()));
+        ZonedDateTime now = ZonedDateTime.now();
+        User updated = userRepository.save(user.setLastLogin(now).setRefreshId(UUID.randomUUID().toString()));
+        userSessionRepository.save(new UserSession(user, req.getRemoteAddr(), null, null, user.getRefreshId(), isReauthentication, now));
         LoginModel loginModel = buildLoginModel(updated);
         String jwt = generateAccessToken(updated);
         res.setHeader(AUTHORIZATION_HEADER_NAME, BEARER_TOKEN_PREFIX + jwt);
