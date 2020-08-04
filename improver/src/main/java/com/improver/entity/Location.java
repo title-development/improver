@@ -8,9 +8,6 @@ import javax.persistence.Embeddable;
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.Pattern;
 
-
-import java.util.Objects;
-
 import static com.improver.util.serializer.SerializationUtil.ZIP_PATTERN_STRING;
 
 @Data

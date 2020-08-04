@@ -33,6 +33,7 @@
               <cv-field-label>State</cv-field-label>
               <cv-select [multiple]="false" [tags]="false" [autocomplete]="true"
                          (autocompleteSearch)="onAutoCompleteSearch($event)" [items]="filteredStates"
+                         [disableItemsMatch]="false"
                          valueKey="value"
                          labelKey="value"
                          name="state"
