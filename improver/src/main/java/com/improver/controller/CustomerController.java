@@ -2,9 +2,9 @@ package com.improver.controller;
 
 import com.improver.entity.Customer;
 import com.improver.entity.User;
-import com.improver.repository.CustomerRepository;
 import com.improver.repository.ProjectRepository;
 import com.improver.security.UserSecurityService;
+import com.improver.service.AccountService;
 import com.improver.service.SearchService;
 import com.improver.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,6 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 import static com.improver.application.properties.Path.*;
-import static com.improver.application.properties.Path.NOTIFICATIONS;
 import static com.improver.util.database.DataRestrictions.USER_SEARCH_MAX_SIZE;
 
 @Slf4j
@@ -29,9 +28,9 @@ public class CustomerController {
 
     @Autowired private UserSecurityService userSecurityService;
     @Autowired private UserService userService;
-    @Autowired private CustomerRepository customerRepository;
     @Autowired private ProjectRepository projectRepository;
     @Autowired private SearchService searchService;
+    @Autowired private AccountService accountService;
 
 
 
@@ -74,7 +73,7 @@ public class CustomerController {
     @PutMapping(NOTIFICATIONS)
     public ResponseEntity<Void> updateNotificationSettings(@RequestBody Customer.NotificationSettings settings) {
         Customer existed = userSecurityService.currentCustomer();
-        customerRepository.save(existed.setNotificationSettings(settings));
+        accountService.updateCustomerNotificationSettings(existed, settings);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

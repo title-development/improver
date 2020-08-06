@@ -8,6 +8,7 @@ import { CompanyService } from "../../../../api/services/company.service";
 import { PopUpMessageService } from "../../../../util/pop-up-message.service";
 import { getErrorMessage } from "../../../../util/functions";
 import { ContractorNotificationSettings } from "../../../../api/models/NotificationSettings";
+import { finalize, first } from "rxjs/operators";
 
 @Component({
   selector: 'communication-settings',
@@ -18,6 +19,7 @@ import { ContractorNotificationSettings } from "../../../../api/models/Notificat
 export class CommunicationSettingsComponent {
 
   notificationSettings: ContractorNotificationSettings;
+  settingsUpdating = false;
 
   constructor(public constants: Constants,
               public messages: Messages,
@@ -32,7 +34,9 @@ export class CommunicationSettingsComponent {
   }
 
   getNotificationSettings() {
-    this.companyService.getNotificationSettings(this.securityService.getLoginModel().company).subscribe(
+    this.companyService.getNotificationSettings(this.securityService.getLoginModel().company)
+      .pipe(first())
+      .subscribe(
       notificationSettings => {
         this.notificationSettings = notificationSettings;
       },
@@ -43,7 +47,10 @@ export class CommunicationSettingsComponent {
   }
 
   updateNotificationSettings() {
-    this.companyService.updateNotificationSettings(this.securityService.getLoginModel().company, this.notificationSettings).subscribe(
+    this.settingsUpdating = true;
+    this.companyService.updateNotificationSettings(this.securityService.getLoginModel().company, this.notificationSettings)
+      .pipe(first(), finalize(() => this.settingsUpdating = false))
+      .subscribe(
       responce => {
         this.popUpService.showSuccess("Your notification settings updated successfully")
       },

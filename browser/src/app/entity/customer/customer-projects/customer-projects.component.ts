@@ -84,7 +84,7 @@ export class CustomerDashboardComponent implements OnDestroy {
     this.subscribeForMediaScreen();
     this.onProjectsUpdate$ = this.projectActionService.onProjectsUpdate
       .pipe(takeUntil(this.destroyed$))
-      .subscribe(() => this.updateTab());
+      .subscribe(() => this.updateTab(true));
 
     this.notificationResource.notifiedProjectId$
       .pipe(
@@ -98,7 +98,7 @@ export class CustomerDashboardComponent implements OnDestroy {
         })
       )
       .subscribe(projectId => {
-        this.updateTab()
+        this.updateTab(true)
       });
 
   }
@@ -139,10 +139,12 @@ export class CustomerDashboardComponent implements OnDestroy {
     );
   }
 
-  getProjects(tab: Tab, forUpdate: Pagination = undefined) {
+  getProjects(tab: Tab, forUpdate: Pagination = undefined, lazy?: boolean) {
     this.tabs.map(item => item.active = false);
     tab.active = true;
-    this.projectsProcessing = true;
+    if(!lazy) {
+      this.projectsProcessing = true;
+    }
     if (!tab.pageable.first) {
       forUpdate = new Pagination(0, tab.projects.length);
     }
@@ -189,12 +191,12 @@ export class CustomerDashboardComponent implements OnDestroy {
       )
   }
 
-  private updateTab(): void {
+  private updateTab(lazy? : boolean): void {
     const tab: Tab = this.tabs.find(item => item.active);
     if (!tab.pageable.first) {
-      this.getProjects(tab, new Pagination(0, tab.projects.length));
+      this.getProjects(tab, new Pagination(0, tab.projects.length), lazy);
     } else {
-      this.getProjects(tab, new Pagination(0, this.maxItemPerPage));
+      this.getProjects(tab, new Pagination(0, this.maxItemPerPage), lazy);
     }
   }
 

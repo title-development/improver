@@ -55,6 +55,39 @@ public class Contractor extends User {
     @Column(columnDefinition = "varchar(500)")
     private String replyText;
 
+    @Embedded
+    private NotificationSettings notificationSettings = new NotificationSettings();
+
+    @Data @Accessors(chain = true)
+    @Embeddable
+    public static class NotificationSettings {
+
+        // New Leads
+        // Email notifications of new leads available for purchase
+        private boolean isReceiveNewLeadsEmail = true;
+
+        // New Leads
+        // SMS notifications of new leads available for purchase
+        private boolean isReceiveNewLeadsSms = false;
+
+        // New Subscription Leads
+        // Email notifications of new subscription leads
+        private boolean isReceiveNewSubscriptionLeadsEmail = true;
+
+        // New Subscription Leads
+        // SMS notifications of new subscription leads
+        private boolean isReceiveNewSubscriptionLeadsSms = true;
+
+        // New messages
+        // Email notifications about new chat messages
+        private boolean isReceiveMessagesEmail = true;
+
+        // Suggestions and tips
+        // Receive personalized tips and suggestion to success on market
+        private boolean isReceiveSuggestionsEmail = true;
+
+    }
+
     public Contractor(UserRegistration reg) {
         super(reg);
         this.setRefCode(generateRefCode());

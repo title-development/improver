@@ -42,14 +42,21 @@ public class Customer extends User {
     public static class NotificationSettings {
 
         //Messages
-        //Receive emails about new chat messages
-        private boolean isReceiveMessages = true;
+        //Email notifications about new chat messages
+        private boolean isReceiveMessagesEmail = true;
 
-        //Marketing
-        //Receive emails regarding updates and special offers from Home Improve
-        private boolean isReceiveMarketing = true;
+        //New proposals
+        //Email notifications about new project request from PROs
+        private boolean isReceiveNewProjectRequestsEmail = true;
+
+        //New proposals
+        //Sms notifications about new project request from PROs
+        private boolean isReceiveNewProjectRequestsSms = false;
+
+        // Suggestions and tips
+        // Receive personalized tips and suggestion to success on market
+        private boolean isReceiveSuggestionsEmail = true;
     }
-
 
     public Customer(UserRegistration reg) {
         super(reg);
@@ -62,7 +69,6 @@ public class Customer extends User {
     public Customer(String firstName, String lastName, String email, String plainPassword, String internalPhone, String iconUrl) {
         super(firstName, lastName, email, plainPassword, internalPhone, iconUrl);
     }
-
 
     public static Customer of(SocialUser socialUser) {
         return new Customer(socialUser.getFirstName(),

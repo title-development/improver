@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { SecurityService } from '../../../../auth/security.service';
 import { Constants } from '../../../../util/constants';
 import { ActivatedRoute } from '@angular/router';
 import { QuickReplyService } from '../../../../api/services/quick-replay.service';
 import { PopUpMessageService } from '../../../../util/pop-up-message.service';
 import { Messages } from '../../../../util/messages';
+import { finalize, first } from "rxjs/operators";
+import { getErrorMessage } from "../../../../util/functions";
 
 
 @Component({
@@ -13,9 +15,9 @@ import { Messages } from '../../../../util/messages';
   styleUrls: ['./quick-reply.component.scss']
 })
 
-export class QuickReplyComponent implements OnInit {
+export class QuickReplyComponent {
 
-  saveProcessing: boolean = false;
+  updateProcessing: boolean = false;
   fetching: boolean = true;
   initialQuickReply = {
     enabled: false,
@@ -32,38 +34,33 @@ export class QuickReplyComponent implements OnInit {
               public securityService: SecurityService,
               public quickReplayService: QuickReplyService,
               public popUpService: PopUpMessageService) {
-
     this.getQuickReplayMessage();
-
-  }
-
-  ngOnInit() {
-
   }
 
   getQuickReplayMessage() {
     this.fetching = true;
     this.quickReplayService.getQuickReplayMessage(this.securityService.getLoginModel().id)
+      .pipe(first())
       .subscribe((quickReplyMessage) => {
         this.fetching = false;
         this.quickReply = quickReplyMessage;
-        this.initialQuickReply = {...{}, ...quickReplyMessage};
+        this.initialQuickReply = {...{}, ...this.quickReply};
       }, err => {
         console.error(err);
       });
 
   }
 
-  submitQuickReplayMessage(form) {
-    this.saveProcessing = true;
+  updateQuickReplayMessage(form) {
+    this.updateProcessing = true;
     this.quickReplayService.updateQuickReplayMessage(this.securityService.getLoginModel().id, this.quickReply)
+      .pipe(first() , finalize(() => this.updateProcessing = false))
       .subscribe(() => {
-        this.saveProcessing = false;
-        this.popUpService.showSuccess('Quick replay message updated successfully');
-        this.getQuickReplayMessage();
+        this.initialQuickReply = {...{}, ...this.quickReply};
+        this.popUpService.showSuccess('Auto replay message updated successfully');
       }, err => {
         console.error(err);
-        this.saveProcessing = false;
+        this.popUpService.showSuccess(getErrorMessage(err));
       });
   }
 

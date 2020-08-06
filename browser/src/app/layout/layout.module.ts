@@ -11,6 +11,7 @@ import { ProBannerComponent } from '../entity/home/pro-banner/pro-banner.compone
 import { MainMenuComponent } from './header/main-menu/main-menu.component';
 import { NotificationsPopupComponent } from "./header/notifications-popup/notifications-popup.component";
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
+import { CvIconModule } from "../theme/icon/cv-icon-module";
 
 @NgModule({
   imports: [
@@ -20,6 +21,7 @@ import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
     RouterModule,
     SharedModule,
     CvSelectModule,
+    CvIconModule,
     PerfectScrollbarModule
   ],
   declarations: [

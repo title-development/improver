@@ -16,31 +16,6 @@
     margin-bottom: 12px;
   }
 
-  cv-checkbox {
-    display: flex;
-    margin-bottom: 16px;
-    &::ng-deep .checkbox-icon {
-      flex: none;
-      vertical-align: top;
-    }
-
-    .notification-label {
-
-      .label {
-        color: $black-800;
-        margin: 2px 0px;
-        font-weight: 600;
-
-      }
-
-      .hint {
-        color: $grey-500;
-      }
-
-    }
-
-  }
-
   .notification-settings-title {
     font-size: 18px;
     color: $black-800;
@@ -53,45 +28,59 @@
     .notification-settings-form-content {
       width: 100%;
 
-      .notification-methods-form-group {
-        margin-bottom: 18px;
+      .notifications-row {
+        display: flex;
+        flex-direction: row;
+        padding-top: 12px;
+        padding-bottom: 12px;
+        border-bottom: solid 1px $grey-200;
 
-        .notification-type-name {
-          font-size: 16px;
-          color: rgba(0, 0, 0, 0.54);
-        }
+        .title-block {
+          flex-grow: 1;
 
-        .notification-group-content {
-          font-size: 16px;
-          color: rgba(0, 0, 0, 0.54);
-
-          .notification-method {
-            padding: 6px 8px;
-            font-size: 12px;
-            text-align: right;
-            cursor: pointer;
-            border-left: 1px solid #e8e8e8;
-
-            &:hover {
-              color: rgba(0, 0, 0, 0.38);
-            }
-
-            &:nth-of-type(1) {
-              border-left: 1px solid transparent;
-            }
-
-            &.active {
-              color: $primary-500;
-            }
+          .label {
+            color: $black-800;
+            margin: 2px 0px;
+            font-weight: 600;
 
           }
 
+          .hint {
+            color: $grey-500;
+            @include response-to(xs) {
+              font-size: 12px;
+            }
+          }
 
         }
 
+        .values {
+          display: flex;
+          flex-direction: row;
+
+          ::ng-deep cv-checkbox {
+            .checkbox-label {
+              margin-left: 0px;
+            }
+          }
+
+          .email-value {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 80px;
+          }
+
+          .sms-value {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 80px;
+          }
+
+        }
 
       }
-
 
     }
 

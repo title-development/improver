@@ -28,26 +28,15 @@ public class CompanyConfig {
     @Embedded
     private CoverageConfig coverageConfig;
 
-    @Embedded
-    private NotificationSettings notificationSettings;
-
     public static CompanyConfig defaultSettings(Company company) {
         return new CompanyConfig().setCompany(company)
-            .setCoverageConfig(CoverageConfig.ofLocation(company.getLocation(), DEFAULT_COMPANY_COVERAGE_RADIUS))
-            .setNotificationSettings(new NotificationSettings());
-
+            .setCoverageConfig(CoverageConfig.ofLocation(company.getLocation(), DEFAULT_COMPANY_COVERAGE_RADIUS));
     }
 
     public CompanyConfig updateCoverageConfigTo(CoverageConfig source){
         this.getCoverageConfig().updateTo(source);
         return this;
     }
-
-    public CompanyConfig updateNotificationSettingTo(NotificationSettings source){
-        this.getNotificationSettings().updateTo(source);
-        return this;
-    }
-
 
     @Data @Accessors(chain = true)
     @NoArgsConstructor
@@ -77,35 +66,6 @@ public class CompanyConfig {
         }
     }
 
-    @Data @Accessors(chain = true)
-    @Embeddable
-    public static class NotificationSettings {
-
-        // New Leads
-        // Email notifications of new leads available for purchase
-        private boolean isReceiveNewLeads = true;
-
-        // Messages
-        // Receive emails about new chat messages
-        private boolean isReceiveMessages = true;
-
-        // Marketing
-        // Receive emails regarding updates and special offers from Home Improve
-        private boolean isReceiveMarketing = true;
-
-        // Suggestions and tips
-        // Receive personalized tips and suggestion to success on market
-        private boolean isReceiveSuggestions = true;
-
-
-        public NotificationSettings updateTo(NotificationSettings source) {
-            this.setReceiveNewLeads(source.isReceiveNewLeads())
-                .setReceiveMessages(source.isReceiveMessages())
-                .setReceiveMarketing(source.isReceiveMarketing())
-                .setReceiveSuggestions(source.isReceiveSuggestions());
-            return this;
-        }
-    }
 }
 
 

@@ -8,6 +8,16 @@
   &:not(:last-child) {
     margin-right: 8px;
   }
+  &.-disabled {
+    cursor: not-allowed;
+    .checkbox-icon {
+      border-color: $grey-200;
+    }
+    .checkbox-label {
+      color: $grey-200;
+    }
+  }
+
   &.-checked {
     .checkbox-icon {
       border-color: $primary-500;
@@ -16,14 +26,12 @@
         background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAc1gAAHNYBTCInoQAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAEtSURBVGiB7di/LgRRFMDhi8hWFN7AExAFNY8gWy4vhU6BUusZlDTeQLkkNBo2+RRmkrFm/2LnTnK+fu6eX87szGZTCiGEEEIIs8AhzrHS9CxzQw8DX27QaXqmmRWbePfdNVZHXbO8yAGngV5K6TqlNDx0P6U0WPxEc8BR5XaqOsVS0/NNJSJyERG5iIhcNBqBHaz/wTldP9/YcIH/fTnjAG+4x8YvzjluchP7RURprpgxEWeLiOjgsebDb7E2wzldfDRyO1WG2MZzzRBTbabRTdQMM1dMVhGVoWaKyTKiMtyomLtqTNYRpUkxrYgoYQ+vNcM+qH86Xcr1z4Mxm8l/E8OKmKdWR5SwNSKmPREl7OKlEnGV7XdikmIzfZy0bhPDsGlRv51CCCGEENrhE2qM47US0sSJAAAAAElFTkSuQmCC');
       }
     }
-  }
-  &.-disabled {
-    cursor: not-allowed;
-    .checkbox-icon {
-      border-color: $grey-200;
-    }
-    .checkbox-label {
-      color: $grey-200;
+
+    &.-disabled {
+      .checkbox-icon {
+        border-color: $primary-300;
+        background-color: $primary-300;
+      }
     }
   }
   &:not(.-disabled):hover {

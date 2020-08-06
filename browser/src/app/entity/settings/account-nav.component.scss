@@ -24,7 +24,7 @@
         border-left: 3px solid $primary-500;
         background-color: rgba($grey-300, 0.16);
 
-        .mat-icon {
+        .mat-icon, cv-icon {
           color: $primary-500;
         }
       }
@@ -33,14 +33,17 @@
         background-color: rgba($grey-300, 0.5);
       }
 
-      .mat-icon {
+      mat-icon, cv-icon {
+        font-size: 24px;
         margin-right: 12px;
         color: $grey-400;
 
         @include response(lg) {
           margin-right: 9px;
         }
+
       }
+
 
     }
 

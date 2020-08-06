@@ -1,14 +1,17 @@
 export class ContractorNotificationSettings {
-  receiveNewLeads: boolean;
-  receiveMessages: boolean;
-  receiveMarketing: boolean;
-  receiveSuggestions: boolean;
+  receiveNewLeadsEmail: boolean;
+  receiveNewLeadsSms: boolean
+  receiveNewSubscriptionLeadsEmail: boolean;
+  receiveNewSubscriptionLeadsSms: boolean;
+  receiveMessagesEmail: boolean;
+  receiveSuggestionsEmail: boolean;
   quickReply: boolean;
   replyText: string
 }
 
-
 export class CustomerNotificationSettings {
-  receiveMessages: boolean;
-  receiveMarketing: boolean;
+  receiveMessagesEmail: boolean;
+  receiveNewProjectRequestsEmail: boolean;
+  receiveNewProjectRequestsSms: boolean;
+  receiveSuggestionsEmail: boolean;
 }

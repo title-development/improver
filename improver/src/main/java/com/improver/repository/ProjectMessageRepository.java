@@ -82,7 +82,7 @@ public interface ProjectMessageRepository extends JpaRepository<ProjectMessage, 
         "INNER JOIN com.improver.entity.Project p ON p.id = pr.project.id " +
         "INNER JOIN com.improver.entity.Customer cus ON p.customer.id = cus.id " +
         "INNER JOIN com.improver.entity.Company comp ON pr.contractor.company.id = comp.id " +
-        "WHERE cus.notificationSettings.isReceiveMessages = true " +
+        "WHERE cus.notificationSettings.isReceiveMessagesEmail = true " +
         "AND pm.isRead = false " +
         "AND pr.status IN :projectRequestStatuses " +
         "AND (pm.created BETWEEN :dateFrom AND :dateTo) " +
@@ -98,8 +98,7 @@ public interface ProjectMessageRepository extends JpaRepository<ProjectMessage, 
         "INNER JOIN com.improver.entity.Customer cus ON p.customer.id = cus.id " +
         "INNER JOIN com.improver.entity.Contractor ctr ON ctr.id = pr.contractor.id " +
         "INNER JOIN com.improver.entity.Company cmp ON cmp.id = ctr.company.id " +
-        "INNER JOIN com.improver.entity.CompanyConfig cc ON cc.company.id = cmp.id " +
-        "WHERE cc.notificationSettings.isReceiveMessages = true " +
+        "WHERE ctr.notificationSettings.isReceiveMessagesEmail = true " +
         "AND pm.isRead = false " +
         "AND pr.status IN :projectRequestStatuses " +
         "AND (pm.created BETWEEN :dateFrom AND :dateTo) " +

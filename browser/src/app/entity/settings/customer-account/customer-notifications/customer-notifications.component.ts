@@ -5,12 +5,9 @@ import { ActivatedRoute } from "@angular/router";
 import { SecurityService } from "../../../../auth/security.service";
 import { AccountService } from '../../../../api/services/account.service';
 import { PopUpMessageService } from "../../../../util/pop-up-message.service";
-import {
-  ContractorNotificationSettings,
-  CustomerNotificationSettings
-} from "../../../../api/models/NotificationSettings";
+import { CustomerNotificationSettings } from "../../../../api/models/NotificationSettings";
 import { getErrorMessage } from "../../../../util/functions";
-import { UserService } from "../../../../api/services/user.service";
+import { finalize, first } from "rxjs/operators";
 
 @Component({
   selector: 'communication-settings',
@@ -21,6 +18,7 @@ import { UserService } from "../../../../api/services/user.service";
 export class CustomerNotificationsComponent {
 
   notificationSettings: CustomerNotificationSettings;
+  settingsUpdating = false;
 
   constructor(public constants: Constants,
               public messages: Messages,
@@ -34,7 +32,9 @@ export class CustomerNotificationsComponent {
   }
 
   getNotificationSettings() {
-    this.accountService.getNotificationSettings().subscribe(
+    this.accountService.getNotificationSettings()
+      .pipe(first())
+      .subscribe(
       notificationSettings => {
         this.notificationSettings = notificationSettings;
       },
@@ -45,7 +45,10 @@ export class CustomerNotificationsComponent {
   }
 
   updateNotificationSettings() {
-    this.accountService.updateNotificationSettings(this.notificationSettings).subscribe(
+    this.settingsUpdating = true;
+    this.accountService.updateNotificationSettings(this.notificationSettings)
+      .pipe(first(), finalize(() => this.settingsUpdating = false))
+      .subscribe(
       responce => {
         this.popUpService.showSuccess("Your notification settings updated successfully")
       },

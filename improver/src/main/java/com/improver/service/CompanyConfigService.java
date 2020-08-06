@@ -6,7 +6,6 @@ import com.improver.exception.ThirdPartyException;
 import com.improver.exception.ValidationException;
 import com.improver.model.NameIdTuple;
 import com.improver.model.OfferedService;
-import com.improver.model.ProNotificationSettings;
 import com.improver.model.TradesServicesCollection;
 import com.improver.model.out.CompanyCoverageConfig;
 import com.improver.model.out.ValidatedLocation;
@@ -89,29 +88,6 @@ public class CompanyConfigService {
             .setCoverageConfig(coverageConfig)
             .setCompanyLocation(company.getLocation());
     }
-
-
-    public ProNotificationSettings getNotificationSettings(Company company, Contractor contractor) {
-
-        return new ProNotificationSettings(company.getCompanyConfig().getNotificationSettings())
-            .setQuickReply(contractor.isQuickReply())
-            .setReplyText(contractor.getReplyText());
-
-    }
-
-    public void updateNotificationSettings(ProNotificationSettings notificationSettings, Company company, Contractor contractor) {
-        CompanyConfig config = company.getCompanyConfig();
-        config.getNotificationSettings()
-            .setReceiveNewLeads(notificationSettings.isReceiveNewLeads())
-            .setReceiveMessages(notificationSettings.isReceiveMessages())
-            .setReceiveMarketing(notificationSettings.isReceiveMarketing())
-            .setReceiveSuggestions(notificationSettings.isReceiveSuggestions());
-        companyConfigRepository.save(config);
-        contractorRepository.save(contractor.setQuickReply(notificationSettings.isQuickReply())
-            .setReplyText(notificationSettings.getReplyText())
-        );
-    }
-
 
     public void updateCompanyLocation(Company company, Location location, Admin currentAdmin) {
         ValidatedLocation result;

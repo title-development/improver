@@ -10,57 +10,106 @@
       <div class="account-nav-wrapper">
 
         <div class="account-top-line">
-          <div class="account-nav-title">Communication Settings</div>
+          <div class="account-nav-title">Messaging Settings</div>
         </div>
         <div [cvSpinner]="!notificationSettings" [cvSpinnerSize]="24">
           <div class="notification-settings-card card" *ngIf="notificationSettings">
 
             <div class="account-title-wrapper">
-              <div class="account-title">Email Settings</div>
-              <div class="account-subtitle">Choose the emails you want to receive from Home Improve:</div>
+              <div class="account-title">Notification Settings</div>
+              <div class="account-subtitle">Choose the notifications you want to receive from Home Improve:</div>
             </div>
 
             <div class="notification-methods-wrapper" fxLayout="column" fxLayoutAlign="start end">
 
               <div class="notification-settings-form-content">
-                <!-- TODO: not implemented-->
-                <!--<cv-checkbox name="newLeads" [(ngModel)]="notificationSettings.receiveNewLeads">
-                  <div class="notification-label">
-                    <div class="label">New Leads</div>
-                    <div class="hint">Email notifications of new leads available for purchase</div>
-                  </div>
-                </cv-checkbox>-->
 
-                <cv-checkbox name="receiveReviews" [(ngModel)]="notificationSettings.receiveMessages">
-                  <div class="notification-label">
-                    <div class="label">Messages</div>
-                    <div class="hint">Receive emails about new chat messages</div>
+                  <div class="notifications-row title-row">
+                    <div class="title-block">
+                    </div>
+                    <div class="values">
+                      <div class="email-value">
+                        Email
+                      </div>
+                      <div class="sms-value">
+                        SMS
+                      </div>
+                    </div>
                   </div>
-                </cv-checkbox>
 
-                <cv-checkbox name="receiveMarketing" [(ngModel)]="notificationSettings.receiveMarketing">
-                  <div class="notification-label">
-                    <div class="label">Marketing</div>
-                    <div class="hint">Receive emails regarding updates and special offers from Home Improve</div>
+                  <div class="notifications-row">
+                    <div class="title-block">
+                      <div class="label">New subscription leads</div>
+                      <div class="hint">Notifications about receiving of new lead by subscription</div>
+                    </div>
+                    <div class="values">
+                      <div class="email-value">
+                        <cv-checkbox name="email" [(ngModel)]="notificationSettings.receiveNewSubscriptionLeadsEmail"
+                                     disabled>
+                        </cv-checkbox>
+                      </div>
+                      <div class="sms-value">
+                        <cv-checkbox name="sms" [(ngModel)]="notificationSettings.receiveNewSubscriptionLeadsSms">
+                        </cv-checkbox>
+                      </div>
+                    </div>
                   </div>
-                </cv-checkbox>
 
-                <cv-checkbox name="receiveSuggestions" [(ngModel)]="notificationSettings.receiveSuggestions">
-                  <div class="notification-label">
-                    <div class="label">Suggestions and tips</div>
-                    <div class="hint">Receive personalized tips and suggestions to succeed in the market</div>
+                  <!--                  TODO: Uncomment after implementation on backend-->
+                  <!--                  <div class="notifications-row">-->
+                  <!--                    <div class="title-block">-->
+                  <!--                      <div class="label">New leads</div>-->
+                  <!--                      <div class="hint">Notifications of new leads available in your area</div>-->
+                  <!--                    </div>-->
+                  <!--                    <div class="values">-->
+                  <!--                      <div class="email-value">-->
+                  <!--                        <cv-checkbox name="email" [(ngModel)]="notificationSettings.receiveNewLeadsEmail">-->
+                  <!--                        </cv-checkbox>-->
+                  <!--                      </div>-->
+                  <!--                      <div class="sms-value">-->
+                  <!--                        <cv-checkbox name="sms" [(ngModel)]="notificationSettings.receiveNewLeadsSms">-->
+                  <!--                        </cv-checkbox>-->
+                  <!--                      </div>-->
+                  <!--                    </div>-->
+                  <!--                  </div>-->
+
+                  <div class="notifications-row">
+                    <div class="title-block">
+                      <div class="label">New Messages</div>
+                      <div class="hint">Notifications about new chat messages from Customers</div>
+                    </div>
+                    <div class="values">
+                      <div class="email-value">
+                        <cv-checkbox name="email" [(ngModel)]="notificationSettings.receiveMessagesEmail">
+                        </cv-checkbox>
+                      </div>
+                      <div class="sms-value">
+                      </div>
+                    </div>
                   </div>
-                </cv-checkbox>
 
-              </div>
+                  <div class="notifications-row">
+                    <div class="title-block">
+                      <div class="label">Suggestions & tips</div>
+                      <div class="hint">Personalized tips and suggestion</div>
+                    </div>
+                    <div class="values">
+                      <div class="email-value">
+                        <cv-checkbox name="email" [(ngModel)]="notificationSettings.receiveSuggestionsEmail">
+                        </cv-checkbox>
+                      </div>
+                      <div class="sms-value">
+                      </div>
+                    </div>
+                  </div>
+
+            </div>
 
               <button cv-button type="button"
                       class="notification-settings-submit-button"
-                      (click)="updateNotificationSettings()">
+                      (click)="updateNotificationSettings()" [loading]="settingsUpdating">
                 Save
               </button>
-
-            </div>
 
           </div>
         </div>
@@ -68,6 +117,7 @@
 
       <quick-reply></quick-reply>
 
+      </div>
     </div>
   </div>
 </div>

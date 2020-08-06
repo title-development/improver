@@ -11,33 +11,79 @@
         <div [cvSpinner]="!notificationSettings" [cvSpinnerSize]="24">
           <div class="notification-settings-card card" *ngIf="notificationSettings">
             <div class="account-title-wrapper">
-              <div class="account-title">Email Settings</div>
-              <div class="account-subtitle">Choose the emails you want to receive from Home Improve:</div>
+              <div class="account-title">Notification Settings</div>
+              <div class="account-subtitle">Choose the notifications you want to receive from Home Improve:</div>
             </div>
 
             <div class="notification-methods-wrapper" fxLayout="column" fxLayoutAlign="start end">
 
               <div class="notification-settings-form-content">
 
-                <cv-checkbox name="projectLifecycle" [(ngModel)]="notificationSettings.receiveMessages">
-                  <div class="notification-label">
-                    <div class="label">Messages</div>
-                    <div class="hint">Receive emails about new chat messages</div>
+                <div class="notifications-row title-row">
+                  <div class="title-block">
                   </div>
-                </cv-checkbox>
+                  <div class="values">
+                    <div class="email-value">
+                      Email
+                    </div>
+                    <div class="sms-value">
+                      SMS
+                    </div>
+                  </div>
+                </div>
 
-                <cv-checkbox name="marketing" [(ngModel)]="notificationSettings.receiveMarketing">
-                  <div class="notification-label">
-                    <div class="label">Marketing</div>
-                    <div class="hint">Receive emails regarding updates and special offers from Home Improve</div>
+                <div class="notifications-row">
+                  <div class="title-block">
+                    <div class="label">New messages</div>
+                    <div class="hint">Notifications about new chat messages from PROs</div>
                   </div>
-                </cv-checkbox>
+                  <div class="values">
+                    <div class="email-value">
+                      <cv-checkbox name="email" [(ngModel)]="notificationSettings.receiveMessagesEmail">
+                      </cv-checkbox>
+                    </div>
+                    <div class="sms-value">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="notifications-row">
+                  <div class="title-block">
+                    <div class="label">New project requests</div>
+                    <div class="hint">Notifications about new project requests from PROs</div>
+                  </div>
+                  <div class="values">
+                    <div class="email-value">
+                      <cv-checkbox name="email" [(ngModel)]="notificationSettings.receiveNewProjectRequestsEmail" [disabled]="!notificationSettings.receiveNewProjectRequestsSms">
+                      </cv-checkbox>
+                    </div>
+                    <div class="sms-value">
+                      <cv-checkbox name="sms" [(ngModel)]="notificationSettings.receiveNewProjectRequestsSms" [disabled]="!notificationSettings.receiveNewProjectRequestsEmail">
+                      </cv-checkbox>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="notifications-row">
+                  <div class="title-block">
+                    <div class="label">Suggestions & tips</div>
+                    <div class="hint">Personalized tips and suggestion</div>
+                  </div>
+                  <div class="values">
+                    <div class="email-value">
+                      <cv-checkbox name="email" [(ngModel)]="notificationSettings.receiveSuggestionsEmail">
+                      </cv-checkbox>
+                    </div>
+                    <div class="sms-value">
+                    </div>
+                  </div>
+                </div>
 
               </div>
 
               <button cv-button type="button"
                       class="notification-settings-submit-button"
-                      (click)="updateNotificationSettings()">
+                      (click)="updateNotificationSettings()" [loading]="settingsUpdating">
                 Save
               </button>
 

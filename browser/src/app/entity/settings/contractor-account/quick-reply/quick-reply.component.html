@@ -15,7 +15,7 @@
                 name="quick-reply-form"
                 fxLayout="column"
                 #quickReplyForm="ngForm"
-                (ngSubmit)="quickReplyForm.valid && submitQuickReplayMessage(quickReplyForm)"
+                (ngSubmit)="quickReplyForm.valid && updateQuickReplayMessage(quickReplyForm)"
                 novalidate>
 
             <div class="title">Send a default message to new customer project requests you've submitted.</div>
@@ -58,7 +58,7 @@
               <button type="button" cv-button-empty (click)="resetQuickReplayMessage()" [disabled]="quickReply.text == initialQuickReply.text">
                 Cancel
               </button>
-              <button cv-button type="submit" [cvSpinner]="saveProcessing" [cvSpinnerSize]="16" [cvSpinnerBackground]="true">
+              <button cv-button type="submit" [loading]="updateProcessing">
                 Save
               </button>
             </div>

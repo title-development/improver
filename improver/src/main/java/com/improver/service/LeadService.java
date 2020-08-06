@@ -50,6 +50,7 @@ public class LeadService {
     @Autowired private BillRepository billRepository;
     @Autowired private PaymentService paymentService;
     @Autowired private MailService mailService;
+    @Autowired private PhoneService phoneService;
     @Autowired private CompanyRepository companyRepository;
     @Lazy @Autowired private LeadService self;  // Required for same instance Transactional method call
 
@@ -177,10 +178,22 @@ public class LeadService {
             mailService.sendLeadAutoPurchaseEmail(company, lead, projectRequest, baseLeadInfo, questionAnswers, true);
             wsNotificationService.newSubscriptionLeadPurchase(assignment, lead.getCustomer(), serviceType, projectRequest.getId());
         }
-        mailService.sendNewProjectRequestEmail(company, lead);
+
+        notifyUsersAboutLeadPurchase(lead, company, assignment, isManual);
+
         return projectRequest;
     }
 
+    private void notifyUsersAboutLeadPurchase(Project lead, Company company, Contractor assignment, boolean isManual) {
+        if(lead.getCustomer().getNotificationSettings().isReceiveNewProjectRequestsEmail()) {
+            mailService.sendNewProjectRequestEmail(company, lead);
+        }
+
+        if (lead.getCustomer().getNotificationSettings().isReceiveNewProjectRequestsSms()
+            || assignment.getNotificationSettings().isReceiveNewSubscriptionLeadsSms()) {
+            phoneService.sendLeadPurchaseMessage(lead.getCustomer(), assignment, lead.getServiceType().getName(), isManual);
+        }
+    }
 
     /**
      * This method NOT intended to be invoked directly!!!

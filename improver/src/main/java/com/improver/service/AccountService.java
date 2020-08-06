@@ -9,6 +9,8 @@ import com.improver.model.UserAccount;
 import com.improver.model.in.CloseProjectRequest;
 import com.improver.model.in.EmailPasswordTuple;
 import com.improver.model.in.UserActivation;
+import com.improver.repository.ContractorRepository;
+import com.improver.repository.CustomerRepository;
 import com.improver.repository.UserRepository;
 import com.improver.security.JwtUtil;
 import com.improver.util.mail.MailService;
@@ -39,6 +41,8 @@ public class AccountService {
     @Autowired private UserRepository userRepository;
     @Autowired private LeadService leadService;
     @Autowired private JwtUtil jwtUtil;
+    @Autowired private CustomerRepository customerRepository;
+    @Autowired private ContractorRepository contractorRepository;
 
 
     public void updateAccount(User existed, UserAccount account) {
@@ -250,6 +254,17 @@ public class AccountService {
         log.debug("Update phone number for " + user.getEmail());
         user.setInternalPhone(phoneNumber);
         userRepository.save(user);
+    }
+
+    public void updateCustomerNotificationSettings(Customer customer, Customer.NotificationSettings settings) {
+        if(!settings.isReceiveNewProjectRequestsEmail() && !settings.isReceiveNewProjectRequestsSms()) {
+            throw new ValidationException("One of the notification types about new project request should be turned on");
+        }
+        customerRepository.save(customer.setNotificationSettings(settings));
+    }
+
+    public void updateContractorNotificationSettings(Contractor contractor, Contractor.NotificationSettings settings) {
+        contractorRepository.save(contractor.setNotificationSettings(settings));
     }
 
 }
