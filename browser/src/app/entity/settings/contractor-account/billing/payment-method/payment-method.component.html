@@ -3,19 +3,31 @@
     <div class="balance-part">
 
       <div class="content">
-        <div class="balance-value">Balance:
-          <span>{{billingService.billing.balance / 100 | currency:'USD':'symbol'}}</span></div>
-        <button cv-button (click)="!paymentCardsProcessing && openAddMoney()"
+
+          <div class="balance-value-wrapper">
+          <div class="balance-value" [ngClass]="{'only-balance-value': !billingService.billing.reserve}">
+            <span class="title">Balance:</span>
+            <span class="value">{{billingService.billing.balance / 100 | currency:'USD':'symbol'}}</span>
+          </div>
+
+          <div class="balance-value" *ngIf="billingService.billing.reserve">
+            <span class="title">Subscription reserve:</span>
+            <span class="value">{{billingService.billing.reserve / 100 | currency:'USD':'symbol'}}</span>
+          </div>
+        </div>
+
+        <button class="add-money-button" cv-button-empty (click)="!paymentCardsProcessing && openAddMoney()"
                 [hidden]="cards?.length < 1 || paymentCardsProcessing">Top up balance
         </button>
 
       </div>
     </div>
+
     <div class="payment-method-part" *ngIf="cards" [cvSpinner]="paymentCardsProcessing" [cvSpinnerSize]="30"
          [cvSpinnerBackground]="true">
 
       <div class="header">
-        <span *ngIf="cards.length > 0 && !paymentCardsProcessing">Select your default payment method</span>
+        <span *ngIf="cards.length > 0 && !paymentCardsProcessing">Account is billed to</span>
         <span *ngIf="cards.length <= 0 && !paymentCardsProcessing" class="no-cards-row">Please add a credit/debit card to finish your account setup</span>
       </div>
 
@@ -52,8 +64,8 @@
             Change default card
           </button>
           <div class="spacer"></div>
-          <button cv-button-empty *ngIf="cards.length < 5" (click)="openAddPaymentCard()">
-            Add new card
+          <button class="add-card-button" cv-button-empty *ngIf="cards.length < 5" (click)="openAddPaymentCard()">
+            Add a card
           </button>
         </div>
       </div>

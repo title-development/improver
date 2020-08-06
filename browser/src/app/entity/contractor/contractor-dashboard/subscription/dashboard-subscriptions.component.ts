@@ -17,10 +17,10 @@ export enum SubscriptionState {
 
 @Component({
   selector: 'dashboard-subscription',
-  templateUrl: './subscription.component.html',
-  styleUrls: ['./subscription.component.scss']
+  templateUrl: './dashboard-subscriptions.component.html',
+  styleUrls: ['./dashboard-subscriptions.component.scss']
 })
-export class SubscriptionComponent implements OnInit, OnChanges {
+export class DashboardSubscriptionsComponent implements OnInit, OnChanges {
 
   subscriptionState = SubscriptionState;
   subscribe: boolean = false;

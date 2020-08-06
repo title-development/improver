@@ -1,8 +1,10 @@
-import { Component, Input, OnChanges, OnInit, ViewChild, Directive } from '@angular/core';
+import { Component, Directive, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
 import { BaseChartDirective } from 'ng2-charts';
 import { ActivatedRoute } from '@angular/router';
 import { LeadsReport, MonthReport } from '../../../../api/models/LeadsReport';
-import { chartColors } from './chart.oprions';
+import { chartColors } from './chart.options';
+import { ChartDataSets, ChartOptions } from "chart.js";
+import * as pluginDataLabels from 'chartjs-plugin-datalabels';
 
 @Directive()
 class MoneySpentModel {
@@ -26,14 +28,34 @@ class MoneySpentModel {
   styleUrls: ['./money-charts.component.scss']
 })
 export class MoneyChartsComponent implements OnInit, OnChanges {
+
   @Input() leadsReport: LeadsReport;
   @ViewChild("tooltip") tooltipEl;
+
+  Math = Math;
+  datasets = [{
+    label: '',
+    borderWidth: 2,
+    data: []
+  }];
   chartData: MoneySpentModel;
   chartJsColors = chartColors;
-  chartJsOptions = {
+  barChartPlugins = [ pluginDataLabels ];
+  chartJsOptions: ChartOptions = {
     responsive: true,
-    lineTension: 0,
     maintainAspectRatio: false,
+    plugins: {
+      datalabels: {
+        anchor: 'end',
+        align: 'end',
+        font: {
+          size: 14,
+        },
+        formatter: (value, context) => {
+          return '$' + (value).toFixed(0);
+        },
+      }
+    },
     elements: {
       point: {
         radius: 3,
@@ -41,10 +63,21 @@ export class MoneyChartsComponent implements OnInit, OnChanges {
       }
     },
     tooltips: {
-      enabled: false,
-      mode: 'index',
+      enabled: true,
+			intersect: false,
       position: 'nearest',
-      custom: (tooltip) => this.htmlTooltip(tooltip)
+			backgroundColor: '#FFFFFF',
+			bodyFontColor: '#273149',
+			borderColor: '#9e9e9e',
+			borderWidth: 0.3,
+			xPadding: 6,
+			bodyAlign: "center",
+			caretPadding: 0,
+			custom: function(tooltip) {
+				if (!tooltip) return;
+				// disable displaying the color box;
+				tooltip.displayColors = false;
+			},
     },
     layout: {
       padding: {
@@ -75,19 +108,6 @@ export class MoneyChartsComponent implements OnInit, OnChanges {
       }]
     },
   };
-  datasets = [{
-    lineTension: 0,
-    label: '',
-    borderWidth: 2,
-    data: []
-  }];
-  tooltipData = {
-    price: 0,
-    opacity: 0,
-    top: 0,
-    left: 0
-  };
-  tooltipPrice: number;
 
   @ViewChild(BaseChartDirective) private _chart;
 
@@ -103,25 +123,6 @@ export class MoneyChartsComponent implements OnInit, OnChanges {
   ngOnInit(): void {
   }
 
-  htmlTooltip(tooltip) {
-    const tooltipEl = this.tooltipEl.nativeElement;
-    if (tooltip.body) {
-      this.tooltipData.price = tooltip.body.map(item => item.lines)[0] * 1;
-    }
-    if (tooltip.opacity === 0) {
-      this.tooltipData.opacity = 0;
-      return;
-    }
-
-    const positionY = this._chart.cvs.offsetTop;
-    const positionX = this._chart.cvs.offsetLeft;
-    const offset = (this._chart.cvs.offsetWidth - document.getElementById('tooltip-holder').offsetWidth) / 2;
-    this.tooltipData.opacity = 1;
-    this.tooltipData.left = positionX + tooltip.caretX - offset;
-    this.tooltipData.top  = positionY + tooltip.caretY;
-  }
-
-
   private forceChartRefresh(): void {
     if (this._chart) {
       setTimeout(() => {
@@ -136,20 +137,44 @@ export class MoneyChartsComponent implements OnInit, OnChanges {
     let chartLabels: Array<string> = [];
     let total: number = 0;
     let deals: number = 0;
+    let activeMonthsCount: number = 0;
+    let activityMonths: Array<number> = [];
     let i = 0;
     for (const val of data) {
-      chartNumbers.push(val.spend / 100);
+      chartNumbers.push(Math.round(val.spend / 100));
       chartLabels.push(val.month.substring(0, 3));
       if (i != 0) {
         total += val.spend;
         deals += val.deals;
       }
+
+      if (val.deals != 0){
+        activeMonthsCount++
+      }
+      activityMonths.push(val.deals);
       i++;
     }
     deals = Math.ceil(deals / 6);
+    if (activeMonthsCount != 0) {
+      total = Math.round((total / 100) / activeMonthsCount);
+    }
     chartNumbers.push((this.leadsReport.current.subscriptionSpend + this.leadsReport.current.payAndGoSpend) / 100);
     chartLabels.push('');
     this.datasets[0].data = chartNumbers;
+    this.chartJsOptions.tooltips.callbacks = {
+
+			title: function(tooltipItem, data) {
+				return '';
+			},
+
+			label: function(tooltipItem, data) {
+				if (typeof activityMonths[tooltipItem.index] === 'undefined'){
+					return;
+				}
+				return activityMonths[tooltipItem.index] + ' leads';
+			},
+
+		};
     this.chartData = new MoneySpentModel(chartNumbers, chartLabels, total, deals);
     this.forceChartRefresh();
   }

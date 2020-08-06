@@ -1,12 +1,18 @@
-@import "../../../../../../improver-mixins.scss";
+@import "improver-mixins";
 
 .payment-method-wrapper {
 }
 
 .payment-method-container {
+
   .balance-part {
-    padding: 24px 24px;
+    padding: 16px 24px 8px 24px;
     border-bottom: 1px solid $grey-200;
+
+    @include response(sm) {
+      padding: 24px;
+    }
+
     @include response(xs) {
       padding: 24px 16px;
     }
@@ -14,37 +20,79 @@
     .content {
       display: flex;
       justify-content: space-between;
-      align-items: flex-end;
-      @include response(xs) {
-        align-items: center;
-        justify-content: space-between;
+      align-items: center;
 
+      @include response(xs) {
+        flex-direction: column;
+        justify-content: normal;
+        align-items: flex-end;
       }
-      .balance-value {
-        font-size: 16px;
-        color: $black-800;
-        font-weight: 500;
-        @include response(xs) {
-          margin-bottom: 8px;
-          width: 110px;
+
+      .balance-value-wrapper {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        width: 100%;
+        max-width: 360px;
+
+        @include response-to(xs) {
+          justify-content: normal;
+          flex-direction: column;
+          max-width: none;
+          margin-bottom: 12px;
         }
-        span {
+
+        .only-balance-value {
+          flex-direction: row !important;
+          align-items: baseline !important;
+          margin: 16px 0 !important;
+
+          .title {
+            margin-right: 16px;
+          }
+
+          .value {
+            margin: 0 !important;
+          }
+        }
+
+      .balance-value {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-right: 18px;
+
+        @include response-to(xs) {
+          flex-direction: row;
+          margin-right: 0;
+          justify-content: space-between;
+          align-items: flex-end;
+        }
+
+        .title {
+          font-size: 16px;
+          color: $black-800;
+          font-weight: 500;
+        }
+
+        .value {
           font-size: 24px;
-          margin-left: 15px;
+          margin-top: 8px;
+          font-weight: 500;
+
           @include response(xs) {
             font-size: 20px;
             margin-left: 0;
           }
         }
       }
+      }
 
       .add-money-button {
-        background-image: linear-gradient(to top, #0092ff, #52b4fe);
-        padding: 9px 20px;
-        cursor: pointer;
-        font-size: 14px;
-        color: $white;
-        border-radius: 2px;
+
+        @include response-to(xs){
+          width: 126px;
+        }
       }
 
     }
@@ -63,7 +111,7 @@
     }
 
     .header {
-      font-size: 18px;
+      font-size: 16px;
       color: rgba(33, 33, 33, 0.87);
       margin-bottom: 8px;
 
@@ -167,6 +215,10 @@
       }
       .spacer {
         flex-grow: 1;
+      }
+
+      .add-card-button {
+        width: 126px;
       }
 
     }

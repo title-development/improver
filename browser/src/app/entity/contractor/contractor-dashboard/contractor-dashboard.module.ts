@@ -9,7 +9,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ChartsModule } from 'ng2-charts';
 import { PayAndGoComponent } from './pay-and-go/pay-and-go.component';
-import { SubscriptionComponent } from './subscription/subscription.component';
+import { DashboardSubscriptionsComponent } from './subscription/dashboard-subscriptions.component';
 import { NgArrayPipesModule, NgStringPipesModule } from 'angular-pipes';
 import { SharedModule } from '../../../shared/shared.module';
 import { LayoutModule } from '../../../layout/layout.module';
@@ -21,6 +21,8 @@ import { CvIconModule } from '../../../theme/icon/cv-icon-module';
 import { CommonModule } from '@angular/common';
 import { CvSpinnerModule } from '../../../theme/spinner/cv-spinner.module';
 import { CvHintModule } from '../../../theme/hint/cv-hint.module';
+import { ChartData, ChartDataSets } from "chart.js";
+import { ChartModule } from "primeng";
 
 const contractorDashboardRouting = RouterModule.forChild([
     {
@@ -47,7 +49,8 @@ const contractorDashboardRouting = RouterModule.forChild([
     CvButtonModule,
     CvIconModule,
     CvSpinnerModule,
-    CvHintModule
+    CvHintModule,
+    ChartModule
   ],
   declarations: [
     ContractorDashboardComponent,
@@ -56,7 +59,7 @@ const contractorDashboardRouting = RouterModule.forChild([
     MoneyChartsComponent,
     DashboardMapComponent,
     PayAndGoComponent,
-    SubscriptionComponent
+    DashboardSubscriptionsComponent
   ],
   providers: [
 

@@ -15,21 +15,21 @@
 <ng-container *ngIf="state == subscriptionState.SUBSCRIBED">
   <div class="subscribed">
     <div class="labels">
-      <div class="label">Subscription</div>
       <div class="label">{{leadsReport?.current.month}}</div>
+      <div class="label">Subscription</div>
     </div>
 
     <div class="amount-holder">
       <div class="amount">
-        <span>{{leadsReport.current.subscriptionSpend / 100 | currency:'USD':'symbol'}}</span>
-        <span>/{{leadsReport.current.subscriptionAmount / 100 | currency:'USD':'symbol'}}</span>
+        <span>{{leadsReport.current.subscriptionSpend / 100 | currency:'USD':'symbol': '1.0-0'}}</span>
+        <span>/{{leadsReport.current.subscriptionAmount / 100 | currency:'USD':'symbol': '1.0-0'}}</span>
       </div>
-      <div class="deals">Made {{leadsReport.current.subscriptionDeals}}
+      <div class="deals">{{leadsReport.current.subscriptionDeals}}
         <ng-container [ngPlural]="leadsReport.current.subscriptionDeals">
-          <ng-template ngPluralCase="=0">deals</ng-template>
-          <ng-template ngPluralCase="=1">deal</ng-template>
-          <ng-template ngPluralCase="few">deals</ng-template>
-          <ng-template ngPluralCase="other">deals</ng-template>
+          <ng-template ngPluralCase="=0">leads</ng-template>
+          <ng-template ngPluralCase="=1">lead</ng-template>
+          <ng-template ngPluralCase="few">leads</ng-template>
+          <ng-template ngPluralCase="other">leads</ng-template>
         </ng-container>
       </div>
     </div>

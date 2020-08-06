@@ -1,4 +1,4 @@
-@import "../../../../../improver-mixins.scss";
+@import "improver-mixins";
 
 :host {
   display: block;
@@ -12,8 +12,15 @@
 :host(.space) {
   background-color: #ffedd8;
 }
+
+.labels-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
 .chart-holder {
-  height: 130px;
+  height: 170px;
   width: 122%;
   position: relative;
   left: -11%;
@@ -44,8 +51,8 @@
 .labels {
   display: flex;
   padding: 16px 16px 0 16px;
-  align-items: flex-end;
   justify-content: space-between;
+
   .label {
     color: #757575;
     transition: color .3s ease, transform .3s ease;
@@ -74,23 +81,5 @@
     font-size: 12px;
     line-height: 16px;
     color: $grey-600;
-  }
-}
-
-.tooltip {
-  opacity: 1;
-  position: absolute;
-  transform: translate(0%, 0);
-  background-color: #fff;
-  font-size: 12px;
-  padding: 8px;
-  border: 1px solid #000;
-  border-radius: 6px;
-  z-index: 10;
-  pointer-events: none;
-  box-shadow: elevation();
-  transition: left .2s ease, top .2s ease, opacity .2s ease;
-  @include response(xs) {
-    transform: translate(-50%, 0);
   }
 }

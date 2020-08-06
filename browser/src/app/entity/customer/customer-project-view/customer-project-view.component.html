@@ -91,7 +91,7 @@
                               xPosition="before">
                       <a mat-menu-item (click)="openProjectRequest(projectRequest)">Details
                       </a>
-                      <a mat-menu-item [routerLink]="['/companies', projectRequest.company.id]">View company</a>
+                      <a mat-menu-item [routerLink]="['/companies', projectRequest.company.id]">View profile</a>
                       <button mat-menu-item
                               *ngIf="(projectRequest.status == ProjectRequest.Status.ACTIVE) && !Project.isArchived(project.status)"
                               (click)="projectActionService.hireCompanyConfirm(projectRequest)">Accept Offer
@@ -145,7 +145,7 @@
                     <mat-menu class="projectRequest-menu" #projectRequestMenu="matMenu" yPosition="below"
                               xPosition="before">
                       <button mat-menu-item (click)="openProjectRequest(projectRequest)">Details</button>
-                      <a mat-menu-item [routerLink]="['/companies', projectRequest.company.id]">View company</a>
+                      <a mat-menu-item [routerLink]="['/companies', projectRequest.company.id]">View profile</a>
                       <button mat-menu-item
                               *ngIf="(projectRequest.status == ProjectRequest.Status.ACTIVE) && !Project.isArchived(project.status)"
                               (click)="projectActionService.hireCompanyConfirm(projectRequest)">Accept Offer

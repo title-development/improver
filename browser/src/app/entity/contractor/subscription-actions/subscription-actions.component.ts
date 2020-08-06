@@ -90,6 +90,7 @@ export class SubscriptionActionsComponent implements OnDestroy {
         } else {
           this.popupService.showSuccess(`You have been subscribed for $${this.subscriptionActionsService.subscriptionAmount / 100}/month`);
         }
+        this.billingService.getSubscriptionInfo();
         this.subscriptionActionsService.reset();
         this.router.navigate(['pro', 'settings', 'billing']);
       },

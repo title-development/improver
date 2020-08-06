@@ -70,10 +70,6 @@
     .container {
       max-width: 320px;
 
-      @include response-to(xs) {
-        min-width: 100%;
-      }
-
       .message-email-verification {
         font-size: 18px;
         text-align: center;
