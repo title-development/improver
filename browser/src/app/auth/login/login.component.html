@@ -18,6 +18,17 @@
               novalidate>
 
           <div class="auth-form-title">Log in to Home Improve</div>
+
+          <social-buttons buttonText="Log in with"
+                          [processing]="processing"
+                          (responseMessageType)="messageType = $event;"
+                          (responseMessage)="messageText = $event;"
+                          (showMessage)="showMessage = $event;"></social-buttons>
+
+          <div class="auth-social-hint">
+            <span>or continue with Email</span>
+          </div>
+
           <cv-input-field>
             <input cv-input
                    type="text"
@@ -61,15 +72,6 @@
           <button cv-button class="full-width auth-form-submit-button" type="submit" [loading]="processing">
             Log in
           </button>
-
-          <div class="auth-social-hint">
-            <span>or continue with</span>
-          </div>
-
-          <social-buttons [processing]="processing"
-                          (responseMessageType)="messageType = $event;"
-                          (responseMessage)="messageText = $event;"
-                          (showMessage)="showMessage = $event;"></social-buttons>
 
           <div class="captcha-reminder">This site is protected by reCAPTCHA and the Google
             <a href="https://policies.google.com/privacy">Privacy Policy</a> and

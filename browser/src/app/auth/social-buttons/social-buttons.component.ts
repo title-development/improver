@@ -29,6 +29,7 @@ export class SocialButtonsComponent implements OnDestroy {
 
   private readonly destroyed$ = new Subject<void>();
 
+  @Input() buttonText: string = 'Continue with'
   @Input() referralCode: string;
   @Input() preventLogin: boolean = false;
   @Input() disabled: boolean = false;

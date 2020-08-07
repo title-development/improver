@@ -4,7 +4,9 @@ import com.improver.entity.ServiceType;
 import com.improver.entity.Trade;
 import com.improver.model.NameIdTuple;
 import com.improver.model.OfferedService;
-import com.improver.model.out.*;
+import com.improver.model.out.NameIdImageTuple;
+import com.improver.model.out.TradeAndServices;
+import com.improver.model.out.TradeModel;
 import com.improver.repository.ServiceTypeRepository;
 import com.improver.repository.TradeRepository;
 import com.improver.service.ServiceTypeService;
@@ -71,9 +73,8 @@ public class CatalogController {
 
 
     @GetMapping(SERVICES)
-    public ResponseEntity<List<NameIdTuple>> getAllServicesModel() {
-        List<NameIdTuple> services = serviceTypeService.getAllServicesModel();
-
+    public ResponseEntity<List<OfferedService>> getAllServicesModel() {
+        List<OfferedService> services = serviceTypeService.getAllServicesModel();
         return new ResponseEntity<>(services, HttpStatus.OK);
     }
 

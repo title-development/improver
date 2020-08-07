@@ -68,7 +68,7 @@
     }
 
     .container {
-      max-width: 320px;
+      max-width: 300px;
 
       .message-email-verification {
         font-size: 18px;
@@ -121,7 +121,7 @@
           font-weight: 600;
           text-align: left;
           margin-bottom: 16px;
-          font-size: 23px;
+          font-size: 22px;
           color: $black-800;
         }
 
@@ -132,11 +132,11 @@
         }
 
         .auth-social-hint {
-          font-size: 12px;
+          font-size: 14px;
           text-align: center;
-          color: rgba(0, 0, 0, 0.38);
+          color: $grey-500;
           width: 100%;
-          margin: 8px 0 12px;
+          margin: 8px 0 24px;
           position: relative;
 
           &:before {
@@ -147,7 +147,7 @@
             top: 50%;
             height: 1px;
             right: 0;
-            background-color: rgba(0, 0, 0, 0.38);
+            background-color: $grey-300;
           }
 
           span {
@@ -232,6 +232,7 @@
 
       .captcha-reminder {
         text-align: left;
+        margin-top: 16px;
         margin-bottom: 16px;
         font-size: 10px;
         color: rgba(0, 0, 0, 0.54);

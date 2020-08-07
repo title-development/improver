@@ -37,7 +37,7 @@ services-selector::ng-deep {
 
 .card {
   @include response-to(xs) {
-    padding: 8px;
+    padding: 16px;
   }
 
   .radius-value {
@@ -65,7 +65,6 @@ services-selector::ng-deep {
     font-size: 20px;
     font-weight: 600;
     color: $black-800;
-    margin-top: 16px;
   }
 
   .lead-preference-sub-title {

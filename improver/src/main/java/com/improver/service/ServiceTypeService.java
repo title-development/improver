@@ -6,6 +6,7 @@ import com.improver.entity.Trade;
 import com.improver.exception.ConflictException;
 import com.improver.exception.NotFoundException;
 import com.improver.model.NameIdTuple;
+import com.improver.model.OfferedService;
 import com.improver.model.admin.AdminServiceType;
 import com.improver.repository.*;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +33,7 @@ public class ServiceTypeService {
     @Autowired private StaffActionLogger staffActionLogger;
 
 
-    public List<NameIdTuple> getAllServicesModel() {
+    public List<OfferedService> getAllServicesModel() {
         return serviceTypeRepository.getAllActiveAsModels();
     }
 

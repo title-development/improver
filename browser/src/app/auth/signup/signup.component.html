@@ -21,6 +21,17 @@
 
           <div class="auth-form-title">Sign up to hire Professionals</div>
 
+          <social-buttons buttonText="Sign up with"
+                          [processing]="registrationProcessing"
+                          (responseMessageType)="messageType = $event;"
+                          (responseMessage)="messageText = $event;"
+                          (showMessage)="showMessage = $event;">
+          </social-buttons>
+
+          <div class="auth-social-hint">
+            <span>or continue with Email</span>
+          </div>
+
           <cv-input-field>
             <input cv-input type="text"
                    inputmode="email"
@@ -67,7 +78,7 @@
                    maxlength="32"
                    pattern="{{constants.patterns.password}}">
             <cv-field-error>
-               <cv-password-hint [checkedInputRef]="passwordInput"></cv-password-hint>
+              <cv-password-hint [checkedInputRef]="passwordInput"></cv-password-hint>
             </cv-field-error>
           </cv-input-field>
 
@@ -146,16 +157,6 @@
           <button cv-button class="full-width auth-form-submit-button" type="submit">
             Sign up
           </button>
-
-          <div class="auth-social-hint">
-            <span>or continue with</span>
-          </div>
-
-          <social-buttons [processing]="registrationProcessing"
-                          (responseMessageType)="messageType = $event;"
-                          (responseMessage)="messageText = $event;"
-                          (showMessage)="showMessage = $event;">
-          </social-buttons>
 
           <div class="captcha-reminder">This site is protected by reCAPTCHA and the Google
             <a href="https://policies.google.com/privacy">Privacy Policy</a> and

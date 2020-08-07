@@ -67,9 +67,9 @@ public interface ServiceTypeRepository extends JpaRepository<ServiceType, Long> 
             " INNER JOIN s.trades t WHERE s.isActive = true AND t.id IN ?1 ORDER BY s.name ASC")
     List<OfferedService> getTradeServicesByIds(List<Long> ids);
 
-    @Query("SELECT new com.improver.model.NameIdTuple(s.id, s.name) FROM com.improver.entity.ServiceType s" +
+    @Query("SELECT new com.improver.model.OfferedService(s.id, s.name, s.leadPrice) FROM com.improver.entity.ServiceType s" +
         " WHERE s.isActive = true ORDER BY s.name ASC")
-    List<NameIdTuple> getAllActiveAsModels();
+    List<OfferedService> getAllActiveAsModels();
 
     @Query("SELECT new com.improver.model.NameIdParentTuple(s.id, s.name, q.id) FROM com.improver.entity.ServiceType s " +
         "INNER JOIN s.questionary q WHERE q.id = s.questionary ORDER BY s.name ASC")

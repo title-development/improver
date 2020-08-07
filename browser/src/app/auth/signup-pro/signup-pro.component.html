@@ -24,14 +24,27 @@
         <div class="row">
           <h3 class="col-md-8 col-sm-12 col-xs-12">Create Pro Account</h3>
           <div [ngClass]="{'invisible': mediaQuery.xs || mediaQuery.sm}" class="or-social col-md-4">
-            <div class="auth-social-hint">
-              <span>or continue with</span>
-            </div>
           </div>
         </div>
 
         <div class="row">
           <div class="col-md-8 col-sm-12 col-xs-12">
+
+            <social-buttons buttonText="Sign up with"
+                            [preventLogin]="!registerProps.agree"
+                            [processing]="processing"
+                            [isPro]="true"
+                            [referralCode]="user.referralCode"
+                            (responseMessageType)="messageType = $event;"
+                            (responseMessage)="messageText = $event;"
+                            (showMessage)="showMessage = $event;"
+                            (click)="agreeForSocialLogin = !registerProps.agree">
+            </social-buttons>
+
+            <div class="auth-social-hint">
+              <span>or continue with Email</span>
+            </div>
+
             <div class="row">
               <div class="col-md-6 col-sm-6 col-xs-12">
                 <cv-input-field>
@@ -181,19 +194,6 @@
 
           <div class="col-md-4 col-sm-12 col-xs-12">
 
-            <div class="auth-social-hint" [ngClass]="{'invisible': mediaQuery.md || mediaQuery.lg || mediaQuery.xlg}">
-              <span>or continue with</span>
-            </div>
-            <social-buttons [preventLogin]="!registerProps.agree"
-                            [processing]="processing"
-                            [isPro]="true"
-                            [referralCode]="user.referralCode"
-                            (responseMessageType)="messageType = $event;"
-                            (responseMessage)="messageText = $event;"
-                            (showMessage)="showMessage = $event;"
-                            (click)="agreeForSocialLogin = !registerProps.agree"
-                            [ngClass]="{'desktop': mediaQuery.md || mediaQuery.lg || mediaQuery.xlg}">
-            </social-buttons>
             <div class="hint account-hint" *ngIf="!(mediaQuery.xs || mediaQuery.sm)">
               <span>Create a PRO account and continue company registration whenever suits you.</span>
             </div>
