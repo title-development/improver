@@ -26,7 +26,7 @@
           <div class="col-md-8 col-sm-12 col-xs-12 avatar-block-wrapper">
             <div class="avatar-wrapper">
               <div class="avatar"
-                   [ngStyle]="companyRegistration.company.logo == '' && {'background-image':'url(/assets/img/company-logo-placeholder.png)'} || {'background-image':'url(' + companyRegistration.company.logo + ')'}"></div>
+                   [style.background-image]="companyInfoService.makeTrustedImageURL(companyRegistration.company.logo)"></div>
               <div class="actions">
                 <div class="icon -edit" title="Edit icon" (click)="openDialogPhoto()">
                   <mat-icon class="edit">edit</mat-icon>

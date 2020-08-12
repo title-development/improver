@@ -1,9 +1,6 @@
 package com.improver.service;
 
-import com.improver.entity.Contractor;
-import com.improver.entity.Customer;
-import com.improver.entity.SocialConnection;
-import com.improver.entity.User;
+import com.improver.entity.*;
 import com.improver.exception.AuthenticationRequiredException;
 import com.improver.exception.ConflictException;
 import com.improver.exception.NotFoundException;
@@ -86,8 +83,26 @@ public class SocialConnectionService {
         if (existedConnection != null) {
             throw new ConflictException(StringUtil.capitalize(socialUser.getProvider().toString()) + " account is already connected to another user");
         }
+        if (user instanceof Contractor){
+            addCompanySocialIcon((Contractor) user, socialUser);
+        } else {
+            addUserSocialIcon(user, socialUser);
+        }
         SocialConnection socialConnection = new SocialConnection(socialUser, user);
         socialConnectionRepository.save(socialConnection);
+    }
+
+    private void addUserSocialIcon(User user, SocialUser socialUser) {
+        if (socialUser.getPicture() != null && (user.getIconUrl() == null || user.getIconUrl().isEmpty())){
+            user.setIconUrl(socialUser.getPicture());
+        }
+    }
+
+    private void addCompanySocialIcon(Contractor contractor, SocialUser socialUser){
+        Company company = contractor.getCompany();
+        if (socialUser.getPicture() != null && (company.getIconUrl() == null || company.getIconUrl().isEmpty())) {
+            company.setIconUrl(socialUser.getPicture());
+        }
     }
 
 

@@ -57,17 +57,22 @@ public class ImageService {
     /**
      * Saves Image.
      * Accepts image as BASE64 encoded data like "data:image/jpeg;base64,/9j/4AAQ...yD==".
+     * or
+     * path to an external resource like "https://....."
      *
      * @return image url
      */
     public String saveBase64Image(String imageInBase64) throws ValidationException, InternalServerException {
         String imageUrl;
+        if (imageInBase64.startsWith("https://")){
+            return imageInBase64;
+        }
         int startOfBase64Data = imageInBase64.indexOf(COMMA) + 1;
         imageInBase64 = imageInBase64.substring(startOfBase64Data, imageInBase64.length());
+
         if (!Base64.isBase64(imageInBase64)) {
             throw new ValidationException("Image is not in BASE64 format!");
         }
-
 
         try {
             byte[] data = Base64.decodeBase64(imageInBase64);
@@ -145,7 +150,10 @@ public class ImageService {
     }
     
 
-    public ResponseEntity<Resource> getImageByURL(String imageUrl) {
+    public ResponseEntity getImageByURL(String imageUrl) {
+        if (imageUrl.startsWith("https://")){
+            return redirectToResourceURL(imageUrl);
+        }
         String imageName = getImageNameFromURL(imageUrl);
         return getImageByName(imageName);
     }
@@ -157,7 +165,7 @@ public class ImageService {
         return addCacheControl(media);
     }
 
-    public ResponseEntity redirectToResourceURL(String iconUrl) {
+    private ResponseEntity redirectToResourceURL(String iconUrl) {
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(URI.create(iconUrl));
         return new ResponseEntity(headers, HttpStatus.MOVED_PERMANENTLY);

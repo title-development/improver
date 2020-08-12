@@ -2,9 +2,9 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { CompanyInfo, SystemMessageType } from "../../model/data-model";
 import { dialogsMap } from "../../shared/dialogs/dialogs.state";
 import {
-  addLicenseDialogConfig,
-  confirmDialogConfig,
-  mobileMediaDialogConfig
+	addLicenseDialogConfig,
+	confirmDialogConfig,
+	mobileMediaDialogConfig
 } from "../../shared/dialogs/dialogs.configs";
 import { CompanyService } from "./company.service";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
@@ -14,12 +14,14 @@ import { LocationValidateService } from "./location-validate.service";
 import { Constants } from "../../util/constants";
 import { LicenseService } from "./license.service";
 import { MediaQuery, MediaQueryService } from "../../util/media-query.service";
+import { DomSanitizer, SafeStyle } from "@angular/platform-browser";
 
 @Injectable({
   providedIn: 'root'
 })
 export class CompanyInfoService {
 
+  DEFAULT_COMPANY_IMAGE_URL: string = 'url(/assets/img/company-logo-placeholder.png)';
   private licenseDialogRef: MatDialogRef<any>;
   private confirmDialogRef: MatDialogRef<any>;
   companyLicensesChanged$: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -30,6 +32,7 @@ export class CompanyInfoService {
   constructor(private companyService: CompanyService,
               private licenseService: LicenseService,
               private dialog: MatDialog,
+              private domSanitizer: DomSanitizer,
               public popupService: PopUpMessageService,
               public securityService: SecurityService,
               public constants: Constants,
@@ -138,5 +141,16 @@ export class CompanyInfoService {
       err => {
         console.error(err);
       });
+  }
+
+  makeTrustedImageURL(image): SafeStyle {
+    let imageUrl: string;
+    if (image != null && image != '') {
+      let imageData: string = JSON.stringify(image).replace(/\\n/g, '');
+      imageUrl = 'url(' + imageData + ')';
+    } else {
+      imageUrl = this.DEFAULT_COMPANY_IMAGE_URL;
+    }
+    return this.domSanitizer.bypassSecurityTrustStyle(imageUrl);
   }
 }

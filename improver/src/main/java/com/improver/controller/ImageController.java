@@ -45,7 +45,7 @@ public class ImageController {
 
     //This is called for Notification to display icons
     @GetMapping(COMPANIES_PATH + COMPANY_ID + ICON)
-    public ResponseEntity<Resource> getCompanyIcon(@PathVariable long companyId) {
+    public ResponseEntity getCompanyIcon(@PathVariable long companyId) {
         String iconUrl = companyRepository.getIconUrl(companyId)
             .orElseThrow(NotFoundException::new);
         return imageService.getImageByURL(iconUrl);
@@ -58,9 +58,6 @@ public class ImageController {
             .orElseThrow(NotFoundException::new);
 
         log.debug("Icon=" + iconUrl);
-        if (iconUrl.contains("https")){
-            return imageService.redirectToResourceURL(iconUrl);
-        }
         return imageService.getImageByURL(iconUrl);
     }
 

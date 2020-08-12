@@ -6,9 +6,10 @@ import { ActivatedRoute } from '@angular/router';
 import { SecurityService } from '../../../../auth/security.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import {
-  companyInfoDialogConfig,
   completeProjectDialogConfig,
-  confirmDialogConfig, mobileMediaDialogConfig, passwordEditorDialogConfig,
+  confirmDialogConfig,
+  mobileMediaDialogConfig,
+  passwordEditorDialogConfig,
   personalPhotoDialogConfig,
   phoneValidationDialogConfig
 } from '../../../../shared/dialogs/dialogs.configs';
@@ -25,6 +26,8 @@ import { SocialConnection } from '../../../../api/models/SocialConnection';
 import { FacebookLoginProvider, GoogleLoginProvider, SocialAuthService, SocialUser } from 'angularx-social-login';
 import { from, Observable, Subject, throwError } from 'rxjs';
 import { MediaQuery, MediaQueryService } from "../../../../util/media-query.service";
+import { CompanyService } from "../../../../api/services/company.service";
+import { CompanyInfoService } from "../../../../api/services/company-info.service";
 
 
 @Component({
@@ -38,6 +41,7 @@ export class PersonalInfoComponent implements OnDestroy {
   account: Account;
   newEmail: string;
   accountPhone: string;
+  companyIconUrl: string;
   confirmDialogRef: MatDialogRef<any>;
   photoDialogRef: MatDialogRef<any>;
   deleteAccountDialogRef: MatDialogRef<any>;
@@ -71,11 +75,16 @@ export class PersonalInfoComponent implements OnDestroy {
               public accountService: AccountService,
               public tricksService: TricksService,
               public popupService: PopUpMessageService,
+              public companyInfoService: CompanyInfoService,
+              private companyService: CompanyService,
               private mediaQueryService: MediaQueryService,
               private socialConnectionService: SocialLoginService,
               private socialAuthService: SocialAuthService) {
     this.getUserAccount();
     this.subscribeForMediaQuery();
+    if (this.securityService.hasRole(Role.CONTRACTOR)){
+      this.getCompanyIcon();
+    }
     this.socialProviders = enumToArrayList(SocialConnection.Provider);
   }
 
@@ -122,6 +131,7 @@ export class PersonalInfoComponent implements OnDestroy {
           this.account = account;
           this.newEmail = this.currentEmail = account.email;
           this.accountPhone = this.currentPhone = this.account.phone = account.phone ? applyPhoneMask(account.phone) : "";
+          this.setUserIconUrl(this.account.iconUrl);
         },
         err => {
           console.error(err);
@@ -136,6 +146,20 @@ export class PersonalInfoComponent implements OnDestroy {
       }
     );
   }
+
+  getCompanyIcon() {
+    this.companyService.get(this.securityService.getLoginModel().company)
+        .subscribe(
+          companyProfile => {
+            this.companyIconUrl = companyProfile.iconUrl;
+            this.setCompanyIconUrl(this.companyIconUrl);
+          },
+          err => {
+            console.error(err);
+          });
+  }
+
+
 
   updateUserInfo(form: NgForm): void {
     const formHasChanges = Object.values(form.controls).some(control => control.dirty || control.touched);
@@ -249,12 +273,19 @@ export class PersonalInfoComponent implements OnDestroy {
     this.photoDialogRef.componentInstance.onPhotoReady.pipe(
       switchMap(
         (base64: string) => {
+          if (this.securityService.hasRole(Role.CONTRACTOR)){
+            return this.companyService.updateLogo(this.securityService.getLoginModel().company, base64);
+          }
           return this.accountService.updateIconBase64(base64);
         }
       )
     ).subscribe(
       res => {
-        this.setUserIconUrl(res.body);
+        if (this.securityService.hasRole(Role.CONTRACTOR)) {
+          this.setCompanyIconUrl(res.body);
+        } else {
+          this.setUserIconUrl(res.body);
+        }
       },
       err => this.popupService.showError(getErrorMessage(err)));
   }
@@ -298,6 +329,9 @@ export class PersonalInfoComponent implements OnDestroy {
       .subscribe(() => {
         this.popupService.showSuccess(`${capitalize(socialPlatform)} account has been connected`);
         this.getUserAccount();
+        if (this.securityService.hasRole(Role.CONTRACTOR)){
+          this.getCompanyIcon();
+        }
       }, err => {
         this.popupService.showError(getErrorMessage(err));
       });
@@ -335,6 +369,10 @@ export class PersonalInfoComponent implements OnDestroy {
     return this.socialConnections.some(connection => connection.provider == provider);
   }
 
+  private setCompanyIconUrl(iconUrl: string) {
+    this.companyIconUrl = iconUrl;
+    this.securityService.getCurrentUser();
+  }
 
   private setUserIconUrl(iconUrl: string) {
     this.account.iconUrl = iconUrl;

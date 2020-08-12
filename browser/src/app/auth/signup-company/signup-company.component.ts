@@ -25,6 +25,8 @@ import { Router } from '@angular/router';
 import { forkJoin, ReplaySubject, Subject } from 'rxjs';
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { RegistrationHelper } from "../../util/registration-helper";
+import { DomSanitizer } from "@angular/platform-browser";
+import { CompanyInfoService } from "../../api/services/company-info.service";
 import LatLng = google.maps.LatLng;
 import Polygon = google.maps.Polygon;
 
@@ -112,10 +114,12 @@ export class SignupCompanyComponent {
               public popUpMessageService: PopUpMessageService,
               public registrationService: RegistrationService,
               public boundariesService: BoundariesService,
+              public dialog: MatDialog,
+              public companyInfoService: CompanyInfoService,
+              private domSanitizer: DomSanitizer,
               private changeDetectorRef: ChangeDetectorRef,
               private gMapUtils: GoogleMapUtilsService,
               private applicationRef: ApplicationRef,
-              public dialog: MatDialog,
               private router: Router,
               private registrationHelper: RegistrationHelper) {
     this.years = this.tricksService.fillArrayWithNumbers(this.constants.COMPANY_FOUNDATION_MIN_YEAR, new Date().getFullYear(), false);
@@ -162,6 +166,8 @@ export class SignupCompanyComponent {
   getIncompleteCompanyRegistration() {
     if (sessionStorage.getItem(SignupCompanyComponent.COMPANY_REGISTRATION_STEP_KEY) && sessionStorage.getItem(SignupCompanyComponent.COMPANY_STORAGE_KEY)) {
       this.getCompanyModel();
+    } else {
+      this.companyRegistration.company.logo = this.securityService.getLoginModel().iconUrl;
     }
   }
 

@@ -16,12 +16,18 @@
             <h3>User information</h3>
             <div class="row">
 
-              <div *ngIf="!securityService.hasRole(Role.CONTRACTOR)" class="avatar-content col-md-3 col-sm-3 col-xs-12">
+              <div class="avatar-content col-md-3 col-sm-3 col-xs-12">
                 <div class="avatar-wrapper" fxLayout="row" fxLayoutAlign="center center">
-                  <div class="avatar" *ngIf="securityService.isAuthenticated()"
-                       [ngStyle]="account.iconUrl && account.iconUrl != '' && {'background-image':'url(' + account.iconUrl + ')'} || securityService.getLoginModel().company && {'background-image':'url(/assets/img/contractor-logo-placeholder.png)'} || {'background-image':'url(/assets/img/user-logo-placeholder.png)'}"></div>
+                  <div class="avatar" *ngIf="securityService.isAuthenticated() && !securityService.hasRole(Role.CONTRACTOR)"
+                       [ngStyle]="account.iconUrl && account.iconUrl != '' && {'background-image':'url(' + account.iconUrl + ')'} || {'background-image':'url(/assets/img/user-logo-placeholder.png)'}">
+                  </div>
+
+                  <div class="avatar" *ngIf="securityService.isAuthenticated() && securityService.hasRole(Role.CONTRACTOR)"
+                       [style.background-image]="companyInfoService.makeTrustedImageURL(companyIconUrl) || 'url(/assets/img/company-logo-placeholder.png)'">
+                  </div>
+
                   <div class="actions">
-                    <div class="icon -delete" title="Delete icon" *ngIf="account.iconUrl"
+                    <div class="icon -delete" title="Delete icon" *ngIf="account.iconUrl && !securityService.hasRole(Role.CONTRACTOR)"
                          (click)="deleteAccountImage()">
                       <mat-icon class="delete">delete</mat-icon>
                     </div>
@@ -32,7 +38,7 @@
                 </div>
               </div>
 
-              <div [ngClass]="securityService.hasRole(Role.CONTRACTOR) ? 'col-md-12 col-sm-12 col-xs-12' : 'col-md-9 col-sm-9 col-xs-12'">
+              <div class="col-md-9 col-sm-9 col-xs-12">
 
                 <form class="personal-info-form"
                       name="personal-info-form"
