@@ -26,6 +26,9 @@ export class CustomerProjectRequestDialogAboutComponent implements OnDestroy {
       distinctUntilChanged()
     ).subscribe((res: MediaQuery) => {
       this.mediaQuery = res;
+      if (this.mediaQuery.xs) {
+        this.truncateOfferedServicesInfo = 10;
+      }
     });
   }
 

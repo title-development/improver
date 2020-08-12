@@ -122,7 +122,8 @@
 
     &.decline {
       .message {
-        background-color: #f83144;
+        background: none;
+        color: $dark;;
       }
     }
 

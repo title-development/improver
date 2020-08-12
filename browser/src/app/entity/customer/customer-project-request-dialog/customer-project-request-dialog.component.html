@@ -1,21 +1,64 @@
 <div class="dialog-content-wrapper">
   <!--HEADER-->
   <div class="header lg-none xlg-none" *ngIf="showAddReviewForm == false">
-    <mat-icon class="close-modal" color="accent" (click)="close()">clear</mat-icon>
+    <mat-icon class="close-modal" color="accent" (click)="close()" *ngIf="!mediaQuery.xs">clear</mat-icon>
 
     <div class="header-content-wrapper">
       <div class="header-content" *ngIf="companyProfile">
-        <div  class="logo" [ngClass]="{'-archived': companyProfile.deleted}"
+        <div class="logo" [ngClass]="{'-archived': companyProfile.deleted}"
               [ngStyle]="companyProfile.iconUrl && companyProfile.iconUrl != '' && !companyProfile.deleted ? {'background-image':'url(' + companyProfile.iconUrl + ')'} : {'background-image':'url(assets/img/company-logo-placeholder.png)'}">
         </div>
 
         <div class="info-block">
-          <div  [ngClass]="{'-archived': companyProfile.deleted}" class="company-name" [title]="companyProfile.name">
+
+          <div class="header-actions" *ngIf="mediaQuery.xs">
+            <div class="mobile-actions-content">
+              <button mat-button *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.ACTIVE && !Project.isArchived(projectRequest.projectStatus) && mediaQuery.xs"
+                      class="mobile-hire-company-button"
+                      (click)="hireCompany(projectRequest)">
+                <mat-icon>person_add</mat-icon>
+              </button>
+              <button mat-button *ngIf="mediaQuery.xs && companyProfile && ((projectRequest && projectRequest.status == ProjectRequest.Status.HIRED) || (projectRequest && projectRequest.status == ProjectRequest.Status.COMPLETED)) && !projectRequest.reviewed"
+                      class="mobile-reviewed-company-button"
+                      (click)="openAddReviewForm()">
+                <mat-icon>thumb_up</mat-icon>
+              </button>
+            </div>
+
+            <div class="more-button-wrapper" *ngIf="mediaQuery.xs">
+              <button class="project-menu-button"
+                      mat-icon-button
+                      [matMenuTriggerFor]="projectRequestMenu"
+                      (click)="$event.stopPropagation()">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+
+              <mat-menu class="project-menu" #projectRequestMenu="matMenu" yPosition="below" xPosition="before">
+                <button mat-menu-item [routerLink]="['/companies', projectRequest.company.id]" routerLinkActive="active">View profile</button>
+                <button *ngIf="mediaQuery.xs && companyProfile && ((projectRequest && projectRequest.status == ProjectRequest.Status.HIRED) || (projectRequest && projectRequest.status == ProjectRequest.Status.COMPLETED)) && !projectRequest.reviewed"
+                        mat-menu-item (click)="openAddReviewForm()">Leave review</button>
+                <button *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.ACTIVE && !Project.isArchived(projectRequest.projectStatus) && mediaQuery.xs"
+                        mat-menu-item (click)="hireCompany(projectRequest)">Hire</button>
+                <button *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.ACTIVE && !Project.isArchived(projectRequest.projectStatus) && mediaQuery.xs"
+                        mat-menu-item (click)="declineCompany(projectRequest)">Decline</button>
+              </mat-menu>
+
+            </div>
+            <mat-icon class="close" color="accent" (click)="close()">clear</mat-icon>
+          </div>
+
+          <div *ngIf="mediaQuery.xs">
+            <div [ngClass]="{'-archived': companyProfile.deleted}" class="mobile-company-name" [title]="companyProfile.name">
+              {{companyProfile.name | truncate:companyNameTruncate: '...'}}
+            </div>
+          </div>
+
+          <div *ngIf="!mediaQuery.xs" [ngClass]="{'-archived': companyProfile.deleted}" class="company-name" [title]="companyProfile.name">
             {{companyProfile.name | truncate:companyNameTruncate: '...'}}
             <span class="declined" *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.DECLINED">Declined</span>
             <span class="hired" *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.HIRED">Hired</span>
           </div>
-          <div class="rating">
+          <div class="rating" *ngIf="!mediaQuery.xs">
             <div class="company-rating">{{companyProfile.rating | number: '1.0-1'}}
             </div>
             <rating-component [rating]="companyProfile.rating" [starSize]="14" [readOnly]="true"></rating-component>
@@ -32,26 +75,27 @@
       </div>
     </div>
 
-    <div class="buttons-block" *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.ACTIVE && !Project.isArchived(projectRequest.projectStatus)">
-      <div class="info-icon" (click)="openMessage = !openMessage" *ngIf="!mediaQuery.xs">i</div>
-      <button cv-button class="hire-company-button" (click)="hireCompany(projectRequest)">
-        Accept Offer
-      </button>
-      <button cv-button class="decline-company-button" (click)="declineCompany(projectRequest)">
-        <span>Decline</span>
-        <span class="message" *ngIf="openMessage">
-          Don't want to receive request and messages from other professionals? Hire one and let others know.
-        </span>
-      </button>
+      <div class="buttons-block"
+           *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.ACTIVE && !Project.isArchived(projectRequest.projectStatus) && !mediaQuery.xs">
+          <div class="info-icon" (click)="openMessage = !openMessage">i</div>
+          <button cv-button-empty class="hire-company-button" (click)="hireCompany(projectRequest)">
+              Hire
+          </button>
+          <button cv-button class="decline-company-button" (click)="declineCompany(projectRequest)">
+              <span>Decline</span>
+              <span class="message" *ngIf="openMessage">
+                  Don't want to receive request and messages from other professionals? Hire one and let others know.
+              </span>
+          </button>
 
-      <span class="back-drop" [ngClass]="{'active': openMessage}" (click)="openMessage = false"></span>
-    </div>
+          <span class="back-drop" [ngClass]="{'active': openMessage}" (click)="openMessage = false"></span>
+      </div>
 
-    <div class="buttons-block" *ngIf="mediaQuery.xs && ((projectRequest && projectRequest.status == ProjectRequest.Status.HIRED) || (projectRequest && projectRequest.status == ProjectRequest.Status.COMPLETED)) && !projectRequest.reviewed">
-      <button cv-button (click)="openAddReviewForm()" [disabled]="isLeaveReviewButtonDisabled" class="add-review">
-        Leave review
-      </button>
-    </div>
+    <!--<div class="buttons-block" *ngIf="mediaQuery.xs && ((projectRequest && projectRequest.status == ProjectRequest.Status.HIRED) || (projectRequest && projectRequest.status == ProjectRequest.Status.COMPLETED)) && !projectRequest.reviewed">-->
+      <!--<button cv-button (click)="openAddReviewForm()" [disabled]="isLeaveReviewButtonDisabled" class="add-review">-->
+        <!--Leave review-->
+      <!--</button>-->
+    <!--</div>-->
 
   </div>
 
@@ -149,7 +193,7 @@
         </div>
         <div class="buttons-block"
              *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.ACTIVE && !Project.isArchived(projectRequest.projectStatus)">
-          <button cv-button class="hire-company-button" (click)="hireCompany(projectRequest)">Accept Offer</button>
+          <button cv-button-empty class="hire-company-button" (click)="hireCompany(projectRequest)">Hire</button>
           <span class="message" (click)="event.preventDefault();">
               Don't want to receive requests and messages from other professionals about this project? Hire one and let others know.
             </span>

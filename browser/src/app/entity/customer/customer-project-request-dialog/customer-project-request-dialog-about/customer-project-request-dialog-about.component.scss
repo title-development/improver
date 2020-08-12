@@ -42,19 +42,53 @@ a {
 }
 
 .info-block {
-  padding: 24px 24px 0px;
+  padding: 24px;
+
   &.about {
     padding-top: 16px;
     word-break: break-word;
   }
 }
 
+.phone-group {
+  margin-left: 13px;
+
+  .label {
+    font-size: 10px;
+    color: rgba(0, 0, 0, 0.24);
+  }
+
+  .value {
+    font-size: 14px;
+    color: $dark !important;
+
+    &:hover {
+      text-decoration: underline !important;
+    }
+
+    @include response(xs) {
+      text-decoration: underline !important;
+    }
+  }
+
+}
+
 .about-title {
   display: flex;
   align-items: baseline;
   justify-content: flex-start;
+
   a {
     margin-left: 8px;
+    color: $dark !important;
+
+    &:hover {
+      text-decoration: underline !important;
+    }
+
+    @include response(xs) {
+      text-decoration: underline !important;
+    }
   }
 }
 
@@ -156,12 +190,30 @@ a {
   }
 }
 
+.buttons-content {
+  width: 100%;
+  text-align: center;
+}
+
 .show-more-button {
   font-size: 14px;
-  color: $primary-500;
+  color: $dark;
   cursor: pointer;
   white-space: nowrap;
+  margin-right: 200px;
+
+  @include response(xs) {
+    margin-right: 0;
+    text-decoration: underline !important;
+  }
+
+  &:hover {
+    text-decoration: underline !important;
+  }
+
   i {
     font-size: 10px;
   }
 }
+
+

@@ -93,6 +93,8 @@ export class ProjectActionService {
     );
   }
 
+
+  //TODO refactor hire dialog
   hireCompanyConfirm(projectRequest) {
     let properties = {
       title: 'Are you sure that you want to accept Pros offer?',
@@ -135,6 +137,7 @@ export class ProjectActionService {
   }
 
 
+  ////TODO refactor decline dialog
   declineCompanyConfirm(projectRequest) {
     this.confirmDialogRef = this.dialog.open(dialogsMap['decline-contractor-dialog'], completeProjectDialogConfig);
     this.confirmDialogRef

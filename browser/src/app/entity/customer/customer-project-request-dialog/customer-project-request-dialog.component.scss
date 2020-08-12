@@ -3,6 +3,7 @@
 ::ng-deep .customer-project-request-dialog {
   padding: 16px 0;
   height: 100%;
+
   @include response-to(sm) {
     padding: 0;
     width: 100% !important;
@@ -15,9 +16,11 @@
     max-height: 800px;
     min-height: 600px;
     height: auto;
-    @include response-h(810) {
+
+    @include response(md) {
       height: 100%;
     }
+
     @include response-to(sm) {
       margin: auto;
       max-width: 100%;
@@ -25,7 +28,8 @@
       max-height: none;
       min-height: 400px;
     }
-    @include response(md) {
+
+    @include response-h(810) {
       height: 100%;
     }
   }
@@ -34,14 +38,17 @@
 .dialog-content-wrapper {
   height: 100%;
   display: flex;
+
+  @include response-to(md) {
+    flex-direction: column;
+  }
+
   @include response-to(sm) {
     max-height: none;
     background: $white;
     overflow-y: auto;
   }
-  @include response-to(md) {
-    flex-direction: column;
-  }
+
 }
 
 .reviews-not-hired-message {
@@ -53,22 +60,13 @@
 .header {
   position: relative;
 
-  .close-modal {
-    position: absolute;
-    right: 32px;
-    top: 65px;
-    font-size: 19px;
-    font-weight: 400;
-    z-index: 1;
-    color: $grey-600;
-
-    @include response(xs, md) {
-      top: 32px;
-    }
-  }
-
   .header-content-wrapper {
     min-height: 68px;
+
+    @include response(xs) {
+      min-height: 58px;
+    }
+
     .header-content {
       display: flex;
       max-height: 100%;
@@ -78,6 +76,11 @@
       @include response-to(md) {
         flex-direction: row;
         padding: 16px 12px 12px;
+      }
+
+      @include response(xs) {
+        padding: 16px 12px;
+        align-items: flex-end;
       }
 
       .logo {
@@ -93,10 +96,9 @@
           pointer-events: none;
         }
 
-        @include response-to(sm) {
-          width: 40px;
-          height: 40px;
-          min-width: 40px;
+        @include response(xs) {
+          width: 56px;
+          height: 56px;
         }
 
       }
@@ -109,8 +111,8 @@
         align-items: stretch;
         margin-left: 23px;
 
-        @include response-to(xs) {
-          margin-left: 16px;
+        @include response(xs) {
+          margin-left: 8px;
         }
 
         .rating {
@@ -119,17 +121,20 @@
           max-height: 100%;
         }
 
-        .company-name {
+        .mobile-company-name {
           margin-right: 32px;
           margin-bottom: -8px;
           font-size: 18px;
-          font-weight: 700;
           text-align: left;
-          color: rgba(0, 0, 0, 0.87);
+          color: $dark;
 
           @include response-to(sm) {
             padding: 0;
             font-size: 16px;
+          }
+
+          @include response(xs) {
+            margin: 0;
           }
         }
 
@@ -156,24 +161,6 @@
           text-align: center;
           color: #626262;
           margin-left: 5px;
-        }
-
-        .phone-block {
-
-          .phone-group {
-
-            .label {
-              font-size: 10px;
-              color: rgba(0, 0, 0, 0.24);
-            }
-
-            .value {
-              font-size: 14px;
-              color: $black-800;
-            }
-
-          }
-
         }
 
       }
@@ -203,11 +190,13 @@
     }
 
     @include response(xs) {
-      padding: 6px 12px 0;
+      justify-content: space-between;
+      padding: 0 12px 0;
       margin-bottom: 12px;
     }
 
     .info-icon {
+      cursor: pointer;
       width: 23px;
       height: 23px;
       opacity: 0.28;
@@ -222,23 +211,10 @@
       font-weight: 600;
       font-family: serif;
 
-      @include response(md) {
-        display: flex;
-        left: 0;
-      }
-
-      @include response(sm, md) {
+      @include response-to(md) {
         position: static;
         margin-right: 10px;
         display: flex;
-      }
-
-      @include response(xs) {
-        display: flex;
-        right: 12px;
-        left: inherit;
-        position: absolute;
-        top: -30px;
       }
     }
 
@@ -266,10 +242,33 @@
   }
 }
 
+.phone-group {
+
+  .label {
+    font-size: 10px;
+    color: rgba(0, 0, 0, 0.24);
+  }
+
+  .value {
+    font-size: 14px;
+    color: $dark !important;
+
+    &:hover {
+      text-decoration: underline !important;
+    }
+
+    @include response(xs) {
+      text-decoration: underline !important;
+    }
+  }
+}
+
+
 .content {
   display: flex;
   height: 100%;
   width: 100%;
+
   @include response(xs) {
     overflow: hidden;
   }
@@ -534,23 +533,27 @@
     }
 
     &.hire-company-button {
-      background-color: #63be8d;
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.15);
 
       @include response-to(md) {
         min-width: 107px;
         height: 35px;
-        background-color: #63be8d;
-        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.15);
         margin-right: 12px !important;
       }
 
+      @include response(xs) {
+        margin-left: 52px !important;
+        width: 255px !important;
+      }
+
       &:hover {
-        background: $green-600;
+        background: $blue-primary;
+        color: #FFFFFF;
       }
 
       &:active {
-        background: $green-600;
+        background: $blue-primary;
+        color: $white;
       }
     }
 
@@ -559,10 +562,10 @@
       font-weight: 500;
       line-height: 1.43;
       text-align: center;
-      color: #ff4a2c;
+      color: $grey-500;
       background-color: transparent;
       box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
-      border: solid 1px #ff4a2c;
+      border: solid 1px $grey-500;
       position: relative;
 
       @include response-to(md) {
@@ -574,15 +577,78 @@
 
 
       &:hover {
-        background: #ff4a2c;
-        color: #fff;
+        background: $grey-400;
+        color: $white;
+      }
+
+      &:active {
+        background: $grey-400;
+        color: $white;
       }
     }
   }
 }
 
+.header-actions {
+  position: absolute;
+  top: 6px;
+  right: 12px;
+  width: 130px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  .close {
+    font-size: 20px;
+    font-weight: 400;
+    z-index: 1;
+    color: $grey-600;
+  }
+
+  .more-button-wrapper {
+
+    .project-menu-button {
+      color: $grey-600;
+      font-size: 20px;
+    }
+
+  }
+
+  .mobile-actions-content {
+    min-width: 20px;
+
+    .mobile-hire-company-button {
+      min-width: 40px;
+      height: 40px;
+      cursor: pointer;
+      margin: 0;
+      padding: 0;
+
+      mat-icon {
+        font-size: 24px;
+        color: $grey-600;
+      }
+    }
+
+    .mobile-reviewed-company-button {
+      min-width: 40px;
+      height: 40px;
+      cursor: pointer;
+      margin: 0;
+      padding: 0;
+
+      mat-icon {
+        font-size: 22px;
+        color: $grey-600;
+      }
+    }
+  }
+}
+
+
+
 .message {
-  //position: absolute;
   position: relative;
   pointer-events: none;
   left: 0;
@@ -631,7 +697,7 @@
     }
 
     @include response-to(xs) {
-      left: 21%;
+      left: 45%;
       margin: inherit;
     }
   }
@@ -648,38 +714,38 @@
     pointer-events: none;
   }
 
-  @include response(md) {
-    padding: 16px 0 3px;
+  @include response-to(md) {
+    padding: 0;
   }
 
   .name {
     margin-right: 5px;
   }
+}
 
-  .hired, .declined {
-    text-align: center;
-    color: $white;
-    text-transform: uppercase;
-    border-radius: 2px;
-    padding: 5px;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.4px;
-    position: relative;
-    display: inline-block;
-    top: -2px;
-    @include response-from(lg) {
-      top: -4px;
-    }
+.hired, .declined {
+  text-align: center;
+  color: $white;
+  text-transform: uppercase;
+  border-radius: 2px;
+  padding: 5px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  position: relative;
+  display: inline-block;
+  top: -2px;
+  @include response-from(lg) {
+    top: -4px;
   }
+}
 
-  .hired {
-    background-color: #63be8d;
-  }
+.hired {
+  background-color: #63be8d;
+}
 
-  .declined {
-    background-color: $red;
-  }
+.declined {
+  background-color: $red;
 }
 
 
@@ -752,6 +818,9 @@
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    //color: $green-450;
   }
+}
+
+::ng-deep .mat-menu-panel {
+  min-height: max-content !important;
 }

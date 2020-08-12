@@ -5,6 +5,7 @@ import com.improver.exception.NotFoundException;
 import com.improver.exception.ValidationException;
 import com.improver.model.in.Order;
 import com.improver.repository.*;
+import com.improver.service.ImageService;
 import com.improver.service.ReviewService;
 import com.improver.util.enums.State;
 import com.improver.util.serializer.SerializationUtil;
@@ -72,6 +73,7 @@ public class TestDataInitializer {
     @Autowired private UnavailabilityPeriodRepository unavailabilityPeriodRepository;
     @Autowired private TestPaymentAccountResolver testPaymentAccountResolver;
     @Autowired private ServedZipRepository servedZipRepository;
+    @Autowired private ImageService imageService;
 
     private static final String TILE_INSTALLATION = "Tile Installation";
     private static final String ARCHITECTURAL_SERVICES = "Architectural Services";
@@ -696,7 +698,7 @@ public class TestDataInitializer {
         String name = UUID.randomUUID().toString().toLowerCase() + ext;
         byte[] bytes = fileUtil.loadFile(path);
         projectImageRepository.save(new ProjectImage(project, name, ext, bytes));
-        String imageUrl = IMAGES_PATH + PROJECTS + '/' + name;
+        String imageUrl = ProjectImage.toProjectImageUrl(project.getId(), name);
         if (!project.hasCover()) {
             projectRepository.save(project.setCoverUrl(imageUrl));
         }

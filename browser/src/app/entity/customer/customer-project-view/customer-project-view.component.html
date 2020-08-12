@@ -94,7 +94,7 @@
                       <a mat-menu-item [routerLink]="['/companies', projectRequest.company.id]">View profile</a>
                       <button mat-menu-item
                               *ngIf="(projectRequest.status == ProjectRequest.Status.ACTIVE) && !Project.isArchived(project.status)"
-                              (click)="projectActionService.hireCompanyConfirm(projectRequest)">Accept Offer
+                              (click)="projectActionService.hireCompanyConfirm(projectRequest)">Hire
                       </button>
                       <button mat-menu-item class="cancel-button"
                               *ngIf="(projectRequest.status == ProjectRequest.Status.ACTIVE) && !Project.isArchived(project.status)"
@@ -148,7 +148,7 @@
                       <a mat-menu-item [routerLink]="['/companies', projectRequest.company.id]">View profile</a>
                       <button mat-menu-item
                               *ngIf="(projectRequest.status == ProjectRequest.Status.ACTIVE) && !Project.isArchived(project.status)"
-                              (click)="projectActionService.hireCompanyConfirm(projectRequest)">Accept Offer
+                              (click)="projectActionService.hireCompanyConfirm(projectRequest)">Hire
                       </button>
                       <button mat-menu-item class="cancel-button"
                               *ngIf="(projectRequest.status == ProjectRequest.Status.ACTIVE) && !Project.isArchived(project.status)"
