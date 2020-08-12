@@ -283,10 +283,11 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
     if (!this.opened) {
       this.opened = true;
       this.highlightedItemIndex = 0;
+      this.changeDetectorRef.detectChanges()
       setTimeout(() => {
         this.dropDownAnimationState = 'opened';
         this.changeDetectorRef.markForCheck();
-      }, 0);
+      });
     }
   }
 

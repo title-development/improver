@@ -18,11 +18,11 @@ import {
   personalPhotoDialogConfig
 } from '../../shared/dialogs/dialogs.configs';
 import { ValidatedLocation } from '../../api/models/LocationsValidation';
-import { finalize, first, takeUntil } from 'rxjs/operators';
+import { finalize, first, takeUntil, tap } from 'rxjs/operators';
 import { getErrorMessage } from '../../util/functions';
 import { HttpResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { ReplaySubject, Subject } from 'rxjs';
+import { forkJoin, ReplaySubject, Subject } from 'rxjs';
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { RegistrationHelper } from "../../util/registration-helper";
 import LatLng = google.maps.LatLng;
@@ -197,29 +197,32 @@ export class SignupCompanyComponent {
   }
 
   getServedZipCodes() {
-    this.boundariesService.getAllServedZips().subscribe(zipCodes => {
-      this.servedZipCodes = zipCodes;
-    });
+    this.boundariesService.getAllServedZips()
+      .pipe(first())
+      .subscribe(zipCodes => {
+        this.servedZipCodes = zipCodes;
+      });
   }
 
   getCoveragePolygon() {
-    this.boundariesService.getCoverageArea().subscribe(coverage => {
-        this.coverageArea = coverage;
-        let zipBoundaries: Array<any> = this.coverageArea.geometry.coordinates;
+    return this.boundariesService.getCoverageArea()
+      .pipe(first(),
+        tap(coverage => {
+          this.coverageArea = coverage;
+          let zipBoundaries: Array<any> = this.coverageArea.geometry.coordinates;
 
-        for (let i = 0; i < zipBoundaries.length; i++) {
-          for (let j = 0; j < zipBoundaries[i].length; j++) {
-            let value: Array<any> = zipBoundaries[i][j];
-            zipBoundaries[i][j] = new google.maps.LatLng(value[1], value[0]);
+          for (let i = 0; i < zipBoundaries.length; i++) {
+            for (let j = 0; j < zipBoundaries[i].length; j++) {
+              let value: Array<any> = zipBoundaries[i][j];
+              zipBoundaries[i][j] = new google.maps.LatLng(value[1], value[0]);
+            }
           }
-        }
 
-        this.coveragePolygon = new google.maps.Polygon({
-          paths: zipBoundaries[0],
-        });
+          this.coveragePolygon = new google.maps.Polygon({
+            paths: zipBoundaries[0],
+          });
 
-      },
-      err => console.error(err))
+        }))
   }
 
   drawUnsupportedAreaUSA() {
@@ -230,12 +233,10 @@ export class SignupCompanyComponent {
     this.map = map;
     applyStyleToMapLayers(this.map);
     this.drawUnsupportedAreaUSA();
-    this.getCoveragePolygon();
-
     let address = this.companyRegistration.company.location.streetAddress + ' ' + this.companyRegistration.company.location.city;
 
-    this.gMapUtils.addressGeocode(address).subscribe(
-      (location) => {
+    forkJoin([this.getCoveragePolygon(), this.gMapUtils.addressGeocode(address)])
+      .subscribe(([coverage, location]) => {
         let circleCenter: LatLng;
         let lat = (location as any).lat();
         let lng = (location as any).lng();
@@ -246,7 +247,7 @@ export class SignupCompanyComponent {
           this.companyRegistration.coverage.center.lng = lng;
         }
 
-        //Company locations in supported area
+        // Company locations in supported area
         if (!google.maps.geometry.poly.containsLocation(new google.maps.LatLng(this.companyRegistration.coverage.center.lat, this.companyRegistration.coverage.center.lng), this.coveragePolygon)) {
           let latLngBounds = new google.maps.LatLngBounds();
           let polygonPaths = this.coveragePolygon.getPaths();
