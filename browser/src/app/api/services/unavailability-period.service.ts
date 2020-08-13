@@ -7,29 +7,29 @@ import { toHttpParams } from '../../util/functions';
 @Injectable()
 export class UnavailabilityPeriodService {
   private readonly companyUrl: string = '/api/companies';
-  private readonly unavailabilities: string = 'unavailabilities';
+  private readonly vacations: string = 'vacations';
 
   constructor(private http: HttpClient) {
 
   }
 
   getAllByCompany(companyId: string): Observable<Array<UnavailabilityPeriod>> {
-    return this.http.get<Array<UnavailabilityPeriod>>(`${this.companyUrl}/${companyId}/${this.unavailabilities}`);
+    return this.http.get<Array<UnavailabilityPeriod>>(`${this.companyUrl}/${companyId}/${this.vacations}`);
   }
 
   add(companyId: string, unavailabilityPeriod: UnavailabilityPeriod): Observable<any> {
 
-    return this.http.post(`${this.companyUrl}/${companyId}/${this.unavailabilities}`, unavailabilityPeriod);
+    return this.http.post(`${this.companyUrl}/${companyId}/${this.vacations}`, unavailabilityPeriod);
   }
 
   update(id: number, companyId: string, unavailabilityPeriod): Observable<any> {
 
-    return this.http.put(`${this.companyUrl}/${companyId}/${this.unavailabilities}/${id}`, unavailabilityPeriod);
+    return this.http.put(`${this.companyUrl}/${companyId}/${this.vacations}/${id}`, unavailabilityPeriod);
   }
 
   delete(id: number, companyId: string): Observable<any> {
 
-    return this.http.delete(`${this.companyUrl}/${companyId}/${this.unavailabilities}/${id}`);
+    return this.http.delete(`${this.companyUrl}/${companyId}/${this.vacations}/${id}`);
   }
 
 

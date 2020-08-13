@@ -76,7 +76,7 @@ public class UserController {
                                                     @RequestParam(required = false) User.Role role,
                                                     @PageableDefault(sort = "email", direction = Sort.Direction.DESC) Pageable pageRequest) {
         Page<UserModel> users = userService.findBy(id, email, displayName, role, pageRequest)
-            .map(UserModel::new);;
+            .map(UserModel::new);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
@@ -125,6 +125,8 @@ public class UserController {
 
 
 
+    //TODO: Misha, redesign this
+    @Deprecated
     @GetMapping(IS_EMAIL_FREE)
     public ResponseEntity<Void> isEmailFree(@RequestParam("email") String email) {
         return new ResponseEntity<>(userService.isEmailFree(email) ? HttpStatus.OK : HttpStatus.CONFLICT);

@@ -32,7 +32,7 @@ public final class Path {
     public static final String SUBSCRIPTION =          "/subscription";
     public static final String NOTIFICATIONS =         "/notifications";
     public static final String GEO =                   "/geo";
-    public static final String UNAVAILABILITIES =      "/unavailabilities";
+    public static final String VACATIONS =              "/vacations";
     public static final String TICKETS =               "/tickets";
     public static final String SOCIAL_LOGIN =          "/socials";
     public static final String INVITATIONS =           "/invitations";

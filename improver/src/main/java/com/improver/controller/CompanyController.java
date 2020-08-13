@@ -116,8 +116,10 @@ public class CompanyController {
 
     @SupportAccess
     @PostMapping(COMPANY_ID + "/approve")
-    public ResponseEntity<Void> approve(@PathVariable long companyId, @RequestParam boolean approved) {
-        companyRepository.approve(companyId, approved);
+    public ResponseEntity<Void> approve(@PathVariable long companyId,
+                                        @RequestParam boolean isApproved) {
+
+        companyRepository.approve(companyId, isApproved);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

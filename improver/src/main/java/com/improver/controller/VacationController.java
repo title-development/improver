@@ -21,27 +21,27 @@ public class VacationController {
     @Autowired private UnavailabilityPeriodService unavailabilityPeriodService;
     @Autowired private CompanyRepository companyRepository;
 
-    @GetMapping(COMPANY_ID + UNAVAILABILITIES)
+    @GetMapping(COMPANY_ID + VACATIONS)
     public ResponseEntity<List<UnavailabilityPeriod>> getUnavailabilityPeriod(@PathVariable long companyId) {
         Company company = companyRepository.findById(companyId).orElseThrow(NotFoundException::new);
         List<UnavailabilityPeriod> periods = unavailabilityPeriodService.getByCompany(company);
         return new ResponseEntity<>(periods, HttpStatus.OK);
     }
 
-    @PostMapping(COMPANY_ID + UNAVAILABILITIES)
+    @PostMapping(COMPANY_ID + VACATIONS)
     public ResponseEntity<Void> addUnavailabilityPeriod(@PathVariable long companyId, @RequestBody UnavailabilityPeriod unavailabilityPeriod) {
         Company company = companyRepository.findById(companyId).orElseThrow(NotFoundException::new);
         unavailabilityPeriodService.addUnavailabilityPeriod(company, unavailabilityPeriod);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping(COMPANY_ID + UNAVAILABILITIES + ID_PATH_VARIABLE)
+    @PutMapping(COMPANY_ID + VACATIONS + ID_PATH_VARIABLE)
     public ResponseEntity<Void> updateUnavailabilityPeriod(@PathVariable Long id, @RequestBody UnavailabilityPeriod unavailabilityPeriod) {
         unavailabilityPeriodService.updateUnavailabilityPeriod(id, unavailabilityPeriod);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping(COMPANY_ID + UNAVAILABILITIES + ID_PATH_VARIABLE)
+    @DeleteMapping(COMPANY_ID + VACATIONS + ID_PATH_VARIABLE)
     public ResponseEntity<Void> deleteUnavailabilityPeriod(@PathVariable Long id) {
         unavailabilityPeriodService.deleteUnavailabilityPeriod(id);
         return new ResponseEntity<>(HttpStatus.OK);
