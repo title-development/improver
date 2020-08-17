@@ -179,19 +179,19 @@ public class LeadService {
             wsNotificationService.newSubscriptionLeadPurchase(assignment, lead.getCustomer(), serviceType, projectRequest.getId());
         }
 
-        notifyUsersAboutLeadPurchase(lead, company, assignment, isManual);
+        notifyUsersAboutLeadPurchase(lead, projectRequest, company, assignment, isManual);
 
         return projectRequest;
     }
 
-    private void notifyUsersAboutLeadPurchase(Project lead, Company company, Contractor assignment, boolean isManual) {
+    private void notifyUsersAboutLeadPurchase(Project lead, ProjectRequest projectRequest, Company company, Contractor assignment, boolean isManual) {
         if(lead.getCustomer().getNotificationSettings().isReceiveNewProjectRequestsEmail()) {
             mailService.sendNewProjectRequestEmail(company, lead);
         }
 
         if (lead.getCustomer().getNotificationSettings().isReceiveNewProjectRequestsSms()
             || assignment.getNotificationSettings().isReceiveNewSubscriptionLeadsSms()) {
-            phoneService.sendLeadPurchaseMessage(lead.getCustomer(), assignment, lead.getServiceType().getName(), isManual);
+            phoneService.sendLeadPurchaseMessage(lead, projectRequest, lead.getCustomer(), assignment, lead.getServiceType().getName(), isManual);
         }
     }
 

@@ -1,8 +1,6 @@
 package com.improver.service;
 
-import com.improver.entity.Contractor;
-import com.improver.entity.Customer;
-import com.improver.entity.PhoneValidation;
+import com.improver.entity.*;
 import com.improver.exception.ValidationException;
 import com.improver.model.in.PhoneValidationConfirm;
 import com.improver.repository.PhoneValidationRepository;
@@ -25,9 +23,9 @@ import java.util.UUID;
 public class PhoneService {
 
     public static final int VALIDATION_CODE_LENGTH = 4;
-    public static final String REGULAR_TEXT_MESSAGE_SIGNATURE = "\nwww.homeimprove.com";
     public static final String SIMULATION_CODE = "1111";
 
+    @Value("${server.domain}") private String serverDomain;
     @Value("${account.twilio.sid}") private String twilioAccountSid;
     @Value("${account.twilio.auth.token}") private String twilioAuthToken;
     @Value("${account.twilio.phone.number}") private String twilioAccountPhoneNumber;
@@ -45,35 +43,39 @@ public class PhoneService {
     public void sendTextMessage(String phoneNumber, String textMessage) {
         Message.creator(new PhoneNumber(countryCode + phoneNumber), // to
             new PhoneNumber(twilioAccountPhoneNumber), // from
-            textMessage + REGULAR_TEXT_MESSAGE_SIGNATURE)
+            textMessage)
             .create();
     }
 
     @Async
-    public void sendLeadPurchaseMessage(Customer customer,
+    public void sendLeadPurchaseMessage(Project project,
+                                        ProjectRequest projectRequest,
+                                        Customer customer,
                                         Contractor contractor,
                                         String serviceType,
                                         boolean isManual) {
         if(!isManual && contractor.getNotificationSettings().isReceiveNewSubscriptionLeadsSms()) {
-            sendNewSubscriptionLeadPurchaseMessage(customer.getDisplayName(), contractor.getInternalPhone(), serviceType);
+            String url = String.format("%s/pro/projects/%s", serverDomain, projectRequest.getId());
+            sendNewSubscriptionLeadPurchaseMessage(customer.getDisplayName(), contractor.getInternalPhone(), serviceType, url);
         }
         if (customer.getNotificationSettings().isReceiveNewProjectRequestsSms()) {
-            sendNewProjectRequestMessage(contractor.getCompany().getName(), customer.getInternalPhone(), serviceType);
+            String url = String.format("%s/my/projects/%s#%s", serverDomain, project.getId(), projectRequest.getId());
+            sendNewProjectRequestMessage(contractor.getCompany().getName(), customer.getInternalPhone(), serviceType, url);
         }
     }
 
-    public void sendNewSubscriptionLeadPurchaseMessage(String customerName, String contractorPhoneNumber, String serviceType) {
+    public void sendNewSubscriptionLeadPurchaseMessage(String customerName, String contractorPhoneNumber, String serviceType, String url) {
         try {
-            sendTextMessage(contractorPhoneNumber, String.format("New subscription project\n%s for %s",  serviceType, customerName));
+            sendTextMessage(contractorPhoneNumber, String.format("New subscription project\n%s for %s\n%s",  serviceType, customerName, url));
         } catch (Exception e) {
             log.error("Unable to send SMS notification about new subscription lead to {}", contractorPhoneNumber,  e);
         }
 
     }
 
-    public void sendNewProjectRequestMessage(String companyName, String customerPhoneNumber, String serviceType) {
+    public void sendNewProjectRequestMessage(String companyName, String customerPhoneNumber, String serviceType, String url) {
         try {
-            sendTextMessage(customerPhoneNumber, String.format("You have new project request from %s on %s",  companyName, serviceType));
+            sendTextMessage(customerPhoneNumber, String.format("You have new project request from %s on %s\n%s",  companyName, serviceType, url));
         } catch (Exception e) {
             log.error("Unable to send SMS notification about new project request to {}", customerPhoneNumber,  e);
         }
