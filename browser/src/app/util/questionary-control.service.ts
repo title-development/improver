@@ -182,22 +182,24 @@ export class QuestionaryControlService {
   }
 
   getAccountData() {
-    this.customerAccountIsLoading = true;
-    this.accountService
-      .getAccount(this.securityService.getLoginModel().id)
-      .pipe(finalize(() => this.customerAccountIsLoading = false))
-      .subscribe(
-        account => {
-          this.customerAccount = account;
-          this.updateQuestionaryParams(undefined, !!this.customerAccount.phone)
-          this.fillCustomerAccountData()
-          this.onAccountDataLoaded.next(this.customerAccount)
-        },
-        err => {
-          this.onAccountDataLoaded.next(null)
-          console.error(err);
-        }
-      );
+    if(this.securityService.getLoginModel()?.id) {
+      this.customerAccountIsLoading = true;
+      this.accountService
+        .getAccount(this.securityService.getLoginModel().id)
+        .pipe(finalize(() => this.customerAccountIsLoading = false))
+        .subscribe(
+          account => {
+            this.customerAccount = account;
+            this.updateQuestionaryParams(undefined, !!this.customerAccount.phone)
+            this.fillCustomerAccountData()
+            this.onAccountDataLoaded.next(this.customerAccount)
+          },
+          err => {
+            this.onAccountDataLoaded.next(null)
+            console.error(err);
+          }
+        );
+    }
   }
 
   fillCustomerAccountData(account = this.customerAccount) {

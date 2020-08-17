@@ -1,16 +1,6 @@
-@import "../../../../improver-mixins.scss";
+@import "improver-mixins.scss";
 
 .dialog-content-wrapper {
-  @include response-to(sm) {
-    background: #fff;
-    display: flex;
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    overflow-y: auto;
-  }
 }
 
 .dialog-content-container {
@@ -22,32 +12,27 @@
   }
 
   .header {
-    font-size: 18px;
-    font-weight: 600;
-
-    @include response-to(sm){
-      flex: 0;
-    }
 
     .header-content {
-      padding: 24px 24px 28px;
-
-      @include response-to(xs){
-        padding: 24px 12px 28px;
-      }
+      padding: 16px 48px 16px 24px;
+      background-color: $grey-100;
+      font-size: 20px;
+      font-weight: 600;
+      text-align: left;
+      color: $grey-600;
     }
 
   }
 
   .content {
-    margin: 0 24px 24px;
+    margin: 24px 24px 24px;
 
     @include response-to(sm){
       flex: 1;
     }
 
     @include response-to(xs){
-      margin: 0 12px 24px;
+      margin: 24px 12px 24px;
     }
 
     .payment-card-form {

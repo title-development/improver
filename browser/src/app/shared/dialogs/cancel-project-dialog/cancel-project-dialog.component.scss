@@ -1,9 +1,6 @@
-@import "../../../../improver-mixins.scss";
-
-
+@import "improver-mixins.scss";
 
 .dialog-content-wrapper {
-
 
   .header {
 
@@ -64,9 +61,11 @@
 
   cv-radio {
     margin-bottom: 16px;
+    align-items: center;
     .radio-label {
       margin-left: 4px;
     }
   }
+
 }
 

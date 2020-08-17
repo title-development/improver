@@ -95,8 +95,7 @@ export class PersonalInfoComponent implements OnDestroy {
 
   openPasswordEditor() {
     this.dialog.closeAll();
-    let dialogConfig = (this.mediaQuery.xs || this.mediaQuery.sm) ? mobileMediaDialogConfig : passwordEditorDialogConfig;
-    this.passwordEditorDialogRef = this.dialog.open(dialogsMap['password-editor-dialog'], dialogConfig);
+    this.passwordEditorDialogRef = this.dialog.open(dialogsMap['password-editor-dialog'], passwordEditorDialogConfig);
     this.passwordEditorDialogRef
         .afterClosed()
         .subscribe(result => {
@@ -158,8 +157,6 @@ export class PersonalInfoComponent implements OnDestroy {
             console.error(err);
           });
   }
-
-
 
   updateUserInfo(form: NgForm): void {
     const formHasChanges = Object.values(form.controls).some(control => control.dirty || control.touched);

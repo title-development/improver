@@ -1,17 +1,6 @@
-@import "../../../../improver-mixins.scss";
+@import "improver-mixins.scss";
 
 .dialog-content-wrapper {
-
-  @include response-to(sm) {
-    background: #fff;
-    display: flex;
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    overflow-y: auto;
-  }
 
 }
 
