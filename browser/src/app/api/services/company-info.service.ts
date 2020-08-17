@@ -2,9 +2,9 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { CompanyInfo, SystemMessageType } from "../../model/data-model";
 import { dialogsMap } from "../../shared/dialogs/dialogs.state";
 import {
-	addLicenseDialogConfig,
-	confirmDialogConfig,
-	mobileMediaDialogConfig
+  addLicenseDialogConfig,
+  confirmDialogConfig,
+  mobileMediaDialogConfig
 } from "../../shared/dialogs/dialogs.configs";
 import { CompanyService } from "./company.service";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
@@ -21,7 +21,7 @@ import { DomSanitizer, SafeStyle } from "@angular/platform-browser";
 })
 export class CompanyInfoService {
 
-  DEFAULT_COMPANY_IMAGE_URL: string = 'url(/assets/img/company-logo-placeholder.png)';
+  DEFAULT_COMPANY_IMAGE_URL: string = 'url(/assets/img/pro_avatar.svg)';
   private licenseDialogRef: MatDialogRef<any>;
   private confirmDialogRef: MatDialogRef<any>;
   companyLicensesChanged$: EventEmitter<boolean> = new EventEmitter<boolean>();

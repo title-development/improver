@@ -19,11 +19,11 @@
               <div class="avatar-content col-md-3 col-sm-3 col-xs-12">
                 <div class="avatar-wrapper" fxLayout="row" fxLayoutAlign="center center">
                   <div class="avatar" *ngIf="securityService.isAuthenticated() && !securityService.hasRole(Role.CONTRACTOR)"
-                       [ngStyle]="account.iconUrl && account.iconUrl != '' && {'background-image':'url(' + account.iconUrl + ')'} || {'background-image':'url(/assets/img/user-logo-placeholder.png)'}">
+                       [ngStyle]="account.iconUrl && account.iconUrl != '' && {'background-image':'url(' + account.iconUrl + ')'} || {'background-image':'url(/assets/img/customer_avatar.svg)'}">
                   </div>
 
                   <div class="avatar" *ngIf="securityService.isAuthenticated() && securityService.hasRole(Role.CONTRACTOR)"
-                       [style.background-image]="companyInfoService.makeTrustedImageURL(companyIconUrl) || 'url(/assets/img/company-logo-placeholder.png)'">
+                       [style.background-image]="companyInfoService.makeTrustedImageURL(companyIconUrl) || 'url(/assets/img/pro_avatar.svg)'">
                   </div>
 
                   <div class="actions">

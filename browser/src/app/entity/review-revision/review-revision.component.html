@@ -9,7 +9,7 @@
       <form action="" #form="ngForm" (ngSubmit)="form.valid && updateReview();">
         <div class="company">
           <img class="icon" [routerLink]="['/', 'companies', review.company.id]"
-               [src]="review.company.iconUrl ? review.company.iconUrl : 'assets/img/company-logo-placeholder.png'"
+               [src]="review.company.iconUrl ? review.company.iconUrl : 'assets/img/pro_avatar.svg'"
                [alt]="review.company.name" [title]="review.company.name">
           <div class="rating">
             <h4 [routerLink]="['/', 'companies', review.company.id]">{{review.company.name}}</h4>

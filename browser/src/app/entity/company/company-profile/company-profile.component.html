@@ -25,7 +25,7 @@
       <div class="wrapper">
         <h1>{{companyProfile.name}}</h1>
         <div class="logo" [ngStyle]="companyProfile.iconUrl && companyProfile.iconUrl != '' && {'background-image':'url(' + companyProfile.iconUrl + ')'} ||
-                                            {'background-image':'url(assets/img/company-logo-placeholder.png)'}">
+                                            {'background-image':'url(assets/img/pro_avatar.svg)'}">
           <div class="actions" *ngIf="editMode">
             <div class="icon -edit" title="Edit icon" (click)="openDialogPhoto()">
               <mat-icon class="edit">edit</mat-icon>

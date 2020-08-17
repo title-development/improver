@@ -59,6 +59,7 @@
   top: 0;
   background-size: cover;
   background-position: center;
+  background-color: $grey-200;
   @include response-to(md) {
     width: 52px;
     height: 52px;

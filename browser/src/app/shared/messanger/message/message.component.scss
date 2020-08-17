@@ -25,10 +25,11 @@
     vertical-align: top;
     height: 32px;
     width: 32px;
-    border: solid 1px #e8e8e8;
+    border: solid 1px $grey-250;
     border-radius: 50%;
     background-size: cover;
     background-position: center;
+    background-color: $grey-200;
   }
 
 }

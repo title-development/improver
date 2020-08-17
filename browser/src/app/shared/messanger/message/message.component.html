@@ -4,7 +4,7 @@
   <div class="icon-wrapper" fxFlexOffset="8px" *ngIf="message.sender != securityService.getLoginModel().id">
 
     <div class="icon"
-         [ngStyle]="userIcon && userIcon != '' && {'background-image':'url(' + userIcon + ')'} || securityService.getLoginModel().company == null && {'background-image':'url(/assets/img/company-logo-placeholder.png)'} || {'background-image':'url(/assets/img/user-logo-placeholder.png)'}"
+         [ngStyle]="userIcon && userIcon != '' && {'background-image':'url(' + userIcon + ')'} || securityService.getLoginModel().company == null && {'background-image':'url(/assets/img/pro_avatar.svg)'} || {'background-image':'url(/assets/img/customer_avatar.svg)'}"
          *ngIf="message.sender != 'system'; else systemImage">
     </div>
 

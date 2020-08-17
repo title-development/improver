@@ -271,6 +271,7 @@
                         align-items: center;
                         justify-content: center;
                         box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
+                        background-color: $grey-200;
 
                         &.hired, &.completed {
                           //border: solid 1px $green;

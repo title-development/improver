@@ -63,7 +63,7 @@
                       <i class="notifications" *ngIf="projectRequest.unreadMessages > 0" title="{{unreadMessagesTittle(projectRequest.unreadMessages)}}">{{projectRequest.unreadMessages}}</i>
                     <div class="projectRequest-icon {{projectRequest.status | toclassname}}"
                          [ngClass]="{'no-icon' : projectRequest.company.iconUrl != ''}"
-                         [ngStyle]="projectRequest.company.iconUrl && projectRequest.company.iconUrl != '' && {'background-image':'url(' + projectRequest.company.iconUrl + ')'} || {'background-image':'url(assets/img/company-logo-placeholder.png)'}">
+                         [ngStyle]="projectRequest.company.iconUrl && projectRequest.company.iconUrl != '' && {'background-image':'url(' + projectRequest.company.iconUrl + ')'} || {'background-image':'url(assets/img/pro_avatar.svg)'}">
                     </div>
                     <div class="info-block">
                       <div class="company-name">
@@ -116,7 +116,7 @@
                   <div class="projectRequest-left">
                     <div class="projectRequest-icon {{projectRequest.status | toclassname}}"
                          [ngClass]="{'no-icon' : projectRequest.company.iconUrl != ''}"
-                         [ngStyle]="projectRequest.company.iconUrl && projectRequest.company.iconUrl != '' && {'background-image':'url(' + projectRequest.company.iconUrl + ')'} || {'background-image':'url(assets/img/company-logo-placeholder.png)'}">
+                         [ngStyle]="projectRequest.company.iconUrl && projectRequest.company.iconUrl != '' && {'background-image':'url(' + projectRequest.company.iconUrl + ')'} || {'background-image':'url(assets/img/pro_avatar.svg)'}">
                     </div>
                     <div class="info-block">
                       <div class="company-name">

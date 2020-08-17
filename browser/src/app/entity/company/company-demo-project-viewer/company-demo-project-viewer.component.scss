@@ -1,4 +1,4 @@
-@import "../../../../improver-mixins.scss";
+@import "improver-mixins.scss";
 
 .company-gallery-project-viewer-wrapper {
   max-width: 670px;
@@ -63,7 +63,7 @@
       border-radius: 50%;
       background: no-repeat center center;
       background-size: contain;
-      border: solid 1px $grey-300;
+      background-color: $grey-200;
       @include response-to(xs) {
         margin-bottom: 16px;
       }

@@ -434,7 +434,7 @@
       border-radius: 96px;
       background-position: 50%;
       background-size: cover;
-      border: 1px solid $grey-300;
+      background-color: $grey-200;
 
       &.-archived {
         pointer-events: none;

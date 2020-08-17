@@ -90,7 +90,7 @@
         </span>
 
         <span *ngSwitchCase="'imageUrl'" class="table-row-image-wrapper">
-          <div *ngIf="row[col.field]" class="box-image" (click)="showServiceImage($event, row, op3)" [ngStyle]="row[col.field] && row[col.field] != '' && {'background-image':'url(' + row[col.field] + ')'} || {'background-image':'url(/assets/img/company-logo-placeholder.png)'}"></div>
+          <div *ngIf="row[col.field]" class="box-image" (click)="showServiceImage($event, row, op3)" [ngStyle]="row[col.field] && row[col.field] != '' && {'background-image':'url(' + row[col.field] + ')'}"></div>
           <div *ngIf="!row[col.field]">No image</div>
         </span>
 

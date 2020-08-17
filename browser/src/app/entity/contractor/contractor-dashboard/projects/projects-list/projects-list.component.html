@@ -1,7 +1,7 @@
 <table class="list-wrapper" cellpadding="0" cellspacing="0">
   <ng-template let-project let-last="last" ngFor [ngForOf]="list">
     <tr class="item">
-      <td class="item-icon" [ngStyle]="project.customer.iconUrl && project.customer.iconUrl != '' && {'background-image':'url(' + project.customer.iconUrl + ')'} || {'background-image':'url(/assets/img/user-logo-placeholder.png)'}">
+      <td class="item-icon" [ngStyle]="project.customer.iconUrl && project.customer.iconUrl != '' && {'background-image':'url(' + project.customer.iconUrl + ')'} || {'background-image':'url(/assets/img/customer_avatar.svg)'}">
         <i class="notifications" *ngIf="project.unreadMessages > 0" title="{{unreadMessagesTittle(project.unreadMessages)}}">{{project.unreadMessages}}</i>
       </td>
       <td width="50%" class="item-name" [routerLink]="['/pro/projects', project.id]">

@@ -70,7 +70,7 @@
                            (click)="projectActionService.project = project; openProjectRequest(projectRequest)"
                       [ngClass]="{'hired': ProjectRequest.isHiredOrCompleted(projectRequest.status)}">
                         <div class="project-request-icon  {{projectRequest.status | toclassname}}"
-                             [ngStyle]="projectRequest.company.iconUrl && projectRequest.company.iconUrl != '' && {'background-image':'url(' + projectRequest.company.iconUrl + ')'} || {'background-image':'url(assets/img/company-logo-placeholder.png)'}">
+                             [ngStyle]="projectRequest.company.iconUrl && projectRequest.company.iconUrl != '' && {'background-image':'url(' + projectRequest.company.iconUrl + ')'} || {'background-image':'url(assets/img/pro_avatar.svg)'}">
                         </div>
                       </div>
                     </ng-template>

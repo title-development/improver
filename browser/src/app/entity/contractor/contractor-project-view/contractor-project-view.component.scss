@@ -195,6 +195,8 @@ hr {
     border-radius: 50%;
     background-size: cover;
     background-position: center;
+    background-color: $grey-200;
+
     @include response-to(sm) {
       height: 55px;
       width: 55px;

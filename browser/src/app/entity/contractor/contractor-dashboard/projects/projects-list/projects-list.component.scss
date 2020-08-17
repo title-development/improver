@@ -39,6 +39,7 @@
         background-size: cover;
         margin-right: 16px;
         border-radius: 50%;
+        background-color: $grey-200;
 
         @include response(xs){
           margin-left: 12px;

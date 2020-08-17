@@ -170,6 +170,7 @@ p {
     box-shadow: elevation(1);
     border-radius: 50%;
     position: relative;
+    background-color: $white;
 
     @include response-from(md) {
       display: block;
