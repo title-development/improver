@@ -275,8 +275,11 @@
       </cv-input-field>
       <cv-input-field>
         <cv-field-label>State</cv-field-label>
-        <cv-select [multiple]="false" [tags]="false" [autocomplete]="true"
-                   (autocompleteSearch)="autocompleteStateSearch($event)" [items]="filteredStates"
+        <cv-select [multiple]="false"
+                   [tags]="false"
+                   [autocomplete]="true"
+                   (autocompleteSearch)="autocompleteStateSearch($event)"
+                   [items]="filteredStates"
                    [disableItemsMatch]="false"
                    valueKey="value"
                    labelKey="value"

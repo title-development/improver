@@ -1,6 +1,7 @@
-@import "../../../../improver-mixins.scss";
+@import "improver-mixins";
 
 .dialog-content-wrapper {
+  height: max-content;
   position: relative;
   min-height: 300px;
 
@@ -52,12 +53,11 @@
   top: 32px;
 }
 
-//.location-wrapper {
-//  ::ng-deep .address-validation-wrapper {
-//    top: 60px;
-//
-//    .address-validation {
-//      display: flex;
-//    }
-//  }
-//}
+.company-location-form {
+
+  .-bottom-space {
+    @include response(xs){
+      margin-bottom: 24px;
+    }
+  }
+}

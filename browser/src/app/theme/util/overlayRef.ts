@@ -13,6 +13,7 @@ import { DOCUMENT } from '@angular/common';
 import { BehaviorSubject, Subject, Subscription } from 'rxjs';
 import { ScrollHolderService } from '../../util/scroll-holder.service';
 import { MatDialog } from "@angular/material/dialog";
+import { DeviceControlService } from "../../util/device-control.service";
 
 export enum BackdropType {
   popup = 'cv-type-popup',
@@ -43,6 +44,7 @@ export class OverlayRef {
   private backdropType: BackdropType;
 
   constructor(private componentFactoryResolver: ComponentFactoryResolver,
+              private deviceControlService: DeviceControlService,
               private appRef: ApplicationRef,
               private injector: Injector,
               private scrollHolderService: ScrollHolderService,
@@ -192,7 +194,12 @@ export class OverlayRef {
 
   private setDropDownHolderPosition(element: HTMLElement): void {
     const elementBoundaries = this.targetElement.getBoundingClientRect();
-    const pageScr = this.mdModalOpened() ? this.getSDKScroll() : this.getPageScroll();
+    let pageScr;
+    if (this.deviceControlService.isIOS() && this.mdModalOpened()){
+      pageScr = this.getPageScroll();
+    } else {
+      pageScr = this.mdModalOpened() ? this.getSDKScroll() : this.getPageScroll();
+    }
     if (this.upDirection || this.isUpDirection(this.targetElement)) {
       element.style.bottom = `${ this.window.innerHeight - elementBoundaries.top - pageScr.y}px`;
       element.style.top = 'auto';

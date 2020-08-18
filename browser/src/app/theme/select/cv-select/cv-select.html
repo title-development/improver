@@ -1,6 +1,6 @@
 <div class="select-open" #targetElement
      [ngClass]="{'-opened': opened, '-tags': tags, '-default-autocomplete': !multiple && autocomplete && !tags, '-overlay-on-top': (overlayRef.$isDropdownOpenedTop | async)}"
-     (click)="openDropdown()">
+     (click)="openDropdown(); scrollOffsetTop($event)">
   <ng-container *ngIf="!multiple && !autocomplete && !tags">
     <div class="select-label" [ngClass]="{'-has-items': selectedItemsCount > 0}">{{ selectedLabel ? selectedLabel :
       label }}
@@ -10,8 +10,9 @@
     <input cv-input name="search" [(ngModel)]="search" (ngModelChange)="autocompleteSearchHandler($event)"
            autocomplete="off"
            inputmode="search"
+           (keypress)="onKeyEvent($event)"
            placeholder="{{label}}"
-           (focus)="openDropdown()"
+           (focus)="openDropdown(); scrollOffsetTop($event)"
     />
   </ng-container>
   <ng-container *ngIf="multiple && !tags">
@@ -45,7 +46,7 @@
   <div class="host"
        [ngClass]="{'-items-showed': isItemsShowed, '-border': border, '-up': (overlayRef.$isDropdownOpenedTop | async)}"
        (@dropDownAnimationState.done)="animationEnd($event)" [@dropDownAnimationState]="dropDownAnimationState">
-    <ng-container *ngIf="items">
+    <ng-container *ngIf="items.length != 0">
       <!--simple dropdown or with autocomplete-->
       <ng-container *ngIf="!multiple && !grouped">
         <div [ngStyle]="{'max-height.px': virtualScrollHeight(items, mediaQuery.xs ? 3 : 4)}" class="holder items" #itemsHolder>

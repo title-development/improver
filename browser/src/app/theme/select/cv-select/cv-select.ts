@@ -27,6 +27,8 @@ import { animate, AnimationEvent, state, style, transition, trigger } from '@ang
 import { CvSelection } from '../../util/CvSelection';
 import { CdkVirtualForOf, CdkVirtualForOfContext, CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { MediaQuery, MediaQueryService } from '../../../util/media-query.service';
+import { DeviceControlService } from "../../../util/device-control.service";
+import { MatDialog } from "@angular/material/dialog";
 
 export const SELECT_VALUE_ACCESSOR: Provider = {
   provide: NG_VALUE_ACCESSOR,
@@ -127,7 +129,9 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
 
   constructor(@Inject(DOCUMENT) private document: any,
               private renderer: Renderer2,
+              private deviceControlService: DeviceControlService,
               public overlayRef: OverlayRef,
+              @Optional() private matDialog: MatDialog,
               @Optional() @SkipSelf() private form: NgForm,
               @Optional() @SkipSelf() private controlContainer: ControlContainer,
               private changeDetectorRef: ChangeDetectorRef,
@@ -155,16 +159,52 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
 
   }
 
-  // ngAfterViewInit(): void {
-  //   this.overlayRef.$isDropdownOpenedTop.subscribe(isUpDirection => {
-  //     this.isDropdownOpenedTop = isUpDirection;
-  //     this.changeDetectorRef.detectChanges();
-  //   });
-  // }
+  //handle IOS focus scrolling
+  scrollOffsetTop(event) {
+    if (this.deviceControlService.isIOS() && (this.matDialog && this.matDialog.openDialogs.length > 0)) {
+      setTimeout(() => {
+        window.scroll(0,0);
+      },50);
+    }
+  }
 
   @HostListener('ngModelChange', ['$event']) onModelChange(value: any) {
     if (!value) {
       this.resetSelection()
+    }
+  }
+
+  onKeyEvent(event){
+    if (event.key.toLowerCase() == 'enter' || event.keyCode.toString() == '13') {
+      let path = event.path || (event.composedPath && event.composedPath());
+
+      if (path[0]) {
+        let targetHTMLElement: HTMLElement = path[0]; // get target element
+
+        for (let i = 0; i < path.length; i++) {
+          // input is wrapped in "cv-input-fields" and has next sibling
+          if (path[i].tagName && path[i].tagName.toLowerCase() == 'cv-input-field' && path[i].nextSibling) {
+            let targetElementNextSibling: HTMLElement = (path[i].nextSibling as HTMLElement).getElementsByTagName('input')[0];
+            // set focus on next sibling element
+            if (targetElementNextSibling) {
+              this.renderer.selectRootElement(targetHTMLElement).blur();
+              this.renderer.selectRootElement(targetElementNextSibling).focus();
+            }
+
+          // input is wrapped in "div" and has next sibling
+          } else if (path[3].tagName.toLowerCase() != 'form' && path[i + 1] && path[i + 1].nextSibling && path[i + 1].nextSibling.tagName && path[i + 1].nextSibling.tagName.toLowerCase() == 'div'
+            && (path[i + 1].nextSibling as HTMLElement).getElementsByTagName('cv-input-field').length != 0) {
+
+            let targetElementNextSibling = (path[i + 1].nextSibling as HTMLElement).getElementsByTagName('cv-input-field')[0].getElementsByTagName('input')[0];
+            // set focus on next sibling element
+            if (targetElementNextSibling) {
+              this.renderer.selectRootElement(targetHTMLElement).blur();
+              this.renderer.selectRootElement(targetElementNextSibling).focus();
+            }
+          }
+        }
+      }
+
     }
   }
 
@@ -224,6 +264,7 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
       this.changeDetectorRef.markForCheck();
     }
 
+    this.overlayRef.$updateDropdownPosition.next();
     this.autocompleteSearch.next(this.search);
     if (!this.opened && this.allowAnyValue) {
       this.openDropdown();
@@ -283,10 +324,11 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
     if (!this.opened) {
       this.opened = true;
       this.highlightedItemIndex = 0;
-      this.changeDetectorRef.detectChanges()
       setTimeout(() => {
         this.dropDownAnimationState = 'opened';
+        this.overlayRef.$updateDropdownPosition.next();
         this.changeDetectorRef.markForCheck();
+        this.changeDetectorRef.detectChanges();
       });
     }
   }
@@ -362,6 +404,7 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
         if (!this.propagateEnterEvent) {
           event.preventDefault();
           this.onEnter();
+          this.onKeyEvent(event);
         }
         break;
       case 9: //tab
