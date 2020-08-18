@@ -14,9 +14,8 @@
 }
 
 .card {
-  &.payment-method-card, &.transaction-history-card {
+  &.payment-method-card, &.transaction-history-card, &.subscriptions-card {
     padding: 0px;
     overflow: auto;
   }
 }
-
