@@ -27,6 +27,12 @@
   .content {
     margin: 24px 24px 24px;
 
+    .hint {
+      color: $grey-600;
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
     @include response-to(sm){
       flex: 1;
     }
@@ -110,4 +116,46 @@ form.payment-card-form {
       margin-bottom: 8px;
     }
   }
+}
+
+.stripe-badge-block {
+  color: $grey-500;
+  margin-top: 24px;
+  display: flex;
+  flex-direction: row;
+  text-align: center;
+  justify-content: center;
+  margin-bottom: 24px;
+
+  mat-icon {
+    font-size: 28px;
+    margin-top: -3px;
+    margin-right: 4px;
+  }
+
+  .text-wrapper {
+    display: flex;
+    text-align: center;
+    align-items: center;
+    flex-direction: row;
+
+    .text {
+      font-size: 14px;
+      color: $grey-600;
+      margin-right: 8px;
+    }
+
+    .stripe-budge {
+      display: flex;
+
+      img {
+        width: 135px;
+      }
+
+    }
+
+  }
+
+
+
 }

@@ -64,7 +64,7 @@
         border-radius: 8px;
 
         &.input-hint {
-          margin-top: 19px;
+          margin-top: 16px;
         }
 
       }
@@ -72,6 +72,10 @@
       .balance-block {
         border: solid 1px $grey-200;
         border-radius: 8px;
+
+        @include response-to(xs) {
+          margin-bottom: 16px;
+        }
 
         &:last-child {
           border-bottom: solid 1px transparent;
@@ -134,4 +138,34 @@
   position: relative;
   right: 32px;
   top: 32px;
+}
+
+.stripe-badge-block {
+  color: $grey-500;
+  margin-top: 16px;
+  display: flex;
+  flex-direction: row;
+
+  mat-icon {
+    color: $grey-500;
+    font-size: 46px;
+  }
+
+  .text-wrapper {
+    display: flex;
+    text-align: center;
+    align-items: center;
+    flex-direction: column;
+
+    .text {
+      font-size: 14px;
+      color: $grey-600;
+    }
+
+  }
+
+  .stripe-budge {
+    display: flex;
+  }
+
 }

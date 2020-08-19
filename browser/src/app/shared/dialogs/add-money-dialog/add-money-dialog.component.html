@@ -21,7 +21,7 @@
 
         <div class="row" *ngIf="step == 1">
 
-          <div class="col-sm-12 col-md-6">
+          <div class="col-xs-12 col-sm-6">
 
             <cv-input-field>
               <cv-field-label>Set an amount to add</cv-field-label>
@@ -39,9 +39,16 @@
                 <span *ngIf="amount.errors?.minlength">{{messages.errors.amount.minlength}}</span>
               </cv-field-error>
             </cv-input-field>
+
+            <div class="stripe-badge-block">
+              <a href="https://stripe.com" class="stripe-budge" target="_blank">
+                <img src="assets/stripe/powered_by_stripe_outline_dark.svg" alt="Powered by Stripe">
+              </a>
+            </div>
+
           </div>
 
-          <div class="col-sm-12 col-md-6">
+          <div class="col-xs-12 col-sm-6">
             <div class="hint input-hint">
               <span>Please set an amount of money you want to top up your balance.
                 <br/>This is a one time charge.
@@ -53,7 +60,7 @@
 
         <div class="row"  *ngIf="step == 2">
 
-          <div class="col-md-6">
+          <div class="col-sm-6">
 
             <div class="balance-block">
 
@@ -95,7 +102,7 @@
 
           </div>
 
-          <div class="col-md-6">
+          <div class="col-sm-6">
             <div class="hint">
               <span>{{chargeValue | currency:'USD':'symbol'}} will be charged to your payment method and added to your Home Improve balance.
                 <br/>This is a one time charge.

@@ -12,6 +12,11 @@
     </div>
 
     <div class="content">
+
+      <div class="hint">
+        Home Improve doesn't save your credit card information. We partnering with Stripe to ensure payments is secure.
+      </div>
+
       <div class="warning">
         <ng-container *ngIf="cards && cards.length >= 5">
           <p>You cannot add more than 5 cards.</p>
@@ -36,6 +41,18 @@
             </div>
 
             <cv-field-error id="card-errors" role="alert" *ngIf="error">{{ error }}</cv-field-error>
+          </div>
+
+          <div class="stripe-badge-block">
+            <mat-icon>https</mat-icon>
+
+            <div class="text-wrapper">
+              <div class="text">Secure payments</div>
+              <a href="https://stripe.com" class="stripe-budge" target="_blank">
+                <img src="assets/stripe/powered_by_stripe_outline_dark.svg" alt="Powered by Stripe">
+              </a>
+            </div>
+
           </div>
 
           <div class="buttons-wrapper" [cvSpinner]="checkingCard" [cvSpinnerSize]="20">

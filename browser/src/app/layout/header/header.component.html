@@ -88,7 +88,7 @@
             <a class="app-menu-button account-menu" title="{{securityService.getLoginModel().name}}"
                *ngIf="securityService.isAuthenticated() && (!mediaQuery.xs && !mediaQuery.sm)"
                (click)="mobileMenuService.mobileMenuOpened = !mobileMenuService.mobileMenuOpened">
-                <div class="account-icon" [ngClass]="{'mobile': mediaQuery.xs || mediaQuery.sm}"
+                <div class="account-icon" [ngClass]="{'present': securityService.getLoginModel().iconUrl}"
                      [ngStyle]="securityService.getLoginModel().iconUrl && securityService.getLoginModel().iconUrl != '' && {'background-image':'url(' + securityService.getLoginModel().iconUrl + ')'} || securityService.getLoginModel().company && {'background-image':'url(/assets/img/pro_avatar.svg)'} || {'background-image':'url(/assets/img/customer_avatar.svg)'}"></div>
                 <div class="user-name xs-none sm-none md-none" *ngIf="securityService.isAuthenticated()">
                     {{securityService.getLoginModel().name | truncate:22: '...'}}
@@ -99,7 +99,7 @@
             <a class="app-menu-button account-menu" title="{{securityService.getLoginModel().name}}"
                *ngIf="securityService.isAuthenticated() && (mediaQuery.xs || mediaQuery.sm)"
                [routerLink]="securityService.hasRole(Role.CONTRACTOR)? '/companies/' + securityService.getLoginModel().company : '/my/settings/account'">
-                <div class="account-icon" [ngClass]="{'mobile': mediaQuery.xs || mediaQuery.sm}"
+                <div class="account-icon" [ngClass]="{'present': securityService.getLoginModel().iconUrl}"
                      [ngStyle]="securityService.getLoginModel().iconUrl && securityService.getLoginModel().iconUrl != '' && {'background-image':'url(' + securityService.getLoginModel().iconUrl + ')'} || securityService.getLoginModel().company && {'background-image':'url(/assets/img/pro_avatar.svg)'} || {'background-image':'url(/assets/img/customer_avatar.svg)'}"></div>
                 <div class="user-name xs-none sm-none md-none" *ngIf="securityService.isAuthenticated()">
                     {{securityService.getLoginModel().name | truncate:18: '...'}}

@@ -23,12 +23,11 @@
           </div>
         </div>
 
-
-
         <div class="terms-block">
           By making this purchase you agree to our <a routerLink="/terms-of-use">Terms of Use</a> and <a
           routerLink="/privacy-policy">Privacy Policy</a>
         </div>
+
       </div>
 
       <div class="col-sm-8 col-md-4 charge-card-wrapper" >
@@ -71,7 +70,7 @@
             <div class="payment-method-block" *ngIf="paymentCards?.length > 0">
               <div class="title">Payment method</div>
               <div class="card-info" >
-                <div >
+                <div>
                   <div class="icon"
                        [ngStyle]="{'background-image':'url(' + 'assets/img/credit-cards-types/' + tricksService.replaceSpases(paymentCards[0]?.brand) + '.png)'}"></div>
                   <div class="ends" fxFlexOffset="16px">ending in {{paymentCards[0].last4}}</div>
@@ -80,6 +79,13 @@
                      [hidden]="paymentCards?.length <= 1">Change
                 </div>
               </div>
+
+              <div class="stripe-badge-block">
+                <a href="https://stripe.com" class="stripe-budge" target="_blank">
+                  <img src="assets/stripe/powered_by_stripe_outline_dark.svg" alt="Powered by Stripe">
+                </a>
+              </div>
+
             </div>
           </div>
 
