@@ -1,8 +1,6 @@
 package com.improver.service;
 
-import com.improver.entity.Staff;
-import com.improver.entity.Ticket;
-import com.improver.entity.User;
+import com.improver.entity.*;
 import com.improver.exception.NotFoundException;
 import com.improver.exception.ValidationException;
 import com.improver.model.admin.out.StaffTicket;
@@ -14,11 +12,14 @@ import com.improver.util.mail.MailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.time.ZonedDateTime;
 
 @Slf4j
 @Service
 public class TicketService {
+
+    private final static int COMPANY_PROFILE_TICKETS_LIMIT = 2;
 
     @Autowired private TicketRepository ticketRepository;
     @Autowired private MailService mailService;
@@ -106,5 +107,35 @@ public class TicketService {
         }
     }
 
+    public void updateName(Contractor contractor, String name) {
+        checkCompanyProfileTicketsLimit(contractor.getId());
+        Ticket ticket = companyProfileChangeRequest(contractor,
+            String.format("Company name change request. New name is - %s", name));
+        add(ticket);
+    }
+
+    public void updateFounded(Contractor contractor, Integer founded) {
+        checkCompanyProfileTicketsLimit(contractor.getId());
+        Ticket ticket = companyProfileChangeRequest(contractor,
+            String.format("Company foundation year change request. New foundation year is - %s", founded));
+        add(ticket);
+    }
+
+    private void checkCompanyProfileTicketsLimit(long contractorId) {
+        int companyProfileTickets = ticketRepository.countAllByStatusInAndAuthorId(Ticket.Status.getActive(), contractorId);
+        if(companyProfileTickets >= COMPANY_PROFILE_TICKETS_LIMIT) {
+            throw new ValidationException("You already requested Company name/year change");
+        }
+    }
+
+    private Ticket companyProfileChangeRequest(Contractor contractor, String description) {
+        Company company = contractor.getCompany();
+        return new Ticket().setName(contractor.getDisplayName())
+            .setBusinessName(company.getName())
+            .setCreated(ZonedDateTime.now())
+            .setEmail(contractor.getEmail())
+            .setSubject(Ticket.Subject.COMPANY_PROFILE)
+            .setDescription(description);
+    }
 
 }

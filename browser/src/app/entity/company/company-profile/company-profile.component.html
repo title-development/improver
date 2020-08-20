@@ -3,7 +3,7 @@
        [ngStyle]="companyProfile.backgroundUrl && companyProfile.backgroundUrl != '' && {'background-image':'url(' + companyProfile.backgroundUrl + ')'}">
     <div class="container">
       <div class="edit-content">
-        <label for="background-file" class="cover-hint" *ngIf="securityService.hasRole(Role.CONTRACTOR) && (companyProfile.backgroundUrl == '' || !companyProfile.backgroundUrl)">
+        <label for="background-image" class="cover-hint" *ngIf="securityService.hasRole(Role.CONTRACTOR) && (companyProfile.backgroundUrl == '' || !companyProfile.backgroundUrl)">
           add background
         </label>
 
@@ -12,10 +12,10 @@
              [cvSpinnerSize]="30"
              [cvSpinnerBackground]="false"
              cvSpinnerBackgroundColor="transparent">
-          <label for="background-file" *ngIf="!backgroundProcessing">
-            <i class="imp-icon-pencil"></i>
+          <label for="background-image" *ngIf="!backgroundProcessing">
+            <mat-icon class="edit">edit</mat-icon>
           </label>
-          <input id="background-file" type="file" accept=".png, .jpg, .bmp" (change)="fileChangeListener($event)">
+          <input id="background-image" type="file" accept=".png, .jpg, .bmp" (change)="fileChangeListener($event)">
         </div>
       </div>
     </div>
@@ -23,7 +23,11 @@
   <div class="company-details">
     <div class="container">
       <div class="wrapper">
-        <h1>{{companyProfile.name}}</h1>
+        <h1 class="company-name">
+          <span>{{companyProfile.name}} </span>
+          <span class="edit-button-wrapper" *ngIf="editMode">
+            <mat-icon class="edit" (click)="openCompanyNameEditDialog()">edit</mat-icon>
+          </span></h1>
         <div class="logo" [ngStyle]="companyProfile.iconUrl && companyProfile.iconUrl != '' && {'background-image':'url(' + companyProfile.iconUrl + ')'} ||
                                             {'background-image':'url(assets/img/pro_avatar.svg)'}">
           <div class="actions" *ngIf="editMode">
@@ -61,7 +65,7 @@
         <div class="info-block">
           <i class="imp-icon-building-2"></i>
           <div class="group">
-            <h5>Founded <i *ngIf="editMode" (click)="openCompanyInfoDialog('about-company-dialog')" class="imp-icon-pencil-2 pencil"></i></h5>
+            <h5>Founded <i *ngIf="editMode" (click)="openCompanyFoundationYearEditDialog()" class="imp-icon-pencil-2 pencil"></i></h5>
           </div>
           <div>
             <p><span>{{companyProfile.founded}}</span>
@@ -225,7 +229,7 @@
                 <div class="info-block">
                   <i class="imp-icon-building-2"></i>
                   <div class="group">
-                    <h5>Founded <i *ngIf="editMode" (click)="openCompanyInfoDialog('about-company-dialog')" class="imp-icon-pencil-2 pencil"></i></h5>
+                    <h5>Founded <i *ngIf="editMode" (click)="openCompanyFoundationYearEditDialog()" class="imp-icon-pencil-2 pencil"></i></h5>
                   </div>
                   <div>
                     <p><span>{{companyProfile.founded}}</span>

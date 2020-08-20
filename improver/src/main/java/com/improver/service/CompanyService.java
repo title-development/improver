@@ -1,20 +1,14 @@
 package com.improver.service;
 
 import com.improver.entity.*;
-import com.improver.exception.ConflictException;
-import com.improver.exception.InternalServerException;
 import com.improver.exception.NotFoundException;
-import com.improver.exception.ValidationException;
 import com.improver.model.CompanyInfo;
 import com.improver.model.admin.CompanyModel;
-import com.improver.model.in.registration.CompanyDetails;
-import com.improver.model.in.registration.CompanyRegistration;
 import com.improver.model.out.CompanyProfile;
 import com.improver.model.out.billing.TransactionModel;
 import com.improver.model.out.project.ProjectRequestShort;
 import com.improver.repository.*;
 import com.improver.security.UserSecurityService;
-import com.improver.util.mail.MailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,12 +16,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.transaction.Transactional;
 import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.Objects;
-
-import static com.improver.util.TextMessages.REPLY_TEXT_TEMPLATE;
 
 @Slf4j
 @Service
@@ -41,7 +32,7 @@ public class CompanyService {
     @Autowired private BillRepository billRepository;
     @Autowired private ProjectRepository projectRepository;
     @Autowired private StaffActionLogger staffActionLogger;
-
+    @Autowired private TicketService ticketService;
 
     public CompanyProfile getCompanyProfile(long id) {
         Company company = companyRepository.findById(id)
@@ -51,8 +42,6 @@ public class CompanyService {
         boolean isOwner = current != null && Objects.equals(owner.getId(), current.getId());
         return new CompanyProfile(company, owner, isOwner);
     }
-
-
 
 
     public Page<TransactionModel> getTransactions(long companyId, Pageable pageable, boolean adminView) {
@@ -146,8 +135,6 @@ public class CompanyService {
         imageService.silentDelete(coverUrl);
         companyRepository.save(company.setBackgroundUrl(null));
     }
-
-
 
     public void archiveCompany(Company company) {
         imageService.silentDelete(company.getIconUrl());

@@ -5,8 +5,6 @@ import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { PopUpMessageService } from "../../../util/pop-up-message.service";
 import { SecurityService } from "../../../auth/security.service";
 import { CompanyInfoService } from "../../../api/services/company-info.service";
-import { companyInfoDialogConfig, mobileMediaDialogConfig } from "../dialogs.configs";
-import { dialogsMap } from "../dialogs.state";
 import { takeUntil } from "rxjs/operators";
 import { MediaQuery, MediaQueryService } from "../../../util/media-query.service";
 import { Subject } from "rxjs";
@@ -22,7 +20,6 @@ export class AboutCompanyDialogComponent implements OnInit, OnDestroy {
 
 	companyInfo: CompanyInfo = new CompanyInfo();
 	spinnerProcessing: boolean = false;
-	public changeCompanyNameDialogRef: MatDialogRef<any>;
 	mediaQuery: MediaQuery;
 
 	constructor(private companyService: CompanyService,
@@ -59,46 +56,6 @@ export class AboutCompanyDialogComponent implements OnInit, OnDestroy {
 					err => {
 						console.error(err);
 					});
-	}
-
-	changeCompanyName() {
-		this.dialog.closeAll();
-		let dialogConfig = (this.mediaQuery.xs || this.mediaQuery.sm) ? mobileMediaDialogConfig : companyInfoDialogConfig;
-		this.changeCompanyNameDialogRef = this.dialog.open(dialogsMap['company-info-editor'], dialogConfig);
-		this.changeCompanyNameDialogRef
-				.afterClosed()
-				.subscribe(result => {
-					this.changeCompanyNameDialogRef = null;
-				});
-		let properties = {
-			title: 'Edit Company Name',
-			placeholder: 'Company name',
-			value: this.companyInfo.name
-		};
-		this.changeCompanyNameDialogRef.componentInstance.properties = properties;
-		this.changeCompanyNameDialogRef.componentInstance.onSuccess.subscribe(() =>{
-			//TODO implement change company name
-		})
-	}
-
-	changeCompanyFounded() {
-		this.dialog.closeAll();
-		let dialogConfig = (this.mediaQuery.xs || this.mediaQuery.sm) ? mobileMediaDialogConfig : companyInfoDialogConfig;
-		this.changeCompanyNameDialogRef = this.dialog.open(dialogsMap['company-info-editor'], dialogConfig);
-		this.changeCompanyNameDialogRef
-				.afterClosed()
-				.subscribe(result => {
-					this.changeCompanyNameDialogRef = null;
-				});
-		let properties = {
-			title: 'Edit Company Founded',
-			placeholder: 'Company Founded',
-			value: this.companyInfo.founded
-		};
-		this.changeCompanyNameDialogRef.componentInstance.properties = properties;
-		this.changeCompanyNameDialogRef.componentInstance.onSuccess.subscribe(() =>{
-			//TODO implement change company founded
-		})
 	}
 
 	ngOnDestroy(): void {

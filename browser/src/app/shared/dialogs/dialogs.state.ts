@@ -32,9 +32,10 @@ import { SocialRegistrationAdditionalInfoDialog } from "./social-registration-ad
 import { CompanyLocationDialogComponent } from "./company-location-dialog/company-location-dialog.component";
 import { CompanyLicensesDialogComponent } from "./company-licenses-dialog/company-licenses-dialog.component";
 import { AboutCompanyDialogComponent } from "./about-company-dialog/about-company-dialog.component";
-import { CompanyInfoEditorComponent } from "./change-company-name-dialog/company-info-editor.component";
+import { CompanyNameEditDialogComponent } from "./change-company-name-dialog/company-name-edit-dialog.component";
 import { EmailVerificationHintDialogComponent } from "./email-verification-hint-dialog/email-verification-hint-dialog.component";
 import { PasswordEditorComponent } from "./password-editor/password-editor.component";
+import { CompanyFoundationYearEditDialogComponent } from "./change-company-foundation-year-dialog/company-foundation-year-edit-dialog.component";
 
 export const dialogs = [
   QuestionaryDialogComponent,
@@ -71,7 +72,8 @@ export const dialogs = [
   CompanyLocationDialogComponent,
   CompanyLicensesDialogComponent,
   AboutCompanyDialogComponent,
-  CompanyInfoEditorComponent,
+  CompanyNameEditDialogComponent,
+  CompanyFoundationYearEditDialogComponent,
   EmailVerificationHintDialogComponent,
 	PasswordEditorComponent
 ];
@@ -108,7 +110,8 @@ export const dialogsMap = {
   'company-location-dialog': CompanyLocationDialogComponent,
   'company-licenses-dialog': CompanyLicensesDialogComponent,
   'about-company-dialog': AboutCompanyDialogComponent,
-  'company-info-editor': CompanyInfoEditorComponent,
+  'company-name-edit-dialog': CompanyNameEditDialogComponent,
+  'company-foundation-year-edit-dialog' : CompanyFoundationYearEditDialogComponent,
   'email-verification-hint-dialog': EmailVerificationHintDialogComponent,
   'password-editor-dialog': PasswordEditorComponent
 };

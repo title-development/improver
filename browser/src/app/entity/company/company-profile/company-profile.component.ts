@@ -29,11 +29,12 @@ import { FILE_MIME_TYPES, MAX_FILE_SIZE } from '../../../util/file-parameters';
 import { ProjectRequest } from '../../../api/models/ProjectRequest';
 import { ErrorHandler } from '../../../util/error-handler';
 import { Company } from '../../../api/models/Company';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { finalize, first, switchMap, takeUntil } from 'rxjs/operators';
 import { ScrollService } from '../../../util/scroll.service';
 import { SeoService } from "../../../util/seo.service";
 import { CompanyInfoService } from "../../../api/services/company-info.service";
 import { Role } from "../../../model/security-model";
+import { TicketService } from "../../../api/services/ticket.service";
 
 @Component({
   selector: 'company-profile-page',
@@ -69,6 +70,7 @@ export class CompanyProfileComponent implements OnInit, OnDestroy {
   private scrollHolder: Element = document.getElementsByClassName('scroll-holder')[0];
   scrollHandler = () => this.onScroll();
   public companyInfoDialogRef: MatDialogRef<any>;
+  public companyInfoEditDialogRef: MatDialogRef<any>;
 
   constructor(@Inject('Window') private window: Window,
               private renderer: Renderer2,
@@ -76,6 +78,7 @@ export class CompanyProfileComponent implements OnInit, OnDestroy {
               public route: ActivatedRoute,
               public securityService: SecurityService,
               public companyService: CompanyService,
+              public ticketService: TicketService,
               public companyInfoService: CompanyInfoService,
               public dialog: MatDialog,
               public mediaQueryService: MediaQueryService,
@@ -328,6 +331,50 @@ export class CompanyProfileComponent implements OnInit, OnDestroy {
         this.setCompanyIconUrl(res.body);
       },
       err => this.popupService.showError(getErrorMessage(err)));
+  }
+
+  openCompanyNameEditDialog() {
+    this.dialog.closeAll();
+    this.companyInfoEditDialogRef = this.dialog.open(dialogsMap['company-name-edit-dialog'], companyInfoDialogConfig);
+    this.companyInfoEditDialogRef
+      .afterClosed()
+      .subscribe(result => {
+        this.companyInfoEditDialogRef = null;
+      });
+    this.companyInfoEditDialogRef.componentInstance.value = this.companyProfile.name
+    this.companyInfoEditDialogRef.componentInstance.onSuccess.subscribe(value => {
+      this.ticketService.updateCompanyName(value)
+        .pipe(
+          first(),
+          finalize(() => this.companyInfoEditDialogRef.componentInstance.loading = false)
+        )
+        .subscribe(() => {
+            this.companyInfoEditDialogRef.componentInstance.done = true;
+          },
+          error => this.popupService.showError(getErrorMessage(error)))
+    })
+  }
+
+  openCompanyFoundationYearEditDialog() {
+    this.dialog.closeAll();
+    this.companyInfoEditDialogRef = this.dialog.open(dialogsMap['company-foundation-year-edit-dialog'], companyInfoDialogConfig);
+    this.companyInfoEditDialogRef
+      .afterClosed()
+      .subscribe(result => {
+        this.companyInfoEditDialogRef = null;
+      });
+    this.companyInfoEditDialogRef.componentInstance.value = this.companyProfile.founded;
+    this.companyInfoEditDialogRef.componentInstance.onSuccess.subscribe(value => {
+      this.ticketService.updateCompanyFoundationYear(value)
+        .pipe(
+          first(),
+          finalize(() => this.companyInfoEditDialogRef.componentInstance.loading = false)
+        )
+        .subscribe(() => {
+            this.companyInfoEditDialogRef.componentInstance.done = true;
+          },
+          error => this.popupService.showError(getErrorMessage(error)))
+    })
   }
 
   private openWriteReviewDialog(companyProfile: Company) {

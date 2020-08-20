@@ -102,8 +102,19 @@ p {
 
       label {
         cursor: pointer;
-        display: block;
         height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        color: #ffffff;
+        background-color: $primary-500;
+        border-radius: 50%;
+
+        mat-icon {
+          font-size: 16px;
+        }
+
       }
 
       input {
@@ -743,6 +754,7 @@ company-reviews {
     flex-direction: column-reverse;
     right: 24px;
   }
+
 }
 
 .cover-hint {
@@ -756,8 +768,31 @@ company-reviews {
   }
 
   @include response-to(sm) {
+    display: none;
     margin-top: 6px;
     margin-right: -10px;
     font-size: 14px;
   }
+
 }
+
+.company-name {
+  .edit-button-wrapper {
+    cursor: pointer;
+
+    color: #ffffff;
+    background-color: #14ABE3;
+    border-radius: 50%;
+    height: 24px;
+    width: 24px;
+    display: inline-block;
+    text-align: center;
+    line-height: 26px;
+
+    mat-icon {
+      font-size: 16px;
+    }
+  }
+}
+
+

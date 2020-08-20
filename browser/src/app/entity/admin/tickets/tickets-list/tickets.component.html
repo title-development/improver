@@ -98,7 +98,7 @@
         </span>
 
         <span *ngSwitchCase="'author'" [ngStyle]="{wordWrap: 'break-word'}">
-          <span *ngIf="row.authorEmail">{{row.authorEmail + ' <' + row.authorName + '> ' + row.authorRole}}</span>
+          <span *ngIf="row.authorEmail">{{row.authorEmail + ' <' + row.name + '> ' + row.authorRole}}</span>
         </span>
 
         <span *ngSwitchCase="'created'" [ngStyle]="{wordWrap: 'break-word'}">

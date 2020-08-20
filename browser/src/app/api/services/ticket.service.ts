@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
-import { License, Review } from '../../model/data-model';
 import { Observable } from 'rxjs';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { toHttpParams } from "../../util/functions";
 import { RestPage } from "../models/RestPage";
 import { Ticket } from "../models/Ticket";
-
 
 
 @Injectable()
@@ -45,6 +43,19 @@ export class TicketService {
   createByStaff(ticket: Ticket): Observable<any> {
     return this.http
       .post(`${this.ticketUrl}/staff`, ticket);
+  }
+
+  updateCompanyName(name: string): Observable<any> {
+    return this.http.put(`${this.ticketUrl}/company/name`, name);
+  }
+
+  updateCompanyFoundationYear(founded: number): Observable<any> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json'
+      })
+    };
+    return this.http.put(`${this.ticketUrl}/company/founded`, founded, httpOptions);
   }
 
 }

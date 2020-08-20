@@ -25,7 +25,6 @@ public class CompanyProfileController {
     @Autowired private CompanyService companyService;
     @Autowired private CompanyRepository companyRepository;
 
-
     @GetMapping(COMPANY_ID + "/profile")
     public ResponseEntity<CompanyProfile> getCompanyProfile(@PathVariable long companyId) {
         CompanyProfile company = companyService.getCompanyProfile(companyId);
@@ -72,4 +71,5 @@ public class CompanyProfileController {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
 }

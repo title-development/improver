@@ -1,11 +1,12 @@
-import { throwError as observableThrowError, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import {
   CompanyInfo,
   CompanyProfile,
   License,
   Location,
-  Pagination, ServiceType,
+  Pagination,
+  ServiceType,
   TradesAndServiceTypes
 } from '../../model/data-model';
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';

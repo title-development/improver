@@ -23,51 +23,6 @@
 
             <div class="content" *ngIf="!spinnerProcessing">
 
-                <div class="editable-group">
-                <div class="group-wrapper">
-                    <cv-input-field>
-                        <cv-field-label>Company name</cv-field-label>
-                        <input cv-input type="text"
-                               placeholder="Company name"
-                               #name="ngModel"
-                               name="name"
-                               disabled
-                               [(ngModel)]="companyInfo.name"
-                               required>
-                        <cv-field-error *ngIf="name.dirty || name.touched || companyInfoForm.submitted">
-                            <span *ngIf="name.errors?.required">Required</span>
-                        </cv-field-error>
-                    </cv-input-field>
-                </div>
-                    <button cv-button type="button" (click)="changeCompanyName()">
-                        <mat-icon *ngIf="mediaQuery.xs || mediaQuery.sm" class="edit">edit</mat-icon>
-                        <span *ngIf="!mediaQuery.sm && !mediaQuery.xs">Change</span>
-                    </button>
-                </div>
-
-                <div class="editable-group">
-                <div class="group-wrapper">
-                    <cv-input-field>
-                        <cv-field-label>Founded</cv-field-label>
-                        <input cv-input type="text"
-                               placeholder="Founded year"
-                               name="founded"
-                               #founded="ngModel"
-                               disabled
-                               [(ngModel)]="companyInfo.founded"
-                               required>
-                        <cv-field-error *ngIf="founded.dirty || founded.touched || companyInfoForm.submitted">
-                            <span *ngIf="founded.errors?.required">Required</span>
-                        </cv-field-error>
-                    </cv-input-field>
-                </div>
-                    <button cv-button type="button" (click)="changeCompanyFounded()">
-                        <mat-icon *ngIf="mediaQuery.xs || mediaQuery.sm" class="edit">edit</mat-icon>
-                        <span *ngIf="!mediaQuery.sm && !mediaQuery.xs">Change</span>
-                    </button>
-                </div>
-
-
                 <div class="group-wrapper">
                     <cv-input-field>
                         <cv-field-label>Company website</cv-field-label>

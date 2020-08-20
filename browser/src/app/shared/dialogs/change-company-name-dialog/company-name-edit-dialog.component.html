@@ -1,0 +1,58 @@
+
+<div class="dialog-content-wrapper">
+    <div class="dialog-content-container">
+
+        <div class="header">
+            <mat-icon class="close-modal" color="accent" (click)="close()">clear</mat-icon>
+            <div class="header-content">Edit company name</div>
+        </div>
+
+        <div class="content">
+
+            <form #companyInfoForm="ngForm"
+                  name="companyInfo"
+                  *ngIf="!done"
+                  (ngSubmit)="saveChanges()">
+
+                <div class="row group-wrapper">
+
+                    <div class="col-xs-12" >
+                        <cv-input-field>
+                            <cv-field-label>Company name</cv-field-label>
+                            <input cv-input
+                                   type="text"
+                                   placeholder="Company name"
+                                   #input="ngModel"
+                                   name="value"
+                                   [(ngModel)]="value"
+                                   trim
+                                   required>
+                            <cv-field-error *ngIf="input.dirty || input.touched || companyInfoForm.submitted">
+                                <span *ngIf="input.errors?.required">Required</span>
+                            </cv-field-error>
+                        </cv-input-field>
+
+                    </div>
+
+                </div>
+
+                <div class="buttons-wrapper">
+                    <button cv-button-flat flatStyle="dark" type="button" (click)="close()">Cancel</button>
+                    <button cv-button type="submit" [loading]="loading">Save</button>
+                </div>
+            </form>
+
+            <div class="request-sent-message" *ngIf="done">
+              <div class="message">We received your <b>company name</b> change request</div>
+              <div class="hint">It will take some time to check and approve your changes</div>
+
+              <div class="buttons-wrapper">
+                <button cv-button type="button" (click)="currentDialogRef.close()">Ok</button>
+              </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>

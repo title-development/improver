@@ -1,16 +1,17 @@
 package com.improver.controller;
 
+import com.improver.entity.Contractor;
 import com.improver.entity.Staff;
 import com.improver.entity.Ticket;
-import com.improver.util.enums.Priority;
 import com.improver.exception.NotFoundException;
 import com.improver.model.admin.out.StaffTicket;
 import com.improver.model.in.StaffTicketUpdate;
 import com.improver.repository.TicketRepository;
 import com.improver.security.UserSecurityService;
+import com.improver.security.annotation.SupportAccess;
 import com.improver.service.TicketService;
 import com.improver.util.annotation.PageableSwagger;
-import com.improver.security.annotation.SupportAccess;
+import com.improver.util.enums.Priority;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,14 +21,15 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
 import javax.validation.Valid;
-
-
 import java.util.Collections;
 import java.util.List;
 
-import static com.improver.application.properties.Path.*;
+import static com.improver.application.properties.Path.ID_PATH_VARIABLE;
+import static com.improver.application.properties.Path.TICKETS_PATH;
 
 @Slf4j
 @RestController
@@ -107,6 +109,22 @@ public class TicketController {
     @SupportAccess
     public ResponseEntity<Void> add(@RequestBody @Valid StaffTicket ticket) {
         ticketService.addByStaff(ticket, userSecurityService.currentStaffOrNull());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('CONTRACTOR')")
+    @PutMapping("/company/name")
+    public ResponseEntity<Void> updateName(@RequestBody String name) {
+        Contractor contractor = userSecurityService.currentPro();
+        ticketService.updateName(contractor, name);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('CONTRACTOR')")
+    @PutMapping("/company/founded")
+    public ResponseEntity<Void> updateFoundationYear(@RequestBody int founded) {
+        Contractor contractor = userSecurityService.currentPro();
+        ticketService.updateFounded(contractor, founded);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

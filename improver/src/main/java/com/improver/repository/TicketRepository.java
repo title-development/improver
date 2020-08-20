@@ -1,8 +1,8 @@
 package com.improver.repository;
 
 import com.improver.entity.Ticket;
-import com.improver.util.enums.Priority;
 import com.improver.model.admin.out.StaffTicket;
+import com.improver.util.enums.Priority;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -30,5 +30,8 @@ public interface TicketRepository extends JpaRepository<Ticket, Long>{
         "OR LOWER(su.displayName) LIKE CONCAT('%', LOWER(cast(:assignee as string)), '%')))" )
     Page<StaffTicket> getAll(Long id, String email, String name, String businessName, Ticket.Subject subject,
                              List<Ticket.Status> statuses, Priority priority, String assignee, String author, Boolean unassignedOnly, Pageable pageable);
+
+
+    Integer countAllByStatusInAndAuthorId(List<Ticket.Status> statuses, Long userId);
 
 }
