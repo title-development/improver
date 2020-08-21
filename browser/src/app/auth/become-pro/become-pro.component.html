@@ -25,7 +25,7 @@
 
 </div>
 
-<div id="guide" class="guide">
+<div id="guide" class="guide" *ngIf="!mediaQuery.xs">
   <div class="step step-1">
     <div class="main-block">
       <img src="assets/img/became-pro-guide/step_1.svg" alt="Find more customers">
@@ -56,47 +56,19 @@
   </div>
 </div>
 
-<div class="benefits">
+<div class="benefits" appParallax [onlyMobileScreen]="mediaQuery.xs || mediaQuery.sm" [parallaxRatio]="0.9">
     <div class="benefits-wrapper">
-        <div class="title">Get leads on your terms</div>
-        <div class="benefits-content" *ngIf="!mediaQuery.sm && !mediaQuery.xs">
-            <div class="active-part-wrapper">
-                <div *ngFor="let item of benefits">
-                    <div class="benefit-item" (click)="selectBenefitImage(item)">
+        <div class="benefits-content" >
+            <div class="title" *ngIf="mediaQuery.xs">What we offer?</div>
+            <div class="benefit-item-parent" *ngFor="let item of benefits">
+                <div class="benefit-item">
+                    <div class="benefit-item-header"></div>
+                    <div class="image"
+                         [ngStyle]="{'background-image':'url(' + 'assets/img/became-pro-benefits/desktop/'+ item.desktopImage + ')'}">
+                    </div>
+                    <div class="benefit-item-footer">
                         <div class="item-title">{{item.title}}</div>
                         <div class="item-text">{{item.text}}</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="image-wrapper">
-                <div class="image-block"></div>
-                <div class="image"
-                     [ngStyle]="{'background-image':'url(' + 'assets/img/became-pro-benefits/desktop/'+ selectedBenefitImageUrl + ')'}"></div>
-            </div>
-
-        </div>
-
-        <div class="phone-wrapper" *ngIf="mediaQuery.sm || mediaQuery.xs">
-            <div class="phone-image">
-                <div class="swiper-container image-swiper" *ngIf="mediaQuery.sm || mediaQuery.xs">
-                    <div class="swiper-wrapper">
-                        <div class="swiper-slide image-slide" *ngFor="let item of benefits">
-                            <div class="image" [ngStyle]="{'background-image':'url(' + 'assets/img/became-pro-benefits/mobile/'+ item.mobileImage + ')'}"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="swiper-container benefits-swiper" *ngIf="mediaQuery.sm || mediaQuery.xs">
-            <div class="swiper-wrapper">
-                <div class="swiper-slide" *ngFor="let item of benefits">
-                    <div class="trade-content">
-                        <div class="text-content">
-                            <div class="item-title">{{item.title}}</div>
-                            <div class="item-text">{{item.text}}</div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -108,29 +80,38 @@
 </div>
 
 <div class="configuration-hints">
-   <div class="hints-wrapper">
+    <div class="hints-wrapper">
 
-       <div class="title" *ngIf="!mediaQuery.xs && !mediaQuery.sm">Get leads on your terms</div>
-       <div class="hints-content">
-       <div class="hints radius-1">
-           <div class="hint1-title" *ngIf="mediaQuery.xs || mediaQuery.sm">Get leads on your terms</div>
-           <div class="hint-image-wrapper hint-image-wrapper-1">
-               <div class="hint-image step-1"></div>
-           </div>
-           <div class="hints-title">Choose exactly where you want jobs</div>
-           <div class="hints-text">Select your targeted counties, cities, and ZIP codes so you can get the most relevant leads.
-                                    As your business changes, you can refine your service area any time.</div>
-
-       </div>
-       <div class="hints radius-2">
-           <div class="hint-image-wrapper hint-image-wrapper-2">
-               <div class="hint-image step-2"></div>
-           </div>
-           <div class="hints-title">Customize the kind of work you want</div>
-           <div class="hints-text">Simply check/uncheck services you provide specify exactly what job you do/don’t do so you always receive work you interested in.</div>
-       </div>
-       </div>
-   </div>
+        <div class="title" >Get relevant leads for you</div>
+        <div class="hints-content">
+            <div class="hints">
+                <div class="hints-header"></div>
+                <div class="hint-image-wrapper step-1"></div>
+                <div class="hints-footer">
+                    <div class="hints-title">
+                        Choose exactly where you want jobs
+                    </div>
+                    <div class="hints-text">
+                        Select your targeted counties, cities, and ZIP codes so you can get the most relevant leads.
+                        As your business changes, you can refine your service area any time.
+                    </div>
+                </div>
+            </div>
+            <div class="hints">
+                <div class="hints-header"></div>
+                <div class="hint-image-wrapper step-2"></div>
+                <div class="hints-footer">
+                    <div class="hints-title">
+                        Customize the kind of work you want
+                    </div>
+                    <div class="hints-text">
+                        Simply check/uncheck services you provide specify exactly what job you
+                        do/don’t do so you always receive work you interested in.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="testimonials-wrapper">

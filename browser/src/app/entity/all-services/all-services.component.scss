@@ -1,4 +1,4 @@
-@import "../../../improver-mixins.scss";
+@import "improver-mixins";
 
 layout-footer {
   background-color: #E7F6FE;;
@@ -175,6 +175,8 @@ layout-footer {
 
     .all-services-card {
       justify-content: space-between;
+      box-shadow: none;
+
       @include response(xs) {
         width: 100%;
       }
@@ -221,6 +223,7 @@ layout-footer {
           .service-type-wrapper {
             padding-bottom: 8px;
             cursor: pointer;
+
             &:hover {
               .service-type-name {
                 color: $primary-600;

@@ -18,7 +18,6 @@ import { MetricsEventService } from "../../util/metrics-event.service";
 
 export class BecomeProComponent implements AfterViewInit {
 
-  selectedBenefitImageUrl: string = 'benefit_1.png';
 	proBannerConfig: any = {
 		image: 'become-pro-banner.png',
 		title: 'Ready to get started?',
@@ -54,40 +53,34 @@ export class BecomeProComponent implements AfterViewInit {
 
   benefits = [
     {
-      title: 'Reliable payment',
-      text: 'You only pay for the leads you receive, and if you get any bad lead we’ll return your money back',
-      desktopImage: 'benefit_1.png',
-			mobileImage: 'mobile_benefit_1.png'
+      title: 'Quality leads',
+      text: 'You’ll only pay for quality leads and get refund if the client cannot be reached',
+      desktopImage: 'benefit_1.svg'
     },
     {
-      title: 'Free choice',
-      text: 'Choose exactly which leads to buy',
-			desktopImage: 'benefit_2.png',
-			mobileImage: ''
+      title: 'Find the job you want',
+      text: 'You pick which leads you purchase, giving you full control over the jobs you accept',
+			desktopImage: 'benefit_2.svg'
     },
     {
       title: 'Flexible schedule',
-      text: 'Plan your monthly workload and receive a steady stream of leads leads automatically',
-			desktopImage: 'benefit_3.png',
-			mobileImage: ''
+      text: 'Easily plan your monthly schedule, pause leads when you don’t want to receive ones',
+			desktopImage: 'benefit_3.svg'
     },
     {
-      title: 'A lot of work',
-      text: 'Browse leads to take on extra work as you have time',
-			desktopImage: 'benefit_4.png',
-			mobileImage: ''
+      title: '20% Off on Subscription',
+      text: 'Subscribe to get first access to new leads with 20% discount',
+			desktopImage: 'benefit_4.svg'
     },
     {
-      title: 'Fast access',
-      text: 'Get first access to leads on subscription',
-			desktopImage: 'benefit_5.png',
-			mobileImage: ''
+      title: 'Give 100$, Get 100$',
+      text: 'Take advantage of Home Improve’s bonus program: earn 100$ for each referral',
+			desktopImage: 'benefit_5.svg'
     },
     {
-      title: 'Ongoing support',
-      text: 'Home Improve offers you 24 hours phone and email support',
-			desktopImage: 'benefit_6.png',
-			mobileImage: ''
+      title: 'Rapid ramp-up',
+      text: 'Easily add reviews from your customer portfolio',
+			desktopImage: 'benefit_6.svg'
     }
   ];
 
@@ -118,55 +111,39 @@ export class BecomeProComponent implements AfterViewInit {
     this.metricsEventService.fireBecameProPageViewEvent();
   }
 
-  createSwipers() {
-  	if ((this.swiper || this.imageSwiper) === undefined) {
-			setTimeout(() => {
-				this.imageSwiper = new Swiper('.image-swiper', {
-					slidesPerView: 1,
-					spaceBetween: 30,
-					speed: 300,
-					loop: true,
-				});
-			},);
-			setTimeout(() => {
-				this.swiper = new Swiper('.benefits-swiper', {
-					slidesPerView: 1.2,
-					spaceBetween: 30,
-					speed: 300,
-					loop: true,
-					control: this.imageSwiper,
-					breakpoints: {
-						340: {
-							slidesPerView: 1.2,
-							spaceBetween: 20
-						},
-						450: {
-							slidesPerView: 1.3,
-							spaceBetween: 30
-						},
-						550: {
-							slidesPerView: 1.5,
-							spaceBetween: 30
-						},
-						650: {
-							slidesPerView: 1.8,
-							spaceBetween: 30
-						},
-						770: {
-							slidesPerView: 2,
-							spaceBetween: 30
-						}
+	createSwipers() {
+		setTimeout(() => {
+			this.swiper = new Swiper('.benefits-swiper', {
+				slidesPerView: 1.2,
+				spaceBetween: 30,
+				speed: 300,
+				loop: true,
+				breakpoints: {
+					340: {
+						slidesPerView: 1.2,
+						spaceBetween: 20
+					},
+					450: {
+						slidesPerView: 1.3,
+						spaceBetween: 30
+					},
+					550: {
+						slidesPerView: 1.5,
+						spaceBetween: 30
+					},
+					650: {
+						slidesPerView: 1.8,
+						spaceBetween: 30
+					},
+					770: {
+						slidesPerView: 2,
+						spaceBetween: 30
 					}
-				});
-				this.imageSwiper.params.control = this.swiper;
-			},);
-		}
+				}
+			});
+		},);
 	}
 
-  selectBenefitImage(item) {
-    this.selectedBenefitImageUrl = item.desktopImage;
-    this.changeDetectorRef.detectChanges();
-  }
 
   gTagTrackClick(): void {
     this.metricsEventService.fireBecameProRegistrationClickEvent();

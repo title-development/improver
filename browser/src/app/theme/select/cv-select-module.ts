@@ -12,6 +12,7 @@ import { CvOverlayDirective } from '../util/cv-overlay.directive';
 import { CvHolder } from '../util/cv-holder';
 import {ScrollingModule} from '@angular/cdk/scrolling';
 import { SharedDirectivesModule } from "../../shared/shared-directives.module";
+import { ParallaxDirective } from "../util/parallax.directive";
 
 
 @NgModule({

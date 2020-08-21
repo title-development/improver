@@ -1,4 +1,4 @@
-@import "../../../improver-mixins.scss";
+@import "improver-mixins";
 
 :host {
   background: white;
@@ -8,6 +8,10 @@
 .title-block {
   background: linear-gradient(180deg, #9ADDFF 0%, #E6F6FF 100%);
   overflow: hidden;
+
+  @include response-to(sm) {
+    z-index: 0;
+  }
 
   .container {
     position: relative;
@@ -326,14 +330,21 @@
   display: flex;
   flex-direction: column;
 
+  @include response-to(sm) {
+    z-index: 1;
+    background-color: $white;
+  }
+
   .benefits-wrapper {
+    position: relative;
     margin: 0 auto;
     margin-bottom: 120px;
     width: 100%;
+    height: 728px;
     max-width: $content-grid-max-width;
 
     @include response-to(lg) {
-      padding-left: 24px;
+      padding: 0 24px;
     }
 
     @include response-to(md) {
@@ -343,17 +354,21 @@
 
     @include response-to(sm) {
       padding-top: 0;
-      margin-bottom: 50px;
+      margin-bottom: 0;
+      height: 800px;
     }
 
-    @include response-to(xs) {
-      padding-left: 20px;
+    @include response(xs) {
+      padding: 0 20px;
+      height: 1000px;
     }
 
     .title {
-      font-family: Merriweather;
       font-weight: bold;
       font-size: 36px;
+      color: $dark;
+      margin-bottom: 32px;
+      text-align: left;
 
       @include response-to(lg) {
         font-size: 30px;
@@ -364,25 +379,8 @@
       }
 
       @include response-to(sm) {
+        margin-top: 50px;
         font-size: 22px;
-      }
-    }
-
-    .phone-wrapper {
-      position: absolute;
-      top: 50px;
-      border-radius: 20px;
-      width: 100%;
-      height: 400px;
-      background-color: #E7F6FD;
-
-      .phone-image {
-        width: 200px;
-        height: 400px;
-        margin: 0 auto;
-        background-image: url("../../../assets/img/became-pro-benefits/mobile/phone.png");
-        background-repeat: no-repeat;
-        background-position: -10px 0;
       }
     }
 
@@ -391,178 +389,128 @@
       height: 100%;
       display: flex;
       flex-direction: row;
+      justify-content: space-between;
+      flex-wrap: wrap;
 
-      .active-part-wrapper {
-        max-width: 600px;
-        width: 50%;
-        padding-top: 48px;
-        margin-right: 20px;
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: space-between;
+      @include response-to(sm) {
+        display: block;
+        flex-direction: column;
+      }
+
+      .benefit-item-parent {
+        width: 32%;
+
+        @include response-to(sm) {
+          width: 100%;
+          max-width: 450px;
+          margin: 0 auto;
+        }
+
+        &:hover {
+          transform: scale(1.05);
+        }
 
         .benefit-item {
-          padding: 10px;
-          cursor: pointer;
-          width: 270px;
-          height: 150px;
-          border-radius: 8px;
-
-          @include response(lg) {
-            width: 240px;
-            height: 130px;
-          }
-
-          @include response-to(md) {
-            width: 180px;
-            height: 120px;
-          }
+          position: relative;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          padding: 15px 25px 0 25px;
+          height: 315px;
+          border-radius: 18px;
+          background-color: #F7F7F7;
+          margin-bottom: 24px;
 
           &:hover {
-            background-color: rgba(43, 79, 110, 0.05);
+            background-color: $grey-200;
           }
 
-          .item-title {
-            font-size: 20px;
-            font-weight: bold;
-            color: $black;
-            margin-bottom: 12px;
-
-            @include response-to(md) {
-              font-size: 18px;
-            }
-          }
-
-          .item-text {
-            font-size: 16px;
-            color: rgba(39, 49, 73, 0.6);
-
-            @include response(md) {
-              font-size: 14px;
-            }
+          .image {
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            height: 200px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
           }
         }
-
       }
-
-      .image-wrapper {
-        position: relative;
-
-        .image-block {
-          position: absolute;
-          top: 0;
-          left: 0;
-          height: 510px;
-          width: 50vw;
-          overflow: hidden;
-          background-color: #E7F6FD;
-          border-radius: 20px;
-
-          @include response-to(lg) {
-            height: 440px;
-          }
-
-          @include response-to(md) {
-            height: 400px;
-          }
-        }
-
-        .image {
-          overflow: hidden;
-          background-size: cover;
-          background-position: center;
-          background-repeat: no-repeat;
-          border: 10px solid $white;
-          box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
-          border-radius: 20px;
-          position: absolute;
-          top: 50px;
-          left: 50px;
-          height: 510px;
-          width: 50vw;
-
-          @include response-to(lg) {
-            top: 40px;
-            left: 40px;
-            height: 440px;
-          }
-
-          @include response-to(md) {
-            top: 30px;
-            left: 30px;
-            height: 400px;
-          }
-        }
-
-      }
-    }
-  }
-}
-
-.image-swiper {
-  width: calc(100% - 35px);
-  margin-left: 10px;
-  margin-top: 5px;
-
-  .image-slide {
-    min-width: 100%;
-    width: 100%;
-    height: 100%;
-    margin-top: 35px;
-
-    .image {
-      background-size: cover;
-      background-repeat: no-repeat;
-      border: 1px solid #D6D5D1;
-      width: 165px;
-      height: 290px;
-      border-radius: 3px;
     }
   }
 }
 
 .benefits-swiper {
   width: 100%;
-  position: relative;
   height: 100%;
-  margin-top: 450px;
+  margin-top: 45px;
 }
 
 .swiper-slide {
   width: 100%;
 
   .trade-content {
+    position: relative;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    justify-content: space-between;
     width: 100%;
-    height: 170px;
+    height: 300px;
     background: rgba(43, 79, 110, 0.05);
-    border-radius: 8px;
+    border-radius: 18px;
 
-    @include response-to(lg) {
-      width: 100%;
-      min-width: 210px;
-      max-width: 260px;
+    .trade-image {
+      position: absolute;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 85%;
+      height: 200px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
     }
+  }
+}
 
-    .text-content {
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      height: 100%;
+.benefit-item-footer {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  margin-bottom: 30px;
+  height: 100px;
+  width: 100%;
 
-      .item-title {
-        margin-bottom: 20px;
-        font-size: 20px;
-        font-weight: bold;
-      }
+  @include response-to(lg) {
+    min-height: 100px;
+    margin-bottom: 30px;
+  }
 
-      .item-text {
-        font-size: 16px;
-        color: rgba(39, 49, 73, 0.4);
-      }
+  @include response-to(sm) {
+    margin-bottom: 25px;
+  }
+
+  .item-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: $grey-700;
+    margin-bottom: 12px;
+
+    @include response-to(md) {
+      font-size: 18px;
+    }
+  }
+
+  .item-text {
+    font-size: 16px;
+    color: rgba(39, 49, 73, 0.6);
+    width: 90%;
+    margin: 0 auto;
+
+    @include response(md) {
+      font-size: 14px;
     }
   }
 }
@@ -605,11 +553,15 @@
       font-size: 36px;
       font-weight: bold;
       color: $black;
-      font-family: Merriweather;
       margin-bottom: 48px;
 
       @include response-to(lg) {
         font-size: 28px;
+      }
+
+      @include response-to(sm) {
+        margin-bottom: 0;
+        font-size: 22px;
       }
     }
 
@@ -624,162 +576,123 @@
       }
 
       .hints {
+        position: relative;
         width: 570px;
         height: 520px;
-        background: rgba(43, 79, 110, 0.05);
+        background: $grey-100;
         border-radius: 20px;
         display: flex;
         flex-direction: column;
         justify-items: center;
-        justify-content: center;
+        justify-content: space-between;
         text-align: center;
+        padding: 0 12px;
 
         @include response-to(lg) {
           width: 48%;
         }
 
+        @include response-to(md) {
+          height: 440px;
+        }
+
         @include response-to(sm) {
           width: 100%;
-          height: 515px;
+          max-width: 450px;
+          height: 435px;
+          margin: 25px auto;
+        }
+
+        @include response(xs) {
+          height: 360px;
+
+        }
+
+        &:hover {
+          transform: scale(1.05);
+          background-color: $grey-200;
         }
 
         .hint-image-wrapper {
-          position: relative;
-          margin: 0 auto;
-          border-radius: 50%;
-          width: 215px;
-          height: 215px;
-          margin-bottom: 34px;
-
-          @include response-to(sm) {
-            width: 170px;
-            height: 170px;
-          }
-
-          @include response(xs) {
-            margin: 0;
-            margin-left: 20%;
-            margin-bottom: 28px;
-          }
-
-          .hint-image {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            background-repeat: no-repeat;
-          }
-
-          .step-1 {
-            width: 237px;
-            height: 245px;
-            background-image: url(../../../assets/img/became-pro-hints/hints_1.png);
-            background-size: 207px 245px;
-            background-position: 30px 0;
-            border-radius: 0 0 55% 45%;
-
-            @include response-to(sm) {
-              width: 195px;
-              height: 194px;
-              background-size: 175px 194px;
-              background-position: 20px 0;
-              border-radius: 0 0 60% 45%;
-            }
-          }
-
-          .step-2 {
-            width: 200px;
-            height: 255px;
-            background-image: url(../../../assets/img/became-pro-hints/hints_2.png);
-            background-size: 128px 255px;
-            background-position: 45px 4px;
-            border-radius: 0 0 42% 50%;
-
-            @include response-to(sm) {
-              width: 170px;
-              height: 194px;
-              background-size: 110px 194px;
-              background-position: 30px 0;
-              border-radius: 0 0 50% 50%;
-            }
-          }
-        }
-
-        .hint-image-wrapper-1 {
-          background-color: $blue-primary;
-        }
-
-        .hint-image-wrapper-2 {
-          background-color: $red-primary;
-        }
-
-        .hints-title {
-          font-size: 24px;
-          font-weight: bold;
-          color: $black;
-          margin-bottom: 15px;
+          position: absolute;
+          top: 35%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 80%;
+          height: 290px;
+          background-repeat: no-repeat;
+          background-size: contain;
+          background-position: center;
 
           @include response-to(md) {
-            font-size: 20px;
+            top: 30%;
+          }
+        }
+
+        .step-1 {
+          background-image: url(../../../assets/img/became-pro-hints/hint_1.png);
+        }
+
+        .step-2 {
+          background-image: url(../../../assets/img/became-pro-hints/hint_2.png);
+        }
+
+        .hints-footer {
+          display: flex;
+          flex-direction: column;
+          margin-bottom: 70px;
+
+          @include response(md) {
+            min-height: 127px;
+            margin-bottom: 50px;
           }
 
           @include response-to(xs) {
-            text-align: left;
-          }
-        }
-
-        .hints-text {
-          margin: 0 auto;
-          font-size: 16px;
-          max-width: 430px;
-          line-height: 140%;
-          color: rgba(39, 49, 73, 0.6);
-
-          @include response-to(md) {
-            max-width: 330px;
+            margin-bottom: 30px;
           }
 
-          @include response-to(sm) {
-            width: 100%;
-          }
-
-          @include response(xs) {
-            margin: 0;
-            text-align: left;
-          }
-        }
-      }
-
-      .radius-1 {
-
-        @include response-to(sm) {
-          border-radius: 20px 20px 0 0;
-          padding: 20px;
-          height: 560px !important;
-        }
-
-        .hint1-title {
-
-          @include response-to(sm) {
-            font-family: Merriweather;
-            font-size: 22px;
+          .hints-title {
+            font-size: 24px;
             font-weight: bold;
-            text-align: center;
-            margin-bottom: 100px;
+            color: $grey-700;
+            margin-bottom: 15px;
+
+            @include response-to(md) {
+              font-size: 18px;
+            }
+
+            @include response-to(sm) {
+              font-size: 20px;
+            }
+
+            @include response-to(xs) {
+              font-size: 18px;
+            }
           }
 
-          @include response(xs) {
-            text-align: left;
-            margin-bottom: 85px;
+          .hints-text {
+            margin: 0 auto;
+            font-size: 16px;
+            max-width: 430px;
+            line-height: 140%;
+            color: rgba(39, 49, 73, 0.6);
+
+            @include response-to(md) {
+              width: 80%;
+              min-width: 300px;
+            }
+
+            @include response-to(sm) {
+              max-width: 430px;
+            }
+
+            @include response(xs) {
+              font-size: 16px;
+              min-width: auto;
+              width: 100%;
+              margin: 0;
+            }
           }
-        }
-      }
-
-      .radius-2 {
-
-        @include response-to(sm) {
-          border-radius: 0 0 20px 20px;
-          padding: 20px;
-          height: 430px !important;
         }
       }
     }
@@ -819,5 +732,9 @@
       margin: 0 !important;
     }
   }
+}
+
+::ng-deep .footer {
+  background-color: #E7F6FE !important;
 }
 
