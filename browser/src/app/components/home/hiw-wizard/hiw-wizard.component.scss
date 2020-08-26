@@ -1,0 +1,202 @@
+@import "improver-mixins.scss";
+
+:host {
+  width: 100%;
+  background-color: $white;
+  height: auto;
+}
+
+.hiw-wizard-wrapper {
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  padding-bottom: 100px;
+
+  @include response-to(sm) {
+    padding-bottom: 60px;
+  }
+
+  .container {
+    padding-left: 0;
+    max-width: 1170px;
+
+    @include response-to(lg) {
+      padding: 0 24px;
+    }
+
+    @include response-to(sm) {
+      justify-content: center;
+      width: 100%;
+    }
+
+    @include response(xs) {
+      padding: 0 20px;
+    }
+
+  }
+}
+
+.hiw-wizard-title {
+  font-family: Merriweather;
+  font-weight: bold;
+  font-size: 36px;
+  text-align: left;
+  color: $dark;
+  margin-bottom: 16px;
+
+  @include response-to(md) {
+    font-size: 30px;
+  }
+
+  @include response-to(sm) {
+    font-size: 25px;
+  }
+
+  @include response-to(xs) {
+    font-size: 22px;
+  }
+}
+
+.hiw-wizard-subtitle {
+  font-size: 18px;
+  text-align: left;
+  color: $dark;
+  opacity: 0.4;
+  margin-bottom: 40px;
+
+  @include response-to(md) {
+    margin-bottom: 0;
+    font-size: 16px;
+  }
+}
+
+.hiw-wizard-content {
+  width: 100%;
+  cursor: default;
+  display: flex;
+  max-height: 100%;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  @include response-to(md) {
+    max-width: 650px;
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  @include response-to(sm) {
+    max-width: 800px;
+  }
+
+  @include response(xs) {
+    align-items: self-start;
+    flex-direction: column;
+  }
+
+}
+
+.wizard-step {
+  max-width: 270px;
+  height: auto;
+
+  @include response-to(lg) {
+    padding-right: 20px;
+  }
+
+  @include response-to(md) {
+    margin-top: 30px;
+  }
+
+  @include response-to(sm) {
+    margin-top: 12px;
+    padding-right: 0;
+  }
+
+  @include response-to(xs) {
+    max-width: 300px;
+  }
+
+  .wizard-step-content{
+    width: 100%;
+    min-width: 232px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    @include response(xs) {
+      margin-top: 16px;
+    }
+  }
+}
+
+.wizard-step-header {
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+
+  @include response-to(sm) {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .wizard-step-image-block {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    border-radius: 20px;
+    text-align: center;
+
+    @include response-to(sm) {
+      border-radius: 12px;
+    }
+
+    & > span {
+      line-height: 60px;
+      font-weight: bold;
+      font-size: 24px;
+      color: $white;
+    }
+  }
+
+  .wizard-step-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: $dark;
+    margin-top: 24px;
+
+    @include response-to(sm) {
+      font-size: 20px;
+      margin-top: 0px;
+      margin-left: 16px;
+    }
+  }
+}
+
+.wizard-step-text-block {
+  width: 100%;
+  height: 100%;
+
+  .wizard-step-text {
+    font-size: 16px;
+    color: rgba(39, 49, 73, 0.6);
+  }
+}
+
+.step-1 {
+  background-color: $dark-primary;
+}
+
+.step-2 {
+  background-color: $red-primary;
+}
+
+.step-3 {
+  background-color: $blue-primary;
+}
+
+.step-4 {
+  background-color: $green-primary;
+}

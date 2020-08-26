@@ -2,9 +2,9 @@ import { Component, EventEmitter } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { SecurityService } from '../../../auth/security.service';
 import { Constants } from '../../../util/constants';
-import { Messages } from '../../../util/messages';
+import { TextMessages } from '../../../util/text-messages';
 import { AccountService } from '../../../api/services/account.service';
-import { PopUpMessageService } from '../../../util/pop-up-message.service';
+import { PopUpMessageService } from '../../../api/services/pop-up-message.service';
 import { getErrorMessage } from "../../../util/functions";
 
 @Component({
@@ -33,7 +33,7 @@ export class EmailConfirmDialogComponent {
               public dialog: MatDialog,
               public securityService: SecurityService,
               public constants: Constants,
-              public messages: Messages,
+              public messages: TextMessages,
               private accountService: AccountService,
               public popupService: PopUpMessageService
   ) {

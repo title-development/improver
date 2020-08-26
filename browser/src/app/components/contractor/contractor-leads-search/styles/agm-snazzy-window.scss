@@ -1,0 +1,129 @@
+@import "improver-mixins.scss";
+
+.si-content-wrapper {
+  padding: 0px;
+  border-radius: 2px;
+}
+
+.si-wrapper-top {
+  transform: translate(-22px, -100%) translateZ(0);
+}
+
+.si-shadow-frame {
+  box-shadow: none;
+}
+.si-has-border .si-content-wrapper {
+  border: none;
+}
+
+.si-float-wrapper {
+}
+
+.si-pointer-top, .si-pointer-top, .si-shadow-pointer-top, .si-close-button {
+  display: none;
+  visibility: hidden;
+}
+
+.si-content {
+  width: 174px;
+  .si-animation-holder {
+    padding-left: 10px;
+    padding-bottom: 8px;
+    user-select: none;
+    &.-content-animate {
+      .list {
+        transform: scale(1, 1);
+        transition: transform 150ms ease 150ms;
+        .item {
+          a {
+            opacity: 1;
+            transition: color 150ms ease, opacity 150ms ease 300ms;
+          }
+        }
+      }
+      .si-footer {
+        max-width: 174px;
+        transition: max-width 150ms ease;
+      }
+    }
+    .list {
+      list-style-type: none;
+      margin: 0;
+      background-color: $white;
+      transform: scale(1, 0);
+      transform-origin: 0 100%;
+      transition: transform 0ms ease;
+      max-height: 100px;
+      overflow: hidden;
+      position: relative;
+      perfect-scrollbar {
+        position: absolute;
+        width: 100%;
+        overflow: auto;
+        top: 0;
+        left: 0;
+        .ps-content {
+          //padding: 8px 8px 4px;
+          margin: 4px 0px 4px;
+          display: flex;
+          flex-direction: column;
+        }
+      }
+    }
+    .item {
+
+      a {
+        display: block;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        padding: 8px 8px 4px;
+        width: 100%;
+        color: #757575;
+        transition: color 150ms ease, opacity 0ms ease;
+        opacity: 0;
+        font-size: 12px;
+        line-height: 10px;
+        font-weight: 400;
+        &:hover {
+          color: $black-800;
+        }
+      }
+      &:last-child {
+        margin-bottom: 4px;
+      }
+    }
+  }
+  .si-footer {
+    //padding: 5px 5px 3px;
+    max-width: 24px;
+    transition: max-width 0ms ease 0ms;
+    overflow: hidden;
+    white-space: nowrap;
+    i, span {
+      display: inline-block;
+      vertical-align: middle;
+      color: $white;
+      font-size: 12px;
+    }
+    span {
+      background-color: $primary-500;
+      padding: 4px 12px 5px 5px;
+      width: 100%;
+      &.-not-in-coverage {
+        background-color: $grey-500;
+      }
+    }
+    i {
+      font-style: normal;
+      font-weight: 600;
+      margin-right: 6px;
+      width: 14px;
+      text-align: center;
+      color: transparent;
+      //padding: ;
+    }
+  }
+
+}
+

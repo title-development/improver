@@ -1,24 +1,24 @@
 import { Component, ElementRef, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { QuestionaryControlService } from '../../../../../util/questionary-control.service';
+import { QuestionaryControlService } from '../../../../../api/services/questionary-control.service';
 import { ServiceType } from '../../../../../model/data-model';
 import { Constants } from '../../../../../util/constants';
-import { Messages } from '../../../../../util/messages';
+import { TextMessages } from '../../../../../util/text-messages';
 import { MatDialog } from '@angular/material/dialog';
 import { Role } from '../../../../../model/security-model';
 import { SecurityService } from '../../../../../auth/security.service';
 import { ProjectService } from '../../../../../api/services/project.service';
 import { LocationValidateService } from '../../../../../api/services/location-validate.service';
-import { PopUpMessageService } from '../../../../../util/pop-up-message.service';
+import { PopUpMessageService } from '../../../../../api/services/pop-up-message.service';
 import { Router } from '@angular/router';
-import { ProjectActionService } from '../../../../../util/project-action.service';
+import { ProjectActionService } from '../../../../../api/services/project-action.service';
 import { CompanyService } from '../../../../../api/services/company.service';
-import { ErrorHandler } from '../../../../../util/error-handler';
+import { ErrorHandler } from '../../../../../util/handlers/error-handler';
 import { BoundariesService } from "../../../../../api/services/boundaries.service";
 import { UserService } from "../../../../../api/services/user.service";
 import { AccountService } from "../../../../../api/services/account.service";
 import { CustomerSuggestionService } from "../../../../../api/services/customer-suggestion.service";
 import { TradeService } from "../../../../../api/services/trade.service";
-import { DeviceControlService } from "../../../../../util/device-control.service";
+import { DeviceControlService } from "../../../../../api/services/device-control.service";
 
 @Component({
   selector: 'pre-questionary-block',
@@ -45,7 +45,7 @@ export class PreQuestionaryBlock implements OnInit {
               public userService: UserService,
               public dialog: MatDialog,
               public constants: Constants,
-              public messages: Messages,
+              public messages: TextMessages,
               public popUpMessageService: PopUpMessageService,
               public customerSuggestionService: CustomerSuggestionService,
               public deviceControlService: DeviceControlService,

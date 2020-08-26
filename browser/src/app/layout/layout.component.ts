@@ -1,5 +1,5 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { ScrollHolderService } from '../util/scroll-holder.service';
+import { ScrollHolderService } from '../api/services/scroll-holder.service';
 
 @Component({
   selector: 'client-app-layout',

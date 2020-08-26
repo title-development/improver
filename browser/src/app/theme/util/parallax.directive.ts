@@ -11,12 +11,13 @@ export class ParallaxDirective {
 
 	constructor(private eleRef: ElementRef,
 							private changeDetectorRef: ChangeDetectorRef) {
+
 		this.initialTop = this.eleRef.nativeElement.getBoundingClientRect().top;
+
 	}
 
 	@HostListener("window:scroll", ["$event"])
 	onWindowScroll(event) {
-		console.log(this.onlyMobileScreen);
 		if (this.onlyMobileScreen) {
 			this.eleRef.nativeElement.style.top = (this.initialTop - (window.scrollY * this.parallaxRatio)) + 'px';
 		} else {

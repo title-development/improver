@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Messages } from "../../util/messages";
+import { TextMessages } from "../../util/text-messages";
 import { Constants } from "../../util/constants";
 import { Ticket } from "../../api/models/Ticket";
 import { Role } from "../../model/security-model";
@@ -7,7 +7,7 @@ import { SecurityService } from "../../auth/security.service";
 import { AccountService } from "../../api/services/account.service";
 import { NgForm } from "@angular/forms";
 import { TicketService } from "../../api/services/ticket.service";
-import { PopUpMessageService } from "../../util/pop-up-message.service";
+import { PopUpMessageService } from "../../api/services/pop-up-message.service";
 import { getErrorMessage, getKeyFromEnum } from "../../util/functions";
 
 @Component({
@@ -33,7 +33,7 @@ export class TicketComponent {
   ticketProcessing = false;
 
   constructor(public constants: Constants,
-              public messages: Messages,
+              public messages: TextMessages,
               public securityService: SecurityService,
               public accountService: AccountService,
               public ticketsService: TicketService,

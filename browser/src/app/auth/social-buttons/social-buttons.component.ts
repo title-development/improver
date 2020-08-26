@@ -9,9 +9,9 @@ import { SecurityService } from '../security.service';
 import { dialogsMap } from '../../shared/dialogs/dialogs.state';
 import { socialRegistrationAdditionalInfoDialogConfig } from '../../shared/dialogs/dialogs.configs';
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
-import { PopUpMessageService } from "../../util/pop-up-message.service";
+import { PopUpMessageService } from "../../api/services/pop-up-message.service";
 import { Router } from "@angular/router";
-import { RegistrationHelper } from "../../util/registration-helper";
+import { RegistrationHelper } from "../../util/helpers/registration-helper";
 import { takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
 

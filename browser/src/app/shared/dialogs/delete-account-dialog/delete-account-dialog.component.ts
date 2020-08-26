@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { SecurityService } from '../../../auth/security.service';
-import { Messages } from '../../../util/messages';
+import { TextMessages } from '../../../util/text-messages';
 import { Constants } from '../../../util/constants';
 import { UserService } from '../../../api/services/user.service';
-import { PopUpMessageService } from '../../../util/pop-up-message.service';
+import { PopUpMessageService } from '../../../api/services/pop-up-message.service';
 import { getErrorMessage } from '../../../util/functions';
 import { NgForm } from '@angular/forms';
 import { Account } from '../../../model/data-model';
@@ -26,7 +26,7 @@ export class DeleteAccountDialogComponent {
               public dialog: MatDialog,
               public securityService: SecurityService,
               public constants: Constants,
-              public messages: Messages,
+              public messages: TextMessages,
               private userService: UserService,
               private popupService: PopUpMessageService,
               private accountService: AccountService) {

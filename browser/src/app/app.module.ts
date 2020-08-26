@@ -3,22 +3,22 @@ import { BrowserModule, HAMMER_GESTURE_CONFIG, HammerModule } from '@angular/pla
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouteReuseStrategy, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ErrorHandler } from './util/error-handler';
+import { ErrorHandler } from './util/handlers/error-handler';
 import { AppComponent } from './app.component';
 import { SecurityService } from './auth/security.service';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { Constants } from './util/constants';
-import { Messages } from './util/messages';
+import { TextMessages } from './util/text-messages';
 import { ObserveMediaDirective } from './directives/observe-media.directive';
 import { routing } from './app.routing';
-import { ScrollService } from './util/scroll.service';
+import { ScrollService } from './api/services/scroll.service';
 import { AgmCoreModule } from '@agm/core';
 import { NotificationResource } from './util/notification.resource';
-import { PopUpMessageService } from './util/pop-up-message.service';
-import { QuestionaryControlService } from './util/questionary-control.service';
+import { PopUpMessageService } from './api/services/pop-up-message.service';
+import { QuestionaryControlService } from './api/services/questionary-control.service';
 import { HTTP_INTERCEPTORS, HttpClientJsonpModule, HttpClientModule } from '@angular/common/http';
 import { NgArrayPipesModule } from 'angular-pipes';
-import { HomeModule } from './entity/home/home.module';
+import { HomeModule } from './components/home/home.module';
 import { BillingService } from './api/services/billing.service';
 import { RegistrationService } from './api/services/registration.service';
 import { ActivationService } from './api/services/activation.service';
@@ -36,9 +36,9 @@ import { PopUpMessageComponent } from './shared/pop-up-message/pop-up-message.co
 import { PopUpMessageContainerComponent } from './shared/pop-up-message/pop-up-message-container/pop-up-message-container.component';
 import { LayoutModule } from './layout/layout.module';
 import { DialogsModule } from './shared/dialogs/dialogs.module';
-import { PageNotFoundComponent } from './entity/not-found/not-found.component';
+import { PageNotFoundComponent } from './components/not-found/not-found.component';
 import { AuthModule } from './auth/auth.module';
-import { ForbiddenComponent } from './entity/forbidden/forbidden.component';
+import { ForbiddenComponent } from './components/forbidden/forbidden.component';
 import { CUSTOM_DATE_FORMATS } from './util/CUSTOM_DATE_FORMATS';
 import { CvInputModule } from './theme/input/cv-input.module';
 import { CvIconModule } from './theme/icon/cv-icon-module';
@@ -46,29 +46,29 @@ import { CvInputFieldModule } from './theme/input-field/form-field.module';
 import { LicenseService } from './api/services/license.service';
 import { RestDeleteInterceptor } from './util/interceptors/rest-delete.interseptor';
 import { TokenInterceptor } from './util/interceptors/token.interceptor';
-import { TricksService } from './util/tricks.service';
-import { StripeService } from './util/stripe.service';
+import { TricksService } from './api/services/tricks.service';
+import { StripeService } from './api/services/stripe.service';
 import { PaymentService } from './api/services/payment.service';
-import { GoogleMapUtilsService } from './util/google-map.utils';
-import { MapMarkersStore } from './util/google-map-markers-store.service';
-import { ProjectActionService } from './util/project-action.service';
-import { MediaQueryService } from './util/media-query.service';
+import { GoogleMapUtilsService } from './util/google/google-map.utils';
+import { MapMarkersStore } from './api/services/google-map-markers-store.service';
+import { ProjectActionService } from './api/services/project-action.service';
+import { MediaQueryService } from './api/services/media-query.service';
 import { LayoutComponent } from './layout/layout.component';
 import { CvButtonModule } from './theme/button/cv-button.module';
 import { UserService } from './api/services/user.service';
 import { environment } from '../environments/environment';
 import { ServiceWorkerModule } from '@angular/service-worker';
-import { FindProfessionalService } from './util/find-professional.service';
-import { SubscriptionActionsService } from './entity/contractor/subscription-actions/subscription-actions.service';
+import { FindProfessionalService } from './api/services/find-professional.service';
+import { SubscriptionActionsService } from './components/contractor/subscription-actions/subscription-actions.service';
 import { ComponentCanDeactivateGuard } from './auth/router-guards/component-can-deactivate.guard';
-import { ScrollHolderService } from './util/scroll-holder.service';
+import { ScrollHolderService } from './api/services/scroll-holder.service';
 import { NotificationService } from './api/services/notification.service';
 import { TicketService } from './api/services/ticket.service';
 import { ProjectRequestService } from './api/services/project-request.service';
 import { FacebookLoginProvider, GoogleLoginProvider, SocialAuthServiceConfig } from 'angularx-social-login';
 import { SocialLoginService } from './api/services/social-login.service';
 import { AccessDeniedInterceptor } from './util/interceptors/access-denied.interceptor';
-import { InternalServerErrorComponent } from './entity/internal-server-error/internal-server-error.component';
+import { InternalServerErrorComponent } from './components/internal-server-error/internal-server-error.component';
 import { CustomRouteReuseStrategy } from './util/router-reuse.strategy';
 import { TutorialsService } from './api/services/tutorials.service';
 import { RECAPTCHA_SETTINGS, RecaptchaSettings } from 'ng-recaptcha';
@@ -84,7 +84,7 @@ import { MatRadioModule } from "@angular/material/radio";
 import { MAT_DATE_FORMATS, MatNativeDateModule } from "@angular/material/core";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { AuthInterceptor } from "./util/interceptors/auth.interseptor";
-import { MyStompService } from "./util/my-stomp.service";
+import { MyStompService } from "./api/services/my-stomp.service";
 import { HammerConfig } from "./util/hummer-config";
 
 
@@ -142,7 +142,7 @@ const rootRouting = RouterModule.forRoot([], {useHash: false});
   ],
   providers: [
     Constants,
-    Messages,
+    TextMessages,
     SecurityService,
     BillingService,
     RegistrationService,

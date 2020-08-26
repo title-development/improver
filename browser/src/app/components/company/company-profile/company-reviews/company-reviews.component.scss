@@ -1,0 +1,138 @@
+@import "improver-mixins.scss";
+
+:host {
+  display: block;
+}
+
+h3 {
+  font-size: 20px;
+  color: $black-800;
+  margin: 0 0 30px;
+
+  @include response-to(sm) {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+}
+
+.reviews-wrapper {
+  padding-bottom: 24px;
+}
+
+.reviews-details-card {
+  padding-bottom: 8px;
+  margin-bottom: 24px;
+  .title {
+    font-size: 20px;
+    font-weight: 600;
+    color: $black-800;
+    margin-bottom: 24px;
+
+    @include response-to(xs) {
+      text-align: center;
+    }
+  }
+
+  .imp-icon-loading-spinner {
+    color: $primary-500;
+    margin-bottom: 16px;
+  }
+
+}
+
+company-review-item {
+  padding-bottom: 25px;
+  margin-bottom: 35px;
+  min-height: 55px;
+  box-sizing: content-box;
+  @include response-to(md) {
+    padding-bottom: 18px;
+    min-height: auto;
+    margin-bottom: 30px;
+  }
+  &:not(:last-of-type) {
+    border-bottom: 1px solid $grey-250;
+  }
+  &:last-of-type {
+    @include response-to(md) {
+      margin-bottom: 19px;
+    }
+  }
+}
+
+.card {
+  border-radius: 8px;
+  background-color: $white;
+  box-shadow: 0 2px 4px 0 rgba($black, 0.76);
+  margin-bottom: 24px;
+}
+
+.review-more {
+  display: flex;
+  justify-content: center;
+
+  @include response-to(sm) {
+    padding: 0 12px;
+  }
+}
+
+.show-more {
+  width: 100%;
+  background: none;
+  color: $dark;
+  border: none;
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 8px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.secondary-button {
+  width: 100%;
+  &:hover {
+    background-color: $grey-150 !important;
+  }
+}
+
+.review-spiner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.review-hint {
+  margin-bottom: 30px;
+  margin-top: -10px;
+
+  @include response-to(sm) {
+    margin-bottom: 20px;
+    padding: 12px;
+  }
+
+  .no-data {
+    color: $grey-500;
+    padding-bottom: 20px;
+  }
+
+  .hint-button-content {
+    text-align: center;
+
+    .hint-button {
+      cursor: pointer;
+      color: $dark;
+      font-size: 14px;
+      font-weight: 600;
+
+      &:hover {
+        text-decoration: underline;
+      }
+
+      @include response-to(sm) {
+        width: 100%;
+      }
+    }
+  }
+}

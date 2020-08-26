@@ -8,12 +8,12 @@ import {
 } from "../../shared/dialogs/dialogs.configs";
 import { CompanyService } from "./company.service";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
-import { PopUpMessageService } from "../../util/pop-up-message.service";
+import { PopUpMessageService } from "./pop-up-message.service";
 import { SecurityService } from "../../auth/security.service";
 import { LocationValidateService } from "./location-validate.service";
 import { Constants } from "../../util/constants";
 import { LicenseService } from "./license.service";
-import { MediaQuery, MediaQueryService } from "../../util/media-query.service";
+import { MediaQuery, MediaQueryService } from "./media-query.service";
 import { DomSanitizer, SafeStyle } from "@angular/platform-browser";
 
 @Injectable({

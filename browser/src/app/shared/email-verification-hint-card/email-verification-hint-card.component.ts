@@ -1,12 +1,12 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { Constants } from "../../util/constants";
-import { Messages } from "../../util/messages";
+import { TextMessages } from "../../util/text-messages";
 import { getErrorMessage } from "../../util/functions";
-import { PopUpMessageService } from "../../util/pop-up-message.service";
+import { PopUpMessageService } from "../../api/services/pop-up-message.service";
 import { RegistrationService } from "../../api/services/registration.service";
 import { FormGroup } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { RegistrationHelper } from "../../util/registration-helper";
+import { RegistrationHelper } from "../../util/helpers/registration-helper";
 import { SecurityService } from "../../auth/security.service";
 
 @Component({
@@ -29,7 +29,7 @@ export class EmailVerificationHintCardComponent implements OnInit {
   public resendDisabledSeconds = 0;
 
   constructor(public constants: Constants,
-              public messages: Messages,
+              public messages: TextMessages,
               public popUpMessageService: PopUpMessageService,
               public registrationService: RegistrationService,
               public registrationHelper: RegistrationHelper,

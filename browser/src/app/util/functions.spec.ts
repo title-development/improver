@@ -1,6 +1,6 @@
 import { getErrorMessage, toHttpParams } from './functions';
 import { HttpErrorResponse, HttpParams } from '@angular/common/http';
-import { httpStatusCodeResponses } from './messages';
+import { httpStatusCodeResponses } from './text-messages';
 
 describe('Functions', () => {
   const test = {

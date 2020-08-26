@@ -3,10 +3,10 @@ import {
   License
 } from '../../../model/data-model';
 import { MatDialogRef } from '@angular/material/dialog';
-import { PopUpMessageService } from '../../../util/pop-up-message.service';
+import { PopUpMessageService } from '../../../api/services/pop-up-message.service';
 import { LicenseService } from '../../../api/services/license.service';
 import { SecurityService } from '../../../auth/security.service';
-import { TricksService } from '../../../util/tricks.service';
+import { TricksService } from '../../../api/services/tricks.service';
 import { Constants } from '../../../util/constants';
 import { getErrorMessage } from "../../../util/functions";
 

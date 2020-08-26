@@ -2,11 +2,11 @@ import { AfterViewInit, Component, Inject, OnInit, Renderer2 } from '@angular/co
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
-import { PopUpMessageService } from './util/pop-up-message.service';
+import { PopUpMessageService } from './api/services/pop-up-message.service';
 import { SecurityService } from './auth/security.service';
 import { SwUpdate } from '@angular/service-worker';
 import { NavigationEnd, Router } from '@angular/router';
-import { MetricsEventService } from "./util/metrics-event.service";
+import { MetricsEventService } from "./api/services/metrics-event.service";
 import 'hammerjs';
 import '../../extend';
 

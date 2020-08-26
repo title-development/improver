@@ -1,13 +1,13 @@
 import { AfterViewInit, ChangeDetectorRef, Component } from '@angular/core';
 import { SecurityService } from '../security.service';
 import { Constants } from '../../util/constants';
-import { Messages } from 'app/util/messages';
-import { HotJarService } from '../../util/hotjar.service';
-import { ScrollService } from "../../util/scroll.service";
-import { MediaQuery, MediaQueryService } from "../../util/media-query.service";
+import { TextMessages } from 'app/util/text-messages';
+import { HotJarService } from '../../api/services/hotjar.service';
+import { ScrollService } from "../../api/services/scroll.service";
+import { MediaQuery, MediaQueryService } from "../../api/services/media-query.service";
 import { takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
-import { MetricsEventService } from "../../util/metrics-event.service";
+import { MetricsEventService } from "../../api/services/metrics-event.service";
 
 @Component({
   selector: 'become-pro-page',
@@ -87,7 +87,7 @@ export class BecomeProComponent implements AfterViewInit {
 
   constructor(public securityService: SecurityService,
               public constants: Constants,
-              public messages: Messages,
+              public messages: TextMessages,
               private hotJarService: HotJarService,
               public scrollService: ScrollService,
 							private changeDetectorRef: ChangeDetectorRef,

@@ -10,14 +10,14 @@ import {
 } from '@angular/core';
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { Constants } from '../../../util/constants';
-import { Messages } from '../../../util/messages';
+import { TextMessages } from '../../../util/text-messages';
 import { SecurityService } from '../../../auth/security.service';
 import { BillingService } from '../../../api/services/billing.service';
 import { CompanyService } from '../../../api/services/company.service';
 import { PaymentCard } from '../../../model/data-model';
-import { StripeService } from "../../../util/stripe.service";
+import { StripeService } from "../../../api/services/stripe.service";
 import { NgForm } from "@angular/forms";
-import { PopUpMessageService } from '../../../util/pop-up-message.service';
+import { PopUpMessageService } from '../../../api/services/pop-up-message.service';
 
 // import {} from "Stripe";
 
@@ -45,7 +45,7 @@ export class AddPaymentCardDialogComponent implements OnInit, AfterViewInit, OnD
   constructor(public currentDialogRef: MatDialogRef<any>,
               public dialog: MatDialog,
               public constants: Constants,
-              public messages: Messages,
+              public messages: TextMessages,
               public billingService: BillingService,
               public securityService: SecurityService,
               public companyService: CompanyService,

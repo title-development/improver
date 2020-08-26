@@ -4,9 +4,9 @@ import { Notification } from '../api/models/Notification';
 import { NotificationService } from '../api/services/notification.service';
 import { SecurityService } from '../auth/security.service';
 import { BillingService } from '../api/services/billing.service';
-import { PopUpMessageService } from './pop-up-message.service';
+import { PopUpMessageService } from '../api/services/pop-up-message.service';
 import { getErrorMessage } from './functions';
-import { MyStompService } from './my-stomp.service';
+import { MyStompService } from '../api/services/my-stomp.service';
 
 
 @Injectable()

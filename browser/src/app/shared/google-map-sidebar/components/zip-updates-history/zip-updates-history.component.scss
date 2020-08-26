@@ -1,4 +1,4 @@
-@import "../../../../../improver-mixins";
+@import "improver-mixins";
 
 :host {
   @include response-to(sm) {

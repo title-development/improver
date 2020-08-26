@@ -8,12 +8,12 @@ import { SecurityService } from '../../auth/security.service';
 import { Subject } from 'rxjs';
 import { ProjectService } from '../../api/services/project.service';
 import { dialogsMap } from '../../shared/dialogs/dialogs.state';
-import { MediaQuery, MediaQueryService } from "../../util/media-query.service";
+import { MediaQuery, MediaQueryService } from "../../api/services/media-query.service";
 import { takeUntil, tap } from 'rxjs/operators';
 import { RequestOrder } from "../../model/order-model";
 import { AccountService } from "../../api/services/account.service";
-import { MobileMenuService } from "../../util/mobile-menu-service";
-import { MetricsEventService } from "../../util/metrics-event.service";
+import { MobileMenuService } from "../../api/services/mobile-menu-service";
+import { MetricsEventService } from "../../api/services/metrics-event.service";
 
 @Component({
   selector: 'layout-header',

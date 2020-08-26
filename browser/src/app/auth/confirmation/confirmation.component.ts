@@ -3,7 +3,7 @@ import { Constants } from '../../util/constants';
 import { ActivatedRoute } from '@angular/router';
 import { ActivationCustomerModel, LoginModel } from '../../model/security-model';
 import { ActivationService } from '../../api/services/activation.service';
-import { Messages } from '../../util/messages';
+import { TextMessages } from '../../util/text-messages';
 import { SecurityService } from '../security.service';
 import { getErrorMessage } from '../../util/functions';
 import { Subject } from 'rxjs';
@@ -38,7 +38,7 @@ export class ConfirmationComponent implements OnDestroy {
   private readonly destroyed$ = new Subject<void>();
 
   constructor(public constants: Constants,
-              public messages: Messages,
+              public messages: TextMessages,
               public route: ActivatedRoute,
               public activationService: ActivationService,
               public securityService: SecurityService,

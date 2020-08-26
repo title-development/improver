@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnInit } from '@angular/core';
 import { MatDialogRef } from "@angular/material/dialog";
 import { Constants } from "../../../util/constants";
-import { Messages } from "../../../util/messages";
+import { TextMessages } from "../../../util/text-messages";
 import { NgForm } from "@angular/forms";
 
 @Component({
@@ -25,7 +25,7 @@ export class PasswordEditorComponent implements OnInit {
 
   constructor(public currentDialogRef: MatDialogRef<any>,
 							public constants: Constants,
-							public messages: Messages) { }
+							public messages: TextMessages) { }
 
   ngOnInit(): void {
   }

@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { Constants } from '../../../util/constants';
-import { Messages } from '../../../util/messages';
+import { TextMessages } from '../../../util/text-messages';
 import { UserService } from '../../../api/services/user.service';
-import { PopUpMessageService } from '../../../util/pop-up-message.service';
+import { PopUpMessageService } from '../../../api/services/pop-up-message.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { SecurityService } from '../../../auth/security.service';
 import { CompanyService } from '../../../api/services/company.service';
@@ -22,7 +22,7 @@ export class DeleteCompanyDialogComponent {
               public dialog: MatDialog,
               public securityService: SecurityService,
               public constants: Constants,
-              public messages: Messages,
+              public messages: TextMessages,
               private companyService: CompanyService,
               private popupService: PopUpMessageService) {
   }

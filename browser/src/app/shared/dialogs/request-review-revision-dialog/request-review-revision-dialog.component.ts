@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, OnInit } from '@angular/core';
 import { ReviewService } from '../../../api/services/review.service';
-import { PopUpMessageService } from '../../../util/pop-up-message.service';
+import { PopUpMessageService } from '../../../api/services/pop-up-message.service';
 import { CompanyService } from '../../../api/services/company.service';
 import { SecurityService } from "../../../auth/security.service";
 import { Review } from "../../../model/data-model";
 import { getErrorMessage } from "../../../util/functions";
-import { Messages } from "../../../util/messages";
+import { TextMessages } from "../../../util/text-messages";
 import { MatDialogRef } from "@angular/material/dialog";
 
 @Component({
@@ -25,7 +25,7 @@ export class RequestReviewRevisionDialogComponent implements OnInit {
               public popUpService: PopUpMessageService,
               private companyConfig: CompanyService,
               public securityService: SecurityService,
-              public  messages : Messages) {
+              public  messages : TextMessages) {
   }
 
   close() {

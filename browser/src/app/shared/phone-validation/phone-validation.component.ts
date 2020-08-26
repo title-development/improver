@@ -3,7 +3,7 @@ import { PhoneValidationConfirm } from "../../api/models/PhoneValidationConfirm"
 import { finalize } from "rxjs/operators";
 import { SecurityService } from "../../auth/security.service";
 import { PhoneService } from "../../api/services/phone.service";
-import { PopUpMessageService } from "../../util/pop-up-message.service";
+import { PopUpMessageService } from "../../api/services/pop-up-message.service";
 import { removePhoneMask } from "../../util/functions";
 
 @Component({

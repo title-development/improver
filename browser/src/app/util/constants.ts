@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { TricksService } from './tricks.service';
+import { TricksService } from '../api/services/tricks.service';
 import { Accreditation, State } from '../model/data-model';
 import { Project } from '../api/models/Project';
 import { Question } from '../api/models/Question';

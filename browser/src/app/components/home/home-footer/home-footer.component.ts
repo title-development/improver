@@ -1,0 +1,29 @@
+import { Component, Inject } from '@angular/core';
+
+import { ScrollService } from "../../../api/services/scroll.service";
+
+@Component({
+  selector: 'home-footer',
+  templateUrl: 'home-footer.component.html',
+  styleUrls: ['home-footer.component.scss']
+})
+
+
+export class HomeFooterComponent {
+
+  constructor(
+    @Inject('Window') public window: Window,
+    public scrollService: ScrollService) {
+  }
+
+  goToUrl(url) {
+    window.location.href = url;
+  }
+
+  openInNewTab(url) {
+    window.open(url, "_blank");
+  }
+
+
+
+}

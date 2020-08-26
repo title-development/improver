@@ -1,6 +1,6 @@
 import { MapOptions } from '@agm/core/services/google-maps-types';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { ZipHistory } from '../../entity/settings/contractor-account/service-area/models/zip-history';
+import { ZipHistory } from '../../components/settings/contractor-account/service-area/models/zip-history';
 import { createConsoleLogger } from '@angular-devkit/core/node';
 
 @Component({

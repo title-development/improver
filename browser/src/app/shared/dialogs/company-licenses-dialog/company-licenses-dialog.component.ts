@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CompanyInfo, License } from "../../../model/data-model";
 import { CompanyService } from "../../../api/services/company.service";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
-import { PopUpMessageService } from "../../../util/pop-up-message.service";
+import { PopUpMessageService } from "../../../api/services/pop-up-message.service";
 import { SecurityService } from "../../../auth/security.service";
 import { CompanyInfoService } from "../../../api/services/company-info.service";
 import { LicenseService } from "../../../api/services/license.service";

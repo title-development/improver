@@ -2,11 +2,11 @@ import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { SecurityService } from "../security.service";
 import { Constants } from "../../util/constants";
-import { Messages } from "app/util/messages";
+import { TextMessages } from "app/util/text-messages";
 import { LoginModel } from "../../model/security-model";
 import { ActivatedRoute } from "@angular/router";
 import { UserService } from "../../api/services/user.service";
-import { PopUpMessageService } from "../../util/pop-up-message.service";
+import { PopUpMessageService } from "../../api/services/pop-up-message.service";
 import { SystemMessageType } from "../../model/data-model";
 import { getErrorMessage } from "../../util/functions";
 import { ActivationService } from "../../api/services/activation.service";
@@ -39,7 +39,7 @@ export class RestorePasswordComponent {
                public userService: UserService,
                public activationService: ActivationService,
                public constants: Constants,
-               public messages: Messages,
+               public messages: TextMessages,
                public popUpMessageService: PopUpMessageService,
                private accountService: AccountService,
                private route: ActivatedRoute) {

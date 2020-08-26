@@ -1,16 +1,16 @@
 import { ApplicationRef, ChangeDetectorRef, Component } from '@angular/core';
 import { MapOptions } from '@agm/core/services/google-maps-types';
-import { defaultMapOptions } from '../../util/google-map-default-options';
+import { defaultMapOptions } from '../../util/google/google-map-default-options';
 import { CompanyRegistration, LoginModel } from '../../model/security-model';
 import { SecurityService } from '../security.service';
 import { Constants } from '../../util/constants';
-import { Messages } from '../../util/messages';
-import { TricksService } from '../../util/tricks.service';
+import { TextMessages } from '../../util/text-messages';
+import { TricksService } from '../../api/services/tricks.service';
 import { LocationValidateService } from '../../api/services/location-validate.service';
-import { PopUpMessageService } from '../../util/pop-up-message.service';
+import { PopUpMessageService } from '../../api/services/pop-up-message.service';
 import { RegistrationService } from '../../api/services/registration.service';
 import { BoundariesService } from '../../api/services/boundaries.service';
-import { applyStyleToMapLayers, GoogleMapUtilsService } from '../../util/google-map.utils';
+import { applyStyleToMapLayers, GoogleMapUtilsService } from '../../util/google/google-map.utils';
 import { dialogsMap } from '../../shared/dialogs/dialogs.state';
 import {
   confirmDialogConfig,
@@ -24,7 +24,7 @@ import { HttpResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { forkJoin, ReplaySubject, Subject } from 'rxjs';
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
-import { RegistrationHelper } from "../../util/registration-helper";
+import { RegistrationHelper } from "../../util/helpers/registration-helper";
 import { DomSanitizer } from "@angular/platform-browser";
 import { CompanyInfoService } from "../../api/services/company-info.service";
 import LatLng = google.maps.LatLng;
@@ -108,7 +108,7 @@ export class SignupCompanyComponent {
 
   constructor(public securityService: SecurityService,
               public constants: Constants,
-              public messages: Messages,
+              public messages: TextMessages,
               public tricksService: TricksService,
               public locationValidateService: LocationValidateService,
               public popUpMessageService: PopUpMessageService,

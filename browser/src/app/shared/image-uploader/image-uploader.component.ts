@@ -3,7 +3,7 @@ import { FileItem, FileLikeObject, FileUploader } from 'ng2-file-upload';
 import { ProjectService } from '../../api/services/project.service';
 import { FILE_MIME_TYPES, IMAGE_UPLOADER_QUERY_LIMIT, MAX_FILE_SIZE } from '../../util/file-parameters';
 import { confirmDialogConfig, customerGalleryDialogConfig, } from '../dialogs/dialogs.configs';
-import { PopUpMessageService } from '../../util/pop-up-message.service';
+import { PopUpMessageService } from '../../api/services/pop-up-message.service';
 import { SystemMessageType } from '../../model/data-model';
 import { HttpClient } from '@angular/common/http';
 import { SecurityService } from '../../auth/security.service';

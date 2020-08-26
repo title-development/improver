@@ -1,14 +1,14 @@
 import { Component, EventEmitter, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { Constants } from '../../../util/constants';
-import { Messages } from '../../../util/messages';
+import { TextMessages } from '../../../util/text-messages';
 import { SecurityService } from '../../../auth/security.service';
 import { BillingService } from '../../../api/services/billing.service';
 import { CompanyService } from '../../../api/services/company.service';
 import { PaymentCard } from '../../../model/data-model';
 import { NgForm } from "@angular/forms";
-import { TricksService } from "../../../util/tricks.service";
-import { PopUpMessageService } from "../../../util/pop-up-message.service";
+import { TricksService } from "../../../api/services/tricks.service";
+import { PopUpMessageService } from "../../../api/services/pop-up-message.service";
 import { getErrorMessage } from "../../../util/functions";
 
 // import {} from "Stripe";
@@ -30,7 +30,7 @@ export class ChangeDefaultPaymentCardDialogComponent implements OnInit, OnDestro
   constructor(public currentDialogRef: MatDialogRef<any>,
               public dialog: MatDialog,
               public constants: Constants,
-              public messages: Messages,
+              public messages: TextMessages,
               public billingService: BillingService,
               public securityService: SecurityService,
               public companyService: CompanyService,

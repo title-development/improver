@@ -21,7 +21,7 @@ import {
   Validator
 } from '@angular/forms';
 import { Subject, Subscription } from 'rxjs';
-import { MediaQuery, MediaQueryService } from "../../../util/media-query.service";
+import { MediaQuery, MediaQueryService } from "../../../api/services/media-query.service";
 import { takeUntil } from "rxjs/operators";
 
 export const EDITABLE_INPUT_VALUE_ACCESSOR: Provider = {

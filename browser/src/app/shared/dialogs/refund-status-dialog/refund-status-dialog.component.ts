@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ContractorProjectShort } from "../../../model/data-model";
 import { MatDialogRef } from "@angular/material/dialog";
-import { PopUpMessageService } from "../../../util/pop-up-message.service";
+import { PopUpMessageService } from "../../../api/services/pop-up-message.service";
 import { ProjectService } from "../../../api/services/project.service";
 import { Refund } from "../../../api/models/Refund";
 

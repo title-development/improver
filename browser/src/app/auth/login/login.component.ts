@@ -2,7 +2,7 @@ import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { SecurityService } from '../security.service';
 import { Constants } from '../../util/constants';
-import { Messages } from 'app/util/messages';
+import { TextMessages } from 'app/util/text-messages';
 import { LoginModel } from '../../model/security-model';
 import { SystemMessageType } from '../../model/data-model';
 import { ProjectService } from '../../api/services/project.service';
@@ -39,7 +39,7 @@ export class LoginComponent implements OnDestroy {
     public securityService: SecurityService,
     public projectService: ProjectService,
     public constants: Constants,
-    public messages: Messages,
+    public messages: TextMessages,
 		public captchaTrackingService: CaptchaTrackingService
   ) {
   }

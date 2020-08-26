@@ -2,13 +2,13 @@ import { Component, EventEmitter, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { SecurityService } from '../../../auth/security.service';
 import { Constants } from '../../../util/constants';
-import { Messages } from '../../../util/messages';
+import { TextMessages } from '../../../util/text-messages';
 import { PaymentCard } from '../../../model/data-model';
 import { CompanyService } from '../../../api/services/company.service';
 import { BillingService } from '../../../api/services/billing.service';
-import { TricksService } from '../../../util/tricks.service';
+import { TricksService } from '../../../api/services/tricks.service';
 import { PaymentService } from '../../../api/services/payment.service';
-import { PopUpMessageService } from '../../../util/pop-up-message.service';
+import { PopUpMessageService } from '../../../api/services/pop-up-message.service';
 import { getErrorMessage } from '../../../util/functions';
 import { NgForm } from '@angular/forms';
 
@@ -35,7 +35,7 @@ export class AddMoneyDialogComponent implements OnInit {
   constructor(public currentDialogRef: MatDialogRef<any>,
               public dialog: MatDialog,
               public constants: Constants,
-              public messages: Messages,
+              public messages: TextMessages,
               public securityService: SecurityService,
               public companyService: CompanyService,
               public billingService: BillingService,

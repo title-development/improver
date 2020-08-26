@@ -1,11 +1,11 @@
 import { Component, Inject } from '@angular/core';
 
-import { ScrollService } from "app/util/scroll.service";
-import { PopUpMessageService } from "../../util/pop-up-message.service";
+import { ScrollService } from "app/api/services/scroll.service";
+import { PopUpMessageService } from "../../api/services/pop-up-message.service";
 import { SecurityService } from "../../auth/security.service";
 import { Role } from "../../model/security-model";
 import { Constants } from "../../util/constants";
-import { Messages } from "../../util/messages";
+import { TextMessages } from "../../util/text-messages";
 
 @Component({
   selector: 'layout-footer',
@@ -22,7 +22,7 @@ export class FooterComponent {
               public popUpMessageService: PopUpMessageService,
               public securityService: SecurityService,
               public constants: Constants,
-              public messages: Messages,
+              public messages: TextMessages,
               public popUpService: PopUpMessageService) {
   }
 

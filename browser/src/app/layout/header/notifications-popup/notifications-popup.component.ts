@@ -15,15 +15,15 @@ import { SecurityService } from '../../../auth/security.service';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Role } from '../../../model/security-model';
 import { Subscription } from 'rxjs';
-import { MediaQuery, MediaQueryService } from '../../../util/media-query.service';
+import { MediaQuery, MediaQueryService } from '../../../api/services/media-query.service';
 import { NotificationService } from "../../../api/services/notification.service";
 import { NotificationResource } from "../../../util/notification.resource";
 import { Notification } from "../../../api/models/Notification";
 import { Router } from '@angular/router';
-import { ScrollService } from '../../../util/scroll.service';
+import { ScrollService } from '../../../api/services/scroll.service';
 import { Pagination } from "../../../model/data-model";
 import { getErrorMessage } from "../../../util/functions";
-import { PopUpMessageService } from "../../../util/pop-up-message.service";
+import { PopUpMessageService } from "../../../api/services/pop-up-message.service";
 import { finalize, first } from "rxjs/operators";
 
 @Component({

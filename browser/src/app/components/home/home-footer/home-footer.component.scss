@@ -1,0 +1,206 @@
+@import "improver-mixins.scss";
+
+:host {
+  background-color: $white;
+  width: 100%;
+}
+
+.footer-wrapper {
+
+  .footer-container {
+    padding: 76px 15px 0;
+    width: 1200px;
+    height: 323px;
+
+    .links-block {
+
+      .social-links-wrapper {
+
+        .header {
+          font-size: 24px;
+          font-weight: 600;
+          letter-spacing: 2px;
+          text-align: left;
+          color: #363636;
+          margin-bottom: 16px;
+          cursor: pointer;
+        }
+
+        .social-links {
+          a {
+            display: flex;
+            cursor: pointer;
+            height: 24px;
+            width: 24px;
+
+            &.facebook-icon {
+              background: url(../../../../assets/img/social-icons/facebook-icon.png) no-repeat center center;
+            }
+            &.twitter-icon {
+              background: url(../../../../assets/img/social-icons/twitter-icon.png) no-repeat center center;
+            }
+            &.instagram-icon {
+              background: url(../../../../assets/img/social-icons/instagram-icon.png) no-repeat center center;
+            }
+            &.linkedin-icon {
+              background: url(../../../../assets/img/social-icons/linkedin-icon.png) no-repeat center center;
+            }
+
+            &:hover {
+              filter: contrast(10%) ;
+            }
+
+          }
+
+        }
+
+      }
+
+      .links {
+
+        .header {
+          font-size: 16px;
+          color: #333333;
+          margin-bottom: 24px;
+
+        }
+
+        .link {
+          display: flex;
+          margin-top: 14px;
+          cursor: pointer;
+          font-size: 14px;
+          text-align: left;
+          color: #999999;
+
+          &:hover {
+            color: #333333;
+          }
+
+        }
+
+      }
+
+
+    }
+
+    .contact-us-block {
+
+      .header {
+        width: 70%;
+        font-size: 16px;
+        color: #333333;
+        margin-bottom: 8px;
+      }
+
+      .description {
+        width: 70%;
+        font-size: 14px;
+        line-height: 1.5;
+        text-align: right;
+        color: #999999;
+      }
+
+      .inputs-wrapper {
+        margin-top: 24px;
+        font-size: 14px;
+
+        .name {
+          height: 46px;
+          border: solid 1px #dddddd;
+          padding: 0 16px;
+          width: 175px;
+        }
+
+        .phone {
+          height: 46px;
+          border: solid 1px #dddddd;
+          border-left: none;
+          padding: 0px 16px;
+          width: 139px;
+        }
+
+        .submit-contact-us-button {
+          cursor: pointer;
+          width: 125px;
+          height: 48px;
+          border-radius: 2px;
+          background-color: $white;
+          border: 2px solid;
+          font-size: 14px;
+
+          @include bordered-link-mixin();
+
+          .submit-contact-us-button-text {
+
+            @include background-image-gradient();
+            font-size: 16px;
+            text-align: left;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+
+          }
+
+          &:hover {
+            @include background-image-gradient();
+
+            .submit-contact-us-button-text {
+              -webkit-text-fill-color: $white;
+              color: $white;
+            }
+
+          }
+
+          &:active {
+            @include background-image-gradient();
+            opacity: 0.64;
+
+            .submit-contact-us-button-text {
+              -webkit-text-fill-color: $white;
+              color: $white;
+            }
+
+          }
+
+        }
+
+      }
+
+    }
+
+  }
+
+  .footer-bottom-line {
+    width: 100%;
+    height: 48px;
+    background-color: $grey-100;
+
+    .footer-bottom-line-container {
+      margin: 0px 15px;
+      width: $content-grid-max-width;
+      font-weight: 700;
+
+      div {
+
+        font-size: 14px;
+        color: #aaaaaa;
+
+        &.footer-nav {
+          cursor: pointer;
+          margin-left: 24px;
+
+          &:hover {
+            color: #333333;
+          }
+
+        }
+
+      }
+
+
+    }
+
+  }
+
+}

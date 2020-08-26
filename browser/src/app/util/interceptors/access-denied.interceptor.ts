@@ -7,9 +7,9 @@ import { Injectable, Injector, Provider } from '@angular/core';
 
 import { SecurityService } from '../../auth/security.service';
 import { Router, RouterState, RouterStateSnapshot } from '@angular/router';
-import { ErrorHandler } from '../error-handler';
+import { ErrorHandler } from '../handlers/error-handler';
 import { getErrorMessage, notLoginPage } from '../functions';
-import { PopUpMessageService } from '../pop-up-message.service';
+import { PopUpMessageService } from '../../api/services/pop-up-message.service';
 import { tap } from "rxjs/internal/operators";
 
 

@@ -2,14 +2,14 @@ import { Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 
 import { SecurityService } from '../security.service';
 import { Constants } from '../../util/constants';
-import { Messages } from 'app/util/messages';
+import { TextMessages } from 'app/util/text-messages';
 import { RegistrationService } from '../../api/services/registration.service';
-import { TricksService } from '../../util/tricks.service';
+import { TricksService } from '../../api/services/tricks.service';
 import { LoginModel, RegistrationUserModel, RegistrationUserProps } from '../../model/security-model';
-import { PopUpMessageService } from '../../util/pop-up-message.service';
+import { PopUpMessageService } from '../../api/services/pop-up-message.service';
 import { HttpResponse } from '@angular/common/http';
 import { clone, getErrorMessage, removePhoneMask } from '../../util/functions';
-import { MediaQuery, MediaQueryService } from '../../util/media-query.service';
+import { MediaQuery, MediaQueryService } from '../../api/services/media-query.service';
 import { Subject, throwError } from 'rxjs';
 import { ActivatedRoute, Params } from '@angular/router';
 import { finalize, mergeMap, takeUntil, timeoutWith } from 'rxjs/operators';
@@ -57,7 +57,7 @@ export class SignupProComponent implements OnDestroy {
 
   constructor(public securityService: SecurityService,
               public constants: Constants,
-              public messages: Messages,
+              public messages: TextMessages,
               public tricksService: TricksService,
               public popUpMessageService: PopUpMessageService,
               public registrationService: RegistrationService,

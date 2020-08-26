@@ -1,15 +1,15 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { NgForm } from "@angular/forms";
-import { QuestionaryControlService } from "../../../util/questionary-control.service";
+import { QuestionaryControlService } from "../../../api/services/questionary-control.service";
 import { SecurityService } from "../../../auth/security.service";
 import { Role } from "../../../model/security-model";
 import { ServiceTypeService } from '../../../api/services/service-type.service';
 import { AccountService } from '../../../api/services/account.service';
 import { ComponentCanDeactivate } from "../../../auth/router-guards/component-can-deactivate.guard";
-import { NavigationHelper } from "../../../util/navigation-helper";
-import { PopUpMessageService } from "../../../util/pop-up-message.service";
-import { ProjectActionService } from "../../../util/project-action.service";
+import { NavigationHelper } from "../../../util/helpers/navigation-helper";
+import { PopUpMessageService } from "../../../api/services/pop-up-message.service";
+import { ProjectActionService } from "../../../api/services/project-action.service";
 
 @Component({
   selector: 'questionary-dialog',

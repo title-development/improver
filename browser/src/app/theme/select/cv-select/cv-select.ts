@@ -26,8 +26,8 @@ import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { animate, AnimationEvent, state, style, transition, trigger } from '@angular/animations';
 import { CvSelection } from '../../util/CvSelection';
 import { CdkVirtualForOf, CdkVirtualForOfContext, CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import { MediaQuery, MediaQueryService } from '../../../util/media-query.service';
-import { DeviceControlService } from "../../../util/device-control.service";
+import { MediaQuery, MediaQueryService } from '../../../api/services/media-query.service';
+import { DeviceControlService } from "../../../api/services/device-control.service";
 import { MatDialog } from "@angular/material/dialog";
 
 export const SELECT_VALUE_ACCESSOR: Provider = {

@@ -13,14 +13,14 @@ import { SecurityService } from '../../../auth/security.service';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Role } from '../../../model/security-model';
 import { Subscription } from 'rxjs';
-import { MediaQuery, MediaQueryService } from '../../../util/media-query.service';
+import { MediaQuery, MediaQueryService } from '../../../api/services/media-query.service';
 import { distinctUntilChanged } from 'rxjs/internal/operators';
 import { Constants } from '../../../util/constants';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { dialogsMap } from '../../../shared/dialogs/dialogs.state';
 import { referralDialogConfig } from '../../../shared/dialogs/dialogs.configs';
 import { ReferralDialogComponent } from '../../../shared/dialogs/refreal-dialog/referral-dialog.component';
-import { MobileMenuService } from "../../../util/mobile-menu-service";
+import { MobileMenuService } from "../../../api/services/mobile-menu-service";
 
 
 @Component({

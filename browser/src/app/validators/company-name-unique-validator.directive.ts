@@ -2,7 +2,7 @@ import { Directive, forwardRef, Input } from '@angular/core';
 import { NG_ASYNC_VALIDATORS, Validator, AbstractControl } from '@angular/forms';
 import { SecurityService } from '../auth/security.service';
 import { RegistrationService } from '../api/services/registration.service';
-import { ErrorHandler } from '../util/error-handler';
+import { ErrorHandler } from '../util/handlers/error-handler';
 import { CompanyService } from "../api/services/company.service";
 
 @Directive({

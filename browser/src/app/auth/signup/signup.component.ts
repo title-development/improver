@@ -2,14 +2,14 @@ import { Component, OnDestroy, ViewChild } from '@angular/core';
 
 import { SecurityService } from '../security.service';
 import { Constants } from '../../util/constants';
-import { Messages } from 'app/util/messages';
+import { TextMessages } from 'app/util/text-messages';
 import { RegistrationService } from '../../api/services/registration.service';
 import { LoginModel, RegistrationUserModel, RegistrationUserProps } from '../../model/security-model';
 import { RecaptchaComponent } from 'ng-recaptcha';
 import { mergeMap, takeUntil, timeoutWith } from 'rxjs/operators';
 import { Subject, throwError } from 'rxjs';
 import { ActivatedRoute, Router } from "@angular/router";
-import { RegistrationHelper } from "../../util/registration-helper";
+import { RegistrationHelper } from "../../util/helpers/registration-helper";
 import { CaptchaTrackingService } from "../../api/services/captcha-tracking.service";
 
 @Component({
@@ -43,7 +43,7 @@ export class SignupComponent implements OnDestroy {
 
   constructor(public securityService: SecurityService,
               public constants: Constants,
-              public messages: Messages,
+              public messages: TextMessages,
               public captchaTrackingService: CaptchaTrackingService,
               private router: Router,
               private route: ActivatedRoute,

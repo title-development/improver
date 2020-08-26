@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { ControlContainer, NgForm, NgModel } from "@angular/forms";
 import { Constants } from "../../../util/constants";
-import { Messages } from "../../../util/messages";
+import { TextMessages } from "../../../util/text-messages";
 
 @Component({
 	selector: 'cv-password-hint',
@@ -38,7 +38,7 @@ export class CvPasswordHintComponent implements OnInit, AfterViewInit, OnDestroy
 
 	validationStatus: PasswordStatus;
 	constructor(public constants: Constants,
-							public messages: Messages,
+							public messages: TextMessages,
 							private changeDetectorRef: ChangeDetectorRef,
 							private renderer: Renderer2,
 							@Optional() @SkipSelf() private controlContainer: ControlContainer) {

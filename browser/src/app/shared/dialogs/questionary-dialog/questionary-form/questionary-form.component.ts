@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { QuestionaryControlService }    from '../../../../util/questionary-control.service';
+import { QuestionaryControlService }    from '../../../../api/services/questionary-control.service';
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 
 @Component({

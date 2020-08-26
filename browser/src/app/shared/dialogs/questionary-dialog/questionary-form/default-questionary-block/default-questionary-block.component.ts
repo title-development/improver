@@ -1,31 +1,31 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { QuestionaryControlService } from '../../../../../util/questionary-control.service';
+import { QuestionaryControlService } from '../../../../../api/services/questionary-control.service';
 import { RequestOrder } from '../../../../../model/order-model';
 import { Constants } from '../../../../../util/constants';
-import { Messages } from '../../../../../util/messages';
+import { TextMessages } from '../../../../../util/text-messages';
 import { MatDialog } from '@angular/material/dialog';
 import { Credentials, LoginModel, RegistrationUserModel, Role } from '../../../../../model/security-model';
 import { SecurityService } from '../../../../../auth/security.service';
 import { ProjectService } from '../../../../../api/services/project.service';
 import { ValidatedLocation } from '../../../../../api/models/LocationsValidation';
 import { LocationValidateService } from '../../../../../api/services/location-validate.service';
-import { PopUpMessageService } from '../../../../../util/pop-up-message.service';
+import { PopUpMessageService } from '../../../../../api/services/pop-up-message.service';
 import { Router } from '@angular/router';
-import { ProjectActionService } from '../../../../../util/project-action.service';
+import { ProjectActionService } from '../../../../../api/services/project-action.service';
 import { capitalize, getErrorMessage, markAsTouched } from '../../../../../util/functions';
 import { finalize, first } from "rxjs/internal/operators";
 import { UserService } from "../../../../../api/services/user.service";
 import { AccountService } from "../../../../../api/services/account.service";
 import { TradeService } from "../../../../../api/services/trade.service";
-import { MetricsEventService } from "../../../../../util/metrics-event.service";
+import { MetricsEventService } from "../../../../../api/services/metrics-event.service";
 import { takeUntil } from "rxjs/operators";
 import { SystemMessageType } from "../../../../../model/data-model";
 import { Subject } from "rxjs";
 import { RecaptchaComponent } from "ng-recaptcha";
 import { CaptchaTrackingService } from "../../../../../api/services/captcha-tracking.service";
-import { RegistrationHelper } from "../../../../../util/registration-helper";
-import { DeviceControlService } from "../../../../../util/device-control.service";
+import { RegistrationHelper } from "../../../../../util/helpers/registration-helper";
+import { DeviceControlService } from "../../../../../api/services/device-control.service";
 import { RegistrationService } from "../../../../../api/services/registration.service";
 
 @Component({
@@ -86,7 +86,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
               public userService: UserService,
               public dialog: MatDialog,
               public constants: Constants,
-              public messages: Messages,
+              public messages: TextMessages,
               public popUpMessageService: PopUpMessageService,
               public captchaTrackingService: CaptchaTrackingService,
               public deviceControlService: DeviceControlService,

@@ -2,11 +2,11 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CompanyInfo } from "../../../model/data-model";
 import { CompanyService } from "../../../api/services/company.service";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
-import { PopUpMessageService } from "../../../util/pop-up-message.service";
+import { PopUpMessageService } from "../../../api/services/pop-up-message.service";
 import { SecurityService } from "../../../auth/security.service";
 import { CompanyInfoService } from "../../../api/services/company-info.service";
 import { takeUntil } from "rxjs/operators";
-import { MediaQuery, MediaQueryService } from "../../../util/media-query.service";
+import { MediaQuery, MediaQueryService } from "../../../api/services/media-query.service";
 import { Subject } from "rxjs";
 
 @Component({

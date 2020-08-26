@@ -1,0 +1,117 @@
+@import "improver-mixins.scss";
+
+:host {
+  background-color: white;
+  padding-bottom: 112px;
+
+  @include response-to(md) {
+    padding-top: 0px;
+    padding-bottom: 40px;
+  }
+
+  @include response-to(sm) {
+    padding-top: 40px;
+    padding-bottom: 35px;
+  }
+}
+
+.container-wide {
+  width: 100%;
+
+  @include response-to(lg) {
+    padding: 0;
+  }
+}
+
+.main-guide-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  max-width: $content-grid-max-width;
+  margin: 0 auto;
+  padding-top: 70px;
+
+  @include response-to(lg) {
+    padding: 50px 0 0 24px;
+  }
+
+  @include response-to(md) {
+    padding: 35px 0 0 24px;
+  }
+
+  @include response-to(sm) {
+    padding: 0 24px;
+    flex-wrap: wrap;
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+  }
+
+  @include response(xs) {
+    padding: 0 20px;
+  }
+}
+
+.main-guide-card {
+  width: 33.3333333%;
+  max-width: 300px;
+  border-radius: 2px;
+  padding-right: 20px;
+
+  @include response-to(sm) {
+    width: 100%;
+    padding: 0;
+    padding-bottom: 24px;
+  }
+
+  .guide-header-block {
+    background-color: $white;
+    border-radius: 100px;
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+
+    @include response-to(sm) {
+      flex-direction: row;
+      align-items: center;
+    }
+
+    img {
+      width: 60px;
+      height: 60px;
+    }
+
+    .guide-card-title {
+      font-size: 24px;
+      text-align: left;
+      color: $black-800;
+      font-weight: 600;
+      margin-top: 24px;
+
+      @include response-to(md) {
+        font-weight: 700;
+        font-size: 20px;
+      }
+
+      @include response-to(sm) {
+        margin-top: 0px;
+        margin-left: 16px;
+      }
+    }
+
+  }
+
+  .guide-text-block {
+
+    .guide-card-text {
+      font-size: 16px;
+      text-align: left;
+      color: #808080;
+      line-height: 1.47;
+      letter-spacing: 0.3px;
+    }
+  }
+
+}
+

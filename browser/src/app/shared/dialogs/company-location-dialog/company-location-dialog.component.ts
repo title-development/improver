@@ -3,7 +3,7 @@ import { CompanyInfo, Location } from "../../../model/data-model";
 import { CompanyService } from "../../../api/services/company.service";
 import { SecurityService } from "../../../auth/security.service";
 import { MatDialogRef } from "@angular/material/dialog";
-import { PopUpMessageService } from "../../../util/pop-up-message.service";
+import { PopUpMessageService } from "../../../api/services/pop-up-message.service";
 import { CompanyInfoService } from "../../../api/services/company-info.service";
 import { LocationValidateService } from "../../../api/services/location-validate.service";
 import { ReplaySubject } from "rxjs";

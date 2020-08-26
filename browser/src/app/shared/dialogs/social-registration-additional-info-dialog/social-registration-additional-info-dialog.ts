@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Constants } from '../../../util/constants';
-import { Messages } from '../../../util/messages';
+import { TextMessages } from '../../../util/text-messages';
 import { AdditionalUserInfo } from '../../../model/security-model';
 import { Subject } from 'rxjs';
 
@@ -34,7 +34,7 @@ export class SocialRegistrationAdditionalInfoDialog implements OnDestroy {
   phoneValidating: boolean = false;
   private readonly destroyed$ = new Subject<void>();
 
-  constructor(public messages: Messages,
+  constructor(public messages: TextMessages,
               public currentDialogRef: MatDialogRef<any>,
               public constants: Constants) {
   }

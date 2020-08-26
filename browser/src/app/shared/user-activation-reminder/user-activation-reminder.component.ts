@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { finalize } from "rxjs/operators";
 import { SecurityService } from "../../auth/security.service";
-import { PopUpMessageService } from "../../util/pop-up-message.service";
+import { PopUpMessageService } from "../../api/services/pop-up-message.service";
 import { Constants } from "../../util/constants";
 import { RegistrationService } from "../../api/services/registration.service";
 

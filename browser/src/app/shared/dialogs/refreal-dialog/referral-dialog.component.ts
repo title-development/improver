@@ -1,9 +1,9 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { SecurityService } from '../../../auth/security.service';
 import { Constants } from '../../../util/constants';
-import { Messages } from '../../../util/messages';
+import { TextMessages } from '../../../util/text-messages';
 import { ReferralService } from '../../../api/services/referral.service';
-import { PopUpMessageService } from '../../../util/pop-up-message.service';
+import { PopUpMessageService } from '../../../api/services/pop-up-message.service';
 import { getErrorMessage } from '../../../util/functions';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -32,7 +32,7 @@ export class ReferralDialogComponent implements OnInit, OnDestroy {
               public dialog: MatDialog,
               public securityService: SecurityService,
               public constants: Constants,
-              public messages: Messages,
+              public messages: TextMessages,
               private referralService: ReferralService,
               private popUpService: PopUpMessageService,
               @Inject('Window') private window: Window) {

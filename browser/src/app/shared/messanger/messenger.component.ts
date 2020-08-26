@@ -7,18 +7,18 @@ import { ProjectRequestService } from '../../api/services/project-request.servic
 import { CompanyService } from '../../api/services/company.service';
 import { ALLOWED_FILE_EXTENTIONS, FILE_MIME_TYPES, MAX_FILE_SIZE } from '../../util/file-parameters';
 import { getErrorMessage, jsonParse } from '../../util/functions';
-import { PopUpMessageService } from '../../util/pop-up-message.service';
+import { PopUpMessageService } from '../../api/services/pop-up-message.service';
 import { hasClass } from '../../util/dom';
 import { PerfectScrollbarComponent } from 'ngx-perfect-scrollbar';
 import { Autosize } from '../../directives/autosize.directive';
 import { Subscription } from 'rxjs';
-import { MediaQuery, MediaQueryService } from '../../util/media-query.service';
+import { MediaQuery, MediaQueryService } from '../../api/services/media-query.service';
 import { Project } from '../../api/models/Project';
 import { ProjectMessage } from '../../api/models/ProjectMessage';
 import { ProjectRequest } from '../../api/models/ProjectRequest';
 import { distinctUntilChanged, first } from 'rxjs/internal/operators';
-import { MyStompService } from '../../util/my-stomp.service';
-import { ProjectActionService } from '../../util/project-action.service';
+import { MyStompService } from '../../api/services/my-stomp.service';
+import { ProjectActionService } from '../../api/services/project-action.service';
 
 @Component({
   selector: 'messenger',
@@ -297,7 +297,7 @@ export class MessengerComponent implements OnInit, OnDestroy {
     });
   }
 
-	// delete "Unread Messages" line from chat
+	// delete "Unread TextMessages" line from chat
   deleteUnreadMessagesLine(message) {
 		setTimeout( () => {
 			if ((message as any).unreadLine) {

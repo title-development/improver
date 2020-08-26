@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { QuestionaryBlock, QuestionType } from "../../../../../model/questionary-model";
-import { QuestionaryControlService } from "../../../../../util/questionary-control.service";
+import { QuestionaryControlService } from "../../../../../api/services/questionary-control.service";
 import { Constants } from "../../../../../util/constants";
-import { Messages } from "../../../../../util/messages";
+import { TextMessages } from "../../../../../util/text-messages";
 import { MatDialog } from "@angular/material/dialog";
 
 @Component({
@@ -20,7 +20,7 @@ export class QuestionaryFormQuestionComponent implements OnInit{
   constructor(public questionaryControlService: QuestionaryControlService,
               public dialog: MatDialog,
               public constants: Constants,
-              public messages: Messages,) {
+              public messages: TextMessages,) {
     this.constants = constants;
     this.messages = messages;
   }

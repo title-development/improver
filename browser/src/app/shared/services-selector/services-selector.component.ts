@@ -5,17 +5,17 @@ import { ActivatedRoute } from '@angular/router';
 import { SecurityService } from '../../auth/security.service';
 import { TradeService } from '../../api/services/trade.service';
 import { ServiceTypeService } from '../../api/services/service-type.service';
-import { PopUpMessageService } from '../../util/pop-up-message.service';
+import { PopUpMessageService } from '../../api/services/pop-up-message.service';
 import { getErrorMessage } from '../../util/functions';
 import { OfferedServiceType, ServiceType, Trade } from '../../model/data-model';
 import { dialogsMap } from '../dialogs/dialogs.state';
 import { confirmDialogConfig } from '../dialogs/dialogs.configs';
 import { combineLatest, ReplaySubject, Subject } from 'rxjs';
-import { ScrollHolderService } from '../../util/scroll-holder.service';
+import { ScrollHolderService } from '../../api/services/scroll-holder.service';
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { UserSearchService } from "../../api/services/user-search.service";
 import { takeUntil } from "rxjs/operators";
-import { MediaQuery, MediaQueryService } from "../../util/media-query.service";
+import { MediaQuery, MediaQueryService } from "../../api/services/media-query.service";
 import { Role } from "../../model/security-model";
 
 

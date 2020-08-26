@@ -14,7 +14,7 @@ import {
 import { markAsTouched } from '../../util/functions';
 import { ServiceType } from '../../model/data-model';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ProjectActionService } from '../../util/project-action.service';
+import { ProjectActionService } from '../../api/services/project-action.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Constants } from '../../util/constants';
 import { ServiceTypeService } from '../../api/services/service-type.service';
@@ -26,11 +26,11 @@ import { Role } from "../../model/security-model";
 import { TradeService } from "../../api/services/trade.service";
 import { UserSearchService } from "../../api/services/user-search.service";
 import { dialogsMap } from "../dialogs/dialogs.state";
-import { MediaQuery, MediaQueryService } from "../../util/media-query.service";
+import { MediaQuery, MediaQueryService } from "../../api/services/media-query.service";
 import { takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
 import { mobileMainDialogBarConfig } from "../dialogs/dialogs.configs";
-import { MobileMenuService } from "../../util/mobile-menu-service";
+import { MobileMenuService } from "../../api/services/mobile-menu-service";
 
 @Component({
   selector: 'main-search-bar',

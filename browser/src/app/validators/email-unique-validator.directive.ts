@@ -1,6 +1,6 @@
 import { Directive, forwardRef, Input } from '@angular/core';
 import { NG_ASYNC_VALIDATORS, Validator, AbstractControl } from '@angular/forms';
-import { ErrorHandler } from '../util/error-handler';
+import { ErrorHandler } from '../util/handlers/error-handler';
 import { UserService } from "../api/services/user.service";
 
 @Directive({

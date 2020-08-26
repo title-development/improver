@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ReviewService } from '../../../api/services/review.service';
 import { ProRequestReview } from '../../../api/models/ProRequestReview';
-import { PopUpMessageService } from '../../../util/pop-up-message.service';
-import { Messages } from '../../../util/messages';
+import { PopUpMessageService } from '../../../api/services/pop-up-message.service';
+import { TextMessages } from '../../../util/text-messages';
 import { finalize } from "rxjs/operators";
 import { ReviewRequestOption } from "../../../model/data-model";
 import { MatDialogRef } from "@angular/material/dialog";
@@ -22,7 +22,7 @@ export class RequestReviewDialogComponent implements OnInit {
 
   constructor(public currentDialogRef: MatDialogRef<any>,
               private reviewService: ReviewService,
-              public messages: Messages,
+              public messages: TextMessages,
               public popUpService: PopUpMessageService) {
   }
 

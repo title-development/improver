@@ -1,5 +1,5 @@
 import { HttpErrorResponse, HttpParams } from '@angular/common/http';
-import { httpStatusCodeResponses } from './messages';
+import { httpStatusCodeResponses } from './text-messages';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { RestPage } from '../api/models/RestPage';
 

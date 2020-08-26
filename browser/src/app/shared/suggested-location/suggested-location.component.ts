@@ -3,7 +3,7 @@ import { ValidatedLocation } from "../../api/models/LocationsValidation";
 import { Location } from "../../model/data-model";
 import { getErrorMessage } from "../../util/functions";
 import { LocationValidateService } from "../../api/services/location-validate.service";
-import { PopUpMessageService } from "../../util/pop-up-message.service";
+import { PopUpMessageService } from "../../api/services/pop-up-message.service";
 import { FormGroup } from "@angular/forms";
 import { ReplaySubject } from "rxjs";
 

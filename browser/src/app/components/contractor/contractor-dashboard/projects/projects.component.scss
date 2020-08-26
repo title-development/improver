@@ -1,0 +1,196 @@
+@import "improver-mixins.scss";
+
+.projects-wrapper {
+  .tab-header {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 17px 15px;
+
+    @include response(xs){
+      flex-direction: column;
+      padding: 8px 12px;
+      align-items: normal;
+      justify-content: center;
+    }
+  }
+  .tab-labels {
+    display: flex;
+
+    @include response(xs){
+      padding: 10px 0 10px 0;
+      justify-content: space-around;
+    }
+  }
+  .tab-label {
+    color: initial;
+    font-size: 14px;
+    cursor: pointer;
+    position: relative;
+    border-bottom: 3px transparent solid;
+    padding: 5px 2px;
+
+    @include response(xs){
+      text-align: center;
+    }
+
+    &:not(:last-child) {
+      margin-right: 20px;
+      @include response(xs) {
+        margin-right: 0;
+      }
+      @include response(sm) {
+        margin-right: 16px;
+      }
+    }
+    &.-active, &:hover {
+      color: $primary-500;
+    }
+    &.-active {
+      border-bottom: 3px $primary-500 solid;
+    }
+  }
+  .tab-search {
+    position: relative;
+    width: 45%;
+
+    @include response(xs){
+      width: 100%;
+    }
+
+    input {
+      background-color: $grey-50;
+      font-size: 14px;
+      padding: 10px 16px 10px 40px;
+      border-radius: 8px;
+
+      @include response-to(sm) {
+        font-size: 16px;
+      }
+      &::placeholder {
+        color: $grey-400 !important;
+        display: block;
+        font-size: 14px;
+      }
+    }
+    mat-icon {
+      position: absolute;
+      background-color: transparent;
+      border: none;
+      border-radius: 0;
+      margin: 0;
+      padding: 0;
+      top: 7px;
+      left: 8px;
+      color: $grey-500;
+      &.clear {
+        cursor: pointer;
+      }
+    }
+  }
+  .tab-content-list {
+    min-height: 52px;
+
+    .no-data-row {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 24px 0 16px;
+      color: $grey-500;
+      //height: 52px;
+      font-size: 16px;
+
+      .footer {
+        width: 100%;
+        margin-top: 16px;
+        background-color: rgba(245, 245, 245, 0.58);
+        margin-bottom: -16px;
+        padding: 16px;
+        [cv-button] {
+          box-shadow: elevation(2);
+          font-size: 16px;
+          background-image: linear-gradient(to bottom, $primary-400, $primary-600 85%);
+          border: none;
+          color: $white;
+          width: 100%;
+          &:hover {
+            background-image: linear-gradient(to top, $primary-400, $primary-600 85%);
+          }
+          &:active {
+            background: $primary-500 none;
+          }
+        }
+      }
+
+    }
+
+    display: none;
+    &.-active {
+      display: block;
+    }
+  }
+  .tab-list-labels {
+    height: 36px;
+    background-color: $grey-150;
+    padding: 0 22px;
+    display: flex;
+
+    td {
+      font-size: 14px;
+      text-align: left;
+      color: $grey-600;
+    }
+  }
+  ::ng-deep .mat-tab-label {
+    .mat-icon {
+      vertical-align: middle;
+      padding-right: 15px;
+    }
+  }
+
+  .tab-content-wrapper {
+    font-weight: normal;
+
+    .tab-content-titles {
+      width: 100%;
+      background-color: $grey-150;
+      padding: 7px 0 4px 15px;
+
+      th {
+        font-size: 14px;
+        text-align: left;
+        color: $grey-600;
+        font-weight: 400;
+
+        &:last-child {
+          text-align: center;
+        }
+      }
+    }
+
+    .loader-wrapper {
+      padding: 30px 0;
+    }
+    .show-more-wrapper {
+      margin-top: 10px;
+
+      button {
+        font-weight: 200;
+      }
+    }
+  }
+}
+
+.secondary-button {
+  width: 100%;
+  &:hover {
+    background-color: $grey-150 !important;
+  }
+}
+
+.loader {
+  height: 40px;
+}

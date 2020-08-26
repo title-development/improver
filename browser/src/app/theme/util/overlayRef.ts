@@ -11,9 +11,9 @@ import {
 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { BehaviorSubject, Subject, Subscription } from 'rxjs';
-import { ScrollHolderService } from '../../util/scroll-holder.service';
+import { ScrollHolderService } from '../../api/services/scroll-holder.service';
 import { MatDialog } from "@angular/material/dialog";
-import { DeviceControlService } from "../../util/device-control.service";
+import { DeviceControlService } from "../../api/services/device-control.service";
 
 export enum BackdropType {
   popup = 'cv-type-popup',

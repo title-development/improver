@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnInit } from '@angular/core';
 import { CvDateRangePicker } from '../../../theme/date-range-picker/cv-date-range-picker/cv-date-range-picker.component';
 import { UnavailabilityPeriod } from '../../../api/models/UnavailabilityPeriod';
-import { TricksService } from '../../../util/tricks.service';
+import { TricksService } from '../../../api/services/tricks.service';
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 
 @Component({

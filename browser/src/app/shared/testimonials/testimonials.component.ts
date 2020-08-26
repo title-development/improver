@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { animate, keyframes, style, transition, trigger } from "@angular/animations";
-import { MediaQuery, MediaQueryService } from "../../util/media-query.service";
+import { MediaQuery, MediaQueryService } from "../../api/services/media-query.service";
 import { clone } from "../../util/functions";
 
 const animationDuration = 200;
