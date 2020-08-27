@@ -18,6 +18,69 @@
 
 }
 
+.mobile-project-info {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.status {
+  font-size: 12px;
+  max-height: 23px;
+  padding: 4px 8px;
+  min-width: 75px;
+  border-radius: 2px;
+  background-color: #aaaaaa;
+  text-align: left;
+  color: $white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @include response-to(sm) {
+    display: inline;
+    white-space: nowrap;
+    vertical-align: middle;
+  }
+
+  &:first-letter {
+    text-transform: uppercase;
+  }
+
+  &.validation {
+    background-color: #e3b10a;
+  }
+
+  &.active {
+    background-color: #309ae3;
+  }
+
+  &.in-progress {
+    background-color: #1eb237;
+  }
+
+  &.completed {
+    background-color: #946dfd;
+  }
+
+  &.canceled {
+    background-color: #ff5a6a;
+  }
+
+}
+
+.date {
+  font-size: 12px;
+  line-height: 1.33;
+  text-align: left;
+  color: $grey-600;
+
+  @include response-to(sm) {
+    margin-top: 5px;
+  }
+}
+
 .customer-project-view {
   display: flex;
   flex-direction: column;
@@ -37,116 +100,78 @@
       padding: 24px 24px;
       border-bottom: 1px solid #e8e8e8;
       display: flex;
+      flex-direction: column;
       justify-content: space-between;
-      align-items: center;
 
       @include response-to(sm) {
         padding: 12px;
       }
 
-      .left-part {
-
-        .top-line {
-          display: flex;
-
-          @include response-to(sm) {
-            display: block;
-            word-break: break-word;
-          }
-
-          .title {
-            font-size: 24px;
-            font-weight: 600;
-            text-align: left;
-            color: $black-800;
-            margin-right: 16px;
-
-            @include response-to(sm) {
-              display: inline;
-              font-size: 21px;
-            }
-
-            @include response-to(xs) {
-              font-size: 18px;
-            }
-          }
-
-          .status {
-            font-size: 12px;
-            max-height: 23px;
-            padding: 4px 8px;
-            min-width: 75px;
-            border-radius: 2px;
-            background-color: #aaaaaa;
-            text-align: left;
-            color: $white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            @include response-to(sm) {
-              display: inline;
-              white-space: nowrap;
-              vertical-align: middle;
-            }
-
-            &:first-letter {
-              text-transform: uppercase;
-            }
-
-            &.validation {
-              background-color: #e3b10a;
-            }
-
-            &.active {
-              background-color: #309ae3;
-            }
-
-            &.in-progress {
-              background-color: #1eb237;
-            }
-
-            &.completed {
-              background-color: #946dfd;
-            }
-
-            &.canceled {
-              background-color: #ff5a6a;
-            }
-
-          }
-
-        }
-
-        .bottom-line {
-          font-size: 12px;
-          line-height: 1.33;
-          text-align: left;
-          color: $grey-600;
-
-          @include response-to(sm) {
-            margin-top: 5px;
-          }
-        }
-
-
-      }
-
-      .right-part {
+      .header-content {
         display: flex;
-        align-self: start;
-        justify-self: start;
-        margin-right: -16px;
-        margin-top: -8px;
-        @include response-to(sm) {
-          margin-right: -8px;
-          margin-top: -4px;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+
+        .left-part {
+
+          .top-line {
+            display: flex;
+
+            @include response-to(sm) {
+              display: block;
+              word-break: break-word;
+            }
+
+            .title {
+              font-size: 24px;
+              font-weight: 600;
+              text-align: left;
+              color: $black-800;
+              margin-right: 16px;
+
+              @include response-to(sm) {
+                display: inline;
+                font-size: 21px;
+              }
+
+              @include response-to(xs) {
+                font-size: 18px;
+              }
+            }
+
+          }
+
+          .bottom-line {
+            font-size: 12px;
+            line-height: 1.33;
+            text-align: left;
+            color: $grey-600;
+
+            @include response-to(sm) {
+              margin-top: 5px;
+            }
+          }
+
+
+        }
+
+        .right-part {
+          display: flex;
+          align-self: start;
+          justify-self: start;
+          margin-right: -16px;
+          margin-top: -8px;
+          @include response-to(sm) {
+            margin-right: -8px;
+            margin-top: -4px;
+          }
         }
       }
 
     }
 
-    .projectRequests {
+    .project-requests {
 
       .approve-mark {
         display: flex;
@@ -163,7 +188,7 @@
         }
       }
 
-      .projectRequest-menu-button {
+      .project-request-menu-button {
         margin-right: 8px;
       }
 
@@ -173,6 +198,10 @@
 
         @include response-to(sm) {
           padding: 16px 12px;
+        }
+
+        @include response(xs) {
+          padding: 0 12px 16px 12px;
         }
 
         .title {
@@ -232,7 +261,7 @@
           }
         }
 
-        .projectRequest {
+        .project-request {
           position: relative;
           display: flex;
           align-items: center;
@@ -262,7 +291,7 @@
             }
           }
 
-          .projectRequest-left {
+          .project-request-left {
             display: flex;
             flex: 1;
 
@@ -293,13 +322,13 @@
           }
 
 
-          .projectRequest-right {
+          .project-request-right {
             display: flex;
             justify-content: flex-end;
             flex: 0;
           }
 
-          .projectRequest-icon {
+          .project-request-icon {
             flex: 0 0 64px;
             width: 64px;
             height: 64px;
@@ -362,7 +391,7 @@
             background-color: $grey-200;
             box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.24);
 
-            .projectRequest-icon {
+            .project-request-icon {
               box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.24);
               opacity: 1;
               position: relative;
@@ -536,7 +565,7 @@
   color: $grey-500;
 }
 
-::ng-deep .mat-menu-panel.projectRequest-menu {
+::ng-deep .mat-menu-panel.project-request-menu {
   position: relative;
   overflow: visible !important;
   box-shadow: none;

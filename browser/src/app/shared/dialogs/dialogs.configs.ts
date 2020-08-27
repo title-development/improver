@@ -170,6 +170,18 @@ export const companyInfoDialogConfig: MatDialogConfig = {
   }
 };
 
+export const projectRequestReviewDialogConfig: MatDialogConfig = {
+  panelClass: 'customer-add-review-form',
+  width: '545px',
+  height: '',
+  position: {
+    top: '',
+    bottom: '',
+    left: '',
+    right: ''
+  }
+};
+
 export const passwordEditorDialogConfig: MatDialogConfig = {
   panelClass: 'dialog-fix-position',
   width: '400px',

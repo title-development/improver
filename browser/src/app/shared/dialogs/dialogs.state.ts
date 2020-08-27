@@ -113,5 +113,6 @@ export const dialogsMap = {
   'company-name-edit-dialog': CompanyNameEditDialogComponent,
   'company-foundation-year-edit-dialog' : CompanyFoundationYearEditDialogComponent,
   'email-verification-hint-dialog': EmailVerificationHintDialogComponent,
-  'password-editor-dialog': PasswordEditorComponent
+  'password-editor-dialog': PasswordEditorComponent,
+  'customer-add-review-dialog': CustomerAddReviewFormComponent
 };

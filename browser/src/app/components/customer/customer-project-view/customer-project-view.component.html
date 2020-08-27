@@ -14,35 +14,43 @@
       <div class="customer-project-view" *ngIf="project">
         <div class="main-content-wrapper">
           <div class="header">
-            <div class="left-part">
-              <div class="top-line">
-                <div class="title">{{project.serviceType}}</div>
-                <div class="status" [ngClass]="[project.status | toclassname]">{{project.status | statustostring}}</div>
+            <div class="header-content">
+              <div class="left-part">
+                <div class="top-line">
+                  <div class="title">{{project.serviceType}}</div>
+                  <div class="status" *ngIf="!mediaQuery.xs" [ngClass]="[project.status | toclassname]">{{project.status | statustostring}}</div>
+                </div>
+                <div class="bottom-line" *ngIf="!mediaQuery.xs">
+                  {{project.created | date: 'mediumDate'}}, {{project.created | date: 'shortTime'}}
+                </div>
               </div>
-              <div class="bottom-line">
-                {{project.created | date: 'mediumDate'}}, {{project.created | date: 'shortTime'}}
+              <div class="right-part">
+                <div class="more-button-wrapper"
+                     *ngIf="project && Project.isActive(project.status)">
+                  <button class="project-menu-button" mat-icon-button [matMenuTriggerFor]="projectMenu"
+                          (click)="$event.stopPropagation()">
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                  <mat-menu class="project-menu" #projectMenu="matMenu" yPosition="below" xPosition="before">
+                    <button mat-menu-item (click)="projectActionService.completeProjectConfirm(project)">
+                      Complete Project
+                    </button>
+                    <button mat-menu-item (click)="projectActionService.cancelProjectConfirm(project)"
+                            class="cancel-button">Cancel Project
+                    </button>
+                  </mat-menu>
+                </div>
               </div>
             </div>
-            <div class="right-part">
-              <div class="more-button-wrapper"
-                   *ngIf="project && Project.isActive(project.status)">
-                <button class="project-menu-button" mat-icon-button [matMenuTriggerFor]="projectMenu"
-                        (click)="$event.stopPropagation()">
-                  <mat-icon>more_vert</mat-icon>
-                </button>
-                <mat-menu class="project-menu" #projectMenu="matMenu" yPosition="below" xPosition="before">
-                  <button mat-menu-item (click)="projectActionService.completeProjectConfirm(project)">
-                    Complete Project
-                  </button>
-                  <button mat-menu-item (click)="projectActionService.cancelProjectConfirm(project)"
-                          class="cancel-button">Cancel Project
-                  </button>
-                </mat-menu>
-              </div>
+
+            <div class="mobile-project-info" *ngIf="mediaQuery.xs">
+              <div class="date">{{project.created | date: 'mediumDate'}}, {{project.created | date: 'shortTime'}}</div>
+              <div class="status" [ngClass]="[project.status | toclassname]">{{project.status | statustostring}}</div>
             </div>
+
           </div>
 
-          <div class="projectRequests" *ngIf="project.projectRequests.length > 0">
+          <div class="project-requests" *ngIf="project.projectRequests.length > 0">
             <div class="content">
 
               <div class="active-pros-info" *ngIf="!project.isArchived() && !isActiveProsExist()">
@@ -50,48 +58,47 @@
                 <div class="hint">There are no active Pros in your project.</div>
               </div>
 
-              <div class="active-pros-info" *ngIf="!project.isArchived() && isActiveProsExist();">
+              <div class="active-pros-info" *ngIf="!project.isArchived() && isActiveProsExist() && !mediaQuery.xs">
                 <div class="title">These Pros are ready to discuss your project</div>
                 <div class="hint">Expect them to call or message you shortly. You can also contact them using messenger below.</div>
               </div>
 
               <ng-template ngFor let-projectRequest [ngForOf]="project.projectRequests" let-i="index">
-                <a class="projectRequest"
+                <a class="project-request"
                      (click)="openProjectRequest(projectRequest)"
                      *ngIf="ProjectRequest.isActive(projectRequest.status)">
-                  <div class="projectRequest-left">
+                  <div class="project-request-left">
                       <i class="notifications" *ngIf="projectRequest.unreadMessages > 0" title="{{unreadMessagesTittle(projectRequest.unreadMessages)}}">{{projectRequest.unreadMessages}}</i>
-                    <div class="projectRequest-icon {{projectRequest.status | toclassname}}"
+                    <div class="project-request-icon {{projectRequest.status | toclassname}}"
                          [ngClass]="{'no-icon' : projectRequest.company.iconUrl != ''}"
                          [ngStyle]="projectRequest.company.iconUrl && projectRequest.company.iconUrl != '' && {'background-image':'url(' + projectRequest.company.iconUrl + ')'} || {'background-image':'url(assets/img/pro_avatar.svg)'}">
                     </div>
                     <div class="info-block">
                       <div class="company-name">
                         <div>{{projectRequest.company.name}}</div>
-                        <!--<div class="approve-mark" *ngIf="projectRequest.company.approved">
-                          <img class="approve-icon" src="assets/icons/approve.svg" alt="" title="Approved by Home Improve">
-                        </div>-->
                       </div>
                       <div class="additional-info hired" *ngIf="ProjectRequest.isHiredOrCompleted(projectRequest.status)">You hired this Pro</div>
                       <div class="additional-info" *ngIf="projectRequest.status == ProjectRequest.Status.ACTIVE">This Pro sent you project request</div>
                     </div>
                   </div>
-                  <div class="projectRequest-right">
+                  <div class="project-request-right">
                     <div class="rating-block">
                       <rating-component [rating]="projectRequest.company.rating" [starSize]="26"></rating-component>
                       <div class="reviews-count">({{projectRequest.company.reviewCount}})</div>
                     </div>
                   </div>
                   <div class="more-button">
-                    <button class="projectRequest-menu-button" mat-icon-button [matMenuTriggerFor]="projectRequestMenu"
+                    <button class="project-request-menu-button" mat-icon-button [matMenuTriggerFor]="projectRequestMenu"
                             (click)="$event.stopPropagation()">
                       <mat-icon>more_vert</mat-icon>
                     </button>
-                    <mat-menu class="projectRequest-menu" #projectRequestMenu="matMenu" yPosition="below"
+                    <mat-menu class="project-request-menu" #projectRequestMenu="matMenu" yPosition="below"
                               xPosition="before">
                       <a mat-menu-item (click)="openProjectRequest(projectRequest)">Details
                       </a>
                       <a mat-menu-item [routerLink]="['/companies', projectRequest.company.id]">View profile</a>
+                      <button *ngIf="((projectRequest && projectRequest.status == ProjectRequest.Status.HIRED) || (projectRequest && projectRequest.status == ProjectRequest.Status.COMPLETED)) && !projectRequest.reviewed"
+                                mat-menu-item (click)="openAddReviewForm(projectRequest)">Leave review</button>
                       <button mat-menu-item
                               *ngIf="(projectRequest.status == ProjectRequest.Status.ACTIVE) && !Project.isArchived(project.status)"
                               (click)="projectActionService.hireCompanyConfirm(projectRequest)">Hire
@@ -110,11 +117,11 @@
               </div>
 
               <ng-template ngFor let-projectRequest [ngForOf]="project.projectRequests" let-i="index">
-                <div class="projectRequest {{projectRequest.status | toclassname}}"
+                <div class="project-request {{projectRequest.status | toclassname}}"
                      (click)="openProjectRequest(projectRequest)"
                      *ngIf="ProjectRequest.isInactive(projectRequest.status)">
-                  <div class="projectRequest-left">
-                    <div class="projectRequest-icon {{projectRequest.status | toclassname}}"
+                  <div class="project-request-left">
+                    <div class="project-request-icon {{projectRequest.status | toclassname}}"
                          [ngClass]="{'no-icon' : projectRequest.company.iconUrl != ''}"
                          [ngStyle]="projectRequest.company.iconUrl && projectRequest.company.iconUrl != '' && {'background-image':'url(' + projectRequest.company.iconUrl + ')'} || {'background-image':'url(assets/img/pro_avatar.svg)'}">
                     </div>
@@ -130,7 +137,7 @@
                       <div class="additional-info" *ngIf="ProjectRequest.proLeft(projectRequest.status)">This Pro left the project</div>
                     </div>
                   </div>
-                  <div class="projectRequest-right">
+                  <div class="project-request-right">
                     <div class="rating-block">
                       <rating-component [rating]="projectRequest.company.rating" [starSize]="26"></rating-component>
                       <div class="reviews-count">({{projectRequest.company.reviewCount}})</div>
@@ -138,11 +145,11 @@
 
                   </div>
                   <div class="more-button">
-                    <button class="projectRequest-menu-button" mat-icon-button [matMenuTriggerFor]="projectRequestMenu"
+                    <button class="project-request-menu-button" mat-icon-button [matMenuTriggerFor]="projectRequestMenu"
                             (click)="$event.stopPropagation()">
                       <mat-icon>more_vert</mat-icon>
                     </button>
-                    <mat-menu class="projectRequest-menu" #projectRequestMenu="matMenu" yPosition="below"
+                    <mat-menu class="project-request-menu" #projectRequestMenu="matMenu" yPosition="below"
                               xPosition="before">
                       <button mat-menu-item (click)="openProjectRequest(projectRequest)">Details</button>
                       <a mat-menu-item [routerLink]="['/companies', projectRequest.company.id]">View profile</a>

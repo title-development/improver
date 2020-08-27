@@ -19,8 +19,9 @@
 
 .container {
   padding-top: 16px;
+
   @include response-to(sm) {
-    padding: 16px 0px 0px;
+    padding: 0;
   }
 }
 
@@ -39,7 +40,6 @@
   }
 
   @include response-to(sm) {
-    top: 130px;
     padding-left: 0;
     padding-right: 0;
     padding-bottom: 0;
@@ -293,20 +293,24 @@ hr {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 13px;
+
   @include response-to(sm) {
     height: 55px;
     margin-bottom: 0;
     background-color: #fff;
     border-bottom: 1px solid $grey-250;
   }
+
   a {
     cursor: pointer;
     padding: 8px 8px 8px 0px;
     font-size: 12px;
     color: $grey-600;
+
     i {
       color: $grey-500;
     }
+
     @include response-to(sm) {
       display: flex;
       align-items: center;
@@ -317,6 +321,7 @@ hr {
       border-right: 1px solid $grey-250;
     }
   }
+
   h3 {
     font-size: 18px;
     color: $black-800;
@@ -324,15 +329,25 @@ hr {
     margin: 0;
     text-align: center;
     padding: 0 12px;
+
     @include response-from(md) {
       display: none;
     }
   }
+
+  h4 {
+
+    @include response-to(sm) {
+      color: $grey-700;
+    }
+  }
+
   .more-button-wrapper {
     @include response-to(sm) {
       border-left: 1px solid $grey-250;
     }
   }
+
   .material-icons {
     width: 30px !important;
     height: 30px !important;
@@ -343,13 +358,16 @@ hr {
     align-items: center;
     justify-content: center;
     cursor: pointer;
+
     @include response-to(sm) {
       font-size: 24px;
     }
+
     @include response-to(sm) {
       width: 55px !important;
       height: 55px !important;
     }
+
     .mat-icon {
     }
   }

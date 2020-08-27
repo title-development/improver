@@ -47,6 +47,7 @@ export class CustomerAddReviewFormComponent implements OnInit {
   ProjectRequest = ProjectRequest;
   isReviewSend = false;
   isSubmitButtonDisabled: boolean = false;
+  isMatDialogWindow: boolean = false;
   @Output() onLoadReviews: EventEmitter<any> = new EventEmitter<any>();
 
   newReview: Review = {

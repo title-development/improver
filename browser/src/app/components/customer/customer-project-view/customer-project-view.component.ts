@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CustomerProject } from '../../../model/data-model';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { PopUpMessageService } from '../../../api/services/pop-up-message.service';
 import { ProjectService } from '../../../api/services/project.service';
 import { ProjectRequestService } from '../../../api/services/project-request.service';
@@ -16,6 +16,9 @@ import { NavigationHelper } from "../../../util/helpers/navigation-helper";
 import { NotificationResource } from "../../../util/notification.resource";
 import { filter, takeUntil } from "rxjs/operators";
 import moveHiredContractorsToFirstPosition = Project.moveHiredContractorsToFirstPosition;
+import { MediaQuery, MediaQueryService } from "../../../api/services/media-query.service";
+import { dialogsMap } from "../../../shared/dialogs/dialogs.state";
+import { projectRequestReviewDialogConfig } from "../../../shared/dialogs/dialogs.configs";
 
 @Component({
   selector: 'customer-project-view',
@@ -31,10 +34,12 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy, Componen
   project: CustomerProject;
   ProjectRequest = ProjectRequest;
   Project = Project;
-  @ViewChild(ImagesUploaderComponent) imageUploader;
+  mediaQuery: MediaQuery;
+  reviewDialogRef: MatDialogRef<any>;
   private hashFragment: string;
   private projectRequestRouterParams$: Subscription;
   private projectDialogOpened: boolean = false;
+  @ViewChild(ImagesUploaderComponent) imageUploader;
 
   constructor(private route: ActivatedRoute,
               private projectService: ProjectService,
@@ -45,6 +50,7 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy, Componen
               public router: Router,
               public somePipe: SomePipe,
               public navigationHelper: NavigationHelper,
+              private mediaQueryService: MediaQueryService,
               private notificationResource: NotificationResource,
               private changeDetectorRef: ChangeDetectorRef) {
 
@@ -82,6 +88,8 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy, Componen
       }
     });
 
+    this.subscribeForMediaQuery();
+
   }
 
   ngOnInit() {
@@ -101,6 +109,30 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy, Componen
   ngOnDestroy(): void {
     this.destroyed$.next();
     this.destroyed$.complete();
+  }
+
+  subscribeForMediaQuery(){
+    this.mediaQueryService.screen
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe((mediaQuery: MediaQuery) => {
+          this.mediaQuery = mediaQuery;
+        });
+  }
+
+  openAddReviewForm(projectRequest: ProjectRequest) {
+    this.dialog.closeAll();
+    this.reviewDialogRef = this.dialog.open(dialogsMap['customer-add-review-dialog'], projectRequestReviewDialogConfig);
+    this.reviewDialogRef.componentInstance.projectRequest = projectRequest;
+    this.reviewDialogRef.componentInstance.isMatDialogWindow = true;
+    this.reviewDialogRef.afterClosed().subscribe(result => {
+          this.reviewDialogRef = null;
+    });
+    this.reviewDialogRef.componentInstance.onLoadReviews.subscribe( leaveReview => {
+      if (leaveReview) {
+        this.getProject();
+      }
+      this.dialog.closeAll();
+    });
   }
 
   openProjectRequest(projectRequest: ProjectRequest) {

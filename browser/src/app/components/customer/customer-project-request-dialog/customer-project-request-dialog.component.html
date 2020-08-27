@@ -16,7 +16,7 @@
               <button mat-button *ngIf="projectRequest && projectRequest.status == ProjectRequest.Status.ACTIVE && !Project.isArchived(projectRequest.projectStatus) && mediaQuery.xs"
                       class="mobile-hire-company-button"
                       (click)="hireCompany(projectRequest)">
-                <mat-icon>person_add</mat-icon>
+                <img class="hire-button-icon" src="../assets/img/pro_hired_avatar.svg" alt="hire">
               </button>
               <button mat-button *ngIf="mediaQuery.xs && companyProfile && ((projectRequest && projectRequest.status == ProjectRequest.Status.HIRED) || (projectRequest && projectRequest.status == ProjectRequest.Status.COMPLETED)) && !projectRequest.reviewed"
                       class="mobile-reviewed-company-button"

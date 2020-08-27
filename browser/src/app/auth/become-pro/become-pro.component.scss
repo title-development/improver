@@ -635,6 +635,10 @@
 
         .step-2 {
           background-image: url(../../../assets/img/became-pro-hints/hint_2.png);
+
+          @include response-to(xs) {
+            width: 95%;
+          }
         }
 
         .hints-footer {
@@ -734,7 +738,9 @@
   }
 }
 
-::ng-deep .footer {
-  background-color: #E7F6FE !important;
+.become-pro-footer {
+  ::ng-deep layout-footer {
+    background-color: #E7F6FE !important;
+  }
 }
 
