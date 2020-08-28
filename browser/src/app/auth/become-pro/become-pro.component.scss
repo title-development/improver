@@ -348,7 +348,6 @@
     }
 
     @include response-to(md) {
-      padding-top: 80px;
       margin-bottom: 80px;
     }
 
@@ -364,6 +363,7 @@
     }
 
     .title {
+      font-family: Merriweather;
       font-weight: bold;
       font-size: 36px;
       color: $dark;
@@ -550,6 +550,7 @@
     }
 
     .title {
+      font-family: Merriweather;
       font-size: 36px;
       font-weight: bold;
       color: $black;

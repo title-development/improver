@@ -13,8 +13,8 @@ export class ProBannerComponent {
 
   @Input() bannerConfig: any = {
     image: 'pro-banner.png',
-    title: 'Find new customers and grow your business with Home Improve',
-    text: 'Whether you’re scaling your business, filling the gaps in your schedule, or just starting out, Home Improve will help you find the right customers.',
+    title: 'Help new clients find you!',
+    text: 'Whether you’re just starting out, looking to grow your home improvement business, or interested in filling gaps in your work schedule, Home Improve can help you find clients in your target demographic.',
     button: 'Become a PRO',
     routerLink: '/become-pro'
   };

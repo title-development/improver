@@ -58,8 +58,8 @@
 
 <div class="benefits" appParallax [onlyMobileScreen]="mediaQuery.xs || mediaQuery.sm" [parallaxRatio]="0.9">
     <div class="benefits-wrapper">
+        <div class="title">What we offer?</div>
         <div class="benefits-content" >
-            <div class="title" *ngIf="mediaQuery.xs">What we offer?</div>
             <div class="benefit-item-parent" *ngFor="let item of benefits">
                 <div class="benefit-item">
                     <div class="benefit-item-header"></div>
@@ -115,7 +115,7 @@
 </div>
 
 <div class="testimonials-wrapper">
-  <testimonials [testimonials]="testimonials"></testimonials>
+  <testimonials [testimonials]="testimonials" [title]="testimonialsTittle"></testimonials>
 </div>
 
 <div class="pro-banner-content">

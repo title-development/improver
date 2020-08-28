@@ -56,6 +56,8 @@ export class TestimonialsComponent {
 
   @Input()
   testimonials = [];
+  @Input()
+  title: string = '';
 
   animating = false;
   transformX = 0;

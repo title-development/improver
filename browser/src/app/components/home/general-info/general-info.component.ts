@@ -60,43 +60,44 @@ export class GeneralInfoComponent {
   animating = false;
   transformX = 0;
   media: MediaQuery;
+  testimonialsTitle: string = 'Why should you choose Home Improve?';
 
   testimonials = [
     {
       fullName: "Nico Funk 0",
       description: "Residence owner",
       state: "NY",
-      text: "We will never find a home services professional through another company again. Home Improve made it so simple to find a reliable contractor for our bathroom renovation!"
+      text: "I've had different services before, but this one beats them all. Home Improve made it so simple to find a reliable contractor for our bathroom renovation!"
     },
     {
       fullName: "Nico Funk 1",
       description: "Residence owner",
       state: "NY",
-      text: "We searched high and low for someone to do some electrical work in our home. We had no luck until we tried Home Improve. We enjoyed the user interface and how simple it was to compare different electricians in our area. We will recommend the Home Improve platform to all of our friends and family members."
+      text: "I highly recommend Home Improve Services. The service man was very polite, courteous, and professional. "
     },
     {
       fullName: "Nico Funk 2",
       description: "Residence owner",
       state: "NY",
-      text: "We decided to renovate our basement and had no clue where to start. Home Improve allowed us to find a contractor who offered all of the services we needed. We shared our job and found our contractor two days later! We will never use a site other than Home Improve when we need work done on our house."
+      text: "We decided to renovate our basement and had no clue where to start. Home Improve allowed us to find a contractor who offered all of the services we needed. We shared our job and found our contractor two days later!"
     },
     {
       fullName: "Nico Funk 3",
       description: "Residence owner",
       state: "NY",
-      text: "When I was looking for a home contractor, I didn’t know who to turn to. Then, I found the Home Improve website and signed a contract with a local remodeling company within a day. I’m excited to continue giving Home Improve Pros my business!"
+      text: "We searched high and low for someone to do some electrical work in our home. We had no luck until we tried Home Improve. We enjoyed the user interface and how simple it was to compare different electricians in our area. We will recommend the Home Improve platform to all of our friends and family members."
     },
     {
       fullName: "Nico Funk 4",
       description: "Residence owner",
       state: "NY",
-      text: "I was thrilled to find the Home Improve page when I was searching for a plumber. I was thrilled with the service I received and I will continue working with Home Improve Pros for home improvement projects."
+      text: "I was thrilled to find the Home Improve page when I was searching for a plumber. Great experience and very satisfied."
     },
     {
       fullName: "Nico Funk 5",
       description: "Residence owner",
       state: "NY",
-      text: "I can’t thank our Home Improve general contractor enough!!! My family needed a bedroom addition and could not find a local construction company we felt comfortable using. After registering for Home Improve, we quickly found someone to handle the addition right away and we couldn’t be happier with the results!!"
+      text: "My family needed a bedroom addition and could not find a local construction company we felt comfortable using. I am very pleased with Home Improve, the crew did an excellent job."
     },
   ];
 

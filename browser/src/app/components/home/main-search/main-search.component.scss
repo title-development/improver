@@ -96,6 +96,7 @@ h1 {
   margin-top: 166px;
   font-weight: bold;
   color: $dark;
+  max-width: 1000px;
 
   @include response-to(sm) {
     font-size: 35px;

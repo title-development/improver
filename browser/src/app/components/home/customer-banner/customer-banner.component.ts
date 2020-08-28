@@ -12,9 +12,9 @@ export class CustomerBannerComponent implements AfterViewInit {
   swiper: Swiper;
 
   banners = [
-    {image: 'assets/img/customer-banner-1.png',  title: 'Roofing', description: 'Simply check/uncheck services you provide specify exactly what job you do/don’t do so you always receive work you interested in'},
-    {image: 'assets/img/customer-banner-2.png',  title: 'Masonry', description: 'Simply check/uncheck services you provide specify exactly what job you do/don’t do so you always receive work you interested in'},
-    {image: 'assets/img/customer-banner-3.png',  title: 'Tiling', description: 'Simply check/uncheck services you provide specify exactly what job you do/don’t do so you always receive work you interested in'},
+    {image: 'assets/img/customer-banner-1.png',  title: 'Trust us with your next renovation project.', description: 'No matter where your home improvement journey takes you, the Home Improve Guarantee is here to give you peace of mind that your home, and your family, are in good hands.'},
+    {image: 'assets/img/customer-banner-2.png',  title: 'Trust us team with your next renovation project.', description: 'No matter where your home improvement journey takes you, the Home Improve Guarantee is here to give you peace of mind that your home, and your family, are in good hands.'},
+    {image: 'assets/img/customer-banner-3.png',  title: 'Trust us with your next renovation project.', description: 'No matter where your home improvement journey takes you, the Home Improve Guarantee is here to give you peace of mind that your home, and your family, are in good hands.'},
   ];
 
   constructor() {

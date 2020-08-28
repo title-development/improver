@@ -29,25 +29,30 @@ export class BecomeProComponent implements AfterViewInit {
 	imageSwiper: Swiper;
 	mediaQuery: MediaQuery;
 	private readonly destroyed$: Subject<void> = new Subject();
+	testimonialsTittle: string = 'What our professionals say?';
 
   testimonials = [
     {
-      fullName: "Nico Funk 0",
+      fullName: "Pro 1",
       description: "Residence owner",
       state: "NY",
-      text: "We can’t thank Home Improve enough for how simple it has been to find more leads in our service area. We used to struggle to track down quality leads, but the Home Improve process has helped us find new clients who actually need our services!"
+      text: "Signing up for Home Improve has been a tremendous asset for our business and has helped us grow in every way possible." +
+				" We also strongly believe in delivering the highest quality of customer service, which makes Home Improve a pleasure to work with."
     },
     {
-      fullName: "Nico Funk 1",
+      fullName: "Pro 2",
       description: "Residence owner",
       state: "NY",
-      text: "Signing up for Home Improve is one of the best things we’ve ever done for our home renovation company. Only paying for the leads we need has made it easy to beef-up our schedule when we want to and scale back if our circumstances dictate doing so."
+      text: "We can’t thank Home Improve enough for how simple it has been to find more leads in our service area." +
+				" We used to struggle to track down quality leads, but the Home Improve process has helped us find new clients who actually need our services." +
+				" We grew from a small company and created other avenues of business."
     },
     {
-      fullName: "Nico Funk 2",
+      fullName: "Pro 3",
       description: "Residence owner",
       state: "NY",
-      text: "We love Home Improve! Our plumbing business has taken off since we create our PRO profile. We now have more clients than we know what to do with (a great “problem” to have!)"
+      text: "Our plumbing business has taken off since we create our PRO profile." +
+				" Only paying for the leads we need has made it easy to beef-up our schedule when we want to and scale back if our circumstances dictate doing so. "
     },
   ];
 
