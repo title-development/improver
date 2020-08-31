@@ -25,7 +25,8 @@
             "assets": [
               "src/assets",
               "src/manifest.json",
-              "src/favicon.ico"
+              "src/favicon.ico",
+              "src/robots.txt"
             ],
             "styles": [
               "node_modules/cropperjs/dist/cropper.min.css",
@@ -161,7 +162,8 @@
             "assets": [
               "src/assets",
               "src/manifest.json",
-              "src/favicon.ico"
+              "src/favicon.ico",
+              "src/robots.txt"
             ]
           }
         },
