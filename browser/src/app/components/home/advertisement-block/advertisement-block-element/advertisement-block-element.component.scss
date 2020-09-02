@@ -71,6 +71,7 @@
         display: block;
         opacity: 0;
         transition: height 0.4s;
+        z-index: 1;
 
         .services-list {
           line-height: 100%;
@@ -124,7 +125,7 @@
       position: absolute;
       top: 0px;
       right: 0px;
-      transition: width 0.4s, height 0.4s;
+      //transition: width 0.4s, height 0.4s;
 
       @include response-to(sm) {
         width: 130px;
