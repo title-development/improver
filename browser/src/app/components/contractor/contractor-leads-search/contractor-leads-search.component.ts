@@ -91,7 +91,7 @@ export class ContractorLeadsSearchComponent implements OnDestroy {
       return defaultMapOptions.minZoom;
     }
     if (this.mediaQuery.xs) {
-      return 8;
+      return 9.75;
     }
     if (this.mediaQuery.sm || this.mediaQuery.md) {
       return 9;

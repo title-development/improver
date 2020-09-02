@@ -777,6 +777,31 @@ company-reviews {
 }
 
 .company-name {
+  display: flex;
+  flex-direction: row;
+  font-weight: 600;
+  color: $white;
+  font-size: 24px;
+  margin: 18px auto;
+  align-items: center;
+  justify-content: center;
+
+  @include response-to(sm) {
+    max-width: 100%;
+    padding: 0 15px;
+  }
+
+  @include response-from(md) {
+    padding-left: 133px;
+    box-sizing: content-box;
+    margin: 18px 0;
+  }
+
+  span {
+    width: 100%;
+    max-width: 300px;
+  }
+
   .edit-button-wrapper {
     cursor: pointer;
 

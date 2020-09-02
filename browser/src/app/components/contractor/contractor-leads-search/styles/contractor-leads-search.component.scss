@@ -15,12 +15,14 @@ agm-map::ng-deep {
   position: absolute;
   z-index: 1;
   box-shadow: elevation(2);
-  top: 8px;
-  left: 0px;
+  top: 12px;
+  left: 0;
   background-color: #ffffff;
   border: 1px solid whitesmoke;
-  padding: 10px 10px;
+  border-radius: 0 8px 8px 0;
+  padding: 10px 16px;
   cursor: pointer;
+  color: $grey-500;
 }
 
 .mat-sidenav-container {
@@ -53,6 +55,7 @@ agm-map::ng-deep {
       padding: 0px 8px;
       margin-right: -8px;
       cursor: pointer;
+      color: $grey-500;
     }
 
     .loading-backdrop {
@@ -93,6 +96,46 @@ agm-map::ng-deep {
     }
   }
 
+}
+
+.service-area-button {
+  padding: 10px 24px 10px 12px;
+  position: absolute;
+  top: 12px;
+  right: 0;
+  z-index: 1;
+  background-color: #ffffff;
+  border-radius: 8px 0 0 8px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  cursor: pointer;
+
+  @include response-to(md) {
+    padding: 10px 28px 10px 22px;
+    border-radius: 8px 0 0 8px;
+  }
+
+  &:hover {
+    background-color: $grey-100;
+  }
+
+  &:active {
+    transform: scale(0.975);
+  }
+
+  mat-icon {
+    font-size: 24px;
+    color: $grey-500;
+  }
+
+  .link {
+    width: max-content;
+    font-size: 16px;
+    text-decoration: none;
+    margin-left: 12px;
+    color: $dark;
+  }
 }
 
 mat-progress-bar {

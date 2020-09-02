@@ -11,7 +11,7 @@
             <input type="text" placeholder="Type to search..." [(ngModel)]="searchTerm" [disabled]="!gMap"/>
           </div>
           <ng-container *ngIf="mediaQuery?.xs || mediaQuery?.sm || mediaQuery?.md">
-            <mat-icon class="close-sidenav" color="primary" (click)="sidenav.close()" *ngIf="sidenav.opened" title="Hide">
+            <mat-icon class="close-sidenav" (click)="sidenav.close()" *ngIf="sidenav.opened" title="Hide">
               keyboard_arrow_left
             </mat-icon>
           </ng-container>
@@ -166,6 +166,16 @@
     keyboard_arrow_right
   </mat-icon>
 </ng-container>
+
+<div class="service-area-button" routerLink="/pro/settings/coverage" *ngIf="mediaQuery.md || mediaQuery.lg || mediaQuery.xlg">
+  <mat-icon>settings</mat-icon>
+  <a class="link">Change Service Area</a>
+</div>
+
+<div class="service-area-button" routerLink="/pro/settings/coverage" *ngIf="(mediaQuery.xs || mediaQuery.sm) && !sidenav.opened">
+  <mat-icon>settings</mat-icon>
+  <a class="link">Change Service Area</a>
+</div>
 
 <mat-progress-bar mode="indeterminate" *ngIf="mapContentIsLoading"></mat-progress-bar>
 

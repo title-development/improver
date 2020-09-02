@@ -7,6 +7,13 @@
   color: $black-800;
 }
 
+.md-padding {
+
+  @include response(md) {
+    padding-right: 6px !important;
+  }
+}
+
 .avatar-content {
 
   @include response-to(sm) {
