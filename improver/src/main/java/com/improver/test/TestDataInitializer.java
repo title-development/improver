@@ -29,7 +29,6 @@ import java.util.stream.Stream;
 
 import static com.improver.application.properties.Environments.*;
 import static com.improver.application.properties.Path.IMAGES_PATH;
-import static com.improver.application.properties.Path.PROJECTS;
 import static java.util.Objects.nonNull;
 
 /**
@@ -301,6 +300,8 @@ public class TestDataInitializer {
         createCustomer(CUST_5, "Victoria", "Secret", DEMO_PHONE, null);
         createCustomer(CUST_6, "Sara-Michel", "Hellar", DEMO_PHONE, null);
 
+        Contractor.NotificationSettings defaultProNotificationSettings = new Contractor.NotificationSettings();
+        defaultProNotificationSettings.setReceiveNewSubscriptionLeadsSms(false);
 
         contractorRepository.save(new Contractor("Lory", "Macalister", PRO_1, DEMO_PASS, DEMO_PHONE)
             .setQuickReply(true)
@@ -308,24 +309,29 @@ public class TestDataInitializer {
             .setReplyText("Hi, we received your project request from Home Improve and would love to discuss this with you. " +
                 "Please let us know a convenient time for you. We look forward to connecting with you.\nThanks, " +
                 "Lory from Bravo inc")
+            .setNotificationSettings(defaultProNotificationSettings)
         );
 
         contractorRepository.save(new Contractor("James", "Brown", PRO_2, DEMO_PASS, DEMO_PHONE)
             .setActivated(true)
             .setCreated(ZonedDateTime.now().minusYears(2).minusMonths(1))
+            .setNotificationSettings(defaultProNotificationSettings)
         );
 
         contractorRepository.save(new Contractor("Tod", "Googled", PRO_3, DEMO_PASS, DEMO_PHONE)
             .setActivated(true)
+            .setNotificationSettings(defaultProNotificationSettings)
         );
 
         contractorRepository.save(new Contractor("Mike", "Mucus", PRO_4, DEMO_PASS, DEMO_PHONE)
             .setActivated(true)
             .setCreated(ZonedDateTime.now().minusYears(2).plusMonths(2))
+            .setNotificationSettings(defaultProNotificationSettings)
         );
 
         contractorRepository.save(new Contractor("Example", "Pro", PRO_5, DEMO_PASS, DEMO_PHONE)
             .setActivated(true)
+            .setNotificationSettings(defaultProNotificationSettings)
         );
 
         adminRepository.save(new Admin("Bridget", "Jones", ADMIN_1, ADMIN_DEMO_PASS, DEMO_PHONE)

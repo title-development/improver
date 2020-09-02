@@ -4,6 +4,8 @@
   <div class="company-projects-gallery-container">
 
     <div class="title">Projects</div>
+    <div class="sub-title" *ngIf="contractorDemoProject.projects?.length == 0">Show your portfolio to potential clients</div>
+
     <div class="content row">
 
       <div class="col-xs-12 col-sm-6 col-md-6" *ngIf="editMode">

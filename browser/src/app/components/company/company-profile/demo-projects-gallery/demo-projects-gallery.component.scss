@@ -16,6 +16,16 @@
     }
   }
 
+  .sub-title {
+    color: $grey-600;
+    margin-bottom: 24px;
+    margin-top: -16px;
+
+    @include response-to(sm) {
+      text-align: center;
+    }
+  }
+
   .content {
     @include response(xs) {
       margin: 0;

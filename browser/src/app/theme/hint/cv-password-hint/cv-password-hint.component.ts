@@ -13,12 +13,20 @@ import {
 import { ControlContainer, NgForm, NgModel } from "@angular/forms";
 import { Constants } from "../../../util/constants";
 import { TextMessages } from "../../../util/text-messages";
+import { animate, state, style, transition, trigger } from "@angular/animations";
 
 @Component({
 	selector: 'cv-password-hint',
 	templateUrl: './cv-password-hint.component.html',
 	styleUrls: ['./cv-password-hint.component.scss'],
-	changeDetection: ChangeDetectionStrategy.OnPush
+	changeDetection: ChangeDetectionStrategy.OnPush,
+	animations: [
+		trigger('openHints', [
+			state('active', style({transform: 'translateX(0)', opacity: '1'})),
+			state('inactive', style({transform: 'translateY(-70px)', opacity: '0', height: '0'})),
+			transition('* <=> *', animate('.25s linear'))
+		])
+	]
 })
 export class CvPasswordHintComponent implements OnInit, AfterViewInit, OnDestroy {
 
@@ -35,8 +43,10 @@ export class CvPasswordHintComponent implements OnInit, AfterViewInit, OnDestroy
 	hasError: boolean = false;
 	focusListener: () => void;
 	inputHasFocus: boolean = false;
+	animationState: string = 'inactive';
 
 	validationStatus: PasswordStatus;
+
 	constructor(public constants: Constants,
 							public messages: TextMessages,
 							private changeDetectorRef: ChangeDetectorRef,
@@ -58,13 +68,22 @@ export class CvPasswordHintComponent implements OnInit, AfterViewInit, OnDestroy
 	private addFocusEventListener() {
 		this.focusListener = this.renderer.listen(this.checkedInputRef.elementRef.nativeElement, 'focus', (event) => {
 			this.inputHasFocus = true;
+			this.animationState = 'active';
+			this.renderer.setStyle(this.checkedInputRef.elementRef.nativeElement.offsetParent, 'z-index', '10');
 			this.changeDetectorRef.detectChanges();
 		});
 
 		this.focusListener = this.renderer.listen(this.checkedInputRef.elementRef.nativeElement, 'focusout', (event) => {
 			this.inputHasFocus = false;
+			if (!this.checkedInputRef.ngControl.control.errors) {
+				this.animationState = 'inactive';
+			}
+			this.renderer.setStyle(this.checkedInputRef.elementRef.nativeElement.offsetParent, 'z-index', '10');
 			this.changeDetectorRef.detectChanges();
 		});
+
+		this.focusListener = this.renderer.listen(this.checkedInputRef.elementRef.nativeElement, '', (event) => {
+		})
 
 	}
 

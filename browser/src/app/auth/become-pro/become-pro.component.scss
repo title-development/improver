@@ -52,14 +52,15 @@
         color: $dark;
         margin-top: 0px;
         margin-bottom: 24px;
-        max-width: 560px;
+        max-width: 700px;
 
         @include response-to(md) {
-          max-width: 460px;
+          max-width: 580px;
           font-size: 36px;
         }
 
         @include response-to(sm) {
+          max-width: 480px;
           font-size: 24px;
           margin-bottom: 16px;
         }
@@ -75,6 +76,7 @@
         opacity: 0.6;
         margin-top: 0px;
         margin-bottom: 40px;
+        max-width: 655px;
 
         @include response-to(md) {
           font-size: 20px;
@@ -84,6 +86,7 @@
         @include response-to(sm) {
           font-size: 16px;
           margin-bottom: 20px;
+          max-width: 320px;
         }
       }
 
@@ -340,7 +343,7 @@
     margin: 0 auto;
     margin-bottom: 120px;
     width: 100%;
-    height: 728px;
+    height: 680px;
     max-width: $content-grid-max-width;
 
     @include response-to(lg) {
@@ -354,12 +357,11 @@
     @include response-to(sm) {
       padding-top: 0;
       margin-bottom: 0;
-      height: 800px;
+      height: max-content;
     }
 
     @include response(xs) {
       padding: 0 20px;
-      height: 1000px;
     }
 
     .title {
@@ -399,6 +401,7 @@
 
       .benefit-item-parent {
         width: 32%;
+        height: max-content;
 
         @include response-to(sm) {
           width: 100%;
@@ -419,7 +422,10 @@
           height: 315px;
           border-radius: 18px;
           background-color: #F7F7F7;
-          margin-bottom: 24px;
+
+          @include response-to(sm) {
+            margin-bottom: 24px;
+          }
 
           &:hover {
             background-color: $grey-200;
@@ -519,6 +525,10 @@
   position: relative;
   width: 100%;
 
+  @include response-to(sm) {
+    margin-top: -1150px;
+  }
+
   .hints-wrapper {
     padding-bottom: 120px;
     width: 100%;
@@ -561,7 +571,7 @@
       }
 
       @include response-to(sm) {
-        margin-bottom: 0;
+        margin-bottom: 25px;
         font-size: 22px;
       }
     }
@@ -580,7 +590,6 @@
         position: relative;
         width: 570px;
         height: 520px;
-        background: $grey-100;
         border-radius: 20px;
         display: flex;
         flex-direction: column;
@@ -601,7 +610,8 @@
           width: 100%;
           max-width: 450px;
           height: 435px;
-          margin: 25px auto;
+          margin: 0 auto 25px;
+          background: $grey-100;
         }
 
         @include response(xs) {
