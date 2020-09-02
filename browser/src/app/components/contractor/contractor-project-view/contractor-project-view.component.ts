@@ -189,4 +189,14 @@ export class ContractorProjectViewComponent implements OnDestroy, AfterViewInit 
     }
     this.swiper = null;
   }
+
+  back() {
+    console.log(this.showContractorInformation)
+    if(this.showContractorInformation == 'showed') {
+      this.showContractorInformation = 'hide'
+    } else {
+      this.router.navigate(['/pro/dashboard'])
+    }
+  }
+
 }

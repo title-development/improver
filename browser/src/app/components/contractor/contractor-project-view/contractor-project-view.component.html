@@ -1,32 +1,14 @@
-<div class="container -top-space">
-  <div class="page-navigation" *ngIf="project">
-    <a *ngIf="mediaQuery.xs || mediaQuery.sm" routerLink="/pro/dashboard"><i class="imp-icon-arrow-left"></i></a>
+<div class="container -top-space" *ngIf="project" >
+  <div class="page-navigation">
+    <a *ngIf="mediaQuery.xs || mediaQuery.sm" (click)="back()"><i class="imp-icon-arrow-left"></i></a>
     <a *ngIf="mediaQuery.md || mediaQuery.lg || mediaQuery.xlg" routerLink="/pro/dashboard"><i class="imp-icon-angle-left"></i>Back to the dashboard</a>
     <h4 *ngIf="mediaQuery.xs || mediaQuery.sm" [title]="project?.serviceType">{{project?.serviceType}}<br/>{{project?.customer.name}}</h4>
     <h3 *ngIf="mediaQuery.md || mediaQuery.lg || mediaQuery.xlg" [title]="project?.serviceType">{{project?.serviceType}}</h3>
-    <div class="more-button-wrapper" *ngIf="project">
+    <div class="more-button-wrapper" *ngIf="project && (mediaQuery.xs || mediaQuery.sm)">
       <mat-icon class="project-menu-button" [matMenuTriggerFor]="projectMenu">more_vert</mat-icon>
-      <mat-menu class="project-menu" tabindex="-1"  #projectMenu="matMenu" yPosition="below" xPosition="before">
-        <button mat-menu-item *ngIf="mediaQuery.xs || mediaQuery.sm"
-                (click)="toggleContractorInformation()">
-          <ng-container *ngIf="showContractorInformation == 'hide'">
-            Show Details
-          </ng-container>
-          <ng-container *ngIf="showContractorInformation == 'showed'">
-            Show Chat
-          </ng-container>
-        </button>
-        <button mat-menu-item [routerLink]="['/pro/receipt/conn', project?.id]">View Receipt</button>
-        <button mat-menu-item (click)="openRequestRefundDialog(project)" *ngIf="project?.refundable">Return Credit</button>
-        <button mat-menu-item (click)="openRefundStatusDialog(project)" *ngIf="project?.refundRequested">Return Status</button>
-        <button mat-menu-item (click)="projectActionService.sendRequestProjectReview(project)"
-                *ngIf="ProjectRequest.isHiredOrCompleted(project.status) && !project.reviewed && !project.reviewRequested ">Request Review</button>
-        <button mat-menu-item (click)="projectActionService.leaveProject(project)" *ngIf="ProjectRequest.canBeLeft(project.status)">Leave</button>
-        <button mat-menu-item (click)="projectActionService.closeProject(project)" *ngIf="ProjectRequest.canBeClosed(project.status)">Close</button>
-      </mat-menu>
     </div>
   </div>
-  <div class="row" *ngIf="project">
+  <div class="row">
     <div class="col-xs-12 col-md-8">
       <div class="conversation-wrapper">
         <messenger class="bs-elevations-1"
@@ -45,7 +27,13 @@
         <div [cvSpinner]="!project" [cvSpinnerSize]="24">
           <ng-container *ngIf="project">
             <div class="customer-info-block">
-              <h3 class="xs-none sm-none">{{project.serviceType}}</h3>
+              <div class="name-wrapper xs-none sm-none">
+                <h3 class="project-name">{{project.serviceType}}</h3>
+                <div class="more-button-wrapper">
+                  <mat-icon class="project-menu-button" [matMenuTriggerFor]="projectMenu">more_vert</mat-icon>
+                </div>
+              </div>
+
               <div class="person">
                 <div class="icon-wrapper"
                      [ngStyle]="project.customer.iconUrl && project.customer.iconUrl != '' && {'background-image':'url(' + project.customer.iconUrl + ')'} || {'background-image':'url(/assets/img/customer_avatar.svg)'}">
@@ -90,7 +78,7 @@
                 <h4>Start date:</h4>
                 <p>{{project.startDate}}</p>
               </div>
-              <div class="group notes">
+              <div class="group notes" *ngIf="project.notes">
                 <h4>Notes:</h4>
                 <p #notes [ngClass]="{'left': showLeftAlignedClass}">{{project.notes| truncate:truncateNotes:'...'}}
                   <span class="show-more-button" (click)="truncateNotes = 10000;"
@@ -117,7 +105,29 @@
       </div>
     </div>
   </div>
+
+  <mat-menu class="project-menu" tabindex="-1"  #projectMenu="matMenu" yPosition="below" xPosition="before">
+    <button mat-menu-item *ngIf="mediaQuery.xs || mediaQuery.sm"
+            (click)="toggleContractorInformation()">
+      <ng-container *ngIf="showContractorInformation == 'hide'">
+        Show Details
+      </ng-container>
+      <ng-container *ngIf="showContractorInformation == 'showed'">
+        Show Chat
+      </ng-container>
+    </button>
+    <button mat-menu-item [routerLink]="['/pro/receipt/conn', project?.id]">View Receipt</button>
+    <button mat-menu-item (click)="openRequestRefundDialog(project)" *ngIf="project?.refundable">Return Credit</button>
+    <button mat-menu-item (click)="openRefundStatusDialog(project)" *ngIf="project?.refundRequested">Return Status</button>
+    <button mat-menu-item (click)="projectActionService.sendRequestProjectReview(project)"
+            *ngIf="ProjectRequest.isHiredOrCompleted(project.status) && !project.reviewed && !project.reviewRequested ">Request Review</button>
+    <button mat-menu-item (click)="projectActionService.leaveProject(project)" *ngIf="ProjectRequest.canBeLeft(project.status)">Leave</button>
+    <button mat-menu-item (click)="projectActionService.closeProject(project)" *ngIf="ProjectRequest.canBeClosed(project.status)">Close</button>
+  </mat-menu>
+
 </div>
+
+
 
 
 
