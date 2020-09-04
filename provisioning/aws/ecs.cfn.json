@@ -1270,7 +1270,7 @@
                       "Ref": "EcsEnvironmentName"
                     },
                     "/application-secured.properties application-secured.properties; ",
-                    "java -XX:+UseContainerSupport -jar improver.jar --spring.config.location=classpath:/application.properties,classpath:/application-",
+                    "java -XX:+UseContainerSupport -Dhttps.protocols=TLSv1,TLSv1.1,TLSv1.2 -jar  improver.jar --spring.config.location=classpath:/application.properties,classpath:/application-",
                     {
                       "Ref": "EcsEnvironmentName"
                     },
