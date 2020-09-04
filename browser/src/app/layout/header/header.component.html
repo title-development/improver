@@ -5,7 +5,7 @@
     <!--TODO: rework menu items with separate components?-->
     <div class="header-left">
       <!--Mobile menu button-->
-      <button class="mobile-header-button menu-button md-none lg-none xlg-none" mat-button (click)="mobileMenuService.mobileMenuOpened = !mobileMenuService.mobileMenuOpened">
+      <button class="mobile-header-button menu-button md-none lg-none xlg-none" mat-button (click)="mobileMenuService.toggleMobileMenu()">
         <mat-icon class="mobile-menu-icon" *ngIf="!mobileMenuService.mobileMenuOpened">menu</mat-icon>
         <i class="material-icons" *ngIf="mobileMenuService.mobileMenuOpened">close</i>
       </button>
@@ -61,7 +61,7 @@
 
       <!--Notification icon-->
       <div class="notification-bar navbar-right" *ngIf="securityService.isAuthenticated()">
-        <button class="menu-button" mat-button color="accent" (click)="mobileMenuService.notificationsPopupOpened = !mobileMenuService.notificationsPopupOpened">
+        <button class="menu-button" mat-button color="accent" (click)="mobileMenuService.toggleNotificationsPopupOpened(); mobileMenuService.findProfessionalsOpened ? toggleFindProfessionalsMobile() : ''">
           <mat-icon class="mobile-menu-icon">notifications_none</mat-icon>
           <div class="counter" *ngIf="notificationResource.unreadNotificationsCounter + (notificationResource.unreadMessagesCount$ | async ) > 0"><span>{{notificationResource.unreadNotificationsCounter + (notificationResource.unreadMessagesCount$ | async )}}</span></div>
         </button>

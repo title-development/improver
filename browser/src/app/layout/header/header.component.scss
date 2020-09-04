@@ -116,6 +116,10 @@
         align-items: center;
         justify-content: center;
 
+        ::ng-deep .mat-button-wrapper {
+          margin-right: 3px;
+        }
+
         @include response-to(md) {
           width: 40px;
           height: 40px;
@@ -124,7 +128,7 @@
 
         .counter {
           position: absolute;
-          top: 11px;
+          top: 16px;
           right: 13px;
           border-radius: 50%;
           background-color: $primary-500;

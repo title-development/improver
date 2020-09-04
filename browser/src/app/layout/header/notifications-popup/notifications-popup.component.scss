@@ -13,12 +13,16 @@
 
 .backdrop {
   position: fixed;
-  top: 0;
   background: transparent;
+  top: 0;
   bottom: 0;
   left: 0;
   right: 0;
   z-index: 111;
+
+  @include response-to(sm) {
+    top: 60px;
+  }
 }
 
 .notifications-popup {
