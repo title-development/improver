@@ -10,7 +10,6 @@ import { CvButtonModule } from "../../theme/button/cv-button.module";
 import { CvInputFieldModule } from '../../theme/input-field/form-field.module';
 import { CvFieldsModule } from '../../theme/fields/cv-fields.module';
 import { LayoutModule } from '../../layout/layout.module';
-import { ParallaxDirective } from "../../theme/util/parallax.directive";
 
 const routing = RouterModule.forChild([
   {
@@ -34,8 +33,7 @@ const routing = RouterModule.forChild([
     LayoutModule,
   ],
   declarations: [
-    BecomeProComponent,
-    ParallaxDirective
+    BecomeProComponent
   ],
   providers: [
     CustomerService

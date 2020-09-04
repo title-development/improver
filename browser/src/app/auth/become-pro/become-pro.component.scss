@@ -369,7 +369,7 @@
       font-weight: bold;
       font-size: 36px;
       color: $dark;
-      margin-bottom: 32px;
+      margin-bottom: 38px;
       text-align: left;
 
       @include response-to(lg) {
@@ -410,7 +410,10 @@
         }
 
         &:hover {
-          transform: scale(1.115);
+
+          @include response-from(md){
+            transform: scale(1.115);
+          }
         }
 
         .benefit-item {
@@ -421,14 +424,10 @@
           padding: 15px 25px 0 25px;
           height: 315px;
           border-radius: 18px;
-          background-color: $grey-100;
+          background-color: $grey-150;
 
           @include response-to(sm) {
             margin-bottom: 24px;
-          }
-
-          &:hover {
-            background-color: $grey-150;
           }
 
           .image {
@@ -512,7 +511,6 @@
   .item-text {
     font-size: 16px;
     color: rgba(39, 49, 73, 0.6);
-    width: 90%;
     margin: 0 auto;
 
     @include response(md) {
@@ -524,10 +522,6 @@
 .configuration-hints {
   position: relative;
   width: 100%;
-
-  @include response-to(sm) {
-    margin-top: -1150px;
-  }
 
   .hints-wrapper {
     padding-bottom: 120px;
@@ -564,14 +558,9 @@
       font-size: 36px;
       font-weight: bold;
       color: $black;
-      margin-bottom: 48px;
-
-      @include response-to(lg) {
-        font-size: 28px;
-      }
+      margin-bottom: 38px;
 
       @include response-to(sm) {
-        margin-bottom: 25px;
         font-size: 22px;
       }
     }
@@ -612,7 +601,7 @@
           max-width: 450px;
           height: 435px;
           margin: 0 auto;
-          padding: 0;
+          padding: 0 12px;
         }
 
         @include response(xs) {
@@ -621,9 +610,11 @@
         }
 
         &:hover {
-          transform: scale(1.05);
-          background-color: #F7F7F7;
-          padding: 0 12px;
+          background-color: $grey-150;
+
+          @include response-from(md) {
+            transform: scale(1.05);
+          }
         }
 
         .hint-image-wrapper {
