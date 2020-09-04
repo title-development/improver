@@ -124,9 +124,8 @@ export class SignupCompanyComponent {
               private registrationHelper: RegistrationHelper) {
     this.years = this.tricksService.fillArrayWithNumbers(this.constants.COMPANY_FOUNDATION_MIN_YEAR, new Date().getFullYear(), false);
     this.companyRegistration.company.founded = (new Date()).getFullYear().toString();
-    this.getIncompleteCompanyRegistration();
+    this.restoreCompanyRegistrationFromSessionStorage();
     this.getServedZipCodes();
-
     this.boundariesService.getUnsupportedArea().subscribe(unsupportedArea => {
       this.unsupportedArea = unsupportedArea;
     });
@@ -163,9 +162,16 @@ export class SignupCompanyComponent {
     this.isCircleAreaInCoverage(this.minLatLngPointsInCoverage);
   }
 
-  getIncompleteCompanyRegistration() {
+  private restoreCompanyRegistrationFromSessionStorage() {
     if (sessionStorage.getItem(SignupCompanyComponent.COMPANY_REGISTRATION_STEP_KEY) && sessionStorage.getItem(SignupCompanyComponent.COMPANY_STORAGE_KEY)) {
-      this.getCompanyModel();
+      const company = sessionStorage.getItem(SignupCompanyComponent.COMPANY_STORAGE_KEY);
+      const companyRegistrationStep = sessionStorage.getItem(SignupCompanyComponent.COMPANY_REGISTRATION_STEP_KEY);
+      try {
+        this.companyRegistration = JSON.parse(company);
+        this.step = JSON.parse(companyRegistrationStep);
+      } catch (e) {
+        this.securityService.logoutFrontend();
+      }
     } else {
       this.companyRegistration.company.logo = this.securityService.getLoginModel().iconUrl;
     }
@@ -173,31 +179,20 @@ export class SignupCompanyComponent {
 
   previousStep() {
     this.step--;
-    this.setCompanyModel(this.companyRegistration, this.step);
+    this.saveCompanyRegistrationToSessionStorage(this.companyRegistration, this.step);
   }
 
   nextStep() {
     this.step++;
-    this.setCompanyModel(this.companyRegistration, this.step);
+    this.saveCompanyRegistrationToSessionStorage(this.companyRegistration, this.step);
   }
 
-  public getCompanyModel() {
-    const company = sessionStorage.getItem(SignupCompanyComponent.COMPANY_STORAGE_KEY);
-    const companyRegistrationStep = sessionStorage.getItem(SignupCompanyComponent.COMPANY_REGISTRATION_STEP_KEY);
-    try {
-      this.companyRegistration = JSON.parse(company);
-      this.step = JSON.parse(companyRegistrationStep);
-    } catch (e) {
-      this.securityService.logoutFrontend();
-    }
-  }
-
-  public setCompanyModel(company: CompanyRegistration, companyRegistrationStep: number){
+  private saveCompanyRegistrationToSessionStorage(company: CompanyRegistration, companyRegistrationStep: number){
     sessionStorage.setItem(SignupCompanyComponent.COMPANY_REGISTRATION_STEP_KEY, JSON.stringify(companyRegistrationStep));
     sessionStorage.setItem(SignupCompanyComponent.COMPANY_STORAGE_KEY, JSON.stringify(company));
   }
 
-  removeIncompleteCompanyFromStorage(){
+  private clearCompanyRegistrationStorage(){
     sessionStorage.removeItem(SignupCompanyComponent.COMPANY_REGISTRATION_STEP_KEY);
     sessionStorage.removeItem(SignupCompanyComponent.COMPANY_STORAGE_KEY);
   }
@@ -248,12 +243,12 @@ export class SignupCompanyComponent {
         let lng = (location as any).lng();
         this.companyRegistration.company.location.lat = lat;
         this.companyRegistration.company.location.lng = lng;
-        if (this.companyRegistration.coverage.center.lat == 0 && this.companyRegistration.coverage.center.lng == 0) {
+        if (this.companyRegistration.coverage.center.lat == 0 || this.companyRegistration.coverage.center.lng == 0) {
           this.companyRegistration.coverage.center.lat = lat;
           this.companyRegistration.coverage.center.lng = lng;
         }
 
-        // Company locations in supported area
+        // Company NOT  in supported area
         if (!google.maps.geometry.poly.containsLocation(new google.maps.LatLng(this.companyRegistration.coverage.center.lat, this.companyRegistration.coverage.center.lng), this.coveragePolygon)) {
           let latLngBounds = new google.maps.LatLngBounds();
           let polygonPaths = this.coveragePolygon.getPaths();
@@ -262,15 +257,15 @@ export class SignupCompanyComponent {
               latLngBounds.extend(latlng);
             })
           });
-
           circleCenter = new google.maps.LatLng(latLngBounds.getCenter().lat(), latLngBounds.getCenter().lng())
+          this.companyRegistration.coverage.center.lat = circleCenter.lat();
+          this.companyRegistration.coverage.center.lng = circleCenter.lng();
         } else {
           circleCenter = new google.maps.LatLng(this.companyRegistration.coverage.center.lat, this.companyRegistration.coverage.center.lng);
         }
 
         this.map.setCenter(circleCenter);
         this.gMapUtils.drawCompanyMarker(this.map, new google.maps.LatLng(this.companyRegistration.company.location.lat, this.companyRegistration.company.location.lng));
-
         this.serviceAreaCircle = new google.maps.Circle({
           strokeColor: '#009EDE',
           strokeOpacity: 0.5,
@@ -285,17 +280,14 @@ export class SignupCompanyComponent {
         });
 
         this.map.fitBounds(this.serviceAreaCircle.getBounds());
-
         this.serviceAreaCircle.addListener('center_changed', this.serviceAreaMoveHandler);
         this.serviceAreaCircle.addListener('radius_changed', this.serviceAreaRadiusChangeHandler);
-
       },
       err => {
         console.error(err);
         this.popUpMessageService.showError(getErrorMessage(err));
       }
     );
-
   }
 
   openDialogPhoto(): void {
@@ -545,7 +537,7 @@ export class SignupCompanyComponent {
       .pipe(takeUntil(this.destroyed$))
       .subscribe(
         (response: HttpResponse<any>) => {
-          this.removeIncompleteCompanyFromStorage();
+          this.clearCompanyRegistrationStorage();
           if ((response.body)) {
             this.securityService.loginUser(JSON.parse(response.body) as LoginModel, response.headers.get('authorization'), true);
           } else {
@@ -579,7 +571,7 @@ export class SignupCompanyComponent {
     this.cancelRegistrationDialogRef.componentInstance.properties = properties;
     this.cancelRegistrationDialogRef.componentInstance.onConfirm.subscribe(
       () => {
-        this.removeIncompleteCompanyFromStorage();
+        this.clearCompanyRegistrationStorage();
         this.securityService.logout();
         this.router.navigate(['/become-pro']);
       },
