@@ -70,7 +70,8 @@
         <profile>
             <id>initdb</id>
             <properties>
-                <environment>initdb</environment>
+                <!--first load dev profile then override by initdb properties-->
+                <environment>dev,initdb</environment>
                 <npm.arguments>install</npm.arguments>
                 <npm.build.cmd>run build</npm.build.cmd>
             </properties>
