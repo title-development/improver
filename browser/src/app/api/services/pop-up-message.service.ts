@@ -83,6 +83,9 @@ export class PopUpMessageService {
     if (this.serviceUnavailableMessageId == id) {
       this.serviceUnavailableMessageId = null;
     }
+    if (this.internalServerErrorId == id) {
+      this.internalServerErrorId = null;
+    }
   };
 
   mergeConfig(config: PopUpMessage) {

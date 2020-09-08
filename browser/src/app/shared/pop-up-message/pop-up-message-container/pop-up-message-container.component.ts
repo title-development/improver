@@ -27,10 +27,23 @@ export class PopUpMessageContainerComponent implements OnInit {
     this.onMessageDestroy.emit(id)
   }
 
-  addMessage(message): number {
-    message.id = ++this.messageId;
-    this.messages.unshift(message);
-    return message.id;
+  addMessage(newNessage): number {
+    let messageNotExists: boolean = true;
+    let messageId: number;
+
+    this.messages.forEach( message => {
+      if (newNessage.text == message.text) {
+        messageNotExists = false;
+        messageId = message.id;
+      }
+    });
+    if (messageNotExists) {
+      newNessage.id = ++this.messageId;
+      this.messages.unshift(newNessage);
+      messageId = newNessage.id;
+    }
+
+    return messageId;
   }
 
   messageInit(messageComponent: PopUpMessageComponent) {
