@@ -39,7 +39,7 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
     }
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse res) throws AuthenticationException, IOException, ServletException {
+    public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse res) throws AuthenticationException, IOException {
         String userIp = req.getRemoteAddr();
         logger.debug("Attempt to login from "+ userIp);
         Credentials creds = new ObjectMapper().readValue(req.getInputStream(), Credentials.class);

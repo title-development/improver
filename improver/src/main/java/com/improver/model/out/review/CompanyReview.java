@@ -40,7 +40,8 @@ public class CompanyReview {
         this.isPublished = review.isPublished();
     }
 
-    public CompanyReview(Review review) {
+    // Fix Pageable and count issue
+    public CompanyReview(Review review, int dummy) {
         this.id = review.getId();
         this.customer = new UserModel(review.getCustomer().getId(), review.getCustomer().getDisplayName(), review.getCustomer().getIconUrl());
         this.score = review.getScore();

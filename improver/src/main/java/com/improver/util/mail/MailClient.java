@@ -85,7 +85,6 @@ public class MailClient {
         if (mailHolder.getAttempts() > maxResendAttempts) {
             return;
         }
-        log.debug("Failed to send email: \"{}\" to recipients: {}", subject, recipient);
         scheduledExecutorService.schedule(() -> sendUnsentEmail(mailHolder, subject, recipient), mailResendTimeout.getSeconds(), TimeUnit.SECONDS);
     }
 
@@ -95,6 +94,7 @@ public class MailClient {
             send(mailHolder);
             log.debug("Email sent");
         } catch (MailException e) {
+            log.error("Failed to send email: \"{}\" to recipients: {}", subject, recipient, e);
             mailHolder.setAttempts(mailHolder.getAttempts() + 1);
             scheduledUnsentMail(mailHolder, subject, recipient);
         }

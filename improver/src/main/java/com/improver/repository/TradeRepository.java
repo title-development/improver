@@ -15,8 +15,8 @@ public interface TradeRepository extends JpaRepository<Trade, Long> {
 
     List<Trade> findByIdIn(List<Long> ids);
 
-
-    @Query("SELECT new com.improver.model.admin.AdminTrade(t) FROM com.improver.entity.Trade t " +
+    // Fix Pageable and count issue
+    @Query("SELECT new com.improver.model.admin.AdminTrade(t, 0) FROM com.improver.entity.Trade t " +
         "WHERE (:id IS null OR t.id = :id) AND " +
         "(:name IS null OR lower(t.name) LIKE '%' || lower(cast(:name as string)) || '%') AND " +
         "(:description IS null OR lower(t.description) LIKE '%' || lower(cast(:description as string)) || '%') AND " +

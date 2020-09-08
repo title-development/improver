@@ -21,7 +21,8 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
         " WHERE r.isPublished = false AND r.publishDate < ?1")
     List<Review> getForPublishing(ZonedDateTime now);
 
-    @Query("SELECT new com.improver.model.out.review.CompanyReview(r)" +
+    // Fix Pageable and count issue
+    @Query("SELECT new com.improver.model.out.review.CompanyReview(r, 0)" +
         " FROM com.improver.entity.Review r WHERE r.company.id = ?1 AND (?2 in (SELECT id FROM com.improver.entity.Contractor contr WHERE contr.company.id = r.company.id) OR r.customer.id = ?2 OR r.isPublished = true)")
     Page<CompanyReview> getVisibleReviews(long companyId, long requesterId, ZonedDateTime now, Pageable pageable);
 

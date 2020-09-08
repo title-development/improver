@@ -31,7 +31,8 @@ public class AdminTrade {
         this.services = services;
     }
 
-    public AdminTrade(Trade trade) {
+    // Fix Pageable and count issue
+    public AdminTrade(Trade trade, int dummy) {
         this.id = trade.getId();
         this.name = trade.getName();
         this.description = trade.getDescription();
