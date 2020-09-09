@@ -193,8 +193,8 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     const requestOrder = RequestOrder.build(this.questionaryControlService.mainForm.getRawValue(), this.questionaryControlService.serviceType);
     this.postOrderProcessing = true;
       this.projectService.postOrder(requestOrder).subscribe(
-        result => {
-          this.orderSuccess(requestOrder);
+        projectId => {
+          this.orderSuccess(requestOrder, projectId);
           this.metricsEventService.fireProjectRequestedEvent();
         },
         err => {
@@ -204,11 +204,11 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
       );
   }
 
-  orderSuccess(requestOrder: RequestOrder): void {
+  orderSuccess(requestOrder: RequestOrder, projectId: number): void {
     this.postOrderProcessing = false;
     this.projectActionService.projectUpdated();
     this.dialog.closeAll();
-    this.router.navigate(['my','projects']);
+    this.router.navigate(['my', 'projects', projectId]);
     this.popUpMessageService.showSuccess('Your <b>' + requestOrder.serviceName + '</b> request is submitted successfully!');
     if (!this.securityService.getLoginModel().emailConfirmed) {
       this.registrationHelper.email = this.defaultQuestionaryForm.get('customerPersonalInfo.email').value;

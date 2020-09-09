@@ -37,7 +37,7 @@ public class OrderService {
     @Autowired private UserAddressRepository userAddressRepository;
 
 
-    public void postOrder(Order order, Customer customer) {
+    public long postOrder(Order order, Customer customer) {
         Project income = validateOrder(order);
         Project lead;
         log.debug("Project order {} validated", income.getServiceName());
@@ -75,6 +75,8 @@ public class OrderService {
             log.info("Project id={} saved, but require customer activation", lead.getId());
             mailService.sendAutoRegistrationConfirmEmail(customer, lead, order.getBaseLeadInfo(), true, !customer.getSocialConnections().isEmpty());
         }
+
+        return lead.getId();
     }
 
 

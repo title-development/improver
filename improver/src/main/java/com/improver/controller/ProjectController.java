@@ -49,10 +49,10 @@ public class ProjectController {
 
     @PreAuthorize("hasAnyRole('ANONYMOUS', 'CUSTOMER', 'ADMIN', 'SUPPORT')")
     @PostMapping
-    public ResponseEntity<Void> postOrder(@RequestBody @Valid Order order) {
+    public ResponseEntity<Long> postOrder(@RequestBody @Valid Order order) {
         Customer customer = userSecurityService.currentCustomerOrNull();
-        orderService.postOrder(order, customer);
-        return new ResponseEntity<>(HttpStatus.OK);
+        long projectId = orderService.postOrder(order, customer);
+        return new ResponseEntity<>(projectId, HttpStatus.OK);
     }
 
     @SupportAccess
