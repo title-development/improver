@@ -76,7 +76,7 @@ function createEcsStack {
         --template-url https://s3.amazonaws.com/improver/configs/${ENVIRONMENT}/ecs.cfn.json \
         --capabilities CAPABILITY_IAM \
         --tags Key=name,Value=${STACK_NAME} \
-        --parameters ParameterKey=AccountId,ParameterValue=$AWS_ACCOUNT_ID ParameterKey=DomainName,ParameterValue=$DOMAIN_NAME ParameterKey=EcsClusterName,ParameterValue=$STACK_NAME ParameterKey=EcsEnvironmentName,ParameterValue=$ENVIRONMENT ParameterKey=HostedZoneId,ParameterValue=${HostedZoneId} ParameterKey=SubnetIds,ParameterValue=${SubnetId1}\\,${SubnetId2} ParameterKey=VpcId,ParameterValue=${VpcId} ParameterKey=ElbSslCertificateArn,ParameterValue=${ElbSslCertificate}
+        --parameters ParameterKey=AccountId,ParameterValue=$AWS_ACCOUNT_ID ParameterKey=DomainName,ParameterValue=$DOMAIN_NAME ParameterKey=EcsClusterName,ParameterValue=$STACK_NAME ParameterKey=EcsEnvironmentName,ParameterValue=$ENVIRONMENT ParameterKey=HostedZoneId,ParameterValue=${HostedZoneId} ParameterKey=SubnetIds,ParameterValue=${SubnetId1}\\,${SubnetId2} ParameterKey=VpcId,ParameterValue=${VpcId} ParameterKey=ElbSslCertificateArn,ParameterValue=${ElbSslCertificate} ParameterKey=EcsInstanceType,ParameterValue=${EcsInstanceType} ParameterKey=EcsInstanceAsgMaxSize,ParameterValue=${EcsInstanceAsgMaxSize}
 }
 
 

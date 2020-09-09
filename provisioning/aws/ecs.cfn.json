@@ -27,12 +27,16 @@
     "EcsInstanceType": {
       "Type": "String",
       "Description": "ECS EC2 instance type",
-      "Default": "t2.micro",
+      "Default": "t3.medium",
       "AllowedValues": [
+        "a1.medium",
+        "a1.large",
+        "a1.xlarge",
         "t2.micro",
         "t2.small",
         "t2.medium",
         "t2.large",
+        "t3.medium",
         "m4.large",
         "m4.xlarge",
         "m4.2xlarge",
@@ -42,6 +46,8 @@
         "m3.large",
         "m3.xlarge",
         "m3.2xlarge",
+        "m6g.medium",
+        "m6gd.medium",
         "c4.large",
         "c4.xlarge",
         "c4.2xlarge",
@@ -52,11 +58,14 @@
         "c3.2xlarge",
         "c3.4xlarge",
         "c3.8xlarge",
+        "c6g.medium",
+        "c6g.large",
         "r3.large",
         "r3.xlarge",
         "r3.2xlarge",
         "r3.4xlarge",
         "r3.8xlarge",
+        "r6g.medium",
         "i2.xlarge",
         "i2.2xlarge",
         "i2.4xlarge",
@@ -126,6 +135,11 @@
       "Type": "String",
       "Description": "Optional - Security Group port to open on ECS instances - defaults to port 80",
       "Default": "80"
+    },
+    "EcsInstanceAsgMaxSize": {
+      "Type": "String",
+      "Description": "Optional - Maximum size of autoscaling group",
+      "Default": "3"
     },
     "ElbHttpPort": {
       "Type": "String",
@@ -968,7 +982,9 @@
           "Ref": "EcsInstanceLc"
         },
         "MinSize": "1",
-        "MaxSize": "2",
+        "MaxSize": {
+          "Ref": "EcsInstanceAsgMaxSize"
+        },
         "DesiredCapacity": {
           "Ref": "AsgDesiredSize"
         },

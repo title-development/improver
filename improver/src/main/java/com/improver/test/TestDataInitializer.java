@@ -38,7 +38,7 @@ import static java.util.Objects.nonNull;
  */
 @Slf4j
 @Component
-@Profile({INITDB, QA, STG})
+@Profile({INITDB, QA, STG, PROD})
 public class TestDataInitializer {
 
     @Autowired private ResourceLoader resourceLoader;

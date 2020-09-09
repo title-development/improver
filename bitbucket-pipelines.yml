@@ -51,6 +51,7 @@ stepdefinitions:
                               ParameterKey=ElbForTrustedOfficeOnly,UsePreviousValue=true \
                               ParameterKey=ElbHttpPort,UsePreviousValue=true \
                               ParameterKey=ElbHttpsPort,UsePreviousValue=true \
+                              ParameterKey=EcsInstanceAsgMaxSize,UsePreviousValue=true \
                               ParameterKey=ElbSslCertificateArn,UsePreviousValue=true \
                               ParameterKey=HostedZoneId,UsePreviousValue=true \
                               ParameterKey=KeyName,UsePreviousValue=true \
@@ -75,6 +76,7 @@ stepdefinitions:
                       ParameterKey=EcsEnvironmentName,UsePreviousValue=true \
                       ParameterKey=EcsInstanceType,UsePreviousValue=true \
                       ParameterKey=EcsPort,UsePreviousValue=true \
+                      ParameterKey=EcsInstanceAsgMaxSize,UsePreviousValue=true \
                       ParameterKey=ElbForTrustedOfficeOnly,UsePreviousValue=true \
                       ParameterKey=ElbHttpPort,UsePreviousValue=true \
                       ParameterKey=ElbHttpsPort,UsePreviousValue=true \

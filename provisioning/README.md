@@ -18,12 +18,12 @@ To walk through environment creation/modification you need the following :
 - The AWS CLI installed
 - Generated SSH key 
 
-## Deployment steps for the whole environment
+## Environment deployment steps from the scratch
 1. [Upload configuration properties and AWS resources](#configuration-deployment-into-aws-s3)
-2. Set proper ENVIRONMENT variable in bitbucket **Repository variables** part
-3. [Push docker images into AWS ECR](#upload-docker-images-into-aws-ecr)
-4. [Deploy AWS VPC](#amazon-vpc-deployment)
-5. [Deploy AWS ECS](#amazon-elastic-container-service-deployment)
+1. Set proper ENVIRONMENT variable in bitbucket **Repository variables** part
+1. [Push docker images into AWS ECR](#upload-docker-images-into-aws-ecr)
+1. [Deploy AWS VPC](#amazon-vpc-deployment)
+1. [Deploy AWS ECS](#amazon-elastic-container-service-deployment)
 
 
 ### Configuration deployment into AWS S3
@@ -32,8 +32,9 @@ placeholders in [application-secured.properties](../improver/src/main/resources/
 ```bash
 mvn s3-upload:s3-upload@configs-deploy -Daws.profile=deploy -pl improver,provisioning
 ```
-That will upload [application-secured.properties](../improver/src/main/resources/application-secured.properties) into `s3://improver/configs/$ENVIRONMENT/application-secured.properties`, which will be used by bitbucket to retrieve all necessary information for its jobs run.
-And will upload cloud formation stacks for VPC and ECS creation.
+That will upload [application-secured.properties](../improver/src/main/resources/application-secured.properties) into `s3://improver/configs/$ENVIRONMENT/application-secured.properties`,
+ which **will be used by bitbucket to retrieve all necessary information for next jobs run ( VPC and ECS cloud formation stacks creation or update)**.
+
 
 NOTES: 
 - aws.profile=$AWS_PROFILE is necessary when you have other profile with deployment permissions(see [AWS credentials file example with multiple AWS profiles](#aws-credentials-file-example-with-multiple-aws-profiles))
@@ -67,9 +68,11 @@ Run **ops-push-docker** job of [bitbucket datapipeline](../bitbucket-pipelines.y
 
 ### Amazon VPC deployment
 Run **ops-deploy-env** job of [bitbucket datapipeline](../bitbucket-pipelines.yml) in bitbucket.
+**IMPORTANT:** If you want to change database credentials, please [upload configuration properties first](#configuration-deployment-into-aws-s3)
 
 ### Amazon Elastic Container Service deployment
 Run **ops-deploy-app** job of [bitbucket datapipeline](../bitbucket-pipelines.yml) in bitbucket.
+**IMPORTANT:** If you want to change database credentials, please [upload configuration properties first](#configuration-deployment-into-aws-s3)
 
 ## Amazon Elastic Container Services CloudFormation quick start.
 
@@ -99,7 +102,7 @@ the existing stack as a starting point and make your updates to that template
    Change sets allow you to see how proposed changes to a stack might impact your running resources before you implement them. AWS CloudFormation doesn't make any changes to your stack until you execute the change set, allowing you to decide whether to proceed with your proposed changes or create another change set.
 
 To create the cluster and start application from your local machine you need to have [aws-cli](https://docs.aws.amazon.com/cli/latest/userguide/installing.html) installed and configured.
-If that is done, please check [run_cfn.sh](./scripts/run_cfn.sh) script
+If that is done, please check [run_cfn.sh](./scripts/run_cfn.sh) script for operations you can do.
 
 ## [Blue-Green Deployments on Amazon EC2 Container Service](https://aws.amazon.com/blogs/compute/bluegreen-deployments-with-amazon-ecs/)
 
