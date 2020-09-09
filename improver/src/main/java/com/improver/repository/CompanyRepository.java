@@ -94,7 +94,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
         "LEFT JOIN com.improver.entity.Company c ON c.id = t.company.id " +
         "WHERE t.created > :period " +
         "AND t.chargeId IS NOT NULL " +
-        "GROUP BY amount, c.name " +
+        "GROUP BY c.name " +
         "ORDER BY amount")
     List<Record> getProfitableCompanies(ZonedDateTime period, Pageable pageable);
 }
