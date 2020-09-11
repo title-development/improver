@@ -600,10 +600,12 @@
   align-items: center;
 
   .close {
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 400;
     z-index: 1;
     color: $grey-600;
+    width: 22px;
+    height: 22px;
   }
 
   .more-button-wrapper {
@@ -641,6 +643,8 @@
 
       mat-icon {
         font-size: 22px;
+        width: 22px;
+        height: 22px;
         color: $grey-600;
       }
     }

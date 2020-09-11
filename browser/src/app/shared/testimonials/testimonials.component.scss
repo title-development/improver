@@ -69,8 +69,8 @@
             overflow: hidden;
             mat-icon {
               font-size: 80px;
-              height: auto;
-              width: auto;
+              height: 80px;
+              width: 80px;
             }
 
             @include response-to(sm) {
@@ -79,6 +79,8 @@
 
               mat-icon {
                 font-size: 70px;
+                width: 70px;
+                height: 70px;
               }
             }
 

@@ -302,29 +302,10 @@
             }
           }
 
-          .notifications {
-            position: absolute;
-            right: 4px;
-            top: -8px;
-            background-color: $red;
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            font-size: 12px;
-            line-height: 22px;
-            font-style: normal;
-            color: $white;
-            text-align: center;
-            @include response(xs) {
-              left: 4px;
-              top: 4px;
-            }
-          }
-
-
           .project-request-right {
             display: flex;
             justify-content: flex-end;
+            align-items: center;
             flex: 0;
           }
 
@@ -486,7 +467,9 @@
 
             .mat-icon {
               color: #aaaaaa;
-              font-size: 20px;
+              font-size: 26px;
+              width: 26px;
+              height: 26px;
               line-height: 20px;
             }
           }
@@ -559,6 +542,38 @@
     }
   }
 
+}
+
+.notifications-block {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  background-image: url("../../../../assets/icons/message-notification.png");
+  background-repeat: no-repeat;
+  background-size: 60px 60px;
+  background-position-y: -2px;
+
+  @include response-to(sm) {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .notifications {
+    position: absolute;
+    top: 7px;
+    right: 5px;
+    background-color: $primary-rating;
+    width: 23px;
+    height: 23px;
+    border-radius: 50%;
+    font-size: 12px;
+    line-height: 20px;
+    font-style: normal;
+    color: #ffffff;
+    text-align: center;
+    border: 2px solid #ffffff;
+  }
 }
 
 .project-menu-button {
