@@ -12,7 +12,7 @@ import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { PopUpMessageService } from "../../api/services/pop-up-message.service";
 import { Router } from "@angular/router";
 import { RegistrationHelper } from "../../util/helpers/registration-helper";
-import { takeUntil } from "rxjs/operators";
+import { finalize, takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
 
 export enum SocialPlatform {
@@ -44,6 +44,7 @@ export class SocialButtonsComponent implements OnDestroy {
   facebookFetching: boolean = false;
   googleFetching: boolean = false;
   private socialRegistrationAdditionalInfoDialogRef: MatDialogRef<any>;
+  public socialAuthServiceInitialized = false;
 
   constructor(private socialLoginService: SocialLoginService,
               private socialAuthService: SocialAuthService,
@@ -52,6 +53,11 @@ export class SocialButtonsComponent implements OnDestroy {
               private router: Router,
               public dialog: MatDialog,
               public registrationHelper: RegistrationHelper) {
+
+    this.socialAuthService.initState
+      .pipe(finalize(() => this.socialAuthServiceInitialized = true))
+      .subscribe();
+
   }
 
 

@@ -1,11 +1,11 @@
-<button type="button" [disabled]="disabled" cv-button class="facebook-auth rounded"
+<button type="button" [disabled]="disabled || !socialAuthServiceInitialized" cv-button class="facebook-auth rounded"
         (click)="!processing && !googleFetching && socialLogin(SocialPlatform.FACEBOOK)"
         [cvSpinner]="facebookFetching" [cvSpinnerSize]="24" [cvSpinnerBackground]="true">
   <cv-icon [icon]="'imp-icon-social-facebook'"></cv-icon>
   <span>{{buttonText}} Facebook</span>
 </button>
 
-<button type="button" [disabled]="disabled" cv-button class="google-auth rounded"
+<button type="button" [disabled]="disabled || !socialAuthServiceInitialized" cv-button class="google-auth rounded"
         (click)="!processing && !facebookFetching && socialLogin(SocialPlatform.GOOGLE)"
         [cvSpinner]="googleFetching" [cvSpinnerSize]="24" [cvSpinnerBackground]="true">
   <cv-icon [icon]="'imp-icon-social-google'"></cv-icon>
