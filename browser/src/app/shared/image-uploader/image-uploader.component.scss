@@ -153,6 +153,8 @@ input[type=file] {
     .mat-icon {
       color: rgba(0, 0, 0, 0.09);
       font-size: 32px;
+      width: 32px;
+      height: 32px;
     }
   }
   .inner {
@@ -218,13 +220,24 @@ input[type=file] {
       z-index: 3;
       opacity: 0;
       transition: opacity .3s ease;
+
+      @include response-to(sm) {
+        opacity: 1;
+      }
+
       &:hover {
 
       }
       mat-icon {
         color: $white;
         font-size: 20px;
+        width: 20px;
+        height: 20px;
         display: block;
+
+        @include response-to(sm) {
+          color: $grey-500;
+        }
       }
     }
     &:after {

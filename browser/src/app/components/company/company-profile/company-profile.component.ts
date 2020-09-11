@@ -37,7 +37,7 @@ import { Role } from "../../../model/security-model";
 import { TicketService } from "../../../api/services/ticket.service";
 
 @Component({
-  selector: 'company-profile-page',
+  selector: 'company-profile',
   templateUrl: './company-profile.component.html',
   styleUrls: ['./company-profile.component.scss']
 })

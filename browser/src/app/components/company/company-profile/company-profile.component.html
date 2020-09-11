@@ -3,7 +3,7 @@
        [ngStyle]="companyProfile.backgroundUrl && companyProfile.backgroundUrl != '' && {'background-image':'url(' + companyProfile.backgroundUrl + ')'}">
     <div class="container">
       <div class="edit-content">
-        <label for="background-image" class="cover-hint" *ngIf="securityService.hasRole(Role.CONTRACTOR) && (companyProfile.backgroundUrl == '' || !companyProfile.backgroundUrl)">
+        <label for="background-image" class="cover-hint" *ngIf="securityService.hasRole(Role.CONTRACTOR) && editMode && (companyProfile.backgroundUrl == '' || !companyProfile.backgroundUrl)">
           add background
         </label>
 

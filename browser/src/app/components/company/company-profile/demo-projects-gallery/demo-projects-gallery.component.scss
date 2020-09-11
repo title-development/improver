@@ -166,6 +166,8 @@
 
           .mat-icon {
             font-size: 48px;
+            height: 48px;
+            width: 48px;
           }
 
           .add-text {
@@ -251,3 +253,8 @@
 ::ng-deep button.cancel-button.mat-menu-item {
   color: $red !important;
 }
+
+::ng-deep .mat-menu-panel {
+  min-height: max-content !important;
+}
+

@@ -15,10 +15,10 @@
 </div>
 
 <div class="review-hint">
-  <div *ngIf="!reviewsLoading && reviews.length == 0 && securityService.hasRole(Role.CUSTOMER)">
+  <div *ngIf="!reviewsLoading && reviews.length == 0 && (securityService.hasRole(Role.CUSTOMER) || !editMode)">
   <div class="no-data">Not reviewed yet</div>
   </div>
-  <div *ngIf="!reviewsLoading && reviews.length == 0 && securityService.hasRole(Role.CONTRACTOR)">
+  <div *ngIf="!reviewsLoading && reviews.length == 0 && securityService.hasRole(Role.CONTRACTOR) && editMode">
   <div class="no-data">For fast ramp up, you can ask clients from previous projects to rate you on Home Improve.</div>
     <div class="hint-button-content">
       <div class="hint-button" (click)="openRequestReviewDialog()" >Request review</div>

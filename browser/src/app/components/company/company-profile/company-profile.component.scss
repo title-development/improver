@@ -113,6 +113,8 @@ p {
 
         mat-icon {
           font-size: 16px;
+          width: 16px;
+          height: 16px;
           display: flex;
           justify-content: center;
           align-items: center;
@@ -235,6 +237,8 @@ p {
     .mat-icon {
       color: $white;
       font-size: 16px;
+      width: 16px;
+      height: 16px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -808,6 +812,11 @@ company-reviews {
   span {
     width: 100%;
     max-width: 300px;
+    margin-right: 12px;
+
+    @include response-to(sm) {
+      margin: 0;
+    }
   }
 
   .edit-button-wrapper {
@@ -824,6 +833,8 @@ company-reviews {
 
     mat-icon {
       font-size: 16px;
+      width: 16px;
+      height: 16px;
     }
   }
 }
