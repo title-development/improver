@@ -4,7 +4,6 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { PopUpMessageService } from './api/services/pop-up-message.service';
 import { SecurityService } from './auth/security.service';
-import { SwUpdate } from '@angular/service-worker';
 import { NavigationEnd, Router } from '@angular/router';
 import { MetricsEventService } from "./api/services/metrics-event.service";
 import 'hammerjs';
@@ -20,7 +19,6 @@ import { GlobalSpinnerService } from "./util/global-spinner.serivce";
 export class AppComponent implements OnInit, AfterViewInit {
 
   constructor(@Inject('Window') private window: Window,
-              private swUpdate: SwUpdate,
               private mdIconRegistry: MatIconRegistry,
               private sanitizer: DomSanitizer,
               private mdDialog: MatDialog,
@@ -36,7 +34,6 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.securityService.getCurrentUser(true);
-    this.checkSwUpdate();
     this.router.events.subscribe((evt) => {
       if (!(evt instanceof NavigationEnd)) {
         return;
@@ -72,16 +69,6 @@ export class AppComponent implements OnInit, AfterViewInit {
         document.getElementsByTagName("body")[0].style.overflowY = "visible";
       }
     );
-  }
-
-  checkSwUpdate() {
-    if (this.swUpdate.isEnabled) {
-      this.swUpdate.available.subscribe(() => {
-        console.log("Service is updated, please reload the page to prevent errors");
-        alert('We improving your user experience. Page reload required for changes to take effect.');
-        window.location.reload();
-      });
-    }
   }
 
 }

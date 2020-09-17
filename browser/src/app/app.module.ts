@@ -57,7 +57,6 @@ import { LayoutComponent } from './layout/layout.component';
 import { CvButtonModule } from './theme/button/cv-button.module';
 import { UserService } from './api/services/user.service';
 import { environment } from '../environments/environment';
-import { ServiceWorkerModule } from '@angular/service-worker';
 import { FindProfessionalService } from './api/services/find-professional.service';
 import { SubscriptionActionsService } from './components/contractor/subscription-actions/subscription-actions.service';
 import { ComponentCanDeactivateGuard } from './auth/router-guards/component-can-deactivate.guard';
@@ -93,7 +92,6 @@ const rootRouting = RouterModule.forRoot([], {useHash: false});
 
 @NgModule({
   imports: [
-    ServiceWorkerModule.register('/ngsw-worker.js', {enabled: environment.production}),
     rootRouting,
     routing,
     RouterModule,

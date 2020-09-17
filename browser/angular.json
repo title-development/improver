@@ -24,7 +24,6 @@
             },
             "assets": [
               "src/assets",
-              "src/manifest.json",
               "src/favicon.ico",
               "src/robots.txt"
             ],
@@ -161,7 +160,6 @@
             ],
             "assets": [
               "src/assets",
-              "src/manifest.json",
               "src/favicon.ico",
               "src/robots.txt"
             ]

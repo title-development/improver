@@ -7,8 +7,8 @@ export class SeoService {
 
   private title = 'Home Improve';
   private description = 'Online service for any kind of home improvement';
-  private logo = 'https://www.stg.homeimprove.com/assets/img/logo-200x200.png';
-  private url = 'https://www.stg.homeimprove.com';
+  private logo = 'https://www.homeimprove.com/assets/img/logo-200x200.png';
+  private url = 'https://www.homeimprove.com';
 
 
   constructor(private titleService: Title,
