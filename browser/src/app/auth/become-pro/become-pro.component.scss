@@ -583,7 +583,7 @@
         display: flex;
         flex-direction: column;
         justify-items: center;
-        justify-content: space-between;
+        justify-content: flex-start;
         text-align: center;
         padding: 0 24px;
 
@@ -653,16 +653,16 @@
         .hints-footer {
           display: flex;
           flex-direction: column;
-          margin-bottom: 70px;
+          margin-top: 280px;
 
-          @include response(md) {
-            min-height: 127px;
-            margin-bottom: 40px;
+          @include response-to(md) {
+            margin-top: 240px;
           }
 
-          @include response-to(xs) {
-            margin-bottom: 20px;
+          @include response-to(sm) {
+            margin-top: 280px;
           }
+
 
           .hints-title {
             font-size: 24px;

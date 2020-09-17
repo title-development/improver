@@ -21,7 +21,7 @@ export class BecomeProComponent implements AfterViewInit {
 	proBannerConfig: any = {
 		image: 'become-pro-banner.png',
 		title: 'Ready to get started?',
-		text: 'After you register free Home Improve business profile, you\'ll be set up to start receiving lead notifications for jobs in your area, within your scope of work',
+		text: 'Once you create your free Home Improve Pro business profile, you will start receiving lead notifications for jobs in your area, within your scope of work',
 		button: 'Get started',
 		routerLink: '/signup-pro'
 	};
