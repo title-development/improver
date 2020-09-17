@@ -65,7 +65,6 @@ import { ScrollHolderService } from './api/services/scroll-holder.service';
 import { NotificationService } from './api/services/notification.service';
 import { TicketService } from './api/services/ticket.service';
 import { ProjectRequestService } from './api/services/project-request.service';
-import { FacebookLoginProvider, GoogleLoginProvider, SocialAuthServiceConfig } from 'angularx-social-login';
 import { SocialLoginService } from './api/services/social-login.service';
 import { AccessDeniedInterceptor } from './util/interceptors/access-denied.interceptor';
 import { InternalServerErrorComponent } from './components/internal-server-error/internal-server-error.component';
@@ -86,6 +85,8 @@ import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { AuthInterceptor } from "./util/interceptors/auth.interseptor";
 import { MyStompService } from "./api/services/my-stomp.service";
 import { HammerConfig } from "./util/hummer-config";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { FacebookLoginProvider, GoogleLoginProvider, SocialAuthServiceConfig } from "./auth/social-login/public-api";
 
 
 const rootRouting = RouterModule.forRoot([], {useHash: false});
@@ -124,7 +125,8 @@ const rootRouting = RouterModule.forRoot([], {useHash: false});
     CvInputModule,
     CvInputFieldModule,
     CvButtonModule,
-    HammerModule
+    HammerModule,
+    MatProgressSpinnerModule
   ],
   declarations: [
     PageNotFoundComponent,

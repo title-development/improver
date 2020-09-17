@@ -8,7 +8,6 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import {
   completeProjectDialogConfig,
   confirmDialogConfig,
-  mobileMediaDialogConfig,
   passwordEditorDialogConfig,
   personalPhotoDialogConfig,
   phoneValidationDialogConfig
@@ -23,11 +22,16 @@ import { applyPhoneMask, capitalize, getErrorMessage, removePhoneMask } from '..
 import { finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { SocialLoginService } from '../../../../api/services/social-login.service';
 import { SocialConnection } from '../../../../api/models/SocialConnection';
-import { FacebookLoginProvider, GoogleLoginProvider, SocialAuthService, SocialUser } from 'angularx-social-login';
 import { from, Observable, Subject, throwError } from 'rxjs';
 import { MediaQuery, MediaQueryService } from "../../../../api/services/media-query.service";
 import { CompanyService } from "../../../../api/services/company.service";
 import { CompanyInfoService } from "../../../../api/services/company-info.service";
+import {
+  FacebookLoginProvider,
+  GoogleLoginProvider,
+  SocialAuthService,
+  SocialUser
+} from "../../../../auth/social-login/public-api";
 
 
 @Component({
@@ -318,7 +322,10 @@ export class PersonalInfoComponent implements OnDestroy {
     } else if (socialPlatform == SocialConnection.Provider.GOOGLE) {
       socialPlatformProvider = GoogleLoginProvider.PROVIDER_ID;
     }
-    from(this.socialAuthService.signIn(socialPlatformProvider))
+
+    let socialProvider = this.socialAuthService.getProvider(socialPlatformProvider)
+
+    from(socialProvider.getProfile())
       .pipe(
         switchMap(socialUser => this.processSocialConnect(socialUser)),
         takeUntil(this.destroyed$)
@@ -349,7 +356,7 @@ export class PersonalInfoComponent implements OnDestroy {
       res => {
         if (socialPlatform == SocialConnection.Provider.FACEBOOK) {
           observable = this.socialConnectionService.disconnectFacebook();
-        } else {
+        } else if (socialPlatform == SocialConnection.Provider.GOOGLE) {
           observable = this.socialConnectionService.disconnectGoogle();
         }
         observable.subscribe(res => {

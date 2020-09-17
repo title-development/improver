@@ -7,10 +7,10 @@ import { CustomerGuard } from './router-guards/customer.guard';
 import { AdminGuard } from './router-guards/admin.guard';
 import { ContractorHomeGuard } from './router-guards/contractor-home.guard';
 import { SupportGuard } from './router-guards/support.guard';
-import { SocialLoginModule } from 'angularx-social-login';
 import { StakeholderGuard } from './router-guards/stakeholder.guard';
 import { IncompleteProGuard } from './router-guards/incomplete-pro.guard';
 import { SharedModule } from "../shared/shared.module";
+import { SocialLoginModule } from "./social-login/public-api";
 
 
 @NgModule({

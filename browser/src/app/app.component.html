@@ -1,1 +1,6 @@
 <router-outlet></router-outlet>
+
+<div class="global-spinner" *ngIf="globalSpinnerService.loading">
+  <div class="background"></div>
+  <mat-spinner></mat-spinner>
+</div>

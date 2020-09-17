@@ -52,8 +52,6 @@ export class LoginComponent implements OnDestroy {
       }
   }
 
-
-
   onSubmit(form: NgForm) {
     this.showMessage = false;
     this.processing = true;

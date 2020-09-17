@@ -1,5 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
-import { SocialAuthService, SocialUser } from 'angularx-social-login';
+import { Component, EventEmitter, Inject, Input, OnDestroy, Output } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { AdditionalUserInfo, LoginModel, Role, SocialConnectionConfig } from '../../model/security-model';
 import { getErrorMessage } from '../../util/functions';
@@ -10,10 +9,12 @@ import { dialogsMap } from '../../shared/dialogs/dialogs.state';
 import { socialRegistrationAdditionalInfoDialogConfig } from '../../shared/dialogs/dialogs.configs';
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { PopUpMessageService } from "../../api/services/pop-up-message.service";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { RegistrationHelper } from "../../util/helpers/registration-helper";
-import { finalize, takeUntil } from "rxjs/operators";
-import { Subject } from "rxjs";
+import { first, takeUntil } from "rxjs/operators";
+import { from, Subject } from "rxjs";
+import { GlobalSpinnerService } from "../../util/global-spinner.serivce";
+import { SocialAuthService, SocialUser } from "../social-login/public-api";
 
 export enum SocialPlatform {
   FACEBOOK = 'FACEBOOK',
@@ -51,12 +52,15 @@ export class SocialButtonsComponent implements OnDestroy {
               public securityService: SecurityService,
               public popUpService: PopUpMessageService,
               private router: Router,
+              private route: ActivatedRoute,
               public dialog: MatDialog,
-              public registrationHelper: RegistrationHelper) {
+              public registrationHelper: RegistrationHelper,
+              public globalSpinnerService: GlobalSpinnerService,
+              @Inject('Window') public window: Window) {
 
     this.socialAuthService.initState
-      .pipe(finalize(() => this.socialAuthServiceInitialized = true))
-      .subscribe();
+      .pipe(first())
+      .subscribe(() => this.socialAuthServiceInitialized = true);
 
   }
 
@@ -120,61 +124,69 @@ export class SocialButtonsComponent implements OnDestroy {
         if (err.status == 401) {
           this.securityService.logoutFrontend();
         }
-        this.showError(undefined, getErrorMessage(err))
+        console.error(err);
+        this.handleSocialLoginError(undefined, getErrorMessage(err))
       });
   }
 
-  private showError(socialPlatform: SocialPlatform, message: string = `Cannot connect to ${socialPlatform} api`): void {
+  private handleSocialLoginError(socialPlatform: SocialPlatform, message: string = `Cannot connect to ${socialPlatform} api`, showMessage = true): void {
     this.googleFetching = false;
     this.facebookFetching = false;
-    this.responseMessage.emit(message);
-    this.responseMessageType.emit(SystemMessageType.ERROR);
-    this.showMessage.emit(true);
+    if(showMessage) {
+      this.responseMessage.emit(message);
+      this.responseMessageType.emit(SystemMessageType.ERROR);
+      this.showMessage.emit(true);
+    }
   }
 
   private socialProviderAuth(socialPlatform: SocialPlatform) {
-    this.socialAuthService.signIn(socialPlatform)
-      .then((socialUser: SocialUser) => {
-          let observable = this.getLoginObservable(socialPlatform, socialUser);
-          observable
-            .pipe(takeUntil(this.destroyed$))
-            .subscribe(response => {
-            let loginModel: LoginModel = response.body as LoginModel;
-            if (this.inQuestionary && loginModel.role != Role.CUSTOMER) {
-              this.securityService.cleanUserLoginData();
-              this.showError(null, "Only customers can request a project");
-            } else {
-              this.securityService.loginUser(response.body as LoginModel, response.headers.get('authorization'), true);
-            }
-            }, err => {
-              if (err.status == 404) {
-                this.socialSignIn(socialUser);
-              } else {
-                console.error(err);
-                this.showError(null, getErrorMessage(err));
-              }
-            }
-          );
-        }
-      )
-      .catch(err => {
-        console.error(err);
-        this.showError(socialPlatform);
-      });
 
+    let socialProvider = this.socialAuthService.getProvider(socialPlatform)
+
+    from(socialProvider.getProfile())
+      .pipe(first())
+      .subscribe((socialUser: SocialUser) => this.handleSocialUser(socialUser),
+          err => {
+        console.error(err);
+        this.handleSocialLoginError(socialPlatform);
+      })
+
+  }
+
+  private handleSocialUser(socialUser: SocialUser) {
+    let observable = this.getLoginObservable(socialUser.provider, socialUser);
+    observable
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(response => {
+          let loginModel: LoginModel = response.body as LoginModel;
+          if (this.inQuestionary && loginModel.role != Role.CUSTOMER) {
+            this.securityService.cleanUserLoginData();
+            this.handleSocialLoginError(null, "Only customers can request a project");
+          } else {
+            this.securityService.loginUser(response.body as LoginModel, response.headers.get('authorization'), true);
+          }
+        }, err => {
+          if (err.status == 404) {
+            this.socialSignIn(socialUser);
+          } else {
+            console.error(err);
+            this.handleSocialLoginError(socialUser.provider as SocialPlatform, getErrorMessage(err));
+          }
+        }
+      );
   }
 
   private socialSignIn(socialUser: SocialUser) {
     if (socialUser && socialUser.id) {
       let needAdditionalInfo = this.isPro || !this.isPro && !socialUser.email;
-      if(needAdditionalInfo) {
-        this.openSocialRegistrationAdditionalInfoDialog(socialUser, this.isPro,  this.register.bind(this));
+      if (needAdditionalInfo) {
+        this.openSocialRegistrationAdditionalInfoDialog(socialUser, this.isPro, this.register.bind(this));
       } else {
         this.register(socialUser, null, this.isPro);
       }
 
     } else {
-      this.showError(socialUser.provider as SocialPlatform);
+      this.handleSocialLoginError(socialUser.provider as SocialPlatform);
     }
   }
 

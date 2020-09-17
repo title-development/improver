@@ -9,6 +9,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { MetricsEventService } from "./api/services/metrics-event.service";
 import 'hammerjs';
 import '../../extend';
+import { GlobalSpinnerService } from "./util/global-spinner.serivce";
 
 
 @Component({
@@ -27,7 +28,8 @@ export class AppComponent implements OnInit, AfterViewInit {
               private securityService: SecurityService,
               private renderer: Renderer2,
               private router: Router,
-              private metricsEventService: MetricsEventService) {
+              private metricsEventService: MetricsEventService,
+              public globalSpinnerService: GlobalSpinnerService) {
 
     popUpMessageService.renderer = renderer;
   }

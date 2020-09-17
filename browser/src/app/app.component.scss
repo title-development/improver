@@ -38,3 +38,24 @@
     font-size: 14px;
   }
 }
+
+.global-spinner {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  z-index: 100000;
+
+  .background {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    background-color: black;
+    opacity: 0.4;
+  }
+}
