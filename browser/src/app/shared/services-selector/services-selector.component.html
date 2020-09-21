@@ -37,8 +37,8 @@
       <div class="trades-title" *ngIf="securityService.hasRole(Role.INCOMPLETE_PRO)">Trades and Services you provide</div>
 
         <ng-template ngFor [ngForOf]="tradesAndServiceTypes?.trades" let-trade let-i="index" [ngForTrackBy]="trackById">
-          <div class="collapse-content">
-          <cv-collapse [title]="trade.name" [(collapsed)]="trade.collapsed"
+          <div class="collapse-content" [ngClass]="{'-highlight': trade.new}">
+          <cv-collapse [title]="trade.name" [(collapsed)]="trade.collapsed" (collapsedChange)="showMore(trade, $event)"
                        (toggle)="$event && scrollHolder.scrollTo(collapse.elementRef, 500)" #collapse>
 
             <div content>
@@ -49,20 +49,21 @@
 
                 <cv-checkbox-group [formControlName]="trade.name" #checkbox [items]="trade.services"
                                    valueKey="id" (check)="onServiceCheck($event)">
-                  <ng-template let-item cvTemplate>
-                    <div class="service-type" [ngClass]="{'-highlight': item?.highlight}">
+                  <ng-template  let-item let-i="index" cvTemplate>
+                    <div *ngIf="i < getTradeSize(trade)" class="service-type" [ngClass]="{'-highlight': item?.highlight}">
                       <div class="custom-check-box"></div>
-                      <div class="service-type-name">{{item.name}}</div>
-                      <div class="service-type-price">
-                        <div>${{item.leadPrice / 100}}</div>
-                      </div>
+                      <span class="service-type-name">{{item.name}}<span>${{item.leadPrice / 100}}</span></span>
                     </div>
                   </ng-template>
                 </cv-checkbox-group>
 
               </div>
 
-              <button cv-button-empty (click)="removeTrade(trade)" type="button">Remove Trade</button>
+              <div class="show-more" (click)="showMore(trade)" *ngIf="trade.new">
+                <span>show more</span>
+              </div>
+
+              <button *ngIf="!trade.new" cv-button-empty (click)="removeTrade(trade)" type="button">Remove Trade</button>
 
             </div>
 

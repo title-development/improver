@@ -7,9 +7,9 @@
     </ng-template>
   </ng-container>
   <ul *ngIf="itemTemplate && items">
-    <ng-template ngFor [ngForOf]="items" let-item>
+    <ng-template ngFor [ngForOf]="items" let-item let-i="index">
       <li (click)="addOrRemoveSelection(item)" [ngClass]="{'-selected': isSelected(item), '-disabled': item?.disabled, '-readonly':item?.readonly}">
-        <ng-container *ngTemplateOutlet="itemTemplate; context: {$implicit: item}"></ng-container>
+        <ng-template [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{$implicit: item, index: i}"></ng-template>
       </li>
     </ng-template>
   </ul>

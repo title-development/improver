@@ -27,10 +27,10 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
     trigger('collapsedContent', [
       transition('* => true', [
         style({height: '0'}),
-        animate(300)
+        animate(500)
       ]),
       state('false', style({height: '0px'})),
-      transition('true => false', animate('200ms linear')),
+      transition('true => false', animate('400ms linear')),
     ]),
     trigger('collapsedArrow', [
       state('true', style({transform: 'rotate(90deg)'})),

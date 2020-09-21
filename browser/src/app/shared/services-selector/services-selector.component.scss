@@ -34,6 +34,13 @@
 
 .collapse-content {
   position: relative;
+
+  &.-highlight {
+    border-radius: 8px;
+    position: relative;
+    z-index: 2;
+    animation: pulse 2s ease 0s 2 normal;
+  }
 }
 
   .services-selector-wrapper {
@@ -136,19 +143,21 @@
           cv-checkbox-group {
 
             ::ng-deep ul {
-
+              max-width: 100%;
 
               li {
                 margin-bottom: 8px;
                 margin-right: 8px;
                 display: inline-block;
                 cursor: pointer;
+                max-width: 100%;
+
                 .service-type {
                   display: flex;
                   border-radius: 4px;
                   background-color: #efefef;
                   padding: 5px 5px 4px 5px;
-
+                  width: max-content;
 
                   &.-highlight {
                     position: relative;
@@ -166,22 +175,15 @@
                   }
 
                   .service-type-name {
-                    display: flex;
+                    display: block;
                     font-size: 14px;
                     font-weight: 400;
-                  }
 
-                  .service-type-price {
-                    margin-left: 5px;
-                    display: flex;
-                    flex-direction: row;
-                    font-size: 14px;
-
-                    .money {
-                      font-size: 16px;
+                    span {
+                      margin: 0;
+                      margin-left: 4px;
                     }
                   }
-
                 }
 
                 &.-selected {
@@ -240,6 +242,40 @@
   padding-left: 16px;
   line-height: 36px;
   height: 36px;
+}
+
+.new-trade-services {
+  max-height: 217px;
+
+  @include response-to(sm) {
+    max-height: 250px;
+  }
+}
+
+.show-more {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 30px;
+  background-color: $white;
+  text-align: center;
+  border-radius: 8px;
+
+  @include response(xs) {
+    text-align: right;
+  }
+
+  span {
+    margin-top: 8px;
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 16px;
+
+    @include response(xs) {
+      margin-right: 12px;
+    }
+  }
 }
 
 

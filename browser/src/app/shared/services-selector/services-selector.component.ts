@@ -56,6 +56,7 @@ export class ServicesSelectorComponent implements OnInit {
   allTrades: Array<Trade> = [];
   allServices: Array<ServiceType> = [];
 
+  newTradeServicesSize: number = 4;
   private HIGHLIGHT_TIME: number = 4000;
 
   constructor(public constants: Constants,
@@ -73,6 +74,7 @@ export class ServicesSelectorComponent implements OnInit {
       .subscribe((mediaQuery: MediaQuery) => {
         this.mediaQuery = mediaQuery;
         this.dropdownHeight = mediaQuery.xs? 3: 4;
+        this.newTradeServicesSize = mediaQuery.xs? 4: 8
       });
 
     this.getTradesAndServiceTypes();
@@ -81,6 +83,10 @@ export class ServicesSelectorComponent implements OnInit {
   ngOnInit() {
     this.tradesAndServiceTypes = this.initialData ? this.initialData : this.tradesAndServiceTypes;
     this.handleCompanyTradesAndServiceTypes();
+  }
+
+  getTradeSize(trade): number {
+    return trade.new? this.newTradeServicesSize: trade.services.length;
   }
 
   initCheckboxControl() {
@@ -309,8 +315,10 @@ export class ServicesSelectorComponent implements OnInit {
             }
             this.tradesAndServiceTypes.trades.forEach(trade => trade.collapsed = false);
             trade.collapsed = true;
-            this.tradesAndServiceTypes.trades.push(trade);
+            trade.new = true;
+            //trade.services.
             this.tradesAndServiceTypes.trades.sort((a, b) => a.name.localeCompare(b.name));
+            this.tradesAndServiceTypes.trades.unshift(trade);
             others && others.services.length > 0 ? this.tradesAndServiceTypes.trades.push(others) : null;
             this.initCheckboxControl();
             this.popUpMessageService.showSuccess('All services form <b>' + trade.name + '</b> have been added to your service list');
@@ -323,6 +331,18 @@ export class ServicesSelectorComponent implements OnInit {
       this.popUpMessageService.showSuccess('<b>' + trade.name + '</b> is already in your service list, you can configure it below');
     }
   }
+
+	showMore(trade, collapsed?: boolean) {
+		if (!collapsed) {
+			setTimeout(() => {
+				this.tradesAndServiceTypes.trades.map(t => {
+					if (t.id == trade.id) {
+						return t.new = false;
+					}
+				})
+			}, 500);
+		}
+	}
 
   removeTrade(trade: Trade) {
 
