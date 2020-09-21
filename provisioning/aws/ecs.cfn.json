@@ -13,7 +13,7 @@
         "id": "ami-0d438d09af26c9583"
       },
       "us-east-1": {
-        "id": "ami-00129b193dc81bc31"
+        "id": "ami-023605ca18ddfa1e1"
       },
       "us-west-1": {
         "id": "ami-a39df1c3"
@@ -27,7 +27,7 @@
     "EcsInstanceType": {
       "Type": "String",
       "Description": "ECS EC2 instance type",
-      "Default": "t3.medium",
+      "Default": "t4g.medium",
       "AllowedValues": [
         "a1.medium",
         "a1.large",
@@ -37,6 +37,9 @@
         "t2.medium",
         "t2.large",
         "t3.medium",
+        "t4g.medium",
+        "t4g.large",
+        "t4g.xlarge",
         "m4.large",
         "m4.xlarge",
         "m4.2xlarge",

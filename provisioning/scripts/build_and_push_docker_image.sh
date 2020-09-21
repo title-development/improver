@@ -24,7 +24,5 @@ if [ $(aws ecr describe-repositories | jq -c '.repositories[] | select (.reposit
     aws ecr create-repository --repository-name $ENVIRONMENT/$IMAGE_NAME
 fi
 
-echo -e "Build docker image: $TARGET_IMAGE"
-docker build -t $TARGET_IMAGE -t $LATEST_IMAGE provisioning/docker/$IMAGE_NAME/
-docker push $LATEST_IMAGE
-docker push $TARGET_IMAGE
+echo -e "Build docker image with tags: $TARGET_IMAGE $LATEST_IMAGE"
+docker buildx build --progress plain --platform linux/amd64,linux/arm64 -t $TARGET_IMAGE -t $LATEST_IMAGE provisioning/docker/$IMAGE_NAME/ --push .

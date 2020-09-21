@@ -145,6 +145,17 @@ NOTE: you must have [AWS cli installed and configured locally](https://docs.aws.
    In future we can get the Reserved Instance Benefit for all of the instances.     
    All Reserved Instances provide a discount compared to On-Demand pricing. With Reserved Instances, we pay for the entire term regardless of actual use. We can choose to pay for your Reserved Instance upfront, partially upfront, or monthly, depending on the payment option specified for the Reserved Instance. When Reserved Instances expire, we will be charged On-Demand rates for EC2 instance usage. 
 
+
+## Migration to ec2 instances powered by Arm-based AWS Graviton processors
+**QA environment:** 
+We are using [Amazon EC2 T4g](https://aws.amazon.com/ec2/instance-types/t4/) instances that are the next generation low cost burstable general purpose instance type that provide a baseline level of CPU performance with the ability to burst CPU usage at any time for as long as required. 
+They deliver up to 40% better price performance over T3 instances and are ideal for running applications with moderate CPU usage that experience temporary spikes in usage.
+
+**PROD environment:** 
+We are using [Amazon EC2 A1](https://aws.amazon.com/ec2/instance-types/a1/) instances. 
+Amazon EC2 A1 instances result in significant cost savings for more distributed and ARM-based applications such as web servers, container microservices, cache fleets, and distributed data stores supported by the extensive ARM ecosystem.
+
+
 # Docker image build
 To properly build/deploy our docker images you need to authenticate docker against ECR with basic auth credentials with:
 `` eval $(aws ecr get-login --region ${AWS_DEFAULT_REGION} --no-include-email --profile $AWS_PROFILE) ``
@@ -178,3 +189,26 @@ docker run --name test-image -it 815041732288.dkr.ecr.us-east-1.amazonaws.com/mv
 ``` 
 
 , where -it flags mean to start the container interactively (with the ability to type into it) and with a TTY (so you can see the input and output).
+
+## Build multi-arch Docker image with AWS Graviton
+
+Since [Bitbucket doesn't support](https://jira.atlassian.com/browse/BCLOUD-15317) building docker images for other OS/ARCH yet, we need to build our application image locally.
+Follow these steps to create [improver](../provisioning/docker/improver) docker image based on [adoptopenjdk/openjdk14:jre-14.0.2_12](https://hub.docker.com/r/adoptopenjdk/openjdk14) for `linux/arm64` OS/ARCH:
+1. make sure to enable Docker’s [experimental features](https://github.com/docker/docker-ce/blob/master/components/cli/experimental/README.md) to get access to Buildx;
+1. create a new builder – an environment in which our container will build itself:
+``
+docker buildx create --name mybuilder
+docker buildx use mybuilder
+``
+1. authenticate to our ECR:
+``
+aws ecr get-login-password --region us-east-1 --profile improver | docker login --username AWS --password-stdin 815041732288.dkr.ecr.us-east-1.amazonaws.com
+``
+1. build and use the `--push` flag to push the image:
+``
+ docker buildx build --progress plain --platform linux/amd64,linux/arm64 -t 815041732288.dkr.ecr.us-east-1.amazonaws.com/prod/improver:latest --push .
+``, where `prod` it the environment name (location direction of docker image in ECR)
+1.  check the image with the `imagetools` subcommand which confirms that 2 architecture versions are included in the image:
+``
+docker buildx imagetools inspect 815041732288.dkr.ecr.us-east-1.amazonaws.com/prod/improver:latest
+``
