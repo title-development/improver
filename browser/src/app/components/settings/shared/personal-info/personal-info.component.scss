@@ -85,6 +85,8 @@
 
   .save-personal-info {
     float: right;
+    width: 120px;
+    padding: 10px 40px;
   }
 
   .personal-info-form-content {
@@ -190,14 +192,17 @@
 }
 
 .social-connection {
+
   .social {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
     &:not(:last-child) {
       padding-bottom: 16px;
       margin-bottom: 16px;
       position: relative;
+
       &:after {
         content: '';
         display: block;
@@ -211,43 +216,49 @@
         margin-right: -24px;
       }
     }
+
+    .social-connect-button {
+      width: 120px;
+    }
+
+    .disconnect-button {
+      width: 120px;
+      padding: 10px 24px;
+      color: $grey-500;
+      border: 1px solid $grey-500
+    }
+
     &:first-of-type {
+
       cv-icon {
-        background-color: #3b5998;
+        color: $white;
       }
-      span {
-        color: #3b5998;
+
+      .social-provider {
+        color: #3B5998;
       }
     }
-    span {
+
+    .social-provider {
       max-width: 100px;
       width: 100%;
       display: inline-block;
       font-size: 15px;
     }
-    cv-icon {
-      color: #ec3c1e;
-    }
+
   }
   .meta {
     display: flex;
     align-items: center;
-    @include response(xs) {
-      margin-bottom: 8px;
-    }
-    cv-icon {
-      display: flex;
+
+    .mat-icon {
+      font-size: 38px;
       width: 38px;
       height: 38px;
-      border-radius: 10px;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      color: #fff;
-      background-color: #ec3c1e;
+      color: $grey-500;
       margin-right: 8px;
-      flex: none;
     }
+
     span {
       color: #ec3c1e;
       font-weight: 700;
@@ -258,9 +269,6 @@
     padding: 0;
     font-size: 14px;
     color: $grey-600;
-    @include response(xs) {
-      display: none;
-    }
   }
 }
 

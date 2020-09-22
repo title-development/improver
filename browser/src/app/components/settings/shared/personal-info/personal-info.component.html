@@ -220,25 +220,27 @@
           </div>
 
           <div class="social-connection card">
-            <h3>Social connections</h3>
+            <h3>Login option</h3>
             <ng-container *ngIf="socialConnections">
               <div class="social" *ngFor="let provider of socialProviders">
                 <div class="meta"
                      [title]="socialConnected(provider) ? 'This social account is already connected' : 'Link your social account to your profile'">
-                  <cv-icon [icon]="'imp-icon-social-'+provider.toString().toLowerCase()"></cv-icon>
+                  <mat-icon>link</mat-icon>
                   <div>
-                    <span>{{provider | capitalize}}</span>
-                    <p *ngIf="!socialConnected(provider)">Link your social account to your profile</p>
-                    <p *ngIf="socialConnected(provider)">This social account is already connected</p>
+                    <span class="social-provider">{{provider | capitalize}}</span>
+                    <p *ngIf="!socialConnected(provider)">Add a login option</p>
+                    <p *ngIf="socialConnected(provider)">is connected</p>
                   </div>
                 </div>
                 <ng-container *ngIf="socialConnected(provider); else connect">
-                  <button cv-button type="button" size="small" class="-danger"
+                  <button cv-button-empty type="button" class="disconnect-button"
                           (click)="disconnectSocial(provider)">Disconnect
                   </button>
                 </ng-container>
                 <ng-template #connect>
-                  <button cv-button type="button" size="small" (click)="connectSocial(provider)">Connect</button>
+                  <button class="social-connect-button" cv-button type="button" (click)="connectSocial(provider)">
+                    <span>Connect</span>
+                  </button>
                 </ng-template>
               </div>
             </ng-container>
