@@ -58,6 +58,8 @@ export class TestimonialsComponent {
   testimonials = [];
   @Input()
   title: string = '';
+  @Input()
+  minHeight: number = 320;
 
   animating = false;
   transformX = 0;

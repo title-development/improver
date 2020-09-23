@@ -1519,8 +1519,8 @@ INSERT INTO service_types (name, lead_price, image_url) SELECT 'Wood Stair Repai
 INSERT INTO trades_service_types (trade_id, service_type_id) VALUES ((SELECT currval(pg_get_serial_sequence('trades','id'))), (SELECT id FROM service_types WHERE service_types.name = 'Wood Stair Repair'));
 
 INSERT INTO trades (name) VALUES ('Tile Services');
-INSERT INTO service_types (name, lead_price, image_url) SELECT 'Custom Tile design', 999, null WHERE NOT EXISTS (SELECT name FROM service_types WHERE service_types.name = 'Custom Tile design');
-INSERT INTO trades_service_types (trade_id, service_type_id) VALUES ((SELECT currval(pg_get_serial_sequence('trades','id'))), (SELECT id FROM service_types WHERE service_types.name = 'Custom Tile design'));
+INSERT INTO service_types (name, lead_price, image_url) SELECT 'Custom Tile Design', 999, null WHERE NOT EXISTS (SELECT name FROM service_types WHERE service_types.name = 'Custom Tile Design');
+INSERT INTO trades_service_types (trade_id, service_type_id) VALUES ((SELECT currval(pg_get_serial_sequence('trades','id'))), (SELECT id FROM service_types WHERE service_types.name = 'Custom Tile Design'));
 INSERT INTO service_types (name, lead_price, image_url) SELECT 'Tile Installation', 2400, '' WHERE NOT EXISTS (SELECT name FROM service_types WHERE service_types.name = 'Tile Installation');
 INSERT INTO trades_service_types (trade_id, service_type_id) VALUES ((SELECT currval(pg_get_serial_sequence('trades','id'))), (SELECT id FROM service_types WHERE service_types.name = 'Tile Installation'));
 INSERT INTO service_types (name, lead_price, image_url) SELECT 'Tile Removal', 999, null WHERE NOT EXISTS (SELECT name FROM service_types WHERE service_types.name = 'Tile Removal');

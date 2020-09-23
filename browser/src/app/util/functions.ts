@@ -7,14 +7,16 @@ import { RestPage } from '../api/models/RestPage';
  Works only for new angular httpClient
  */
 export function getErrorMessage(err: HttpErrorResponse | any): string {
+  let error = null;
   try {
-    return JSON.parse(err.error).message;
+    error = JSON.parse(err.error).message;
   } catch (e) {
     if (err.error != null && typeof err.error == 'object') {
-      return err.error.message ? err.error.message : httpStatusCodeResponses[err.status];
+      error =  err.error.message ? err.error.message : httpStatusCodeResponses[err.status];
     } else {
-      return err.error ? err.error : httpStatusCodeResponses[err.status];
+      error = err.error ? err.error : httpStatusCodeResponses[err.status];
     }
+    return error ? error : httpStatusCodeResponses[0]
   }
 }
 

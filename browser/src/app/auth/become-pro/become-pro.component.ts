@@ -33,26 +33,25 @@ export class BecomeProComponent implements AfterViewInit {
 
   testimonials = [
     {
-      fullName: "Pro 1",
-      description: "Residence owner",
-      state: "NY",
-      text: "Signing up for Home Improve has been a tremendous asset for our business and has helped us grow in every way possible." +
-				" We also strongly believe in delivering the highest quality of customer service, which makes Home Improve a pleasure to work with."
+      avatar: "assets/img/reviews/contractors/1.jpg",
+      fullName: "Alex Isakov",
+      description: "NovDom Development Corp",
+      state: "Owner",
+      text: "Signing up for Home Improve has been a tremendous asset for our business and has helped us grow in every way possible. We also strongly believe in delivering the highest quality of customer service, which makes Home Improve a pleasure to work with."
     },
     {
-      fullName: "Pro 2",
-      description: "Residence owner",
-      state: "NY",
-      text: "We can’t thank Home Improve enough for how simple it has been to find more leads in our service area." +
-				" We used to struggle to track down quality leads, but the Home Improve process has helped us find new clients who actually need our services." +
-				" We grew from a small company and created other avenues of business."
+      avatar: "assets/img/reviews/contractors/2.jpg",
+      fullName: "Mariana Garber",
+      description: "Bay Dental Equipment Inc",
+      state: "Manager",
+      text: "We can’t thank Home Improve enough for how simple it has been to find more leads in our service area. We used to struggle to track down quality leads, but the Home Improve process has helped us find new clients who actually need our services. We grew from a small company and created other avenues of business."
     },
     {
-      fullName: "Pro 3",
-      description: "Residence owner",
-      state: "NY",
-      text: "Our plumbing business has taken off since we create our PRO profile." +
-				" Only paying for the leads we need has made it easy to beef-up our schedule when we want to and scale back if our circumstances dictate doing so. "
+      avatar: "assets/img/reviews/contractors/3.jpg",
+      fullName: "Ryszard Tobiasiewicz",
+      description: "Torpol construction Llc",
+      state: "Owner",
+      text: "Our business has taken off since we create our PRO profile. Only paying for the leads we need has made it easy to beef-up our schedule when we want to and scale back if our circumstances dictate doing so."
     },
   ];
 
@@ -60,32 +59,32 @@ export class BecomeProComponent implements AfterViewInit {
     {
       title: 'Quality leads',
       text: 'You’ll only pay for quality leads and get refund if the client cannot be reached',
-      desktopImage: 'benefit_1.svg'
+      image: 'benefit_1.svg'
     },
     {
       title: 'Find the job you want',
       text: 'You pick which leads you purchase, giving you full control over the jobs you accept',
-			desktopImage: 'benefit_2.svg'
+			image: 'benefit_2.svg'
     },
     {
       title: 'Flexible schedule',
       text: 'Easily plan your monthly schedule, pause leads when you don’t want to receive ones',
-			desktopImage: 'benefit_3.svg'
+			image: 'benefit_3.svg'
     },
     {
       title: '20% Off on Subscription',
       text: 'Subscribe to get first access to new leads with 20% discount',
-			desktopImage: 'benefit_4.svg'
+			image: 'benefit_4.svg'
     },
     {
       title: 'Give 100$, Get 100$',
       text: 'Take advantage of Home Improve’s bonus program: earn 100$ for each referral',
-			desktopImage: 'benefit_5.svg'
+			image: 'benefit_5.svg'
     },
     {
       title: 'Rapid ramp-up',
       text: 'Easily add reviews from your customer portfolio',
-			desktopImage: 'benefit_6.svg'
+			image: 'benefit_6.svg'
     }
   ];
 

@@ -5,12 +5,13 @@
     <div class="list" @blockInitialRenderAnimation>
 
       <div *ngFor="let testimonial of testimonials; index as i;" [@animator]="{value: i, params: {transformX: transformX}}" (@animator.done)="animationDone($event)">
-        <div class="testimonial">
+        <div class="testimonial" [style.minHeight.px]="minHeight">
 
           <div class="body">{{testimonial.text}}</div>
           <div class="author">
             <div class="logo">
-              <mat-icon>account_box</mat-icon>
+              <img [src]="testimonial.avatar" alt="" class="avatar" *ngIf="testimonial.avatar">
+              <mat-icon *ngIf="!testimonial.avatar">account_box</mat-icon>
             </div>
             <div class="info">
               <div class="name">{{testimonial.fullName}}</div>
