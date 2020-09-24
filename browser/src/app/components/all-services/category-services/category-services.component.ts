@@ -55,15 +55,18 @@ export class CategoryServicesComponent implements OnInit {
   }
 
   swiperInitializer() {
-    this.swiper = new Swiper('.swiper-container', {
-      pagination: '.swiper-pagination',
-      paginationClickable: true,
-      autoplay: 5000,
-      spaceBetween: 0,
-      speed: 300,
-      loop: true,
-    });
+    if (this.trade.imageUrls.length > 1) {
+      this.swiper = new Swiper('.swiper-container', {
+        pagination: '.swiper-pagination',
+        paginationClickable: true,
+        autoplay: 5000,
+        spaceBetween: 0,
+        speed: 300,
+        loop: true,
+      });
+    }
   }
+
 
   getTrade(tradeId) {
     this.tradeService.getTradeById(tradeId).subscribe(

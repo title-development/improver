@@ -712,9 +712,8 @@
 }
 
 .testimonials-wrapper {
+  margin: auto;
   margin-bottom: 120px;
-  margin-left: auto;
-  margin-right: auto;
   position: relative;
   max-width: $content-grid-max-width;
   @include response-to(lg) {
@@ -731,6 +730,10 @@
 
   @include response-to(xs) {
     padding-left: 20px;
+  }
+
+  .testimonials-inner {
+    position: relative;
   }
 
 }

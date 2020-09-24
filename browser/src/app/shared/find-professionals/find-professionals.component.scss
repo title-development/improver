@@ -79,13 +79,15 @@
     text-align: initial;
     background-color: $white;
     padding-bottom: 5px;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.15);
+    border-top: 1px solid $grey-200;
 
     .dropdown-content {
       display: flex;
       flex-direction: column;
       width: $content-grid-max-width;
       margin: 0 auto;
-      padding: 20px 0 15px 0;
+      padding: 44px 0 15px 0;
 
       @include response-to(lg) {
         width: 100%;
@@ -97,7 +99,7 @@
         font-size: 16px;
         display: flex;
         justify-content: center;
-        width: 1000px;
+        width: 900px;
         max-width: 100%;
         border-radius: 20px;
 
@@ -516,13 +518,11 @@
 }
 
 .swiper-slide {
-  min-width: 240px;
   cursor: pointer;
 
   .trade-content {
     display: flex;
     flex-direction: row;
-    width: 270px;
     height: 110px;
     background: rgba(43, 79, 110, 0.05);
     border-radius: 8px;

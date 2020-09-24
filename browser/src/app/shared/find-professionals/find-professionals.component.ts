@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Pagination, ServiceType, NameIdImageTuple } from '../../model/data-model';
+import { NameIdImageTuple, Pagination, ServiceType } from '../../model/data-model';
 import { ServiceTypeService } from '../../api/services/service-type.service';
 import { TradeService } from '../../api/services/trade.service';
 import { Constants } from '../../util/constants';
@@ -116,7 +116,7 @@ export class FindProfessionalsComponent implements OnInit {
                 spaceBetween: 25
               },
               820: {
-                slidesPerView: 2,
+                slidesPerView: 3,
                 spaceBetween: 30
               }
             }

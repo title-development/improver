@@ -49,7 +49,7 @@ export class BecomeProComponent implements AfterViewInit {
     {
       avatar: "assets/img/reviews/contractors/3.jpg",
       fullName: "Ryszard Tobiasiewicz",
-      description: "Torpol construction Llc",
+      description: "Torpol Construction LLC",
       state: "Owner",
       text: "Our business has taken off since we create our PRO profile. Only paying for the leads we need has made it easy to beef-up our schedule when we want to and scale back if our circumstances dictate doing so."
     },
