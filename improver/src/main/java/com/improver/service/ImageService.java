@@ -5,7 +5,7 @@ import com.improver.entity.*;
 import com.improver.exception.InternalServerException;
 import com.improver.exception.NotFoundException;
 import com.improver.exception.ValidationException;
-import com.improver.repository.CompanyImageRepository;
+import com.improver.repository.DemoProjectImageRepository;
 import com.improver.repository.ImageRepository;
 import com.improver.repository.ProjectImageRepository;
 import com.improver.util.ImageContainable;
@@ -45,7 +45,7 @@ public class ImageService {
 
     @Autowired private ImageRepository imageRepository;
     @Autowired private ProjectImageRepository projectImageRepository;
-    @Autowired private CompanyImageRepository companyImageRepository;
+    @Autowired private DemoProjectImageRepository demoProjectImageRepository;
     @Autowired private ResourceLoader resourceLoader;
 
 
@@ -135,7 +135,7 @@ public class ImageService {
             }
         } else {
             DemoProject project = (DemoProject) imageContainable;
-            companyImageRepository.deleteByNameAndProjectId(imageName, project.getId());
+            demoProjectImageRepository.deleteByNameAndProjectId(imageName, project.getId());
             if (isCover) {
                 imageUrls = getDemoProjectImageUrls(project.getId());
             }
@@ -148,7 +148,7 @@ public class ImageService {
         }
         return imageContainable.getCoverUrl();
     }
-    
+
 
     public ResponseEntity getImageByURL(String imageUrl) {
         if (imageUrl.startsWith("https://")){
@@ -189,7 +189,7 @@ public class ImageService {
     }
 
     private String saveDemoProjectImage(DemoProject project, Image image) {
-        companyImageRepository.save(new DemoProjectImage(image, project));
+        demoProjectImageRepository.save(new DemoProjectImage(image, project));
         return Image.toImageUrl(image.getName());
     }
 
@@ -211,7 +211,7 @@ public class ImageService {
     }
 
     public Collection<String> getDemoProjectImageUrls(long projectId) {
-        return companyImageRepository.getImagesByProject(projectId).stream()
+        return demoProjectImageRepository.getImagesByProject(projectId).stream()
             .map(Image::toImageUrl)
             .collect(Collectors.toList());
     }

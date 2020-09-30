@@ -10,7 +10,6 @@
     "build": "ng build",
     "build:qa": "node --max_old_space_size=6096 node_modules/@angular/cli/bin/ng build --configuration=qa --source-map",
     "build:prod": "node --max_old_space_size=6096 node_modules/@angular/cli/bin/ng build --prod",
-    "build:stg": "node --max_old_space_size=6096 node_modules/@angular/cli/bin/ng build --configuration=stg",
     "build:stats": "ng build --stats-json",
     "bundle-report": "webpack-bundle-analyzer target/classes/stats.json",
     "test": "ng test",

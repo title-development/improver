@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import javax.transaction.Transactional;
 import java.util.List;
 
-public interface CompanyImageRepository extends JpaRepository<DemoProjectImage, Long> {
+public interface DemoProjectImageRepository extends JpaRepository<DemoProjectImage, Long> {
 
     @Query("SELECT i.name FROM com.improver.entity.DemoProjectImage i WHERE i.demoProject.id = ?1 ORDER BY i.created ASC")
     List<String> getImagesByProject(long projectId);

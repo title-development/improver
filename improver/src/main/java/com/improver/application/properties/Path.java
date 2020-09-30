@@ -136,7 +136,5 @@ public final class Path {
     public static final String UNREAD =                     "/unread";
 
     /* Resource paths */
-    public static final String PATH_IMGS = "/assets/img/";
-    public static final String PATH_IMGS_SERVICES = PATH_IMGS + "services/";
-    public static final String PATH_IMGS_SERVICE_TILING = PATH_IMGS_SERVICES + "tiling/";
+
 }

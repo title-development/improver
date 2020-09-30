@@ -8,7 +8,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class RandomChatGenerator {
+public class TestRandomChatGenerator {
 
     private static String HI_MSG = "Hi we are best PRO ever! We would like to discuss more detail on this project. Please give us call, or contact me in this chat.\nThank you";
 

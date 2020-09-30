@@ -5,7 +5,6 @@ import com.improver.exception.NotFoundException;
 import com.improver.exception.ValidationException;
 import com.improver.model.in.Order;
 import com.improver.repository.*;
-import com.improver.service.ImageService;
 import com.improver.service.ReviewService;
 import com.improver.util.enums.State;
 import com.improver.util.serializer.SerializationUtil;
@@ -17,7 +16,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.ResourcePatternUtils;
 import org.springframework.stereotype.Component;
-
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -38,8 +36,11 @@ import static java.util.Objects.nonNull;
  */
 @Slf4j
 @Component
-@Profile({INITDB, QA, STG, PROD})
+@Profile({INITDB, QA, PROD})
 public class TestDataInitializer {
+
+
+    public static final String PATH_IMGS_SERVICE_TILING ="test-data/services/tiling/";
 
     @Autowired private ResourceLoader resourceLoader;
     @Autowired private CompanyConfigRepository companyConfigRepository;
@@ -59,8 +60,8 @@ public class TestDataInitializer {
     @Autowired private QuestionRepository questionRepository;
     @Autowired private ImageRepository imageRepository;
     @Autowired private ProjectImageRepository projectImageRepository;
-    @Autowired private FileUtil fileUtil;
-    @Autowired private CompanyImageRepository companyImageRepository;
+    @Autowired private TestFileUtil testFileUtil;
+    @Autowired private DemoProjectImageRepository demoProjectImageRepository;
     @Autowired private QuestionaryRepository questionaryRepository;
     @Autowired private AreaRepository areaRepository;
     @Autowired private AdminRepository adminRepository;
@@ -72,7 +73,7 @@ public class TestDataInitializer {
     @Autowired private UnavailabilityPeriodRepository unavailabilityPeriodRepository;
     @Autowired private TestPaymentAccountResolver testPaymentAccountResolver;
     @Autowired private ServedZipRepository servedZipRepository;
-    @Autowired private ImageService imageService;
+    @Autowired private TestQuestionaryGenerator testQuestionaryGenerator;
 
     private static final String TILE_INSTALLATION = "Tile Installation";
     private static final String ARCHITECTURAL_SERVICES = "Architectural Services";
@@ -108,32 +109,33 @@ public class TestDataInitializer {
 
     @PostConstruct
     public void init() {
-            log.info("Start test data ======================================");
-            log.info("=========== Init Test Questionary ...");
-            initQuestions();
-            try {
-                setServicesImagesIntoDb("classpath*:**/tmp/trades/*.jpg");
-            } catch (IOException e) {
-                log.error("Failed to load images for ServiceTypes", e);
-            }
-            log.info("=========== Init Test Users ...");
-            initUsers();
-            log.info("=========== Init Test Companies ...");
-            initCompanies();
-            supportedServices = pro1().getCompany().getServiceTypes().stream().map(ServiceType::getName).collect(Collectors.toList());
-            log.info("=========== Init Test UnavailabilityPeriods ...");
-            initUnavailabilityPeriods();
-            log.info("=========== Init Test Projects ...");
-            initProjects();
-            log.info("=========== Init Test Demo Projects ...");
-            initDemoProjects();
-            log.info("=========== Init Test Transactions ...");
-            initTransactions();
-            log.info("=========== Init Test Reviews ...");
-            initReviews();
-            log.info("=========== Init Test Licenses ...");
-            initLicenses();
-            log.info("END test data ==============================================");
+        log.info("*********** Init PROD Trades images ...");
+        try {
+            setServicesImagesIntoDb("classpath*:**/test-data/trades/*.jpg");
+        } catch (IOException e) {
+            log.error("Failed to load images for ServiceTypes", e);
+        }
+        log.info("Start test data ======================================");
+        log.info("=========== Init Test Questionary ...");
+        initQuestions();
+        log.info("=========== Init Test Users ...");
+        initUsers();
+        log.info("=========== Init Test Companies ...");
+        initCompanies();
+        supportedServices = pro1().getCompany().getServiceTypes().stream().map(ServiceType::getName).collect(Collectors.toList());
+        log.info("=========== Init Test UnavailabilityPeriods ...");
+        initUnavailabilityPeriods();
+        log.info("=========== Init Test Projects ...");
+        initProjects();
+        log.info("=========== Init Test Demo Projects ...");
+        initDemoProjects();
+        log.info("=========== Init Test Transactions ...");
+        initTransactions();
+        log.info("=========== Init Test Reviews ...");
+        initReviews();
+        log.info("=========== Init Test Licenses ...");
+        initLicenses();
+        log.info("END test data ==============================================");
     }
 
     private String randomService() {
@@ -173,7 +175,7 @@ public class TestDataInitializer {
         createProject(randomService(), cust6(), Collections.singletonList(pro1()), Arrays.asList(pro2(), pro5()), getRandomDate());
         Project withImg = createProject(randomService(), cust1(), Arrays.asList(pro1(), pro2(), pro3()), Collections.singletonList(pro5()), getFreshRandomDate());
         Stream.of(1, 2, 3, 4, 5, 6, 7, 8, 9)
-            .forEach(i -> saveProjectImage(withImg, "tmp/projects/kitchen-photo-" + i + ".jpg"));
+            .forEach(i -> saveProjectImage(withImg, "test-data/projects/kitchen-photo-" + i + ".jpg"));
         createProject(randomService(), cust1(), Arrays.asList(pro1(), pro2()), Collections.emptyList(), getFreshRandomDate());
         createProjectWithStatus(randomService(), cust1(), Arrays.asList(pro2(), pro4()), Collections.singletonList(pro1()), Project.Status.COMPLETED, getRandomDate());
         createProjectWithStatus(randomService(), cust1(), Arrays.asList(pro2(), pro3()), Arrays.asList(pro1(), pro5()), Project.Status.CANCELED, getRandomDate());
@@ -181,7 +183,7 @@ public class TestDataInitializer {
 
     private Project createLead(String serviceName, Customer customer) {
         ServiceType serviceType = serviceTypeRepository.findByName(serviceName);
-        Order order = OrderHelper.generateFor(serviceName);
+        Order order = TestOrderHelper.generateFor(serviceName);
         Order.BaseLeadInfo details = order.getBaseLeadInfo();
         Centroid centroid = servedZipRepository.findByZip(details.getLocation().getZip())
             .orElseThrow(() -> new ValidationException("zip not found"))
@@ -272,8 +274,8 @@ public class TestDataInitializer {
 
 
     private void initQuestions() {
-        saveQuestionary(QuestionaryInitializer.kitchenTilingQuestionary(questionaryRepository.save(new Questionary())), TILE_INSTALLATION);
-        saveQuestionary(QuestionaryInitializer.architecturalServices(questionaryRepository.save(new Questionary())), ARCHITECTURAL_SERVICES);
+        saveQuestionary(testQuestionaryGenerator.kitchenTilingQuestionary(questionaryRepository.save(new Questionary())), TILE_INSTALLATION);
+        saveQuestionary(testQuestionaryGenerator.architecturalServices(questionaryRepository.save(new Questionary())), ARCHITECTURAL_SERVICES);
     }
 
     private void saveQuestionary(Questionary questionary, String... serviceTypeNames) {
@@ -293,9 +295,9 @@ public class TestDataInitializer {
 
     private void initUsers() {
 
-        createCustomer(CUST_1, "John", "Down", DEMO_PHONE, saveImage("tmp/icons/user-icon-1.jpg"));
-        createCustomer(CUST_2, "Bruce", "Willis", DEMO_PHONE, saveImage("tmp/icons/user-icon-2.jpg"));
-        createCustomer(CUST_3, "Jim", "Beam", DEMO_PHONE, saveImage("tmp/icons/user-icon-3.jpg"));
+        createCustomer(CUST_1, "John", "Down", DEMO_PHONE, saveImage("test-data/icons/user-icon-1.jpg"));
+        createCustomer(CUST_2, "Bruce", "Willis", DEMO_PHONE, saveImage("test-data/icons/user-icon-2.jpg"));
+        createCustomer(CUST_3, "Jim", "Beam", DEMO_PHONE, saveImage("test-data/icons/user-icon-3.jpg"));
         createCustomer(CUST_4, "Clark", "Kent", DEMO_PHONE, null);
         createCustomer(CUST_5, "Victoria", "Secret", DEMO_PHONE, null);
         createCustomer(CUST_6, "Sara-Michel", "Hellar", DEMO_PHONE, null);
@@ -380,7 +382,7 @@ public class TestDataInitializer {
             .orElseThrow(NotFoundException::new);
         companyRepository.save(company.setServiceTypes(serviceTypes)
             .setTrades(trades)
-            .setIconUrl(saveImage("tmp/icons/company-icon-" + companyId + ".jpg"))
+            .setIconUrl(saveImage("test-data/icons/company-icon-" + companyId + ".jpg"))
             .setCreated(ZonedDateTime.now().minusMonths(companyId - 1L))
         );
         companyConfigRepository.save(CompanyConfig.defaultSettings(company));
@@ -438,10 +440,10 @@ public class TestDataInitializer {
             .setServiceTypes(Arrays.asList(TILE_INSTALLATION, ARCHITECTURAL_SERVICES))
             .setDate(getRandomDate().toLocalDate())
             .setPrice(2_577_000)
-            .setCoverUrl(saveImage("tmp/projects/brick-house.jpg"))
+            .setCoverUrl(saveImage("test-data/projects/brick-house.jpg"))
         );
         Stream.of(1, 2, 3, 4, 5, 6, 7, 8, 9)
-            .forEach(i -> saveDemoProjectImage(withImg, "tmp/projects/kitchen-photo-" + i + ".jpg"));
+            .forEach(i -> saveDemoProjectImage(withImg, "test-data/projects/kitchen-photo-" + i + ".jpg"));
 
         demoProjectRepository.save(new DemoProject()
             .setName("Kitchen from scratch")
@@ -669,7 +671,7 @@ public class TestDataInitializer {
             .setStatus(ProjectRequest.Status.ACTIVE));
         projectMessageRepository.save(ProjectMessage.request(projectRequest, created));
         // chat
-        List<ProjectMessage> conversation = RandomChatGenerator.generate(projectRequest, String.valueOf(contractor.getId()),
+        List<ProjectMessage> conversation = TestRandomChatGenerator.generate(projectRequest, String.valueOf(contractor.getId()),
             String.valueOf(project.getCustomer().getId()), conversationEnd);
         projectMessageRepository.saveAll(conversation);
         return projectRequest;
@@ -679,7 +681,7 @@ public class TestDataInitializer {
     private String saveImage(String path) {
         String ext = path.substring(path.lastIndexOf('.'));
         String name = UUID.randomUUID().toString().toLowerCase() + ext;
-        byte[] bytes = fileUtil.loadFile(path);
+        byte[] bytes = testFileUtil.loadFile(path);
         imageRepository.save(new Image().setName(name)
             .setData(bytes)
             .setExtension(ext)
@@ -702,7 +704,7 @@ public class TestDataInitializer {
     private String saveProjectImage(Project project, String path) {
         String ext = path.substring(path.lastIndexOf('.'));
         String name = UUID.randomUUID().toString().toLowerCase() + ext;
-        byte[] bytes = fileUtil.loadFile(path);
+        byte[] bytes = testFileUtil.loadFile(path);
         projectImageRepository.save(new ProjectImage(project, name, ext, bytes));
         String imageUrl = ProjectImage.toProjectImageUrl(project.getId(), name);
         if (!project.hasCover()) {
@@ -714,8 +716,8 @@ public class TestDataInitializer {
     private String saveDemoProjectImage(DemoProject project, String path) {
         String ext = path.substring(path.lastIndexOf('.'));
         String name = UUID.randomUUID().toString().toLowerCase() + ext;
-        byte[] bytes = fileUtil.loadFile(path);
-        companyImageRepository.save(new DemoProjectImage(project, name, ext, bytes));
+        byte[] bytes = testFileUtil.loadFile(path);
+        demoProjectImageRepository.save(new DemoProjectImage(project, name, ext, bytes));
         return IMAGES_PATH + '/' + name;
 
     }

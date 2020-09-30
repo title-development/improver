@@ -11,7 +11,7 @@ import java.util.Random;
 
 import static com.improver.model.in.Order.BaseLeadInfo.StartExpectation.*;
 
-public class OrderHelper {
+public class TestOrderHelper {
 
     private static List<List<Order.QuestionAnswer>> answers = new ArrayList<>();
     private static List<Order.BaseLeadInfo> details = new ArrayList<>();
@@ -139,7 +139,7 @@ public class OrderHelper {
 
 
     public static Order generateFor(String serviceType) {
-        List<Order.QuestionAnswer> details = (new Random().nextBoolean()) ? OrderHelper.answers.get(new Random().nextInt(answers.size()))
+        List<Order.QuestionAnswer> details = (new Random().nextBoolean()) ? TestOrderHelper.answers.get(new Random().nextInt(answers.size()))
             : new ArrayList<>();
 
         return new Order().setBaseLeadInfo(getRandomDetails()).setQuestionary(details);

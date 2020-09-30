@@ -13,7 +13,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.3.3.RELEASE</version>
+        <version>2.3.4.RELEASE</version>
     </parent>
 
     <scm>
@@ -92,21 +92,6 @@
                 <environment>qa</environment>
                 <npm.arguments>install --production</npm.arguments>
                 <npm.build.cmd>run build:qa</npm.build.cmd>
-            </properties>
-        </profile>
-
-        <profile>
-            <id>stg</id>
-            <activation>
-                <property>
-                    <name>environment</name>
-                    <value>stg</value>
-                </property>
-            </activation>
-            <properties>
-                <environment>qa</environment>
-                <npm.arguments>install --production</npm.arguments>
-                <npm.build.cmd>run build:stg</npm.build.cmd>
             </properties>
         </profile>
 

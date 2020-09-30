@@ -1,13 +1,20 @@
 package com.improver.test;
 
+
 import com.improver.entity.Question;
 import com.improver.entity.Questionary;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import static com.improver.application.properties.Path.PATH_IMGS_SERVICE_TILING;
+import static com.improver.test.TestDataInitializer.PATH_IMGS_SERVICE_TILING;
 
-public class QuestionaryInitializer {
+@Component
+public class TestQuestionaryGenerator {
 
-    public static Questionary architecturalServices(Questionary questionary) {
+    @Autowired private TestFileUtil testFileUtil;
+
+    @Deprecated
+    public Questionary architecturalServices(Questionary questionary) {
         return questionary
             .setName("architecturalServices")
             .setDescription("Questionary for Attic Remodel")
@@ -53,53 +60,7 @@ public class QuestionaryInitializer {
                 .addAnswer("Answer 4"));
     }
 
-
-    @Deprecated
-    public static Questionary defaultQuestionary(Questionary questionary) {
-        return questionary
-            .setName("defaultQuestionary")
-            .setDescription("Default set of questions")
-            .addQuestion(new Question()
-                .setName("project_estimate_expectations")
-                .setTitle("When do you need your project started?")
-                .setType(Question.Type.RADIO_BUTTON)
-                .addAnswer("I'm flexible")
-                .addAnswer("Within 48 hours")
-                .addAnswer("Within a week")
-                .addAnswer("Within a month")
-                .addAnswer("Within a year"))
-            .addQuestion(new Question()
-                .setName("type_of_property")
-                .setTitle("What type of property do you have?")
-                .setType(Question.Type.CHECK_BOX)
-                .addAnswer("Home")
-                .addAnswer("Multi-unit building")
-                .addAnswer("Office / business")
-                .addAnswer("Commercial")
-                .addAnswer("Other"))
-            .addQuestion(new Question()
-                .setName("additional_information_about_project")
-                .setLabel("Project details")
-                .setTitle("Please provide some project details for Professional")
-                .setType(Question.Type.TEXT_AREA))
-            .addQuestion(new Question()
-                .setName("customer_full_name")
-                .setLabel("Full name")
-                .setTitle("Let's getDetailedForPro acquainted?")
-                .setType(Question.Type.TEXT_INPUT))
-            .addQuestion(new Question()
-                .setName("customer_contacts")
-                .setLabel("Email")
-                .setTitle("What's the best way to getDetailedForPro in contact?")
-                .setType(Question.Type.TEXT_INPUT))
-            .addQuestion(new Question()
-                .setName("project_location")
-                .setLabel("Zip code")
-                .setTitle("Where do you need a Professional?")
-                .setType(Question.Type.TEXT_INPUT));
-    }
-
-    public static Questionary kitchenTilingQuestionary(Questionary questionary) {
+    public Questionary kitchenTilingQuestionary(Questionary questionary) {
         return questionary
             .setName("kitchenTilingQuestionary")
             .setDescription("Questionary for Kitchen Tiling")
@@ -111,15 +72,15 @@ public class QuestionaryInitializer {
             .addQuestion(new Question()
                 .setTitle("What kind of tile are you interested in?")
                 .setType(Question.Type.IMG_RADIO_BUTTON)
-                .addAnswer("Ceramic", PATH_IMGS_SERVICE_TILING + "1_ceramic_tile.png")
-                .addAnswer("Encaustic", PATH_IMGS_SERVICE_TILING + "2_encaustic_tile.png")
-                .addAnswer("Glass", PATH_IMGS_SERVICE_TILING + "3_glass_tile.jpg")
-                .addAnswer("Granite", PATH_IMGS_SERVICE_TILING + "4_granite_tile.jpg")
-                .addAnswer("Porcelain", PATH_IMGS_SERVICE_TILING + "5_porcelain_tile.jpg")
-                .addAnswer("Saltillo", PATH_IMGS_SERVICE_TILING + "6_saltillo_tile.jpg")
-                .addAnswer("Slate", PATH_IMGS_SERVICE_TILING + "7_slate_tile.jpg")
-                .addAnswer("Terracotta", PATH_IMGS_SERVICE_TILING + "8_terracotta_tile.jpg")
-                .addAnswer("Terrazzo", PATH_IMGS_SERVICE_TILING + "9_terrazzo_tile.jpg"))
+                .addAnswer("Ceramic", testFileUtil.saveImage(PATH_IMGS_SERVICE_TILING + "1_ceramic_tile.png"))
+                .addAnswer("Encaustic", testFileUtil.saveImage(PATH_IMGS_SERVICE_TILING + "2_encaustic_tile.png"))
+                .addAnswer("Glass", testFileUtil.saveImage(PATH_IMGS_SERVICE_TILING + "3_glass_tile.jpg"))
+                .addAnswer("Granite", testFileUtil.saveImage(PATH_IMGS_SERVICE_TILING + "4_granite_tile.jpg"))
+                .addAnswer("Porcelain", testFileUtil.saveImage(PATH_IMGS_SERVICE_TILING + "5_porcelain_tile.jpg"))
+                .addAnswer("Saltillo", testFileUtil.saveImage(PATH_IMGS_SERVICE_TILING + "6_saltillo_tile.jpg"))
+                .addAnswer("Slate", testFileUtil.saveImage(PATH_IMGS_SERVICE_TILING + "7_slate_tile.jpg"))
+                .addAnswer("Terracotta", testFileUtil.saveImage(PATH_IMGS_SERVICE_TILING + "8_terracotta_tile.jpg"))
+                .addAnswer("Terrazzo", testFileUtil.saveImage(PATH_IMGS_SERVICE_TILING + "9_terrazzo_tile.jpg")))
             .addQuestion(new Question()
                 .setTitle("What quality/price level tile you want to buy?")
                 .setType(Question.Type.RADIO_BUTTON)

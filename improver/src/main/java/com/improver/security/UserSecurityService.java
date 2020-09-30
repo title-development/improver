@@ -302,7 +302,7 @@ public class UserSecurityService implements UserDetailsService {
         cookie.setSecure(true);
         cookie.setPath(path);
         cookie.setMaxAge(maxAge);
-        if (activeProfile.equals(Environments.PROD) || activeProfile.equals(Environments.STG) || activeProfile.equals(Environments.QA)){
+        if (activeProfile.equals(Environments.PROD) || activeProfile.equals(Environments.QA)){
             cookie.setDomain(serverDomain);
         }
         return cookie;

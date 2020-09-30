@@ -24,6 +24,66 @@
         <stripe.version>5.25.0</stripe.version>
     </properties>
 
+    <profiles>
+        <profile>
+            <id>qa</id>
+            <build>
+                <plugins>
+                    <!-- Required to include swagger jars in dev profile -->
+                    <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>repackage</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <excludes>
+                                <exclude>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>browser</artifactId>
+                                </exclude>
+                            </excludes>
+                            <excludeGroupIds>io.springfox,io.swagger</excludeGroupIds>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>prod</id>
+            <build>
+                <plugins>
+                    <!-- Required to include swagger jars in dev profile -->
+                    <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>repackage</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <excludes>
+                                <exclude>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>browser</artifactId>
+                                </exclude>
+                            </excludes>
+                            <excludeGroupIds>io.springfox,io.swagger</excludeGroupIds>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
     <build>
         <finalName>improver</finalName>
 
@@ -31,15 +91,10 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
-<!--                <excludes>
-                    <exclude>application-dev.properties</exclude>
-                    <exclude>application-heroku.properties</exclude>
-                </excludes>-->
             </resource>
         </resources>
 
         <plugins>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -108,9 +163,9 @@
                             <artifactId>browser</artifactId>
                         </exclude>
                     </excludes>
-                    <!--<excludeArtifactIds>browser</excludeArtifactIds>-->
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>com.bazaarvoice.maven.plugins</groupId>
                 <artifactId>s3-upload-maven-plugin</artifactId>
@@ -218,7 +273,7 @@
             <version>${jsr310.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
+            <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>${apache.commons.version}</version>
         </dependency>
