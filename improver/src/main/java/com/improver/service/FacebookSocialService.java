@@ -100,7 +100,7 @@ public class FacebookSocialService {
         try {
             URIBuilder uriBuilder = new URIBuilder("https://graph.facebook.com/" + FB_API_VERSION + "/me");
             uriBuilder.setParameter("access_token", accessToken);
-            uriBuilder.setParameter("fields", "name,email,last_name,first_name,picture");
+            uriBuilder.setParameter("fields", "name,email,picture.width(200).height(200),first_name,last_name");
             HttpUriRequest request = RequestBuilder.get()
                 .setUri(uriBuilder.build())
                 .build();
