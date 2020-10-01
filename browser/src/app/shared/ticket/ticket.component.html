@@ -129,10 +129,6 @@
 
         </div>
 
-        <response-message *ngIf="showMessage" [type]="messageType" [message]="messageText"
-                          [paddingV]="12" [paddingH]="24"
-                          [showIcon]="false" (onHide)="onMessageHide($event)"></response-message>
-
       </form>
 
       <div class="after-ticket" *ngIf="ticketSent">

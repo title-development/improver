@@ -52,7 +52,7 @@ export class ContractorLeadPurchaseComponent implements OnInit, OnDestroy {
               public tricksService: TricksService,
               private applicationRef: ApplicationRef,
               private leadService: LeadService,
-              private billingService: BillingService,
+              public billingService: BillingService,
               private boundariesService: BoundariesService,
               private gMapUtils: GoogleMapUtilsService) {
   }

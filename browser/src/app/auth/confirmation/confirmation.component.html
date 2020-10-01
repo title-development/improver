@@ -19,8 +19,7 @@
       <cv-input-field class="input-with-hints">
         <input cv-input type="password"
                placeholder="Password (at least 8 symbols)"
-               #password="ngModel"
-               #passwordInput
+               #passwordInput="ngModel"
                name="password"
                [(ngModel)]="activationCustomerModel.password"
                validateEqual="confirmPassword"

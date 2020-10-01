@@ -119,7 +119,7 @@ export class CvSelectComponent extends CvSelection implements ControlValueAccess
   private onOverlayClick = (event: MouseEvent) => this.closeByOverlayHandler(event);
   // private onMouseLeave = (event: MouseEvent) => this.closeDropdown(event);
   private onKeyDown = (event: KeyboardEvent) => this.onKeyDownHandler(event);
-  private highlightedItemIndex: number = -1;
+  public highlightedItemIndex: number = -1;
   private lastLabel: string;
   private hostHeight: number;
   private itemHeight: number;

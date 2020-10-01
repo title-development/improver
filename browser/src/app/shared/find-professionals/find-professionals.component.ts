@@ -34,7 +34,7 @@ export class FindProfessionalsComponent implements OnInit {
   suggestedServiceTypes: Array<ServiceType> = [];
   popularServiceTypes: Array<ServiceType> = [];
   filteredServiceTypes: Array<ServiceType> = [];
-  popularServiceSize: Number;
+  popularServiceSize: number;
   popularTrades: Array<NameIdImageTuple> = [];
   recentSearches: Array<string> = [];
   pagination: Pagination = new Pagination(0, 4);

@@ -134,8 +134,8 @@
           <div class="list" *ngIf="infoWindowData.leads" [style.height.px]="(infoWindowData.leads.length * 22) + 12">
             <perfect-scrollbar>
               <div>
-                <div class="item" *ngFor="let lead of infoWindowData.leads" [title]="lead.serviceType">
-                  <a href="" (click)="onShowLeadData($event, lead)">
+                <div class="item" *ngFor="let lead of infoWindowData.leads; let i = index" [title]="lead.serviceType">
+                  <a href="" (click)="onShowLeadData($event, lead, i)">
                     {{lead.serviceType}}
                   </a>
                 </div>

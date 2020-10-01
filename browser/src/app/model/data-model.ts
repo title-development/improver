@@ -330,13 +330,25 @@ export class CompanyProfile extends CompanyInfo {
 export class DemoProject {
   id?: number;
   name: string;
-  images?: string[];
+  images?: string[] = [];
   coverUrl?: string;
   description: string;
   date: string;
-  price?: string;
-  serviceTypes?: any[];
-  location?: Location;
+  price?: number;
+  serviceTypes?: any[] = [];
+  location?: Location = new Location();
+
+  constructor(name?: string, images: string[] = [], coverUrl?: string, description?: string, date?: string, price?: number, serviceTypes: any[] = [], location: Location = new Location()) {
+    this.name = name;
+    this.images = images;
+    this.coverUrl = coverUrl;
+    this.description = description;
+    this.date = date;
+    this.price = price;
+    this.serviceTypes = serviceTypes;
+    this.location = location;
+  }
+
 }
 
 export class Lead {
@@ -381,6 +393,16 @@ export class Location {
   zip?: string;
   lat?: number;
   lng?: number;
+
+
+  constructor(state?: string, city?: string, streetAddress?: string, zip?: string, lat?: number, lng?: number) {
+    this.state = state;
+    this.city = city;
+    this.streetAddress = streetAddress;
+    this.zip = zip;
+    this.lat = lat;
+    this.lng = lng;
+  }
 }
 
 // TODO: fix model

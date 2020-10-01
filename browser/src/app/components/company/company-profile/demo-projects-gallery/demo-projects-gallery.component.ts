@@ -35,23 +35,7 @@ export class DemoProjectsGalleryComponent implements OnInit, OnDestroy {
   Role = Role;
   confirmDialogRef: MatDialogRef<any>;
 
-  emptyDemoProject: DemoProject = {
-    name: "",
-    coverUrl: "",
-    date: "",
-    description: "",
-    price: "",
-    location: {
-      state: "",
-      city: "",
-      streetAddress: "",
-      zip: "",
-    },
-    serviceTypes: [],
-    images: []
-  };
-
-  constructor (private securityService: SecurityService,
+  constructor (public securityService: SecurityService,
                private demoProjectService: DemoProjectService,
                public popUpMessageService: PopUpMessageService,
                public dialog: MatDialog,

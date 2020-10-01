@@ -7,17 +7,18 @@ import { RestPage } from '../api/models/RestPage';
  Works only for new angular httpClient
  */
 export function getErrorMessage(err: HttpErrorResponse | any): string {
-  let error = null;
+  let error;
   try {
     error = JSON.parse(err.error).message;
   } catch (e) {
     if (err.error != null && typeof err.error == 'object') {
-      error =  err.error.message ? err.error.message : httpStatusCodeResponses[err.status];
+      error =  err.error.message && err.error.message !== '' ? err.error.message : httpStatusCodeResponses[err.status];
     } else {
-      error = err.error ? err.error : httpStatusCodeResponses[err.status];
+      error = err.error && err.error !== '' ? err.error : httpStatusCodeResponses[err.status];
     }
     return error ? error : httpStatusCodeResponses[0]
   }
+  return error;
 }
 
 export function markAsTouched(group: FormGroup | FormArray): void {

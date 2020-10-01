@@ -1,7 +1,7 @@
 <form *ngIf="!media.xs && !media.sm" class="main-search-form" [formGroup]="mainSearchFormGroup" (ngSubmit)="search()" (mouseleave)="mouseleave($event)">
   <div class="search-inputs-content">
-  <div class="service-type-form-group" [ngClass]="isDropdownOpenedTop? 'up-direction' : 'bottom-direction'">
-    <cv-select class="main-search-service-input"
+  <div class="service-type-form-group" [ngClass]="(mainSearch.overlayRef.$isDropdownOpenedTop | async)? 'up-direction' : 'bottom-direction'">
+    <cv-select class="main-search-service-input" #mainSearch
                [highlightErrors]="false"
                label="Pipe, carpet, paint, etc."
                [formControl]="selectionCtrl"

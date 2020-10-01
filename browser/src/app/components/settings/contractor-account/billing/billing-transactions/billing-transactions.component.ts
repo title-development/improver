@@ -31,7 +31,7 @@ export class BillingTransactionsComponent {
     )
   }
 
-  getTransactions(refresh: boolean) {
+  getTransactions(refresh?: boolean) {
     this.transactionsProcessing = true;
     if (refresh)  this.pagination = new Pagination(0, 10);
     this.billingService

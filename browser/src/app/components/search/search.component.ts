@@ -1,12 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { CompanyInfo, ServiceType, Trade } from '../../model/data-model';
+import { CompanyInfo, ServiceType } from '../../model/data-model';
 import { CompanyService } from '../../api/services/company.service';
 import { ReplaySubject, Subject } from 'rxjs';
 import { PopUpMessageService } from '../../api/services/pop-up-message.service';
 import { RestPage } from '../../api/models/RestPage';
 import { ProjectActionService } from '../../api/services/project-action.service';
-import { getErrorMessage } from "../../util/functions";
 import { CustomerSuggestionService } from "../../api/services/customer-suggestion.service";
 import { first, takeUntil } from "rxjs/operators";
 import { UserSearchService } from "../../api/services/user-search.service";
@@ -30,8 +29,8 @@ export class SearchComponent implements OnInit, OnDestroy {
   searchResultMessageText: string;
   pageable: RestPage<CompanyInfo> = new RestPage<CompanyInfo>();
   loading = false;
-  private page = 1;
-  private size = 35;
+  public page = 1;
+  public size = 35;
   popularServiceTypes: Array<ServiceType> = [];
 
   constructor(private activatedRoute: ActivatedRoute,

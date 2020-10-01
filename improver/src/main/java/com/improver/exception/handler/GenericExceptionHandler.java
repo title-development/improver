@@ -1,13 +1,8 @@
 package com.improver.exception.handler;
 
 import com.improver.exception.*;
-import com.improver.exception.NotFoundException;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -95,7 +90,7 @@ public class GenericExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler({ThirdPartyException.class})
-    public ResponseEntity<Object> handleInternalError(ThirdPartyException e, WebRequest request) {
+    public ResponseEntity<Object> handleThirdPartyException(ThirdPartyException e, WebRequest request) {
         log.error("Internal Server Error ", e);
         return new ResponseEntity<>(new RestError(500, e.getMessage()), INTERNAL_SERVER_ERROR);
     }

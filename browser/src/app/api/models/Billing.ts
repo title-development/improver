@@ -1,3 +1,5 @@
+import { Location } from '../../model/data-model';
+
 export class Billing {
   id: number;
   balance: number;

@@ -28,7 +28,7 @@
       <div class="ui-grid-col-4">
         <ng-container *ngIf="firstName.dirty || firstName.touched || newUserForm.submitted">
           <p-message *ngIf="firstName.errors?.required" severity="error" text="First name is required"></p-message>
-          <p-message *ngIf="firstName.minlength?.required" severity="error"
+          <p-message *ngIf="firstName.errors?.minlength" severity="error"
                      text="At least 2 letters required"></p-message>
         </ng-container>
       </div>

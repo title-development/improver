@@ -297,16 +297,8 @@
                  [(ngModel)]="companyRegistration.coverage.radius"
                  class="cv-slider" (change)="radiusChange($event)">
 
-          <div class="location-info" *ngIf="companyMarker">
-            <div class="lead-preference-sub-title">Company location:</div>
-            <div class="location-full">{{companyRegistration.company.location.streetAddress}}
-              {{companyRegistration.company.location.city}},
-              {{companyRegistration.company.location.state}} {{companyRegistration.company.location.zip}}
-            </div>
-          </div>
-
           <div class="hint -arrow lead-preferences-hint">
-            You can adjust the center of the area by clicking and dragging it elsewhere.
+            You can adjust the center of your service area by dragging it elsewhere.
           </div>
 
         </div>

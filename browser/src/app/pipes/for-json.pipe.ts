@@ -5,7 +5,7 @@ import { Pipe, PipeTransform } from "@angular/core";
  */
 @Pipe({name: 'forjson'})
 export class ForJsonPipe implements PipeTransform {
-  transform(value, args:string[]) : any {
+  transform(value, args?: string[]) : any {
     let items = [];
     for (let key in value) {
       items.push({key: key, value: value[key]});

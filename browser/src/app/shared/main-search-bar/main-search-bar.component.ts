@@ -166,7 +166,7 @@ export class MainSearchBarComponent implements OnInit, OnChanges, AfterViewInit 
     return item.id;
   }
 
-  mouseleave(): void {
+  mouseleave(event): void {
     Object.values(this.mainSearchFormGroup.controls).forEach(control => {
       if (!control.value) {
         control.reset();

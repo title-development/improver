@@ -38,6 +38,10 @@ export class TextMessages {
       maxlength: "Last name is too long"
     },
 
+    businessName: {
+      required: "Business name is required",
+    },
+
     zip: {
       required: "Zip code is required",
       pattern: "Please enter a valid ZIP code"

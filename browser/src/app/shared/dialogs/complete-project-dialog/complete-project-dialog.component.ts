@@ -52,7 +52,7 @@ export class CompleteProjectDialogComponent implements OnInit, OnDestroy {
       )
   }
 
-  selectVariant(variant, projectRequestId) {
+  selectVariant(variant, projectRequestId?) {
     this.selectedVariant = {
       variant: variant,
       contractorId: projectRequestId

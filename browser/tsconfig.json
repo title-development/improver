@@ -5,8 +5,10 @@
     "baseUrl": "src",
     "sourceMap": true,
     "declaration": false,
-    "module": "esnext",
+    "module": "es2020",
     "moduleResolution": "node",
+    "importHelpers": true,
+    "downlevelIteration": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "target": "es2015",
@@ -19,8 +21,12 @@
       "dom"
     ]
   },
-     "files": [
-       "src/main.ts",
-       "src/polyfills.ts"
-     ]
+  "files": [
+    "src/main.ts",
+    "src/polyfills.ts"
+  ],
+  "angularCompilerOptions": {
+    "fullTemplateTypeCheck": true,
+    "strictInjectionParameters": true
+  }
 }

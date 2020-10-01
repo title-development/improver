@@ -42,12 +42,12 @@
         <!--Conversation-->
         <div class="message-content" *ngSwitchCase="ProjectRequest.MessageType.TEXT">{{message.body}}</div>
 
-        <div class="message-content" *ngSwitchCase="ProjectRequest.MessageType.DOCUMENT"><a [href]="message.body.url">
+        <div class="message-content" *ngSwitchCase="ProjectRequest.MessageType.DOCUMENT"><a [href]="$any(message.body).url">
           <mat-icon class="mat-icon material-icons">attach_file</mat-icon>
-          {{message.body.name}}</a></div>
+          {{$any(message.body).name}}</a></div>
 
-        <div class="message-content" *ngSwitchCase="ProjectRequest.MessageType.IMAGE"><a [href]="message.body.url"><span
-          [ngStyle]="{'background-image': 'url('+ message.body.url +')'}" title="{{message.body.name}}"></span></a>
+        <div class="message-content" *ngSwitchCase="ProjectRequest.MessageType.IMAGE"><a [href]="$any(message.body).url"><span
+          [ngStyle]="{'background-image': 'url('+ $any(message.body).url +')'}" title="{{$any(message.body).name}}"></span></a>
         </div>
 
         <div class="message-content" *ngSwitchCase="ProjectRequest.MessageType.EVENT">

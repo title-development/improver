@@ -29,21 +29,7 @@ export class CompanyDemoProjectEditorComponent implements OnInit, ComponentCanDe
   minDate: string;
   maxDate: string;
 
-  demoProject: DemoProject = {
-    name: '',
-    coverUrl: '',
-    date: '',
-    description: '',
-    price: '',
-    location: {
-      state: '',
-      city: '',
-      streetAddress: '',
-      zip: ''
-    },
-    serviceTypes: [],
-    images: [],
-  };
+  demoProject: DemoProject = new DemoProject();
 
   projectImages: any[] = [];
 
