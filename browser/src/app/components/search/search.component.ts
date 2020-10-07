@@ -65,7 +65,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.searchResults = this.userSearchService.getSearchResults(this.service)
       .filter((el, index) => index <= this.page * this.size);
     if (this.searchResults.length == 0) {
-      this.searchResultMessageText = 'No results were found for \"' + this.service + '\". The following are results for a similar search';
+      this.searchResultMessageText = `No results were found for "${this.service}". The following are results for a similar search`;
       this.searchResults = this.popularServiceTypes;
     } else {
       this.searchResultMessageText = '';

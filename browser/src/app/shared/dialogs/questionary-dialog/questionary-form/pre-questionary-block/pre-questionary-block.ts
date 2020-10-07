@@ -140,7 +140,7 @@ export class PreQuestionaryBlock implements OnInit {
         let searchResults = this.searchHolder.search(searchTerm);
 
         if (searchResults.length == 0){
-          this.searchResultMessageText = 'No results were found for \"' + searchTerm + '\".';
+          this.searchResultMessageText = `No results were found for "${searchTerm}".`;
           this.filteredServices = [];
           return;
         } else {

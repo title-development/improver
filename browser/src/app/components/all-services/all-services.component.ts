@@ -66,13 +66,14 @@ export class AllServicesComponent implements OnInit {
 
     if(!searchTerm) {
       this.filteredTrades = clone(this.trades);
+      this.searchResultMessageText = '';
       return
     } else {
       setTimeout(() => {
         let searchResults = this.searchHolder.search(searchTerm);
 
         if (searchResults.length == 0){
-          this.searchResultMessageText = 'No results were found for \"' + searchTerm + '\".';
+          this.searchResultMessageText = `No results were found for "${searchTerm}".`;
           this.filteredTrades = [];
           return;
         } else {

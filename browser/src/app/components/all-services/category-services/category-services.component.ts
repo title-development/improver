@@ -94,13 +94,14 @@ export class CategoryServicesComponent implements OnInit {
 
     if(!searchTerm) {
       this.filteredServices = clone(this.trade.services);
+      this.searchResultMessageText = '';
       return
     } else {
       setTimeout(() => {
         let searchResults = this.searchHolder.search(searchTerm);
 
         if (searchResults.length == 0){
-          this.searchResultMessageText = 'No results were found for \"' + searchTerm + '\".';
+          this.searchResultMessageText = `No results were found for "${searchTerm}".`;
           this.filteredServices = [];
           return;
         } else {
@@ -115,7 +116,7 @@ export class CategoryServicesComponent implements OnInit {
 
 
       if (this.filteredServices.length == 0){
-        this.searchResultMessageText = 'No results were found for \"' + searchTerm + '\".';
+        this.searchResultMessageText = `No results were found for "${searchTerm}".`;
       } else {
         this.searchResultMessageText = '';
       }
