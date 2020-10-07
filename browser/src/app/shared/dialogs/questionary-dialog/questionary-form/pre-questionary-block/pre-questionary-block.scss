@@ -130,6 +130,16 @@ cv-radio-group {
 }
 
 .filtered-services-wrapper {
+  .no-results-message-block {
+    width: 100%;
+    font-size: 22px;
+    color: $grey-600;
+
+    @include response-to(sm) {
+      font-size: 18px;
+    }
+  }
+
   display: flex;
   overflow-y: hidden;
   perfect-scrollbar {

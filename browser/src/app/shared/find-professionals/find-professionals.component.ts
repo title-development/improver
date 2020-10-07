@@ -17,7 +17,7 @@ import { UserService } from "../../api/services/user.service";
 import { CustomerSuggestionService } from "../../api/services/customer-suggestion.service";
 import { takeUntil } from "rxjs/operators";
 import { Role } from "../../model/security-model";
-import { UserSearchService } from "../../api/services/user-search.service";
+import { UserSearchService } from "../../util/user-search.service";
 
 
 @Component({

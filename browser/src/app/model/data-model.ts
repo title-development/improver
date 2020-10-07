@@ -118,6 +118,7 @@ export class NameIdImageTuple {
 
 export class ServiceType {
   id: number;
+  tradeId?: number
   name: string;
   description?: string;
   rating?: number;

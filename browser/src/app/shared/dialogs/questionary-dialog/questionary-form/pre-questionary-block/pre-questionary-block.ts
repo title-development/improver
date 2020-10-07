@@ -19,6 +19,7 @@ import { AccountService } from "../../../../../api/services/account.service";
 import { CustomerSuggestionService } from "../../../../../api/services/customer-suggestion.service";
 import { TradeService } from "../../../../../api/services/trade.service";
 import { DeviceControlService } from "../../../../../api/services/device-control.service";
+import { SearchHolder } from "../../../../../util/search-holder";
 
 @Component({
   selector: 'pre-questionary-block',
@@ -33,7 +34,11 @@ export class PreQuestionaryBlock implements OnInit {
   lastZipCode: string;
   serviceSearch;
 
+  searchResultMessageText: string = '';
+
+  services: ServiceType[] = [];
   filteredServices: ServiceType[] = [];
+  searchHolder: SearchHolder<ServiceType>
 
   @ViewChildren('defaultQuestion') defaultQuestions: QueryList<ElementRef>;
 
@@ -68,7 +73,8 @@ export class PreQuestionaryBlock implements OnInit {
     );
 
     if (this.questionaryControlService.trade) {
-      this.filteredServices = this.questionaryControlService.trade.services;
+      this.filteredServices = this.services = this.questionaryControlService.trade.services;
+      this.searchHolder = new SearchHolder<ServiceType>(this.services)
     }
 
   }
@@ -128,13 +134,25 @@ export class PreQuestionaryBlock implements OnInit {
     }
   }
 
-  autocompleteServiceSelectionSearch(search): void {
-    if (search && search.length > 0) {
-      const regExp: RegExp = new RegExp(`^${search.trim()}`, 'i');
-      this.filteredServices = this.questionaryControlService.trade.services.filter(item => Object.values(item).some(str => regExp.test(str as string)));
-    } else {
-      this.filteredServices = this.questionaryControlService.trade.services;
+  autocompleteServiceSelectionSearch(searchTerm): void {
+    if (searchTerm && searchTerm.length > 0) {
+      setTimeout(() => {
+        let searchResults = this.searchHolder.search(searchTerm);
+
+        if (searchResults.length == 0){
+          this.searchResultMessageText = 'No results were found for \"' + searchTerm + '\".';
+          this.filteredServices = [];
+          return;
+        } else {
+          this.searchResultMessageText = '';
+        }
+
+        let serviceTypeIds = searchResults.map(e => e.id);
+        this.filteredServices = this.services.filter(e => serviceTypeIds.includes(e.id))
+
+      })
     }
+
   }
 
 }

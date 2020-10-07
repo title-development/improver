@@ -1,10 +1,10 @@
 import { EventEmitter, Injectable, Input, Output } from '@angular/core';
-import { ServiceType, Trade } from "../../model/data-model";
-import { getErrorMessage } from "../../util/functions";
-import { CustomerSuggestionService } from "./customer-suggestion.service";
-import { PopUpMessageService } from "./pop-up-message.service";
-import { ServiceTypeService } from "./service-type.service";
-import { ProjectActionService } from "./project-action.service";
+import { ServiceType, Trade } from "../model/data-model";
+import { getErrorMessage } from "./functions";
+import { CustomerSuggestionService } from "../api/services/customer-suggestion.service";
+import { PopUpMessageService } from "../api/services/pop-up-message.service";
+import { ServiceTypeService } from "../api/services/service-type.service";
+import { ProjectActionService } from "../api/services/project-action.service";
 import { Router } from "@angular/router";
 import * as Fuse from "fuse.js";
 import { FuseOptions } from "fuse.js";
@@ -14,6 +14,15 @@ import { zip } from "rxjs";
   providedIn: 'root'
 })
 export class UserSearchService {
+
+  readonly fuseOptions: FuseOptions<any> = {
+    maxPatternLength: 100,
+    minMatchCharLength: 2,
+    threshold: 0.1,
+    tokenize: true,
+    matchAllTokens: true,
+    keys: ['name']
+  };
 
   @Output() notMatch: EventEmitter<any> = new EventEmitter<any>();
   @Input() isMobileSearchActive: boolean = false;
@@ -80,17 +89,7 @@ export class UserSearchService {
         this.tradesAndServiceTypes = [...serviceTypes, ...trades];
 
         if (this.tradesAndServiceTypes.length > 0) {
-          let options: FuseOptions<any> = {
-            maxPatternLength: 100,
-            minMatchCharLength: 2,
-            threshold: 0.1,
-            tokenize: true,
-            matchAllTokens: true,
-            //location: 0,
-            //distance: 10,
-            keys: ['name']
-          };
-          this.tradeAndServiceTypeIndexes = new Fuse(this.tradesAndServiceTypes, options);
+          this.tradeAndServiceTypeIndexes = new Fuse(this.tradesAndServiceTypes, this.fuseOptions);
         }
       },
       err => this.popUpService.showError(getErrorMessage(err)));

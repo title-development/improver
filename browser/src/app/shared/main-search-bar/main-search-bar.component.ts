@@ -24,7 +24,7 @@ import { UserService } from "../../api/services/user.service";
 import { CustomerSuggestionService } from "../../api/services/customer-suggestion.service";
 import { Role } from "../../model/security-model";
 import { TradeService } from "../../api/services/trade.service";
-import { UserSearchService } from "../../api/services/user-search.service";
+import { UserSearchService } from "../../util/user-search.service";
 import { dialogsMap } from "../dialogs/dialogs.state";
 import { MediaQuery, MediaQueryService } from "../../api/services/media-query.service";
 import { takeUntil } from "rxjs/operators";

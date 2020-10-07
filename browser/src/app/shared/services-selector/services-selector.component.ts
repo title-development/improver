@@ -13,7 +13,7 @@ import { confirmDialogConfig } from '../dialogs/dialogs.configs';
 import { combineLatest, ReplaySubject, Subject } from 'rxjs';
 import { ScrollHolderService } from '../../api/services/scroll-holder.service';
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
-import { UserSearchService } from "../../api/services/user-search.service";
+import { UserSearchService } from "../../util/user-search.service";
 import { takeUntil } from "rxjs/operators";
 import { MediaQuery, MediaQueryService } from "../../api/services/media-query.service";
 import { Role } from "../../model/security-model";

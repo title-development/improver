@@ -14,7 +14,7 @@ layout-footer {
   margin: 0 auto 52px;
   display: flex;
   justify-content: flex-start;
-  align-items: center;
+  min-height: 300px;
 
   @include response-to(lg) {
     padding: 0 24px;

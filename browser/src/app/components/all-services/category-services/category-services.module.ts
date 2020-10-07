@@ -11,7 +11,7 @@ const routes = RouterModule.forChild([
     path: '', redirectTo: '/404', pathMatch: 'full'
   },
   {
-    path: ':categoryId',
+    path: ':tradeId',
     component: CategoryServicesComponent
   }
 ]);

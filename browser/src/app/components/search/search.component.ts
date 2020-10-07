@@ -8,7 +8,7 @@ import { RestPage } from '../../api/models/RestPage';
 import { ProjectActionService } from '../../api/services/project-action.service';
 import { CustomerSuggestionService } from "../../api/services/customer-suggestion.service";
 import { first, takeUntil } from "rxjs/operators";
-import { UserSearchService } from "../../api/services/user-search.service";
+import { UserSearchService } from "../../util/user-search.service";
 
 
 @Component({

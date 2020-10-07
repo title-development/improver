@@ -16,7 +16,7 @@ import { Constants } from "../../util/constants";
 import { CustomerSuggestionService } from "../../api/services/customer-suggestion.service";
 import { SecurityService } from "../../auth/security.service";
 import { Role } from "../../model/security-model";
-import { UserSearchService } from "../../api/services/user-search.service";
+import { UserSearchService } from "../../util/user-search.service";
 import { markAsTouched } from "../../util/functions";
 import { CvSelectComponent } from "../../theme/select/cv-select/cv-select";
 import { NavigationStart, Router } from "@angular/router";

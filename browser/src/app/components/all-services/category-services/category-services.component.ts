@@ -6,10 +6,11 @@ import { ProjectActionService } from "../../../api/services/project-action.servi
 import { Subject, Subscription } from "rxjs";
 import { ActivatedRoute, Router } from "@angular/router";
 import { PopUpMessageService } from "../../../api/services/pop-up-message.service";
-import { getErrorMessage } from "../../../util/functions";
+import { clone, getErrorMessage } from "../../../util/functions";
 import { takeUntil } from "rxjs/operators";
 import { MediaQuery, MediaQueryService } from "../../../api/services/media-query.service";
 import { AdminTrade } from "../../../api/models/AdminTrade";
+import { SearchHolder } from "../../../util/search-holder";
 
 @Component({
   selector: 'category-services-page',
@@ -23,11 +24,12 @@ export class CategoryServicesComponent implements OnInit {
   trade: AdminTrade;
   filteredServices: ServiceType[] = [];
   private routeParamsSubscription: Subscription;
-  categoryId: any;
+  tradeId: any;
   mediaQuery: MediaQuery;
   model: string = '';
 
   swiper: Swiper;
+  searchHolder: SearchHolder<ServiceType>
 
   constructor(private serviceTypesService: ServiceTypeService,
               private tradeService: TradeService,
@@ -39,8 +41,8 @@ export class CategoryServicesComponent implements OnInit {
               public mediaQueryService: MediaQueryService) {
 
     this.routeParamsSubscription = this.route.params.subscribe(params => {
-      params['categoryId'] ? this.categoryId = params['categoryId'].toString() : this.categoryId = '';
-      this.getTrade(this.categoryId);
+      params['tradeId'] ? this.tradeId = params['tradeId'].toString() : this.tradeId = '';
+      this.getTrade(this.tradeId);
     });
 
     this.mediaQueryService.screen
@@ -72,6 +74,7 @@ export class CategoryServicesComponent implements OnInit {
     this.tradeService.getTradeById(tradeId).subscribe(
       trade => {
         this.trade = trade;
+        this.searchHolder = new SearchHolder<ServiceType>(this.trade.services)
         this.changeDetectorRef.detectChanges();
         this.swiperInitializer();
         this.onFilter('');
@@ -89,26 +92,33 @@ export class CategoryServicesComponent implements OnInit {
   onFilter(searchTerm) {
     searchTerm = searchTerm.trim();
 
-    if (searchTerm == '') {
-      this.filteredServices = this.trade.services;
-      return;
+    if(!searchTerm) {
+      this.filteredServices = clone(this.trade.services);
+      return
     } else {
+      setTimeout(() => {
+        let searchResults = this.searchHolder.search(searchTerm);
 
-      this.filteredServices = [];
-
-        for (let service of this.trade.services) {
-          let regex = new RegExp(searchTerm, 'gi');
-          if (regex.test(service.name)) {
-            this.filteredServices.push(service)
-          }
+        if (searchResults.length == 0){
+          this.searchResultMessageText = 'No results were found for \"' + searchTerm + '\".';
+          this.filteredServices = [];
+          return;
+        } else {
+          this.searchResultMessageText = '';
         }
+
+        let serviceTypeIds = searchResults.map(e => e.id);
+        this.filteredServices = clone(this.trade.services).filter(e => serviceTypeIds.includes(e.id))
+
+      })
+
+
 
       if (this.filteredServices.length == 0){
         this.searchResultMessageText = 'No results were found for \"' + searchTerm + '\".';
       } else {
         this.searchResultMessageText = '';
       }
-
     }
 
   }

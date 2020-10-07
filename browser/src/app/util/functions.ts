@@ -217,3 +217,25 @@ export function applyPhoneMask(value): any {
     return this.lastValue;
   }
 }
+
+export function removeDuplicatesFromArray(array, uniqueFieldName, skipFilterFn?) {
+  let splitted = [];
+  if (skipFilterFn) {
+    splitted = array
+      .reduce((result, el) => {
+        result[skipFilterFn(el) ? 1 : 0].push(el);
+        return result;
+      }, [[], []]);
+  }
+
+  let filteredArray = skipFilterFn ? splitted[0] : array;
+  let unfilteredArray = skipFilterFn ? splitted[1] : [];
+
+  let result = filteredArray.map(e => e[uniqueFieldName])
+    .map((e, i, final) => final.indexOf(e) === i && i)
+    .filter(e => filteredArray[e])
+    .map(e => filteredArray[e]);
+
+  result.push(...unfilteredArray)
+  return result
+}

@@ -22,6 +22,7 @@
 
       <div class="filtered-services-wrapper fill-flex-space">
         <perfect-scrollbar>
+          <div class="no-results-message-block" *ngIf="filteredServices.length == 0 && searchResultMessageText != ''">{{searchResultMessageText}}</div>
           <cv-radio-group name="serviceType" formControlName="serviceType" [items]="filteredServices" labelKey="name">
           </cv-radio-group>
         </perfect-scrollbar>
