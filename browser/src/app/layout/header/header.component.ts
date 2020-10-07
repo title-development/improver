@@ -40,10 +40,6 @@ export class HeaderComponent {
 
     this.subscribeForMediaScreen();
 
-    this.securityService.onUserInit.subscribe(() => {
-      this.postUnsavedOrder();
-    });
-
   }
 
 
@@ -73,36 +69,6 @@ export class HeaderComponent {
           this.dialogRef = null;
         }
       );
-  }
-
-  /** Save projects that was created by anonymous user */
-  private postUnsavedOrder() {
-
-    let oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
-    let maxExpirationDays = 7;
-    let now = new Date();
-
-    if (this.securityService.hasRole(Role.CUSTOMER) && localStorage.getItem('unsavedProjects')) {
-      let unsavedProjects: any = JSON.parse(localStorage.getItem('unsavedProjects'));
-      let requests = [];
-
-      for (let key in unsavedProjects) {
-        let project: RequestOrder = unsavedProjects[key];
-        let diffDays = Math.round(Math.abs((now.getTime() - Date.parse(key)) / (oneDay)));
-
-        this.accountService.getAccount(this.securityService.getLoginModel().id).subscribe(account => {
-          if (project.defaultQuestionaryGroup.email.toLowerCase() == account.email.toLowerCase() && diffDays <= maxExpirationDays) {
-            this.projectService.postUnsavedProjects(project)
-              .pipe(tap( () => {
-                localStorage.removeItem('unsavedProjects')
-                this.metricsEventService.fireProjectRequestedEvent();
-              }))
-              .subscribe();
-          }
-        });
-      }
-    }
-
   }
 
 }

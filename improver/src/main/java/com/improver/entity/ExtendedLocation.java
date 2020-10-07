@@ -17,17 +17,7 @@ import static com.improver.util.serializer.SerializationUtil.ZIP_PATTERN_STRING;
 @Accessors(chain = true)
 @NoArgsConstructor
 @Embeddable
-public class ExtendedLocation {
-
-    private String state;
-
-    @Pattern(regexp = CITY_PATTERN_STRING, message = "Incorrect city name")
-    private String city;
-
-    private String streetAddress;
-
-    @Pattern(regexp = ZIP_PATTERN_STRING, message = "Incorrect zip code")
-    private String zip;
+public class ExtendedLocation extends Location {
 
     @Column(columnDefinition = CD_DOUBLE)
     private Double lat;
@@ -36,22 +26,19 @@ public class ExtendedLocation {
     private Double lng;
 
 
+    public ExtendedLocation(String streetAddress, String city, String state, String zip, boolean isAddressManual) {
+        super(streetAddress, city, state, zip, isAddressManual);
+    }
 
 
-    public ExtendedLocation(String streetAddress, String city, String state, String zip, double lat, double lng) {
-        this.state = state;
-        this.city = city;
-        this.streetAddress = streetAddress;
-        this.zip = zip;
+    public ExtendedLocation(Location location, double lat, double lng) {
+        super(location.getStreetAddress(), location.getCity(), location.getState(), location.getZip(), location.getIsAddressManual());
         this.lat = lat;
         this.lng = lng;
     }
 
-    public ExtendedLocation(Location location, double lat, double lng) {
-        this(location.getStreetAddress(), location.getCity(), location.getState(), location.getZip(), lat, lng);
-    }
 
     public Location withOutCoordinates(){
-        return new Location(this.streetAddress, this.city, this.state, this.zip);
+        return new Location(this.getStreetAddress(), this.getCity(), this.getState(), this.getZip(), this.getIsAddressManual());
     }
 }

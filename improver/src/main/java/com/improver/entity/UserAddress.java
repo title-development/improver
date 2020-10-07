@@ -20,9 +20,7 @@ public class UserAddress extends Location {
 
     private String name;
 
-    private boolean isDefault;
-
-    private boolean isManual;
+    private Boolean isDefault = false;
 
     @ManyToOne
     @JoinColumn(name = "customer_id", foreignKey = @ForeignKey(name = "addresses_customer_fkey"))
@@ -34,8 +32,8 @@ public class UserAddress extends Location {
         setStreetAddress(location.getStreetAddress())
             .setCity(location.getCity())
             .setState(location.getState())
-            .setZip(location.getZip());
-        this.isDefault = true;
-
+            .setZip(location.getZip())
+            .setIsAddressManual(location.getIsAddressManual());
+        this.name = location.asText();
     }
 }

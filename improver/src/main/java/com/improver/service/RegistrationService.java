@@ -49,19 +49,6 @@ public class RegistrationService {
 
 
     /**
-     * Used during service order to create new Customer
-     */
-    public Customer autoRegisterCustomer(Order.BaseLeadInfo baseLeadInfo) {
-        UserRegistration registration = new UserRegistration()
-            .setEmail(baseLeadInfo.getEmail())
-            .setFirstName(baseLeadInfo.getFirstName())
-            .setLastName(baseLeadInfo.getLastName())
-            .setPhone(baseLeadInfo.getPhone());
-        return customerRepository.save(new Customer(registration).generateValidationKey());
-    }
-
-
-    /**
      * Saves new Contractor
      * NOTE. Mail will be sent during company registration
      */

@@ -8,7 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Credentials, LoginModel, RegistrationUserModel, Role } from '../../../../../model/security-model';
 import { SecurityService } from '../../../../../auth/security.service';
 import { ProjectService } from '../../../../../api/services/project.service';
-import { ValidatedLocation } from '../../../../../api/models/LocationsValidation';
+import { OrderValidationResult } from '../../../../../api/models/LocationsValidation';
 import { LocationValidateService } from '../../../../../api/services/location-validate.service';
 import { PopUpMessageService } from '../../../../../api/services/pop-up-message.service';
 import { Router } from '@angular/router';
@@ -54,6 +54,8 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
   filteredStates = [];
   locationValidation: string = '';
   validationMessage: string = '';
+  projectId: number;
+  orderServiceType: string;
   processingAddressValidation: boolean;
   waitingPhoneConfirmation: boolean;
   originalAddress: any = {};
@@ -142,21 +144,6 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     }
   }
 
-  onSubmit(name?, handler?: Function): void {
-    if (name) {
-      if (this.isValid(name)) {
-        if (handler !== undefined) {
-          handler.call(this, name, this.saveProject);
-        } else {
-          this.saveProject();
-        }
-      } else {
-        markAsTouched(<FormGroup> this.defaultQuestionaryForm.get(name));
-      }
-    } else {
-      this.saveProject();
-    }
-  }
 
   close(): void {
     this.dialog.closeAll();
@@ -188,34 +175,26 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
         });
   }
 
-  saveProject(): void {
-    this.disabledNextAction = true;
-    const requestOrder = RequestOrder.build(this.questionaryControlService.mainForm.getRawValue(), this.questionaryControlService.serviceType);
-    this.postOrderProcessing = true;
-      this.projectService.postOrder(requestOrder).subscribe(
-        projectId => {
-          this.orderSuccess(requestOrder, projectId);
-          this.metricsEventService.fireProjectRequestedEvent();
-        },
-        err => {
-          this.popUpMessageService.showError(getErrorMessage(err));
-          this.postOrderProcessing = false;
-        }
-      );
-  }
 
-  orderSuccess(requestOrder: RequestOrder, projectId: number): void {
-    this.postOrderProcessing = false;
-    this.projectActionService.projectUpdated();
-    this.dialog.closeAll();
-    this.router.navigate(['my', 'projects', projectId]);
-    this.popUpMessageService.showSuccess('Your <b>' + requestOrder.serviceName + '</b> request is submitted successfully!');
-    if (!this.securityService.getLoginModel().emailConfirmed) {
-      this.registrationHelper.email = this.defaultQuestionaryForm.get('customerPersonalInfo.email').value;
-      this.registrationHelper.isRegisteredWhileProjectSubmission = true;
-      setTimeout(() => {
-        this.registrationHelper.openEmailVerificationHintDialog()
-      }, 200)
+  onSubmit(projectId?: number): void {
+    this.disabledNextAction = true;
+    if (this.projectId) {
+      this.metricsEventService.fireProjectRequestedEvent();
+      this.projectService.submitProject(projectId)
+        .subscribe(response => {
+          this.postOrderProcessing = false;
+          this.projectActionService.projectUpdated();
+          this.dialog.closeAll();
+          this.router.navigate(['my', 'projects', projectId]);
+          this.popUpMessageService.showSuccess(this.orderServiceType + ' request is submitted');
+          if (!this.securityService.getLoginModel().emailConfirmed) {
+            this.registrationHelper.email = this.defaultQuestionaryForm.get('customerPersonalInfo.email').value;
+            this.registrationHelper.isRegisteredWhileProjectSubmission = true;
+            setTimeout(() => {
+              this.registrationHelper.openEmailVerificationHintDialog()
+            }, 200)
+          }
+        });
     }
   }
 
@@ -241,50 +220,62 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
   }
 
   validateLocation(formGroupName: string, callback?: Function): void {
-    this.disabledNextAction = true;
-    const location = this.defaultQuestionaryForm.get(formGroupName).value;
-    this.processingAddressValidation = true;
-    this.locationValidate.validateWithCoverage(location)
-      .pipe(first())
-      .subscribe((validatedLocation: ValidatedLocation) => {
-      this.processingAddressValidation = false;
-      if (validatedLocation.valid) {
-        this.locationValidation = '';
-        this.disabledNextAction = false;
-        callback.call(this);
-      } else {
-        if (validatedLocation.suggested) {
-          this.hideNextAction = true;
-          this.locationInvalid = true;
-          this.originalAddress = location;
-          this.suggestedAddress = validatedLocation.suggested;
-          this.validationMessage = validatedLocation.validationMsg;
-        } else {
-          this.locationInvalid = false;
-        }
-        this.locationValidation = validatedLocation.error;
-        this.defaultQuestionaryForm.get('projectLocation')
-          .valueChanges
-          .pipe(first())
-          .subscribe(res => {
-              this.locationValidation = '';
-              this.disabledNextAction = false;
-            }
-          );
+    if (this.questionaryControlService.hasUnsavedChanges) {
+      this.disabledNextAction = true;
+      const location = this.defaultQuestionaryForm.get(formGroupName).value;
+      const requestOrder = RequestOrder.build(this.questionaryControlService.mainForm.getRawValue(), this.questionaryControlService.serviceType);
+      this.orderServiceType = requestOrder.serviceName;
+      if (this.projectId){
+        requestOrder.projectId = this.projectId;
       }
-    }, err => {
-      	console.error(err);
-      	this.processingAddressValidation = false;
-      	this.locationValidation = 'Address Not found';
-      	this.resetLocationQuestion();
-    });
+      this.projectService.prepareOrder(requestOrder)
+        .subscribe((orderValidationResult: OrderValidationResult) => {
+          this.projectId = orderValidationResult.projectId;
+          this.questionaryControlService.hasUnsavedChanges = false;
+
+          if (orderValidationResult.validatedLocation.valid) {
+            this.locationValidation = '';
+            this.disabledNextAction = false;
+            callback.call(this);
+          } else {
+            if (orderValidationResult.validatedLocation.suggested) {
+              this.hideNextAction = true;
+              this.locationInvalid = true;
+              this.originalAddress = location;
+              this.suggestedAddress = orderValidationResult.validatedLocation.suggested;
+              this.validationMessage = orderValidationResult.validatedLocation.validationMsg;
+            } else {
+              this.locationInvalid = false;
+              this.disabledNextAction = true;
+            }
+            this.locationValidation = orderValidationResult.validatedLocation.error;
+            this.defaultQuestionaryForm.get('projectLocation')
+              .valueChanges
+              .pipe(first())
+              .subscribe(res => {
+                  this.locationValidation = '';
+                  this.disabledNextAction = false;
+                }
+              );
+          }
+        }, err => {
+          console.error(err);
+          this.disabledNextAction = true;
+          this.processingAddressValidation = false;
+          this.locationValidation = 'Address Not found';
+          this.resetLocationQuestion();
+        });
+    } else {
+      callback.call(this);
+    }
+
   }
 
   resetLocationQuestion(): void {
     this.locationInvalid = false;
     this.hideNextAction = false;
-    this.disabledNextAction = false;
-    this.locationValidation = '';
+    this.disabledNextAction = true;
+    //this.locationValidation = '';
     const location: FormGroup = this.defaultQuestionaryForm.get('projectLocation');
   }
 
@@ -300,11 +291,11 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
       zip: address.zip
     });
     if (this.securityService.hasRole(Role.ANONYMOUS)) {
-      this.nextStep();
+      this.nextQuestion('projectLocation', this.validateLocation);
     } else if (this.securityService.hasRole(Role.CUSTOMER) && !this.questionaryControlService.customerHasPhone) {
-      this.nextStep();
+      this.nextQuestion('projectLocation', this.validateLocation);
     } else {
-      this.nextStep();
+      this.nextQuestion('projectLocation', this.validateLocation);
     }
 
   }

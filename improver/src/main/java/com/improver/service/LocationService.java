@@ -10,6 +10,7 @@ import com.improver.entity.ExtendedLocation;
 import com.improver.entity.Location;
 import com.improver.exception.ThirdPartyException;
 import com.improver.exception.ValidationException;
+import com.improver.model.UserAddressModel;
 import com.improver.model.out.ValidatedLocation;
 import com.improver.repository.ServedZipRepository;
 import com.shippo.Shippo;
@@ -50,6 +51,14 @@ public class LocationService {
     }
 
 
+    public ValidatedLocation validateProjectAddress(UserAddressModel address) throws ThirdPartyException {
+        Location projectLoc = new Location().setStreetAddress(address.getStreetAddress())
+            .setCity(address.getCity())
+            .setState(address.getState())
+            .setZip(address.getZip());
+        return validate(projectLoc,  false, true, address.getIsAddressManual());
+    }
+
 
     public ValidatedLocation validate(@Valid Location toValidate, boolean includeCoordinates, boolean checkCoverage, boolean isManual) throws ThirdPartyException {
 
@@ -71,26 +80,23 @@ public class LocationService {
             }
 
             else {
-                ExtendedLocation validated = new ExtendedLocation()
-                    .setStreetAddress(capitalize((String) address.getStreet1()))
-                    .setCity(capitalize((String) address.getCity()))
-                    .setState((String) address.getState())
-                    .setZip(address.getZip().toString().substring(0, 5));
+                ExtendedLocation validated = new ExtendedLocation((String) address.getStreet1(),
+                (String) address.getCity(), (String) address.getState(), address.getZip().toString().substring(0, 5), isManual);
 
                 // check the address
                 String errorMsg;
                 if (!validated.getState().equalsIgnoreCase(toValidate.getState())) {
-                    log.debug("State doesn't match");
+                    log.trace("State doesn't match");
                     errorMsg = "State is not valid for provided address";
                     return suggestion(validated, errorMsg, validationMsg, checkCoverage);
                 }
                 if (!validated.getCity().equalsIgnoreCase(toValidate.getCity())) {
-                    log.debug("City doesn't match");
+                    log.trace("City doesn't match");
                     errorMsg = "City is not valid for provided address";
                     return suggestion(validated, errorMsg, validationMsg, checkCoverage);
                 }
                 if (!validated.getZip().equalsIgnoreCase(toValidate.getZip())) {
-                    log.debug("Zip doesn't match");
+                    log.trace("Zip doesn't match");
                     errorMsg = "Zip code is not valid for provided address";
                     return suggestion(validated, errorMsg, validationMsg, checkCoverage);
                 }
@@ -100,11 +106,11 @@ public class LocationService {
                 double similarityScore = similarityService.score(inputStreet, suggestedStreet);
                 if (similarityScore < STREET_ADDRESS_MIN_SIMILARITY_SCORE) {
                     if (isManual && similarityScore >= 0.7) {
-                        log.debug("Manual address");
+                        log.trace("Manual street address validation score=" + similarityScore);
                         validationMsg = "";
                         return valid(includeCoordinates, validated.withOutCoordinates(), validationMsg, checkCoverage);
                     } else {
-                        log.debug("Street Address doesn't match");
+                        log.trace("Street Address doesn't match");
                         errorMsg = "Street address is not fully valid or formatted incorrectly";
                         return suggestion(validated, errorMsg, validationMsg, checkCoverage);
                     }

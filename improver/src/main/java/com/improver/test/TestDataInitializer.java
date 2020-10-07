@@ -185,7 +185,7 @@ public class TestDataInitializer {
         ServiceType serviceType = serviceTypeRepository.findByName(serviceName);
         Order order = TestOrderHelper.generateFor(serviceName);
         Order.BaseLeadInfo details = order.getBaseLeadInfo();
-        Centroid centroid = servedZipRepository.findByZip(details.getLocation().getZip())
+        Centroid centroid = servedZipRepository.findByZip(order.getAddress().getZip())
             .orElseThrow(() -> new ValidationException("zip not found"))
             .getCentroid();
         Project project = new Project()
@@ -195,7 +195,7 @@ public class TestDataInitializer {
             .setLeadPrice(serviceType.getLeadPrice())
             .setCustomer(customer)
             .setServiceType(serviceType)
-            .setLocation(details.getLocation())
+            .setLocation(order.getAddress())
             .setStartDate(details.getStartExpectation())
             .setDetails(SerializationUtil.toJson(order.getQuestionary()))
             .setNotes(order.getBaseLeadInfo().getNotes())

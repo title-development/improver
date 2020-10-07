@@ -251,6 +251,8 @@
                name="streetAddress"
                placeholder="Address"
                [formControlName]="'streetAddress'"
+               [(cv_trim)]="defaultQuestionaryForm.get('projectLocation.streetAddress').value"
+               (cv_trimChange)="defaultQuestionaryForm.get('projectLocation.streetAddress').setValue($event)"
                [id]="'streetAddress'"
                required>
         <cv-field-error
@@ -266,6 +268,8 @@
                name="city"
                placeholder="City"
                [id]="'city'"
+               [(cv_trim)]="defaultQuestionaryForm.get('projectLocation.city').value"
+               (cv_trimChange)="defaultQuestionaryForm.get('projectLocation.city').setValue($event)"
                [formControlName]="'city'"
                required>
         <cv-field-error
@@ -312,7 +316,8 @@
           *ngIf="defaultQuestionaryForm.get('projectLocation.zip').dirty || defaultQuestionaryForm.get('projectLocation.zip').touched">
           <span *ngIf="defaultQuestionaryForm.get('projectLocation.zip').errors?.required">Is required</span>
           <span
-            *ngIf="defaultQuestionaryForm.get('projectLocation.zip').errors?.pattern">{{messages.errors.zip.pattern}}</span>
+            *ngIf="defaultQuestionaryForm.get('projectLocation.zip').errors?.pattern">{{messages.errors.zip.pattern}}
+          </span>
         </cv-field-error>
       </cv-input-field>
       <cv-field-error class="location-error">{{locationValidation | lowercase}}</cv-field-error>
@@ -404,7 +409,7 @@
     <div class="questionary-dialog-footer" fxLayoutAlign="end center">
       <button cv-button-empty class="questionary-previous-button" (click)="questionaryControlService.previousQuestion()" type="button">Back</button>
       <div fxFlex=""></div>
-      <button cv-button class="questionary-next-button" (click)="onSubmit()" type="button" [loading]="postOrderProcessing">Confirm</button>
+      <button cv-button class="questionary-next-button" (click)="onSubmit(projectId)" type="button" [loading]="postOrderProcessing">Confirm</button>
     </div>
 
 </div>

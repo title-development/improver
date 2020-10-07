@@ -33,3 +33,8 @@ export class ValidatedLocation {
   error: string;
   validationMsg: string;
 }
+
+export class OrderValidationResult {
+  projectId: number;
+  validatedLocation: ValidatedLocation;
+}

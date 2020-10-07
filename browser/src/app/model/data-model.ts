@@ -442,6 +442,38 @@ export class StripeToken {
   created: number;
 }
 
+export class BaseLeadInfo {
+  startExpectation: string;
+  notes: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+
+  constructor(info, startExpectation, projectDetails) {
+    this.startExpectation = startExpectation;
+    this.notes = projectDetails;
+    this.firstName = info.firstName;
+    this.lastName = info.lastName;
+    this.email = info.email;
+    this.phone = info.phone;
+  }
+}
+
+export class UserAddress {
+  streetAddress: string;
+  city: string;
+  state: string;
+  zip: string
+
+  constructor(location) {
+    this.streetAddress = location.streetAddress;
+    this.city = location.city;
+    this.state = location.state;
+    this.zip = location.zip;
+  }
+}
+
 export class Pagination {
   page: any;
   size: any;

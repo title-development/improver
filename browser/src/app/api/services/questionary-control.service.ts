@@ -47,6 +47,7 @@ export class QuestionaryControlService {
 
   mainForm;
   questionary: ServiceQuestionaryModel;
+  hasUnsavedChanges: boolean = false;
 
   public onAccountDataLoaded: ReplaySubject<any> = new ReplaySubject(1);
 

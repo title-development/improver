@@ -236,13 +236,15 @@ public class MailService {
      *                                                  CUSTOMER
      ********************************************************************************************************/
 
-    public void sendAutoRegistrationConfirmEmail(Customer customer, Project project, Order.BaseLeadInfo details, boolean showAnswers, boolean isSocialUser) {
+    public void sendAutoRegistrationConfirmEmail(Customer customer, Project project, boolean showAnswers, boolean isSocialUser) {
         Context context = contextTemplate();
         context.setVariable(USER_NAME, customer.getFirstName());
         context.setVariable(TITLE, "Thank you for choosing Home Improve!");
         context.setVariable("serviceType", project.getServiceName());
         context.setVariable(BODY, "You've requested request a " + project.getServiceName());
-        context.setVariable("projectDetails", details);
+        context.setVariable("location", project.getLocation());
+        context.setVariable("startExpectation", project.getStartDate());
+        context.setVariable("notes", project.getNotes());
         if (showAnswers){
             List<Order.QuestionAnswer> questionAnswers = SerializationUtil.fromJson(new TypeReference<>() {}, project.getDetails());
             context.setVariable("answers", questionAnswers);
@@ -257,12 +259,14 @@ public class MailService {
     }
 
 
-    public void sendOrderSubmitMail(Customer customer, Project project, Order.BaseLeadInfo details, boolean showAnswers) {
+    public void sendOrderSubmitMail(Customer customer, Project project, boolean showAnswers) {
         Context context = contextTemplate();
         context.setVariable(USER_NAME, customer.getFirstName());
         context.setVariable(TITLE, "Your project has been submitted!");
         context.setVariable(BODY, "You've requested a " + project.getServiceName()  + ".");
-        context.setVariable("projectDetails", details);
+        context.setVariable("location", project.getLocation());
+        context.setVariable("startExpectation", project.getStartDate());
+        context.setVariable("notes", project.getNotes());
         if (showAnswers){
             List<Order.QuestionAnswer> questionAnswers = SerializationUtil.fromJson(new TypeReference<>() {}, project.getDetails());
             context.setVariable("answers", questionAnswers);
@@ -415,16 +419,17 @@ public class MailService {
      *
      * @param company            contractor that purchased lead
      * @param projectRequest     projectRequest created after purchase
-     * @param baseLeadInfo       lead details from questionary forms
      * @param answers            lead question answer from questionary form
      * @param showAnswers        add answers to context
      */
-    public void sendLeadAutoPurchaseEmail(Company company, Project project, ProjectRequest projectRequest, Order.BaseLeadInfo baseLeadInfo, List<Order.QuestionAnswer> answers, boolean showAnswers) {
+    public void sendLeadAutoPurchaseEmail(Company company, Project project, ProjectRequest projectRequest, List<Order.QuestionAnswer> answers, boolean showAnswers) {
         Context context = contextTemplate();
         context.setVariable(USER_NAME, projectRequest.getContractor().getDisplayName());
         context.setVariable(TITLE, "You received new subscription lead");
         context.setVariable(BODY, project.getServiceName() + " request from " + project.getCustomer().getDisplayName());
-        context.setVariable("projectDetails", baseLeadInfo);
+        context.setVariable("location", project.getLocation());
+        context.setVariable("startExpectation", project.getStartDate());
+        context.setVariable("notes", project.getNotes());
         if (showAnswers){
             context.setVariable("answers", answers);
         }

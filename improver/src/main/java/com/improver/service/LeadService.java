@@ -168,14 +168,7 @@ public class LeadService {
             mailService.sendManualLeadPurchaseEmail(assignment, projectRequest);
         } else {
             List <Order.QuestionAnswer> questionAnswers = SerializationUtil.fromJson(new TypeReference<>() {}, lead.getDetails());
-            Order.BaseLeadInfo baseLeadInfo = new Order.BaseLeadInfo()
-                .setStartExpectation(lead.getStartDate())
-                .setNotes(lead.getNotes())
-                .setStreetAddress(lead.getLocation().getStreetAddress())
-                .setCity(lead.getLocation().getCity())
-                .setState(lead.getLocation().getState())
-                .setZip(lead.getLocation().getZip());
-            mailService.sendLeadAutoPurchaseEmail(company, lead, projectRequest, baseLeadInfo, questionAnswers, true);
+            mailService.sendLeadAutoPurchaseEmail(company, lead, projectRequest, questionAnswers, true);
             wsNotificationService.newSubscriptionLeadPurchase(assignment, lead.getCustomer(), serviceType, projectRequest.getId());
         }
 

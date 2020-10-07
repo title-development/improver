@@ -41,7 +41,6 @@ public class GenericExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({AccessDeniedException.class})
     public ResponseEntity<Object> handleAccessDenied(AccessDeniedException e, WebRequest request) {
-        log.error("Access Denied: "+ e.getMessage());
         return new ResponseEntity<>(new RestError(403, e.getMessage()), FORBIDDEN);
     }
 
@@ -68,6 +67,12 @@ public class GenericExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(new RestError(422, e.getMessage()), UNPROCESSABLE_ENTITY);
     }
 
+    @ExceptionHandler({OrderValidationException.class})
+    public ResponseEntity<Object> handleValidationException(OrderValidationException e, WebRequest request) {
+        return new ResponseEntity<>(e.getValidationResult(), OK);
+    }
+
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException e,
                                                                   HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -85,13 +90,14 @@ public class GenericExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({InternalServerException.class})
     public ResponseEntity<Object> handleInternalError(InternalServerException e, WebRequest request) {
-        log.error("Internal Server Error ", e);
+        if (e.isLogMessageInAdvice()) {
+            log.error("Internal Server Error ", e);
+        }
         return new ResponseEntity<>(new RestError(500, e.getMessage()), INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler({ThirdPartyException.class})
     public ResponseEntity<Object> handleThirdPartyException(ThirdPartyException e, WebRequest request) {
-        log.error("Internal Server Error ", e);
         return new ResponseEntity<>(new RestError(500, e.getMessage()), INTERNAL_SERVER_ERROR);
     }
 

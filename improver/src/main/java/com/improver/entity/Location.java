@@ -6,6 +6,7 @@ import lombok.experimental.Accessors;
 
 import javax.persistence.Embeddable;
 import javax.persistence.MappedSuperclass;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 import static com.improver.util.serializer.SerializationUtil.ZIP_PATTERN_STRING;
@@ -17,10 +18,11 @@ import static com.improver.util.serializer.SerializationUtil.ZIP_PATTERN_STRING;
 @Embeddable
 public class Location {
 
-    private String streetAddress;
-    private String city;
-    private String state;
+    @NotNull private String streetAddress;
+    @NotNull private String city;
+    @NotNull private String state;
     @Pattern(regexp = ZIP_PATTERN_STRING) private String zip;
+    private Boolean isAddressManual = false;
 
 
     public Location(String streetAddress, String city, String state, String zip) {
@@ -28,6 +30,11 @@ public class Location {
         this.city = city;
         this.streetAddress = streetAddress;
         this.zip = zip;
+    }
+
+    public Location(String streetAddress, String city, String state, String zip, boolean isAddressManual) {
+        this(streetAddress, city, state, zip);
+        this.isAddressManual = isAddressManual;
     }
 
     public String asText() {

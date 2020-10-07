@@ -1,7 +1,7 @@
 package com.improver.model.in;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.improver.entity.Location;
+
+import com.improver.model.UserAddressModel;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -10,20 +10,21 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 import static com.improver.util.ErrorMessages.ORDER_DESCRIPTION_SIZE_ERROR_MESSAGE;
-import static com.improver.util.StringUtil.capitalize;
 import static com.improver.util.database.DataRestrictions.ORDER_DESCRIPTION_SIZE;
 
 @Data
 @Accessors(chain = true)
 public class Order {
 
+    private Long projectId;
+
     private long serviceId;
 
-    @JsonProperty("questionaryGroup")
     private List<QuestionAnswer> questionary;
 
-    @JsonProperty("defaultQuestionaryGroup")
     private BaseLeadInfo baseLeadInfo;
+
+    private UserAddressModel address;
 
 
     @Data
@@ -45,25 +46,9 @@ public class Order {
         @NotNull
         private String phone;
 
-        @NotNull
-        private String streetAddress;
-
-        @NotNull
-        private String city;
-
-        @NotNull
-        private String state;
-
-        @NotNull
-        private String zip;
-
         public BaseLeadInfo setEmail(String email) {
             this.email = email.toLowerCase();
             return this;
-        }
-
-        public Location getLocation() {
-            return new Location(capitalize(streetAddress), capitalize(city), state, zip);
         }
 
         public enum StartExpectation {

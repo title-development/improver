@@ -29,7 +29,7 @@ public class LocationController {
                                                                 @RequestParam(defaultValue = "false") boolean isManual) {
         ValidatedLocation validated = null;
         try {
-            validated = locationService.validate(new Location(streetAddress, city, state, zip), coordinates, checkCoverage, isManual);
+            validated = locationService.validate(new Location(streetAddress, city, state, zip, isManual), coordinates, checkCoverage, isManual);
         } catch (ThirdPartyException e) {
             throw new InternalServerException("Could not validate Address", e);
         }

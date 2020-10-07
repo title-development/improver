@@ -1,4 +1,4 @@
-<form class="questionary-form" [formGroup]="questionaryControlService.mainForm">
+<form class="questionary-form" #mainForm="ngForm" [formGroup]="questionaryControlService.mainForm">
 
   <div *ngIf="questionaryControlService.showQuestionary" class="start-white-screen">
     <ng-container>

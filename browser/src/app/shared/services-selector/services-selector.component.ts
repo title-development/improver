@@ -321,14 +321,14 @@ export class ServicesSelectorComponent implements OnInit {
             this.tradesAndServiceTypes.trades.unshift(trade);
             others && others.services.length > 0 ? this.tradesAndServiceTypes.trades.push(others) : null;
             this.initCheckboxControl();
-            this.popUpMessageService.showSuccess('All services form <b>' + trade.name + '</b> have been added to your service list');
+            this.popUpMessageService.showSuccess('Trade ' + trade.name + ' added');
             this.updateTradesAndServices();
           },
           err => {
             this.popUpMessageService.showError(getErrorMessage(err));
           });
     } else {
-      this.popUpMessageService.showSuccess('<b>' + trade.name + '</b> is already in your service list, you can configure it below');
+      this.popUpMessageService.showSuccess('Trade ' + trade.name + ' already selected');
     }
   }
 
@@ -358,7 +358,7 @@ export class ServicesSelectorComponent implements OnInit {
     }
 
     let properties = {
-      title: 'Are you sure that you want to remove this Trade?',
+      title: 'Remove this Trade?',
       message: '',
       OK: 'Confirm',
       CANCEL: 'Cancel'

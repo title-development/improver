@@ -11,6 +11,7 @@ import com.improver.model.in.CloseProjectRequest;
 import com.improver.model.in.Order;
 import com.improver.model.out.project.CloseProjectQuestionary;
 import com.improver.model.out.project.CompanyProjectRequest;
+import com.improver.model.out.project.OrderValidationResult;
 import com.improver.repository.ProjectRepository;
 import com.improver.repository.ProjectRequestRepository;
 import com.improver.security.UserSecurityService;
@@ -47,13 +48,32 @@ public class ProjectController {
     @Autowired private ProjectRequestRepository projectRequestRepository;
     @Autowired private CustomerProjectService customerProjectService;
 
-    @PreAuthorize("hasAnyRole('ANONYMOUS', 'CUSTOMER', 'ADMIN', 'SUPPORT')")
-    @PostMapping
-    public ResponseEntity<Long> postOrder(@RequestBody @Valid Order order) {
-        Customer customer = userSecurityService.currentCustomerOrNull();
-        long projectId = orderService.postOrder(order, customer);
-        return new ResponseEntity<>(projectId, HttpStatus.OK);
+    @PreAuthorize("hasRole('CUSTOMER')")
+    @PutMapping
+    public ResponseEntity<OrderValidationResult> prepareOrder(@RequestBody @Valid Order order) {
+        Customer customer = userSecurityService.currentCustomer();
+        OrderValidationResult result = orderService.prepareOrder(order, customer);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+
+    @PreAuthorize("hasRole('CUSTOMER')")
+    @PostMapping(ID_PATH_VARIABLE)
+    public ResponseEntity<Long> submitProject(@PathVariable long id) {
+        Customer customer = userSecurityService.currentCustomer();
+        long projId = orderService.submitProject(id, customer);
+        return new ResponseEntity<>(projId, HttpStatus.OK);
+    }
+
+
+    @PreAuthorize("hasRole('CUSTOMER')")
+    @DeleteMapping(ID_PATH_VARIABLE)
+    public ResponseEntity<Void> deleteOrder(@PathVariable long id) {
+        Customer customer = userSecurityService.currentCustomer();
+        orderService.removeOrder(id, customer);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 
     @SupportAccess
     @GetMapping
