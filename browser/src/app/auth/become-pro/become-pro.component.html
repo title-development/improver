@@ -57,59 +57,61 @@
 </div>
 
 <div class="benefits">
-    <div class="benefits-wrapper">
-        <div class="title">Your Leads - Your Terms - No Hassle</div>
-        <div class="benefits-content" >
-            <div class="benefit-item-parent" *ngFor="let item of benefits">
-                <div class="benefit-item">
-                    <div class="benefit-item-header"></div>
-                    <div class="image"
-                         [ngStyle]="{'background-image':'url(' + 'assets/img/became-pro-benefits/'+ item.image + ')'}">
-                    </div>
-                    <div class="benefit-item-footer">
-                        <div class="item-title">{{item.title}}</div>
-                        <div class="item-text">{{item.text}}</div>
-                    </div>
-                </div>
-            </div>
+  <div class="benefits-wrapper">
+    <div class="title">Your Leads - Your Terms - No Hassle</div>
+    <div class="benefits-content">
+      <div class="benefit-item-parent" *ngFor="let item of benefits">
+        <div class="benefit-item">
+          <div class="benefit-item-header"></div>
+          <div class="image"
+               [ngStyle]="{'background-image':'url(' + 'assets/img/became-pro-benefits/'+ item.image + ')'}">
+          </div>
+          <div class="benefit-item-footer">
+            <div class="item-title">{{item.title}}</div>
+            <div class="item-text">{{item.text}}</div>
+          </div>
         </div>
-        <div>
-
-        </div>
+      </div>
     </div>
+    <div>
+
+    </div>
+  </div>
 </div>
 
 <div class="configuration-hints">
-    <div class="hints-wrapper">
+  <div class="hints-wrapper">
 
-        <div class="title" >Get relevant leads for you</div>
-        <div class="hints-content">
-            <div class="hints">
-                <div class="hints-header"></div>
-                <div class="hint-image-wrapper step-1"></div>
-                <div class="hints-footer">
-                    <div class="hints-title">
-                      Choose where you want to accept jobs
-                    </div>
-                    <div class="hints-text">
-                      Select your targeted cities, countries, and zip codes to get the most relevant leads.
-                    </div>
-                </div>
-            </div>
-            <div class="hints">
-                <div class="hints-header"></div>
-                <div class="hint-image-wrapper step-2"></div>
-                <div class="hints-footer">
-                    <div class="hints-title">
-                      Customize the kind of work you want
-                    </div>
-                    <div class="hints-text">
-                      Check and uncheck service boxes so potential clients know exactly what your team’s skill set is.
-                    </div>
-                </div>
-            </div>
+    <div class="title">Get relevant leads for you</div>
+
+    <div class="hints">
+
+      <div class="hint">
+        <img src="../../../assets/img/became-pro-hints/hint_1.png">
+        <div class="hint-footer">
+          <div class="hint-title">
+            Choose where you want to accept jobs
+          </div>
+          <div class="hint-text">
+            Select your targeted cities, countries, and zip codes to get the most relevant leads.
+          </div>
         </div>
+      </div>
+
+      <div class="hint">
+        <img src="../../../assets/img/became-pro-hints/hint_2.png">
+        <div class="hint-footer">
+          <div class="hint-title">
+            Customize the kind of work you want
+          </div>
+          <div class="hint-text">
+            Check and uncheck service boxes so potential clients know exactly what your team’s skill set is.
+          </div>
+        </div>
+      </div>
+
     </div>
+  </div>
 </div>
 
 <div class="testimonials-wrapper">
@@ -119,10 +121,10 @@
 </div>
 
 <div class="pro-banner-content">
-    <pro-banner [bannerConfig]="proBannerConfig"></pro-banner>
+  <pro-banner [bannerConfig]="proBannerConfig"></pro-banner>
 </div>
 
 
 <div class="become-pro-footer">
-    <layout-footer></layout-footer>
+  <layout-footer></layout-footer>
 </div>

@@ -369,7 +369,7 @@
       font-weight: bold;
       font-size: 36px;
       color: $dark;
-      margin-bottom: 38px;
+      margin-bottom: 48px;
       text-align: left;
 
       @include response-to(lg) {
@@ -520,6 +520,7 @@
 }
 
 .configuration-hints {
+  display: flex;
   position: relative;
   width: 100%;
 
@@ -565,7 +566,7 @@
       }
     }
 
-    .hints-content {
+    .hints {
       display: flex;
       flex-direction: row;
       justify-content: space-between;
@@ -575,15 +576,15 @@
         justify-content: center;
       }
 
-      .hints {
+      .hint {
         position: relative;
         width: 540px;
-        height: 455px;
         border-radius: 20px;
         display: flex;
         flex-direction: column;
         justify-items: center;
         justify-content: flex-start;
+        align-items: center;
         text-align: center;
         padding: 0 24px;
 
@@ -592,21 +593,17 @@
         }
 
         @include response-to(md) {
-          height: 400px;
           padding: 0 20px;
         }
 
         @include response-to(sm) {
           width: 100%;
           max-width: 450px;
-          height: 435px;
           margin: 0 auto;
           padding: 0 12px;
         }
 
         @include response(xs) {
-          height: 360px;
-
         }
 
         &:hover {
@@ -617,54 +614,34 @@
           }
         }
 
-        .hint-image-wrapper {
-          position: absolute;
-          top: 35%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          width: 80%;
+        img {
+          width: 90%;
+          max-width: 90%;
+          min-width: 90%;
           height: 290px;
-          background-repeat: no-repeat;
-          background-size: contain;
-          background-position: center;
+          object-fit: contain;
 
           @include response-to(md) {
-            top: 30%;
-          }
-        }
-
-        .step-1 {
-          background-image: url(../../../assets/img/became-pro-hints/hint_1.png);
-        }
-
-        .step-2 {
-          background-image: url(../../../assets/img/became-pro-hints/hint_2.png);
-
-          @include response-to(md) {
-            width: 90%;
+            width: 100%;
+            max-width: 100%;
+            min-width: 100%;
           }
 
           @include response-to(xs) {
-            top: 40%;
-            width: 85%;
+            width: calc(100% + 12px);
+            max-width: calc(100% + 12px);
+            min-width: calc(100% + 12px);
+            height: 250px;
+            margin-top: -12px;
+            margin-bottom: -12px;
           }
         }
 
-        .hints-footer {
+        .hint-footer {
           display: flex;
           flex-direction: column;
-          margin-top: 280px;
 
-          @include response-to(md) {
-            margin-top: 240px;
-          }
-
-          @include response-to(sm) {
-            margin-top: 280px;
-          }
-
-
-          .hints-title {
+          .hint-title {
             font-size: 24px;
             font-weight: bold;
             color: $grey-700;
@@ -683,12 +660,12 @@
             }
           }
 
-          .hints-text {
-            margin: 0 auto;
+          .hint-text {
             font-size: 16px;
             max-width: 430px;
             line-height: 140%;
             color: rgba(39, 49, 73, 0.6);
+            margin: 0 auto 48px;
 
             @include response-to(md) {
               min-width: 300px;
@@ -702,7 +679,7 @@
               font-size: 16px;
               min-width: auto;
               width: 100%;
-              margin: 0;
+              margin: 0 0 24px;
             }
           }
         }
@@ -716,6 +693,8 @@
   margin-bottom: 120px;
   position: relative;
   max-width: 100%;
+  padding-left: 24px;
+
   @include response-to(lg) {
     padding-left: 24px;
   }
