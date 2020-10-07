@@ -7,17 +7,16 @@
       border: none;
       border-left: 3px solid transparent;
       background-color: transparent;
-      padding: 12px 3px 10px;
+      padding: 12px 12px 10px;
       color: $grey-600;
       font-size: 16px;
 
       @include response(md) {
         font-size: 14px;
-        padding-right: 0;
       }
 
       > div {
-        align-self: center;
+        text-align: left;
       }
       &.active {
         color: $primary-500;

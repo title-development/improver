@@ -1,12 +1,6 @@
 @import "../../account.component.scss";
 @import "improver-mixins";
 
-.account-nav-title {
-  font-size: 24px;
-  font-weight: 600;
-  color: $black-800;
-}
-
 .md-padding {
 
   @include response(md) {
