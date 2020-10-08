@@ -176,3 +176,10 @@ cv-radio-group {
 .form-row {
   width: 100%;
 }
+
+.filtered-services-wrapper perfect-scrollbar {
+  .ps__rail-x, .ps__rail-y {
+    opacity: 0 ;
+    transition: all .3s ease;
+  }
+}

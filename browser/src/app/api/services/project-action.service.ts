@@ -353,6 +353,7 @@ export class ProjectActionService {
     this.questionaryDialogRef
       .afterClosed()
       .subscribe(result => {
+        this.questionaryControlService.clearPreSavedProject()
         this.questionaryControlService.resetQuestionaryForm();
         this.questionaryDialogRef = null;
         this.zipIsChecking = false;

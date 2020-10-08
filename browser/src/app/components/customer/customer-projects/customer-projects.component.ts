@@ -185,7 +185,8 @@ export class CustomerDashboardComponent implements OnDestroy {
       .pipe(takeUntil(this.destroyed$))
       .subscribe(
         recommendedTrades => {
-          this.recommendedTrades = recommendedTrades;
+          // TODO: this is tmp fix to reduce size of recommended trades
+          this.recommendedTrades = recommendedTrades.slice(0, this.maxItemPerPage);
         },
         err => this.popUpMessageService.showError(getErrorMessage(err))
       )

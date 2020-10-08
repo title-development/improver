@@ -21,8 +21,8 @@ import { toHttpParams } from '../../util/functions';
 import { Billing } from '../models/Billing';
 import { Refund } from '../models/Refund';
 import { map } from 'rxjs/internal/operators';
+import { OrderValidationResult } from "../models/LocationsValidation";
 import Receipt = Billing.Receipt;
-import {OrderValidationResult} from "../models/LocationsValidation";
 
 @Injectable()
 export class ProjectService {
@@ -126,6 +126,10 @@ export class ProjectService {
 
   submitProject(projectId: number) : Observable<any> {
     return this.http.post(`${this.PROJECTS_PATH}/${projectId}`, {});
+  }
+
+  deleteProject(projectId: number) : Observable<any> {
+    return this.http.delete(`${this.PROJECTS_PATH}/${projectId}`);
   }
 
   getCloseProjectVariants(projectId): Observable<CloseProjectVariant> {

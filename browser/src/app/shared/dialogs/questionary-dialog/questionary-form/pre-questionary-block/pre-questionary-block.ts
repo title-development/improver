@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { QuestionaryControlService } from '../../../../../api/services/questionary-control.service';
 import { ServiceType } from '../../../../../model/data-model';
 import { Constants } from '../../../../../util/constants';
@@ -20,6 +20,7 @@ import { CustomerSuggestionService } from "../../../../../api/services/customer-
 import { TradeService } from "../../../../../api/services/trade.service";
 import { DeviceControlService } from "../../../../../api/services/device-control.service";
 import { SearchHolder } from "../../../../../util/search-holder";
+import { PerfectScrollbarComponent } from "ngx-perfect-scrollbar";
 
 @Component({
   selector: 'pre-questionary-block',
@@ -27,7 +28,10 @@ import { SearchHolder } from "../../../../../util/search-holder";
   styleUrls: ['./pre-questionary-block.scss'],
 })
 
-export class PreQuestionaryBlock implements OnInit {
+export class PreQuestionaryBlock implements OnInit, AfterViewInit {
+
+  @ViewChildren('defaultQuestion') defaultQuestions: QueryList<ElementRef>;
+  @ViewChild('perfectScroll') perfectScroll: PerfectScrollbarComponent;
 
   Role = Role;
   defaultQuestionaryForm;
@@ -39,8 +43,6 @@ export class PreQuestionaryBlock implements OnInit {
   services: ServiceType[] = [];
   filteredServices: ServiceType[] = [];
   searchHolder: SearchHolder<ServiceType>
-
-  @ViewChildren('defaultQuestion') defaultQuestions: QueryList<ElementRef>;
 
   constructor(public questionaryControlService: QuestionaryControlService,
               public projectService: ProjectService,
@@ -82,6 +84,14 @@ export class PreQuestionaryBlock implements OnInit {
   ngOnInit(): void {
     this.defaultQuestionaryForm = this.questionaryControlService.mainForm.get('defaultQuestionaryGroup');
     this.defaultQuestionaryForm.get('projectLocation.zip').setValue(this.lastZipCode);
+  }
+
+  ngAfterViewInit(): void {
+    // fix to prevent displaying of initial state of perfect scroll
+    setTimeout(() => {
+      this.perfectScroll.directiveRef.update()
+      this.perfectScroll.directiveRef.config.suppressScrollY = false;
+    }, 300)
   }
 
   isValid(name) {
@@ -151,6 +161,8 @@ export class PreQuestionaryBlock implements OnInit {
         this.filteredServices = this.services.filter(e => serviceTypeIds.includes(e.id))
 
       })
+    } else {
+      this.filteredServices = this.services;
     }
 
   }

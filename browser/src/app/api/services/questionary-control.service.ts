@@ -8,9 +8,10 @@ import { ServiceQuestionaryModel } from "../../model/service-questionary-model";
 import { getErrorMessage } from "../../util/functions";
 import { ServiceTypeService } from "./service-type.service";
 import { PopUpMessageService } from "./pop-up-message.service";
-import { finalize } from "rxjs/operators";
+import { finalize, first } from "rxjs/operators";
 import { AccountService } from "./account.service";
 import { ReplaySubject } from "rxjs";
+import { ProjectService } from "./project.service";
 
 @Injectable()
 export class QuestionaryControlService {
@@ -48,13 +49,15 @@ export class QuestionaryControlService {
   mainForm;
   questionary: ServiceQuestionaryModel;
   hasUnsavedChanges: boolean = false;
+  projectId
 
   public onAccountDataLoaded: ReplaySubject<any> = new ReplaySubject(1);
 
   constructor(private securityService: SecurityService,
               private serviceTypeService: ServiceTypeService,
               private accountService: AccountService,
-              private popUpService: PopUpMessageService) {
+              private popUpService: PopUpMessageService,
+              private projectService: ProjectService) {
 
     securityService.onUserInit.subscribe(() => {
       this.getAccountData()
@@ -178,6 +181,7 @@ export class QuestionaryControlService {
 
     if (!this.withServiceType && (this.currentQuestionIndex == -1 && this.withZip || this.currentQuestionIndex == -2 && !this.withZip)) {
       this.serviceType = null;
+      this.clearPreSavedProject();
     }
 
   }
@@ -240,6 +244,15 @@ export class QuestionaryControlService {
       lastName: '',
       phone: '',
     };
+  }
+
+  clearPreSavedProject() {
+    if (this.projectId) {
+      this.projectService.deleteProject(this.projectId)
+        .pipe(first())
+        .subscribe()
+      this.projectId = null;
+    }
   }
 
 }

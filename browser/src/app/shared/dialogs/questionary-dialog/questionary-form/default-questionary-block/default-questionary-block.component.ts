@@ -54,7 +54,6 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
   filteredStates = [];
   locationValidation: string = '';
   validationMessage: string = '';
-  projectId: number;
   orderServiceType: string;
   processingAddressValidation: boolean;
   waitingPhoneConfirmation: boolean;
@@ -176,12 +175,14 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
   }
 
 
-  onSubmit(projectId?: number): void {
+  onSubmit(): void {
     this.disabledNextAction = true;
-    if (this.projectId) {
+    let projectId = this.questionaryControlService.projectId;
+    if (projectId) {
       this.metricsEventService.fireProjectRequestedEvent();
       this.projectService.submitProject(projectId)
         .subscribe(response => {
+          this.questionaryControlService.projectId = null;
           this.postOrderProcessing = false;
           this.projectActionService.projectUpdated();
           this.dialog.closeAll();
@@ -225,12 +226,12 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
       const location = this.defaultQuestionaryForm.get(formGroupName).value;
       const requestOrder = RequestOrder.build(this.questionaryControlService.mainForm.getRawValue(), this.questionaryControlService.serviceType);
       this.orderServiceType = requestOrder.serviceName;
-      if (this.projectId){
-        requestOrder.projectId = this.projectId;
+      if (this.questionaryControlService.projectId){
+        requestOrder.projectId = this.questionaryControlService.projectId;
       }
       this.projectService.prepareOrder(requestOrder)
         .subscribe((orderValidationResult: OrderValidationResult) => {
-          this.projectId = orderValidationResult.projectId;
+          this.questionaryControlService.projectId = orderValidationResult.projectId;
           this.questionaryControlService.hasUnsavedChanges = false;
 
           if (orderValidationResult.validatedLocation.valid) {

@@ -72,7 +72,7 @@ export class QuestionaryDialogComponent implements OnInit, ComponentCanDeactivat
   }
 
   @HostListener('window:beforeunload', ['$event'])
-  unloadNotification(event): any {
+  beforeunload(event): any {
     if (!this.canDeactivate()) {
       return false;
     }
