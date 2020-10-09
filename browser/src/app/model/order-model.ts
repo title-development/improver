@@ -9,7 +9,7 @@ export class RequestOrder {
   baseLeadInfo: BaseLeadInfo;
   address: UserAddress;
 
-  static build(formData: any, serviceType: ServiceType): RequestOrder {
+  static build(formData: any, serviceType: ServiceType, isAddressManual): RequestOrder {
     delete formData?.defaultQuestionaryGroup?.customerPersonalInfo?.password
     const requestOrder = new RequestOrder();
     requestOrder.serviceId = serviceType.id;
@@ -20,7 +20,7 @@ export class RequestOrder {
         return new QuestionaryBlock(item[0], (results as Array<string>));
       });
     requestOrder.baseLeadInfo = new BaseLeadInfo(formData.defaultQuestionaryGroup.customerPersonalInfo, formData.defaultQuestionaryGroup.startExpectation, formData.defaultQuestionaryGroup.notes);
-    requestOrder.address = new UserAddress(formData.defaultQuestionaryGroup.projectLocation)
+    requestOrder.address = new UserAddress(formData.defaultQuestionaryGroup.projectLocation, isAddressManual)
 
     return requestOrder;
   }

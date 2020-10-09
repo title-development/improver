@@ -465,12 +465,14 @@ export class UserAddress {
   city: string;
   state: string;
   zip: string
+  isAddressManual: boolean;
 
-  constructor(location) {
+  constructor(location: Location, isAddressManual: boolean) {
     this.streetAddress = location.streetAddress;
     this.city = location.city;
     this.state = location.state;
     this.zip = location.zip;
+    this.isAddressManual = isAddressManual;
   }
 }
 

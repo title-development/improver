@@ -59,6 +59,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
   waitingPhoneConfirmation: boolean;
   originalAddress: any = {};
   suggestedAddress: any = {};
+  isAddressManual: boolean = false;
   locationInvalid: boolean;
   phoneValid: boolean;
   hideNextAction: boolean;
@@ -223,13 +224,18 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
   validateLocation(formGroupName: string, callback?: Function): void {
     if (this.questionaryControlService.hasUnsavedChanges) {
       this.disabledNextAction = true;
+      this.postOrderProcessing = true;
       const location = this.defaultQuestionaryForm.get(formGroupName).value;
-      const requestOrder = RequestOrder.build(this.questionaryControlService.mainForm.getRawValue(), this.questionaryControlService.serviceType);
+      const requestOrder = RequestOrder.build(this.questionaryControlService.mainForm.getRawValue(), this.questionaryControlService.serviceType, this.isAddressManual);
       this.orderServiceType = requestOrder.serviceName;
       if (this.questionaryControlService.projectId){
         requestOrder.projectId = this.questionaryControlService.projectId;
       }
       this.projectService.prepareOrder(requestOrder)
+        .pipe(finalize(() => {
+          this.postOrderProcessing = false;
+          this.processingAddressValidation = false;
+        }))
         .subscribe((orderValidationResult: OrderValidationResult) => {
           this.questionaryControlService.projectId = orderValidationResult.projectId;
           this.questionaryControlService.hasUnsavedChanges = false;
@@ -243,6 +249,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
               this.hideNextAction = true;
               this.locationInvalid = true;
               this.originalAddress = location;
+              this.originalAddress.canUseManual = orderValidationResult.validatedLocation.canUseManual;
               this.suggestedAddress = orderValidationResult.validatedLocation.suggested;
               this.validationMessage = orderValidationResult.validatedLocation.validationMsg;
             } else {
@@ -261,10 +268,9 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
           }
         }, err => {
           console.error(err);
-          this.disabledNextAction = true;
-          this.processingAddressValidation = false;
           this.locationValidation = 'Address Not found';
           this.resetLocationQuestion();
+          this.disabledNextAction = false;
         });
     } else {
       callback.call(this);
@@ -276,12 +282,13 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     this.locationInvalid = false;
     this.hideNextAction = false;
     this.disabledNextAction = true;
-    //this.locationValidation = '';
     const location: FormGroup = this.defaultQuestionaryForm.get('projectLocation');
   }
 
-  chooseAddress(address: any): void {
+  chooseAddress(address: any, isAddressManual: boolean): void {
     const location: FormGroup = this.defaultQuestionaryForm.get('projectLocation');
+    this.isAddressManual = isAddressManual;
+    this.processingAddressValidation = true;
     this.hideNextAction = false;
     this.locationInvalid = false;
     this.locationValidation = '';

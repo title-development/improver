@@ -55,7 +55,7 @@ public class OrderService {
         }
 
         Project lead = projectRepository.save(income.setCustomer(customer));
-        return OrderValidationResult.valid(lead.getId());
+        return OrderValidationResult.valid(lead.getId(), lead.getLocation().getIsAddressManual());
     }
 
 
@@ -174,7 +174,7 @@ public class OrderService {
 
 
     private Project validateOrder(Order order, Customer customer) {
-        UserAddress savedAddress =null;
+        UserAddress savedAddress = null;
 
         // 1 Address
         if (order.getAddress().getId() != null) {

@@ -39,7 +39,8 @@ public class LocationService {
     private static final String SUGGESTION_MSG = "Some parts of address were corrected to be valid";
     private static final String INCORRECT_ADDRESS_ERROR = "Provided address seems not valid or formatted incorrectly";
     private static final String UNSUPPORTED_AREA = "Sorry, we do not support this area yet.";
-    private static final double STREET_ADDRESS_MIN_SIMILARITY_SCORE = 0.9;
+    private static final double ADDRESS_VALIDATION_SCORE = 0.95;
+    private static final double ADDRESS_MIN_SIMILARITY_SCORE = 0.9;
 
     @Autowired private ServedZipRepository servedZipRepository;
     @Autowired private ThirdPartyApis thirdPartyApis;
@@ -104,15 +105,15 @@ public class LocationService {
                 String suggestedStreet = validated.getStreetAddress().toLowerCase();
                 String inputStreet = toValidate.getStreetAddress().toLowerCase();
                 double similarityScore = similarityService.score(inputStreet, suggestedStreet);
-                if (similarityScore < STREET_ADDRESS_MIN_SIMILARITY_SCORE) {
-                    if (isManual && similarityScore >= 0.7) {
+                if (similarityScore < ADDRESS_VALIDATION_SCORE) {
+                    if (isManual && similarityScore >= ADDRESS_MIN_SIMILARITY_SCORE) {
                         log.trace("Manual street address validation score=" + similarityScore);
                         validationMsg = "";
                         return valid(includeCoordinates, validated.withOutCoordinates(), validationMsg, checkCoverage);
                     } else {
                         log.trace("Street Address doesn't match");
                         errorMsg = "Street address is not fully valid or formatted incorrectly";
-                        return suggestion(validated, errorMsg, validationMsg, checkCoverage);
+                        return suggestion(validated, errorMsg, validationMsg, checkCoverage, true);
                     }
                 }
 
@@ -128,7 +129,14 @@ public class LocationService {
         if (checkCoverage && !servedZipRepository.isZipServed(suggested.getZip())){
             return ValidatedLocation.invalid(errorMsg);
         }
-        return ValidatedLocation.suggestion(suggested, errorMsg, validationMsg);
+        return ValidatedLocation.suggestion(suggested, errorMsg, validationMsg, false);
+    }
+
+    private ValidatedLocation suggestion(ExtendedLocation suggested, String errorMsg, String validationMsg, boolean checkCoverage, boolean canUseManual){
+        if (checkCoverage && !servedZipRepository.isZipServed(suggested.getZip())){
+            return ValidatedLocation.invalid(errorMsg);
+        }
+        return ValidatedLocation.suggestion(suggested, errorMsg, validationMsg, canUseManual);
     }
 
     private ValidatedLocation valid(boolean includeCoordinates, Location toValidate, String infoMsg, boolean checkCoverage) throws ThirdPartyException {

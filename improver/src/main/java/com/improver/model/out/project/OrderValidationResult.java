@@ -12,8 +12,8 @@ public class OrderValidationResult {
     private ValidatedLocation validatedLocation;
 
 
-    public static OrderValidationResult valid(long projectId) {
+    public static OrderValidationResult valid(long projectId, boolean canUseManual) {
         return new OrderValidationResult().setProjectId(projectId)
-            .setValidatedLocation(new ValidatedLocation(true, null, null, null, false));
+            .setValidatedLocation(new ValidatedLocation(true, null, null, null, canUseManual));
     }
 }

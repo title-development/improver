@@ -28,6 +28,7 @@ export class LocationAddress {
 }
 
 export class ValidatedLocation {
+  canUseManual: boolean;
   valid: boolean;
   suggested: Location;
   error: string;

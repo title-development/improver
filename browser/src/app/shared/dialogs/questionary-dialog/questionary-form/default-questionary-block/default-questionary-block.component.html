@@ -243,7 +243,7 @@
     <h2 class="question-title">Where do you need a Professional?</h2>
     <div class="text-input-group fill-flex-space" [formGroupName]="'projectLocation'"
          [cvSpinner]="processingAddressValidation"
-         [cvSpinnerSize]="50"
+         [cvSpinnerSize]="40"
          [cvSpinnerBackground]="true">
       <cv-input-field>
         <cv-field-label>Address</cv-field-label>
@@ -321,7 +321,7 @@
         </cv-field-error>
       </cv-input-field>
       <cv-field-error class="location-error">{{locationValidation | lowercase}}</cv-field-error>
-      <div class="address-validation" [ngClass]="{'-invalid': locationInvalid}">
+      <div *ngIf="originalAddress?.streetAddress && suggestedAddress?.streetAddress" class="address-validation" [ngClass]="{'-invalid': locationInvalid}">
         <div class="row">
           <div class="col-xs-12 col-sm-6">
             <div class="address">
@@ -333,34 +333,36 @@
                 {{originalAddress?.zip}}
               </p>
             </div>
-            <button cv-button-empty type="button" (click)="resetLocationQuestion()">Use another address</button>
+            <button *ngIf="originalAddress?.canUseManual" cv-button-empty type="button" (click)="chooseAddress(originalAddress, true)">Use this address</button>
+            <button *ngIf="!originalAddress?.canUseManual" cv-button-empty type="button" (click)="resetLocationQuestion()">Edit address</button>
           </div>
           <div class="col-xs-12 col-sm-6">
-            <div class="address apply" (click)="chooseAddress(suggestedAddress)">
+            <div class="address apply" (click)="chooseAddress(suggestedAddress, false)">
               <div class="overlay"><i></i></div>
               <h4>Suggested address</h4>
               <p>
-                {{suggestedAddress?.streetAddress}}<br>
-                {{suggestedAddress?.city}},
-                {{suggestedAddress?.state}}
-                {{suggestedAddress?.zip}}
+                <mark [ngClass]="{'-success': originalAddress?.streetAddress?.trim().toLowerCase() != suggestedAddress?.streetAddress?.trim().toLowerCase()}">{{suggestedAddress?.streetAddress}}</mark><br>
+                <mark [ngClass]="{'-success': originalAddress?.city?.trim().toLowerCase() != suggestedAddress?.city?.trim().toLowerCase()}">{{suggestedAddress?.city}}</mark>,
+                <mark [ngClass]="{'-success': originalAddress?.state?.trim().toLowerCase() != suggestedAddress?.state?.trim().toLowerCase()}">{{suggestedAddress?.state}}</mark>
+                <mark [ngClass]="{'-success': originalAddress?.zip?.trim().toLowerCase() != suggestedAddress?.zip?.trim().toLowerCase()}">{{suggestedAddress?.zip}}</mark>
               </p>
             </div>
-            <button cv-button type="button" (click)="chooseAddress(suggestedAddress)">Use suggested</button>
+            <button cv-button type="button" (click)="chooseAddress(suggestedAddress, false)">Use suggested</button>
           </div>
         </div>
         <span *ngIf="validationMessage">{{validationMessage}}</span>
+        <button class="grey-button" *ngIf="originalAddress?.canUseManual" cv-button-empty type="button" (click)="resetLocationQuestion()">Enter another address</button>
       </div>
     </div>
 
-    <div class="questionary-dialog-footer" [cvSpinner]="postOrderProcessing"
+    <div *ngIf="!processingAddressValidation" class="questionary-dialog-footer" [cvSpinner]="postOrderProcessing"
          [cvSpinnerSize]="20">
       <button cv-button-empty class="questionary-previous-button" (click)="questionaryControlService.previousQuestion()" type="button"
               *ngIf="!hideNextAction && !postOrderProcessing">Back
       </button>
       <button *ngIf="!hideNextAction"
               cv-button class="questionary-next-button"
-              (click)="nextQuestion('projectLocation', validateLocation)" type="button"
+              (click)="isAddressManual = false; nextQuestion('projectLocation', validateLocation)" type="button"
               [disabled]="disabledNextAction">
         Next
       </button>

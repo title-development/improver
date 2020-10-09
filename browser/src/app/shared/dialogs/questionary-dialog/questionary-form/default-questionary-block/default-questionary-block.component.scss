@@ -153,6 +153,25 @@
   }
 }
 
+.-danger {
+  background-color: yellow !important;
+}
+
+.-success {
+  background-color: $green-200 !important;
+}
+
+p {
+  mark {
+    background-color: $white;
+  }
+}
+
+.grey-button {
+  color: $grey-500;
+  border-color: $grey-500;
+}
+
 .location-error {
   &:first-letter {
     text-transform: uppercase
@@ -192,6 +211,10 @@
   }
   .row {
     > div {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
       &:first-child {
         position: relative;
         @include response(xs) {

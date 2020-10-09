@@ -16,8 +16,8 @@ public class ValidatedLocation {
     private final boolean canUseManual;
 
 
-    public static ValidatedLocation suggestion(ExtendedLocation suggested, String error, String validationMsg){
-        return new ValidatedLocation(false, suggested, error, validationMsg, false);
+    public static ValidatedLocation suggestion(ExtendedLocation suggested, String error, String validationMsg, boolean canUseManual){
+        return new ValidatedLocation(false, suggested, error, validationMsg, canUseManual);
     }
 
 
