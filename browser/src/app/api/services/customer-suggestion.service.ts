@@ -38,24 +38,6 @@ export class CustomerSuggestionService {
               private tradeService: TradeService){
   }
 
-
-  get suggestedServiceTypes$(): ReplaySubject<Array<ServiceType>> {
-    if (!this.suggestedServiceTypesCached) {
-      this.suggestedServiceTypesCached = true;
-      this.serviceTypeService.getSuggested(16).subscribe((serviceType: Array<ServiceType>) => {
-        if (!serviceType){
-          this.suggestedServiceTypesCached = false;
-        }
-        this._suggestedServiceTypes$.next(serviceType);
-      }, err => {
-        this.suggestedServiceTypesCached = false;
-        console.error(err);
-      });
-    }
-
-    return this._suggestedServiceTypes$;
-  }
-
   get popularTrades$(): ReplaySubject<Array<NameIdImageTuple>> {
     if (!this.popularTradesCached) {
       this.popularTradesCached = true;

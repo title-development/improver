@@ -59,22 +59,9 @@ export class ServiceTypeService {
 
   }
 
-  getSuggested(size): Observable<Array<ServiceType>> {
-    const params = new HttpParams().set('size', size);
-    return this.http.get<Array<ServiceType>>(`${this.serviceCatalogUrl}/suggested`, {params});
-  }
-
   getPopular(size): Observable<Array<ServiceType>> {
     const params = new HttpParams().set('size', size);
     return this.http.get<Array<ServiceType>>(`${this.serviceCatalogUrl}/popular`, {params});
-  }
-
-  getRecommended(userId, size: number): Observable<Array<ServiceType>> {
-    const params = new HttpParams()
-      .set('size', size.toString())
-      .set('userId', userId.toString());
-
-    return this.http.get<Array<ServiceType>>(`${this.serviceCatalogUrl}/recommended`, {params});
   }
 
   isNameFree(serviceName: string): Observable<any> {

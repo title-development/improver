@@ -121,7 +121,6 @@ export class ServiceType {
   tradeId?: number
   name: string;
   description?: string;
-  rating?: number;
   image?: string;
 }
 

@@ -16,7 +16,6 @@ public class AdminTrade {
     private long id;
     private String name;
     private String description;
-    private int rating;
     private List<String> imageUrls;
     private Boolean isAdvertised;
     private List<NameIdTuple> services = new ArrayList<>();
@@ -25,7 +24,6 @@ public class AdminTrade {
         this.id = trade.getId();
         this.name = trade.getName();
         this.description = trade.getDescription();
-        this.rating = trade.getRating();
         this.imageUrls = trade.getImageUrlsFromString();
         this.isAdvertised = trade.isAdvertised();
         this.services = services;
@@ -36,7 +34,6 @@ public class AdminTrade {
         this.id = trade.getId();
         this.name = trade.getName();
         this.description = trade.getDescription();
-        this.rating = trade.getRating();
         this.imageUrls = trade.getImageUrlsFromString();
         this.isAdvertised = trade.isAdvertised();
     }

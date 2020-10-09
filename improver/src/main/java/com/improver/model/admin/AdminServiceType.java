@@ -18,7 +18,6 @@ public class AdminServiceType {
     private String imageUrl;
     private Boolean isActive;
     private List<String> labels;
-    private int rating;
     private int leadPrice;
     private long questionaryId;
     private List<NameIdTuple> trades;
@@ -30,7 +29,6 @@ public class AdminServiceType {
         this.imageUrl = serviceType.getImageUrl();
         this.isActive = serviceType.isActive();
         this.labels = serviceType.getLabels();
-        this.rating = serviceType.getRating();
         this.leadPrice = serviceType.getLeadPrice();
         this.questionaryId = questionaryId != null ? questionaryId : 0;
     }

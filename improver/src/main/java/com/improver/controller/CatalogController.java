@@ -21,36 +21,50 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static com.improver.application.properties.Path.*;
-import static com.improver.application.properties.SystemProperties.POPULAR_TRADES_CACHE_EXPIRATION;
+import static com.improver.application.properties.SystemProperties.ADVERTISED_TRADES_CACHE_EXPIRATION;
+import static com.improver.application.properties.SystemProperties.SERVICE_CATALOG_CACHE_DURATION;
 
 @RestController
 @RequestMapping(CATALOG_PATH)
 public class CatalogController {
+
+    private static final HttpHeaders cacheControl = new HttpHeaders();
+    static {
+        cacheControl.setCacheControl(CacheControl.maxAge(SERVICE_CATALOG_CACHE_DURATION.getSeconds(), TimeUnit.SECONDS));
+    }
 
     @Autowired private TradeService tradeService;
     @Autowired private TradeRepository tradeRepository;
     @Autowired private ServiceTypeService serviceTypeService;
     @Autowired private ServiceTypeRepository serviceTypeRepository;
 
-    /**
-     * Deprecated
-     * Returns suggested {@link ServiceType} list represented by list of {@link NameIdImageTuple}'s.
-     *
-     * <b>Note</b> {@link CacheControl} is used to reduce REST API calls and improve performance.
-     */
-    @Deprecated
-    @GetMapping(SERVICES + SUGGESTED)
-    public ResponseEntity<List<NameIdImageTuple>> getSuggestedServices(@RequestParam(defaultValue = "8") int size) {
-        // TODO: Done for testing of images at home page. Will be removed later
-        List<NameIdImageTuple> services = serviceTypeRepository.getRandomPopularServiceTypes(PageRequest.of(0, size))
-            .getContent();
-        return ResponseEntity.ok().body(services);
-    }
+
+
 
     /**
-     * Returns popular {@link ServiceType} list represented by list of {@link NameIdImageTuple}'s.
+     * Returns {@link Trade} list represented by list of {@link NameIdTuple}'s.
+     * <p>
+     * <b>Note</b> {@link CacheControl} is used to reduce REST API calls and improve performance.
+     */
+    @GetMapping
+    public ResponseEntity<List<TradeAndServices>> getAllTradesAndServices() {
+        List<TradeAndServices> trades = tradeService.getAllTradesAndServices();
+        return new ResponseEntity<>(trades, cacheControl, HttpStatus.OK);
+    }
+
+
+    @GetMapping(SERVICES)
+    public ResponseEntity<List<OfferedService>> getAllServicesModel() {
+        List<OfferedService> services = serviceTypeService.getAllServicesModel();
+        return new ResponseEntity<>(services, cacheControl, HttpStatus.OK);
+    }
+
+
+    /**
+     * Returns popular {@link ServiceType}
      *
      * Used at Home Page and Find Professionals dropdown
      */
@@ -61,34 +75,16 @@ public class CatalogController {
         return new ResponseEntity<>(popularServices, HttpStatus.OK);
     }
 
-    /**
-     * Returns recommended {@link ServiceType} list represented by list of {@link NameIdImageTuple}'s.
-     *
-     * Used in Customer dashboard
-     */
-    @GetMapping(SERVICES + RECOMMENDED)
-    public ResponseEntity<List<NameIdImageTuple>> getRecommendedServices(@RequestParam(defaultValue = "6") int size) {
-        return getSuggestedServices(size);
-    }
-
-
-    @GetMapping(SERVICES)
-    public ResponseEntity<List<OfferedService>> getAllServicesModel() {
-        List<OfferedService> services = serviceTypeService.getAllServicesModel();
-        return new ResponseEntity<>(services, HttpStatus.OK);
-    }
-
 
     /**
-     * Returns {@link Trade} list represented by list of {@link NameIdTuple}'s.
+     * Returns {@link Trade} list
      * <p>
      * <b>Note</b> {@link CacheControl} is used to reduce REST API calls and improve performance.
      */
     @GetMapping(TRADES)
     public ResponseEntity<List<NameIdTuple>> getAllTradesModel() {
         List<NameIdTuple> trades = tradeService.getAllTradesModel();
-        return ResponseEntity.ok()
-            .body(trades);
+        return new ResponseEntity<>(trades, cacheControl, HttpStatus.OK);
     }
 
 
@@ -98,39 +94,35 @@ public class CatalogController {
         return new ResponseEntity<>(popular, HttpStatus.OK);
     }
 
+
+    /**
+     * Returns advertised {@link Trade} list.
+     * Used in the home page
+     */
     @GetMapping(TRADES + SUGGESTED)
-    public ResponseEntity<List<TradeModel>> getSuggestedTrades(@RequestParam(defaultValue = "8") int size) {
+    public ResponseEntity<List<TradeModel>> getAdvertisedTrades(@RequestParam int size) {
         HttpHeaders headers = new HttpHeaders();
-        List<TradeModel> suggested = tradeService.getCachedTrades();
-        headers.setCacheControl(CacheControl.maxAge(POPULAR_TRADES_CACHE_EXPIRATION.getSeconds(), TimeUnit.SECONDS).getHeaderValue());
+        List<TradeModel> suggested = tradeService.getAdvertisedTradesWithServicesFromCache().stream()
+            .limit(size)
+            .collect(Collectors.toList());
+        headers.setCacheControl(CacheControl.maxAge(ADVERTISED_TRADES_CACHE_EXPIRATION.getSeconds(), TimeUnit.SECONDS));
         return new ResponseEntity<>(suggested, headers, HttpStatus.OK);
     }
 
+
     /**
-     * Returns recommended {@link Trade} list represented by list of {@link NameIdImageTuple}'s.
-     *
-     * Used in Customer dashboard
+     * Returns recommended {@link Trade} list for given customer, used in Customer dashboard.
+     * Now returns advertised
      */
     @GetMapping(TRADES + RECOMMENDED)
     public ResponseEntity<List<TradeModel>> getRecommendedTrades(@RequestParam(defaultValue = "6") int size) {
-        return getSuggestedTrades(size);
+        return getAdvertisedTrades(size);
     }
+
 
     @GetMapping(TRADES + ID_PATH_VARIABLE + SERVICES)
     public ResponseEntity<List<OfferedService>> getServices(@PathVariable long id) {
         List<OfferedService> services = serviceTypeRepository.getActiveByTradeId(id);
-        return new ResponseEntity<>(services, HttpStatus.OK);
-    }
-
-    /**
-     * Returns {@link Trade} list represented by list of {@link NameIdTuple}'s.
-     * <p>
-     * <b>Note</b> {@link CacheControl} is used to reduce REST API calls and improve performance.
-     */
-    @GetMapping
-    public ResponseEntity<List<TradeAndServices>> getAllTradesAndServices() {
-        List<TradeAndServices> trades = tradeService.getAllTradesAndServices();
-        return ResponseEntity.ok()
-            .body(trades);
+        return new ResponseEntity<>(services, cacheControl, HttpStatus.OK);
     }
 }

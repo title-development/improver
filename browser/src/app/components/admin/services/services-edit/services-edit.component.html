@@ -48,11 +48,6 @@
       </div>
     </div>
     <div class="ui-grid-row ui-grid-field">
-      <div class="ui-grid-col-3"><label for="rating">Rating</label></div>
-      <div class="ui-grid-col-9"><input id="rating" name="rating" type="number" pInputText
-                                        [(ngModel)]="serviceType.rating" [disabled]="mode == 'view'"></div>
-    </div>
-    <div class="ui-grid-row ui-grid-field">
       <div class="ui-grid-col-3"><label for="image">Image</label></div>
       <div class="ui-grid-col-9">
         <image-preview [previewSize]="80" (fileChange)="addImage($event)" class="image"

@@ -24,7 +24,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.improver.application.properties.SystemProperties.POPULAR_TRADES_CACHE_EXPIRATION;
+import static com.improver.application.properties.SystemProperties.ADVERTISED_TRADES_CACHE_EXPIRATION;
 
 /**
  * @author Mykhailo Soltys
@@ -45,8 +45,8 @@ public class TradeService {
         return tradeRepository.getAllAsModels();
     }
 
-    public Page<AdminTrade> getAllTrades(Long id, String name, String description, Integer ratingFrom, Integer ratingTo, Pageable pageRequest) {
-        Page<AdminTrade> trades = tradeRepository.getAll(id, name, description, ratingFrom, ratingTo, pageRequest)
+    public Page<AdminTrade> getAllTrades(Long id, String name, String description, Pageable pageRequest) {
+        Page<AdminTrade> trades = tradeRepository.getAll(id, name, description, pageRequest)
             .map(trade -> trade.setServices(serviceTypeRepository.getByTradeId(trade.getId())));
         return trades;
     }
@@ -91,7 +91,6 @@ public class TradeService {
 
         existedTrade.setName(adminTrade.getName());
         existedTrade.setDescription(adminTrade.getDescription());
-        existedTrade.setRating(adminTrade.getRating());
         existedTrade.setServiceTypes(serviceTypes);
         existedTrade.setImageUrls(String.join(",", adminTrade.getImageUrls()));
         existedTrade.setAdvertised(adminTrade.getIsAdvertised());
@@ -131,22 +130,21 @@ public class TradeService {
         tradeRepository.delete(trade);
     }
 
-    private void addTradesCacheExpiredTime() {
-        this.tradesCacheExpirationTime = ZonedDateTime.now().plus(POPULAR_TRADES_CACHE_EXPIRATION);
+    private void resetTradesCacheExpiration() {
+        this.tradesCacheExpirationTime = ZonedDateTime.now().plus(ADVERTISED_TRADES_CACHE_EXPIRATION);
     }
 
-    public List<TradeModel> getCachedTrades() {
-        ZonedDateTime now = ZonedDateTime.now();
-        if (this.tradesCacheExpirationTime == null || now.isAfter(this.tradesCacheExpirationTime)) {
-            this.suggestedTradesWithServices = getSuggestedTradeWithServices();
-            addTradesCacheExpiredTime();
+    public List<TradeModel> getAdvertisedTradesWithServicesFromCache() {
+        if (this.tradesCacheExpirationTime == null || ZonedDateTime.now().isAfter(this.tradesCacheExpirationTime)) {
+            this.suggestedTradesWithServices = getAdvertisedTradeWithServices();
+            resetTradesCacheExpiration();
         }
         return this.suggestedTradesWithServices;
     }
 
-    private List<TradeModel> getSuggestedTradeWithServices(){
-        List<NameIdParentTuple> allSuggestedService = serviceTypeRepository.getSuggestedServices();
-        List<NameIdImageTuple> allSuggestedTrades = tradeRepository.getSuggestedTrades();
+    private List<TradeModel> getAdvertisedTradeWithServices(){
+        List<NameIdParentTuple> allSuggestedService = serviceTypeRepository.getAdvertisedServices();
+        List<NameIdImageTuple> allSuggestedTrades = tradeRepository.getAdvertisedTrades();
 
         return allSuggestedTrades.stream()
              .map( trade -> {

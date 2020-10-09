@@ -37,7 +37,7 @@ export class ServicesEditComponent {
         if (params['id'] && this.mode != 'new') {
           return this.serviceTypeService.getServiceTypeById(params['id']);
         } else {
-          return of(new AdminServiceType('', '', '', true, 0, [], 999, 0, []));
+          return of(new AdminServiceType('', '', '', true, [], 999, 0, []));
         }
       }),
       switchMap((serviceType: AdminServiceType) => {

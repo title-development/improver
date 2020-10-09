@@ -32,7 +32,6 @@ import static com.improver.util.serializer.SerializationUtil.fromJson;
 public class ServiceTypeController {
 
     @Autowired private ServiceTypeService serviceTypeService;
-    @Autowired private ServiceTypeRepository serviceTypeRepository;
     @Autowired private UserSecurityService userSecurityService;
 
 
@@ -45,12 +44,10 @@ public class ServiceTypeController {
         @RequestParam(required = false) String description,
         @RequestParam(required = false) String labels,
         @RequestParam(required = false) String tradeName,
-        @RequestParam(required = false) Integer ratingFrom,
-        @RequestParam(required = false) Integer ratingTo,
         @RequestParam(required = false) Integer leadPriceFrom,
         @RequestParam(required = false) Integer leadPriceTo,
         @PageableDefault(sort = "name", direction = Sort.Direction.ASC) Pageable pageRequest) {
-        Page<AdminServiceType> services = serviceTypeService.getAllServiceTypes(id, name, description, labels, tradeName, ratingFrom, ratingTo, leadPriceFrom, leadPriceTo, pageRequest);
+        Page<AdminServiceType> services = serviceTypeService.getAllServiceTypes(id, name, description, labels, tradeName, leadPriceFrom, leadPriceTo, pageRequest);
 
         return new ResponseEntity<>(services, HttpStatus.OK);
     }

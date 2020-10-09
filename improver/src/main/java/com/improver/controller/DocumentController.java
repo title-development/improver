@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.concurrent.TimeUnit;
 
 import static com.improver.application.properties.Path.DOCUMENTS_PATH;
+import static com.improver.application.properties.SystemProperties.IMAGES_CACHE_DURATION;
 
 @RestController
 @RequestMapping(DOCUMENTS_PATH)
@@ -42,7 +43,7 @@ public class DocumentController {
                 .headers(headers)
                 .contentLength(resource.contentLength())
                 .contentType(MediaType.parseMediaType("application/octet-stream"))
-                .cacheControl(CacheControl.maxAge(14, TimeUnit.DAYS))
+                .cacheControl(CacheControl.maxAge(IMAGES_CACHE_DURATION.getSeconds(), TimeUnit.SECONDS))
                 .body(resource);
     }
 }

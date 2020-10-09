@@ -25,9 +25,6 @@ public class Trade {
 
     private String description;
 
-    @Column(columnDefinition = CD_INTEGER)
-    private int rating = 0;
-
     @Column(columnDefinition = "boolean default false")
     private boolean isAdvertised = false;
 
@@ -48,7 +45,6 @@ public class Trade {
     public Trade(AdminTrade adminTrade, String imageUrls, List<ServiceType> serviceTypes) {
         this.name = adminTrade.getName();
         this.description = adminTrade.getDescription();
-        this.rating = adminTrade.getRating();
         this.imageUrls = imageUrls;
         this.isAdvertised = adminTrade.getIsAdvertised();
         this.serviceTypes = serviceTypes;

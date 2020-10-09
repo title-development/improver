@@ -37,7 +37,6 @@ export class TradesListComponent {
     {field: 'name', header: 'Name', active: true},
     {field: 'description', header: 'Description', active: true},
     {field: 'isAdvertised', header: 'Advertised', active: true},
-    {field: 'rating', header: 'Rating', active: true},
   ];
 
   selectedColumns = this.columns.filter(column => column.active);

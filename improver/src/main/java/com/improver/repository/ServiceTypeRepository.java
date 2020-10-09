@@ -36,10 +36,9 @@ public interface ServiceTypeRepository extends JpaRepository<ServiceType, Long> 
         "(:name IS null OR LOWER(s.name) LIKE CONCAT('%', LOWER(cast(:name as string)), '%')) AND " +
         "(:description IS null OR LOWER(s.description) LIKE  CONCAT('%', LOWER(cast(:description as string)), '%')) AND " +
         "(:labels IS null OR LOWER(s.labels) LIKE CONCAT('%', LOWER(cast(:labels as string)), '%')) AND " +
-        "(:ratingFrom IS null OR s.rating BETWEEN :ratingFrom AND :ratingTo) AND " +
         "(:leadPriceFrom IS null OR s.leadPrice BETWEEN :leadPriceFrom AND :leadPriceTo) AND " +
         "(:tradeName IS null OR EXISTS(SELECT tr FROM s.trades tr WHERE LOWER(tr.name) LIKE CONCAT('%', LOWER(cast(:tradeName as string)), '%')))")
-    Page<AdminServiceType> getAll(Long id, String name, String description, String labels, String tradeName, Integer ratingFrom, Integer ratingTo, Integer leadPriceFrom, Integer leadPriceTo, Pageable pageable);
+    Page<AdminServiceType> getAll(Long id, String name, String description, String labels, String tradeName, Integer leadPriceFrom, Integer leadPriceTo, Pageable pageable);
 
     @Query("SELECT new com.improver.model.admin.AdminServiceType(s, q.id) " +
         "FROM com.improver.entity.ServiceType s " +
@@ -81,11 +80,6 @@ public interface ServiceTypeRepository extends JpaRepository<ServiceType, Long> 
     @Query("SELECT new com.improver.model.NameIdTuple(s.id, s.name) FROM com.improver.entity.ServiceType s WHERE s.questionary IS NULL ORDER BY s.name ASC")
     List<NameIdTuple> getAllWithOutQuestionary();
 
-    @Deprecated
-    @Query("SELECT new com.improver.model.out.NameIdImageTuple(s.id, s.name, s.imageUrl) FROM com.improver.entity.ServiceType s " +
-        "WHERE s.isActive = true AND s.imageUrl IS NOT NULL ORDER BY RANDOM()")
-    Page<NameIdImageTuple> getRandomWithImageAsModels(Pageable pageable);
-
     @Query("SELECT new com.improver.model.admin.out.Record(count(s.id), s.name, 'TOP_SERVICE_TYPES') FROM com.improver.entity.ServiceType s " +
         "LEFT JOIN com.improver.entity.Project p ON s.id = p.serviceType.id " +
         "WHERE p.created > :period " +
@@ -120,13 +114,7 @@ public interface ServiceTypeRepository extends JpaRepository<ServiceType, Long> 
             "AND t.isAdvertised = true " +
             "GROUP BY st.id, t.id " +
             "ORDER BY COUNT(p.id) DESC")
-    List<NameIdParentTuple> getSuggestedServices();
-
-    @Query("SELECT new  com.improver.model.out.NameIdImageTuple(st.id, st.name, st.imageUrl) FROM com.improver.entity.ServiceType st " +
-        "WHERE st.isActive = true " +
-        "AND st.rating > 0 AND st.imageUrl <> '' AND st.imageUrl IS NOT NULL " +
-        "ORDER BY RANDOM()")
-    Page<NameIdImageTuple> getRandomPopularServiceTypes(Pageable pageable);
+    List<NameIdParentTuple> getAdvertisedServices();
 
 
     // COMPANY SERVICES

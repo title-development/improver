@@ -11,7 +11,6 @@ import javax.persistence.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.improver.util.database.DataRestrictions.CD_INTEGER;
 import static com.improver.util.serializer.SerializationUtil.fromJson;
 
 @Data
@@ -51,9 +50,6 @@ public class ServiceType {
     @JoinColumn(name = "questionary_id", foreignKey = @ForeignKey(name = "service_questionary_fkey"))
     private Questionary questionary;
 
-    @Column(columnDefinition = CD_INTEGER)
-    private int rating;
-
     @Column(columnDefinition = "integer default 999")
     private int leadPrice = 999;
 
@@ -61,7 +57,6 @@ public class ServiceType {
         this.name = adminServiceType.getName();
         this.description = adminServiceType.getDescription();
         this.isActive = adminServiceType.getIsActive();
-        this.rating = adminServiceType.getRating();
         this.leadPrice = adminServiceType.getLeadPrice();
         this.labels = SerializationUtil.toJson(adminServiceType.getLabels());
         addTrades(trades);

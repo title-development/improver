@@ -29,7 +29,6 @@ import static com.improver.util.serializer.SerializationUtil.fromJson;
 public class TradeController {
 
     @Autowired private TradeService tradeService;
-    @Autowired private TradeRepository tradeRepository;
 
     @SupportAccess
     @GetMapping
@@ -38,10 +37,8 @@ public class TradeController {
         @RequestParam(required = false) Long id,
         @RequestParam(required = false) String name,
         @RequestParam(required = false) String description,
-        @RequestParam(required = false) Integer ratingFrom,
-        @RequestParam(required = false) Integer ratingTo,
         @PageableDefault(sort = "name", direction = Sort.Direction.ASC) Pageable pageRequest) {
-        Page<AdminTrade> trades = tradeService.getAllTrades(id, name, description, ratingFrom, ratingTo, pageRequest);
+        Page<AdminTrade> trades = tradeService.getAllTrades(id, name, description, pageRequest);
 
         return new ResponseEntity<>(trades, HttpStatus.OK);
     }
@@ -83,10 +80,8 @@ public class TradeController {
     @PostMapping
     ResponseEntity<Void> addTrade(@RequestPart(value = "data") String data,
                                   @RequestPart(value = "file", required = false) MultipartFile image) {
-        AdminTrade adminTrade = fromJson(new TypeReference<AdminTrade>() {
-        }, data);
+        AdminTrade adminTrade = fromJson(new TypeReference<>() {}, data);
         tradeService.addTrade(adminTrade, image);
-
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

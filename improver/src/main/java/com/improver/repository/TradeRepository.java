@@ -19,9 +19,8 @@ public interface TradeRepository extends JpaRepository<Trade, Long> {
     @Query("SELECT new com.improver.model.admin.AdminTrade(t, 0) FROM com.improver.entity.Trade t " +
         "WHERE (:id IS null OR t.id = :id) AND " +
         "(:name IS null OR lower(t.name) LIKE '%' || lower(cast(:name as string)) || '%') AND " +
-        "(:description IS null OR lower(t.description) LIKE '%' || lower(cast(:description as string)) || '%') AND " +
-        "(:ratingFrom IS null OR t.rating BETWEEN :ratingFrom AND :ratingTo)")
-    Page<AdminTrade> getAll(Long id, String name, String description, Integer ratingFrom, Integer ratingTo, Pageable pageable);
+        "(:description IS null OR lower(t.description) LIKE '%' || lower(cast(:description as string)) || '%')")
+    Page<AdminTrade> getAll(Long id, String name, String description, Pageable pageable);
 
     @Query("SELECT new com.improver.model.NameIdTuple(t.id, t.name) FROM com.improver.entity.Trade t" +
         " INNER JOIN t.serviceTypes s WHERE s.id = ?1 ORDER BY s.name ASC")
@@ -45,7 +44,7 @@ public interface TradeRepository extends JpaRepository<Trade, Long> {
             "AND t.isAdvertised = true " +
             "GROUP BY t.id " +
             "ORDER BY RANDOM()")
-    List<NameIdImageTuple> getSuggestedTrades();
+    List<NameIdImageTuple> getAdvertisedTrades();
 
     @Query("SELECT CASE WHEN count(t)> 0 THEN false ELSE true END FROM com.improver.entity.Trade t WHERE LOWER(t.name) = LOWER(?1)")
     boolean isTradeNameFree(String name);

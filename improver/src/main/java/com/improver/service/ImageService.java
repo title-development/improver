@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 
 import static com.improver.application.properties.Path.IMAGES_PATH;
 import static com.improver.application.properties.Path.SLASH;
+import static com.improver.application.properties.SystemProperties.IMAGES_CACHE_DURATION;
 
 
 @Service
@@ -39,7 +40,6 @@ public class ImageService {
 
     private static final char COMMA = ',';
     private static final char FILE_EXTENSION_SEPARATOR = '.';
-    private static final int CACHE_CONTROL_AGE = 30; // value in days
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -173,7 +173,7 @@ public class ImageService {
 
     public ResponseEntity<Resource> addCacheControl(byte[] media) {
         HttpHeaders headers = new HttpHeaders();
-        headers.setCacheControl(CacheControl.maxAge(CACHE_CONTROL_AGE, TimeUnit.DAYS).getHeaderValue());
+        headers.setCacheControl(CacheControl.maxAge(IMAGES_CACHE_DURATION.getSeconds(), TimeUnit.SECONDS));
         return new ResponseEntity<>(new ByteArrayResource(media), headers, HttpStatus.OK);
     }
 

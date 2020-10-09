@@ -51,8 +51,8 @@ public class ServiceTypeService {
         return sorted;
     }
 
-    public Page<AdminServiceType> getAllServiceTypes(Long id, String name, String description, String labels, String tradeName, Integer ratingFrom, Integer ratingTo, Integer leadPriceFrom, Integer leadPriceTo, Pageable pageable) {
-        Page<AdminServiceType> serviceTypes = serviceTypeRepository.getAll(id, name, description, labels, tradeName, ratingFrom, ratingTo, leadPriceFrom, leadPriceTo, pageable)
+    public Page<AdminServiceType> getAllServiceTypes(Long id, String name, String description, String labels, String tradeName, Integer leadPriceFrom, Integer leadPriceTo, Pageable pageable) {
+        Page<AdminServiceType> serviceTypes = serviceTypeRepository.getAll(id, name, description, labels, tradeName, leadPriceFrom, leadPriceTo, pageable)
             .map(adminServiceType -> adminServiceType.setTrades(tradeRepository.getByServiceTypeId(adminServiceType.getId())));
         return serviceTypes;
     }
@@ -99,7 +99,6 @@ public class ServiceTypeService {
         serviceType.setName(adminServiceType.getName());
         serviceType.setDescription(adminServiceType.getDescription());
         serviceType.setActive(adminServiceType.getIsActive());
-        serviceType.setRating(adminServiceType.getRating());
         serviceType.setLabels(adminServiceType.getLabels());
         serviceType.setLeadPrice(adminServiceType.getLeadPrice());
         serviceType.setImageUrl(newImageUrl);

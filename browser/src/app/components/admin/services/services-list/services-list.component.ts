@@ -39,7 +39,6 @@ export class ServicesListComponent {
     {field: 'name', header: 'Name', active: true},
     {field: 'description', header: 'Description', active: false},
     {field: 'leadPrice', header: 'Lead Price', active: true},
-    {field: 'rating', header: 'Rating', active: true},
     {field: 'labels', header: 'Labels', active: false},
     {field: 'trades', header: 'Trades', active: true},
     {field: 'questionaryId', header: 'Questionary', active: true},
