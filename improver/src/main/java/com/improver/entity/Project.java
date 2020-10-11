@@ -155,7 +155,7 @@ public class Project implements ImageContainable {
         }
 
         public static List<Status> getActive() {
-            return Arrays.asList(VALIDATION, ACTIVE, IN_PROGRESS, PENDING);
+            return Arrays.asList(VALIDATION, UNCOMPLETED, ACTIVE, IN_PROGRESS, PENDING);
         }
 
         public static List<Status> getArchived() {

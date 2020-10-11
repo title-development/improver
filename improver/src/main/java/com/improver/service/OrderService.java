@@ -299,7 +299,7 @@ public class OrderService {
     public void removeOrder(long projectId, Customer customer) {
         Project project = projectRepository.findByIdAndCustomerId(projectId, customer.getId())
             .orElseThrow(NotFoundException::new);
-        if (null != project.getStatus() || project.isLead()) {
+        if (UNCOMPLETED != project.getStatus() || project.isLead()) {
             throw new ConflictException("Order cannot be removed when processed.");
         }
         log.info("Removing order {} id={}", project.getServiceName(), projectId);

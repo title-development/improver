@@ -94,12 +94,21 @@
                       <button mat-menu-item class="complete-button"
                               (click)="projectActionService.completeProjectConfirm(project)"
                               *ngIf="Project.isActive(project.status)">
-                        Complete
+                        Complete Project
                       </button>
                       <button mat-menu-item class="cancel-button"
                               (click)="projectActionService.cancelProjectConfirm(project)"
                               *ngIf="Project.isActive(project.status)">
-                        Cancel
+                        Cancel Project
+                      </button>
+                      <!-- Menu for Uncompleted Order -->
+                      <button mat-menu-item (click)="projectActionService.resubmitOrder(project.id)"
+                              *ngIf="project.status == Project.Status.UNCOMPLETED">
+                        Submit Project
+                      </button>
+                      <button mat-menu-item (click)="projectActionService.cancelOrder(project.id)" class="cancel-button"
+                              *ngIf="project.status == Project.Status.UNCOMPLETED">
+                        Cancel Project
                       </button>
                     </mat-menu>
                   </div>

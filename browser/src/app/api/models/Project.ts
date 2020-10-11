@@ -52,6 +52,7 @@ export namespace Project {
   }
 
   export enum Status {
+    UNCOMPLETED = 'UNCOMPLETED',
     PENDING = 'PENDING',
     VALIDATION = 'VALIDATION',
     ACTIVE = 'ACTIVE',
