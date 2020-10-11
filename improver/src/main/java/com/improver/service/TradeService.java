@@ -99,7 +99,7 @@ public class TradeService {
         tradeRepository.save(existedTrade);
     }
 
-    public void addTrade(AdminTrade adminTrade, MultipartFile file) {
+    public Long addTrade(AdminTrade adminTrade, MultipartFile file) {
         if (!tradeRepository.isTradeNameFree(adminTrade.getName())) {
             throw new ConflictException("Trade with name " + adminTrade.getName() + " already exist");
         }
@@ -110,7 +110,7 @@ public class TradeService {
 
         Trade trade = new Trade(adminTrade, imageUrl, serviceTypes);
 
-        tradeRepository.save(trade);
+        return tradeRepository.save(trade).getId();
     }
 
     public void deleteTrade(long id) {

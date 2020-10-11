@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TradeService } from '../../../../api/services/trade.service';
-import { of, Subject } from 'rxjs';
+import { forkJoin, Observable, of, Subject } from 'rxjs';
 import { ServiceTypeService } from '../../../../api/services/service-type.service';
 import { ServiceType, SystemMessageType } from '../../../../model/data-model';
 import { SelectItem } from 'primeng/api';
@@ -22,7 +22,7 @@ export class TradesEditComponent {
   serviceTypes: Array<SelectItem>;
   mode: 'new' | 'view' | 'edit';
   previousName: string;
-  private newImage: File;
+  private newImages: { file: File, index: string }[] = [];
   private readonly destroyed$ = new Subject<void>();
 
   constructor(private route: ActivatedRoute,
@@ -30,7 +30,7 @@ export class TradesEditComponent {
               private tradeService: TradeService,
               private serviceTypeService: ServiceTypeService,
               private popUpService: PopUpMessageService,
-							public changeDetectorRef: ChangeDetectorRef,
+              public changeDetectorRef: ChangeDetectorRef,
               public location: Location) {
     this.route.params.pipe(
       first(),
@@ -59,11 +59,11 @@ export class TradesEditComponent {
         this.serviceTypes = [...this.trade.services, ...serviceTypes]
           .filter((item, index, arr) => index === arr.findIndex((t) => (t.id === item.id))) //remove duplicates
           .map(item => {
-          return {
-            label: item.name,
-            value: item
-          };
-        });
+            return {
+              label: item.name,
+              value: item
+            };
+          });
       }
     });
   }
@@ -79,10 +79,17 @@ export class TradesEditComponent {
         this.router.navigate(['admin', 'trades']);
       });
     } else {
-      this.tradeService.createTrade(formData).subscribe(res => {
-        this.popUpService.showSuccess(`Trade ${this.trade.name} has been added`);
-        this.previousName = this.trade.name;
-        this.router.navigate(['admin', 'trades']);
+      this.tradeService.createTrade(formData).subscribe(tradeId => {
+        let uploadImageObservableBatch = [];
+        this.newImages.forEach(image => {
+          uploadImageObservableBatch.push(this.uploadTradeImage(image, tradeId))
+        })
+
+        forkJoin(uploadImageObservableBatch).subscribe(response => {
+          this.popUpService.showSuccess(`Trade ${this.trade.name} has been added`);
+          this.previousName = this.trade.name;
+          this.router.navigate(['admin', 'trades']);
+        }, error => this.popUpService.showError(getErrorMessage(error)));
       });
     }
   }
@@ -97,40 +104,41 @@ export class TradesEditComponent {
     });
   }
 
-  addNewImage(image){
-  	if (image.file){
-			this.newImage = image.file;
-			if (image.lastChange) {
-				this.updateTradeImages(image.index);
-			}
-		}
+  addNewImage(image) {
+    if (image.file && image.lastChange) {
+      this.newImages.push({file: image.file, index: image.index});
+
+      if (this.mode == 'edit') {
+        this.uploadTradeImage(image, this.trade.id).subscribe(response => {
+          this.trade.imageUrls = response;
+          this.newImages = [];
+          this.changeDetectorRef.detectChanges();
+        }, error => this.popUpService.showError(getErrorMessage(error)))
+      }
+    }
   }
 
-	updateTradeImages(index: number) {
+  uploadTradeImage(image, tradeId: number): Observable<any> {
       let data = new FormData();
-      data.append('file', this.newImage);
-      this.tradeService.updateTradeImages(this.trade.id, data, index.toString()).subscribe(response => {
-        this.trade.imageUrls = response;
-        this.newImage = null;
-				this.changeDetectorRef.detectChanges();
-      }, error => this.popUpService.showError(getErrorMessage(error)));
-	}
+      data.append('file', image.file);
+      return this.tradeService.updateTradeImages(tradeId, data, image.index.toString())
+  }
 
-	deleteImage(imageUrl: string) {
-  	this.tradeService.deleteTradeImage(this.trade.id, imageUrl).subscribe(response => {
-  		let index = this.trade.imageUrls.indexOf(imageUrl);
-  		this.trade.imageUrls.splice(index, 1);
-  		this.changeDetectorRef.detectChanges();
-			this.popUpService.showMessage(
-				{
-					text: 'Image has been deleted.',
-					type: SystemMessageType.INFO,
-					timeout: 5000
-				}
-			);
-			this.changeDetectorRef.detectChanges();
-		}, error => this.popUpService.showError(getErrorMessage(error)));
-	}
+  deleteImage(imageUrl: string) {
+    this.tradeService.deleteTradeImage(this.trade.id, imageUrl).subscribe(response => {
+      let index = this.trade.imageUrls.indexOf(imageUrl);
+      this.trade.imageUrls.splice(index, 1);
+      this.changeDetectorRef.detectChanges();
+      this.popUpService.showMessage(
+        {
+          text: 'Image has been deleted.',
+          type: SystemMessageType.INFO,
+          timeout: 5000
+        }
+      );
+      this.changeDetectorRef.detectChanges();
+    }, error => this.popUpService.showError(getErrorMessage(error)));
+  }
 
   ngOnDestroy(): void {
     this.destroyed$.next();

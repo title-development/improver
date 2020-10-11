@@ -78,11 +78,10 @@ public class TradeController {
 
     @AdminAccess
     @PostMapping
-    ResponseEntity<Void> addTrade(@RequestPart(value = "data") String data,
+    ResponseEntity<Long> addTrade(@RequestPart(value = "data") String data,
                                   @RequestPart(value = "file", required = false) MultipartFile image) {
         AdminTrade adminTrade = fromJson(new TypeReference<>() {}, data);
-        tradeService.addTrade(adminTrade, image);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(tradeService.addTrade(adminTrade, image),HttpStatus.OK);
     }
 
     @AdminAccess
