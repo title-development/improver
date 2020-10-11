@@ -493,7 +493,7 @@ export class ProjectActionService {
 
   resubmitOrder(projectId: number) {
     this.projectService.submitProject(projectId)
-      .subscribe(this.projectUpdateSubject.next());
+      .subscribe(response => this.projectUpdateSubject.next());
 
   }
 
