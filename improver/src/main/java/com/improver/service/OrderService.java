@@ -33,7 +33,7 @@ public class OrderService {
 
 
     /**
-     * Validates the order (address, answers, etc) and saves the project with NULL status and isLead=true.
+     * Validates the order (address, answers, etc) and saves the project with UNCOMPLETED status and isLead=true.
      *
      * Flow:
      * Project doesn't go to the market, and no emails send.
@@ -121,7 +121,7 @@ public class OrderService {
             .setStartDate(order.getBaseLeadInfo().getStartExpectation())
             .setNotes(order.getBaseLeadInfo().getNotes())
             .setDetails(order.getQuestionary() != null ? SerializationUtil.toJson(order.getQuestionary()) : null )
-            .setStatus(null)
+            .setStatus(UNCOMPLETED)
             .setCreated(ZonedDateTime.now());
     }
 
@@ -137,7 +137,7 @@ public class OrderService {
     public long submitProject(long projectId, Customer customer) {
         Project project = projectRepository.findByIdAndCustomerId(projectId, customer.getId())
             .orElseThrow(NotFoundException::new);
-        if (null != project.getStatus() || project.isLead()) {
+        if (!UNCOMPLETED.equals(project.getStatus()) || project.isLead()) {
             throw new ConflictException("Order already submitted");
         }
 
@@ -224,7 +224,7 @@ public class OrderService {
             .setStartDate(order.getBaseLeadInfo().getStartExpectation())
             .setNotes(order.getBaseLeadInfo().getNotes())
             .setDetails(order.getQuestionary() != null ? SerializationUtil.toJson(order.getQuestionary()) : null )
-            .setStatus(null)
+            .setStatus(UNCOMPLETED)
             .setCreated(ZonedDateTime.now());
     }
 

@@ -3,7 +3,6 @@ package com.improver.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonRawValue;
 import com.improver.util.ImageContainable;
 import lombok.Data;
 import lombok.ToString;
@@ -131,6 +130,7 @@ public class Project implements ImageContainable {
      *  Project Status
      */
     public enum Status {
+        UNCOMPLETED("UNCOMPLETED"), // customer answered all questions but didn't submit
         PENDING("PENDING"),         // wait for customer to confirm email
         VALIDATION("VALIDATION"),   // saved, ready for validation
         ACTIVE("ACTIVE"),           // validated by system or manager
