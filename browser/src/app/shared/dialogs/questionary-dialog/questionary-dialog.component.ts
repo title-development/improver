@@ -10,6 +10,8 @@ import { ComponentCanDeactivate } from "../../../auth/router-guards/component-ca
 import { NavigationHelper } from "../../../util/helpers/navigation-helper";
 import { PopUpMessageService } from "../../../api/services/pop-up-message.service";
 import { ProjectActionService } from "../../../api/services/project-action.service";
+import { dialogsMap } from "../dialogs.state";
+import { confirmDialogConfig } from "../dialogs.configs";
 
 @Component({
   selector: 'questionary-dialog',
@@ -57,14 +59,35 @@ export class QuestionaryDialogComponent implements OnInit, ComponentCanDeactivat
   }
 
   close() {
-    if (!this.projectActionService.zipIsSupported
-      || confirm('Do you want to exit? Service will not be requested. Press OK - to exit, Cancel to stay')) {
+    if (!this.projectActionService.zipIsSupported) {
       this.currentDialogRef.close();
+    } else {
+      let properties = {
+        title: 'Unsaved changes',
+        message: `You have unsaved project request. Are you sure you want to leave now?`,
+        OK: 'Stay',
+        CANCEL: 'Leave'
+      };
+      let confirmDialogRef = this.dialog.open(dialogsMap['confirm-dialog'], confirmDialogConfig);
+      confirmDialogRef
+        .afterClosed()
+        .subscribe(result => {
+          confirmDialogRef = null;
+        });
+      confirmDialogRef.componentInstance.properties = properties as any;
+      confirmDialogRef.componentInstance.onAction.subscribe(
+        confirmed => {
+          if (!confirmed) {
+            this.currentDialogRef.close();
+          }
+        }
+      );
+
     }
   }
 
   checkProgressBarWidth() {
-    return (this.questionaryControlService.currentQuestionIndex + 1) / this.questionaryControlService.totalQuestionaryLength * 100 + '%'
+    return (this.questionaryControlService.currentQuestionIndex + this.questionaryControlService.PRE_QUESTIONARY_LENGTH) / this.questionaryControlService.totalQuestionaryLength * 100 + '%'
   }
 
   canDeactivate(): boolean {

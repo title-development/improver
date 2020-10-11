@@ -9,16 +9,17 @@ import { ProjectActionService } from '../../../api/services/project-action.servi
 import { Project } from '../../../api/models/Project';
 import { ProjectRequest } from '../../../api/models/ProjectRequest';
 import { SomePipe } from 'angular-pipes';
-import { Subject, Subscription } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { ComponentCanDeactivate } from '../../../auth/router-guards/component-can-deactivate.guard';
 import { ImagesUploaderComponent } from '../../../shared/image-uploader/image-uploader.component';
 import { NavigationHelper } from "../../../util/helpers/navigation-helper";
 import { NotificationResource } from "../../../util/notification.resource";
 import { filter, takeUntil } from "rxjs/operators";
-import moveHiredContractorsToFirstPosition = Project.moveHiredContractorsToFirstPosition;
 import { MediaQuery, MediaQueryService } from "../../../api/services/media-query.service";
 import { dialogsMap } from "../../../shared/dialogs/dialogs.state";
-import { projectRequestReviewDialogConfig } from "../../../shared/dialogs/dialogs.configs";
+import { confirmDialogConfig, projectRequestReviewDialogConfig } from "../../../shared/dialogs/dialogs.configs";
+import { map } from "rxjs/internal/operators";
+import moveHiredContractorsToFirstPosition = Project.moveHiredContractorsToFirstPosition;
 
 @Component({
   selector: 'customer-project-view',
@@ -95,13 +96,31 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy, Componen
   ngOnInit() {
   }
 
-  canDeactivate(): boolean {
-    return !(this.imageUploader && this.imageUploader.hasUnsavedImages());
+  canDeactivate(): Observable<boolean> | boolean {
+    console.log("canDeactivate")
+    if (!(this.imageUploader && this.imageUploader.hasUnsavedImages())) {
+      return true
+    } else {
+      let properties = {
+        title: 'Unsaved changes',
+        message: `You have unsaved changes in your project. Are you sure you want to leave now?`,
+        OK: 'Stay',
+        CANCEL: 'Leave'
+      };
+      let confirmDialogRef = this.dialog.open(dialogsMap['confirm-dialog'], confirmDialogConfig);
+      confirmDialogRef
+        .afterClosed()
+        .subscribe(result => {
+          confirmDialogRef = null;
+        });
+      confirmDialogRef.componentInstance.properties = properties as any;
+      return confirmDialogRef.componentInstance.onAction.pipe(map(value => !value))
+    }
   }
 
   @HostListener('window:beforeunload', ['$event'])
-  unloadNotification(event): any {
-    if (!this.canDeactivate()) {
+  beforeunload(event): any {
+    if ((this.imageUploader && this.imageUploader.hasUnsavedImages())) {
       return false;
     }
   }

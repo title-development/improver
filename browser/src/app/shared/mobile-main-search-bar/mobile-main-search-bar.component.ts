@@ -3,7 +3,6 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
-  HostListener,
   OnDestroy,
   OnInit,
   Renderer2,
@@ -141,10 +140,6 @@ export class MobileMainSearchBarComponent implements OnInit, AfterViewInit, OnDe
 					});
 	}
 
-  canDeactivate(): boolean {
-    return false;
-  }
-
   close() {
     this.currentDialogRef.close();
   }
@@ -161,13 +156,6 @@ export class MobileMainSearchBarComponent implements OnInit, AfterViewInit, OnDe
   focusout() {
     if (this.zipCodeCtrl.valid){
       this.searchServiceType();
-    }
-  }
-
-  @HostListener('window:beforeunload', ['$event'])
-  unloadNotification(event): any {
-    if (!this.canDeactivate()) {
-      return false;
     }
   }
 

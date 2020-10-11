@@ -76,6 +76,7 @@ export class PreQuestionaryBlock implements OnInit, AfterViewInit {
 
     if (this.questionaryControlService.trade) {
       this.filteredServices = this.services = this.questionaryControlService.trade.services;
+      console.log(this.questionaryControlService.trade.services)
       this.searchHolder = new SearchHolder<ServiceType>(this.services)
     }
 
@@ -89,8 +90,10 @@ export class PreQuestionaryBlock implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     // fix to prevent displaying of initial state of perfect scroll
     setTimeout(() => {
-      this.perfectScroll.directiveRef.update()
-      this.perfectScroll.directiveRef.config.suppressScrollY = false;
+      if (this.perfectScroll?.directiveRef) {
+        this.perfectScroll.directiveRef.update()
+        this.perfectScroll.directiveRef.config.suppressScrollY = false;
+      }
     }, 300)
   }
 
@@ -126,6 +129,7 @@ export class PreQuestionaryBlock implements OnInit, AfterViewInit {
         if (supported) {
           this.customerSuggestionService.saveUserSearchTerm(this.questionaryControlService.serviceType.name, this.defaultQuestionaryForm.get('projectLocation.zip').value, false);
           this.nextStep();
+          this.questionaryControlService.withZip = true;
         }
       },
       err => {

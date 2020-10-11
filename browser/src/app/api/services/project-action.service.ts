@@ -20,7 +20,7 @@ import { BoundariesService } from './boundaries.service';
 import { Role } from '../../model/security-model';
 import { Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime, first } from 'rxjs/operators';
 import { ReviewService } from "./review.service";
 import { ErrorHandler } from "../../util/handlers/error-handler";
 import { CustomerSuggestionService } from "./customer-suggestion.service";
@@ -289,9 +289,10 @@ export class ProjectActionService {
       this.openQuestionary(selected, localStorage.getItem('zipCode'));
     } else if (this.securityService.hasRole(Role.CUSTOMER)) {
       this.customerSuggestionService.lastCustomerZipCode$
-          .subscribe(lastCustomerZipCode => {
-            this.openQuestionary(selected, lastCustomerZipCode);
-          });
+        .pipe(first())
+        .subscribe(lastCustomerZipCode => {
+          this.openQuestionary(selected, lastCustomerZipCode);
+        });
     } else {
       this.openQuestionary(selected);
     }

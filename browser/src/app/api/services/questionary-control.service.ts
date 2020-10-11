@@ -16,9 +16,10 @@ import { ProjectService } from "./project.service";
 @Injectable()
 export class QuestionaryControlService {
 
-  public DEFAULT_QUESTIONARY_LENGTH = 5;
-  public DEFAULT_QUESTIONARY_LENGTH_AUTHORIZED_NO_PHONE = 5;
-  public DEFAULT_QUESTIONARY_LENGTH_AUTHORIZED = 4;
+  public readonly DEFAULT_QUESTIONARY_LENGTH = 5;
+  public readonly DEFAULT_QUESTIONARY_LENGTH_AUTHORIZED_NO_PHONE = 5;
+  public readonly DEFAULT_QUESTIONARY_LENGTH_AUTHORIZED = 4;
+  public readonly PRE_QUESTIONARY_LENGTH = 1;
 
   public defaultQuestionaryLength = this.DEFAULT_QUESTIONARY_LENGTH;
 

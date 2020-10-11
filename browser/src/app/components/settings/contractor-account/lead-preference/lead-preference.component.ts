@@ -11,6 +11,9 @@ import { getErrorMessage } from '../../../../util/functions';
 import { ComponentCanDeactivate } from "../../../../auth/router-guards/component-can-deactivate.guard";
 import { Observable } from "rxjs";
 import { TradesAndServiceTypes } from "../../../../model/data-model";
+import { dialogsMap } from "../../../../shared/dialogs/dialogs.state";
+import { confirmDialogConfig } from "../../../../shared/dialogs/dialogs.configs";
+import { map } from "rxjs/internal/operators";
 
 @Component({
   selector: 'lead-preference',
@@ -72,11 +75,29 @@ export class LeadPreferenceComponent implements OnInit, ComponentCanDeactivate {
   }
 
   canDeactivate(): Observable<boolean> | boolean {
-    return !this.unsavedChanges;
+    if (!this.unsavedChanges) {
+      return true
+    } else {
+      let properties = {
+        title: 'Unsaved changes',
+        message: `You have unsaved lead preference configuration. Are you sure you want to leave now?`,
+        OK: 'Stay',
+        CANCEL: 'Leave'
+      };
+      let confirmDialogRef = this.dialog.open(dialogsMap['confirm-dialog'], confirmDialogConfig);
+      confirmDialogRef
+        .afterClosed()
+        .subscribe(result => {
+          confirmDialogRef = null;
+        });
+      confirmDialogRef.componentInstance.properties = properties as any;
+      return confirmDialogRef.componentInstance.onAction.pipe(map(value => !value))
+    }
   }
 
-  @HostListener('window:beforeunload', ['$event']) unloadNotification(event): any {
-    if (!this.canDeactivate()) {
+  @HostListener('window:beforeunload', ['$event'])
+  beforeunload(event): any {
+    if (this.unsavedChanges) {
       return false;
     }
   }

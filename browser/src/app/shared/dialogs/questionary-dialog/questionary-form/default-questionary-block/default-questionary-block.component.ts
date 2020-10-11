@@ -128,8 +128,8 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
 
   nextQuestion(name, handler?: Function) {
     this.currentQuestionName = name;
-
-    if(name == 'customerPersonalInfo') {
+    // retrieve questionary answers before final confirm
+    if (this.questionaryControlService.currentQuestionIndex + this.questionaryControlService.PRE_QUESTIONARY_LENGTH == this.questionaryControlService.totalQuestionaryLength - 1) {
       this.getQuestionaryAnswers();
     }
 
@@ -365,6 +365,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
       questionaryAnswers.push({key: key, value: value})
     }
     this.questionaryAnswers = questionaryAnswers
+    console.log('questionaryAnswers', questionaryAnswers)
     return questionaryAnswers;
   }
 

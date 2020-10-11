@@ -113,4 +113,17 @@ public class TestQuestionaryGenerator {
                 .addAnswer("Drywall")
                 .addAnswer("Other"));
     }
+
+    public Questionary bathroomPainting(Questionary questionary) {
+        return questionary
+            .setName("bathroomPaintingQuestionary")
+            .setDescription("Questionary for Bathroom Painting")
+            .addQuestion(new Question()
+                .setTitle("Dou you need to clean painting surface from old paint?")
+                .setType(Question.Type.RADIO_BUTTON)
+                .addAnswer("Yes")
+                .addAnswer("No"));
+
+    }
+
 }

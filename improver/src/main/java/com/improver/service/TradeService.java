@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.ZonedDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -151,6 +152,7 @@ public class TradeService {
                  List<NameIdTuple> tradeSuggestedServices = allSuggestedService.stream()
                      .filter(suggestedService -> suggestedService.getParentId() == trade.getId())
                      .map(suggestedService -> new NameIdTuple(suggestedService.getId(), suggestedService.getName()))
+                     .sorted(Comparator.comparing(NameIdTuple::getName))
                      .collect(Collectors.toList());
 
                      return new TradeModel()

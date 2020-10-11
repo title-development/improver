@@ -22,6 +22,7 @@ import { PopUpMessageService } from '../../../../api/services/pop-up-message.ser
 import {
   distinctUntilChanged,
   finalize,
+  map,
   mergeMap,
   publishReplay,
   refCount,
@@ -42,6 +43,9 @@ import { BasicModeService } from './services/basic-mode.service';
 import { CircleService } from './services/circle.service';
 import { CoverageService } from './services/coverage.service';
 import { DetailModeService } from './services/detail-mode.service';
+import { dialogsMap } from "../../../../shared/dialogs/dialogs.state";
+import { confirmDialogConfig } from "../../../../shared/dialogs/dialogs.configs";
+import { MatDialog } from "@angular/material/dialog";
 
 @Component({
   selector: 'imp-service-area',
@@ -112,7 +116,8 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate, 
               private changeDetectionRef: ChangeDetectorRef,
               private tutorialService: TutorialsService,
               private coverageService: CoverageService,
-              private mediaQueryService: MediaQueryService) {
+              private mediaQueryService: MediaQueryService,
+              public dialog: MatDialog) {
   }
 
   ngOnInit(): void {
@@ -239,12 +244,29 @@ export class ServiceAreaComponent implements OnDestroy, ComponentCanDeactivate, 
   }
 
   canDeactivate(): Observable<boolean> | boolean {
-    return !this.unsavedChanges;
+    if (!this.unsavedChanges) {
+      return true
+    } else {
+      let properties = {
+        title: 'Unsaved changes',
+        message: `You have unsaved service area configuration. Are you sure you want to leave now?`,
+        OK: 'Stay',
+        CANCEL: 'Leave'
+      };
+      let confirmDialogRef = this.dialog.open(dialogsMap['confirm-dialog'], confirmDialogConfig);
+      confirmDialogRef
+        .afterClosed()
+        .subscribe(result => {
+          confirmDialogRef = null;
+        });
+      confirmDialogRef.componentInstance.properties = properties as any;
+      return confirmDialogRef.componentInstance.onAction.pipe(map(value => !value))
+    }
   }
 
-  @HostListener('window:beforeunload', ['$event']) unloadNotification(event): any {
-    if (!this.canDeactivate()) {
-
+  @HostListener('window:beforeunload', ['$event'])
+  beforeunload(event): any {
+    if (this.unsavedChanges) {
       return false;
     }
   }

@@ -12,6 +12,7 @@ export class ComponentCanDeactivateGuard implements CanDeactivate<ComponentCanDe
   }
 
   canDeactivate(component: ComponentCanDeactivate): boolean | Observable<boolean> {
-    return component.canDeactivate() ? true : confirm('Do you want to leave this page? You have unsaved changes! Press Cancel to stay, or OK to discard changes.');
+    return component.canDeactivate()
   }
+
 }

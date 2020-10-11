@@ -16,6 +16,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.ResourcePatternUtils;
 import org.springframework.stereotype.Component;
+
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -77,6 +78,7 @@ public class TestDataInitializer {
 
     private static final String TILE_INSTALLATION = "Tile Installation";
     private static final String ARCHITECTURAL_SERVICES = "Architectural Services";
+    private static final String BATHROOM_PAINTING = "Bathroom Painting";
     private static final String DEMO_PASS = "2019bestHOMEimprove";
     private static final String ADMIN_DEMO_PASS = DEMO_PASS + "!";
 
@@ -276,6 +278,7 @@ public class TestDataInitializer {
     private void initQuestions() {
         saveQuestionary(testQuestionaryGenerator.kitchenTilingQuestionary(questionaryRepository.save(new Questionary())), TILE_INSTALLATION);
         saveQuestionary(testQuestionaryGenerator.architecturalServices(questionaryRepository.save(new Questionary())), ARCHITECTURAL_SERVICES);
+        saveQuestionary(testQuestionaryGenerator.bathroomPainting(questionaryRepository.save(new Questionary())), BATHROOM_PAINTING);
     }
 
     private void saveQuestionary(Questionary questionary, String... serviceTypeNames) {

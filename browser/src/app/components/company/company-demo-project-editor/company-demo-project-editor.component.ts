@@ -17,6 +17,9 @@ import { finalize, first, map, startWith } from 'rxjs/internal/operators';
 import { ImagesUploaderComponent } from '../../../shared/image-uploader/image-uploader.component';
 import { ComponentCanDeactivate } from '../../../auth/router-guards/component-can-deactivate.guard';
 import { FormHasChangesDirective } from '../../../directives/form-has-changes.directive';
+import { dialogsMap } from "../../../shared/dialogs/dialogs.state";
+import { confirmDialogConfig } from "../../../shared/dialogs/dialogs.configs";
+import { MatDialog } from "@angular/material/dialog";
 
 
 @Component({
@@ -53,6 +56,7 @@ export class CompanyDemoProjectEditorComponent implements OnInit, ComponentCanDe
               private serviceTypeService: ServiceTypeService,
               private demoProjectService: DemoProjectService,
               public securityService: SecurityService,
+              public dialog: MatDialog,
               public router: Router,
               public constants: Constants,
               public messages: TextMessages) {
@@ -96,16 +100,36 @@ export class CompanyDemoProjectEditorComponent implements OnInit, ComponentCanDe
   }
 
   @HostListener('window:beforeunload', ['$event'])
-  unloadNotification(event): any {
-    if (!this.canDeactivate()) {
-
+  beforeunload(event): any {
+    if (this.hasUnsavedChanges()) {
       return false;
     }
   }
 
-  canDeactivate(): boolean {
-    const haveUnsavedImages: boolean = this.imageUploader && this.imageUploader.hasUnsavedImages();
-    return !(haveUnsavedImages || this.formHasChanges);
+
+  canDeactivate(): Observable<boolean> | boolean {
+    if (!this.hasUnsavedChanges()) {
+      return true
+    } else {
+      let properties = {
+        title: 'Unsaved changes',
+        message: `You have unsaved changes in your project. Are you sure you want to leave now?`,
+        OK: 'Stay',
+        CANCEL: 'Leave'
+      };
+      let confirmDialogRef = this.dialog.open(dialogsMap['confirm-dialog'], confirmDialogConfig);
+      confirmDialogRef
+        .afterClosed()
+        .subscribe(result => {
+          confirmDialogRef = null;
+        });
+      confirmDialogRef.componentInstance.properties = properties as any;
+      return confirmDialogRef.componentInstance.onAction.pipe(map(value => !value))
+    }
+  }
+
+  hasUnsavedChanges() {
+    return this.imageUploader && this.imageUploader.hasUnsavedImages() || this.formHasChanges
   }
 
   filter(name: string, arr: any): any[] {

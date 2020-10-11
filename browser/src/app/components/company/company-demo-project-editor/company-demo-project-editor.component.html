@@ -168,8 +168,8 @@
               <button cv-button-flat flatStyle="dark" [routerLink]="'/companies/' + securityService.getLoginModel().company">Cancel</button>
             </div>
             <div class="right-buttons">
-              <button cv-button [loading]="savingData" [disabled]="canDeactivate()" type="submit" *ngIf="newMode">Save</button>
-              <button cv-button [loading]="savingData" [disabled]="canDeactivate()" type="submit" *ngIf="!newMode">Save changes</button>
+              <button cv-button [loading]="savingData" [disabled]="!hasUnsavedChanges()" type="submit" *ngIf="newMode">Save</button>
+              <button cv-button [loading]="savingData" [disabled]="!hasUnsavedChanges()" type="submit" *ngIf="!newMode">Save changes</button>
             </div>
           </div>
 
