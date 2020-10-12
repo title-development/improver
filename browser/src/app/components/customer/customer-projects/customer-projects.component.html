@@ -74,15 +74,16 @@
                         </div>
                       </div>
                     </ng-template>
+                    <div class="no-requests-message" *ngIf="project.status == ProjectStatus.UNCOMPLETED">
+                      Actions needed
+                    </div>
                     <div class="no-requests-message"
-                         *ngIf="project.status == ProjectStatus.ACTIVE && project.projectRequests.length == 0">Searching
-                      for
-                      professionals...
+                         *ngIf="project.status == ProjectStatus.ACTIVE && project.projectRequests.length == 0">
+                      Searching for professionals...
                     </div>
                     <div class="no-requests-message"
                          *ngIf="project.status == ProjectStatus.VALIDATION && project.projectRequests.length == 0">
-                      Project
-                      in review...
+                      Project in review...
                     </div>
                   </div>
                   <div class="more-button">

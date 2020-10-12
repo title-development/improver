@@ -1,13 +1,12 @@
-<div class="category-services-header-content" *ngIf="trade">
+<div class="category-services-header-content" [cvSpinner]="!trade" [cvSpinnerSize]="64" [cvSpinnerBackground]="true">
     <div class="category-services-header-search">
         <div class="left-header">
             <div class="header-title-content">
                 <img class="trade-icon" [src]="'assets/trades/icons/' + trade.name + '.svg'"
-                     onerror="this.src='assets/trades/icons/default.svg';">
+                     onerror="this.src = 'assets/trades/icons/default.svg';">
                 <div class="header-title-text">
                     <div class="title">{{trade.name}}</div>
-                    <div class="sub-title">Simply check/uncheck services you provide specify exactly what job you
-                        do/don’t do so you always receive work you interested in.
+                    <div class="sub-title">Here you can find list of all services related to {{trade.name}}. Just type what you need.
                     </div>
                 </div>
             </div>
@@ -60,7 +59,7 @@
     </div>
 </div>
 
-<layout-footer></layout-footer>
+<layout-footer *ngIf="trade"></layout-footer>
 
 
 
