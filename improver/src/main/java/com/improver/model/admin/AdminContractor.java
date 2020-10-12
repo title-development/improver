@@ -19,4 +19,11 @@ public class AdminContractor extends UserModel {
         this.isQuickReply = contractor.isQuickReply();
         this.company = new NameIdTuple(company.getId(), company.getName());
     }
+
+
+    // Fix Pageable and count issue
+    public AdminContractor(Contractor contractor, int dummy) {
+        super(contractor);
+        this.isQuickReply = contractor.isQuickReply();
+    }
 }

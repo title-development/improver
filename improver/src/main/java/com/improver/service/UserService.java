@@ -102,7 +102,9 @@ public class UserService {
 
 
     public Page<AdminContractor> getAllContractors(Long id, String displayName, String email, String companyName, Pageable pageable) {
-        return userRepository.getAllContractors(id, displayName, email, companyName, pageable);
+        return (null == companyName || companyName.isEmpty())
+            ? userRepository.getAllContractors(id, displayName, email, pageable)
+            : userRepository.getAllContractorsJoinCompanies(id, displayName, email, companyName, pageable);
     }
 
     public Page<User> getAllCustomers(Long id, String displayName, String email, Pageable pageable) {

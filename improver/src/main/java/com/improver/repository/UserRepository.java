@@ -56,6 +56,16 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT  u.iconUrl FROM com.improver.entity.User u WHERE u.id = ?1")
     Optional<String> getIconUrl(long id);
 
+
+    // Fix Pageable and count issue
+    @Query("SELECT new com.improver.model.admin.AdminContractor(pro, 0) " +
+        "FROM com.improver.entity.Contractor pro WHERE " +
+        "(:id IS null OR pro.id = :id) AND " +
+        "(:displayName IS null OR LOWER(pro.displayName) LIKE CONCAT('%', LOWER(cast(:displayName as string)),'%')) AND " +
+        "(:email IS null OR LOWER(pro.email) LIKE CONCAT('%', LOWER(cast(:email as string)), '%'))")
+    Page<AdminContractor> getAllContractors(Long id, String displayName, String email, Pageable pageable);
+
+
     @Query("SELECT new com.improver.model.admin.AdminContractor(pro, c) " +
         "FROM com.improver.entity.Contractor pro " +
         "INNER JOIN pro.company c " +
@@ -64,7 +74,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
         "(:displayName IS null OR LOWER(pro.displayName) LIKE CONCAT('%', LOWER(cast(:displayName as string)),'%')) AND " +
         "(:email IS null OR LOWER(pro.email) LIKE CONCAT('%', LOWER(cast(:email as string)), '%')) AND " +
         "(:companyName IS null OR LOWER(c.name) LIKE CONCAT('%', LOWER(cast(:companyName as string)), '%'))")
-    Page<AdminContractor> getAllContractors(Long id, String displayName, String email, String companyName, Pageable pageable);
+    Page<AdminContractor> getAllContractorsJoinCompanies(Long id, String displayName, String email, String companyName, Pageable pageable);
 
     @Query("SELECT u  " +
         "FROM com.improver.entity.Customer u " +
