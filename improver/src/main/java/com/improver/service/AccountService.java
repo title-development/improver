@@ -182,24 +182,18 @@ public class AccountService {
             userRepository.save(user.setValidationKey(null));
             throw new ConflictException("Confirmation link is invalid");
         }
-        user.setActivated(true);
         user.setValidationKey(null);
         if (activation.getPassword() != null) {
             log.debug("Creating password for user={}", user.getEmail());
             user.setPassword(activation.getPassword());
         }
-        user = userRepository.save(user);
+        activateAndSaveUser(user);
         log.info("User confirmed email={}", user.getEmail());
-
-        // If Customer has a pending projects - put them into market
-        if (user instanceof Customer) {
-            leadService.putPendingOrdersToMarket((Customer) user);
-        }
         return user;
     }
 
     @Transactional
-    public User confirmUserEmail(UserActivation activation) {
+    public User confirmUserEmailChange(UserActivation activation) {
         String validationKey = jwtUtil.parseActivationJWT(activation.getToken());
         User user = userRepository.findByValidationKey(validationKey)
             .orElseThrow(() -> new ConflictException("Confirmation link is invalid"));
@@ -207,8 +201,8 @@ public class AccountService {
         user.setEmail(user.getNewEmail());
         user.setNewEmail(null);
         user.setValidationKey(null);
-        user = userRepository.save(user);
-        log.info("User confirmed email={}", user.getEmail());
+        activateAndSaveUser(user);
+        log.info("User confirmed email change={}", user.getEmail());
         return user;
     }
 
@@ -220,19 +214,22 @@ public class AccountService {
             .orElseThrow(() -> new ConflictException("Confirmation link is invalid"));
         user.setValidationKey(null);
         user.setPassword(activation.getPassword());
+        activateAndSaveUser(user);
+        log.info("User={} restored password", user.getEmail());
+        return user;
+    }
+
+    private void activateAndSaveUser(User user) {
         boolean activated = false;
         if (!user.isActivated()){
             user.setActivated(true);
             activated = true;
         }
         user = userRepository.save(user);
-        log.info("User={} restored password", user.getEmail());
-        if (user instanceof Customer && activated){
+        if (activated && user instanceof Customer){
             leadService.putPendingOrdersToMarket((Customer) user);
         }
-        return user;
     }
-
 
     @Transactional
     public void updateEmail(User user, EmailPasswordTuple emailPasswordTuple) {

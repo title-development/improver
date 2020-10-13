@@ -81,7 +81,6 @@ import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatRadioModule } from "@angular/material/radio";
 import { MAT_DATE_FORMATS, MatNativeDateModule } from "@angular/material/core";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
-import { AuthInterceptor } from "./util/interceptors/auth.interseptor";
 import { MyStompService } from "./api/services/my-stomp.service";
 import { HammerConfig } from "./util/hummer-config";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
@@ -203,11 +202,6 @@ const rootRouting = RouterModule.forRoot([], {useHash: false});
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AccessDeniedInterceptor,
-      multi: true
-    },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthInterceptor,
       multi: true
     },
     {

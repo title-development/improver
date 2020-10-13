@@ -23,7 +23,7 @@ export class ConfirmationComponent implements OnDestroy {
     token: "",
     password: "",
   };
-  password: {
+  password = {
     confirm: ""
   };
   activationSuccess = false;
@@ -95,7 +95,7 @@ export class ConfirmationComponent implements OnDestroy {
         response => {
           this.step = 2;
           this.activationSuccess = true;
-          this.securityService.cleanUserLoginData();
+          this.securityService.logoutFrontend();
           this.securityService.loginUser(response.body as LoginModel, response.headers.get('authorization'), true)
         },
         err => {
@@ -115,7 +115,7 @@ export class ConfirmationComponent implements OnDestroy {
         response => {
           this.step = 2;
           this.emailConfirmationSuccess = true;
-          this.securityService.cleanUserLoginData();
+          this.securityService.logoutFrontend();
           this.securityService.loginUser(response.body as LoginModel, response.headers.get('authorization'), true)
         },
         err => {

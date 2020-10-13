@@ -2,12 +2,12 @@ package com.improver.controller;
 
 import com.improver.entity.User;
 import com.improver.exception.ConflictException;
-import com.improver.model.out.LoginModel;
 import com.improver.model.in.UserActivation;
+import com.improver.model.out.LoginModel;
 import com.improver.repository.UserRepository;
+import com.improver.security.JwtUtil;
 import com.improver.security.UserSecurityService;
 import com.improver.service.AccountService;
-import com.improver.security.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -41,7 +41,7 @@ public class ConfirmationController {
 
     @PostMapping(EMAIL)
     public ResponseEntity<LoginModel> confirmEmailChange(@RequestBody UserActivation userActivation, HttpServletRequest req, HttpServletResponse res) {
-        User user = accountService.confirmUserEmail(userActivation);
+        User user = accountService.confirmUserEmailChange(userActivation);
         LoginModel loginModel = userSecurityService.performUserLogin(user, req, res);
         return new ResponseEntity<>(loginModel, HttpStatus.OK);
     }

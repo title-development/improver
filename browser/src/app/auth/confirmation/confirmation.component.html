@@ -20,6 +20,7 @@
         <input cv-input type="password"
                placeholder="Password (at least 8 symbols)"
                #passwordInput="ngModel"
+               #passwordInputRef
                name="password"
                [(ngModel)]="activationCustomerModel.password"
                validateEqual="confirmPassword"
@@ -29,7 +30,7 @@
                maxlength="32"
                pattern="{{constants.patterns.password}}">
         <cv-field-error>
-          <cv-password-hint [checkedInputRef]="passwordInput"></cv-password-hint>
+          <cv-password-hint [checkedInputRef]="passwordInputRef"></cv-password-hint>
         </cv-field-error>
       </cv-input-field>
 

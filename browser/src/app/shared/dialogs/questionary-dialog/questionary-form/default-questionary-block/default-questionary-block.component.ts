@@ -365,7 +365,6 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
       questionaryAnswers.push({key: key, value: value})
     }
     this.questionaryAnswers = questionaryAnswers
-    console.log('questionaryAnswers', questionaryAnswers)
     return questionaryAnswers;
   }
 
