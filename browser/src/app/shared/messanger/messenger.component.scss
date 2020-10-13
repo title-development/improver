@@ -83,6 +83,8 @@
 
     .chat-input-form {
       display: flex;
+      justify-content: center;
+      align-content: center;
       flex-direction: row;
       box-sizing: border-box;
       background-color: $white;
@@ -120,6 +122,10 @@
       }
 
       .file-input-button {
+        display: flex;
+        align-content: center;
+        justify-content: center;
+        align-self: center;
         padding: 16px 10px;
         background-color: $white;
         border: 1px solid transparent;
@@ -129,7 +135,6 @@
 
       textarea {
         display: block;
-        padding: 0 55px 0 0;
         border: 1px solid transparent;
         width: 100%;
         font-size: 14px;
@@ -140,10 +145,13 @@
       }
 
       .send-button {
+        display: flex;
+        align-content: center;
+        justify-content: center;
+        align-self: flex-end;
         padding: 16px 10px;
         background-color: transparent;
         border: 1px solid transparent;
-        position: absolute;
         right: 0;
         bottom: 0;
         margin: 0;

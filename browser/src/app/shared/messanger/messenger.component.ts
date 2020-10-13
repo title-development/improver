@@ -44,7 +44,7 @@ export class MessengerComponent implements OnInit, OnDestroy {
 
 
   @ViewChild('messengerContent') messengerContent: ElementRef;
-  @ViewChild('textAreaScrollBar') textAreaScrollBar: ElementRef;
+  @ViewChild('textAreaScrollBar') textAreaScrollBar: PerfectScrollbarComponent;
   @ViewChild('messageListScrollBar') messageListScrollBar: PerfectScrollbarComponent;
   @ViewChild('chatInputForm') form: ElementRef;
   @ViewChild(Autosize) autosize: Autosize;
@@ -93,6 +93,15 @@ export class MessengerComponent implements OnInit, OnDestroy {
     if (this.isMessengerEnabled()) {
       this.subscribeOnNewMessages();
     }
+  }
+
+  ngAfterViewInit(): void {
+    // fix to prevent displaying of initial state of perfect scroll
+    setTimeout(() => {
+      if (this.textAreaScrollBar?.directiveRef) {
+        this.textAreaScrollBar.directiveRef.update()
+      }
+    }, 300)
   }
 
   ngOnDestroy(): void {
@@ -310,7 +319,7 @@ export class MessengerComponent implements OnInit, OnDestroy {
    * Move send button 11px right when scrollbar appear
    */
   onScrollBarShow() {
-    const el = this.textAreaScrollBar.nativeElement;
+    const el = this.textAreaScrollBar.directiveRef.elementRef.nativeElement;
     setTimeout(() => {
       if (hasClass(el, 'ps--active-y') && this.sendButtonOffset == 0) {
         this.sendButtonOffset = 11;

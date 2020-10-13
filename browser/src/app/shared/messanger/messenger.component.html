@@ -57,18 +57,18 @@
         #fileInput
         multiple
         (change)="onFileChange($event)">
-      <label for="file-input" class="file-input-button" fxLayoutAlign="center center">
+      <label for="file-input" class="file-input-button">
         <mat-icon>attach_file</mat-icon>
       </label>
       <div class="scrollbar-holder">
-        <div perfectScrollbar #textAreaScrollBar>
+        <perfect-scrollbar #textAreaScrollBar [config]="{suppressScrollX : true}">
         <textarea autosize minHeight="20" maxlength="500" [(ngModel)]="message"
                   (keydown)="onKeyDown()"
                   (ngModelChange)="onScrollBarShow()" name="input_message" rows="1" placeholder="Type your message"
                   (focus)="isMessengerEnabled() && sendReadEvent()"></textarea>
-        </div>
+        </perfect-scrollbar>
       </div>
-      <button class="send-button" fxLayoutAlign="center center" type="submit" [style.right.px]="sendButtonOffset">
+      <button class="send-button" type="submit" [style.right.px]="sendButtonOffset">
         <mat-icon>send</mat-icon>
       </button>
     </form>

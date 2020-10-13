@@ -58,6 +58,13 @@
           background-size: cover;
           background-position: center;
         }
+
+        &[ng-reflect-ng-switch="IMAGE"] {
+          padding: 0px;
+          border-radius: 8px;
+          overflow: hidden;
+        }
+
       }
     }
     .message {
