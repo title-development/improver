@@ -231,6 +231,10 @@
   }
 }
 
+.text-wrap-format {
+  white-space: nowrap;
+}
+
 .logout-wrapper {
   width: 20px;
   height: 20px;
@@ -248,6 +252,7 @@
   top: -5px;
   right: 0;
   min-width: 240px;
+  width: -moz-max-content;
   width: max-content;
   position: absolute;
   opacity: 0;
