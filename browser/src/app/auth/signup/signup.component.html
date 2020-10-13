@@ -17,7 +17,8 @@
               [cvSpinner]="registrationProcessing"
               [cvSpinnerSize]="30"
               [cvSpinnerBackground]="true"
-              cvSpinnerBackgroundColor="#fafafa">
+              cvSpinnerBackgroundColor="#fafafa"
+              autocomplete="off">
 
           <div class="auth-form-title">Sign up to hire Professionals</div>
 
@@ -31,6 +32,9 @@
           <div class="auth-social-hint">
             <span>or continue with Email</span>
           </div>
+
+          <!--prevent email autofill-->
+          <input type="text" style="display: none;">
 
           <cv-input-field>
             <input cv-input type="text"
@@ -69,7 +73,7 @@
                    #passwordInput
                    name="password"
                    type="password"
-                   autocomplete="new-password"
+                   autocomplete="off"
                    [(ngModel)]="user.password"
                    validateEqual="confirmPassword"
                    validationEqualReverse="true"
@@ -87,6 +91,7 @@
                    #confirmPassword="ngModel"
                    name="confirmPassword"
                    type="password"
+                   autocomplete="off"
                    [(ngModel)]="registerProps.confirmPassword"
                    validateEqual="password"
                    validationEqualReverse="false"

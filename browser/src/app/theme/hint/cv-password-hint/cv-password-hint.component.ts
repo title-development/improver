@@ -68,7 +68,9 @@ export class CvPasswordHintComponent implements OnInit, AfterViewInit, OnDestroy
 	private addFocusEventListener() {
 		this.focusListener = this.renderer.listen(this.checkedInputRef.elementRef.nativeElement, 'focus', (event) => {
 			this.inputHasFocus = true;
-			this.animationState = 'active';
+			if (this.hasError) {
+        this.animationState = 'active';
+      }
 			this.renderer.setStyle(this.checkedInputRef.elementRef.nativeElement.offsetParent, 'z-index', '10');
 			this.changeDetectorRef.detectChanges();
 		});
@@ -90,7 +92,10 @@ export class CvPasswordHintComponent implements OnInit, AfterViewInit, OnDestroy
 	private subscribeOnPasswordChanges() {
 		(this.checkedInputRef.ngControl as NgModel).valueChanges.subscribe(password => {
 			this.validate(password);
-			this.changeDetectorRef.detectChanges();
+      this.changeDetectorRef.detectChanges();
+      if (this.hasError && this.animationState == 'inactive') {
+        this.animationState = 'active';
+      }
 		});
 	}
 

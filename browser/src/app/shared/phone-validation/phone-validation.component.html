@@ -10,7 +10,11 @@
   <form class="validate-phone-form"
         name="validate-phone-form"
         #validatePhoneForm="ngForm"
+        autocomplete="off"
         novalidate>
+
+    <!--prevent code autofill-->
+    <input type="text" style="display: none;">
 
     <div class="row">
 

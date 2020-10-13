@@ -41,7 +41,7 @@ export class Constants {
       // at least 8 characters
       // at least 1 numeric character
       // at least 1 lowercase and uppercase letter
-      password: '^(?=.*?[A-Za-z])(?=.*?[0-9]).{8,}$',
+      password: '^(?=.*[a-z])(?=.*?[A-Z])(?=.*?[0-9]).{8,}$',
 
       // at least 8 characters
       // at least 1 numeric character
