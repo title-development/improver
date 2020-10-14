@@ -17,8 +17,11 @@
               [cvSpinner]="registrationProcessing"
               [cvSpinnerSize]="30"
               [cvSpinnerBackground]="true"
-              cvSpinnerBackgroundColor="#fafafa"
-              autocomplete="off">
+              cvSpinnerBackgroundColor="#fafafa">
+
+          <!--prevent email, password autofill-->
+          <input type="text" name="email" style="opacity: 0;position: absolute; pointer-events: none">
+          <input type="password" style="opacity: 0;position: absolute; pointer-events: none">
 
           <div class="auth-form-title">Sign up to hire Professionals</div>
 
@@ -33,9 +36,6 @@
             <span>or continue with Email</span>
           </div>
 
-          <!--prevent email autofill-->
-          <input type="text" style="display: none;">
-
           <cv-input-field>
             <input cv-input type="text"
                    inputmode="email"
@@ -46,6 +46,7 @@
                    required
                    trim
                    maxlength="255"
+                   autocomplete="off"
                    pattern="{{constants.patterns.email}}"
                    emailUniqueValidator>
             <cv-field-error *ngIf="email.dirty || email.touched || signupForm.submitted">
@@ -62,9 +63,6 @@
               </span>
             </cv-field-error>
           </cv-input-field>
-
-          <!--prevent password autofill-->
-          <input type="password" style="display: none;">
 
           <cv-input-field class="input-with-hints">
 

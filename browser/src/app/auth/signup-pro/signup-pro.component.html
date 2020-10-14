@@ -21,6 +21,10 @@
             (ngSubmit)="accountForm.valid && submitContractorRegistration()"
             novalidate>
 
+        <!--prevent email, password autofill-->
+        <input type="text" name="email" style="opacity: 0;position: absolute; pointer-events: none">
+        <input type="password" style="opacity: 0;position: absolute; pointer-events: none">
+
         <div class="row">
           <h3 class="col-md-8 col-sm-12 col-xs-12">Create Pro Account</h3>
           <div [ngClass]="{'invisible': mediaQuery.xs || mediaQuery.sm}" class="or-social col-md-4">

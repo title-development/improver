@@ -10,46 +10,50 @@
   </div>
   <div class="popup-body">
     <ng-container ></ng-container>
-    <perfect-scrollbar [config]="psConfig" *ngIf="(notifications && notifications.length > 0) || (notificationResource.unreadMessagesCount$ | async) > 0 " (psYReachEnd)="psYReachEnd($event)">
-    <!--message notification-->
-    <ng-template ngFor [ngForOf]="unreadMessages" let-unreadMessage let-i="index" [ngForTrackBy]="trackBy">
-      <a class="item" [ngClass]="{'new': !unreadMessage.read}" (click)="navigate(unreadMessage.link); notificationResource.read(i); close()">
+       <div class="notification-content" [style.height.px]="notificationsBlockHeight((notifications && notifications.length), (notificationResource.unreadMessagesCount$ | async))" *ngIf="(notifications && notifications.length > 0) || (notificationResource.unreadMessagesCount$ | async) > 0 ">
+         <perfect-scrollbar [config]="psConfig"  (psYReachEnd)="psYReachEnd($event)">
+        <!--message notification-->
+        <ng-template ngFor [ngForOf]="unreadMessages" let-unreadMessage let-i="index" [ngForTrackBy]="trackBy">
+          <a class="item" [ngClass]="{'new': !unreadMessage.read}" (click)="navigate(unreadMessage.link); notificationResource.read(i); close()">
 
-        <div class="logo-wrapper">
-          <div [ngStyle]="unreadMessage.newMessage ? {'background-image': 'url(/assets/icons/message-notification.png)'} : unreadMessage.icon && unreadMessage.icon != '' && {'background-image':'url(' + unreadMessage.icon + '), url(/assets/img/home-improve-notification-icon.png)'}">
-          </div>
-        </div>
+            <div class="logo-wrapper">
+              {{ unreadMessage.icon}}
+              <div [ngStyle]="unreadMessage.newMessage ? {'background-image': 'url(/assets/icons/message-notification.png)'} : unreadMessage.icon && unreadMessage.icon != '' && {'background-image':'url(' + unreadMessage.icon + '), url(/assets/img/home-improve-notification-icon.png)'}">
+              </div>
+            </div>
 
-        <div class="notification-body">
-          <div class="top-line" [innerHtml]="unreadMessage.payload"></div>
-          <div class="bottom-line">
-            <i class="imp-icon-clock-2"></i>
-            <span>{{unreadMessage.created | timeAgo | async}}</span>
-          </div>
-        </div>
+            <div class="notification-body">
+              <div class="top-line" [innerHtml]="unreadMessage.payload"></div>
+              <div class="bottom-line">
+                <i class="imp-icon-clock-2"></i>
+                <span>{{unreadMessage.created | timeAgo | async}}</span>
+              </div>
+            </div>
 
-      </a>
-    </ng-template>
-    <ng-template ngFor [ngForOf]="notifications" let-notification let-i="index" [ngForTrackBy]="trackBy">
-      <a class="item" [ngClass]="{'new': !notification.read}" (click)="navigate(notification.link); !notification.read && read(notification.id); close()">
+          </a>
+        </ng-template>
+        <ng-template ngFor [ngForOf]="notifications" let-notification let-i="index" [ngForTrackBy]="trackBy">
+          <a class="item" [ngClass]="{'new': !notification.read}" (click)="navigate(notification.link); !notification.read && read(notification.id); close()">
 
-        <div class="logo-wrapper">
-          <div [ngStyle]="notification.icon && notification.icon != '' && {'background-image':'url(' + notification.icon + '), url(/assets/img/home-improve-notification-icon.png)'}"
-               [ngClass]="{'icon-present': !notification.newMessage && notification.icon && notification.icon != ''}">
-          </div>
-        </div>
+            <div class="logo-wrapper">
+              <div [ngStyle]="notification.icon && notification.icon != '' && {'background-image':'url(' + notification.icon + '), url(/assets/img/home-improve-notification-icon.png)'}"
+                   [ngClass]="{'icon-present': !notification.newMessage && notification.icon && notification.icon != ''}">
+              </div>
+            </div>
 
-        <div class="notification-body">
-          <div class="top-line" [innerHtml]="notification.payload"></div>
-          <div class="bottom-line">
-            <i class="imp-icon-clock-2"></i>
-            <span>{{notification.created | timeAgo | async}}</span>
-          </div>
-        </div>
+            <div class="notification-body">
+              <div class="top-line" [innerHtml]="notification.payload"></div>
+              <div class="bottom-line">
+                <i class="imp-icon-clock-2"></i>
+                <span>{{notification.created | timeAgo | async}}</span>
+              </div>
+            </div>
 
-      </a>
-    </ng-template>
-    </perfect-scrollbar>
+          </a>
+        </ng-template>
+      </perfect-scrollbar>
+    </div>
+
     <div class="no-notifications" *ngIf="(notifications && notifications.length == 0) && (notificationResource.unreadMessagesCount$ | async) == 0 ">
       You don't have new notifications
     </div>

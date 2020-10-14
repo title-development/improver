@@ -1,5 +1,5 @@
 <div class="category-services-header-content" [cvSpinner]="!trade" [cvSpinnerSize]="64" [cvSpinnerBackground]="true">
-    <div class="category-services-header-search">
+    <div *ngIf="trade" class="category-services-header-search">
         <div class="left-header">
             <div class="header-title-content">
                 <img class="trade-icon" [src]="'assets/trades/icons/' + trade.name + '.svg'"

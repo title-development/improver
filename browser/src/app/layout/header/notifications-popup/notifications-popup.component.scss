@@ -25,6 +25,10 @@
   }
 }
 
+.notification-content {
+  max-height: 412px;
+}
+
 .notifications-popup {
   position: absolute;
   left: -100px;
@@ -107,7 +111,7 @@
 
   .popup-body {
     perfect-scrollbar {
-      max-height: 412px;
+      height: 100%;
     }
 
     .no-notifications {

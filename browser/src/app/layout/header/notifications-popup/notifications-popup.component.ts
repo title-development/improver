@@ -122,6 +122,17 @@ export class NotificationsPopupComponent implements OnChanges, OnDestroy {
     }
   }
 
+  notificationsBlockHeight(notificationsAmount: number = 0, unreadMessagesAmount: number = 0): number {
+    let maxNotificationsBlockHeight: number = 412;
+    let itemHeight: number = 68.7;
+    let totalItems = notificationsAmount + unreadMessagesAmount;
+    if (totalItems > 0 && totalItems < 6) {
+      return totalItems * itemHeight;
+    } else if (totalItems >= 6) {
+      return maxNotificationsBlockHeight;
+    }
+  }
+
   getUnreadMessages() {
     this.notificationsProcessing = true;
     this.notificationResource.unreadMessages$
