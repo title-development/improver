@@ -12,7 +12,7 @@
          selectionMode="single" sortMode="single"
          [contextMenu]="cm" [paginator]="true"
          [rows]="rowsPerPage[0]" [totalRecords]="users.totalElements" [rowsPerPageOptions]="rowsPerPage"
-         [sortField]="'email'" [sortOrder]="1"
+         [sortField]="'id'" [sortOrder]="1"
          [filters]="filters"
          [(contextMenuSelection)]="selectedUser"
          (onContextMenuSelect)="initContextMenu()"

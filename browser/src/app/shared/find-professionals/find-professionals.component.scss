@@ -265,7 +265,7 @@
 }
 
 .service-type-form-group {
-  width: 79%;
+  width: 78%;
   z-index: 30;
   position: relative;
   border-radius: 20px 0 0 20px;
@@ -309,7 +309,7 @@
 .zip-code-form-group {
   z-index: 1;
   min-width: 106px;
-  width: 21%;
+  width: 22%;
   position: relative;
 
   @include response-to(sm){
@@ -531,7 +531,6 @@
 
     @include response-to(lg) {
       width: 100%;
-      min-width: 210px;
       max-width: 300px;
     }
 

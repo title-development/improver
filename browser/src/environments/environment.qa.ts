@@ -1,8 +1,10 @@
 export const environment = {
+  env: 'qa',
   production: true,
   stripePublicKey: 'pk_test_tBR2VDNxpL6kuQN7qiRxZ6rP00PePkGsvA',
   googleApiKey: 'AIzaSyAfuqCiejg570FcpxUhMExQZS_-0NXkOW4',
   facebookClientId: '679075905790840',
+  facebookPixelId: '3320760744600703',
   googleClientId: '1078841939849-an19r4o58srgq6cu9d86flt70darg1f4.apps.googleusercontent.com',
   googleAnalyticsTrackingId: 'UA-148193868-1',
   hotJarTrackingId: 1490374,

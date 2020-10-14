@@ -97,7 +97,6 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy, Componen
   }
 
   canDeactivate(): Observable<boolean> | boolean {
-    console.log("canDeactivate")
     if (!(this.imageUploader && this.imageUploader.hasUnsavedImages())) {
       return true
     } else {

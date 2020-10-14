@@ -37,7 +37,7 @@
          [ngClass]="{'owner' : message.sender == securityService.getLoginModel().id , 'system' : message.sender == 'system'}">
 
       <div class="message" [ngSwitch]="message.type"
-           [ngClass]="{ 'owner' : message.sender == securityService.getLoginModel().id }">
+           [ngClass]="{ 'owner' : message.sender == securityService.getLoginModel().id, 'image' : message.type == ProjectRequest.MessageType.IMAGE }">
 
         <!--Conversation-->
         <div class="message-content" *ngSwitchCase="ProjectRequest.MessageType.TEXT">{{message.body}}</div>

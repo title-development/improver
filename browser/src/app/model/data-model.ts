@@ -1,6 +1,7 @@
 import { Project } from '../api/models/Project';
 import { ProjectRequest } from '../api/models/ProjectRequest';
 import { Centroid } from '../api/models/ZipBoundaries';
+import { removePhoneMask } from "../util/functions";
 
 /*************************************************
  ******************    Enums   *******************
@@ -456,7 +457,7 @@ export class BaseLeadInfo {
     this.firstName = info.firstName;
     this.lastName = info.lastName;
     this.email = info.email;
-    this.phone = info.phone;
+    this.phone = removePhoneMask(info.phone);
   }
 }
 

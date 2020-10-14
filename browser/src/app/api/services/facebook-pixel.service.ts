@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { environment } from "../../../environments/environment";
 
 declare let fbq: Function;
 
@@ -20,8 +21,7 @@ export class FacebookPixelService {
       n.push = n; n.loaded = !0; n.version = '2.0'; n.queue = []; t = b.createElement(e); t.async = !0;
       t.src = v; s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s)
     })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
-    (window as any).fbq('init', '3320760744600703');
-    (window as any).fbq('track', 'Landing (page view)');
+    (window as any).fbq('init', environment.facebookPixelId);
     this.fbq = fbq;
   }
 

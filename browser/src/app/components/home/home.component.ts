@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { MetricsEventService } from "../../api/services/metrics-event.service";
 
 @Component({
   selector: 'home-page',
@@ -6,4 +7,9 @@ import { Component } from '@angular/core';
   styleUrls: ['home.component.scss']
 })
 export class HomeComponent {
+
+  constructor(private metricsEventService: MetricsEventService) {
+    this.metricsEventService.fireLandingPageViewEvent()
+  }
+
 }
