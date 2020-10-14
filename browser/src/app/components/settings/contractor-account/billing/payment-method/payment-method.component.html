@@ -16,8 +16,11 @@
           </div>
         </div>
 
-        <button class="add-money-button" cv-button-empty (click)="!paymentCardsProcessing && openAddMoney()"
-                [hidden]="cards?.length < 1 || paymentCardsProcessing">Top up balance
+        <button *ngIf="cards?.length >= 1"
+                class="add-money-button"
+                cv-button-empty
+                [disabled]="paymentCardsProcessing"
+                (click)="!paymentCardsProcessing && openAddMoney()">Top up balance
         </button>
 
       </div>

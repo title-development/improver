@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit, QueryList, Renderer2, ViewChild, ViewChildren } from '@angular/core';
-import { CompanyProfile } from '../../../model/data-model';
+import { CompanyProfile, CompanyReviewCapability, CustomerProjectShort } from '../../../model/data-model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SecurityService } from '../../../auth/security.service';
 import { CompanyService } from '../../../api/services/company.service';
@@ -8,8 +8,8 @@ import { PopUpMessageService } from '../../../api/services/pop-up-message.servic
 import {
   addLicenseDialogConfig,
   companyInfoDialogConfig,
-  mobileMediaDialogConfig,
-  personalPhotoDialogConfig,
+  mobileMediaDialogConfig, notReviewedProjectRequestsDialogConfig,
+  personalPhotoDialogConfig, projectRequestReviewDialogConfig,
   unavailabilityPeriodDialogConfig
 } from '../../../shared/dialogs/dialogs.configs';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -71,6 +71,7 @@ export class CompanyProfileComponent implements OnInit, OnDestroy {
   scrollHandler = () => this.onScroll();
   public companyInfoDialogRef: MatDialogRef<any>;
   public companyInfoEditDialogRef: MatDialogRef<any>;
+  public notReviewedProjectRequestsDialogRef: MatDialogRef<any>;
 
   constructor(@Inject('Window') private window: Window,
               private renderer: Renderer2,
@@ -225,8 +226,21 @@ export class CompanyProfileComponent implements OnInit, OnDestroy {
 
   openDialogAddReview(companyProfile): void {
     const reviewToken = localStorage.getItem('review-token');
+
     this.reviewService.getReviewOptions(this.companyId, '0', reviewToken).subscribe(
-      res => this.openWriteReviewDialog(companyProfile),
+			companyReviewCapability => {
+        if (companyReviewCapability.canLeftReview && reviewToken == null) {
+          this.notReviewedProjectRequestsDialogRef = this.dialog.open(dialogsMap['not-reviewed-project-requests-dialog'], notReviewedProjectRequestsDialogConfig);
+          this.notReviewedProjectRequestsDialogRef.componentInstance.projectRequests = companyReviewCapability.notReviewedProjectRequests;
+          this.notReviewedProjectRequestsDialogRef.componentInstance.companyId = this.companyId;
+          this.notReviewedProjectRequestsDialogRef.afterClosed()
+              .subscribe(result => {
+                this.companyInfoDialogRef = null;
+              });
+        } else {
+          this.openWriteReviewDialog(companyProfile)
+        }
+      },
       err => {
         this.errorHandler.unauthorized(err, '', () => this.openWriteReviewDialog(companyProfile));
         this.errorHandler.unprocessableEntity(err, getErrorMessage(err), () => this.clearUrlQueryParams());
@@ -236,6 +250,7 @@ export class CompanyProfileComponent implements OnInit, OnDestroy {
         this.dialog.closeAll();
       }
     );
+
   }
 
   openNewLicenseDialog(licenseId?): void {

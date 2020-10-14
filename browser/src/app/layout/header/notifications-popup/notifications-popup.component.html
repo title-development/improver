@@ -17,7 +17,6 @@
           <a class="item" [ngClass]="{'new': !unreadMessage.read}" (click)="navigate(unreadMessage.link); notificationResource.read(i); close()">
 
             <div class="logo-wrapper">
-              {{ unreadMessage.icon}}
               <div [ngStyle]="unreadMessage.newMessage ? {'background-image': 'url(/assets/icons/message-notification.png)'} : unreadMessage.icon && unreadMessage.icon != '' && {'background-image':'url(' + unreadMessage.icon + '), url(/assets/img/home-improve-notification-icon.png)'}">
               </div>
             </div>

@@ -1,0 +1,176 @@
+@import "improver-mixins.scss";
+
+.dialog-content-wrapper {
+
+  .header {
+
+    .header-content {
+      padding: 16px 48px 16px 24px;
+      background-color: $grey-100;
+      font-size: 20px;
+      font-weight: 600;
+      text-align: left;
+      color: $grey-600;
+    }
+
+  }
+
+  .content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.92);
+    padding: 24px 24px 0;
+    width: 420px;
+
+    .project-request-wrapper {
+      cursor: pointer;
+      margin-bottom: 24px;
+      width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.24);
+      padding: 20px;
+
+      &:hover {
+        background-color: $grey-200;
+      }
+
+      .project-request-content {
+        display: flex;
+        flex-direction: row;
+
+        .imp-icon-tools:before {
+          margin: 0;
+          font-size: 55px;
+          margin-right: 12px;
+        }
+
+        .icon {
+          height: 60px;
+          width: 60px;
+          background-size: cover;
+          background-repeat: no-repeat;
+          margin-right: 12px;
+          border-radius: 50%;
+          background-color: $grey-200;
+        }
+
+        .details-content {
+          display: flex;
+          flex-direction: column;
+
+          span {
+            font-size: 18px;
+            font-weight: 600;
+            color: $dark;
+          }
+        }
+      }
+    }
+
+  }
+
+  .actions {
+    padding: 0px 24px 16px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+  }
+
+}
+
+.content-size {
+  max-width: 100%;
+}
+
+.review-form-content {
+  padding: 0 !important;
+  width: 540px !important;
+  max-width: 100%;
+}
+
+.status {
+  font-size: 12px;
+  max-height: 23px;
+  padding: 4px 8px;
+  min-width: 75px;
+  width: max-content;
+  border-radius: 2px;
+  background-color: #aaaaaa;
+  text-align: left;
+  color: $white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @include response-to(sm) {
+    white-space: nowrap;
+    vertical-align: middle;
+  }
+
+  &:first-letter {
+    text-transform: uppercase;
+  }
+
+  &.active {
+    background-color: #309ae3;
+  }
+
+  &.hired {
+    background-color: #1eb237;
+  }
+
+  &.decline {
+    background-color: #ff5a6a;
+  }
+
+  &.inactive {
+    background-color: #ff5a6a;
+  }
+
+  &.refund_rejected {
+    background-color: #ff5a6a;
+  }
+
+  &.refund_requested {
+    background-color: #e3b10a;
+  }
+
+  &.refunded {
+    background-color: #946dfd;
+  }
+
+  &.completed {
+    background-color: #946dfd;
+  }
+
+  &.closed {
+    background-color: #ff5a6a;
+  }
+
+}
+
+
+::ng-deep .mat-dialog-container {
+  padding: 0px;
+}
+
+.close-modal {
+  position: relative;
+  right: 32px;
+  top: 32px;
+}
+
+:host {
+  ::ng-deep .add-review-wrapper {
+    position: relative !important;
+    background: $white !important;
+    padding: 0 !important;
+
+    .add-review-container {
+      box-shadow: none !important;
+    }
+  }
+}

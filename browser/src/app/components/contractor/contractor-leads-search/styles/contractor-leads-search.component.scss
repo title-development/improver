@@ -23,6 +23,8 @@ agm-map::ng-deep {
   padding: 10px 16px;
   cursor: pointer;
   color: $grey-500;
+  width: auto;
+  height: auto;
 }
 
 .mat-sidenav-container {
@@ -52,8 +54,7 @@ agm-map::ng-deep {
     .close-sidenav {
       display: flex;
       align-items: center;
-      padding: 0px 8px;
-      margin-right: -8px;
+      margin-left: 8px;
       cursor: pointer;
       color: $grey-500;
     }

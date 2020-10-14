@@ -89,6 +89,7 @@
       }
 
       .add-money-button {
+        max-height: 39px;
 
         @include response-to(xs){
           width: 126px;

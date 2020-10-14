@@ -40,7 +40,7 @@ import { Constants } from '../../../../util/constants';
 export class CustomerAddReviewFormComponent implements OnInit {
 
   @Input() sidebar;
-  @Input() projectRequest;
+  @Input() projectRequest: ProjectRequest;
 
   showReviewForm = false;
   isRated = false;
@@ -70,37 +70,26 @@ export class CustomerAddReviewFormComponent implements OnInit {
   addReview(reviewForm: NgForm) {
     if (!this.projectRequest.reviewed && reviewForm.valid) {
       this.isSubmitButtonDisabled = true;
-      this.reviewService.getReviewOptions(this.projectRequest.company.id, this.projectRequest.id).subscribe(
-        (response: boolean) => {
-          if (this.isRated) {
 
-            if (this.newReview.description.trim().length > 2) {
-
-              this.reviewService.addReview(this.projectRequest.company.id, this.newReview, this.projectRequest.id)
-                .subscribe(response => {
-                    this.newReview = {};
-                    this.newReview.score = 1;
-                    this.showReviewForm = false;
-                    this.isRated = false;
-                    this.isReviewSend = true;
-                    this.newReview.description = '';
-                    reviewForm.resetForm();
-                    this.updateProjectRequest();
-                    this.onLoadReviews.emit(this.isReviewSend);
-                  },
-                  err => {
-                    console.error(err);
-                    this.isSubmitButtonDisabled = false;
-                  }
-                );
-            }
-          }
-        },
-        err => {
-          console.error(err);
-          this.popUpMessageService.showMessage({text: JSON.parse(err.error).message, type: SystemMessageType.ERROR});
-        }
-      );
+      if (this.isRated && this.newReview.description.trim().length > 2) {
+        this.reviewService.addReview(this.projectRequest.company.id, this.newReview, this.projectRequest.id)
+            .subscribe(response => {
+                this.newReview = {};
+                this.newReview.score = 1;
+                this.showReviewForm = false;
+                this.isRated = false;
+                this.isReviewSend = true;
+                this.newReview.description = '';
+                reviewForm.resetForm();
+                this.updateProjectRequest();
+                this.onLoadReviews.emit(this.isReviewSend);
+              },
+              err => {
+                console.error(err);
+                this.isSubmitButtonDisabled = false;
+              }
+            );
+      }
     }
   }
 

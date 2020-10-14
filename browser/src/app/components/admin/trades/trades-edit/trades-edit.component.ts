@@ -89,7 +89,7 @@ export class TradesEditComponent {
           this.popUpService.showSuccess(`Trade ${this.trade.name} has been added`);
           this.previousName = this.trade.name;
           this.router.navigate(['admin', 'trades']);
-        }, error => this.popUpService.showError(getErrorMessage(error)));
+        }, error => this.popUpService.showError('Failed to upload images for trade'));
       });
     }
   }

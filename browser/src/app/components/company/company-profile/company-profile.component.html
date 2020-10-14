@@ -24,9 +24,11 @@
     <div class="container">
       <div class="wrapper">
         <div class="company-name">
-          <span>{{companyProfile.name}} </span>
-          <span class="edit-button-wrapper" *ngIf="editMode">
-            <mat-icon class="edit" (click)="openCompanyNameEditDialog()">edit</mat-icon>
+          <span>
+            {{companyProfile.name}}
+            <span class="edit-button-wrapper" *ngIf="editMode">
+              <mat-icon class="edit" (click)="openCompanyNameEditDialog()">edit</mat-icon>
+            </span>
           </span>
         </div>
         <div class="logo" [ngStyle]="companyProfile.iconUrl && companyProfile.iconUrl != '' && {'background-image':'url(' + companyProfile.iconUrl + ')'} ||

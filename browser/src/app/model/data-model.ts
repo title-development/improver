@@ -188,6 +188,23 @@ export class CustomerProjectShort {
   }
 }
 
+export class CompanyReviewCapability {
+  notReviewedProjectRequests: Array<CompanyProjectRequest>;
+  canLeftReview: boolean;
+}
+
+export class CompanyProjectRequest {
+  id: number;
+  company: any;
+  contractor: any;
+  status: ProjectRequest.Status;
+  isReviewed: boolean;
+  projectStatus: Project.Status;
+  unreadMessages: number;
+  projectCoverUrl?: string;
+  serviceType?: string;
+}
+
 export class CustomerProject extends CustomerProjectShort {
   location: Location;
   startDate: string;

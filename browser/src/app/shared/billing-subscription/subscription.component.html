@@ -39,10 +39,16 @@
                   <cv-input-field>
                     <cv-field-label>Monthly budget</cv-field-label>
                     <cv-icon icon="imp-icon-dollar"></cv-icon>
-                    <input cv-input class="monthly-budget" positiveNumeric maxlength="4"
-                           name="monthlyBudget" autocomplete="off" [(ngModel)]="model.nextMonthlyBudget"
+                    <input cv-input
+                           class="monthly-budget"
+                           positiveNumeric
+                           maxlength="4"
+                           name="monthlyBudget"
+                           inputmode="numeric"
+                           [(ngModel)]="model.nextMonthlyBudget"
                            (ngModelChange)="validateBudget()"
-                           placeholder="Amount" #monthlyBudget="ngModel" type="text"
+                           placeholder="Amount"
+                           #monthlyBudget="ngModel" type="text"
                            required />
                   </cv-input-field>
                 </div>

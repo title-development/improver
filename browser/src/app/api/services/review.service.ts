@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Pagination, Review, ReviewRevisionRequest } from '../../model/data-model';
+import { CompanyReviewCapability, Pagination, Review, ReviewRevisionRequest } from '../../model/data-model';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
@@ -34,16 +34,12 @@ export class ReviewService {
     return this.http.get<any>(`${this.reviewUrl}${this.request}${this.options}`)
   }
 
-  getReviewOptions(companyId: any, projectRequestId: string = '0', reviewToken?: string): Observable<any> {
+  getReviewOptions(companyId: any, projectRequestId: string = '0', reviewToken?: string): Observable<CompanyReviewCapability> {
     const params = new HttpParams()
       .set('projectRequestId', projectRequestId)
       .set('reviewToken', reviewToken);
 
-    return this.http
-      .get(`${this.companyUrl}/${companyId}${this.reviews}${this.options}`, {
-        responseType: 'text',
-        params: params
-      });
+    return this.http.get<CompanyReviewCapability>(`${this.companyUrl}/${companyId}${this.reviews}${this.options}`, {params: params});
   }
 
   getReviews(companyId: string, publishedOnly, pagination: Pagination): Observable<ReviewRating> {

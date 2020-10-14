@@ -1,0 +1,31 @@
+<div class="dialog-content-wrapper">
+    <div class="dialog-content-container">
+
+        <div class="header">
+
+            <mat-icon class="close-modal" color="accent" (click)="close()">clear</mat-icon>
+
+            <div class="header-content" [innerHtml]="title"></div>
+
+        </div>
+
+        <div class="content content-size" [cvSpinner]="projectsProcessing" [cvSpinnerSize]="40" [cvSpinnerBackground]="true" *ngIf="step == 1">
+            <div class="project-request-wrapper" *ngFor="let projectRequest of projectRequests">
+                <div class="project-request-content"
+                     (click)="nextStep(projectRequest)">
+                    <div [ngClass]="projectRequest.projectCoverUrl && projectRequest.projectCoverUrl != '' || projectRequest.projectCoverUrl != null? 'icon': 'imp-icon-tools'"
+                         [ngStyle]="(projectRequest.projectCoverUrl && projectRequest.projectCoverUrl != '' || projectRequest.projectCoverUrl != null) && {'background-image':'url(' + projectRequest.projectCoverUrl + ')'}"></div>
+                    <div class="details-content">
+                        <span>{{projectRequest.serviceType}}</span>
+                        <div class="status" [ngClass]="[projectRequest.status | toclassname]">{{projectRequest.status | statustostring}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content review-form-content" *ngIf="step == 2">
+            <customer-add-review-form [projectRequest]="selectedProjectRequest" (onLoadReviews)="previousStep()"></customer-add-review-form>
+        </div>
+
+    </div>
+</div>

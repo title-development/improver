@@ -182,6 +182,18 @@ export const projectRequestReviewDialogConfig: MatDialogConfig = {
   }
 };
 
+export const notReviewedProjectRequestsDialogConfig: MatDialogConfig = {
+  panelClass: 'dialog-fix-position',
+  width: '',
+  height: '',
+  position: {
+    top: '',
+    bottom: '',
+    left: '',
+    right: ''
+  }
+};
+
 export const passwordEditorDialogConfig: MatDialogConfig = {
   panelClass: 'dialog-fix-position',
   width: '400px',

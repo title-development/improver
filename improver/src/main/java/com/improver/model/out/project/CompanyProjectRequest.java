@@ -21,6 +21,8 @@ public class CompanyProjectRequest {
     private final boolean isReviewed;
     private Project.Status projectStatus;
     private Long unreadMessages;
+    private String projectCoverUrl;
+    private String serviceType;
 
 
 
@@ -44,6 +46,12 @@ public class CompanyProjectRequest {
         this.isReviewed = reviewId != null;
         this.projectStatus = projectStatus;
         this.unreadMessages = unreadMessages;
+    }
+
+    public CompanyProjectRequest(ProjectRequest projectRequest, Project project, Company company, Project.Status projectStatus, Object reviewId) {
+        this(projectRequest, company, null, projectStatus, reviewId, null);
+        this.projectCoverUrl = project.getCoverUrl();
+        this.serviceType = project.getServiceName();
     }
 
 

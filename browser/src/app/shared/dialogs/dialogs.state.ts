@@ -36,6 +36,7 @@ import { CompanyNameEditDialogComponent } from "./change-company-name-dialog/com
 import { EmailVerificationHintDialogComponent } from "./email-verification-hint-dialog/email-verification-hint-dialog.component";
 import { PasswordEditorComponent } from "./password-editor/password-editor.component";
 import { CompanyFoundationYearEditDialogComponent } from "./change-company-foundation-year-dialog/company-foundation-year-edit-dialog.component";
+import { NotReviewedProjectRequestDialogComponent } from "./not-reviewed-project-request-dialog/not-reviewed-project-request-dialog.component";
 
 export const dialogs = [
   QuestionaryDialogComponent,
@@ -75,7 +76,8 @@ export const dialogs = [
   CompanyNameEditDialogComponent,
   CompanyFoundationYearEditDialogComponent,
   EmailVerificationHintDialogComponent,
-	PasswordEditorComponent
+	PasswordEditorComponent,
+  NotReviewedProjectRequestDialogComponent
 ];
 
 export const dialogsMap = {
@@ -114,5 +116,6 @@ export const dialogsMap = {
   'company-foundation-year-edit-dialog' : CompanyFoundationYearEditDialogComponent,
   'email-verification-hint-dialog': EmailVerificationHintDialogComponent,
   'password-editor-dialog': PasswordEditorComponent,
-  'customer-add-review-dialog': CustomerAddReviewFormComponent
+  'customer-add-review-dialog': CustomerAddReviewFormComponent,
+  'not-reviewed-project-requests-dialog': NotReviewedProjectRequestDialogComponent
 };

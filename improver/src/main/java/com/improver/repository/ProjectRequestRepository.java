@@ -6,6 +6,7 @@ import com.improver.entity.Project;
 import com.improver.entity.ProjectRequest;
 import com.improver.model.admin.out.AdminProjectRequest;
 import com.improver.model.out.project.CompanyProjectRequest;
+import com.improver.model.out.project.CustomerProjectShort;
 import com.improver.model.out.project.ProjectRequestDetailed;
 import com.improver.model.out.project.ProjectRequestShort;
 import org.springframework.data.domain.Page;
@@ -95,14 +96,14 @@ public interface ProjectRequestRepository extends JpaRepository<ProjectRequest, 
 
     List<ProjectRequest> findByStatusInAndProjectId(Collection<ProjectRequest.Status> statuses, long projectId);
 
-    @Query("SELECT pr FROM com.improver.entity.ProjectRequest pr " +
+    @Query("SELECT new com.improver.model.out.project.CompanyProjectRequest(pr, p, c.company, p.status, pr.review.id) FROM com.improver.entity.ProjectRequest pr " +
         "INNER JOIN com.improver.entity.Project p ON pr.project.id = p.id " +
-        "INNER JOIN com.improver.entity.Contractor c on pr.contractor.id = c.id " +
+        "INNER JOIN com.improver.entity.Contractor c ON pr.contractor.id = c.id " +
         "WHERE pr.review IS NULL " +
         "AND (pr.status = 'HIRED' OR pr.status = 'COMPLETED' ) " +
         "AND p.customer.id = ?1 " +
         "AND c.company.id = ?2")
-    List<ProjectRequest> getNotReviewedProjectRequests(Long customerId, String companyId);
+    List<CompanyProjectRequest> getNotReviewedProjectRequests(Long customerId, Long companyId);
 
 
 

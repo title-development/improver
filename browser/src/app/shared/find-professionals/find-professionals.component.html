@@ -90,7 +90,7 @@
                       <div class="trade-title">{{trade.name}}</div>
                     </div>
 
-                    <div class="image-content" [ngStyle]="{'background-image':'url(' + trade.image + ')'}"></div>
+                    <div class="image-content" [ngStyle]="{'background-image':'url(' + trade.image.split(',')[0] + ')'}"></div>
                   </div>
                 </div>
               </div>
