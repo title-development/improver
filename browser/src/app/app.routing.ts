@@ -35,7 +35,8 @@ const routes: Routes = [
       { path: 'my/review-revision', loadChildren:  () => import('./components/review-revision/review-revision.module').then(m => m.ReviewRevisionModule), canActivateChild: [AuthGuard, CustomerGuard]},
       { path: 'ticket', loadChildren: () => import('./shared/ticket/ticket.module').then(m => m.TicketModule)},
       { path: 'privacy-policy', loadChildren: () => import('./components/information/privacy-policy/privacy-policy.module').then(m => m.PrivacyPolicyModule)},
-      { path: 'terms-of-use', loadChildren: () => import('./components/information/terms-of-use/terms-of-use.module').then(m => m.TermsOfUseModule)}
+      { path: 'terms-of-use', loadChildren: () => import('./components/information/terms-of-use/terms-of-use.module').then(m => m.TermsOfUseModule)},
+      { path: 'about-us', loadChildren: () => import('./components/information/about-us/about-us.module').then(m => m.AboutUsModule)}
     ]
   },
   { path: 'admin', loadChildren: () => import('./components/admin/admin.module').then(m => m.AdminModule)},

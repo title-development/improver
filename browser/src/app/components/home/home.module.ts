@@ -9,7 +9,7 @@ import { MainGuideComponent } from './main-guide/main-guide.component';
 import { CustomerBannerComponent } from './customer-banner/customer-banner.component';
 import { HiwWizardComponent } from './hiw-wizard/hiw-wizard.component';
 import { GeneralInfoComponent } from './general-info/general-info.component';
-import { HomeFooterComponent } from './home-footer/home-footer.component';
+
 import { QuestionaryControlService } from '../../api/services/questionary-control.service';
 import { CustomerService } from '../../api/services/customer.service';
 import { GeolocationService } from '../../api/services/geolocation.service';
@@ -40,7 +40,6 @@ import { NgTakePipeModule } from "angular-pipes";
     CustomerBannerComponent,
     HiwWizardComponent,
     GeneralInfoComponent,
-    HomeFooterComponent,
     AdvertisementBlockElementComponent
   ],
   providers: [
@@ -55,8 +54,7 @@ import { NgTakePipeModule } from "angular-pipes";
     AdvertisementBlockComponent,
     CustomerBannerComponent,
     HiwWizardComponent,
-    GeneralInfoComponent,
-    HomeFooterComponent
+    GeneralInfoComponent
   ]
 })
 
