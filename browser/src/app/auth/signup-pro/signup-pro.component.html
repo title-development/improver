@@ -105,6 +105,7 @@
                          inputmode="email"
                          placeholder="Email"
                          name="email"
+                         autocomplete="off"
                          #email="ngModel"
                          [(ngModel)]="user.email"
                          required
@@ -153,11 +154,12 @@
                 <input type="password" style="display: none;">
                 <div class="password-with-hints col-md-6 col-sm-6 col-xs-12">
                     <cv-input-field>
-                        <input cv-input autocomplete="new-password" placeholder="Password (at least 8 symbols)"
+                        <input cv-input placeholder="Password (at least 8 symbols)"
                                #passwordEl="ngModel"
                                #passwordInput
                                name="password"
                                type="password"
+                               autocomplete="off"
                                [(ngModel)]="user.password"
                                validateEqual="confirmPassword"
                                validationEqualReverse="true"
@@ -179,6 +181,7 @@
                                #confirmPassword="ngModel"
                                name="confirmPassword"
                                type="password"
+                               autocomplete="off"
                                [(ngModel)]="registerProps.confirmPassword"
                                validateEqual="password"
                                validationEqualReverse="false"

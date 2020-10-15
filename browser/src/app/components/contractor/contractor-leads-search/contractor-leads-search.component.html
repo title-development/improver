@@ -162,17 +162,17 @@
 </mat-sidenav-container>
 
 <ng-container *ngIf="mediaQuery?.xs || mediaQuery?.sm || mediaQuery?.md">
-  <mat-icon class="open-sidenav" color="primary" (click)="sidenav.open()" title="Search leads">
+  <mat-icon class="open-sidenav noselect" color="primary" (click)="sidenav.open()" title="Search leads">
     keyboard_arrow_right
   </mat-icon>
 </ng-container>
 
-<div class="service-area-button" routerLink="/pro/settings/coverage" *ngIf="mediaQuery.md || mediaQuery.lg || mediaQuery.xlg">
+<div class="service-area-button noselect" routerLink="/pro/settings/coverage" *ngIf="mediaQuery.md || mediaQuery.lg || mediaQuery.xlg">
   <mat-icon>settings</mat-icon>
   <a class="link">Change Service Area</a>
 </div>
 
-<div class="service-area-button" routerLink="/pro/settings/coverage" *ngIf="(mediaQuery.xs || mediaQuery.sm) && !sidenav.opened">
+<div class="service-area-button noselect" routerLink="/pro/settings/coverage" *ngIf="(mediaQuery.xs || mediaQuery.sm) && !sidenav.opened">
   <mat-icon>settings</mat-icon>
   <a class="link">Change Service Area</a>
 </div>

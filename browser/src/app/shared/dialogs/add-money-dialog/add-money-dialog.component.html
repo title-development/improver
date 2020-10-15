@@ -29,6 +29,8 @@
               <input cv-input class="monthly-budget" minlength="2" maxlength="5"
                      #amount="ngModel"
                      name="amount"
+                     inputmode="numeric"
+                     autocomplete="off"
                      [(ngModel)]="payment.amount"
                      (input)="onInputAmount()"
                      placeholder="100"

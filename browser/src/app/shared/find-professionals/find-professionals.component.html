@@ -89,8 +89,8 @@
                     <div class="text-content">
                       <div class="trade-title">{{trade.name}}</div>
                     </div>
-
-                    <div class="image-content" [ngStyle]="{'background-image':'url(' + trade.image.split(',')[0] + ')'}"></div>
+                    <div [ngClass]="trade.image && trade.image != '' && trade.image != null? 'image-content': 'imp-icon-tools'"
+                         [ngStyle]="(trade.image && trade.image != '' && trade.image != null) && {'background-image':'url(' + trade.image.split(',')[0] + ')'}"></div>
                   </div>
                 </div>
               </div>

@@ -73,6 +73,12 @@ h4 {
   }
 }
 
+.address-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
 .address {
   position: relative;
   text-align: center;

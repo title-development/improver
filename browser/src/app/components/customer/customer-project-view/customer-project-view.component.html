@@ -97,8 +97,8 @@
                       <div class="reviews-count">({{projectRequest.company.reviewCount}})</div>
                     </div>
 
-                    <div class="notifications-block">
-                      <i class="notifications" *ngIf="projectRequest.unreadMessages > 0" title="{{unreadMessagesTittle(projectRequest.unreadMessages)}}">{{projectRequest.unreadMessages}}</i>
+                    <div *ngIf="projectRequest.unreadMessages > 0" class="notifications-block">
+                      <i class="notifications" title="{{unreadMessagesTittle(projectRequest.unreadMessages)}}">{{projectRequest.unreadMessages}}</i>
                     </div>
                   </div>
                   <div class="more-button">

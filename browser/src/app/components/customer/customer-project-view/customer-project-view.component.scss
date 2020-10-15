@@ -39,7 +39,6 @@
   justify-content: center;
 
   @include response-to(sm) {
-    display: inline;
     white-space: nowrap;
     vertical-align: middle;
   }
