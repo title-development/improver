@@ -1,4 +1,4 @@
-import { EventEmitter, Injectable } from '@angular/core';
+import { EventEmitter, Injectable, Input } from '@angular/core';
 import { CompanyInfo, SystemMessageType } from "../../model/data-model";
 import { dialogsMap } from "../../shared/dialogs/dialogs.state";
 import {
@@ -26,6 +26,7 @@ export class CompanyInfoService {
   private confirmDialogRef: MatDialogRef<any>;
   companyLicensesChanged$: EventEmitter<boolean> = new EventEmitter<boolean>();
   companyLicensesAdd$: EventEmitter<boolean> = new EventEmitter<boolean>();
+  companyReviewAdd$: EventEmitter<boolean> = new EventEmitter<boolean>();
   mediaQuery: MediaQuery;
 
 

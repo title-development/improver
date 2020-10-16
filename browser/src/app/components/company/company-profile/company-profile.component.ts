@@ -1,4 +1,14 @@
-import { Component, Inject, OnDestroy, OnInit, QueryList, Renderer2, ViewChild, ViewChildren } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Inject,
+  OnDestroy,
+  OnInit,
+  QueryList,
+  Renderer2,
+  ViewChild,
+  ViewChildren
+} from '@angular/core';
 import { CompanyProfile, CompanyReviewCapability, CustomerProjectShort } from '../../../model/data-model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SecurityService } from '../../../auth/security.service';
@@ -63,6 +73,7 @@ export class CompanyProfileComponent implements OnInit, OnDestroy {
   boxGlue: boolean = true;
   mediaQuery: MediaQuery;
   backgroundProcessing = false;
+  refreshReview: EventEmitter<boolean> = new EventEmitter<boolean>();
   private hashFragment: string;
   private licenseDialogRef: MatDialogRef<any>;
   private photoDialogRef: MatDialogRef<any>;
@@ -233,6 +244,9 @@ export class CompanyProfileComponent implements OnInit, OnDestroy {
           this.notReviewedProjectRequestsDialogRef = this.dialog.open(dialogsMap['not-reviewed-project-requests-dialog'], notReviewedProjectRequestsDialogConfig);
           this.notReviewedProjectRequestsDialogRef.componentInstance.projectRequests = companyReviewCapability.notReviewedProjectRequests;
           this.notReviewedProjectRequestsDialogRef.componentInstance.companyId = this.companyId;
+          this.notReviewedProjectRequestsDialogRef.componentInstance.onSuccess.subscribe(() => {
+            this.companyInfoService.companyReviewAdd$.emit();
+          })
           this.notReviewedProjectRequestsDialogRef.afterClosed()
               .subscribe(result => {
                 this.companyInfoDialogRef = null;

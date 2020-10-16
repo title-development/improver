@@ -4,8 +4,6 @@ import com.improver.entity.*;
 import com.improver.exception.NotFoundException;
 import com.improver.model.in.CustomerReview;
 import com.improver.model.in.ProRequestReview;
-import com.improver.model.out.project.CustomerProjectShort;
-import com.improver.model.out.project.ProjectRequestShort;
 import com.improver.model.out.review.*;
 import com.improver.repository.CompanyRepository;
 import com.improver.repository.ProjectRequestRepository;
@@ -30,8 +28,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
-
-import java.util.List;
 
 import static com.improver.application.properties.Path.*;
 import static com.improver.application.properties.Path.REVIEWS;
@@ -142,24 +138,23 @@ public class ReviewController {
     @PreAuthorize("hasRole('CUSTOMER')")
     @GetMapping(COMPANIES_PATH + COMPANY_ID + REVIEWS + OPTIONS)
     public ResponseEntity<CompanyReviewCapability> getReviewCapability(@PathVariable long companyId,
-                                                    @RequestParam(defaultValue = "0") long projectRequestId,
+                                                    @RequestParam Long projectRequestId,
                                                     @RequestParam(required = false) String reviewToken) {
 
         Customer customer = userSecurityService.currentCustomer();
-        return new ResponseEntity<>(reviewService.checkReview(projectRequestId, customer, companyId, reviewToken),HttpStatus.OK);
+        return new ResponseEntity<>(reviewService.checkReviewCapability(projectRequestId, customer, companyId, reviewToken),HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('CUSTOMER')")
     @PostMapping(COMPANIES_PATH + COMPANY_ID + REVIEWS)
     public ResponseEntity<Void> addReview(@PathVariable long companyId,
-                                          @RequestParam(defaultValue = "0") long projectRequestId,
+                                          @RequestParam Long projectRequestId,
                                           @RequestParam(required = false) String reviewToken,
                                           @RequestBody @Valid CustomerReview review) {
 
         Customer customer = userSecurityService.currentCustomer();
-        reviewService.checkReview(projectRequestId, customer, companyId, reviewToken);
-        reviewService.addReview(reviewService.getCompanyReview(companyId, projectRequestId, review, customer), reviewToken, customer);
-
+        Review companyReview = reviewService.checkReview(projectRequestId, customer, companyId, reviewToken);
+        reviewService.addReview(companyReview.setScore(review.getScore()).setDescription(review.getDescription()), reviewToken, customer);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

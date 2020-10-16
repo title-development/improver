@@ -7,6 +7,8 @@ import { animate, state, style, transition, trigger } from "@angular/animations"
 import { ProjectRequestService } from "../../../../api/services/project-request.service";
 import { ProjectRequest } from '../../../../api/models/ProjectRequest';
 import { Constants } from '../../../../util/constants';
+import { getErrorMessage } from "../../../../util/functions";
+import { MatDialog } from "@angular/material/dialog";
 
 @Component({
   selector: 'customer-add-review-form',
@@ -57,6 +59,7 @@ export class CustomerAddReviewFormComponent implements OnInit {
   constructor(public popUpMessageService: PopUpMessageService,
               public reviewService: ReviewService,
               public constants: Constants,
+              public dialog: MatDialog,
               public projectRequestService: ProjectRequestService) { }
 
   ngOnInit() {
@@ -83,10 +86,14 @@ export class CustomerAddReviewFormComponent implements OnInit {
                 reviewForm.resetForm();
                 this.updateProjectRequest();
                 this.onLoadReviews.emit(this.isReviewSend);
+                this.popUpMessageService.showSuccess("Review is published")
               },
               err => {
                 console.error(err);
                 this.isSubmitButtonDisabled = false;
+                this.popUpMessageService.showError(getErrorMessage(err))
+                this.dialog.closeAll();
+
               }
             );
       }

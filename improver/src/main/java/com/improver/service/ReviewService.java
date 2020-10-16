@@ -112,39 +112,46 @@ public class ReviewService {
         companyRepository.save(company.setReviewCount(reviewCount).setRating(rating).setSumRating(sumRating));
     }
 
-    public CompanyReviewCapability checkReview(long projectRequestId, Customer customer, Long companyId, String reviewToken) throws NotFoundException, ValidationException, ConflictException {
+    public CompanyReviewCapability checkReviewCapability(Long projectRequestId, Customer customer, Long companyId, String reviewToken){
         CompanyReviewCapability companyReviewCapability = new CompanyReviewCapability();
         companyReviewCapability.setNotReviewedProjectRequests(projectRequestRepository.getNotReviewedProjectRequests(customer.getId(), companyId));
         companyReviewCapability.setCanLeftReview(companyReviewCapability.getNotReviewedProjectRequests().size() != 0);
-        if (companyReviewCapability.getNotReviewedProjectRequests().size() == 0) {
 
-            ProjectRequest projectRequest = null;
-            if (projectRequestId > 0) {
-                projectRequest = projectRequestRepository.findByIdAndCustomerId(projectRequestId, customer.getId())
-                                                         .orElseThrow(NotFoundException::new);
-                if (!ProjectRequest.Status.HIRED.equals(projectRequest.getStatus()) && !ProjectRequest.Status.COMPLETED.equals(projectRequest.getStatus())) {
-                    throw new ConflictException("You can review only after you hire pro");
-                }
-                if (projectRequest.getReview() != null) {
-                    throw new ConflictException("Review for this project already exist");
-                }
-            } else {
-                ReviewRequest requestReview = reviewRequestRepository.findByReviewToken(reviewToken).orElseThrow(NotFoundException::new);
-                if (requestReview.isCompleted()) {
-                    throw new ValidationException("You already reviewed the company");
-                }
-
-                if (!customer.getEmail().equals(requestReview.getCustomerEmail())) {
-                    throw new ValidationException("Review token is invalid");
-                }
-
-                if (!companyId.equals(requestReview.getCompanyId())) {
-                    throw new ValidationException("You should have request for review or hire this pro");
-                }
-            }
+        if (companyReviewCapability.getNotReviewedProjectRequests().size() == 0){
+            checkReview(projectRequestId, customer, companyId, reviewToken);
         }
 
         return companyReviewCapability;
+    }
+
+    public Review checkReview(Long projectRequestId, Customer customer, Long companyId, String reviewToken) throws NotFoundException, ValidationException, ConflictException {
+        Company company = companyRepository.findById(companyId)
+            .orElseThrow(NotFoundException::new);
+        ProjectRequest projectRequest = null;
+        if (projectRequestId != null) {
+            projectRequest = projectRequestRepository.findByIdAndCustomerId(projectRequestId, customer.getId())
+                .orElseThrow(NotFoundException::new);
+            if (!ProjectRequest.Status.HIRED.equals(projectRequest.getStatus()) && !ProjectRequest.Status.COMPLETED.equals(projectRequest.getStatus())) {
+                throw new ConflictException("You can review only after you hire pro");
+            }
+            if (projectRequest.getReview() != null) {
+                throw new ConflictException("Review for this project already exist");
+            }
+        } else {
+            ReviewRequest requestReview = reviewRequestRepository.findByReviewToken(reviewToken).orElseThrow(NotFoundException::new);
+            if (requestReview.isCompleted()) {
+                throw new ValidationException("You already reviewed the company");
+            }
+
+            if (!customer.getEmail().equals(requestReview.getCustomerEmail())) {
+                throw new ValidationException("Review token is invalid");
+            }
+
+            if (!companyId.equals(requestReview.getCompanyId())) {
+                throw new ValidationException("You should have request for review or hire this pro");
+            }
+        }
+        return new Review().setCompany(company).setProjectRequest(projectRequest).setCustomer(customer);
     }
 
     public void requestReviewRevision(Company company, Review review, String comment) {
@@ -198,18 +205,5 @@ public class ReviewService {
         return new ReviewRequestOption()
            .setCompleted(completed)
            .setAvailable(MAX_REQUEST_REVIEWS - reviewRequests.size());
-    }
-
-    public Review getCompanyReview(long companyId, long projectRequestId, CustomerReview review, Customer customer) {
-        ProjectRequest projectRequest = projectRequestRepository.findByIdAndCustomerId(projectRequestId, customer.getId())
-                                                                .orElseThrow(NotFoundException::new);
-        Company company = companyRepository.findById(companyId)
-                                           .orElseThrow(NotFoundException::new);
-        return new Review()
-                .setCompany(company)
-                .setProjectRequest(projectRequest)
-                .setCustomer(customer)
-                .setScore(review.getScore())
-                .setDescription(review.getDescription());
     }
 }

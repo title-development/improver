@@ -24,7 +24,7 @@
         </div>
 
         <div class="content review-form-content" *ngIf="step == 2">
-            <customer-add-review-form [projectRequest]="selectedProjectRequest" (onLoadReviews)="previousStep()"></customer-add-review-form>
+            <customer-add-review-form [projectRequest]="selectedProjectRequest" (onLoadReviews)="onSuccess.emit(); close()"></customer-add-review-form>
         </div>
 
     </div>

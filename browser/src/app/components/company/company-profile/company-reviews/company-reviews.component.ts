@@ -1,4 +1,14 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange, SimpleChanges } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChange,
+  SimpleChanges
+} from '@angular/core';
 import { CompanyProfile, Pagination, Review } from '../../../../model/data-model';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ReviewService } from '../../../../api/services/review.service';
@@ -9,6 +19,7 @@ import { SecurityService } from "../../../../auth/security.service";
 import { Role } from "../../../../model/security-model";
 import { dialogsMap } from "../../../../shared/dialogs/dialogs.state";
 import { unavailabilityPeriodDialogConfig } from "../../../../shared/dialogs/dialogs.configs";
+import { CompanyInfoService } from "../../../../api/services/company-info.service";
 
 @Component({
   selector: 'company-reviews',
@@ -16,7 +27,7 @@ import { unavailabilityPeriodDialogConfig } from "../../../../shared/dialogs/dia
   styleUrls: ['company-reviews.component.scss']
 })
 
-export class CompanyReviewsComponent implements OnInit, OnChanges {
+export class CompanyReviewsComponent implements OnInit, OnChanges, AfterViewInit {
   reviews: Array<Review>;
   reviewsPage: RestPage<Review>;
   postReviewDialogRef: MatDialogRef<any>;
@@ -33,7 +44,8 @@ export class CompanyReviewsComponent implements OnInit, OnChanges {
 
   constructor(private reviewService: ReviewService,
               public dialog: MatDialog,
-              public securityService: SecurityService) {
+              public securityService: SecurityService,
+              public companyInfoService: CompanyInfoService) {
 
   }
 
@@ -89,6 +101,12 @@ export class CompanyReviewsComponent implements OnInit, OnChanges {
 
   trackById(index, item: Review) {
     return item.id;
+  }
+
+  ngAfterViewInit(): void {
+    this.companyInfoService.companyReviewAdd$.subscribe(() => {
+      this.getReviews();
+    })
   }
 
 }

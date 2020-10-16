@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, EventEmitter, OnInit } from '@angular/core';
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {SecurityService} from "../../../auth/security.service";
 import {CompanyProjectRequest} from "../../../model/data-model";
@@ -18,6 +18,7 @@ export class NotReviewedProjectRequestDialogComponent implements OnInit {
   companyId: string;
   title: string = 'Leave Review';
   projectsProcessing: boolean = false;
+  onSuccess: EventEmitter<any> = new EventEmitter<any>();
 
   constructor(private projectRequestService: ProjectRequestService,
               public currentDialogRef: MatDialogRef<any>,
