@@ -11,7 +11,8 @@
       <div class="list" @blockInitialRenderAnimation>
 
         <div *ngFor="let item of items; index as i;" [@animator]="{value: i, params: {transformX: transformX}}" (@animator.done)="animationDone($event)">
-          <advertisement-block-element [item]="item" [ngClass]="{'hoverable': i == 0 || i == 1 && !media.md}"></advertisement-block-element>
+          <advertisement-block-element *ngIf="media.xs || media.sm" [item]="item" (click)="showServicesList()" [ngClass]="{'hoverable': mobileHoverActive && (i == 0 || i == 1 && !media.md)}"></advertisement-block-element>
+          <advertisement-block-element *ngIf="!media.xs && !media.sm" [item]="item" [ngClass]="{'hoverable': i == 0 || i == 1 && !media.md}"></advertisement-block-element>
         </div>
 
       </div>

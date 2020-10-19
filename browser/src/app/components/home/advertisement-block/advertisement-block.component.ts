@@ -61,6 +61,7 @@ export class AdvertisementBlockComponent implements OnInit {
   animating = false;
   transformX = 0;
   media: MediaQuery;
+  mobileHoverActive = false;
 
   constructor(private customerSuggestionService: CustomerSuggestionService,
               public projectActionService: ProjectActionService,
@@ -101,5 +102,13 @@ export class AdvertisementBlockComponent implements OnInit {
 
   animationDone(event) {
     this.animating = false;
+    this.mobileHoverActive = false;
+  }
+
+  showServicesList() {
+    this.mobileHoverActive = !this.mobileHoverActive;
+    if (!this.mobileHoverActive){
+      this.animating = false;
+    }
   }
 }

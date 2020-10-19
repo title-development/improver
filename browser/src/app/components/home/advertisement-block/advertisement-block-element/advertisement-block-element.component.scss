@@ -156,6 +156,11 @@
           height: 100%;
           opacity: 1;
           transition: opacity 0.2s 0.2s, visibility 0.2s, height 0.4s;
+
+          @include response-to(sm) {
+            margin-top: 16px;
+          }
+
           .services-list {
             .service-name {
               pointer-events: auto;
