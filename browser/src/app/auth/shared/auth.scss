@@ -329,6 +329,19 @@
 
 }
 
-.auth-form response-message ::ng-deep.response-message {
-  margin-bottom: 8px;
+.auth-form response-message {
+  word-break: break-word;
+  ::ng-deep.response-message {
+    margin-top: 0 !important;
+    margin-bottom: 8px;
+  }
+}
+
+.signup-form {
+  &.loading {
+    ::ng-deep .cv-spinner-holder {
+      z-index: 10;
+      transform: scale(1.1);
+    }
+  }
 }

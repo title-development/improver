@@ -9,7 +9,8 @@
     <div class="main-block">
       <div class="header"></div>
       <div class="container">
-        <form class="auth-form"
+        <form class="auth-form signup-form"
+              [ngClass]="{'loading': registrationProcessing}"
               name="signup-form"
               #signupForm="ngForm"
               (ngSubmit)="signupForm.valid && registerCustomer()"
