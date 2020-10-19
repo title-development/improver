@@ -40,7 +40,7 @@
 
 .label {
   font-size: 14px;
-  color: #b5b5b5;
+  color: $grey-600;
   &.-enabled {
     color: $primary-500;
   }

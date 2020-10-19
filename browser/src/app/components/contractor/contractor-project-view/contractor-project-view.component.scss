@@ -80,7 +80,7 @@
   @include response-to(sm) {
     position: fixed;
     opacity: 0;
-    top: 105px;
+    top: 115px;
     bottom: 0;
     margin: 0 !important;
     overflow-y: auto !important;
@@ -169,7 +169,7 @@ hr {
     font-weight: 400;
   }
   h4 {
-    color: $grey-500;
+    color: $grey-600;
     font-size: 12px;
     margin-bottom: 2px;
   }
@@ -321,7 +321,7 @@ hr {
     color: $grey-600;
 
     i {
-      color: $grey-500;
+      color: $grey-600;
     }
 
     @include response-to(sm) {
@@ -366,7 +366,7 @@ hr {
     height: 30px !important;
     line-height: 30px;
     font-size: 20px;
-    color: $grey-500;
+    color: $grey-600;
     display: flex;
     align-items: center;
     justify-content: center;

@@ -125,19 +125,6 @@ md-input-container {
   pointer-events: none !important;
 }
 
-body ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
-  color: #dddddd !important; //fix architecture bag
-}
-
-body ::-moz-placeholder { /* Firefox 19+ */
-  color: #dddddd;
-}
-
-
-body :-moz-placeholder { /* Firefox 18- */
-  color: #dddddd;
-}
-
 .noselect {
   -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none; /* Safari */

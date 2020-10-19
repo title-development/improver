@@ -46,14 +46,14 @@ h4 {
   }
 }
 
-.meta {
+.lead-info {
   @include response(sm, md) {
     display: flex;
     align-items: center;
   }
   span {
     font-size: 12px;
-    color: $grey-600;
+    color: $grey-700;
     white-space: nowrap;
     &:last-child {
       display: block;

@@ -442,7 +442,7 @@
 
             .reviews-count {
               font-size: 14px;
-              color: rgba(0, 0, 0, 0.25);
+              color: $grey-500;
               min-width: 26px;
               margin-left: 5px;
             }
@@ -465,7 +465,7 @@
             }
 
             .mat-icon {
-              color: #aaaaaa;
+              color: $grey-500;
               font-size: 26px;
               width: 26px;
               height: 26px;
@@ -490,7 +490,7 @@
       }
 
       div {
-        color: rgba(0, 0, 0, 0.36);
+        color: $grey-600;
         margin-top: 24px;
       }
     }

@@ -151,7 +151,7 @@ input[type=file] {
     width: 100%;
     height: 100%;
     .mat-icon {
-      color: rgba(0, 0, 0, 0.09);
+      color: $grey-400;
       font-size: 32px;
       width: 32px;
       height: 32px;
@@ -169,20 +169,12 @@ input[type=file] {
   .add-photo-button-text {
     font-size: 14px;
     margin-top: 5px;
-    color: $grey-400;
+    color: $grey-500;
   }
 }
 
 .photo {
   margin-bottom: 24px;
-
-  //&:nth-child(2n-1) {
-  //  padding-left: 6px;
-  //}
-  //
-  //&:nth-child(2n) {
-  //  padding-right: 6px;
-  //}
 
   @include response-to(sm) {
     margin-bottom: 12px;

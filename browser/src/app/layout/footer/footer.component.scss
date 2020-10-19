@@ -188,7 +188,7 @@
           cursor: pointer;
           font-size: 14px;
           text-align: left;
-          color: $grey-500;
+          color: $grey-600;
 
           @include response(xs) {
             text-align: center;
@@ -251,7 +251,6 @@
 
         @include response-to(sm) {
           padding-left: 0;
-          width: 60%;
           margin: 0 auto;
           width: 100%;
           height: auto;

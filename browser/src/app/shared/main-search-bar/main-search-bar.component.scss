@@ -155,6 +155,11 @@
     padding-left: 16px;
     width: 100%;
     height: 100%;
+
+    &::placeholder {
+      color: $placeholder
+    }
+
   }
 }
 
@@ -188,7 +193,7 @@
       font-size: 20px;
       width: 20px;
       height: 20px;
-      color: $grey-250;
+      color: $grey-400;
       margin-right: 4px;
     }
 

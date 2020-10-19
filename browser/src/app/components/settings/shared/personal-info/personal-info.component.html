@@ -221,7 +221,7 @@
             <h3>Login option</h3>
             <ng-container *ngIf="socialConnections">
               <div class="social" *ngFor="let provider of socialProviders">
-                <div class="meta"
+                <div class="lead-info"
                      [title]="socialConnected(provider) ? 'This social account is already connected' : 'Link your social account to your profile'">
                   <mat-icon>link</mat-icon>
                   <div>

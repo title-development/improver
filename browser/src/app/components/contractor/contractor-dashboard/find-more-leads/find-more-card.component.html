@@ -12,7 +12,7 @@
     </h3>
     <ul>
       <li *ngFor="let lead of leads.content">
-        <div class="meta">
+        <div class="lead-info">
           <h4>{{lead.serviceType}}</h4>
           <span>{{lead.location.city}}, {{lead.location.state}} {{lead.location.zip}}</span>
           <span>{{lead.created | timeAgo | async}}</span>

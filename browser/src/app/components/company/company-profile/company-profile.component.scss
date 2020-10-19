@@ -293,7 +293,7 @@ p {
 
   span {
     font-size: 14px;
-    color: #a6a6a6;
+    color: $grey-600;
 
     &:not(:last-child) {
       &:after {
@@ -658,7 +658,7 @@ company-reviews {
 }
 
 .pencil {
-  color: $grey-300;
+  color: $grey-500;
   cursor: pointer;
   font-size: 14px;
   transition: color .3s ease;

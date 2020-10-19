@@ -40,7 +40,8 @@
           }
 
           .hint {
-            color: $grey-500;
+            color: $grey-600;
+            font-size: 14px;
             @include response-to(xs) {
               font-size: 12px;
             }
