@@ -25,10 +25,6 @@
   }
 }
 
-.notification-content {
-  max-height: 412px;
-}
-
 .notifications-popup {
   position: absolute;
   left: -100px;
@@ -122,30 +118,33 @@
     }
 
     .item {
-      font-size: 12px;
       padding: 8px;
       border-top: 1px solid $grey-200;
       background-color: transparent;
       display: flex;
       border-left: 4px solid transparent;
+      font-size: 14px;
+      align-items: center;
 
       .logo-wrapper {
         display: flex;
         justify-content: center;
         margin-right: 8px;
-        height: 50px;
-        width: 50px;
         min-width: 50px;
+        height: 60px;
+        width: 50px;
+
         div {
-          height: 50px;
-          width: 50px;
           background-size: cover;
           background-position: center;
           border-radius: 50%;
+          height: 60px;
+          width: 60px;
+
           &.icon-present {
-            height: 36px;
-            width: 36px;
             margin-top: 8px;
+            height: 42px;
+            width: 42px;
           }
         }
       }
@@ -174,7 +173,6 @@
   }
 
   .popup-footer {
-    //padding: 16px;
     display: flex;
     flex-direction: row;
     align-items: center;

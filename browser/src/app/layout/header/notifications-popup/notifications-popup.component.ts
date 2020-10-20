@@ -9,7 +9,7 @@ import {
   OnChanges,
   OnDestroy,
   Output,
-  Renderer2
+  Renderer2, ViewChild
 } from '@angular/core';
 import { SecurityService } from '../../../auth/security.service';
 import { animate, state, style, transition, trigger } from '@angular/animations';
@@ -69,10 +69,13 @@ export class NotificationsPopupComponent implements OnChanges, OnDestroy {
   notificationsProcessing = false;
   notificationsSubscription$;
   onReadSubscription$;
+  unreadMessagesCount: number = 0;
+  notificationAndMessageItemsHeight: {item: any, height: number, type: string}[] = [];
 
   psConfig = {
     wheelPropagation: false
   };
+  @ViewChild('notificationsBlockElement') notificationsElementRef: ElementRef;
 
   constructor(private elementRef: ElementRef,
               @Inject('Window') private window: Window,
@@ -104,6 +107,9 @@ export class NotificationsPopupComponent implements OnChanges, OnDestroy {
         this.notifications = []
       }
     })
+    this.notificationResource.unreadMessagesCount$.subscribe( unreadMessagesCount => {
+      this.unreadMessagesCount = unreadMessagesCount
+    })
 
   }
 
@@ -122,14 +128,36 @@ export class NotificationsPopupComponent implements OnChanges, OnDestroy {
     }
   }
 
-  notificationsBlockHeight(notificationsAmount: number = 0, unreadMessagesAmount: number = 0): number {
-    let maxNotificationsBlockHeight: number = 412;
-    let itemHeight: number = 68.7;
-    let totalItems = notificationsAmount + unreadMessagesAmount;
-    if (totalItems > 0 && totalItems < 6) {
-      return totalItems * itemHeight;
-    } else if (totalItems >= 6) {
-      return maxNotificationsBlockHeight;
+  resetItemsHeight() {
+    this.notificationAndMessageItemsHeight = []
+  }
+
+  findItemsHeight(item: HTMLElement, notification: any, type: string) {
+    let notificationsBlockHeight: number = 0;
+    let findIndex = this.notificationAndMessageItemsHeight.findIndex(item => item.item.payload == notification.payload &&
+      ((item.item.id !== null && item.item.id == notification.id) || (item.item.projectId != null && item.item.projectId == notification.projectId)) &&
+      item.type == type
+    )
+
+    if (findIndex >= 0) {
+      this.notificationAndMessageItemsHeight[findIndex] = {item: notification, height: item.offsetHeight, type: type};
+    } else {
+      this.notificationAndMessageItemsHeight.push({item: notification, height: item.offsetHeight, type: type})
+    }
+
+    // sort messages first
+    this.notificationAndMessageItemsHeight = this.notificationAndMessageItemsHeight.sort(function (a, b) {
+      if (a.type < b.type) { return -1; }
+      if (a.type > b.type) { return 1; }
+      return 0;
+    }).slice(0, 6);
+
+    // set notifications block height
+    this.notificationAndMessageItemsHeight.forEach(item => {
+      notificationsBlockHeight = notificationsBlockHeight + item.height;
+    })
+    if (this.notificationsElementRef) {
+      this.renderer.setStyle(this.notificationsElementRef.nativeElement, 'height', notificationsBlockHeight + 'px')
     }
   }
 
