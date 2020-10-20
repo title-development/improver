@@ -14,11 +14,7 @@
               name="signup-form"
               #signupForm="ngForm"
               (ngSubmit)="signupForm.valid && registerCustomer()"
-              novalidate
-              [cvSpinner]="registrationProcessing"
-              [cvSpinnerSize]="30"
-              [cvSpinnerBackground]="true"
-              cvSpinnerBackgroundColor="#fafafa">
+              novalidate>
 
           <!--prevent email, password autofill-->
           <input type="text" name="email" style="opacity: 0;position: absolute; pointer-events: none">
@@ -28,6 +24,7 @@
 
           <social-buttons buttonText="Sign up with"
                           [processing]="registrationProcessing"
+                          [disabled]="registrationProcessing"
                           (responseMessageType)="messageType = $event;"
                           (responseMessage)="messageText = $event;"
                           (showMessage)="showMessage = $event;">
@@ -158,7 +155,7 @@
                             [paddingV]="12" [paddingH]="16"
                             [showIcon]="false" (onHide)="onMessageHide($event)"></response-message>
 
-          <button cv-button class="full-width auth-form-submit-button" type="submit">
+          <button cv-button class="full-width auth-form-submit-button" type="submit" [loading]="registrationProcessing">
             Sign up
           </button>
 

@@ -11,6 +11,7 @@ import { SystemMessageType } from "../../model/data-model";
 import { getErrorMessage } from "../../util/functions";
 import { ActivationService } from "../../api/services/activation.service";
 import { AccountService } from "../../api/services/account.service";
+import { finalize } from "rxjs/operators";
 
 
 @Component({
@@ -34,6 +35,7 @@ export class RestorePasswordComponent {
   SystemMessageType = SystemMessageType;
   showMessage: boolean;
   messageText: string;
+  processing = false;
 
   constructor (public securityService: SecurityService,
                public userService: UserService,
@@ -63,7 +65,10 @@ export class RestorePasswordComponent {
   }
 
   restorePassword(form: NgForm) {
-    this.activationService.confirmPasswordReset(this.credentials, this.token).subscribe(response => {
+    this.processing = true;
+    this.activationService.confirmPasswordReset(this.credentials, this.token)
+      .pipe(finalize(() => this.processing = false))
+      .subscribe(response => {
       this.securityService.loginUser(JSON.parse(response.body) as LoginModel, response.headers.get('authorization'), true);
       this.popUpMessageService.showSuccess('Password changed successfully');
     }, err => {

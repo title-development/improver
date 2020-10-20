@@ -38,6 +38,7 @@
                             [preventLogin]="!registerProps.agree"
                             [processing]="processing"
                             [isPro]="true"
+                            [disabled]="processing"
                             [referralCode]="user.referralCode"
                             (responseMessageType)="messageType = $event;"
                             (responseMessage)="messageText = $event;"
