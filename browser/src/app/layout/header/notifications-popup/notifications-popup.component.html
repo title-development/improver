@@ -11,15 +11,14 @@
   <div class="popup-body">
     <ng-container ></ng-container>
        <div class="notification-content"
-            #notificationsBlockElement
+            [style.height.px]="totalPanelHeight"
             *ngIf="(notifications && notifications.length > 0) || unreadMessagesCount > 0 ">
          <perfect-scrollbar [config]="psConfig"  (psYReachEnd)="psYReachEnd($event)">
         <!--message notification-->
         <ng-template ngFor [ngForOf]="unreadMessages" let-unreadMessage let-i="index" [ngForTrackBy]="trackBy">
           <a class="item" #unreadMessageItem
-             [ngStyle]="{'style': findItemsHeight(unreadMessageItem, unreadMessage, 'message')}"
              [ngClass]="{'new': !unreadMessage.read}"
-             (click)="navigate(unreadMessage.link); notificationResource.read(i); resetItemsHeight(); close()">
+             (click)="navigate(unreadMessage.link); notificationResource.read(i); close()">
 
             <div class="logo-wrapper">
               <div [ngStyle]="unreadMessage.newMessage ? {'background-image': 'url(/assets/icons/message-notification.png)'} : unreadMessage.icon && unreadMessage.icon != '' && {'background-image':'url(' + unreadMessage.icon + '), url(/assets/img/home-improve-notification-icon.png)'}">
@@ -38,9 +37,8 @@
         </ng-template>
         <ng-template ngFor [ngForOf]="notifications" let-notification let-i="index" [ngForTrackBy]="trackBy">
           <a class="item" #unreadNotificationItem
-             [ngStyle]="{'style': findItemsHeight(unreadNotificationItem, notification, 'notification')}"
              [ngClass]="{'new': !notification.read}"
-             (click)="navigate(notification.link); !notification.read && read(notification.id); resetItemsHeight(); close()">
+             (click)="navigate(notification.link); !notification.read && read(notification.id); close()">
 
             <div class="logo-wrapper">
               <div [ngStyle]="notification.icon && notification.icon != '' && {'background-image':'url(' + notification.icon + '), url(/assets/img/home-improve-notification-icon.png)'}"

@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 
 import static com.improver.application.properties.BusinessProperties.MAX_AVAILABLE_CARDS_COUNT;
 import static com.improver.application.properties.BusinessProperties.REFERRAL_BONUS_AMOUNT;
+import static com.improver.application.properties.SystemProperties.MIN_STRIPE_CHARGE_CENTS;
 import static com.improver.application.properties.Text.TOP_UP_PURPOSE;
 import static com.improver.util.TextMessages.REFERRAL_BONUS_MESSAGE;
 
@@ -118,6 +119,9 @@ public class PaymentService {
      * @return Stripe Charge object
      */
     public Charge charge(String stripeId, int amount, String description) throws PaymentFailureException, InternalServerException {
+        if (amount < MIN_STRIPE_CHARGE_CENTS) {
+            throw new IllegalArgumentException("Amount must be at least $0.50 usd");
+        }
         Charge charge = null;
         try {
             com.stripe.model.Customer stripeCustomer = com.stripe.model.Customer.retrieve(stripeId);
@@ -130,7 +134,7 @@ public class PaymentService {
         } catch (CardException e) {
             throw new PaymentFailureException("Payment cannot be proceed due to card issue. Please check your billing information and try again.", e);
         } catch (AuthenticationException | InvalidRequestException | APIConnectionException | APIException e) {
-            throw new InternalServerException("Payment cannot be proceed due to connectivity issue. Try again in a while", e);
+            throw new InternalServerException("Payment cannot be proceed:  " + e.getMessage(), e);
         }
         if (ChargeStatus.FAILED.equalsValue(charge.getStatus())) {
             throw new PaymentFailureException("Payment failure. " + charge.getFailureMessage());
@@ -198,7 +202,7 @@ public class PaymentService {
             throw new InternalServerException(e.getMessage());
         } catch (AuthenticationException | InvalidRequestException | APIConnectionException | APIException e) {
             // TODO: change to third party
-            throw new InternalServerException("Cannot retrieve payment cards due to connectivity issue. Try again in a while", e);
+            throw new InternalServerException("Cannot retrieve payment cards: " + e.getMessage(), e);
         }
         return cards;
     }

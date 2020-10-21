@@ -9,6 +9,7 @@ import java.time.temporal.ChronoUnit;
  */
 public class SystemProperties {
 
+    public static final int MIN_STRIPE_CHARGE_CENTS = 50;
     public static final int TRANSACTIONS_NUMBER_MAX_LENGTH = 6;  // should not exceed 13 - based on Long.MAX_VALUE
     public static final Duration ADVERTISED_TRADES_CACHE_EXPIRATION = Duration.of(1, ChronoUnit.DAYS);
     public static final Duration IMAGES_CACHE_DURATION = Duration.of(30, ChronoUnit.DAYS);

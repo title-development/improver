@@ -9,7 +9,9 @@ import {
   OnChanges,
   OnDestroy,
   Output,
-  Renderer2, ViewChild
+  QueryList,
+  Renderer2,
+  ViewChildren
 } from '@angular/core';
 import { SecurityService } from '../../../auth/security.service';
 import { animate, state, style, transition, trigger } from '@angular/animations';
@@ -41,6 +43,9 @@ import { finalize, first } from "rxjs/operators";
 })
 export class NotificationsPopupComponent implements OnChanges, OnDestroy {
 
+  @ViewChildren('unreadMessageItem') unreadMessageItems: QueryList<any>;
+  @ViewChildren('unreadNotificationItem') unreadNotificationItem: QueryList<any>;
+
   @Input() get toggle(): boolean {
     return this._toggle;
   }
@@ -48,34 +53,33 @@ export class NotificationsPopupComponent implements OnChanges, OnDestroy {
   set toggle(value: boolean) {
     this.toggleChange.emit(value);
     this._toggle = value;
+    if (value) {
+      this.findItemsHeight();
+    }
   }
 
   @Output() toggleChange: EventEmitter<boolean> = new EventEmitter();
 
-
   Role = Role;
   animationState: string | 'inactive' | 'active';
   mediaQuery: MediaQuery;
-
   private _toggle: boolean = false;
   private mediaWatcher: Subscription;
   private menuWidth: number = 320;
   resizeHandler = () => this.onResize();
-
   showMore = false;
   notifications: Notification [] = [];
   unreadMessages: Notification [] = [];
-  private pagination: Pagination = new Pagination(0, 5);
+  private pagination: Pagination = new Pagination(0, 6);
   notificationsProcessing = false;
   notificationsSubscription$;
   onReadSubscription$;
   unreadMessagesCount: number = 0;
-  notificationAndMessageItemsHeight: {item: any, height: number, type: string}[] = [];
+  totalPanelHeight: number = 0;
 
   psConfig = {
     wheelPropagation: false
   };
-  @ViewChild('notificationsBlockElement') notificationsElementRef: ElementRef;
 
   constructor(private elementRef: ElementRef,
               @Inject('Window') private window: Window,
@@ -109,8 +113,8 @@ export class NotificationsPopupComponent implements OnChanges, OnDestroy {
     })
     this.notificationResource.unreadMessagesCount$.subscribe( unreadMessagesCount => {
       this.unreadMessagesCount = unreadMessagesCount
+      this.findItemsHeight();
     })
-
   }
 
   ngOnChanges(changes): void {
@@ -128,37 +132,15 @@ export class NotificationsPopupComponent implements OnChanges, OnDestroy {
     }
   }
 
-  resetItemsHeight() {
-    this.notificationAndMessageItemsHeight = []
-  }
+  findItemsHeight() {
+    if (!this.toggle) return;
+    this.changeDetectorRef.detectChanges();
 
-  findItemsHeight(item: HTMLElement, notification: any, type: string) {
-    let notificationsBlockHeight: number = 0;
-    let findIndex = this.notificationAndMessageItemsHeight.findIndex(item => item.item.payload == notification.payload &&
-      ((item.item.id !== null && item.item.id == notification.id) || (item.item.projectId != null && item.item.projectId == notification.projectId)) &&
-      item.type == type
-    )
-
-    if (findIndex >= 0) {
-      this.notificationAndMessageItemsHeight[findIndex] = {item: notification, height: item.offsetHeight, type: type};
-    } else {
-      this.notificationAndMessageItemsHeight.push({item: notification, height: item.offsetHeight, type: type})
-    }
-
-    // sort messages first
-    this.notificationAndMessageItemsHeight = this.notificationAndMessageItemsHeight.sort(function (a, b) {
-      if (a.type < b.type) { return -1; }
-      if (a.type > b.type) { return 1; }
-      return 0;
-    }).slice(0, 6);
-
-    // set notifications block height
-    this.notificationAndMessageItemsHeight.forEach(item => {
-      notificationsBlockHeight = notificationsBlockHeight + item.height;
-    })
-    if (this.notificationsElementRef) {
-      this.renderer.setStyle(this.notificationsElementRef.nativeElement, 'height', notificationsBlockHeight + 'px')
-    }
+    let items = [...this.unreadMessageItems, ...this.unreadNotificationItem].slice(0, 6)
+    this.totalPanelHeight = items.reduce((height, item) => {
+      height += item.nativeElement.offsetHeight;
+      return height;
+    }, 0);
   }
 
   getUnreadMessages() {
@@ -187,13 +169,14 @@ export class NotificationsPopupComponent implements OnChanges, OnDestroy {
 
   subscribeOnUnreadNotifications() {
     this.notificationsSubscription$ = this.notificationResource.newUnreadNotifications.subscribe(notifications => {
-        let contentSize = this.pagination.size * (this.pagination.page + 1);
-        this.notifications.unshift(...notifications);
-        if (this.notifications.length > contentSize) {
-          // remove last item(s) to prevent duplication after pagination
-          this.notifications = this.notifications.slice(0, -notifications.length);
-          this.showMore = true;
-        }
+      let contentSize = this.pagination.size * (this.pagination.page + 1);
+      this.notifications.unshift(...notifications);
+      if (this.notifications.length > contentSize) {
+        // remove last item(s) to prevent duplication after pagination
+        this.notifications = this.notifications.slice(0, -notifications.length);
+        this.showMore = true;
+      }
+      this.findItemsHeight();
     });
   }
 
