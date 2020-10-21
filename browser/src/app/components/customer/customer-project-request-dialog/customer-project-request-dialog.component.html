@@ -5,7 +5,7 @@
 
     <div class="header-content-wrapper">
       <div class="header-content" *ngIf="companyProfile">
-        <div class="logo" [ngClass]="{'-archived': companyProfile.deleted}"
+        <div class="logo" [ngClass]="{'-archived': companyProfile.deleted}" [routerLink]="['/companies', companyProfile.id]"
               [ngStyle]="companyProfile.iconUrl && companyProfile.iconUrl != '' && !companyProfile.deleted ? {'background-image':'url(' + companyProfile.iconUrl + ')'} : {'background-image':'url(assets/img/pro_avatar.svg)'}">
         </div>
 
@@ -160,7 +160,7 @@
     <div class="sidebar xs-none sm-none md-none" [cvSpinner]="!companyProfile" [cvSpinnerSize]="24">
         <mat-icon class="close-modal" color="accent" (click)="close()">clear</mat-icon>
       <div class="sidebar-information" *ngIf="companyProfile">
-        <div class="logo" [ngClass]="{'-archived': companyProfile.deleted}"
+        <div class="logo" [ngClass]="{'-archived': companyProfile.deleted}" [routerLink]="['/companies', companyProfile.id]"
            [ngStyle]="companyProfile.iconUrl && companyProfile.iconUrl != '' && !companyProfile.deleted ? {'background-image':'url(' + companyProfile.iconUrl + ')'} : {'background-image':'url(assets/img/pro_avatar.svg)'}"></div>
         <div class="info-block">
           <div [ngClass]="{'-archived': companyProfile.deleted}" class="company-name">

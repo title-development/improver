@@ -259,7 +259,7 @@ export class CompanyProfileComponent implements OnInit, OnDestroy {
         this.errorHandler.unauthorized(err, '', () => this.openWriteReviewDialog(companyProfile));
         this.errorHandler.unprocessableEntity(err, getErrorMessage(err), () => this.clearUrlQueryParams());
         this.errorHandler.conflict(err, getErrorMessage(err));
-        this.errorHandler.notFound(err, "You don't have request to review this company");
+        this.errorHandler.notFound(err, "You don't have common projects to review this company");
         localStorage.removeItem('review-token');
         this.dialog.closeAll();
       }

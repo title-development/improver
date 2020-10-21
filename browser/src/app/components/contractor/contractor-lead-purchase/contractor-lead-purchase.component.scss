@@ -132,6 +132,15 @@
 
 }
 
+.contractor-lead-purchase-success {
+  .in-line-text {
+
+    &:before {
+      background-color: $grey-300
+    }
+  }
+}
+
 
 .buttom-purchase-button {
 

@@ -184,7 +184,7 @@ export const projectRequestReviewDialogConfig: MatDialogConfig = {
 
 export const notReviewedProjectRequestsDialogConfig: MatDialogConfig = {
   panelClass: 'dialog-fix-position',
-  width: '',
+  width: '450px',
   height: '',
   position: {
     top: '',
