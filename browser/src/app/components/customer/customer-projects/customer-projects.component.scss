@@ -486,6 +486,26 @@
 
 }
 
+.recommended-services-image-block {
+
+  .imp-icon-tools {
+    width: 100%;
+    position: absolute;
+    color: #424242;;
+    top: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    background-color: #d8d8d8;
+    border-radius: 8px;
+  }
+
+  .imp-icon-tools:before {
+    font-size: 65px;
+    margin: 0 auto;
+  }
+}
+
 ::ng-deep .mat-menu-panel{
   min-height: max-content !important;
 }

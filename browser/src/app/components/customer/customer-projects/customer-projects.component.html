@@ -160,7 +160,10 @@
               <div class="recommended-services-card-content">
 
                 <div class="recommended-services-image-block">
-                  <img [src]="trade.image" alt="" class="recommended-works-img">
+                  <img *ngIf="trade.image && trade.image != '' && trade.image != null" [src]="trade.image" alt="" class="recommended-works-img">
+                  <div *ngIf="!trade.image || trade.image == '' || trade.image == null" class="image-block" fxLayout="column" fxLayoutAlign="center center">
+                    <i class="imp-icon-tools" *ngIf="!trade.image || trade.image == ''"></i>
+                  </div>
                   <div class="shadow-box"></div>
                 </div>
 
