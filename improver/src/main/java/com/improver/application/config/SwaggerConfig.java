@@ -23,7 +23,7 @@ import static springfox.documentation.builders.PathSelectors.regex;
 @Profile(DEV)
 public class SwaggerConfig {
 
-    String API_VERSION = "0.1.9-SNAPSHOT";
+    String API_VERSION = "2.12.0-RELEASE";
 
     private ApiInfo getApiInfo(String version) {
         return new ApiInfo(
