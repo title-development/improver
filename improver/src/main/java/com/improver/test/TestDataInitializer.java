@@ -37,7 +37,7 @@ import static java.util.Objects.nonNull;
  */
 @Slf4j
 @Component
-@Profile({INITDB, QA, PROD})
+@Profile({INITDB, QA})
 public class TestDataInitializer {
 
 
@@ -109,14 +109,19 @@ public class TestDataInitializer {
     private static Location DUMMY_LOCATION = new Location("123 Bengamin st.", "New York", "NY", "12345");
 
 
-    @PostConstruct
-    public void init() {
+    public void initProd() {
         log.info("*********** Init PROD Trades images ...");
         try {
             setServicesImagesIntoDb("classpath*:**/test-data/trades/*.jpg");
         } catch (IOException e) {
             log.error("Failed to load images for ServiceTypes", e);
         }
+    }
+
+    @PostConstruct
+    public void initTestData() {
+        initProd();
+
         log.info("Start test data ======================================");
         log.info("=========== Init Test Questionary ...");
         initQuestions();
