@@ -5,7 +5,7 @@ import { first } from "rxjs/operators";
 @Injectable()
 export class ScrollService {
 
-  HEADER_HEIGHT = 50;
+  HEADER_HEIGHT = 60;
 
   constructor(
     private roter: Router,

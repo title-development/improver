@@ -6,7 +6,7 @@
 
       <div class="buttons">
         <button class="main-action-button" routerLink="/signup-pro" (click)="gTagTrackClick()">Start now</button>
-        <button class="secondary-action-button" (click)="scrollService.scrollToElementById('guide')">More info</button>
+        <button class="secondary-action-button" (click)="scrollService.scrollToElementById(mediaQuery.xs || mediaQuery.sm? 'benefits': 'guide')">More info</button>
       </div>
     </div>
 
@@ -56,7 +56,7 @@
   </div>
 </div>
 
-<div class="benefits">
+<div id="benefits" class="benefits">
   <div class="benefits-wrapper">
     <div class="title">Your Leads - Your Terms - No Hassle</div>
     <div class="benefits-content">

@@ -44,7 +44,7 @@ import { finalize, first } from "rxjs/operators";
 export class NotificationsPopupComponent implements OnChanges, OnDestroy {
 
   @ViewChildren('unreadMessageItem') unreadMessageItems: QueryList<any>;
-  @ViewChildren('unreadNotificationItem') unreadNotificationItem: QueryList<any>;
+  @ViewChildren('unreadNotificationItem') unreadNotificationItems: QueryList<any>;
 
   @Input() get toggle(): boolean {
     return this._toggle;
@@ -136,7 +136,7 @@ export class NotificationsPopupComponent implements OnChanges, OnDestroy {
     if (!this.toggle) return;
     this.changeDetectorRef.detectChanges();
 
-    let items = [...this.unreadMessageItems, ...this.unreadNotificationItem].slice(0, 6)
+    let items = [...this.unreadMessageItems, ...this.unreadNotificationItems].slice(0, 6)
     this.totalPanelHeight = items.reduce((height, item) => {
       height += item.nativeElement.offsetHeight;
       return height;

@@ -692,8 +692,8 @@
   margin: auto;
   margin-bottom: 120px;
   position: relative;
-  max-width: 100%;
   padding-left: 24px;
+  max-width: $content-grid-max-width;
 
   @include response-to(lg) {
     padding-left: 24px;

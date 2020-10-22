@@ -82,21 +82,19 @@
   overflow: auto;
   display: flex;
   flex-direction: column;
-  max-height: 100%;
+  height: 100%;
 
   .autocomplete-item {
     padding: 10px 0;
     width: 100%;
-    font-size: 14px;
+    font-size: 16px;
     cursor: pointer;
   }
 }
 
 .search-result-container {
-  padding-top: 33px;
   width: 90%;
-  margin: 0 auto;
-  height: calc(100vh - 60px - 170px - 53px); //max block height = ( device height - header height - inputs block - padding )
+  margin: 34px auto;
   overflow: hidden;
 
   .popular-service-title {

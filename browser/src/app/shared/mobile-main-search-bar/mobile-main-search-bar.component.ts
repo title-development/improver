@@ -5,8 +5,10 @@ import {
   ElementRef,
   OnDestroy,
   OnInit,
+  QueryList,
   Renderer2,
-  ViewChild
+  ViewChild,
+  ViewChildren
 } from '@angular/core';
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
@@ -42,6 +44,8 @@ export class MobileMainSearchBarComponent implements OnInit, AfterViewInit, OnDe
 	private readonly destroyed$ = new Subject<void>();
 
   @ViewChild('serviceType') cvSelectComponent: CvSelectComponent;
+  @ViewChild('searchResultContentElement') searchResultContentElementRef: ElementRef;
+  @ViewChildren('serviceTypeElement') serviceTypeHTMLElements: QueryList<any>;
 
   constructor(public currentDialogRef: MatDialogRef<any>,
               public constants: Constants,
@@ -69,27 +73,36 @@ export class MobileMainSearchBarComponent implements OnInit, AfterViewInit, OnDe
 
     this.zipCodeCtrl.setValue(localStorage.getItem('zipCode'));
 
-		this.securityService.onUserInit.subscribe(() => {
-				if (this.securityService.hasRole(Role.CUSTOMER)) {
-					this.getLastCustomerZipCode();
-				}
-			}
-		);
+    this.securityService.onUserInit.subscribe(() => {
+        if (this.securityService.hasRole(Role.CUSTOMER)) {
+          this.getLastCustomerZipCode();
+        }
+      }
+    );
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
-      let element =  this.element.nativeElement.querySelector('cv-select').getElementsByTagName('input')[0];
-      this.changeDetectorRef.detectChanges();
-    }, 0);
+    console.log(this.serviceTypeHTMLElements);
+    this.findItemsHeight();
   }
 
-  getRouterEvents(){
-  	this.router.events.pipe(takeUntil(this.destroyed$)).subscribe( event => {
-      if(event instanceof NavigationStart) {
+  getRouterEvents() {
+    this.router.events.pipe(takeUntil(this.destroyed$)).subscribe(event => {
+      if (event instanceof NavigationStart) {
         this.dialog.closeAll();
       }
     });
+  }
+
+  findItemsHeight() {
+    this.changeDetectorRef.detectChanges();
+    let items = this.serviceTypeHTMLElements.toArray().slice(0, 10);
+    console.log(items)
+    let totalPanelHeight = items.reduce((height, item) => {
+      height += item.nativeElement.offsetHeight;
+      return height;
+    }, 0);
+    this.renderer.setStyle(this.searchResultContentElementRef.nativeElement, 'height', totalPanelHeight + 'px');
   }
 
   autocompleteSearch(search): void {
@@ -115,6 +128,7 @@ export class MobileMainSearchBarComponent implements OnInit, AfterViewInit, OnDe
         } else {
           this.hasSearchResults = true;
         }
+        this.findItemsHeight();
         if (this.resetAfterFind) {
           this.mainSearchFormGroup.reset({
             zipCodeCtrl: localStorage.getItem('zipCode') ? localStorage.getItem('zipCode') : this.lastZipCode
@@ -129,16 +143,18 @@ export class MobileMainSearchBarComponent implements OnInit, AfterViewInit, OnDe
 
   getPopularServiceTypes() {
     this.customerSuggestionService.popularServices$
-      .subscribe( (popularServiceTypes: Array<ServiceType>) => this.popularServiceTypes = this.filteredServiceTypes = this.searchResults = popularServiceTypes);
+      .subscribe((popularServiceTypes: Array<ServiceType>) => {
+        this.popularServiceTypes = this.filteredServiceTypes = this.searchResults = popularServiceTypes;
+      });
   }
 
-	getLastCustomerZipCode() {
-		this.customerSuggestionService.lastCustomerZipCode$
-				.subscribe(lastZipCode => {
-						this.lastZipCode = lastZipCode;
-						this.zipCodeCtrl.setValue(lastZipCode)
-					});
-	}
+  getLastCustomerZipCode() {
+    this.customerSuggestionService.lastCustomerZipCode$
+      .subscribe(lastZipCode => {
+        this.lastZipCode = lastZipCode;
+        this.zipCodeCtrl.setValue(lastZipCode)
+      });
+  }
 
   close() {
     this.currentDialogRef.close();
@@ -154,7 +170,7 @@ export class MobileMainSearchBarComponent implements OnInit, AfterViewInit, OnDe
   }
 
   focusout() {
-    if (this.zipCodeCtrl.valid){
+    if (this.zipCodeCtrl.valid) {
       this.searchServiceType();
     }
   }
@@ -164,8 +180,8 @@ export class MobileMainSearchBarComponent implements OnInit, AfterViewInit, OnDe
   }
 
   ngOnDestroy(): void {
-		this.destroyed$.next();
-		this.destroyed$.complete();
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
 }

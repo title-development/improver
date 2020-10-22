@@ -65,12 +65,12 @@
 
     </form>
 
-    <div class="search-result-container">
+    <div #searchResultContentElement class="search-result-container">
       <div class="popular-service-title" *ngIf="!hasSearchResults">Popular services</div>
 
       <div class="autocomplete-content">
         <div *ngFor="let serviceType of searchResults">
-          <div class="autocomplete-item" (click)="searchServiceType(serviceType.name)">
+          <div #serviceTypeElement class="autocomplete-item" (click)="searchServiceType(serviceType.name)">
             {{serviceType.name}}
           </div>
         </div>
