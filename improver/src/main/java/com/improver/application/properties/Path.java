@@ -49,6 +49,7 @@ public final class Path {
     public static final String DECLINE =               "/decline";
     public static final String ACCEPT =                "/accept";
     public static final String ACCOUNT =               "/account";
+    public static final String ADDRESS =               "/addresses";
 
 
     public static final String LOGIN =               "/login";

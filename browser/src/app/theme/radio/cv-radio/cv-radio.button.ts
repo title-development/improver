@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component, EventEmitter,
@@ -18,9 +19,10 @@ import {
     '[class.-readonly]': 'readonly',
   },
 })
-export class CvRadioButton {
+export class CvRadioButton implements AfterViewInit{
 
   @Input() value: any;
+  @Input() isDefaultValue: boolean = false;
 
   @Input()
   set disabled(value) {
@@ -55,6 +57,15 @@ export class CvRadioButton {
   check(event: MouseEvent) {
     if (this.readonly || this.disabled) return;
     this.onSelect.emit(this.value);
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      if (this.isDefaultValue) {
+        this.onSelect.emit(this.value);
+      }
+    })
+
   }
 
 }

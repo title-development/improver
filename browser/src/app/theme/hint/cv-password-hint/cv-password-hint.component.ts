@@ -106,14 +106,17 @@ export class CvPasswordHintComponent implements OnInit, AfterViewInit, OnDestroy
 		});
 	}
 
-	private subscribeOnFormSubmit() {
-		if (this.controlContainer && (this.controlContainer as NgForm).ngSubmit) {
-			(this.controlContainer as any).ngSubmit.subscribe(() => {
-				this.isFormSubmitted = true;
-				this.changeDetectorRef.detectChanges();
-			})
-		}
-	}
+  private subscribeOnFormSubmit() {
+    if (this.controlContainer && (this.controlContainer as NgForm).ngSubmit) {
+      (this.controlContainer as any).ngSubmit.subscribe(() => {
+        if (!this.isFormSubmitted) {
+          this.isFormSubmitted = true;
+          this.animationState = 'active';
+        }
+        this.changeDetectorRef.detectChanges();
+      })
+    }
+  }
 
 	private validate(password: string) {
 		if (!password || password == '') {

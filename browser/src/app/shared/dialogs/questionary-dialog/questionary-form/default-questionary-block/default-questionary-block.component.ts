@@ -20,13 +20,14 @@ import { AccountService } from "../../../../../api/services/account.service";
 import { TradeService } from "../../../../../api/services/trade.service";
 import { MetricsEventService } from "../../../../../api/services/metrics-event.service";
 import { takeUntil } from "rxjs/operators";
-import { SystemMessageType } from "../../../../../model/data-model";
+import { SystemMessageType, UserAddress } from "../../../../../model/data-model";
 import { Subject } from "rxjs";
 import { RecaptchaComponent } from "ng-recaptcha";
 import { CaptchaTrackingService } from "../../../../../api/services/captcha-tracking.service";
 import { RegistrationHelper } from "../../../../../util/helpers/registration-helper";
 import { DeviceControlService } from "../../../../../api/services/device-control.service";
 import { RegistrationService } from "../../../../../api/services/registration.service";
+import { UserAddressService } from "../../../../../api/services/user-address.service";
 
 @Component({
   selector: 'default-questionary-block',
@@ -73,6 +74,9 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
   loginMessageText;
   loginMessageType;
   showLoginMessage = false;
+  userAddress: UserAddress[] = [];
+  canEnterManualAddress: boolean = false;
+  isAddressSelected: boolean = false;
 
   socialButtonsMessageType
   socialButtonsMessageText
@@ -86,6 +90,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
               public projectActionService: ProjectActionService,
               public securityService: SecurityService,
               public userService: UserService,
+              public userAddressService: UserAddressService,
               public dialog: MatDialog,
               public constants: Constants,
               public messages: TextMessages,
@@ -106,6 +111,8 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     securityService.onUserInit.subscribe(() => {
       this.phoneValid = false;
     });
+
+    this.loadUserAddress();
   }
 
   submitUserInfo() {
@@ -147,6 +154,12 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
 
   close(): void {
     this.dialog.closeAll();
+  }
+
+  loadUserAddress() {
+    this.userAddressService.getUserAddress().subscribe((userAddress: UserAddress[]) => {
+      this.userAddress = userAddress;
+    }, error => console.log(error))
   }
 
   checkEmail(email) {
@@ -283,6 +296,27 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     this.hideNextAction = false;
     this.disabledNextAction = true;
     const location: FormGroup = this.defaultQuestionaryForm.get('projectLocation');
+  }
+
+  selectAddress(address, isAddressManual: boolean) {
+    this.isAddressSelected = true;
+    const location: FormGroup = this.defaultQuestionaryForm.get('projectLocation');
+    this.isAddressManual = isAddressManual;
+    location.setValue({
+      streetAddress: address.streetAddress,
+      city: address.city,
+      state: address.state,
+      zip: address.zip
+    });
+  }
+
+  clearUserAddressForm() {
+    const location: FormGroup = this.defaultQuestionaryForm.get('projectLocation');
+    this.canEnterManualAddress = true;
+    this.isAddressSelected = false;
+    location.reset({
+      'zip': location.get('zip').value,
+    });
   }
 
   chooseAddress(address: any, isAddressManual: boolean): void {

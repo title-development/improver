@@ -37,6 +37,11 @@ public class Location {
         this.isAddressManual = isAddressManual;
     }
 
+    public Location(UserAddress userAddress) {
+        this(userAddress.getStreetAddress(), userAddress.getCity(), userAddress.getState(), userAddress.getZip());
+        this.isAddressManual = userAddress.getIsAddressManual();
+    }
+
     public String asText() {
         return streetAddress + ", " +
             city + ", " +

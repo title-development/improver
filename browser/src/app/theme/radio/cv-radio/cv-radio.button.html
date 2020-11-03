@@ -1,5 +1,9 @@
-<div class="radio-circle"></div>
-<input type="radio" [checked]="checked" [disabled]="disabled">
-<div class="radio-label">
-  <ng-content></ng-content>
+
+<div class="radio-wrapper">
+  <div class="radio-circle"></div>
+  <input type="radio" [checked]="checked" [disabled]="disabled">
+  <div class="radio-label">
+    <ng-content></ng-content>
+  </div>
 </div>
+

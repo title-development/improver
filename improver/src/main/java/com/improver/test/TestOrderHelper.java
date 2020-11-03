@@ -158,7 +158,7 @@ public class TestOrderHelper {
     public static Order generateFor(String serviceType) {
         List<Order.QuestionAnswer> details = (new Random().nextBoolean()) ? TestOrderHelper.answers.get(new Random().nextInt(answers.size()))
             : new ArrayList<>();
-        return new Order().setAddress(new UserAddressModel(getRandomLocation())).setBaseLeadInfo(getRandomDetails());
+        return new Order().setAddress(new UserAddressModel(getRandomLocation(), 0)).setBaseLeadInfo(getRandomDetails());
     }
 
 

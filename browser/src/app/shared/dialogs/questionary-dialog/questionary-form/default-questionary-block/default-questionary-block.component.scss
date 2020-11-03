@@ -412,3 +412,55 @@ cv-radio-group {
   }
 
 }
+
+.user-address-wrapper {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin-bottom: 20px;
+  width: calc(100% + 10px);
+  min-height: 150px;
+
+  cv-radio {
+    margin-right: 10px;
+  }
+
+  perfect-scrollbar {
+    max-height: 272px;
+  }
+
+  .address-item-wrapper {
+    display: flex;
+    flex-direction: column;
+    border: 1px $grey-400 solid;
+    border-radius: 8px;
+    padding: 6px 0;
+    font-size: 16px;
+
+    ::ng-deep .radio-circle {
+      margin: 0 16px;
+    }
+  }
+
+  ::ng-deep .ps {
+    .ps__rail-y {
+      @include response-to(sm) {
+        opacity: 0.6;
+      }
+    }
+
+    .ps__thumb-y {
+      @include response-to(sm) {
+        opacity: 0.6;
+      }
+    }
+
+  }
+
+  .new-address-button {
+    font-size: 16px;
+    color: $dark;
+    border-color: $grey-400;
+    width: calc(100% - 10px);
+  }
+}

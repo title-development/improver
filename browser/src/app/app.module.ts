@@ -85,6 +85,7 @@ import { MyStompService } from "./api/services/my-stomp.service";
 import { HammerConfig } from "./util/hummer-config";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { FacebookLoginProvider, GoogleLoginProvider, SocialAuthServiceConfig } from "./auth/social-login/public-api";
+import { UserAddressService } from "./api/services/user-address.service";
 
 
 const rootRouting = RouterModule.forRoot([], {useHash: false});
@@ -147,6 +148,7 @@ const rootRouting = RouterModule.forRoot([], {useHash: false});
     RegistrationService,
     ActivationService,
     UserService,
+    UserAddressService,
     GeolocationService,
     ProjectService,
     CompanyService,

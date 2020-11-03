@@ -1,4 +1,4 @@
-<div class="pro-banner-wrapper">
+<div class="pro-banner-wrapper" *ngIf="!securityService.hasRole(Role.CUSTOMER)">
 
   <div class="pro-banner-container">
 

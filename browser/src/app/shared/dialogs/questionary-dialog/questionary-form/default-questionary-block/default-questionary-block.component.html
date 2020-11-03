@@ -238,10 +238,34 @@
   </div>
 
   <div #defaultQuestion class="form-element-wrapper text-input-wrapper"
-        [formGroupName]="'defaultQuestionaryGroup'"
+       [formGroupName]="'defaultQuestionaryGroup'"
        *ngIf="questionaryControlService.currentQuestionIndex == questionaryControlService.questionaryLength + 2 + (personalInfoRequired() ? 1 : 0)">
     <h2 class="question-title">Where do you need a Professional?</h2>
-    <div class="text-input-group fill-flex-space" [formGroupName]="'projectLocation'"
+
+    <div class="user-address-wrapper" *ngIf="userAddress.length > 0 && !canEnterManualAddress">
+
+      <perfect-scrollbar>
+        <cv-radio-group formGroupName="projectLocation"  required>
+          <cv-radio class="address-item-wrapper" *ngFor="let address of userAddress; let i=index"
+                    [value]="address"
+                    [checked]="defaultQuestionaryForm.get('projectLocation').value == address"
+                    [isDefaultValue]="i == 0 && !isAddressSelected"
+                    (onSelect)="selectAddress($event, false)">
+            {{address.streetAddress}}<br>
+            {{address.city}} {{address.state}} {{address.zip}}
+          </cv-radio>
+        </cv-radio-group>
+      </perfect-scrollbar>
+      <div class="question-general-error">
+          <span class="mat-error"
+                *ngIf="defaultQuestionaryForm.get('projectLocation').errors?.required">Is required</span>
+      </div>
+
+      <button class="new-address-button" (click)="clearUserAddressForm()" cv-button-empty>Enter new address</button>
+    </div>
+
+    <div *ngIf="userAddress.length == 0 || canEnterManualAddress" class="text-input-group fill-flex-space"
+         [formGroupName]="'projectLocation'"
          [cvSpinner]="processingAddressValidation"
          [cvSpinnerSize]="40"
          [cvSpinnerBackground]="true">
@@ -321,7 +345,8 @@
         </cv-field-error>
       </cv-input-field>
       <cv-field-error class="location-error">{{locationValidation | lowercase}}</cv-field-error>
-      <div *ngIf="originalAddress?.streetAddress && suggestedAddress?.streetAddress" class="address-validation" [ngClass]="{'-invalid': locationInvalid}">
+      <div *ngIf="originalAddress?.streetAddress && suggestedAddress?.streetAddress" class="address-validation"
+           [ngClass]="{'-invalid': locationInvalid}">
         <div class="row">
           <div class="col-xs-12 col-sm-6">
             <div class="address">
@@ -333,8 +358,12 @@
                 {{originalAddress?.zip}}
               </p>
             </div>
-            <button *ngIf="originalAddress?.canUseManual" cv-button-empty type="button" (click)="chooseAddress(originalAddress, true)">Use this address</button>
-            <button *ngIf="!originalAddress?.canUseManual" cv-button-empty type="button" (click)="resetLocationQuestion()">Edit address</button>
+            <button *ngIf="originalAddress?.canUseManual" cv-button-empty type="button"
+                    (click)="chooseAddress(originalAddress, true)">Use this address
+            </button>
+            <button *ngIf="!originalAddress?.canUseManual" cv-button-empty type="button"
+                    (click)="resetLocationQuestion()">Edit address
+            </button>
           </div>
           <div class="col-xs-12 col-sm-6">
             <div class="address apply" (click)="chooseAddress(suggestedAddress, false)">
@@ -351,13 +380,18 @@
           </div>
         </div>
         <span *ngIf="validationMessage">{{validationMessage}}</span>
-        <button class="grey-button" *ngIf="originalAddress?.canUseManual" cv-button-empty type="button" (click)="resetLocationQuestion()">Enter another address</button>
+        <button class="grey-button" *ngIf="originalAddress?.canUseManual" cv-button-empty type="button"
+                (click)="resetLocationQuestion()">Enter another address
+        </button>
       </div>
     </div>
 
     <div *ngIf="!processingAddressValidation" class="questionary-dialog-footer" [cvSpinner]="postOrderProcessing"
          [cvSpinnerSize]="20">
-      <button cv-button-empty class="questionary-previous-button" (click)="questionaryControlService.previousQuestion()" type="button"
+      <button cv-button-empty
+              class="questionary-previous-button"
+              (click)="questionaryControlService.previousQuestion(); isAddressSelected = false; canEnterManualAddress = false"
+              type="button"
               *ngIf="!hideNextAction && !postOrderProcessing">Back
       </button>
       <button *ngIf="!hideNextAction"
@@ -409,7 +443,7 @@
       </div>
 
     <div class="questionary-dialog-footer" fxLayoutAlign="end center">
-      <button cv-button-empty class="questionary-previous-button" (click)="questionaryControlService.previousQuestion()" type="button">Back</button>
+      <button cv-button-empty class="questionary-previous-button" (click)="questionaryControlService.previousQuestion(); isAddressSelected = false" type="button">Back</button>
       <div fxFlex=""></div>
       <button cv-button class="questionary-next-button" (click)="onSubmit()" type="button" [loading]="postOrderProcessing">Confirm</button>
     </div>
