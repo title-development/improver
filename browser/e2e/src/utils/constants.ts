@@ -1,6 +1,14 @@
+export const SECOND = 1000;
+export const TWO_SECONDS = 2000;
+export const THREE_SECONDS = 3000;
+export const FIVE_SECONDS = 5000;
+export const TEN_SECONDS = 10000;
+export const WRONG_EMAIL_PASSWORD_MESSAGE = "Email or password is incorrect";
+
 export const successTitle = {
-  registeredUser: "You’ve been successfully registered!"
+  registeredUser: "We've sent an email to you."
 };
+
 export const errorMessages = {
   firstNameError: {
     emptyField: 'First name is required',
@@ -37,25 +45,26 @@ export const questionaryAnonymousLastStep = {
   button: "Ok"
 };
 
-export const mainSlogan = "IT'S TIME FOR YOUR HOME IMPROVE";
+export const mainSlogan = "Get Your Home Improvement Project Underway, the Right Way!";
 
 export const pageTitle = {
   signUp: "Sign up to hire Professionals",
-  account: "Account",
+  userInformation: "User information",
+  socialConnections: "Login option",
   company: "Company",
-  services: "Services",
-  coverage: "Coverage configuration",
+  services: "Provided Services",
+  serviceArea: "Service Area",
   billing: "Billing",
-  notifications: "Notifications",
-  quickReply: "Quick reply",
-  scheduling: "Scheduling"
+  notificationSettings: "Notification Settings",
+  autoReplay: "Auto Reply",
+  scheduling: "Vacation Schedule"
 };
 
 export const menuLinkText = {
-  services: 'Services',
-  coverage: 'Coverage',
+  leadPreferences: 'Lead Preferences',
+  serviceArea: 'Service Area',
   notifications: 'Notifications',
-  quickReply: 'Quick Reply',
+  messagingAndNotifications: 'Messaging & Notifications',
   scheduling: 'Scheduling'
 };
 export const headerLinkText = {
@@ -66,20 +75,21 @@ export const pageLink = {
   dashboard: "/pro/dashboard",
   billing: '/pro/settings/billing'
 };
-export const dashboardCurrentUrl = "https://localhost:4200/pro/dashboard";
+export const dashboardCurrentUrlPattern = "^https://localhost:[0-9]{4}/pro/dashboard#";
 
 export const billingHints = {
+  balanceHeader: "Balance:",
   noAddedPaymentCardHeader: "Please add a credit/debit card to finish your account setup",
-  selectDefaultPaymentCard: "Select your default payment method",
+  accountBilledTo: "Account is billed to",
   setAmountToReplenish: "Please set an amount of money you want to top up your balance.\nThis is a one time charge.",
-  };
+};
 
 export const signUpProHints = {
-  email: "We use this email to register your account and send a lead notification.",
+  email: "Create a PRO account and continue company registration whenever suits you.",
   companyLogo: "Add a company logo or picture. Profiles with a picture bring up to 300% more customers.",
-  coverageCommon: "Service Area is the area you work and receive leads. Basic coverage has a circle shape with a center of your company address and radius of 10 miles. The zip codes that intersect the coverage area will be selected.",
-  coverageRadius: "You can adjust the center of the coverage by clicking and dragging it elsewhere.",
-  offeredServices: "Select services you offer and want to receive leads for. You can always change offered services in your account settings later.",
+  coverageCommon: "Service Area is the area you work and receive leads. Basic area highlights a round area with radius of 10 miles and your company in the center. The zip codes that intersect with that area will be selected.",
+  coverageRadius: "You can adjust the center of your service area by dragging it elsewhere.",
+  offeredServices: "Select services you offer and want to receive leads for. You can always change offered services in your account settings.",
   businessCategories: "Services are grouped into Trades for easier configuration. Add the entire Trades or select particular Services.",
   checkService: "Please check any Service that applies to you"
 };
@@ -91,7 +101,4 @@ export const validPaymentCard = {
   postal: 10022
 };
 
-
-
-
-
+export const phoneValidationCode = "1111";

@@ -81,6 +81,19 @@
         </profile>
 
         <profile>
+            <id>test</id>
+            <properties>
+                <!--first load def and initdb profiles then override by test properties-->
+                <environment>dev,initdb,test</environment>
+                <npm.arguments>install</npm.arguments>
+                <npm.build.cmd>run build:test</npm.build.cmd>
+            </properties>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+        </profile>
+
+        <profile>
             <id>qa</id>
             <activation>
                 <property>

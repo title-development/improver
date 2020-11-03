@@ -1,22 +1,16 @@
-import {
-  letter,
-  notAllowedNameSymbols,
-  notValidEmails,
-  notValidPasswords,
-  notValidPhones, tooShortPassword,
-  users, validConfirmPassword,
-  validNames, validPasswords, zero
-} from "../../../test.data";
+import { users } from "../../../test.data";
 import {
   findInputErrorElementByName,
   login,
-  logout, validateEmailOnAccount,
-  validateFirstLastNameInputs, validatePasswordAndConfirmPassword,
+  logout,
+  validateEmailOnAccount,
+  validateFirstLastNameInputs,
+  validatePasswordAndConfirmPassword,
   validatePhoneInputs
 } from "../../utils/common.functions";
-import { $$, browser, by, element, protractor } from "protractor";
-import { FIVE_SECONDS, SECOND, THREE_SECONDS } from "../../utils/util";
-import { errorMessages, pageTitle } from "../../utils/constants";
+import { browser, by, element } from "protractor";
+import { errorMessages, pageTitle, SECOND } from "../../utils/constants";
+import { userMenu } from "../../utils/util";
 
 describe('User Account Page', () => {
 
@@ -31,13 +25,12 @@ describe('User Account Page', () => {
   let phoneInput = personalInfoForm.element(by.name("phone"));
 
   // Change password form elements
-  let changePasswordForm = element(by.css(".change-password-form-group"));
+  let changePasswordForm = element(by.css(".change-password-form"));
   let oldPasswordInput = changePasswordForm.element(by.name("oldPassword"));
   let newPasswordInput = changePasswordForm.element(by.name("newPassword"));
   let confirmPasswordInput = changePasswordForm.element(by.name("confirmNewPassword"));
 
   beforeEach(() => {
-
     login(users.customer.email, users.customer.password);
     browser.sleep(SECOND);
     browser.get('/my/settings/account');
@@ -49,29 +42,20 @@ describe('User Account Page', () => {
   });
 
   it('should display account title', () => {
-    browser.waitForAngularEnabled(false);
-    let userMenu = element(by.css(".header .user-name"));
-    userMenu.isPresent().then(value => {
-      if (value) {
-        userMenu.click();
-        browser.sleep(SECOND);
-        element(by.linkText('Account')).click();
-        browser.sleep(SECOND);
-      }
-    });
-    expect(element(by.css(".account-nav-title")).getText()).toEqual(pageTitle.account);
+    userMenu.click();
+    browser.sleep(SECOND);
+    element(by.partialLinkText('User Account')).click();
+    browser.sleep(SECOND);
+    expect(element(by.css(".personal-info-card h3")).getText()).toEqual(pageTitle.userInformation);
+    expect(element(by.css(".social-connection h3")).getText()).toEqual(pageTitle.socialConnections);
   });
 
   it('should check email validation', () => {
-    browser.waitForAngularEnabled(false);
     browser.sleep(SECOND);
-
     validateEmailOnAccount (emailInput, emailInputErrorMessage, errorMessages.emailError, users.contractor.email);
   });
 
   it('should check first name validation', () => {
-
-    browser.waitForAngularEnabled(false);
     firstNameInput.clear();
     element(by.css(".save-personal-info")).click();
     browser.sleep(SECOND);
@@ -80,34 +64,33 @@ describe('User Account Page', () => {
   });
 
   it('should check last name validation', () => {
-    browser.waitForAngularEnabled(false);
     lastNameInput.clear();
     element(by.css(".save-personal-info")).click();
     browser.sleep(SECOND);
-
     validateFirstLastNameInputs(lastNameInput, findInputErrorElementByName("lastName"), errorMessages.lastNameError, users.customer.lastName)
   });
 
-  it('should check phone number validation', () => {
-    browser.waitForAngularEnabled(false);
+  // pattern for phone removed
+  xit('should check phone number validation', () => {
     browser.sleep(SECOND);
     validatePhoneInputs(phoneInput, findInputErrorElementByName("phone"), errorMessages.phoneError);
   });
 
   it('should check new password and confirm password', () => {
-    browser.waitForAngularEnabled(false);
+    element(by.css(".change-password-button")).click();
     browser.sleep(SECOND);
-
-    element(by.css(".change-password-card .cv-button")).click();
-
+    element(by.css(".change-password-form .cv-button[type='submit']")).click();
     expect(findInputErrorElementByName("oldPassword").getText()).toEqual(errorMessages.passwordError.emptyField);
-    expect(findInputErrorElementByName("newPassword").getText()).toEqual(errorMessages.passwordError.emptyField);
+    // TODO: Errors replaced by password hint but its not visible after form submit
+    // expect(findInputErrorElementByName("newPassword").getText()).toEqual(errorMessages.passwordError.emptyField);
     expect(findInputErrorElementByName("confirmNewPassword").getText()).toEqual(errorMessages.confirmPasswordError.emptyField);
 
     oldPasswordInput.sendKeys(users.customer.password);
     expect(findInputErrorElementByName("oldPassword").isPresent()).toBeFalsy();
     validatePasswordAndConfirmPassword(newPasswordInput, confirmPasswordInput, findInputErrorElementByName("newPassword"), findInputErrorElementByName("confirmNewPassword"), errorMessages.passwordError, errorMessages.confirmPasswordError);
+    element(by.css("password-editor .close-modal")).click();
   });
+
 });
 
 

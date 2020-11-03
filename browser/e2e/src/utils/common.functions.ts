@@ -1,15 +1,18 @@
-import { $$, browser, by, element, protractor } from "protractor";
-import { SECOND, TEN_SECONDS, THREE_SECONDS } from "./util";
+import { browser, by, element, protractor } from "protractor";
 import {
   letter,
   notAllowedNameSymbols,
-  zero,
-  validNames,
   notValidEmails,
-  users,
-  notValidPhones, notValidPasswords, tooShortPassword, validPasswords, validConfirmPassword
+  notValidPasswords,
+  notValidPhones,
+  tooShortPassword,
+  validConfirmPassword,
+  validNames,
+  validPasswords,
+  zero
 } from "../../test.data";
-import { errorMessages } from "./constants";
+import { phoneValidationCode, SECOND, THREE_SECONDS } from "./constants";
+import { userMenu } from "./util";
 
 export function clearStorage() {
   function clearStorage() {
@@ -24,7 +27,6 @@ export function login(email: string, password: string) {
   browser.sleep(THREE_SECONDS);
   // TODO: Error if redirect by clicking in menu without refresh http://git.io/v4gXM
   browser.get('/login');
-  // $$('a[href="/login"]').filter(item => item.isDisplayed()).first().click();
   element(by.name("email")).sendKeys(email);
   element(by.name("password")).sendKeys(password, protractor.Key.ENTER);
 }
@@ -37,15 +39,22 @@ export function logout() {
  * Logout user by clicking on logout button in user menu. Skipping any actions if user is not authorized.
  */
 export function logoutUI() {
-  let userMenu = element(by.css(".header .user-name"));
   userMenu.isPresent().then(value => {
     if (value) {
       userMenu.click();
       browser.sleep(SECOND);
-      element(by.css(".header .menu-footer")).click();
+      element(by.css(".header .menu-footer a")).click();
       browser.sleep(SECOND);
     }
   });
+}
+
+export function confirmEmailConfirmationHintDialog() {
+  element(by.css("email-verification-hint-dialog .confirm")).click()
+}
+
+export function closeNotificationPopup() {
+  element(by.css(".pop-up-message .close-button-wrapper mat-icon")).click()
 }
 
 export function sendKeysByOne(element, value) {
@@ -58,6 +67,11 @@ export function sendKeysByOne(element, value) {
 export function findInputErrorElementByName(name) {
   return element(by.xpath(`//input[@name="${name}"]/ancestor::cv-input-field//cv-field-error/span`));
 }
+
+export function findEditableInputErrorElementByName(name) {
+  return element(by.xpath(`//input/ancestor::cv-editable-input[@name="${name}"]//cv-field-error/span`));
+}
+
 export function validateFirstLastNameInputs(inputFirstLastNameElement, errorFirstLastNameElement, firstLastNameErrorMessage, firstLastName) {
 
   expect(errorFirstLastNameElement.getText()).toEqual(firstLastNameErrorMessage.emptyField);
@@ -128,6 +142,9 @@ export function validateRegisteredEmail (inputEmailElement, errorEmailElement, e
 }
 
 export function validatePhoneInputs (inputPhoneElement, errorPhoneElement, phoneErrorMessage) {
+  element(by.css("cv-editable-input[name='phone'] .-edit")).click();
+  browser.sleep(SECOND);
+
   inputPhoneElement.clear();
 
   notValidPhones.forEach(notValidPhone => {
@@ -137,23 +154,28 @@ export function validatePhoneInputs (inputPhoneElement, errorPhoneElement, phone
   });
 }
 
-export function validatePasswordAndConfirmPassword (inputPasswordElement, inputConfirmPasswordElement, errorPasswordElement, errorConfirmPasswordElement, passwordErrorMessage, confirmPasswordErrorMessage) {
+export function validatePasswordAndConfirmPassword(inputPasswordElement, inputConfirmPasswordElement, errorPasswordElement, errorConfirmPasswordElement, passwordErrorMessage, confirmPasswordErrorMessage) {
 
-notValidPasswords.forEach(notValidPassword => {
-  inputPasswordElement.sendKeys(notValidPassword);
-  expect(errorPasswordElement.getText()).toEqual(passwordErrorMessage.notValid);
-  inputPasswordElement.clear();
-});
+  let passwordHint = element(by.css("cv-password-hint .cv-password-hint"))
 
-  inputPasswordElement.sendKeys(tooShortPassword);
-expect(errorPasswordElement.getText()).toEqual(passwordErrorMessage.tooShort);
+  notValidPasswords.forEach(notValidPassword => {
+    inputPasswordElement.sendKeys(notValidPassword, protractor.Key.TAB);
+    browser.sleep(SECOND);
+    expect(passwordHint.getCssValue("opacity")).toEqual("1");
+    inputPasswordElement.clear();
+  });
+
+  inputPasswordElement.sendKeys(tooShortPassword, protractor.Key.TAB);
+  browser.sleep(SECOND);
+  expect(passwordHint.getCssValue("opacity")).toEqual("1");
   inputPasswordElement.clear();
 
-validPasswords.forEach(validPassword => {
-  inputPasswordElement.sendKeys(validPassword);
-  expect(errorPasswordElement.isPresent()).toBeFalsy();
-  inputPasswordElement.clear();
-});
+  validPasswords.forEach(validPassword => {
+    inputPasswordElement.sendKeys(validPassword, protractor.Key.TAB);
+    browser.sleep(SECOND);
+    expect(passwordHint.getCssValue("opacity")).toEqual("0");
+    inputPasswordElement.clear();
+  });
 
   inputConfirmPasswordElement.sendKeys(validConfirmPassword);
   expect(errorConfirmPasswordElement.getText()).toEqual(confirmPasswordErrorMessage.passwordMismatch);
@@ -161,12 +183,20 @@ validPasswords.forEach(validPassword => {
   inputConfirmPasswordElement.clear();
 
 //input valid, but different passwords in fields
-  inputPasswordElement.sendKeys(validPasswords[0]);
+  inputPasswordElement.sendKeys(validPasswords[0], protractor.Key.TAB);
   inputConfirmPasswordElement.sendKeys(validConfirmPassword);
-expect(errorPasswordElement.isPresent()).toBeFalsy();
-expect(errorConfirmPasswordElement.getText()).toEqual(confirmPasswordErrorMessage.passwordMismatch);
+  browser.sleep(SECOND);
+  expect(passwordHint.getCssValue("opacity")).toEqual("0");
+  expect(errorConfirmPasswordElement.getText()).toEqual(confirmPasswordErrorMessage.passwordMismatch);
   inputPasswordElement.clear();
   inputConfirmPasswordElement.clear();
+  browser.sleep(SECOND);
+}
 
+export function clickBackdrop() {
+  element(by.css(".backdrop")).click();
+}
 
+export function insertPhoneValidationCode(code = phoneValidationCode) {
+  element(by.name("code")).sendKeys(code)
 }

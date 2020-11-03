@@ -1,6 +1,7 @@
 package com.improver.controller;
 
 
+import com.improver.application.properties.SecurityProperties;
 import com.improver.entity.Contractor;
 import com.improver.entity.Customer;
 import com.improver.exception.AuthenticationRequiredException;
@@ -36,6 +37,7 @@ public class RegistrationController {
     @Autowired private UserSecurityService userSecurityService;
     @Autowired private ReCaptchaService reCaptchaService;
     @Autowired private RegistrationService registrationService;
+    @Autowired private SecurityProperties securityProperties;
 
 
     @PreAuthorize("isAnonymous()")
@@ -59,9 +61,11 @@ public class RegistrationController {
     @PostMapping(CUSTOMERS)
     public ResponseEntity<LoginModel> registerCustomer(@RequestBody @Valid UserRegistration customerRegistration, HttpServletRequest req, HttpServletResponse res) {
         log.info("Registration of customer = {}", customerRegistration.getEmail());
-        ReCaptchaResponse reCaptchaResponse = reCaptchaService.validate(customerRegistration.getCaptcha(), req.getRemoteAddr());
-        if(!reCaptchaResponse.isSuccess()) {
-            throw new AuthenticationRequiredException(CAPTCHA_VALIDATION_ERROR_MESSAGE);
+        if (securityProperties.isCaptchaEnabled()){
+            ReCaptchaResponse reCaptchaResponse = reCaptchaService.validate(customerRegistration.getCaptcha(), req.getRemoteAddr());
+            if(!reCaptchaResponse.isSuccess()) {
+                throw new AuthenticationRequiredException(CAPTCHA_VALIDATION_ERROR_MESSAGE);
+            }
         }
         Customer registered = registrationService.registerCustomer(customerRegistration);
         LoginModel loginModel = userSecurityService.performUserLogin(registered, req, res);
@@ -73,9 +77,11 @@ public class RegistrationController {
     @PostMapping(CONTRACTORS)
     public ResponseEntity<LoginModel> registerContractor(@RequestBody @Valid UserRegistration registration, HttpServletResponse res, HttpServletRequest req) {
         log.info("Registration of PRO = {}", registration.getEmail());
-        ReCaptchaResponse reCaptchaResponse = reCaptchaService.validate(registration.getCaptcha(), req.getRemoteAddr());
-        if(!reCaptchaResponse.isSuccess()) {
-            throw new AuthenticationRequiredException(CAPTCHA_VALIDATION_ERROR_MESSAGE);
+        if (securityProperties.isCaptchaEnabled()) {
+            ReCaptchaResponse reCaptchaResponse = reCaptchaService.validate(registration.getCaptcha(), req.getRemoteAddr());
+            if (!reCaptchaResponse.isSuccess()) {
+                throw new AuthenticationRequiredException(CAPTCHA_VALIDATION_ERROR_MESSAGE);
+            }
         }
         Contractor contractor = registrationService.registerContractor(registration);
         LoginModel loginModel = userSecurityService.performUserLogin(contractor, req, res);

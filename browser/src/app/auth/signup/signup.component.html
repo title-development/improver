@@ -164,7 +164,7 @@
             <a href="https://policies.google.com/terms">Terms of Service</a> apply.
           </div>
 
-          <re-captcha [size]="'invisible'"></re-captcha>
+          <re-captcha *ngIf="securityService.captchaEnabled" [size]="'invisible'"></re-captcha>
         </form>
       </div>
 

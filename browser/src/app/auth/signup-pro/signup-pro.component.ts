@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 
 import { SecurityService } from '../security.service';
 import { Constants } from '../../util/constants';
@@ -29,7 +29,7 @@ import { CaptchaTrackingService } from "../../api/services/captcha-tracking.serv
 export class SignupProComponent implements OnDestroy {
 
   @ViewChild(RecaptchaComponent)
-  recaptcha: RecaptchaComponent;
+  captcha: RecaptchaComponent;
   phoneValidationDialog: MatDialogRef<any>;
   agreeForSocialLogin: boolean = false;
   processing: boolean = false;
@@ -80,25 +80,39 @@ export class SignupProComponent implements OnDestroy {
 
   registerContractor() {
     this.processing = true;
-    this.recaptcha.execute();
-    this.captchaTrackingService.captchaDialogChange().subscribe(() => {
-      this.recaptcha.reset();
-      this.processing = false;
-    });
-    this.recaptcha.resolved.pipe(
-      timeoutWith(this.constants.ONE_MINUTE, throwError({error: {message: 'Timeout error please try again later'}})),
-      mergeMap((captcha: string | null) => {
-        if (!captcha) {
-          return throwError({error: {message: 'Captcha is expired please try again later'}});
-        }
-        this.user.captcha = captcha;
-        let registrationUserModel: RegistrationUserModel = clone(this.user);
-        registrationUserModel.phone = removePhoneMask(registrationUserModel.phone);
-        return this.registrationService.registerContractor(registrationUserModel);
-      }),
-      takeUntil(this.destroyed$),
-      finalize(() => this.processing = false)
-    ).subscribe((response: HttpResponse<any>) => {
+
+    let registrationUserModel: RegistrationUserModel = clone(this.user);
+    registrationUserModel.phone = removePhoneMask(registrationUserModel.phone);
+
+    let registrationObservable;
+
+    if (this.captcha) {
+      this.captcha.execute();
+      this.captchaTrackingService.captchaDialogChange().subscribe(() => {
+        this.resetCaptcha()
+        this.processing = false;
+      });
+      registrationObservable = this.captcha.resolved.pipe(
+        timeoutWith(this.constants.ONE_MINUTE, throwError({error: {message: 'Timeout error please try again later'}})),
+        mergeMap((captcha: string | null) => {
+          if (!captcha) {
+            return throwError({error: {message: 'Captcha is expired please try again later'}});
+          }
+          this.user.captcha = captcha;
+
+          return this.registrationService.registerContractor(registrationUserModel);
+        }),
+      )
+    } else {
+      registrationObservable = this.registrationService.registerContractor(registrationUserModel)
+    }
+
+    registrationObservable
+      .pipe(
+        takeUntil(this.destroyed$),
+        finalize(() => this.processing = false)
+      )
+      .subscribe((response: HttpResponse<any>) => {
       this.clearReferralCode();
       this.securityService.loginUser(JSON.parse(response.body) as LoginModel, response.headers.get('authorization'), true)
         .then((result) => {
@@ -108,12 +122,11 @@ export class SignupProComponent implements OnDestroy {
           }
         );
     }, err => {
-      this.recaptcha.reset();
-      if (err.status == 401) {
-        this.securityService.logoutFrontend();
-      }
+      this.resetCaptcha()
+      if (err.status == 401) this.securityService.logoutFrontend()
       this.popUpMessageService.showError(getErrorMessage(err));
     });
+
   }
 
   onMessageHide(event) {
@@ -155,6 +168,10 @@ export class SignupProComponent implements OnDestroy {
       .subscribe(() => {
         this.registerContractor()
       });
+  }
+
+  resetCaptcha(captcha = this.captcha) {
+    if (this.captcha) this.captcha.reset();
   }
 
 }

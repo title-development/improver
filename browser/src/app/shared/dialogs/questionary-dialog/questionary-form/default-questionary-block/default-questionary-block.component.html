@@ -223,7 +223,7 @@
 
       <button *ngIf="securityService.hasRole(Role.ANONYMOUS) && emailIsChecked && !emailIsUnique"
               cv-button class="questionary-next-button"
-              (click)="captchaValidation()" type="button" [disabled]="disabledNextAction">
+              (click)="authorize()" type="button" [disabled]="disabledNextAction">
         Next
       </button>
 
@@ -421,17 +421,17 @@
             {{defaultQuestionaryForm.get('projectLocation').value?.zip}}
           </div>
         </div>
-        <div class="project-details-group">
+        <div class="project-details-group start-expectation">
           <div class="label">When do you need your project started:</div>
           <div class="value main">{{defaultQuestionaryForm.get('startExpectation').value}}</div>
         </div>
 
-        <div class="project-details-group">
+        <div class="project-details-group notes">
           <div class="label">Notes:</div>
           <div class="value main">{{defaultQuestionaryForm.get('notes').value}}</div>
         </div>
         <ng-template ngFor let-question [ngForOf]="questionaryAnswers">
-          <div class="project-details-group">
+          <div class="project-details-group {{question.key | toclassname}}">
             <div class="label">{{question.key}}:</div>
             <div class="value">
               <ng-template ngFor let-value [ngForOf]="question.value">

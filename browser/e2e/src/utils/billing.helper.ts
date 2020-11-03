@@ -1,5 +1,4 @@
-import { browser, by, element } from "protractor";
-import { SECOND } from "./util";
+import { by, element } from "protractor";
 
 export class BillingHelper {
 

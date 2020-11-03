@@ -1,9 +1,17 @@
-import { $, $$, browser, by, element, promise, protractor } from 'protractor';
+import { $, $$, browser, by, element } from 'protractor';
 import { users } from "../../../test.data";
-import { login, logout, sendKeysByOne } from "./../../utils/common.functions";
+import { closeNotificationPopup, login, logout, sendKeysByOne } from "./../../utils/common.functions";
 import { BillingHelper } from "../../utils/billing.helper";
-import { FIVE_SECONDS, SECOND, TEN_SECONDS, THREE_SECONDS } from "../../utils/util";
-import {pageLink,  pageTitle,  headerLinkText,  billingHints,  dashboardCurrentUrl,  validPaymentCard, } from "../../utils/constants";
+import {
+  billingHints,
+  dashboardCurrentUrlPattern,
+  FIVE_SECONDS,
+  headerLinkText,
+  pageLink,
+  SECOND,
+  THREE_SECONDS,
+  validPaymentCard,
+} from "../../utils/constants";
 
 
 describe('Billing', () => {
@@ -25,12 +33,13 @@ describe('Billing', () => {
     browser.waitForAngularEnabled(false);
     element(by.partialLinkText(headerLinkText.dashboard)).click();
     browser.sleep(SECOND);
-    expect(browser.getCurrentUrl()).toEqual(dashboardCurrentUrl);
-    element(by.css(".balance-bar")).click();
-    expect(element(by.css(".account-nav-title")).getText()).toEqual(pageTitle.billing);
+    //expect(browser.getCurrentUrl()).toMatch(`^${dashboardCurrentUrlPattern}#`)
+    expect(browser.getCurrentUrl()).toMatch(new RegExp(`${dashboardCurrentUrlPattern}`))
+    browser.get(pageLink.billing);
+    expect(element(by.css(".payment-method-card .balance-part .balance-value .title")).getText()).toEqual(billingHints.balanceHeader);
     browser.sleep(SECOND);
+  });
 
-    });
   //TODO:Need contractor without payments cards
   xit('no added payment cards', () => {
     billingHelper.balanceLink();
@@ -40,14 +49,12 @@ describe('Billing', () => {
 
   //TODO:Need contractor without payments cards
   xit('add card button while purchase a lead, if any cards added', () => {
-    browser.waitForAngularEnabled(false);
     let buyFirstAvailableLead = element.all(by.buttonText('Buy')).filter(element1 => element1.isDisplayed()).first();
     buyFirstAvailableLead.click();
     browser.sleep(THREE_SECONDS);
 
     $$('.lead-actions-content-wrapper button').filter(item => item.isDisplayed()).first().click();
     //let addCardButtonText = element.all(by.css('.lead-actions-content-wrapper button')).filter(item => item.isDisplayed()).first().getText();
-    browser.waitForAngularEnabled(true);
     //expect(addCardButtonText).toEqual("Add card");
     browser.sleep(SECOND);
     let driver = browser.driver;
@@ -59,23 +66,19 @@ describe('Billing', () => {
     driver.findElement(by.tagName('[name="cvc"]')).sendKeys(validPaymentCard.cvc);
     driver.findElement(by.tagName('[name="postal"]')).sendKeys(validPaymentCard.postal);
     browser.sleep(SECOND);
-    browser.waitForAngularEnabled(false);
     browser.switchTo().defaultContent();
     $$('.payment-card-form .cv-button-flat').filter(item => item.isDisplayed()).first().click();
     browser.sleep(SECOND);
   });
 
   it('at least one card added', () => {
-
-    browser.waitForAngularEnabled(false);
     browser.sleep(SECOND);
-    expect(element(by.css('.header span.ng-star-inserted')).getText()).toEqual(billingHints.selectDefaultPaymentCard);
-
+    expect(element(by.css('.payment-method-part .header span')).getText()).toEqual(billingHints.accountBilledTo);
   });
 
   it('top up balance from valid card', () => {
 
-    let replenishBalanceButton = element(by.css('.balance-part .cv-button'));
+    let replenishBalanceButton = element(by.css('.balance-part .add-money-button'));
     replenishBalanceButton.click();
     browser.sleep(SECOND);
 
@@ -83,7 +86,7 @@ describe('Billing', () => {
 
     expect(element(by.css('.hint')).getText()).toBe(billingHints.setAmountToReplenish);
 
-    let amount = 50;
+    let amount = 200;
     let replenishWindow = element(by.css('.mat-dialog-container'));
     let replenishAmountInput = replenishWindow.element(by.name('amount'));
     replenishAmountInput.sendKeys(amount.toString());
@@ -102,11 +105,12 @@ describe('Billing', () => {
     replenishWindow = element(by.css('.mat-dialog-container'));
     let completeReplenishButton = replenishWindow.element(by.buttonText('Complete Purchase'));
     completeReplenishButton.click();
-    //menu is overlay by success message, can't open a menu for logout
-    browser.sleep(TEN_SECONDS);
+    browser.sleep(THREE_SECONDS);
+    closeNotificationPopup()
   });
 
-  it('should change default card by default link', () => {
+  // 2 cards required for test user
+  xit('should change default card by default link', () => {
 
     let defaultCardLink = element(by.css('.default-card'));
     defaultCardLink.click();
@@ -118,7 +122,8 @@ describe('Billing', () => {
     browser.sleep(FIVE_SECONDS);
   });
 
-  it('should change default card by default button', () => {
+  // 2 cards required for test user
+  xit('should change default card by default button', () => {
 
     let defaultCardButton = element(by.buttonText('Change default card'));
     defaultCardButton.click();
@@ -140,14 +145,13 @@ describe('Billing', () => {
       initialCardsCount = countBefore;
 
       //Add new card
-      let addNewCardButton = element(by.css('.cv-button-empty'));
+      let addNewCardButton = element(by.css('.add-card-button'));
       addNewCardButton.click();
 
       browser.sleep(SECOND);
       let driver = browser.driver;
       let iframe = by.css('[name="payment-card-form"] iframe');
       let iframeHtmlElement = driver.findElement(iframe);
-      browser.waitForAngularEnabled(false);
       browser.switchTo().frame(iframeHtmlElement);
       sendKeysByOne(driver.findElement(by.tagName('[name="cardnumber"]')), 4242424242424242);
       sendKeysByOne(driver.findElement(by.tagName('[name="exp-date"]')), 1122);
@@ -168,8 +172,8 @@ describe('Billing', () => {
         $$('.payment-method-part .card-button').filter(item => item.isDisplayed()).first().click();
         $('.dialog-content-wrapper .confirm').click();
         browser.sleep(SECOND);
-        // browser.waitForAngularEnabled(true);
       });
     });
   });
+
 });

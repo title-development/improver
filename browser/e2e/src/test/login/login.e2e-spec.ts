@@ -1,7 +1,7 @@
-import { browser, by, element, promise, protractor } from 'protractor';
+import { browser, by, element } from 'protractor';
 import { users } from "../../../test.data";
 import { login, logout } from "../../utils/common.functions";
-import { SECOND, WRONG_EMAIL_PASSWORD_MESSAGE } from "../../utils/util";
+import { SECOND, WRONG_EMAIL_PASSWORD_MESSAGE } from "../../utils/constants";
 
 describe('Login', () => {
 
@@ -32,7 +32,6 @@ describe('Login', () => {
 
   it('should login existed Customer', () => {
     login(customer.email, customer.password);
-    browser.waitForAngularEnabled(false);
     browser.sleep(SECOND);
     let userMenu = element(by.css(".header .user-name"));
     userMenu.isPresent().then(value => {

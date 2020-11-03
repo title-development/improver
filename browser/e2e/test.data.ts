@@ -1,5 +1,3 @@
-import { element } from "protractor";
-
 export const users = {
   customer: {
     email: 'user.improver@gmail.com',
@@ -9,20 +7,20 @@ export const users = {
   },
   newCustomer: {
     email: 'newuser@gmail.com',
-    password: '1qaz2wsx3edc',
+    password: '1qaz2wsx3EDC',
     firstName: 'Morgan\'s-Jr',
     lastName: 'Freeman\'s-Jr',
   },
   notRegisteredCustomer: {
     email: 'notregistereduser@gmail.com',
-    password: '1qaz2wsx3edc',
+    password: '1qaz2wsx3EDC',
     firstName: 'David',
     lastName: 'Hasselhof',
     phone: '3891234567'
   },
   anonymous: {
     email: 'anonymous@gmail.com',
-    password: '1qaz2wsx3edc',
+    password: '1qaz2wsx3EDC',
     firstName: 'Anthony',
     lastName: 'Hopkins',
   },
@@ -33,7 +31,7 @@ export const users = {
   newContractor: {
     email: 'newcontractor@gmail.com',
     phone: '3891234567',
-    password: '1qaz2wsx3edc',
+    password: '1qaz2wsx3EDC',
     firstName: 'Morgan',
     lastName: 'Freeman',
     company: {
@@ -69,10 +67,10 @@ export const notValidEmails = ["abc", "abc@", "abc@gmail", "abc@gmail.", "abc@gm
 export const notValidPhones = ["0891234567", "1891234567", "289123456", "0000000000"];
 
 //TODO: create get random letter
-export const notValidPasswords = ["aaaaaaaa", "123456789"];
+export const notValidPasswords = ["aaaaaaaa", "123456789", "aaaa1234"];
 export const tooShortPassword = "1aaaaaa";
-export const validPasswords = ["aaaaaaa2", "m2=-()*&?^:$#@!"];
-export const validConfirmPassword = "bbbbbbb2";
+export const validPasswords = ["aaaaaaa2A", "Sm2=-()*&?^:$#@!"];
+export const validConfirmPassword = "bbbbbbb2B";
 
 export const questionaries = {
   withQuestionary: {
@@ -93,7 +91,7 @@ export const questionaries = {
 
     }
   },
-  projectDetails: 'I want to install tile in my new home. Tile is very expensive so I need real professionals'
+  projectDetails: 'I want the project to be done quickly and with high quality. I need real professionals'
 };
 
 export const unsupportedArea = {

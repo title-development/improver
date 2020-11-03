@@ -119,7 +119,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     if (this.securityService.hasRole(Role.ANONYMOUS) && !this.emailIsChecked) {
       this.checkEmail(this.defaultQuestionaryForm.get('customerPersonalInfo.email').value)
     } else if (this.securityService.hasRole(Role.ANONYMOUS) && this.emailIsChecked && !this.emailIsUnique){
-      this.captchaValidation()
+      this.authorize()
     } else if ((this.securityService.hasRole(Role.CUSTOMER) || this.emailIsChecked && this.emailIsUnique) && this.personalInfoRequired()) {
       this.nextQuestion('customerPersonalInfo', !this.questionaryControlService.customerHasPhone && !this.phoneValid ? this.validatePhone : undefined)
     }
@@ -169,7 +169,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     }
 
     this.emailIsChecking = true;
-    this.captcha.reset();
+    this.resetCaptcha()
     // TODO: change this
       this.userService.isEmailFree(email)
         .pipe(finalize(() => {
@@ -361,7 +361,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     this.questionaryControlService.updateQuestionaryParams(undefined, true)
 
     if(!this.securityService.isAuthenticated()) {
-      this.captchaValidation()
+      this.authorize()
     }
 
   }
@@ -370,19 +370,30 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     return (this.securityService.hasRole(Role.ANONYMOUS) || (this.securityService.hasRole(Role.CUSTOMER) && !this.questionaryControlService.customerHasPhone))
   }
 
-  captchaValidation() {
-    this.captcha.execute();
+  authorize() {
+    if (this.captcha) {
+      this.captcha.execute()
+    } else {
+      this.handleAnonymousUser();
+    }
+
     if(this.emailIsChecked && !this.emailIsUnique) {
       this.loginProcessing = true;
     } else {
       this.registrationProcessing = true;
     }
 
-    this.captchaTrackingService.captchaDialogChange().subscribe( () => {
-      this.captcha.reset();
+    if (this.captcha) {
+      this.captchaTrackingService.captchaDialogChange().subscribe( () => {
+        this.resetCaptcha()
+        this.loginProcessing = false;
+        this.registrationProcessing = false;
+      })
+    } else {
       this.loginProcessing = false;
       this.registrationProcessing = false;
-    })
+    }
+
   }
 
   getQuestionaryAnswers() {
@@ -404,14 +415,18 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
 
   resolveCaptcha(captcha) {
     if(captcha) {
-      if(this.emailIsChecked && this.emailIsUnique) {
-        this.register(captcha)
-      } else {
-        this.loginCustomer(captcha);
-      }
+      this.handleAnonymousUser(captcha)
     } else {
       this.loginProcessing = false;
       this.registrationProcessing = false
+    }
+  }
+
+  handleAnonymousUser(captcha?) {
+    if(this.emailIsChecked && this.emailIsUnique) {
+      this.register(captcha)
+    } else {
+      this.loginCustomer(captcha);
     }
   }
 
@@ -421,7 +436,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     this.securityService.sendLoginRequest(credentials)
       .pipe(
         takeUntil(this.destroyed$),
-        finalize(() => this.captcha.reset())
+        finalize(() => this.resetCaptcha())
       )
       .subscribe(response => {
         let loginModel: LoginModel = response.body as LoginModel;
@@ -464,7 +479,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     this.registrationService.registerCustomer(registrationUserModel)
       .pipe(
         takeUntil(this.destroyed$),
-        finalize(() => this.captcha.reset())
+        finalize(() => this.resetCaptcha())
       )
       .subscribe(response => {
         this.securityService.loginUser(response.body as LoginModel, response.headers.get('authorization'), false);

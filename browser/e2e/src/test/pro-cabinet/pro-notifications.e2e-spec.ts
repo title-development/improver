@@ -1,16 +1,13 @@
-import { BillingHelper } from "../../utils/billing.helper";
 import { users } from "../../../test.data";
-import { login, logout } from "../../utils/common.functions";
+import { clickBackdrop, login, logout } from "../../utils/common.functions";
 import { browser, by, element } from "protractor";
-import { SECOND } from "../../utils/util";
-import { menuLinkText, pageTitle } from "../../utils/constants";
+import { SECOND } from "../../utils/constants";
 
-describe('Notifications Page', () => {
+describe('Notifications Pro', () => {
 
   let contractor = users.contractor;
 
   beforeEach(() => {
-
     login(contractor.email, contractor.password);
     browser.sleep(SECOND);
   });
@@ -19,19 +16,12 @@ describe('Notifications Page', () => {
     logout();
   });
 
-  it('should display notifications title', () => {
-
-    let userMenu = element(by.css(".header .user-name"));
-    userMenu.isPresent().then(value => {
-      if (value) {
-        userMenu.click();
-        browser.sleep(SECOND);
-        element(by.linkText(menuLinkText.notifications)).click();
-        browser.sleep(SECOND);
-      }
-    });
-
-    expect(element(by.css(".account-nav-title")).getText()).toEqual(pageTitle.notifications);
+  it('should display notifications popup', () => {
+    element(by.css(".notification-bar button")).click();
+    browser.sleep(SECOND);
+    expect(element(by.css("notifications-popup")).isPresent()).toEqual(true)
+    clickBackdrop();
+    browser.sleep(SECOND);
   });
 
 });

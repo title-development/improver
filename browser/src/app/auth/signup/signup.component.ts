@@ -20,7 +20,7 @@ import { CaptchaTrackingService } from "../../api/services/captcha-tracking.serv
 
 export class SignupComponent implements OnDestroy {
   @ViewChild(RecaptchaComponent)
-  recaptcha: RecaptchaComponent;
+  captcha: RecaptchaComponent;
 
   user: RegistrationUserModel = {
     email: '',
@@ -54,37 +54,29 @@ export class SignupComponent implements OnDestroy {
 
   registerCustomer() {
     this.registrationProcessing = true;
-    this.recaptcha.execute();
-    this.captchaTrackingService.captchaDialogChange().subscribe(() => {
-      this.recaptcha.reset();
-      this.registrationProcessing = false;
-    });
-    this.recaptcha.resolved.pipe(
-      timeoutWith(this.constants.ONE_MINUTE, throwError({error: {message: 'Timeout error please try again later'}})),
-      mergeMap((captcha: string | null) => {
-        if (!captcha) {
-          return throwError({error: {message: 'Captcha is expired please try again later'}});
-        }
-        this.user.captcha = captcha;
-        return this.registrationService
-          .registerCustomer(this.user);
-      }),
-      takeUntil(this.destroyed$),
-    )
-      .subscribe(
-        response => {
-          this.registrationHelper.email = this.user.email;
-          this.securityService.loginUser(response.body as LoginModel, response.headers.get('authorization'), false);
-          this.router.navigate(['/signup/email-verification-hint'])
-        },
-        err => {
-          this.recaptcha.reset();
-          this.registrationProcessing = false;
-          console.error(err);
-          this.showMessage = true;
-          this.messageText = err.message;
-          this.messageType = 'ERROR';
-        });
+    if (this.captcha) {
+      this.captcha.execute();
+      this.captchaTrackingService.captchaDialogChange().subscribe(() => {
+        this.resetCaptcha()
+        this.registrationProcessing = false;
+      });
+      this.captcha.resolved.pipe(
+        timeoutWith(this.constants.ONE_MINUTE, throwError({error: {message: 'Timeout error please try again later'}})),
+        mergeMap((captcha: string | null) => {
+          if (!captcha) {
+            return throwError({error: {message: 'Captcha is expired please try again later'}});
+          }
+          this.user.captcha = captcha;
+          return this.registrationService
+            .registerCustomer(this.user);
+        }),
+        takeUntil(this.destroyed$),
+      ).subscribe(this.handleRegistration, this.handleRegistrationError);
+    } else {
+      this.registrationService
+        .registerCustomer(this.user)
+        .subscribe(this.handleRegistration, this.handleRegistrationError)
+    }
   }
 
   ngOnDestroy(): void {
@@ -94,6 +86,27 @@ export class SignupComponent implements OnDestroy {
 
   onMessageHide(event) {
     this.showMessage = event;
+  }
+
+  resetCaptcha(captcha = this.captcha) {
+    if(captcha) {
+      captcha.reset()
+    }
+  }
+
+  handleRegistration = response => {
+    this.registrationHelper.email = this.user.email;
+    this.securityService.loginUser(response.body as LoginModel, response.headers.get('authorization'), false);
+    this.router.navigate(['/signup/email-verification-hint'])
+  }
+
+  handleRegistrationError = err => {
+    this.resetCaptcha()
+    this.registrationProcessing = false;
+    console.error(err);
+    this.showMessage = true;
+    this.messageText = err.message;
+    this.messageType = 'ERROR';
   }
 
 }

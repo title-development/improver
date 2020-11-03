@@ -1,5 +1,5 @@
 import { browser, by, element, protractor } from "protractor";
-import { SECOND } from "./util";
+import { THREE_SECONDS } from "./constants";
 
 export class QuestionaryHelper {
 
@@ -51,9 +51,9 @@ export class QuestionaryHelper {
       streetAddress, protractor.Key.TAB,
       city, protractor.Key.TAB,
       state);
-    browser.sleep(SECOND);
+    browser.sleep(THREE_SECONDS);
     browser.actions().sendKeys(protractor.Key.ENTER, protractor.Key.TAB, zip).perform();
-    browser.sleep(SECOND);
+    browser.sleep(THREE_SECONDS);
     this.next();
   }
 
@@ -61,12 +61,22 @@ export class QuestionaryHelper {
     element(by.css(".address.apply")).click();
   }
 
-  public personalInfo(firstName: string, lastName: string, email: string, phoneNumber: string) {
+  public personalInfo(firstName: string, lastName: string, phoneNumber: string) {
     element(by.name("firstName")).sendKeys(
       firstName, protractor.Key.TAB,
       lastName, protractor.Key.TAB,
-      email, protractor.Key.TAB,
       phoneNumber, protractor.Key.TAB);
     this.next();
   }
+
+  public setEmailForAnonymous(email: string) {
+    element(by.name("email")).sendKeys(email)
+    this.next();
+  }
+
+  public setPassword(password: string) {
+    element(by.name("password")).sendKeys(password)
+    this.next();
+  }
+
 }

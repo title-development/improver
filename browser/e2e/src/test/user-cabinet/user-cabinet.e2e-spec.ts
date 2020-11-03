@@ -1,7 +1,7 @@
-import { $, $$, browser, by, element, promise, protractor } from 'protractor';
-import { login, logout } from "../../utils/common.functions";
+import { $, $$, browser, by, element } from 'protractor';
+import { login } from "../../utils/common.functions";
 import { users } from "../../../test.data";
-import { SECOND } from "../../utils/util";
+import { SECOND } from "../../utils/constants";
 
 xdescribe('User cabinet', () => {
 
