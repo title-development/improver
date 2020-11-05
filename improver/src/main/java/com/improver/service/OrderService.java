@@ -59,70 +59,98 @@ public class OrderService {
     }
 
 
-    @Deprecated
-    private Project processOrder(Order order, Customer customer, Project toUpdate) {
-        UserAddress savedAddress = null;
-        Project project = toUpdate != null ? toUpdate
-            : new Project().setLead(false).setStatus(null).setCreated(ZonedDateTime.now());
+    /**
+     * Validates the order (address, answers, etc) and saves the project with UNCOMPLETED status and isLead=true.
+     *
+     * Flow:
+     * Project doesn't go to the market, and no emails send.
+     * If address is not fully valid, project saved with suggested address.
+     * Saves customer phone when order passes the validation.
+     */
+    public OrderValidationResult processOrder(Order order, Customer customer) {
+        Project project;
+        boolean isNewOrder = false;
+        OrderValidationException thrownException = null;
 
-        if (toUpdate == null || !toUpdate.getLocation().equalsIgnoreCase(order.getAddress())) {
-            // 1. Address
+        if (null != order.getProjectId()) {
+            project = projectRepository.findByIdAndCustomerId(order.getProjectId(), customer.getId())
+                .orElseThrow(() -> new ValidationException("Cannot update not existing order"));
+        } else {
+            project = new Project().setLead(false)
+                .setStatus(UNCOMPLETED)
+                .setCreated(ZonedDateTime.now())
+                .setCustomer(customer);
+            isNewOrder = true;
+        }
+
+        // 1. Address
+        if (isNewOrder || !project.getLocation().equalsIgnoreCase(order.getAddress())) {
             if (order.getAddress().getId() != null) {
-                savedAddress = userAddressRepository.findByIdAndCustomer(order.getAddress().getId(), customer)
+                UserAddress savedAddress = userAddressRepository.findByIdAndCustomer(order.getAddress().getId(), customer)
                     .orElseThrow(() -> new ValidationException("User address not exist"));
                 project.setLocation(savedAddress);
             } else {
-                // new Address
+                // 1.1. New UserAddress
+                ValidatedLocation validatedAddress;
                 try {
-                    ValidatedLocation validatedAddress = locationService.validateProjectAddress(order.getAddress());
-
-                    //TODO: later
-                    if (!validatedAddress.isValid()) {
-                        log.info("Order address seem not be valid");
-                        throw new OrderValidationException(validatedAddress);
-                    }
-                    project.setLocation(validatedAddress.getSuggested());
-                    //
-
+                    validatedAddress = locationService.validateProjectAddress(order.getAddress());
                 } catch (ThirdPartyException e) {
                     log.error("Could not validate Address", e.getCause());
                     throw new InternalServerException("Address is not validated due to Shippo error");
                 }
-                Centroid centroid = servedZipRepository.findByZip(order.getAddress().getZip())
-                    .orElseThrow(() -> new ValidationException(order.getAddress().getZip() + " ZIP Code is not in service area"))
-                    .getCentroid();
-                project.setCentroid(centroid);
+                if (validatedAddress.isValid()) {
+                    project.setLocation(order.getAddress());
+                } else {
+                    thrownException = new OrderValidationException(validatedAddress);
+                    if (validatedAddress.getSuggested() == null){
+                        throw thrownException;
+                    }
+                    // 1.2. Pre-save order with suggested address
+                    log.info("Order address seem not be valid. Using suggested address");
+                    project.setLocation(validatedAddress.getSuggested());
+                }
             }
+
+            Centroid centroid = servedZipRepository.findByZip(project.getLocation().getZip())
+                .orElseThrow(() -> new ValidationException(project.getLocation().getZip() + " ZIP Code is not in service area"))
+                .getCentroid();
+            project.setCentroid(centroid);
         }
 
-
-        // 2 Service
+        // 2. Service / Questionary
         ServiceType serviceType = serviceTypeRepository.findById(order.getServiceId())
             .orElseThrow(() -> new ValidationException("ServiceType id = " + order.getServiceId() + " not exist"));
-
-        // 3 Questionary
-        List<Order.QuestionAnswer> validated = null;
+        List<Order.QuestionAnswer> validatedAnwsers = null;
         Questionary questionary = serviceType.getQuestionary();
         if (questionary != null) {
             if (order.getQuestionary() != null) {
-                validated = validateQuestionary(order.getQuestionary(), questionary);
+                validatedAnwsers = validateQuestionary(order.getQuestionary(), questionary);
             } else {
                 throw new ValidationException("Questionary is empty");
             }
         }
-        order.setQuestionary(validated);
 
-        return new Project()
-            .setLead(false)
-            .setServiceType(serviceType)
+        // 3. Save customer phone if needed
+        if (order.getBaseLeadInfo().getPhone() != null){
+            customer.setInternalPhone(order.getBaseLeadInfo().getPhone());
+            customerRepository.save(customer);
+        }
+
+        // 4. Save / Update
+        project.setServiceType(serviceType)
             .setServiceName(serviceType.getName())
             .setLeadPrice(serviceType.getLeadPrice())
-            .setLocation(savedAddress != null ? savedAddress : order.getAddress())
             .setStartDate(order.getBaseLeadInfo().getStartExpectation())
             .setNotes(order.getBaseLeadInfo().getNotes())
-            .setDetails(order.getQuestionary() != null ? SerializationUtil.toJson(order.getQuestionary()) : null )
-            .setStatus(UNCOMPLETED)
-            .setCreated(ZonedDateTime.now());
+            .setDetails(validatedAnwsers != null ? SerializationUtil.toJson(order.getQuestionary()) : null)
+            .setUpdated(ZonedDateTime.now());
+
+        Project lead = projectRepository.save(project);
+        if (thrownException != null) {
+            thrownException.getValidationResult().setProjectId(lead.getId());
+            throw thrownException;
+        }
+        return OrderValidationResult.valid(lead.getId(), lead.getLocation().getIsAddressManual());
     }
 
 

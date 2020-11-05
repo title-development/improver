@@ -52,7 +52,7 @@ public class ProjectController {
     @PutMapping
     public ResponseEntity<OrderValidationResult> prepareOrder(@RequestBody @Valid Order order) {
         Customer customer = userSecurityService.currentCustomer();
-        OrderValidationResult result = orderService.prepareOrder(order, customer);
+        OrderValidationResult result = orderService.processOrder(order, customer);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

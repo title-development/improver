@@ -365,6 +365,7 @@ public class TestDataInitializer {
     }
 
 
+    @Deprecated
     private void initCompanies() {
 
         List<Trade> trades = tradeRepository.findByIdIn(Arrays.asList(1L, 5L, 7L));
