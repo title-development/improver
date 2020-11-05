@@ -56,16 +56,19 @@
   top: 32px;
 }
 
-::ng-deep cv-radio-group .input-holder {
-  display: block !important;
+.cancel-project-form {
+  ::ng-deep cv-radio-group .input-holder {
+    display: block !important;
 
-  cv-radio {
-    margin-bottom: 16px;
-    align-items: center;
-    .radio-label {
-      margin-left: 4px;
+    cv-radio {
+      margin-bottom: 16px;
+
+      .radio-label {
+        margin-left: 8px;
+      }
     }
-  }
 
+  }
 }
+
 
