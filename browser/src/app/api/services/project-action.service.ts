@@ -493,11 +493,12 @@ export class ProjectActionService {
 
   resubmitOrder(projectId: number) {
     this.projectService.submitProject(projectId)
-      .subscribe(response => this.projectUpdateSubject.next());
+      .subscribe(res => this.projectUpdated());
   }
 
   cancelOrder(projectId: number) {
-    this.projectService.deleteProject(projectId).subscribe();
+    this.projectService.deleteProject(projectId)
+      .subscribe(() => this.projectUpdated());
     this.router.navigate(["/my/projects"])
   }
 }
