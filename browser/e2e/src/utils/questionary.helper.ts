@@ -1,5 +1,5 @@
 import { browser, by, element, protractor } from "protractor";
-import { THREE_SECONDS } from "./constants";
+import { SECOND, THREE_SECONDS } from "./constants";
 
 export class QuestionaryHelper {
 
@@ -61,6 +61,10 @@ export class QuestionaryHelper {
     element(by.css(".address.apply")).click();
   }
 
+  public applySavedUserAddress(index: number) {
+    this.radio(index);
+  }
+
   public personalInfo(firstName: string, lastName: string, phoneNumber: string) {
     element(by.name("firstName")).sendKeys(
       firstName, protractor.Key.TAB,
@@ -79,4 +83,7 @@ export class QuestionaryHelper {
     this.next();
   }
 
+  newAddressButtonClick() {
+    element(by.css(".new-address-button")).click()
+  }
 }

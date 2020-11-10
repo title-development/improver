@@ -239,14 +239,14 @@
 
   <div #defaultQuestion class="form-element-wrapper text-input-wrapper"
        [formGroupName]="'defaultQuestionaryGroup'"
-       *ngIf="questionaryControlService.currentQuestionIndex == questionaryControlService.questionaryLength + 2 + (personalInfoRequired() ? 1 : 0)">
+       *ngIf="questionaryControlService.currentQuestionIndex == questionaryControlService.questionaryLength + 2 + (personalInfoRequired() ? 1 : 0) && !loadingUserAddresses">
     <h2 class="question-title">Where do you need a Professional?</h2>
 
-    <div class="user-address-wrapper" *ngIf="userAddress.length > 0 && !canEnterManualAddress">
+    <div class="user-address-wrapper" *ngIf="userAddresses.length > 0 && !canEnterManualAddress">
 
       <perfect-scrollbar>
         <cv-radio-group formGroupName="projectLocation"  required>
-          <cv-radio class="address-item-wrapper" *ngFor="let address of userAddress; let i=index"
+          <cv-radio class="address-item-wrapper" *ngFor="let address of userAddresses; let i=index"
                     [value]="address"
                     [checked]="defaultQuestionaryForm.get('projectLocation').value == address"
                     [isDefaultValue]="i == 0 && !isAddressSelected"
@@ -256,15 +256,17 @@
           </cv-radio>
         </cv-radio-group>
       </perfect-scrollbar>
-      <div class="question-general-error">
-          <span class="mat-error"
-                *ngIf="defaultQuestionaryForm.get('projectLocation').errors?.required">Is required</span>
-      </div>
 
       <button class="new-address-button" (click)="clearUserAddressForm()" cv-button-empty>Enter new address</button>
+
+      <div class="location-error-wrapper">
+        <span *ngIf="locationValidation">{{locationValidation}}</span>
+        <span class="mat-error" *ngIf="defaultQuestionaryForm.get('projectLocation').errors?.required">Is required</span>
+      </div>
+
     </div>
 
-    <div *ngIf="userAddress.length == 0 || canEnterManualAddress" class="text-input-group fill-flex-space"
+    <div *ngIf="userAddresses.length == 0 || canEnterManualAddress" class="text-input-group fill-flex-space"
          [formGroupName]="'projectLocation'"
          [cvSpinner]="processingAddressValidation"
          [cvSpinnerSize]="40"

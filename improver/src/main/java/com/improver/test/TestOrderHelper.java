@@ -13,6 +13,25 @@ public class TestOrderHelper {
     private static List<List<Order.QuestionAnswer>> answers = new ArrayList<>();
     private static List<Order.BaseLeadInfo> details = new ArrayList<>();
     private static List<Location> address = new ArrayList<>();
+    private static List<Location> validAddresses = new ArrayList<>();
+
+    static {
+        validAddresses.add(new Location()
+            .setState("NY")
+            .setCity("New York")
+            .setStreetAddress("307 E 14th St")
+            .setZip("10003"));
+        validAddresses.add(new Location()
+            .setState("NY")
+            .setCity("New York")
+            .setStreetAddress("150 W 17th St")
+            .setZip("10011"));
+        validAddresses.add(new Location()
+            .setState("NY")
+            .setCity("New York")
+            .setStreetAddress("234 W 42nd St")
+            .setZip("10036"));
+    }
 
     static {
         address.add(new Location()
@@ -161,6 +180,9 @@ public class TestOrderHelper {
         return new Order().setAddress(new UserAddressModel(getRandomLocation(), 0)).setBaseLeadInfo(getRandomDetails());
     }
 
+    public static List<Location> getValidLocations() {
+        return validAddresses;
+    }
 
     private static Order.BaseLeadInfo getRandomDetails() {
         return details.get(new Random().nextInt(details.size()));

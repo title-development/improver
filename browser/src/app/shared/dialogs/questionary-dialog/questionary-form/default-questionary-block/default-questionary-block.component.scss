@@ -464,3 +464,10 @@ cv-radio-group {
     width: calc(100% - 10px);
   }
 }
+
+.location-error-wrapper {
+  color: $red;
+  font-size: 14px;
+  text-align: center;
+  margin: 12px 0;
+}

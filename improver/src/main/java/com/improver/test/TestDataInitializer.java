@@ -3,6 +3,7 @@ package com.improver.test;
 import com.improver.entity.*;
 import com.improver.exception.NotFoundException;
 import com.improver.exception.ValidationException;
+import com.improver.model.UserAddressModel;
 import com.improver.model.in.Order;
 import com.improver.repository.*;
 import com.improver.service.ReviewService;
@@ -75,6 +76,7 @@ public class TestDataInitializer {
     @Autowired private TestPaymentAccountResolver testPaymentAccountResolver;
     @Autowired private ServedZipRepository servedZipRepository;
     @Autowired private TestQuestionaryGenerator testQuestionaryGenerator;
+    @Autowired private UserAddressRepository userAddressRepository;
 
     private static final String TILE_INSTALLATION = "Tile Installation";
     private static final String ARCHITECTURAL_SERVICES = "Architectural Services";
@@ -211,7 +213,9 @@ public class TestDataInitializer {
         return projectRepository.save(project);
     }
 
-
+    private void saveUserAddress(Customer customer, Location location) {
+        userAddressRepository.save(new UserAddress(customer, location));
+    }
 
 
 
@@ -294,21 +298,25 @@ public class TestDataInitializer {
 
     }
 
-    private void createCustomer(String email, String firstName, String lastName, String phone, String iconUrl) {
+    private Customer createCustomer(String email, String firstName, String lastName, String phone, String iconUrl) {
         Customer customer = new Customer(firstName, lastName, email, DEMO_PASS, phone)
             .setIconUrl(iconUrl)
             .setActivated(true);
-        customerRepository.save(customer);
+        return customerRepository.save(customer);
     }
 
     private void initUsers() {
 
-        createCustomer(CUST_1, "John", "Down", DEMO_PHONE, saveImage("test-data/icons/user-icon-1.jpg"));
+        Customer customer = createCustomer(CUST_1, "John", "Down", DEMO_PHONE, saveImage("test-data/icons/user-icon-1.jpg"));
         createCustomer(CUST_2, "Bruce", "Willis", DEMO_PHONE, saveImage("test-data/icons/user-icon-2.jpg"));
         createCustomer(CUST_3, "Jim", "Beam", DEMO_PHONE, saveImage("test-data/icons/user-icon-3.jpg"));
         createCustomer(CUST_4, "Clark", "Kent", DEMO_PHONE, null);
         createCustomer(CUST_5, "Victoria", "Secret", DEMO_PHONE, null);
         createCustomer(CUST_6, "Sara-Michel", "Hellar", DEMO_PHONE, null);
+
+       TestOrderHelper.getValidLocations().forEach( location -> {
+           saveUserAddress(customer, location);
+       });
 
         Contractor.NotificationSettings defaultProNotificationSettings = new Contractor.NotificationSettings();
         defaultProNotificationSettings.setReceiveNewSubscriptionLeadsSms(false);

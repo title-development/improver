@@ -74,7 +74,8 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
   loginMessageText;
   loginMessageType;
   showLoginMessage = false;
-  userAddress: UserAddress[] = [];
+  userAddresses: UserAddress[] = [];
+  loadingUserAddresses: boolean = false;
   canEnterManualAddress: boolean = false;
   isAddressSelected: boolean = false;
 
@@ -110,9 +111,14 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
 
     securityService.onUserInit.subscribe(() => {
       this.phoneValid = false;
+      if (this.userAddresses.length == 0) {
+        this.loadUserAddress();
+      }
     });
 
-    this.loadUserAddress();
+    if (securityService.isAuthenticated()) {
+      this.loadUserAddress();
+    }
   }
 
   submitUserInfo() {
@@ -157,8 +163,11 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
   }
 
   loadUserAddress() {
-    this.userAddressService.getUserAddress().subscribe((userAddress: UserAddress[]) => {
-      this.userAddress = userAddress;
+    this.loadingUserAddresses = true;
+    this.userAddressService.getUserAddress()
+      .pipe(finalize(() => this.loadingUserAddresses = false))
+      .subscribe((userAddress: UserAddress[]) => {
+      this.userAddresses = userAddress;
     }, error => console.log(error))
   }
 

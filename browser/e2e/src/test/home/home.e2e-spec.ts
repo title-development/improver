@@ -57,7 +57,7 @@ describe('Home Page', () => {
     browser.sleep(SECOND);
     insertPhoneValidationCode();
     questionaryHelper.next();
-    browser.sleep(SECOND);
+    browser.sleep(THREE_SECONDS);
     questionaryHelper.address(partlyValidLocation.streetAddress, partlyValidLocation.city, partlyValidLocation.state, partlyValidLocation.zip);
     browser.sleep(THREE_SECONDS);
     questionaryHelper.addressApplySuggested();
@@ -84,6 +84,8 @@ describe('Home Page', () => {
     questionaryHelper.setEmailForAnonymous(users.customer.email);
     browser.sleep(SECOND);
     questionaryHelper.setPassword(users.customer.password)
+    browser.sleep(THREE_SECONDS);
+    questionaryHelper.newAddressButtonClick();
     browser.sleep(SECOND);
     questionaryHelper.address(partlyValidLocation.streetAddress, partlyValidLocation.city, partlyValidLocation.state, partlyValidLocation.zip);
     browser.sleep(THREE_SECONDS);
@@ -118,6 +120,8 @@ describe('Home Page', () => {
     questionaryHelper.radio(1);
     questionaryHelper.radio(2);
     questionaryHelper.textarea(questionaries.projectDetails);
+    questionaryHelper.newAddressButtonClick();
+    browser.sleep(SECOND);
     questionaryHelper.address(partlyValidLocation.streetAddress, partlyValidLocation.city, partlyValidLocation.state, partlyValidLocation.zip);
     browser.sleep(THREE_SECONDS);
     questionaryHelper.addressApplySuggested();
@@ -144,9 +148,59 @@ describe('Home Page', () => {
 
     questionaryHelper.radio(1);
     questionaryHelper.textarea(questionaries.projectDetails);
+    questionaryHelper.newAddressButtonClick();
+    browser.sleep(SECOND);
     questionaryHelper.address(partlyValidLocation.streetAddress, partlyValidLocation.city, partlyValidLocation.state, partlyValidLocation.zip);
     browser.sleep(THREE_SECONDS);
     questionaryHelper.addressApplySuggested();
+    browser.sleep(THREE_SECONDS);
+    expect(element(by.css(".notes .value")).getText()).toEqual(questionaries.projectDetails)
+    questionaryHelper.next();
+    browser.sleep(SECOND);
+    closeNotificationPopup()
+  });
+
+  it('should order service with saved user addresses', () => {
+    let mainSearchForm = element(by.css(".main-search-form"));
+    let mainSearchInput = mainSearchForm.element(by.name("search"));
+
+    login(users.customer.email, users.customer.password);
+    browser.sleep(SECOND);
+
+    browser.get('/');
+    browser.sleep(SECOND);
+
+    mainSearchInput.sendKeys(questionaries.withoutQuestionary.name);
+    mainSearchInput.sendKeys(protractor.Key.TAB, partlyValidLocation.zip, protractor.Key.ENTER);
+    browser.sleep(SECOND);
+
+    questionaryHelper.radio(1);
+    questionaryHelper.textarea(questionaries.projectDetails);
+    questionaryHelper.applySavedUserAddress(2)
+    browser.sleep(THREE_SECONDS);
+    expect(element(by.css(".notes .value")).getText()).toEqual(questionaries.projectDetails)
+    questionaryHelper.next();
+    browser.sleep(SECOND);
+    closeNotificationPopup()
+  });
+
+  it('should order service with default saved user addresses', () => {
+    let mainSearchForm = element(by.css(".main-search-form"));
+    let mainSearchInput = mainSearchForm.element(by.name("search"));
+
+    login(users.customer.email, users.customer.password);
+    browser.sleep(SECOND);
+
+    browser.get('/');
+    browser.sleep(SECOND);
+
+    mainSearchInput.sendKeys(questionaries.withoutQuestionary.name);
+    mainSearchInput.sendKeys(protractor.Key.TAB, partlyValidLocation.zip, protractor.Key.ENTER);
+    browser.sleep(SECOND);
+
+    questionaryHelper.radio(1);
+    questionaryHelper.textarea(questionaries.projectDetails);
+    questionaryHelper.next()
     browser.sleep(THREE_SECONDS);
     expect(element(by.css(".notes .value")).getText()).toEqual(questionaries.projectDetails)
     questionaryHelper.next();
@@ -192,6 +246,8 @@ describe('Home Page', () => {
     browser.sleep(SECOND);
     questionaryHelper.radio(1);
     questionaryHelper.textarea(questionaries.projectDetails);
+    questionaryHelper.newAddressButtonClick();
+    browser.sleep(SECOND);
     questionaryHelper.address(partlyValidLocation.streetAddress, partlyValidLocation.city, partlyValidLocation.state, partlyValidLocation.zip);
     browser.sleep(THREE_SECONDS);
     questionaryHelper.addressApplySuggested();
