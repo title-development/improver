@@ -1,13 +1,16 @@
 package com.improver.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
 
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Accessors(chain = true)
 @Entity(name = "areas")
 @Table(
@@ -25,4 +28,9 @@ public class Area {
     @ManyToOne
     @JoinColumn(name = "company_id")
     private Company company;
+
+    public Area(String zip, Company company) {
+        this.zip = zip;
+        this.company = company;
+    }
 }

@@ -2,6 +2,7 @@ package com.improver.entity;
 
 import com.improver.model.in.registration.CompanyDetails;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
@@ -109,7 +110,6 @@ public class Company {
     @ToString.Exclude
     @OneToOne(mappedBy = "company", fetch = FetchType.LAZY)
     private CompanyConfig companyConfig;
-
 
 
     public static Company of(CompanyDetails details, String iconUrl, ZonedDateTime created){
