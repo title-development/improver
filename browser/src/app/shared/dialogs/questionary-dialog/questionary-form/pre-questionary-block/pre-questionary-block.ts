@@ -76,7 +76,6 @@ export class PreQuestionaryBlock implements OnInit, AfterViewInit {
 
     if (this.questionaryControlService.trade) {
       this.filteredServices = this.services = this.questionaryControlService.trade.services;
-      console.log(this.questionaryControlService.trade.services)
       this.searchHolder = new SearchHolder<ServiceType>(this.services)
     }
 

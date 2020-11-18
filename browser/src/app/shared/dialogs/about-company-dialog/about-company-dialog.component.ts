@@ -50,7 +50,6 @@ export class AboutCompanyDialogComponent implements OnInit, OnDestroy {
 				.subscribe(
 					companyProfile => {
 						this.companyInfo = companyProfile;
-						console.log(this.companyInfo);
 						this.spinnerProcessing = false;
 					},
 					err => {

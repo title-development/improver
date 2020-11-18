@@ -1,15 +1,14 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  EventEmitter,
-  HostListener,
-  Input,
-  OnInit,
-  Output,
-  Renderer2,
-} from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, Renderer2, } from '@angular/core';
 import { FileItem, FileLikeObject, FileUploader } from 'ng2-file-upload';
-import { ProjectService } from '../../api/services/project.service';
+import { HttpClient } from '@angular/common/http';
+import { Subject } from 'rxjs/internal/Subject';
+import { Observable } from 'rxjs/internal/Observable';
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { PopUpMessageService } from "../../../../../api/services/pop-up-message.service";
+import { SecurityService } from "../../../../../auth/security.service";
+import { dialogsMap } from "../../../dialogs.state";
+import { confirmDialogConfig } from "../../../dialogs.configs";
+import { SystemMessageType } from "../../../../../model/data-model";
 import {
   FILE_MIME_TYPES,
   IMAGE_UPLOADER_QUERY_LIMIT,
@@ -17,40 +16,26 @@ import {
   UPLOAD_IMAGE_COMPRESS_RATIO,
   UPLOAD_IMAGE_MAX_HEIGHT,
   UPLOAD_IMAGE_MAX_WIDTH
-} from '../../util/file-parameters';
-import { confirmDialogConfig, customerGalleryDialogConfig, } from '../dialogs/dialogs.configs';
-import { PopUpMessageService } from '../../api/services/pop-up-message.service';
-import { SystemMessageType } from '../../model/data-model';
-import { HttpClient } from '@angular/common/http';
-import { SecurityService } from '../../auth/security.service';
-
-
-import { dialogsMap } from '../dialogs/dialogs.state';
-import { Subject } from 'rxjs/internal/Subject';
-import { Observable } from 'rxjs/internal/Observable';
-import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+} from "../../../../../util/file-parameters";
+import { ProjectService } from "../../../../../api/services/project.service";
+import { first } from "rxjs/operators";
+import { ProjectActionService } from "../../../../../api/services/project-action.service";
+import { BehaviorSubject } from "rxjs";
 
 @Component({
-  selector: 'image-uploader',
-  templateUrl: './image-uploader.component.html',
-  styleUrls: ['./image-uploader.component.scss', './image-preview.scss']
+  selector: 'questionary-image-uploader',
+  templateUrl: './questionary-image-uploader.component.html',
+  styleUrls: ['./questionary-image-uploader.component.scss', './image-preview.scss'],
 })
-export class ImagesUploaderComponent implements OnInit {
+export class QuestionaryImageUploaderComponent implements OnInit {
 
-  @Input() title: string;
-  @Input() subtitle: string;
-  @Input() projectImages: Array<any>;
+  @Input() projectId: any;
   @Input() apiUrl: string;
-  @Input() isArchived: boolean;
-  @Input() projectView: boolean = false;
-  @Input() showActionButtons: boolean = true;
-  @Output() uploadCompleted: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() hasElements: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
+  @Output() processing: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  editMode: boolean;
-  dropZoneTrigger: boolean;
   hasBaseDropZoneOver: boolean = false;
   uploader: FileUploader;
-  customerGalleryDialogRef: MatDialogRef<any>;
 
   private confirmDialog: MatDialogRef<any>;
   private refreshingAccessToken: boolean = false;
@@ -61,10 +46,14 @@ export class ImagesUploaderComponent implements OnInit {
               private popupService: PopUpMessageService,
               private http: HttpClient,
               private securityService: SecurityService,
-              private changeDetectorRef: ChangeDetectorRef) {
+              private changeDetectorRef: ChangeDetectorRef,
+              public projectActionService: ProjectActionService) {
   }
 
   ngOnInit(): void {
+    this.apiUrl = this.apiUrl ? this.apiUrl : `/api/customers/projects/${this.projectId}/images`
+    this.updateHasElements();
+
     this.uploader = new FileUploader({
       url: this.apiUrl,
       authToken: this.securityService.getTokenHeader(),
@@ -79,6 +68,7 @@ export class ImagesUploaderComponent implements OnInit {
       this.uploader.queue.forEach((item: FileItem) => {
         this.resizeImage(item._file).subscribe((blob: Blob) => {
           item._file = (blob as File);
+          this.changeDetectorRef.detectChanges()
         });
       });
     };
@@ -97,28 +87,8 @@ export class ImagesUploaderComponent implements OnInit {
     };
   }
 
-  @HostListener('window:keyup', ['$event'])
-  onEscClicked(event: KeyboardEvent): void {
-    if (event.keyCode == 27 && this.dropZoneTrigger) {
-      this.closeDropZone(event);
-    }
-  }
-
   hasUnsavedImages(): boolean {
     return this.uploader.getNotUploadedItems().length > 0;
-  }
-
-  toggleEditMode() {
-    this.editMode = !this.editMode;
-  }
-
-  closeDropZone(event: Event): void {
-    this.dropZoneTrigger = false;
-    this.uploader.clearQueue();
-  }
-
-  showDropZone(event: Event): void {
-    this.dropZoneTrigger = true;
   }
 
   fileOverBase(event: any): void {
@@ -141,8 +111,8 @@ export class ImagesUploaderComponent implements OnInit {
     this.confirmDialog.componentInstance.onConfirm.subscribe(res => {
       this.http.delete(this.apiUrl, {params: {'imageUrl': path}, responseType: 'text'}).subscribe(
         res => {
-          this.projectImages.splice(index, 1);
-          this.projectImages = this.projectImages.slice();
+          this.projectActionService.projectImages.splice(index, 1);
+          this.projectActionService.projectImages = this.projectActionService.projectImages.slice();
           this.popupService.showMessage(
             {
               text: 'Image has been deleted.',
@@ -161,6 +131,17 @@ export class ImagesUploaderComponent implements OnInit {
     event.preventDefault();
     event.stopPropagation();
     this.uploader.queue.splice(index, 1);
+  }
+
+  removeImageFromProject(event, imageUrl) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.projectActionService.projectImages = this.projectActionService.projectImages.filter(image => image != imageUrl);
+    this.projectService.deleteImage(this.projectId, imageUrl)
+      .pipe(first())
+      .subscribe(() => {
+        this.updateHasElements()
+      })
   }
 
   rotateImage(event: Event, fileItem): void {
@@ -188,7 +169,7 @@ export class ImagesUploaderComponent implements OnInit {
         ctx.restore();
         canvas.toBlob(blob => {
           fileItem._file = blob;
-          this.changeDetectorRef.detectChanges();
+          this.changeDetectorRef.detectChanges()
         }, 'image/jpeg', 0.7);
         img = null;
       };
@@ -196,7 +177,10 @@ export class ImagesUploaderComponent implements OnInit {
   }
 
   onProcessDone(event: Event, item): void {
-    item['processing'] = false;
+    this.processing.next(true);
+    item.processing = false;
+    this.changeDetectorRef.detectChanges()
+    this.uploadAllImages()
   }
 
   uploadAllImages(url?: string): void {
@@ -214,25 +198,19 @@ export class ImagesUploaderComponent implements OnInit {
         }, 500);
       } else {
         setTimeout(() => {
-          this.uploadCompleted.next(true);
-          this.uploader.clearQueue();
-          this.dropZoneTrigger = false;
           this.getProjectImages();
         }, 500);
       }
     };
   }
 
-  openGallery(key, index): void {
-    this.dialog.closeAll();
-    this.customerGalleryDialogRef = this.dialog.open(dialogsMap[key], customerGalleryDialogConfig);
-
-    this.customerGalleryDialogRef.componentInstance.gallery = this.projectImages;
-    this.customerGalleryDialogRef.componentInstance.galleryActiveIndex = index;
-  }
-
   private getProjectImages(): void {
-    this.http.get<Array<string>>(this.apiUrl).subscribe(res => this.projectImages = res);
+    this.http.get<Array<string>>(this.apiUrl).subscribe(images => {
+      this.projectActionService.projectImages = images
+      this.uploader.clearQueue();
+      this.updateHasElements()
+      this.processing.next(false);
+    });
   }
 
   private resizeImage(file: File): Observable<Blob> {
@@ -269,24 +247,11 @@ export class ImagesUploaderComponent implements OnInit {
         ctx.restore();
         canvas.toBlob(blob => {
           compressedFileSubject.next(blob);
+          this.changeDetectorRef.detectChanges()
         }, type, UPLOAD_IMAGE_COMPRESS_RATIO);
       };
     };
     return compressedFileSubject.asObservable();
-  }
-
-  private fileValidation(file: File): boolean {
-    const allowedMimeType: Array<string> = FILE_MIME_TYPES.images;
-    const maxFileSize: number = MAX_FILE_SIZE.bytes;
-    if (!allowedMimeType.includes(file.type)) {
-
-      return false;
-    } else if (file.size > maxFileSize) {
-
-      return false;
-    } else {
-      return true;
-    }
   }
 
   private refreshAccessToken(): void {
@@ -321,13 +286,21 @@ export class ImagesUploaderComponent implements OnInit {
         text = `The file ${item.name} has failed to upload. Maximum upload file size ${MAX_FILE_SIZE.megabytes} Mb.`;
         break;
       case 'queueLimit':
-        console.info(`Query limit. You can add only ${IMAGE_UPLOADER_QUERY_LIMIT} images to upload query.`);
-        return;
+        text = `You can add only ${IMAGE_UPLOADER_QUERY_LIMIT} images to upload query`
+        break;
       default:
-        text = 'Could not add image to upload query';
+        text = 'Failed to upload image';
         break;
     }
-    this.popupService.showError(text, 10000);
+    this.popupService.showWarning(text);
+  }
+
+  updateHasElements () {
+    this.hasElements.next(this.uploader?.queue?.length > 0 || this.projectActionService.projectImages.length > 0)
+  }
+
+  onFileDrop($event: File[]) {
+    this.updateHasElements()
   }
 
 }

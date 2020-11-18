@@ -27,8 +27,8 @@
            (fileOver)="fileOverBase($event)"
            [uploader]="uploader"
            class="drop-zone-holder">
-      <div class="drop-zone" *ngIf="!uploader?.queue?.length">
-        <h3>Drop photos here or click here to upload</h3>
+      <div class="drop-zone-label" *ngIf="!uploader?.queue?.length">
+        <h3>Drop pictures to attach, or click here</h3>
       </div>
       <div class="images-list" *ngIf="uploader?.queue?.length">
         <div class="col" *ngFor="let item of uploader.queue; let index = index" (click)="$event.preventDefault()">

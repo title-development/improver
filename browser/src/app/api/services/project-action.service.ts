@@ -37,6 +37,7 @@ export class ProjectActionService {
   onCloseProjectRequestDialog: EventEmitter<any> = new EventEmitter<any>();
   zipIsChecking = false;
   zipIsSupported = true;
+  projectImages = [];
 
   private DEBOUNCE_TIME: number = 300;
   private questionaryDialogRef: MatDialogRef<any>;
@@ -356,6 +357,7 @@ export class ProjectActionService {
       .subscribe(result => {
         this.questionaryControlService.clearPreSavedProject()
         this.questionaryControlService.resetQuestionaryForm();
+        this.clearProjectImages();
         this.questionaryDialogRef = null;
         this.zipIsChecking = false;
         this.zipIsSupported = true;
@@ -501,4 +503,9 @@ export class ProjectActionService {
       .subscribe(() => this.projectUpdated());
     this.router.navigate(["/my/projects"])
   }
+
+  clearProjectImages() {
+    this.projectImages = [];
+  }
+
 }

@@ -31,6 +31,8 @@ import { NgReplacePipeModule } from "angular-pipes";
 import { CompanyInfoService } from "../../api/services/company-info.service";
 import { SocialButtonsModule } from "../../auth/social-buttons/social-buttons.module";
 import { RecaptchaModule } from "ng-recaptcha";
+import { QuestionaryImageUploaderComponent } from "./questionary-dialog/questionary-form/questionary-image-uploader/questionary-image-uploader.component";
+import { FileUploadModule } from "ng2-file-upload";
 
 @NgModule({
   imports: [
@@ -57,13 +59,15 @@ import { RecaptchaModule } from "ng-recaptcha";
     MatProgressSpinnerModule,
     NgReplacePipeModule,
     SocialButtonsModule,
-    RecaptchaModule
+    RecaptchaModule,
+    FileUploadModule
   ],
   declarations: [
     QuestionaryFormComponent,
     QuestionaryFormQuestionComponent,
     DefaultQuestionaryBlockComponent,
     PreQuestionaryBlock,
+    QuestionaryImageUploaderComponent,
     ...dialogs
   ],
   entryComponents: [

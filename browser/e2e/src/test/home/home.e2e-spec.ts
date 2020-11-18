@@ -62,6 +62,8 @@ describe('Home Page', () => {
     browser.sleep(THREE_SECONDS);
     questionaryHelper.addressApplySuggested();
     browser.sleep(THREE_SECONDS);
+    questionaryHelper.next();
+    browser.sleep(SECOND);
     expect(element(by.css(".notes .value")).getText()).toEqual(questionaries.projectDetails)
     expect(element(by.css(".approximately-how-many-square-feet-is-the-area-that-needs-tiling .value span")).getText()).toEqual("200")
     questionaryHelper.next();
@@ -91,6 +93,8 @@ describe('Home Page', () => {
     browser.sleep(THREE_SECONDS);
     questionaryHelper.addressApplySuggested();
     browser.sleep(THREE_SECONDS);
+    questionaryHelper.next();
+    browser.sleep(SECOND);
     expect(element(by.css(".notes .value")).getText()).toEqual(questionaries.projectDetails)
     questionaryHelper.next();
     browser.sleep(SECOND);
@@ -126,6 +130,8 @@ describe('Home Page', () => {
     browser.sleep(THREE_SECONDS);
     questionaryHelper.addressApplySuggested();
     browser.sleep(THREE_SECONDS);
+    questionaryHelper.next();
+    browser.sleep(SECOND);
     expect(element(by.css(".notes .value")).getText()).toEqual(questionaries.projectDetails)
     questionaryHelper.next();
     browser.sleep(SECOND);
@@ -154,6 +160,8 @@ describe('Home Page', () => {
     browser.sleep(THREE_SECONDS);
     questionaryHelper.addressApplySuggested();
     browser.sleep(THREE_SECONDS);
+    questionaryHelper.next();
+    browser.sleep(SECOND);
     expect(element(by.css(".notes .value")).getText()).toEqual(questionaries.projectDetails)
     questionaryHelper.next();
     browser.sleep(SECOND);
@@ -178,6 +186,8 @@ describe('Home Page', () => {
     questionaryHelper.textarea(questionaries.projectDetails);
     questionaryHelper.applySavedUserAddress(2)
     browser.sleep(THREE_SECONDS);
+    questionaryHelper.next();
+    browser.sleep(SECOND);
     expect(element(by.css(".notes .value")).getText()).toEqual(questionaries.projectDetails)
     questionaryHelper.next();
     browser.sleep(SECOND);
@@ -202,6 +212,8 @@ describe('Home Page', () => {
     questionaryHelper.textarea(questionaries.projectDetails);
     questionaryHelper.next()
     browser.sleep(THREE_SECONDS);
+    questionaryHelper.next();
+    browser.sleep(SECOND);
     expect(element(by.css(".notes .value")).getText()).toEqual(questionaries.projectDetails)
     questionaryHelper.next();
     browser.sleep(SECOND);
@@ -252,6 +264,8 @@ describe('Home Page', () => {
     browser.sleep(THREE_SECONDS);
     questionaryHelper.addressApplySuggested();
     browser.sleep(THREE_SECONDS);
+    questionaryHelper.next();
+    browser.sleep(SECOND);
     expect(element(by.css(".notes .value")).getText()).toEqual(questionaries.projectDetails)
     questionaryHelper.next();
     browser.sleep(SECOND);

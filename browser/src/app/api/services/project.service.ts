@@ -157,7 +157,7 @@ export class ProjectService {
   }
 
   deleteImage(projectId, path: string): Observable<any> {
-    return this.http.delete(`${this.PROJECTS_PATH}/${projectId}/images`, {
+    return this.http.delete(`${this.CUSTOMER_PROJECTS_PATH}/${projectId}/images`, {
       params: {'imageUrl': path},
       responseType: 'text'
     });

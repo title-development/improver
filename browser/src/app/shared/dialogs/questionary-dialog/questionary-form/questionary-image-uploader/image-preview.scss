@@ -1,0 +1,172 @@
+@import "improver-mixins.scss";
+
+.image-list-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 198px;
+  width: 100%;
+
+  .with-images {
+    min-height: 222px;
+  }
+
+  .images-list {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 8px;
+    width: 100%;
+    .image-wrapper {
+      width: 25%;
+      padding: 8px;
+
+      @include response-to(sm) {
+        width: 50%;
+      }
+
+      @include response-to(xs) {
+        width: 100%;
+      }
+
+    }
+    img {
+      max-width: 100%;
+      height:  auto;
+      max-height: 100%;
+      width:  auto;
+    }
+    h3 {
+      font-size: 13px;
+      margin: 10px 0 0;
+      color: $black;
+    }
+  }
+}
+
+.image-holder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  height: 75px;
+  border-radius: 2px;
+  background-color: $white;
+  border: solid 1px $grey-300;
+  padding: 4px;
+
+  @include response-to(sm) {
+    height: 200px;
+  }
+
+  @include response-to(xs) {
+    height: 170px;
+  }
+
+  &:hover {
+    .actions {
+      opacity: 1;
+    }
+  }
+  &:after {
+    content: '';
+    display: none;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    background-color: $white;
+    background-image: url('../../../../../../assets/icons/spiner.gif');
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 4;
+  }
+  &.-processing {
+    &:after {
+      display: block;
+    }
+  }
+  .actions {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    background-color: rgba(#000, .3);
+    transition: opacity .3s ease;
+    opacity: 0;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    @include response-to(sm) {
+      opacity: 1;
+      background-color: transparent;
+      .mat-icon {
+        color: $grey-500 !important;
+      }
+    }
+
+    .mat-icon {
+      cursor: pointer;
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      padding: 1px;
+      color: $white;
+      transition: opacity .3s ease;
+      position: absolute;
+      right: 6px;
+      top: 6px;
+      &:hover {
+        opacity: .7;
+      }
+    }
+  }
+}
+
+.progress-holder {
+  position: absolute;
+  bottom: 8px;
+  left: 4px;
+  right: 4px;
+  background-image: url('../../../../../../assets/icons/loader.svg');
+  background-repeat: repeat-x;
+  background-color: $white;
+  animation: loading 300s linear 0s infinite;
+  border-radius: 4px;
+  height: 8px;
+  overflow: hidden;
+  .state {
+    width: 100%;
+    height: 100%;
+    display: none;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    &.-error {
+      background-color: $red;
+      display: block;
+    }
+    &.-done {
+      background-color: #1eb237;
+      display: block;
+    }
+  }
+  .progress-bar {
+    height: 100%;
+    width: 0;
+    transition: width .3s ease;
+    background-image: linear-gradient(to left, #fd9926, #fd6e26);
+    border-radius: 4px;
+  }
+}
+
+@keyframes loading {
+  from {
+    background-position: 0 0;
+  }
+  to{
+    background-position: 10000% 0;
+  }
+}

@@ -68,8 +68,8 @@ public class Project implements ImageContainable {
     private String coverUrl;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "project")
-    private Set<ProjectImage> images;
+    @OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE)
+    private List<ProjectImage> images;
 
     @Enumerated(EnumType.STRING)
     private Status status;

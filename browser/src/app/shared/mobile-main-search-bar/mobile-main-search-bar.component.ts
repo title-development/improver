@@ -82,7 +82,6 @@ export class MobileMainSearchBarComponent implements OnInit, AfterViewInit, OnDe
   }
 
   ngAfterViewInit(): void {
-    console.log(this.serviceTypeHTMLElements);
     this.findItemsHeight();
   }
 
@@ -97,7 +96,6 @@ export class MobileMainSearchBarComponent implements OnInit, AfterViewInit, OnDe
   findItemsHeight() {
     this.changeDetectorRef.detectChanges();
     let items = this.serviceTypeHTMLElements.toArray().slice(0, 10);
-    console.log(items)
     let totalPanelHeight = items.reduce((height, item) => {
       height += item.nativeElement.offsetHeight;
       return height;

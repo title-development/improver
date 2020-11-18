@@ -191,7 +191,6 @@ export class ContractorProjectViewComponent implements OnDestroy, AfterViewInit 
   }
 
   back() {
-    console.log(this.showContractorInformation)
     if(this.showContractorInformation == 'showed') {
       this.showContractorInformation = 'hide'
     } else {

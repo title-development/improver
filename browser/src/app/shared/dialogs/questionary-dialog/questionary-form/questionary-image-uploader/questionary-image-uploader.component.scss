@@ -3,39 +3,7 @@
 :host {
   display: block;
   width: 100%;
-}
-
-.drop-zone-actions {
-  display: flex;
   margin-bottom: 24px;
-  justify-content: space-between;
-  .submit-button {
-    &:disabled {
-      background: #dddddd !important;
-      pointer-events: none;
-    }
-  }
-}
-
-.header {
-  position: relative;
-  margin-bottom: 24px;
-  .title {
-    font-size: 20px;
-    font-weight: 600;
-    text-align: left;
-    color: $black-800;
-  }
-  .subtitle {
-    font-size: 14px;
-    color: $grey-600;
-    margin-bottom: 24px;
-  }
-
-  @include response-to(sm) {
-    margin-bottom: 16px;
-  }
-
 }
 
 input[type=file] {
@@ -73,31 +41,54 @@ input[type=file] {
 }
 
 .drop-zone-holder {
+  position: relative;
+  display: flex;
+  height: 100%;
+  width: 100%;
   text-align: center;
   align-items: center;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
   border-radius: 8px;
   background-color: $white;
-  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.16);
-  display: flex;
+  border: 2px dashed $grey-400;
   cursor: pointer;
   transition: min-height .6s ease;
   @include response-to(sm) {
     flex-direction: column;
   }
-  label {
+  .drop-zone-label {
+    position: absolute;
+    width: 100%;
+    color: $grey-500;
+    font-size: 20px;
+    font-weight: 400;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding-left: 16px;
+    padding-right: 16px;
+
+    &.with-images {
+      margin-top: 24px;
+      margin-bottom: 8px;
+      position: relative;
+      top: auto;
+      left: auto;
+      transform: none;
+    }
+
+  }
+
+  .add-photo-button-mobile {
     margin-bottom: 16px;
+
     @include response-from(md) {
       display: none;
     }
+
   }
-  h3 {
-    color: transparent;
-    font-size: 20px;
-    margin: 0;
-    font-weight: 400;
-  }
+
 }
 
 .toggle-drop-zone {
@@ -185,7 +176,6 @@ input[type=file] {
     .photo-inner {
       &:after {
         background-color: rgba(0, 0, 0, 0.54);
-        border-radius: 8px;
       }
       .remove {
         opacity: 1;
@@ -235,7 +225,6 @@ input[type=file] {
     }
     &:after {
       transition: background-color .3s ease;
-      border-radius: 8px;
       content: '';
       display: block;
       position: absolute;

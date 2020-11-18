@@ -1,4 +1,13 @@
-import { Directive, ElementRef, Input, Renderer2, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Directive,
+  ElementRef,
+  EventEmitter,
+  Input,
+  Output,
+  Renderer2,
+  SimpleChanges
+} from '@angular/core';
 
 
 @Directive({ selector: 'img[imgPreview]' })
@@ -10,7 +19,8 @@ export class ImagePreviewDirective {
   private maxWidth: number = 300;
 
 
-  constructor(private el: ElementRef, private renderer: Renderer2) {
+  constructor(private el: ElementRef, private renderer: Renderer2,
+              private changeDetectorRef: ChangeDetectorRef) {
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -18,7 +28,6 @@ export class ImagePreviewDirective {
     let reader = new FileReader();
     let el = this.el;
     let img = new Image();
-
     reader.onloadend = (e) => {
       img.src = reader.result as string;
       let canvas = this.renderer.createElement("canvas");

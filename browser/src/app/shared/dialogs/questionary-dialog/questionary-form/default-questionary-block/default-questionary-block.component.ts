@@ -28,6 +28,7 @@ import { RegistrationHelper } from "../../../../../util/helpers/registration-hel
 import { DeviceControlService } from "../../../../../api/services/device-control.service";
 import { RegistrationService } from "../../../../../api/services/registration.service";
 import { UserAddressService } from "../../../../../api/services/user-address.service";
+import { MediaQuery, MediaQueryService } from "../../../../../api/services/media-query.service";
 
 @Component({
   selector: 'default-questionary-block',
@@ -46,6 +47,8 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     "Within a month",
     "Within a year",
   ];
+
+  media: MediaQuery;
 
   Role = Role;
   defaultQuestionaryForm;
@@ -103,7 +106,8 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
               private locationValidate: LocationValidateService,
               private metricsEventService: MetricsEventService,
               private registrationService: RegistrationService,
-              private registrationHelper: RegistrationHelper) {
+              private registrationHelper: RegistrationHelper,
+              public mediaQueryService: MediaQueryService) {
     this.constants = constants;
     this.messages = messages;
     this.emailIsChecked = false;
@@ -119,6 +123,9 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     if (securityService.isAuthenticated()) {
       this.loadUserAddress();
     }
+
+    this.mediaQueryService.screen
+      .subscribe(mediaQuery => this.media = mediaQuery);
   }
 
   submitUserInfo() {
@@ -141,9 +148,12 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
 
   nextQuestion(name, handler?: Function) {
     this.currentQuestionName = name;
-    // retrieve questionary answers before final confirm
-    if (this.questionaryControlService.currentQuestionIndex + this.questionaryControlService.PRE_QUESTIONARY_LENGTH == this.questionaryControlService.totalQuestionaryLength - 1) {
-      this.getQuestionaryAnswers();
+
+    if (name == 'projectImages') {
+      // retrieve questionary answers before final confirm
+      this.getQuestionaryAnswers()
+      this.nextStep();
+      return
     }
 
     if (this.isValid(name)) {

@@ -407,6 +407,22 @@
 
   <div #defaultQuestion class="form-element-wrapper text-input-wrapper" [formGroupName]="'defaultQuestionaryGroup'"
        *ngIf="questionaryControlService.currentQuestionIndex == questionaryControlService.questionaryLength + 3 + (personalInfoRequired() ? 1 : 0)">
+    <h2 class="question-title">Add pictures of your project to share with Professionals</h2>
+
+    <div class="image-uploader-wrapper fill-flex-space">
+      <questionary-image-uploader #imageUploader [projectId]="questionaryControlService.projectId"></questionary-image-uploader>
+    </div>
+
+    <div class="questionary-dialog-footer" fxLayoutAlign="end center">
+      <button cv-button-empty class="questionary-previous-button" (click)="questionaryControlService.previousQuestion(); isAddressSelected = false" type="button">Back</button>
+      <div fxFlex=""></div>
+      <button cv-button class="questionary-next-button" (click)="nextQuestion('projectImages')" type="button" [disabled]="imageUploader.processing | async">{{(imageUploader.hasElements | async) ? 'Next' : 'Skip'}}</button>
+    </div>
+
+  </div>
+
+  <div #defaultQuestion class="form-element-wrapper text-input-wrapper" [formGroupName]="'defaultQuestionaryGroup'"
+       *ngIf="questionaryControlService.currentQuestionIndex == questionaryControlService.questionaryLength + 4 + (personalInfoRequired() ? 1 : 0)">
     <h2 class="question-title">You are requesting {{questionaryControlService.serviceType.name}}</h2>
 
     <div class="project-summary fill-flex-space">
@@ -445,7 +461,7 @@
       </div>
 
     <div class="questionary-dialog-footer" fxLayoutAlign="end center">
-      <button cv-button-empty class="questionary-previous-button" (click)="questionaryControlService.previousQuestion(); isAddressSelected = false" type="button">Back</button>
+      <button cv-button-empty class="questionary-previous-button" (click)="questionaryControlService.previousQuestion()" type="button">Back</button>
       <div fxFlex=""></div>
       <button cv-button class="questionary-next-button" (click)="onSubmit()" type="button" [loading]="postOrderProcessing">Confirm</button>
     </div>
