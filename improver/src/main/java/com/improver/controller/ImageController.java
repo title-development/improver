@@ -2,6 +2,7 @@ package com.improver.controller;
 
 import com.improver.entity.ProjectImage;
 import com.improver.exception.NotFoundException;
+import com.improver.model.projection.ImageProjection;
 import com.improver.repository.CompanyRepository;
 import com.improver.repository.ImageRepository;
 import com.improver.repository.ProjectImageRepository;
@@ -45,20 +46,18 @@ public class ImageController {
 
     //This is called for Notification to display icons
     @GetMapping(COMPANIES_PATH + COMPANY_ID + ICON)
-    public ResponseEntity getCompanyIcon(@PathVariable long companyId) {
-        String iconUrl = companyRepository.getIconUrl(companyId)
-            .orElseThrow(NotFoundException::new);
-        return imageService.getImageByURL(iconUrl);
+    public ResponseEntity<Resource> getCompanyIcon(@PathVariable long companyId) {
+        ImageProjection imageProjection = companyRepository.getCompanyIcon(companyId);
+
+        return imageService.getImageData(imageProjection);
     }
 
     //This is invoked for Notification to display icons
     @GetMapping(USERS_PATH + ID_PATH_VARIABLE + ICON)
-    public ResponseEntity getUserIcon(@PathVariable("id") long id) {
-        String iconUrl = userRepository.getIconUrl(id)
-            .orElseThrow(NotFoundException::new);
+    public ResponseEntity<Resource> getUserIcon(@PathVariable("id") long userId) {
+        ImageProjection imageProjection = userRepository.getUserIcon(userId);
 
-        log.debug("Icon=" + iconUrl);
-        return imageService.getImageByURL(iconUrl);
+        return imageService.getImageData(imageProjection);
     }
 
 }

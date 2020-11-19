@@ -5,6 +5,7 @@ import com.improver.entity.CompanyAction;
 import com.improver.entity.ServiceType;
 import com.improver.model.CompanyInfo;
 import com.improver.model.admin.out.Record;
+import com.improver.model.projection.ImageProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -77,8 +78,11 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
         " WHERE contr.email = ?1")
     Optional<Company> findByContractorEmail(String contractorEmail);
 
-    @Query("SELECT c.iconUrl FROM com.improver.entity.Company c WHERE c.id = ?1")
-    Optional<String> getIconUrl(long companyId);
+    @Query(value = "SELECT case when(c.icon_url LIKE '%https://%') then null else i.data end as image, c.icon_url as redirectUrl FROM companies c " +
+        "LEFT JOIN images i on c.icon_url LIKE '%https://%' or " +
+        "(substring(c.icon_url, length(c.icon_url) - position('/' in reverse(c.icon_url)) + 2, length(c.icon_url)) = i.name) " +
+        "WHERE c.id = :companyId LIMIT 1",nativeQuery = true)
+    ImageProjection getCompanyIcon(long companyId);
 
     @Modifying
     @Transactional

@@ -5,6 +5,7 @@ import com.improver.entity.*;
 import com.improver.exception.InternalServerException;
 import com.improver.exception.NotFoundException;
 import com.improver.exception.ValidationException;
+import com.improver.model.projection.ImageProjection;
 import com.improver.repository.DemoProjectImageRepository;
 import com.improver.repository.ImageRepository;
 import com.improver.repository.ProjectImageRepository;
@@ -149,13 +150,13 @@ public class ImageService {
         return imageContainable.getCoverUrl();
     }
 
-
-    public ResponseEntity getImageByURL(String imageUrl) {
-        if (imageUrl.startsWith("https://")){
-            return redirectToResourceURL(imageUrl);
+    public ResponseEntity<Resource> getImageData(ImageProjection imageProjection) {
+        if (imageProjection.getImage() == null && imageProjection.getRedirectUrl() == null) {
+            throw new NotFoundException();
         }
-        String imageName = getImageNameFromURL(imageUrl);
-        return getImageByName(imageName);
+
+        return imageProjection.getImage() == null ? redirectToResourceURL(imageProjection.getRedirectUrl())
+            : addCacheControl(imageProjection.getImage());
     }
 
     public ResponseEntity<Resource> getImageByName(String name) {
@@ -165,10 +166,10 @@ public class ImageService {
         return addCacheControl(media);
     }
 
-    private ResponseEntity redirectToResourceURL(String iconUrl) {
+    private ResponseEntity<Resource> redirectToResourceURL(String iconUrl) {
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(URI.create(iconUrl));
-        return new ResponseEntity(headers, HttpStatus.MOVED_PERMANENTLY);
+        return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
     }
 
     public ResponseEntity<Resource> addCacheControl(byte[] media) {

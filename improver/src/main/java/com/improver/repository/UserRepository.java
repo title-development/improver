@@ -3,6 +3,7 @@ package com.improver.repository;
 import com.improver.entity.User;
 import com.improver.model.admin.AdminContractor;
 import com.improver.model.admin.out.Record;
+import com.improver.model.projection.ImageProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -52,10 +53,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("UPDATE com.improver.entity.User u SET u.password = ?2 WHERE u.email = ?1")
     void updatePasswordFor(String email, String newPassword);
 
-
-    @Query("SELECT  u.iconUrl FROM com.improver.entity.User u WHERE u.id = ?1")
-    Optional<String> getIconUrl(long id);
-
+    @Query(value = "SELECT case when(u.icon_url LIKE '%https://%') then null else i.data end as image, u.icon_url as redirectUrl FROM users u " +
+        "LEFT JOIN images i on u.icon_url LIKE '%https://%' or " +
+        "(substring(u.icon_url, length(u.icon_url) - position('/' in reverse(u.icon_url)) + 2, length(u.icon_url)) = i.name) " +
+        "WHERE u.id = :userId LIMIT 1",nativeQuery = true)
+    ImageProjection getUserIcon(long userId);
 
     // Fix Pageable and count issue
     @Query("SELECT new com.improver.model.admin.AdminContractor(pro, 0) " +
