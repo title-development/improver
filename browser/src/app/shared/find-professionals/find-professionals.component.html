@@ -38,6 +38,7 @@
                        [propagateEnterEvent]="true"
                        [dropdownBorder]="false"
                        (autocompleteSearch)="autocompleteSearch($event)"
+                       (onSelect)="search($event.service)"
                        (onClose)="mouseleave($event)"></cv-select>
 
             <div class="error-holder service-type-error" *ngIf="mainSearchFormGroup.get('selectionCtrl').errors && (mainSearchFormGroup.get('selectionCtrl').dirty || mainSearchFormGroup.get('selectionCtrl').touched)">

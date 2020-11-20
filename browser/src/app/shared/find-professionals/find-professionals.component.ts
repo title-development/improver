@@ -42,6 +42,7 @@ export class FindProfessionalsComponent implements OnInit {
   showMoreActivated: boolean = false;
   mediaQuery: any;
   swiper: Swiper;
+  resetAfterFind = true;
 
 
   constructor(private serviceTypeService: ServiceTypeService,
@@ -131,6 +132,27 @@ export class FindProfessionalsComponent implements OnInit {
 
   autocompleteSearch(search): void {
     this.filteredServiceTypes = this.userSearchService.autocompleteSearchResult(search);
+  }
+
+  search(serviceType?: string): void {
+    if (serviceType) {
+      this.selectionCtrl.setValue(serviceType);
+    }
+
+    if (this.mainSearchFormGroup.valid) {
+      this.userSearchService.isMobileSearchActive = false;
+      const selectionCtrl = this.mainSearchFormGroup.get('selectionCtrl');
+      if (selectionCtrl.value) {
+        this.userSearchService.findServiceTypeOrTrade(this.mainSearchFormGroup.value);
+        if (this.resetAfterFind) {
+          this.mainSearchFormGroup.reset({
+            zipCodeCtrl: localStorage.getItem('zipCode') ? localStorage.getItem('zipCode') : this.lastZipCode
+          });
+        }
+      }
+    } else {
+      markAsTouched(this.mainSearchFormGroup);
+    }
   }
 
   getRecentSearches() {
