@@ -83,7 +83,7 @@
               <span class="name">Popular Categories</span>
             </div>
 
-            <div class="swiper-container find-professional-swiper">
+            <div class="swiper-container find-professional-swiper" [style.opacity]="isSwiperDisplayed? 1 : 0">
               <div class="swiper-wrapper">
                 <div class="swiper-slide" *ngFor="let trade of popularTrades" (click)="findProfessionalService.toggle()" [routerLink]="['category', trade.id]">
                   <div class="trade-content">

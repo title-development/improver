@@ -454,6 +454,7 @@
 }
 
 .swiper-container {
+  opacity: 0;
   margin-top: -20px;
   padding-top: 40px;
   width: 100% !important;
@@ -531,7 +532,6 @@
 
     @include response-to(lg) {
       width: 100%;
-      max-width: 300px;
     }
 
     .text-content {

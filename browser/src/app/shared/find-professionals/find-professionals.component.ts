@@ -1,22 +1,14 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NameIdImageTuple, Pagination, ServiceType } from '../../model/data-model';
-import { ServiceTypeService } from '../../api/services/service-type.service';
-import { TradeService } from '../../api/services/trade.service';
 import { Constants } from '../../util/constants';
-import { QuestionaryControlService } from '../../api/services/questionary-control.service';
 import { ProjectActionService } from '../../api/services/project-action.service';
 import { MediaQueryService } from '../../api/services/media-query.service';
 import { markAsTouched } from '../../util/functions';
-import { Router } from '@angular/router';
 import { FindProfessionalService } from '../../api/services/find-professional.service';
-import { PopUpMessageService } from "../../api/services/pop-up-message.service";
-import { SecurityService } from "../../auth/security.service";
 import { UserService } from "../../api/services/user.service";
 import { CustomerSuggestionService } from "../../api/services/customer-suggestion.service";
-import { takeUntil } from "rxjs/operators";
-import { Role } from "../../model/security-model";
 import { UserSearchService } from "../../util/user-search.service";
 
 
@@ -43,64 +35,43 @@ export class FindProfessionalsComponent implements OnInit {
   mediaQuery: any;
   swiper: Swiper;
   resetAfterFind = true;
+  isSwiperDisplayed: boolean = false;
 
 
-  constructor(private serviceTypeService: ServiceTypeService,
-              private questionaryControlService: QuestionaryControlService,
-              private tradeService: TradeService,
-              private router: Router,
-              private securityService: SecurityService,
-              private popUpService: PopUpMessageService,
-              public userSearchService: UserSearchService,
+  constructor(public userSearchService: UserSearchService,
               public customerSuggestionService: CustomerSuggestionService,
               public dialog: MatDialog,
               public userService: UserService,
               public projectActionService: ProjectActionService,
               public constants: Constants,
               public media: MediaQueryService,
-              private changeDetectorRef: ChangeDetectorRef,
               public findProfessionalService: FindProfessionalService) {
+    this.createFormGroup();
+    this.getSuggestedTrades();
+    this.getPopularServiceTypes();
+    this.getLastCustomerZipCode();
+    this.subscribeForMediaQuery();
+  }
+
+  ngOnInit() {
+    this.initializeSwiper();
+  }
+
+  createFormGroup() {
     let group: any = {};
 
     group.selectionCtrl = new FormControl(null, Validators.required);
     group.zipCodeCtrl = new FormControl(
       null,
-      Validators.compose([Validators.required, Validators.pattern(constants.patterns.zipcode)])
+      Validators.compose([Validators.required, Validators.pattern(this.constants.patterns.zipcode)])
     );
 
     this.mainSearchFormGroup = new FormGroup(group);
     this.selectionCtrl = group.selectionCtrl;
     this.zipCodeCtrl = group.zipCodeCtrl;
-
-    this.getSuggestedTrades();
-    this.getPopularServiceTypes();
-
-    this.customerSuggestionService.onZipChange.subscribe(zip => this.zipCodeCtrl.setValue(zip));
-
-    this.zipCodeCtrl.setValue(localStorage.getItem('zipCode'));
-
-    securityService.onUserInit
-      .pipe(takeUntil(securityService.onLogout))
-      .subscribe(() => {
-        if (this.securityService.hasRole(Role.CUSTOMER)) {
-          this.getRecentSearches();
-          this.getLastCustomerZipCode();
-        }
-      }
-    );
-
-    this.media.screen.subscribe(media => {
-      this.mediaQuery = media;
-      if (media.xs || media.sm) {
-        this.popularServiceSize = 8;
-      }
-      if (media.md || media.lg || media.xlg) {
-        this.popularServiceSize = 16;
-      }
-    });
   }
 
-  ngOnInit() {
+  initializeSwiper() {
     this.findProfessionalService.visibilityState.subscribe( show => {
       if (show){
         setTimeout(()=> {
@@ -127,8 +98,25 @@ export class FindProfessionalsComponent implements OnInit {
         this.showMoreActivated = false;
       }
     });
+
+    this.findProfessionalService.visibilityState.subscribe(opened => {
+      setTimeout(() => {
+        this.isSwiperDisplayed = opened;
+      }, )
+    })
   }
 
+  subscribeForMediaQuery() {
+    this.media.screen.subscribe(media => {
+      this.mediaQuery = media;
+      if (media.xs || media.sm) {
+        this.popularServiceSize = 8;
+      }
+      if (media.md || media.lg || media.xlg) {
+        this.popularServiceSize = 16;
+      }
+    });
+  }
 
   autocompleteSearch(search): void {
     this.filteredServiceTypes = this.userSearchService.autocompleteSearchResult(search);
