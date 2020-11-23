@@ -7,7 +7,7 @@
     <div class="col-xs-6 col-sm-4 col-md-3 photo" (click)="openGallery('image-viewer',index);">
       <div class="photo-inner" [ngStyle]="{'background-image': 'url(' + photo + ')'}">
         <div class="remove" *ngIf="!isArchived" (click)="deleteImage($event,index, photo)">
-          <mat-icon>close</mat-icon>
+          <mat-icon>delete</mat-icon>
         </div>
         <div class="hover-text">View</div>
       </div>

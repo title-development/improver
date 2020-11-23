@@ -16,7 +16,7 @@
     padding: 8px;
     width: 100%;
     .image-wrapper {
-      width: 25%;
+      width: 33.33%;
       padding: 8px;
 
       @include response-to(sm) {
@@ -47,7 +47,7 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  height: 75px;
+  height: 95px;
   border-radius: 2px;
   background-color: $white;
   border: solid 1px $grey-300;
@@ -98,30 +98,40 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    cursor: default;
+
+    .mat-icon {
+      position: absolute;
+      cursor: pointer;
+      font-size: 18px;
+      width: 32px;
+      height: 32px;
+      color: $white;
+      transition: opacity .3s ease;
+      right: 0px;
+      top: 0px;
+      padding: 8px;
+      &:hover {
+        opacity: .7;
+      }
+    }
 
     @include response-to(sm) {
       opacity: 1;
       background-color: transparent;
       .mat-icon {
-        color: $grey-500 !important;
+        background-color: rgba(#000, .3);
+        width: 30px;
+        height: 30px;
+        color: #ffffff;
+        transition: opacity 0.3s ease;
+        right: 4px;
+        top: 4px;
+        padding: 6px;
+        border-radius: 4px;
       }
     }
 
-    .mat-icon {
-      cursor: pointer;
-      font-size: 18px;
-      width: 18px;
-      height: 18px;
-      padding: 1px;
-      color: $white;
-      transition: opacity .3s ease;
-      position: absolute;
-      right: 6px;
-      top: 6px;
-      &:hover {
-        opacity: .7;
-      }
-    }
   }
 }
 
