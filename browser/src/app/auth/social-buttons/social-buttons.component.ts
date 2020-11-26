@@ -11,7 +11,7 @@ import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { PopUpMessageService } from "../../api/services/pop-up-message.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RegistrationHelper } from "../../util/helpers/registration-helper";
-import { first, takeUntil } from "rxjs/operators";
+import { finalize, first, takeUntil } from "rxjs/operators";
 import { from, Subject } from "rxjs";
 import { GlobalSpinnerService } from "../../util/global-spinner.serivce";
 import { SocialAuthService, SocialUser } from "../social-login/public-api";
@@ -34,6 +34,7 @@ export class SocialButtonsComponent implements OnDestroy {
   @Input() referralCode: string;
   @Input() preventLogin: boolean = false;
   @Input() disabled: boolean = false;
+  @Output() disabledChange: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Input() processing: boolean = false;
   @Input() isPro: boolean = false;
   @Input() inQuestionary: boolean = false;
@@ -66,6 +67,7 @@ export class SocialButtonsComponent implements OnDestroy {
 
 
   socialLogin(socialPlatform: SocialPlatform) {
+    this.disabledChange.emit(true);
     if (this.preventLogin) {
       return;
     }
@@ -83,6 +85,7 @@ export class SocialButtonsComponent implements OnDestroy {
     this.socialRegistrationAdditionalInfoDialogRef = this.dialog.open(dialogsMap['social-registration-additional-info-dialog'], socialRegistrationAdditionalInfoDialogConfig);
     this.socialRegistrationAdditionalInfoDialogRef
       .afterClosed()
+      .pipe(finalize(() => this.disabledChange.emit(false)))
       .subscribe(result => {
         this.socialRegistrationAdditionalInfoDialogRef = null;
       });
@@ -98,7 +101,9 @@ export class SocialButtonsComponent implements OnDestroy {
     this.socialRegistrationAdditionalInfoDialogRef.componentInstance.userName = userData.name;
     this.socialRegistrationAdditionalInfoDialogRef.componentInstance.socialPlatform = userData.provider;
 
-    this.socialRegistrationAdditionalInfoDialogRef.componentInstance.onSuccess.subscribe(additionalContacts => {
+    this.socialRegistrationAdditionalInfoDialogRef.componentInstance.onSuccess
+      .pipe(finalize(() => this.disabledChange.emit(false)))
+      .subscribe(additionalContacts => {
       registrationHandler(userData, additionalContacts, isPro);
       this.socialRegistrationAdditionalInfoDialogRef.close();
     })
@@ -132,6 +137,7 @@ export class SocialButtonsComponent implements OnDestroy {
   private handleSocialLoginError(socialPlatform: SocialPlatform, message: string = `Cannot connect to ${socialPlatform} api`, showMessage = true): void {
     this.googleFetching = false;
     this.facebookFetching = false;
+    this.disabledChange.emit(false);
     if(showMessage) {
       this.responseMessage.emit(message);
       this.responseMessageType.emit(SystemMessageType.ERROR);

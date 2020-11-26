@@ -73,6 +73,7 @@
         </div>
 
         <social-buttons [inQuestionary]="true"
+                        [(disabled)]="loginProcessing"
                         (responseMessageType)="socialButtonsMessageType = $event;"
                         (responseMessage)="socialButtonsMessageText = $event;"
                         (showMessage)="socialButtonsShowMessage = $event;">

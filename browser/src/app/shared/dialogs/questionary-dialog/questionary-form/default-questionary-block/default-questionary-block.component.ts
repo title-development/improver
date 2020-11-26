@@ -114,6 +114,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     this.filteredStates = constants.states;
 
     securityService.onUserInit.subscribe(() => {
+      this.loginProcessing = false;
       this.phoneValid = false;
       if (this.userAddresses.length == 0) {
         this.loadUserAddress();

@@ -21,7 +21,7 @@
 
           <social-buttons buttonText="Log in with"
                           [processing]="processing"
-                          [disabled]="processing"
+                          [(disabled)]="processing"
                           (responseMessageType)="messageType = $event;"
                           (responseMessage)="messageText = $event;"
                           (showMessage)="showMessage = $event;"></social-buttons>

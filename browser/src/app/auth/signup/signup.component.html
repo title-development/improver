@@ -24,7 +24,7 @@
 
           <social-buttons buttonText="Sign up with"
                           [processing]="registrationProcessing"
-                          [disabled]="registrationProcessing"
+                          [(disabled)]="registrationProcessing"
                           (responseMessageType)="messageType = $event;"
                           (responseMessage)="messageText = $event;"
                           (showMessage)="showMessage = $event;">
