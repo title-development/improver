@@ -12,7 +12,7 @@ import {
 import { Role } from '../../../../model/security-model';
 
 import Cropper from 'cropperjs/dist/cropper.esm.js';
-import { FILE_MIME_TYPES, MAX_FILE_SIZE } from '../../../../util/file-parameters';
+import { FILE_MIME_TYPES, FILE_SIZE_MAX } from '../../../../util/file-parameters';
 import { ConfirmationService } from 'primeng/api';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { addClass } from '../../../../util/dom';
@@ -110,7 +110,7 @@ export class ImageCropperComponent implements ControlValueAccessor, OnInit {
 
   fileValidation(file: File): boolean {
     const allowedMimeType: Array<string> = FILE_MIME_TYPES.images;
-    const maxFileSize: number = MAX_FILE_SIZE.bytes;
+    const maxFileSize: number = FILE_SIZE_MAX.bytes;
     let errorMessage: string;
     if (!allowedMimeType.includes(file.type)) {
       errorMessage = `The file type of ${file.name} is not allowed. \r\n You can only upload the following file types: .png, .jpg, .bmp.`;
@@ -118,7 +118,7 @@ export class ImageCropperComponent implements ControlValueAccessor, OnInit {
 
       return false;
     } else if (file.size > maxFileSize) {
-      errorMessage = `The file ${file.name} has failed to upload. Maximum upload file size ${MAX_FILE_SIZE.megabytes} Mb.`;
+      errorMessage = `The file ${file.name} has failed to upload. Maximum upload file size ${FILE_SIZE_MAX.megabytes} Mb.`;
       this.popUpService.showError(errorMessage);
 
       return false;

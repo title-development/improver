@@ -13,8 +13,8 @@
       </div>
     </div>
   </ng-template>
-  <div class="col-xs-6 col-sm-4 col-md-3 toggle-drop-zone" *ngIf="!isArchived" [ngClass]="{'-opened': dropZoneTrigger}">
-    <div class="add-image-button" (click)="showDropZone($event)">
+  <div class="col-xs-6 col-sm-4 col-md-3 toggle-drop-zone" *ngIf="!isArchived && projectImages.length < PROJECT_ATTACHED_IMAGES_LIMIT" [ngClass]="{'-opened': dropZoneTrigger}">
+    <div class="add-image-button" (click)="showDropZone($event)" >
       <div class="inner">
         <mat-icon>add_circle</mat-icon>
         <div class="add-photo-button-text">Add photo</div>
@@ -50,7 +50,7 @@
           </div>
         </div>
       </div>
-      <label  *ngIf="uploader?.queue?.length" cv-button size="small" for="file-uploader">Add another photo</label>
+      <label  *ngIf="uploader?.queue?.length && projectImages.length < PROJECT_ATTACHED_IMAGES_LIMIT" cv-button size="small" for="file-uploader">Add another photo</label>
     </label>
 
   </div>

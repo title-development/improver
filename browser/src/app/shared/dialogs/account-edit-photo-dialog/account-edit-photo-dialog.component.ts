@@ -6,7 +6,7 @@ import Cropper from 'cropperjs/dist/cropper.esm.js';
 import { AccountService } from '../../../api/services/account.service';
 import { Role } from '../../../model/security-model';
 import { getErrorMessage } from '../../../util/functions';
-import { FILE_MIME_TYPES, MAX_FILE_SIZE } from '../../../util/file-parameters';
+import { FILE_MIME_TYPES, FILE_SIZE_MAX } from '../../../util/file-parameters';
 
 @Component({
   selector: 'account-edit-photo-dialog',
@@ -77,7 +77,7 @@ export class AccountEditPhotoDialogComponent implements OnInit {
 
   fileValidation(file: File): boolean {
     const allowedMimeType: Array<string> = FILE_MIME_TYPES.images;
-    const maxFileSize: number = MAX_FILE_SIZE.bytes;
+    const maxFileSize: number = FILE_SIZE_MAX.bytes;
     let errorMessage: string;
     if (!allowedMimeType.includes(file.type)) {
       errorMessage = `The file type of ${file.name} is not allowed. \r\n You can only upload the following file types: .png, .jpg, .bmp.`;
@@ -85,7 +85,7 @@ export class AccountEditPhotoDialogComponent implements OnInit {
 
       return false;
     } else if (file.size > maxFileSize) {
-      errorMessage = `The file ${file.name} has failed to upload. Maximum upload file size ${MAX_FILE_SIZE.megabytes} Mb.`;
+      errorMessage = `The file ${file.name} has failed to upload. Maximum upload file size ${FILE_SIZE_MAX.megabytes} Mb.`;
       this.popupService.showError(errorMessage);
 
       return false;

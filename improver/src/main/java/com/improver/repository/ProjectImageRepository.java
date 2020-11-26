@@ -22,5 +22,6 @@ public interface ProjectImageRepository extends JpaRepository<ProjectImage, Long
     @Query("SELECT i.name FROM com.improver.entity.ProjectImage i WHERE i.project.id = ?1 ORDER BY i.created ASC")
     List<String> getImageUrlsByProject(long projectId);
 
+    Integer countByProjectId(Long projectId);
 
 }

@@ -22,4 +22,7 @@ public interface DemoProjectImageRepository extends JpaRepository<DemoProjectIma
     @Transactional
     @Query("DELETE FROM com.improver.entity.DemoProjectImage i WHERE i.demoProject.id = ?2")
     void deleteByProjectId(long projectId);
+
+    Integer countByDemoProjectId(Long projectId);
+
 }

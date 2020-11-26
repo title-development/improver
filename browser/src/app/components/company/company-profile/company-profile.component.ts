@@ -33,7 +33,7 @@ import { ReviewService } from '../../../api/services/review.service';
 import { GlueBlockDirective } from '../../../directives/glue-block.directive';
 import { getErrorMessage, resizeImage } from '../../../util/functions';
 
-import { FILE_MIME_TYPES, MAX_FILE_SIZE } from '../../../util/file-parameters';
+import { FILE_MIME_TYPES, FILE_SIZE_MAX } from '../../../util/file-parameters';
 
 
 import { ProjectRequest } from '../../../api/models/ProjectRequest';
@@ -326,7 +326,7 @@ export class CompanyProfileComponent implements OnInit, OnDestroy {
 
   fileValidation(file: File): boolean {
     const allowedMimeType: Array<string> = FILE_MIME_TYPES.images;
-    const maxFileSize: number = MAX_FILE_SIZE.bytes;
+    const maxFileSize: number = FILE_SIZE_MAX.bytes;
     let errorMessage: string;
     if (!allowedMimeType.includes(file.type)) {
       errorMessage = `The file type of ${file.name} is not allowed. \r\n You can only upload the following file types: .png, .jpg, .bmp.`;
@@ -334,7 +334,7 @@ export class CompanyProfileComponent implements OnInit, OnDestroy {
 
       return false;
     } else if (file.size > maxFileSize) {
-      errorMessage = `The file ${file.name} has failed to upload. Maximum upload file size ${MAX_FILE_SIZE.megabytes} Mb.`;
+      errorMessage = `The file ${file.name} has failed to upload. Maximum upload file size ${FILE_SIZE_MAX.megabytes} Mb.`;
       this.popupService.showError(errorMessage);
 
       return false;

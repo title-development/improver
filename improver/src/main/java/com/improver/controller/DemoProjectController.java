@@ -1,12 +1,14 @@
 package com.improver.controller;
 
 import com.improver.entity.DemoProject;
+import com.improver.exception.ValidationException;
+import com.improver.repository.DemoProjectImageRepository;
 import com.improver.repository.DemoProjectRepository;
-import com.improver.security.UserSecurityService;
 import com.improver.service.DemoProjectService;
 import com.improver.service.ImageService;
 import groovy.util.logging.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -20,6 +22,7 @@ import java.time.ZonedDateTime;
 import java.util.Collection;
 
 import static com.improver.application.properties.Path.*;
+import static com.improver.util.ErrorMessages.PROJECT_ATTACHED_IMAGES_LIMIT_MSG;
 
 @Slf4j
 @RestController
@@ -29,7 +32,9 @@ public class DemoProjectController {
     @Autowired private DemoProjectService demoProjectService;
     @Autowired private DemoProjectRepository demoProjectRepository;
     @Autowired private ImageService imageService;
-    @Autowired private UserSecurityService userSecurityService;
+    @Autowired private DemoProjectImageRepository demoProjectImageRepository;
+
+    @Value("${project.attached.images.limit}") private int projectImagesAmountMax;
 
 
     @GetMapping
@@ -84,6 +89,10 @@ public class DemoProjectController {
                                                 @PathVariable long id,
                                                 MultipartFile file) {
         DemoProject project = demoProjectService.getDemoProject(companyId, id);
+        Integer projectImagesCount = demoProjectImageRepository.countByDemoProjectId(project.getId());
+        if (projectImagesCount >= projectImagesAmountMax) {
+            throw new ValidationException(PROJECT_ATTACHED_IMAGES_LIMIT_MSG);
+        }
         String imageUrl = imageService.saveProjectImage(file, project);
         // Set first picture as a cover
         if (!project.hasCover()) {

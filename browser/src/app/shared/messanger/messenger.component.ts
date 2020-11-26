@@ -5,7 +5,7 @@ import { Message } from '@stomp/stompjs';
 import { SecurityService } from '../../auth/security.service';
 import { ProjectRequestService } from '../../api/services/project-request.service';
 import { CompanyService } from '../../api/services/company.service';
-import { ALLOWED_FILE_EXTENTIONS, FILE_MIME_TYPES, MAX_FILE_SIZE } from '../../util/file-parameters';
+import { ALLOWED_FILE_EXTENTIONS, FILE_MIME_TYPES, FILE_SIZE_MAX } from '../../util/file-parameters';
 import { getErrorMessage, jsonParse } from '../../util/functions';
 import { PopUpMessageService } from '../../api/services/pop-up-message.service';
 import { hasClass } from '../../util/dom';
@@ -356,8 +356,8 @@ export class MessengerComponent implements OnInit, OnDestroy {
 
       return false;
     }
-    if (file.size > MAX_FILE_SIZE.bytes) {
-      this.popUpService.showError(`The file ${file.name} has failed to upload. Maximum upload file size ${MAX_FILE_SIZE.megabytes} Mb.`);
+    if (file.size > FILE_SIZE_MAX.bytes) {
+      this.popUpService.showError(`The file ${file.name} has failed to upload. Maximum upload file size ${FILE_SIZE_MAX.megabytes} Mb.`);
       this.file.nativeElement.value = '';
 
       return false;

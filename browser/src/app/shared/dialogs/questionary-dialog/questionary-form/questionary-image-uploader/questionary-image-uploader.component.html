@@ -1,14 +1,17 @@
 <input type="file" id="file-uploader" ng2FileSelect [uploader]="uploader" multiple/>
 <label for="file-uploader"
        ng2FileDrop
-       [ngClass]="{'nv-file-over': hasBaseDropZoneOver}"
+       [ngClass]="{'nv-file-over': hasBaseDropZoneOver, 'inactive': (projectActionService.projectImages.length + uploader?.queue?.length) >= PROJECT_ATTACHED_IMAGES_LIMIT}"
        (fileOver)="fileOverBase($event)"
        (onFileDrop)="onFileDrop($event)"
        [uploader]="uploader"
        class="drop-zone-holder">
 
   <div class="drop-zone-label" [ngClass]="{'with-images': uploader?.queue?.length > 0 || projectActionService.projectImages.length > 0}">
-    Drop pictures to attach, or click here
+    <span *ngIf="(projectActionService.projectImages.length + uploader?.queue?.length) < PROJECT_ATTACHED_IMAGES_LIMIT; else altDropZoneTitle">
+      Drop pictures to attach, or click here
+    </span>
+    <ng-template #altDropZoneTitle>Attached pictures</ng-template>
   </div>
 
   <div class="image-list-wrapper" [ngClass]="{'with-images': uploader?.queue?.length > 0 || projectActionService.projectImages.length > 0}">
@@ -51,6 +54,6 @@
   </div>
 
 
-  <label class="add-photo-button-mobile" *ngIf="uploader?.queue?.length > 0 || projectActionService.projectImages.length > 0" cv-button size="small" for="file-uploader">Add another photo</label>
+  <label class="add-photo-button-mobile" *ngIf="(uploader?.queue?.length > 0 || projectActionService.projectImages.length > 0) && (projectActionService.projectImages.length + uploader?.queue?.length) < PROJECT_ATTACHED_IMAGES_LIMIT" cv-button size="small" for="file-uploader">Add another photo</label>
 
 </label>

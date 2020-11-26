@@ -3,11 +3,13 @@ package com.improver.controller;
 import com.improver.entity.Customer;
 import com.improver.entity.Project;
 import com.improver.exception.NotFoundException;
+import com.improver.exception.ValidationException;
 import com.improver.model.in.CloseProjectRequest;
 import com.improver.model.out.project.CloseProjectQuestionary;
 import com.improver.model.out.project.CompanyProjectRequest;
 import com.improver.model.out.project.CustomerProject;
 import com.improver.model.out.project.CustomerProjectShort;
+import com.improver.repository.ProjectImageRepository;
 import com.improver.repository.ProjectRepository;
 import com.improver.security.UserSecurityService;
 import com.improver.service.CustomerProjectService;
@@ -15,6 +17,7 @@ import com.improver.service.ImageService;
 import com.improver.service.ProjectService;
 import com.improver.util.annotation.PageableSwagger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -31,6 +34,8 @@ import java.util.Collection;
 import java.util.List;
 
 import static com.improver.application.properties.Path.*;
+import static com.improver.util.ErrorMessages.PROJECT_ATTACHED_IMAGES_LIMIT_MSG;
+
 
 @PreAuthorize("hasRole('CUSTOMER')")
 @RestController
@@ -42,6 +47,9 @@ public class CustomerProjectController {
     @Autowired private ProjectRepository projectRepository;
     @Autowired private ProjectService projectService;
     @Autowired private ImageService imageService;
+    @Autowired private ProjectImageRepository projectImageRepository;
+
+    @Value("${project.attached.images.limit}") private int projectImagesAmountMax;
 
 
     @GetMapping
@@ -89,6 +97,10 @@ public class CustomerProjectController {
     @PostMapping(ID_PATH_VARIABLE + IMAGES)
     public ResponseEntity<Void> addProjectImage(@PathVariable long id, MultipartFile file) {
         Project project = projectService.getProject(id);
+        Integer projectImagesCount = projectImageRepository.countByProjectId(project.getId());
+        if (projectImagesCount >= projectImagesAmountMax) {
+            throw new ValidationException(PROJECT_ATTACHED_IMAGES_LIMIT_MSG);
+        }
         String imageUrl = imageService.saveProjectImage(file, project);
         // Set first picture as a cover
         if (!project.hasCover()) {
@@ -119,5 +131,5 @@ public class CustomerProjectController {
         return projectRepository.findByIdAndCustomerId(id, customer.getId())
             .orElseThrow(NotFoundException::new);
     }
-    
+
 }

@@ -20,7 +20,6 @@ public final class ErrorMessages {
     public static final String ORDER_DESCRIPTION_SIZE_ERROR_MESSAGE = "Order description must be not more " + ORDER_DESCRIPTION_SIZE + " characters";
     public static final String CAPTCHA_VALIDATION_ERROR_MESSAGE = "You did not pass captcha";
 
-
     public static final String BAD_CREDENTIALS_MSG = "Email or password is incorrect";
     public static final String SESSION_TIMED_OUT_MSG = "Your session has timed out. Please log in again";
     public static final String ACCOUNT_DELETED_MSG = "Account has been deleted";
@@ -28,4 +27,6 @@ public final class ErrorMessages {
     public static final String ACCOUNT_BLOCKED_MSG = "Account is blocked. Please contact support";
     public static final String INVALID_ACTIVATION_LINK = "Invalid activation link";
     public static final String CREDENTIALS_EXPIRED_MSG = "Password has been expired. Please change it";
+
+    public static final String PROJECT_ATTACHED_IMAGES_LIMIT_MSG = "The maximum amount of images allowed to attach exceeded";
 }

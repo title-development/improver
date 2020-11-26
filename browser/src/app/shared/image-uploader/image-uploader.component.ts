@@ -12,8 +12,8 @@ import { FileItem, FileLikeObject, FileUploader } from 'ng2-file-upload';
 import { ProjectService } from '../../api/services/project.service';
 import {
   FILE_MIME_TYPES,
-  IMAGE_UPLOADER_QUERY_LIMIT,
-  MAX_FILE_SIZE,
+  PROJECT_ATTACHED_IMAGES_LIMIT,
+  FILE_SIZE_MAX,
   UPLOAD_IMAGE_COMPRESS_RATIO,
   UPLOAD_IMAGE_MAX_HEIGHT,
   UPLOAD_IMAGE_MAX_WIDTH
@@ -29,6 +29,7 @@ import { dialogsMap } from '../dialogs/dialogs.state';
 import { Subject } from 'rxjs/internal/Subject';
 import { Observable } from 'rxjs/internal/Observable';
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { getErrorMessage } from "../../util/functions";
 
 @Component({
   selector: 'image-uploader',
@@ -36,6 +37,8 @@ import { MatDialog, MatDialogRef } from "@angular/material/dialog";
   styleUrls: ['./image-uploader.component.scss', './image-preview.scss']
 })
 export class ImagesUploaderComponent implements OnInit {
+
+  PROJECT_ATTACHED_IMAGES_LIMIT = PROJECT_ATTACHED_IMAGES_LIMIT
 
   @Input() title: string;
   @Input() subtitle: string;
@@ -69,8 +72,8 @@ export class ImagesUploaderComponent implements OnInit {
       url: this.apiUrl,
       authToken: this.securityService.getTokenHeader(),
       allowedMimeType: FILE_MIME_TYPES.images,
-      maxFileSize: MAX_FILE_SIZE.bytes,
-      queueLimit: IMAGE_UPLOADER_QUERY_LIMIT,
+      maxFileSize: FILE_SIZE_MAX.bytes,
+      queueLimit: PROJECT_ATTACHED_IMAGES_LIMIT,
     });
     this.uploader.onWhenAddingFileFailed = (item: FileLikeObject, filter: any, options: any) => {
       this.handleError(item, filter);
@@ -93,7 +96,10 @@ export class ImagesUploaderComponent implements OnInit {
         //resetting image to upload again
         item.isUploaded = false;
         item.isError = false;
+      } else if (status == 422) {
+        this.uploader.clearQueue()
       }
+      this.popupService.showWarning(getErrorMessage({error: response}))
     };
   }
 
@@ -277,7 +283,7 @@ export class ImagesUploaderComponent implements OnInit {
 
   private fileValidation(file: File): boolean {
     const allowedMimeType: Array<string> = FILE_MIME_TYPES.images;
-    const maxFileSize: number = MAX_FILE_SIZE.bytes;
+    const maxFileSize: number = FILE_SIZE_MAX.bytes;
     if (!allowedMimeType.includes(file.type)) {
 
       return false;
@@ -318,10 +324,10 @@ export class ImagesUploaderComponent implements OnInit {
         text = `The file type of ${item.name} is not allowed. \r\n You can only upload the following file types: .png, .jpg, .bmp.`;
         break;
       case 'fileSize':
-        text = `The file ${item.name} has failed to upload. Maximum upload file size ${MAX_FILE_SIZE.megabytes} Mb.`;
+        text = `The file ${item.name} has failed to upload. Maximum upload file size ${FILE_SIZE_MAX.megabytes} Mb.`;
         break;
       case 'queueLimit':
-        console.info(`Query limit. You can add only ${IMAGE_UPLOADER_QUERY_LIMIT} images to upload query.`);
+        console.info(`Query limit. You can add only ${PROJECT_ATTACHED_IMAGES_LIMIT} images to upload query.`);
         return;
       default:
         text = 'Could not add image to upload query';

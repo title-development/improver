@@ -11,7 +11,7 @@ import {
 	Renderer2,
 	ViewChild
 } from '@angular/core';
-import { ALLOWED_FILE_EXTENTIONS, MAX_FILE_SIZE } from '../../../../util/file-parameters';
+import { ALLOWED_FILE_EXTENTIONS, FILE_SIZE_MAX } from '../../../../util/file-parameters';
 import { ConfirmationService } from 'primeng';
 import { PopUpMessageService } from "../../../../api/services/pop-up-message.service";
 import { DragulaService } from "ng2-dragula";
@@ -133,8 +133,8 @@ export class ImagePreviewComponent implements OnDestroy, AfterViewInit {
 
       return false;
     }
-    if (file.size > MAX_FILE_SIZE.bytes) {
-      this.popUpService.showError(`The file <b>${file.name}</b> has failed to upload. Maximum upload file size <b>${MAX_FILE_SIZE.megabytes}</b> Mb`);
+    if (file.size > FILE_SIZE_MAX.bytes) {
+      this.popUpService.showError(`The file <b>${file.name}</b> has failed to upload. Maximum upload file size <b>${FILE_SIZE_MAX.megabytes}</b> Mb`);
       this.fileInput.nativeElement.value = '';
 
       return false;
