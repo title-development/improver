@@ -10,6 +10,8 @@ import { FindProfessionalService } from '../../api/services/find-professional.se
 import { UserService } from "../../api/services/user.service";
 import { CustomerSuggestionService } from "../../api/services/customer-suggestion.service";
 import { UserSearchService } from "../../util/user-search.service";
+import { SecurityService } from "../../auth/security.service";
+import { Role } from "../../model/security-model";
 
 
 @Component({
@@ -36,9 +38,11 @@ export class FindProfessionalsComponent implements OnInit {
   swiper: Swiper;
   resetAfterFind = true;
   isSwiperDisplayed: boolean = false;
+  Role = Role;
 
 
-  constructor(public userSearchService: UserSearchService,
+  constructor(private securityService: SecurityService,
+              public userSearchService: UserSearchService,
               public customerSuggestionService: CustomerSuggestionService,
               public dialog: MatDialog,
               public userService: UserService,
@@ -49,7 +53,11 @@ export class FindProfessionalsComponent implements OnInit {
     this.createFormGroup();
     this.getSuggestedTrades();
     this.getPopularServiceTypes();
-    this.getLastCustomerZipCode();
+    this.securityService.onUserInit.subscribe(() => {
+      if (this.securityService.hasRole(Role.CUSTOMER)) {
+        this.getLastCustomerZipCode();
+      }
+    });
     this.subscribeForMediaQuery();
   }
 
