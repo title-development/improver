@@ -20,7 +20,6 @@ import { mobileMainDialogBarConfig } from "../../../shared/dialogs/dialogs.confi
 import { TradeService } from "../../../api/services/trade.service";
 import { MobileMenuService } from "../../../api/services/mobile-menu-service";
 import { NotificationResource } from "../../../util/notification.resource";
-import moveHiredContractorsToFirstPosition = Project.moveHiredContractorsToFirstPosition;
 
 interface Tab {
   label: string;
@@ -157,7 +156,7 @@ export class CustomerDashboardComponent implements OnDestroy {
       .subscribe(
       (pageable: RestPage<CustomerProjectShort>) => {
         tab.pageable = forUpdate ? reCalculatePageable(tab.pageable, pageable, this.maxItemPerPage) : pageable;
-        moveHiredContractorsToFirstPosition(pageable.content);
+        Project.moveHiredContractorsToFirstPosition(pageable.content);
         tab.projects = pageable.content;
       },
         err => this.popUpMessageService.showError(getErrorMessage(err))
