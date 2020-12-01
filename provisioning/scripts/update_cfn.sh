@@ -15,7 +15,7 @@ STACK_PARAMETERS="$6"
 [ -z "$STACK_URL" ] && ERROR 'No stack url provided'
 
 CLUSTER_NAME=$(aws ecs list-clusters --query "clusterArns[?contains(@,'ecs-$USER-$ENVIRONMENT-cluster')]" --output text)
-TASK_ID=$(aws ecs list-tasks --cluster $CLUSTER_NAME --desired-status RUNNING | egrep "task" | tr "/" " " | tr "[" " " |  awk '{print $2}' | sed 's/"$//')
+TASK_ID=$(aws ecs list-tasks --cluster $CLUSTER_NAME --desired-status RUNNING | egrep "task" | tr "/" " " | tr "[" " " |  awk '{print $3}' | sed 's/"$//')
 
 function aws_change_set(){
 	echo -e "Creating cloudformation stack change set for: $STACK_NAME"

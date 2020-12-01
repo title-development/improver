@@ -95,7 +95,7 @@ function updateEcsStack {
 
 function stopEcsTask {
     CLUSTER_NAME=$(aws ecs list-clusters --profile ${AWS_PROFILE} --query "clusterArns[?contains(@,'ecs-${USER}-${ENVIRONMENT}-cluster')]" --output text)
-    TASK_ID=$(aws ecs list-tasks --cluster $CLUSTER_NAME --profile ${AWS_PROFILE} --desired-status RUNNING | egrep "task" | tr "/" " " | tr "[" " " |  awk '{print $2}' | sed 's/"$//')
+    TASK_ID=$(aws ecs list-tasks --cluster $CLUSTER_NAME --profile ${AWS_PROFILE} --desired-status RUNNING | egrep "task" | tr "/" " " | tr "[" " " |  awk '{print $3}' | sed 's/"$//')
     echo -e "Stop ecs task: $TASK_ID for $CLUSTER_NAME cluster"
     cd $homedir/../..
     mvn clean deploy -Denvironment=$ENVIRONMENT -DdomainName=$DOMAIN_NAME -DdbName=$DB_NAME -DdbUserName=$DB_USER_NAME -DdbPassword=$DB_PASSWORD -Daws.account.id=$AWS_ACCOUNT_ID -Daws.profile=$AWS_PROFILE
