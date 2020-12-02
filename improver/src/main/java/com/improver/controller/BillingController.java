@@ -2,13 +2,9 @@ package com.improver.controller;
 
 import com.improver.entity.*;
 import com.improver.exception.NotFoundException;
-import com.improver.exception.ValidationException;
-import com.improver.model.out.*;
 import com.improver.model.out.billing.PaymentCard;
 import com.improver.model.out.billing.Receipt;
-import com.improver.model.out.billing.SubscriptionInfo;
 import com.improver.model.out.billing.TransactionModel;
-import com.improver.repository.TransactionRepository;
 import com.improver.security.UserSecurityService;
 import com.improver.security.annotation.AdminAccess;
 import com.improver.service.*;
@@ -27,9 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
-import static com.improver.application.properties.BusinessProperties.MIN_SUBSCRIPTION;
 import static com.improver.application.properties.Path.*;
 
 @RestController
@@ -37,13 +31,11 @@ import static com.improver.application.properties.Path.*;
 public class BillingController {
 
     @Autowired private BillingService billingService;
-    @Autowired private SubscriptionService subscriptionService;
     @Autowired private PaymentService paymentService;
     @Autowired private CompanyRepository companyRepository;
     @Autowired private BillRepository billRepository;
     @Autowired private CompanyService companyService;
     @Autowired private UserSecurityService userSecurityService;
-    @Autowired private TransactionRepository transactionRepository;
 
 
 
@@ -66,48 +58,6 @@ public class BillingController {
     }
 
 
-    //TODO: Move to CompanySettingsController
-    @CompanyMemberOrSupportAccess
-    @GetMapping(SUBSCRIPTION)
-    public ResponseEntity<SubscriptionInfo> getSubscription(@PathVariable long companyId) {
-        Billing billing = billRepository.findByCompanyId(companyId)
-            .orElseThrow(NotFoundException::new);
-
-        Subscription subscription = Optional.ofNullable(billing.getSubscription())
-            .orElse(new Subscription());
-        int dealsCount = 0;
-        if(subscription.isActive()){
-            dealsCount = transactionRepository.countSubscriptionPurchasesForPeriod(companyId, subscription.getStartBillingDate(), subscription.getNextBillingDate());
-        }
-        return new ResponseEntity<>(new SubscriptionInfo(subscription, dealsCount), HttpStatus.OK);
-    }
-
-
-    //TODO: Move to CompanySettingsController
-    @CompanyMemberOrSupportAccess
-    @PutMapping(SUBSCRIPTION)
-    public ResponseEntity<Subscription> subscribe(@PathVariable long companyId,
-                                                  @RequestParam int budget,
-                                                  @RequestHeader int timeZoneOffset) {
-        Company company = companyRepository.findById(companyId)
-            .orElseThrow(NotFoundException::new);
-        if (budget < MIN_SUBSCRIPTION) {
-            throw new ValidationException("Minimum budget is 100");
-        }
-        Contractor contractor = userSecurityService.currentPro();
-        Subscription subscription = subscriptionService.subscribe(contractor, company, budget, timeZoneOffset).getSubscription();
-        return new ResponseEntity<>(subscription, HttpStatus.OK);
-    }
-
-    //TODO: Move to CompanySettingsController
-    @CompanyMemberOrSupportAccess
-    @DeleteMapping(SUBSCRIPTION)
-    public ResponseEntity<Void> unsubscribe(@PathVariable long companyId, @RequestHeader int timeZoneOffset) {
-        Company company = companyRepository.findById(companyId)
-            .orElseThrow(NotFoundException::new);
-        subscriptionService.cancelSubscription(company, timeZoneOffset);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 
     @CompanyMemberOrSupportAccess
     @PageableSwagger
@@ -168,15 +118,6 @@ public class BillingController {
             .orElseThrow(NotFoundException::new);
         paymentService.deleteCard(company, id);
         return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-
-    //TODO: Move to somewhere else
-    @CompanyMemberOrSupportAccess
-    @GetMapping(LEADS + "/report")
-    public ResponseEntity<CompanyLeadsReport> getCompanyLeadsReport(@PathVariable long companyId) {
-        CompanyLeadsReport companyLeadsReport = billingService.getCompanyLeadsReport(companyId);
-        return new ResponseEntity<>(companyLeadsReport, HttpStatus.OK);
     }
 
 }

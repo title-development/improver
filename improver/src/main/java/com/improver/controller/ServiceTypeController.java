@@ -97,7 +97,7 @@ public class ServiceTypeController {
         return new ResponseEntity<>(serviceTypeService.isNameFree(serviceName) ? HttpStatus.OK : HttpStatus.CONFLICT);
     }
 
-    //todo refactor
+
     @SupportAccess
     @GetMapping("/with-questionary")
     public ResponseEntity<List<List<NameIdTuple>>> getSortedByQuestionaryExist() {

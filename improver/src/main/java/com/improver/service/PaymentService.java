@@ -182,7 +182,7 @@ public class PaymentService {
     public List<PaymentCard> getCards(Company company) {
         Billing bill = company.getBilling();
         if (bill.getStripeId() == null) {
-            return new ArrayList<PaymentCard>();
+            return new ArrayList<>();
         }
         com.stripe.model.Customer stripeCustomer;
         List<PaymentCard> cards;

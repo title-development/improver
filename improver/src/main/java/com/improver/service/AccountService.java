@@ -13,6 +13,7 @@ import com.improver.repository.ContractorRepository;
 import com.improver.repository.CustomerRepository;
 import com.improver.repository.UserRepository;
 import com.improver.security.JwtUtil;
+import com.improver.security.UserSecurityService;
 import com.improver.util.mail.MailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,7 @@ public class AccountService {
     @Autowired private JwtUtil jwtUtil;
     @Autowired private CustomerRepository customerRepository;
     @Autowired private ContractorRepository contractorRepository;
+    @Autowired private UserSecurityService userSecurityService;
 
 
     public void updateAccount(User existed, UserAccount account) {
@@ -146,7 +148,7 @@ public class AccountService {
     public void resetPasswordRequest(String email) {
         User user;
         try {
-            user = getUserWithCheck(email.toLowerCase());
+            user = userSecurityService.getUserWithCheck(email.toLowerCase());
         } catch (Exception e) {
             log.info("Could not reset password for {}. {}", email.toLowerCase(), e.getMessage());
             return;
@@ -155,20 +157,6 @@ public class AccountService {
         user.generateValidationKey();
         userRepository.save(user);
         mailService.sendPasswordRestore(user);
-    }
-
-    //TODO: userSecurityService
-    @Deprecated
-    public User getUserWithCheck(String email) {
-        User user = userRepository.findByEmail(email)
-            .orElseThrow(NotFoundException::new);
-        if (user.isBlocked()) {
-            throw new AccessDeniedException();
-        }
-        if (user.isDeleted()) {
-            throw new NotFoundException("User has been deleted");
-        }
-        return user;
     }
 
 

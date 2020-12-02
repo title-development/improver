@@ -3,6 +3,7 @@ package com.improver.security;
 import com.improver.application.properties.Environments;
 import com.improver.application.properties.SecurityProperties;
 import com.improver.entity.*;
+import com.improver.exception.AccessDeniedException;
 import com.improver.exception.AuthenticationRequiredException;
 import com.improver.exception.NotFoundException;
 import com.improver.model.out.LoginModel;
@@ -306,5 +307,18 @@ public class UserSecurityService implements UserDetailsService {
             cookie.setDomain(serverDomain);
         }
         return cookie;
+    }
+
+
+    public User getUserWithCheck(String email) {
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(NotFoundException::new);
+        if (user.isBlocked()) {
+            throw new AccessDeniedException();
+        }
+        if (user.isDeleted()) {
+            throw new NotFoundException("User has been deleted");
+        }
+        return user;
     }
 }

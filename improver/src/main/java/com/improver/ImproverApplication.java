@@ -19,9 +19,8 @@ import java.util.TimeZone;
 public class ImproverApplication {
 
 	public static void main(String[] args) {
-        //TODO: Mykhailo Soltys finish this
-	    //TimeZone.setDefault(TimeZone.getTimeZone("EST"));
 		SpringApplication.run(ImproverApplication.class, args);
+		System.out.println("Time zone: " + TimeZone.getDefault());
 	}
 
 }

@@ -35,7 +35,6 @@ public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
         } else {
             message = BAD_CREDENTIALS_MSG;
         }
-        //TODO: may need to send allow origins header
         response.sendError(HttpStatus.UNAUTHORIZED.value(), message);
 
     }
