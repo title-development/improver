@@ -64,12 +64,13 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
         " AND NOT EXISTS (SELECT up FROM c.unavailabilityPeriods up WHERE :currentDate BETWEEN up.fromDate AND up.tillDate)")
     List<Company> getEligibleForSubscriptionLead(ServiceType serviceType, String zip, int leadPrice, LocalDate currentDate);
 
-    @Query(value = "SELECT comp.id from contractors contr " +
-        " LEFT JOIN (SELECT pr.contractor_id AS contr_id, MAX(pr.created) AS latest FROM project_requests pr WHERE pr.is_manual = false GROUP BY pr.contractor_id) AS leads ON leads.contr_id = contr.id " +
-        " INNER JOIN companies comp on contr.company_id = comp.id " +
+    @Query(value = "SELECT * from companies comp " +
+        " INNER JOIN contractors contr on comp.id = contr.company_id " +
+        " LEFT JOIN (SELECT pr.contractor_id AS contr_id, MAX(pr.created) AS latest FROM project_requests pr " +
+        "           WHERE pr.is_manual = false GROUP BY pr.contractor_id) AS leads ON leads.contr_id = contr.id " +
         " WHERE comp.id IN :eligibleForSubs " +
         " ORDER BY leads.latest ASC NULLS FIRST LIMIT :number", nativeQuery = true)
-    List<Long> getLastSubsPurchased(List<Long> eligibleForSubs, int number);
+    List<Company> getLastSubsPurchased(List<Long> eligibleForSubs, int number);
 
     @Query("SELECT CASE WHEN count(c)> 0 THEN false ELSE true END FROM com.improver.entity.Company c WHERE LOWER(c.name) = LOWER(?1)")
     boolean isNameFree(String name);

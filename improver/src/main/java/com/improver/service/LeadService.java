@@ -269,11 +269,7 @@ public class LeadService {
             return eligibleForSubs;
         }
         List<Long> eligibleIds = eligibleForSubs.stream().map(Company::getId).collect(Collectors.toList());
-        // TODO: fix in the future. Hibernate exception when converting to Company entity
-        List<Long> ids = companyRepository.getLastSubsPurchased(eligibleIds, limit);
-        return ids.stream()
-            .map(id -> companyRepository.findById(id).get())
-            .collect(Collectors.toList());
+        return companyRepository.getLastSubsPurchased(eligibleIds, limit);
     }
 
 
