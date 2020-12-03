@@ -41,11 +41,11 @@ export class CustomerSuggestionService {
   get popularTrades$(): ReplaySubject<Array<NameIdImageTuple>> {
     if (!this.popularTradesCached) {
       this.popularTradesCached = true;
-      this.tradeService.getPopular(16).subscribe((serviceTypes: Array<NameIdImageTuple>) => {
-        if (!serviceTypes){
+      this.tradeService.getPopular(16).subscribe((popularTrades: Array<NameIdImageTuple>) => {
+        if (!popularTrades){
           this.popularTradesCached = false;
         }
-        this._popularTrades$.next(serviceTypes);
+        this._popularTrades$.next(popularTrades);
       }, err => {
         this.popularTradesCached = false;
         console.error(err);

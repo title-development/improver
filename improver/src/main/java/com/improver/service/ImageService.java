@@ -5,6 +5,7 @@ import com.improver.entity.*;
 import com.improver.exception.InternalServerException;
 import com.improver.exception.NotFoundException;
 import com.improver.exception.ValidationException;
+import com.improver.model.NameDataTuple;
 import com.improver.model.projection.ImageProjection;
 import com.improver.repository.DemoProjectImageRepository;
 import com.improver.repository.ImageRepository;
@@ -25,8 +26,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URI;
+import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -34,6 +37,7 @@ import java.util.stream.Collectors;
 import static com.improver.application.properties.Path.IMAGES_PATH;
 import static com.improver.application.properties.Path.SLASH;
 import static com.improver.application.properties.SystemProperties.IMAGES_CACHE_DURATION;
+import static com.improver.application.properties.SystemProperties.SERVICE_CATALOG_CACHE_DURATION;
 
 
 @Service
@@ -41,6 +45,8 @@ public class ImageService {
 
     private static final char COMMA = ',';
     private static final char FILE_EXTENSION_SEPARATOR = '.';
+    private ZonedDateTime tradeImagesCacheExpirationTime;
+    private List<NameDataTuple> tradeImages;
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -159,11 +165,22 @@ public class ImageService {
             : addCacheControl(imageProjection.getImage());
     }
 
+    private void resetTradeImagesCacheExpiration() {
+        this.tradeImagesCacheExpirationTime = ZonedDateTime.now().plus(SERVICE_CATALOG_CACHE_DURATION);
+    }
+
     public ResponseEntity<Resource> getImageByName(String name) {
-        Image image = imageRepository.findByName(name)
-                                     .orElseThrow(NotFoundException::new);
-        byte[] media = image.getData();
-        return addCacheControl(media);
+        if (this.tradeImagesCacheExpirationTime == null || ZonedDateTime.now().isAfter(this.tradeImagesCacheExpirationTime)) {
+            this.tradeImages = imageRepository.findAllTradeImages();
+            resetTradeImagesCacheExpiration();
+        }
+
+        NameDataTuple nameDataTuple = this.tradeImages.stream()
+            .filter(cacheImage -> cacheImage.getName().equals(name))
+            .findFirst()
+            .orElseGet(() -> new NameDataTuple(imageRepository.findByName(name).orElseThrow(NotFoundException::new)));
+
+        return addCacheControl(nameDataTuple.getData());
     }
 
     private ResponseEntity<Resource> redirectToResourceURL(String iconUrl) {
