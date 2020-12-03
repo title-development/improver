@@ -91,7 +91,7 @@
               </div>
               <ng-template ngFor let-detail [ngForOf]="project.details">
                 <div class="group">
-                  <h4>{{detail.name}}</h4>
+                  <h4>{{detail.title}}</h4>
                   <p>
                     <ng-template ngFor let-result let-last="last" [ngForOf]="detail.results">
                       <span>{{result}}</span>

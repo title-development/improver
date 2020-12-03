@@ -103,7 +103,7 @@
                         Cancel Project
                       </button>
                       <!-- Menu for Uncompleted Order -->
-                      <button mat-menu-item (click)="projectActionService.resubmitOrder(project.id)"
+                      <button mat-menu-item (click)="projectActionService.openSubmitOrderModal(project, true)"
                               *ngIf="project.status == Project.Status.UNCOMPLETED">
                         Submit Project
                       </button>

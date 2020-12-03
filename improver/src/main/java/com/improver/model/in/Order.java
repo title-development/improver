@@ -76,14 +76,14 @@ public class Order {
     @Accessors(chain = true)
     public static class QuestionAnswer {
 
-        private String name;
+        private String title;
         private List<String> results;
 
         public QuestionAnswer() {
         }
 
-        public QuestionAnswer(String name, List<String> results) {
-            this.name = name;
+        public QuestionAnswer(String title, List<String> results) {
+            this.title = title;
             this.results = results;
         }
     }

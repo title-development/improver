@@ -33,9 +33,9 @@ public class Questionary {
 
 
 
-    public Question getQuestionByName(String questionName) {
+    public Question getQuestionByTitle(String questionTitle) {
         return getQuestions().stream()
-            .filter(question -> question.getName().equals(questionName))
+            .filter(question -> question.getTitle().equals(questionTitle))
             .findAny()
             .orElse(null);
     }

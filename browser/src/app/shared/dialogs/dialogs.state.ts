@@ -37,6 +37,7 @@ import { EmailVerificationHintDialogComponent } from "./email-verification-hint-
 import { PasswordEditorComponent } from "./password-editor/password-editor.component";
 import { CompanyFoundationYearEditDialogComponent } from "./change-company-foundation-year-dialog/company-foundation-year-edit-dialog.component";
 import { NotReviewedProjectRequestDialogComponent } from "./not-reviewed-project-request-dialog/not-reviewed-project-request-dialog.component";
+import { SubmitProjectDialogComponent } from "./submit-project-dialog/submit-project-dialog.component";
 
 export const dialogs = [
   QuestionaryDialogComponent,
@@ -50,6 +51,7 @@ export const dialogs = [
   ChangeDefaultPaymentCardDialogComponent,
   AddMoneyDialogComponent,
   CompleteProjectDialogComponent,
+  SubmitProjectDialogComponent,
   CancelProjectDialogComponent,
   DeclineContractorDialogComponent,
   AddCompanyReviewComponent,
@@ -89,6 +91,7 @@ export const dialogsMap = {
   'change-default-payment-card-dialog': ChangeDefaultPaymentCardDialogComponent,
   'add-money-dialog': AddMoneyDialogComponent,
   'complete-project-dialog': CompleteProjectDialogComponent,
+  'submit-project-dialog': SubmitProjectDialogComponent,
   'cancel-project-dialog': CancelProjectDialogComponent,
   'decline-contractor-dialog': DeclineContractorDialogComponent,
   'add-review': AddCompanyReviewComponent,

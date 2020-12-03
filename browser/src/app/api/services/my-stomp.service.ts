@@ -1,10 +1,10 @@
-import {Inject, Injectable} from "@angular/core";
-import {InjectableRxStompConfig, RxStompService} from '@stomp/ng2-stompjs';
-import {SecurityService} from "../../auth/security.service";
-import {RxStompState} from '@stomp/rx-stomp';
-import {IFrame} from '@stomp/stompjs';
-import {environment} from '../../../environments/environment';
-import {PopUpMessageService} from "./pop-up-message.service";
+import { Inject, Injectable } from "@angular/core";
+import { InjectableRxStompConfig, RxStompService } from '@stomp/ng2-stompjs';
+import { SecurityService } from "../../auth/security.service";
+import { RxStompState } from '@stomp/rx-stomp';
+import { IFrame } from '@stomp/stompjs';
+import { environment } from '../../../environments/environment';
+import { PopUpMessageService } from "./pop-up-message.service";
 
 
 @Injectable()
@@ -21,7 +21,7 @@ export class MyStompService extends RxStompService {
     reconnectDelay: 0,           // Disabled, we do manual reconnect through this.reconnectAfter()
     debug: (str) => {
       if (!environment.production) {
-        console.log(new Date(), str);
+        // console.log(new Date(), str);
       }
     }
   };

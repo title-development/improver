@@ -264,9 +264,9 @@ public class OrderService {
             throw new ValidationException("Answers for all questions are required");
         }
         for(Order.QuestionAnswer questionAnswer : fromOrder) {
-            Question question = questionary.getQuestionByName(questionAnswer.getName());
+            Question question = questionary.getQuestionByTitle(questionAnswer.getTitle());
             if (question == null) {
-                log.error("Question name=%s not exist!", questionAnswer.getName());
+                log.error("Question = {} - not exist!", questionAnswer.getTitle(), null);
                 throw new ValidationException("Invalid Questionary");
             }
             try {

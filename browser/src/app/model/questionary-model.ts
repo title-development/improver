@@ -25,8 +25,8 @@ export class QuestionaryBlock {
   answers?: Answer[];
   results?: string[];
 
-  constructor(name: string, results: string[]) {
-    this.name = name;
+  constructor(title: string, results: string[]) {
+    this.title = title;
     this.results = results;
   }
 }

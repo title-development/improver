@@ -426,40 +426,13 @@
        *ngIf="questionaryControlService.currentQuestionIndex == questionaryControlService.questionaryLength + 4 + (personalInfoRequired() ? 1 : 0)">
     <h2 class="question-title">You are requesting {{questionaryControlService.serviceType.name}}</h2>
 
-    <div class="project-summary fill-flex-space">
-        <div class="project-details-group" *ngIf="!securityService.isAuthenticated()">
-          <div class="label">Phone:</div>
-          <div class="value main">{{defaultQuestionaryForm.get('customerPersonalInfo.phone').value}}</div>
-        </div>
-        <div class="project-details-group">
-          <div class="label">Location:</div>
-          <div class="value main">
-            {{defaultQuestionaryForm.get('projectLocation').value?.streetAddress}},
-            {{defaultQuestionaryForm.get('projectLocation').value?.city}},
-            {{defaultQuestionaryForm.get('projectLocation').value?.state}}
-            {{defaultQuestionaryForm.get('projectLocation').value?.zip}}
-          </div>
-        </div>
-        <div class="project-details-group start-expectation">
-          <div class="label">When do you need your project started:</div>
-          <div class="value main">{{defaultQuestionaryForm.get('startExpectation').value}}</div>
-        </div>
-
-        <div class="project-details-group notes">
-          <div class="label">Notes:</div>
-          <div class="value main">{{defaultQuestionaryForm.get('notes').value}}</div>
-        </div>
-        <ng-template ngFor let-question [ngForOf]="questionaryAnswers">
-          <div class="project-details-group {{question.key | toclassname}}">
-            <div class="label">{{question.key}}:</div>
-            <div class="value">
-              <ng-template ngFor let-value [ngForOf]="question.value">
-                <span>{{value}}</span>
-              </ng-template>
-            </div>
-          </div>
-        </ng-template>
-      </div>
+    <project-summary
+    [phone]="defaultQuestionaryForm.get('customerPersonalInfo.phone').value"
+    [projectLocation]="defaultQuestionaryForm.get('projectLocation').value"
+    [startExpectation]="defaultQuestionaryForm.get('startExpectation').value"
+    [notes]="defaultQuestionaryForm.get('notes').value"
+    [questionaryAnswers]="questionaryAnswers">
+    </project-summary>
 
     <div class="questionary-dialog-footer" fxLayoutAlign="end center">
       <button cv-button-empty class="questionary-previous-button" (click)="questionaryControlService.previousQuestion()" type="button">Back</button>

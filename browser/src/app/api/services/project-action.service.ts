@@ -25,6 +25,7 @@ import { ReviewService } from "./review.service";
 import { ErrorHandler } from "../../util/handlers/error-handler";
 import { CustomerSuggestionService } from "./customer-suggestion.service";
 import { NavigationHelper } from "../../util/helpers/navigation-helper";
+import { Project } from "../models/Project";
 
 @Injectable()
 export class ProjectActionService {
@@ -495,7 +496,31 @@ export class ProjectActionService {
 
   resubmitOrder(projectId: number) {
     this.projectService.submitProject(projectId)
-      .subscribe(res => this.projectUpdated());
+      .subscribe(response => {
+          this.projectUpdated()
+          this.popUpService.showInfo(`Your project submitted successfully`)
+          this.confirmDialogRef.close()
+        },
+        error => {
+          this.popUpService.showError(getErrorMessage(error))
+          this.confirmDialogRef.componentInstance.submitting = false;
+        });
+  }
+
+  openSubmitOrderModal(project: Project | CustomerProject, reloadProject = false) {
+
+    this.dialog.closeAll();
+
+    this.confirmDialogRef = this.dialog.open(dialogsMap['submit-project-dialog'], confirmDialogConfig);
+    this.confirmDialogRef.componentInstance.project = project;
+    this.confirmDialogRef.componentInstance.reloadProject = reloadProject;
+
+    this.confirmDialogRef.componentInstance.onConfirm.subscribe(() => this.resubmitOrder(project.id))
+
+    this.confirmDialogRef
+      .afterClosed()
+      .subscribe(result => {
+      });
   }
 
   cancelOrder(projectId: number) {

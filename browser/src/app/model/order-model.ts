@@ -9,19 +9,23 @@ export class RequestOrder {
   baseLeadInfo: BaseLeadInfo;
   address: UserAddress;
 
-  static build(formData: any, serviceType: ServiceType, isAddressManual): RequestOrder {
+  static build(formData: any, questions: Array<QuestionaryBlock>, serviceType: ServiceType, isAddressManual): RequestOrder {
     delete formData?.defaultQuestionaryGroup?.customerPersonalInfo?.password
     const requestOrder = new RequestOrder();
     requestOrder.serviceId = serviceType.id;
     requestOrder.serviceName = serviceType.name;
-    requestOrder.questionary = Object.entries(formData.questionaryGroup)
-      .map(item => {
-        const results = Array.isArray(item[1]) ? item[1] : [item[1]];
-        return new QuestionaryBlock(item[0], (results as Array<string>));
-      });
+    requestOrder.questionary = RequestOrder.parseQuestionaryAnswers(formData.questionaryGroup, questions)
     requestOrder.baseLeadInfo = new BaseLeadInfo(formData.defaultQuestionaryGroup.customerPersonalInfo, formData.defaultQuestionaryGroup.startExpectation, formData.defaultQuestionaryGroup.notes);
     requestOrder.address = new UserAddress(formData.defaultQuestionaryGroup.projectLocation, isAddressManual)
-
     return requestOrder;
   }
+
+  static parseQuestionaryAnswers(questionaryGroup, qeustionary: Array<QuestionaryBlock>) {
+    return qeustionary.map(question => {
+      let value = questionaryGroup[question.name];
+      if (!Array.isArray(value)) value = [value]
+      return new QuestionaryBlock(question.title, (value as Array<string>))
+    })
+  }
+
 }

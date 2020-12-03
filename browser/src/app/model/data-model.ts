@@ -249,7 +249,7 @@ export class ContractorProject extends ContractorProjectShort {
   location: Location;
   startDate: string;
   notes: string;
-  details: string;
+  details: ProjectDetail[];
 }
 
 
@@ -304,7 +304,7 @@ export class ReviewRevisionRequest {
 }
 
 export class ProjectDetail {
-  name: string;
+  title: string;
   results: string[];
 }
 

@@ -1,0 +1,44 @@
+<div class="dialog-content-wrapper">
+  <div class="dialog-content-container">
+
+    <div class="header">
+
+      <mat-icon class="close-modal" color="accent" (click)="close()">clear</mat-icon>
+
+      <div class="header-content" fxLayout="row" fxLayoutAlign="center end">
+
+        <div class="title">Submit project</div>
+
+      </div>
+
+    </div>
+
+    <div class="content" [cvSpinner]="loading" [cvSpinnerSize]="30" [cvSpinnerBackground]="true">
+
+      <div class="project-summary-wrapper">
+
+        <h2 class="question-title">{{project.serviceType}}</h2>
+
+        <project-summary *ngIf="!loading"
+          [projectLocation]="project.location"
+          [startExpectation]="project.startDate"
+          [notes]="project.notes"
+          [questionaryAnswers]="project.details">
+        </project-summary>
+
+        <div class="buttons-wrapper" fxLayout="row" fxLayoutAlign="space-between center">
+
+          <button cv-button-flat class="-dark" (click)="close()" type="button" [disabled]="submitting">Not now</button>
+          <button cv-button type="submit" (click)="onSubmit($event)" [disabled]="submitting" [loading]="submitting">Submit</button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+
+

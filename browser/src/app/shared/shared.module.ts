@@ -46,6 +46,7 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { EmailVerificationHintCardComponent } from "./email-verification-hint-card/email-verification-hint-card.component";
 import { UserActivationReminderComponent } from "./user-activation-reminder/user-activation-reminder.component";
 import { CvPasswordHintModule } from "../theme/hint/cv-password-hint/cv-password-hint-module";
+import { ProjectSummaryComponent } from "./project-summary/project-summary.component";
 
 @NgModule({
   imports: [
@@ -99,7 +100,8 @@ import { CvPasswordHintModule } from "../theme/hint/cv-password-hint/cv-password
     TestimonialsComponent,
     SuggestedLocationComponent,
     EmailVerificationHintCardComponent,
-    UserActivationReminderComponent
+    UserActivationReminderComponent,
+    ProjectSummaryComponent
   ],
   exports: [
     CommonModule,
@@ -147,7 +149,8 @@ import { CvPasswordHintModule } from "../theme/hint/cv-password-hint/cv-password
     TestimonialsComponent,
     SuggestedLocationComponent,
     EmailVerificationHintCardComponent,
-    UserActivationReminderComponent
+    UserActivationReminderComponent,
+    ProjectSummaryComponent
   ],
   providers: [
   ]

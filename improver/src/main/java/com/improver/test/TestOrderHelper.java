@@ -146,28 +146,28 @@ public class TestOrderHelper {
 
     static  {
         List<Order.QuestionAnswer> questionary = new ArrayList<>();
-        questionary.add(new Order.QuestionAnswer().setName("What kind of work?")
+        questionary.add(new Order.QuestionAnswer().setTitle("What kind of work?")
             .setResults(Collections.singletonList("Install")));
-        questionary.add(new Order.QuestionAnswer().setName("What kind of tile are you interested in?")
+        questionary.add(new Order.QuestionAnswer().setTitle("What kind of tile are you interested in?")
             .setResults(Collections.singletonList("Encaustic")));
-        questionary.add(new Order.QuestionAnswer().setName("What quality/price level tile you want to buy?")
+        questionary.add(new Order.QuestionAnswer().setTitle("What quality/price level tile you want to buy?")
             .setResults(Collections.singletonList("High")));
-        questionary.add(new Order.QuestionAnswer().setName("What would you like tiled?")
+        questionary.add(new Order.QuestionAnswer().setTitle("What would you like tiled?")
             .setResults(Arrays.asList("Countertop", "Wall", "Floor", "Backsplash", "Island")));
-        questionary.add(new Order.QuestionAnswer().setName("Approximately how many square feet is the area that needs tiling?")
+        questionary.add(new Order.QuestionAnswer().setTitle("Approximately how many square feet is the area that needs tiling?")
             .setResults(Collections.singletonList("2800")));
-        questionary.add(new Order.QuestionAnswer().setName("Does the area to be tiled need to be stripped of any existing surface material?")
+        questionary.add(new Order.QuestionAnswer().setTitle("Does the area to be tiled need to be stripped of any existing surface material?")
             .setResults(Collections.singletonList("Yes, existing tile needs to be removed")));
-        questionary.add(new Order.QuestionAnswer().setName("What material will the tile be installed over?")
+        questionary.add(new Order.QuestionAnswer().setTitle("What material will the tile be installed over?")
             .setResults(Collections.singletonList("Wood")));
         answers.add(questionary);
     }
 
     static  {
         List<Order.QuestionAnswer> questionary = new ArrayList<>();
-        questionary.add(new Order.QuestionAnswer().setName("Why are you remodeling your attic?")
+        questionary.add(new Order.QuestionAnswer().setTitle("Why are you remodeling your attic?")
             .setResults(Collections.singletonList("Update the attic's look")));
-        questionary.add(new Order.QuestionAnswer().setName("What attic rooms will you be adding or replacing?")
+        questionary.add(new Order.QuestionAnswer().setTitle("What attic rooms will you be adding or replacing?")
             .setResults(Arrays.asList("Bedroom(s)", "Storage", "Bathroom(s)")));
 
         answers.add(questionary);

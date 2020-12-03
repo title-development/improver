@@ -6,13 +6,10 @@ import { Observable } from 'rxjs/internal/Observable';
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { PopUpMessageService } from "../../../../../api/services/pop-up-message.service";
 import { SecurityService } from "../../../../../auth/security.service";
-import { dialogsMap } from "../../../dialogs.state";
-import { confirmDialogConfig } from "../../../dialogs.configs";
-import { SystemMessageType } from "../../../../../model/data-model";
 import {
   FILE_MIME_TYPES,
-  PROJECT_ATTACHED_IMAGES_LIMIT,
   FILE_SIZE_MAX,
+  PROJECT_ATTACHED_IMAGES_LIMIT,
   UPLOAD_IMAGE_COMPRESS_RATIO,
   UPLOAD_IMAGE_MAX_HEIGHT,
   UPLOAD_IMAGE_MAX_WIDTH
@@ -101,44 +98,6 @@ export class QuestionaryImageUploaderComponent implements OnInit {
     this.hasBaseDropZoneOver = event;
   }
 
-  deleteImage(event, index: number, path: string): void {
-    event.preventDefault();
-    event.stopPropagation();
-    const properties = {
-      title: 'Confirm delete action',
-      message: 'Do you want to delete this image?',
-      OK: 'Yes',
-      CANCEL: 'No'
-    };
-
-    this.confirmDialog = this.dialog.open(dialogsMap['confirm-dialog'], confirmDialogConfig);
-    this.confirmDialog.componentInstance.properties = properties;
-    this.confirmDialog.componentInstance.onConfirm = new EventEmitter<boolean>();
-    this.confirmDialog.componentInstance.onConfirm.subscribe(res => {
-      this.http.delete(this.apiUrl, {params: {'imageUrl': path}, responseType: 'text'}).subscribe(
-        res => {
-          this.projectActionService.projectImages.splice(index, 1);
-          this.projectActionService.projectImages = this.projectActionService.projectImages.slice();
-          this.popupService.showMessage(
-            {
-              text: 'Image has been deleted.',
-              type: SystemMessageType.INFO,
-              timeout: 5000
-            }
-          );
-        },
-        err => {
-          console.error(err);
-        });
-    });
-  }
-
-  removeImageFromQuery(event: Event, index: number): void {
-    event.preventDefault();
-    event.stopPropagation();
-    this.uploader.queue.splice(index, 1);
-  }
-
   removeImageFromProject(event, imageUrl) {
     event.preventDefault();
     event.stopPropagation();
@@ -148,38 +107,6 @@ export class QuestionaryImageUploaderComponent implements OnInit {
       .subscribe(() => {
         this.updateHasElements()
       })
-  }
-
-  rotateImage(event: Event, fileItem): void {
-    event.preventDefault();
-    event.stopPropagation();
-    fileItem['processing'] = true;
-    let reader = new FileReader();
-    let img = new Image();
-    if (fileItem) {
-      reader.readAsDataURL(fileItem._file);
-    }
-    reader.onloadend = (event) => {
-      img.src = reader.result as string;
-      img.onload = () => {
-        const canvas = this.renderer.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        const width = img.width;
-        const height = img.height;
-        canvas.height = width;
-        canvas.width = height;
-        ctx.save();
-        ctx.rotate(0.5 * Math.PI);
-        ctx.translate(0, -height);
-        ctx.drawImage(img, 0, 0);
-        ctx.restore();
-        canvas.toBlob(blob => {
-          fileItem._file = blob;
-          this.changeDetectorRef.detectChanges()
-        }, 'image/jpeg', 0.7);
-        img = null;
-      };
-    };
   }
 
   onProcessDone(event: Event, item): void {

@@ -93,8 +93,8 @@
             <p class="-coments">{{selectedLead.notes}}</p>
             <ng-container *ngIf="selectedLead.details">
               <ng-container *ngFor="let detail of selectedLead.details">
-                <h4>{{detail.name}}</h4>
-                <p *ngIf="detail.results"><span *ngFor="let res of detail.results">{{res}}</span></p>
+                <h4>{{detail.title}}</h4>
+                <p *ngIf="detail.results"><span *ngFor="let result of detail.results">{{result}}</span></p>
               </ng-container>
             </ng-container>
           </div>

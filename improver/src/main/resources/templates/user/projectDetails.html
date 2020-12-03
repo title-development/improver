@@ -29,7 +29,7 @@
                 <td align="left">
                   <table th:each="quesionAnswer: ${answers}">
                     <tr>
-                      <td style="font-weight: bold;" th:text="${quesionAnswer.name}"></td>
+                      <td style="font-weight: bold;" th:text="${quesionAnswer.title}"></td>
                     </tr>
                     <tr th:each="result: ${quesionAnswer.results} ">
                       <td th:text="' - ' + ${result}"></td>

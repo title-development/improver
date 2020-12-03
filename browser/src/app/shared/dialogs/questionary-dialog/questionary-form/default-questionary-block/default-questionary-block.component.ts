@@ -13,7 +13,7 @@ import { LocationValidateService } from '../../../../../api/services/location-va
 import { PopUpMessageService } from '../../../../../api/services/pop-up-message.service';
 import { Router } from '@angular/router';
 import { ProjectActionService } from '../../../../../api/services/project-action.service';
-import { capitalize, getErrorMessage, markAsTouched } from '../../../../../util/functions';
+import { getErrorMessage, markAsTouched } from '../../../../../util/functions';
 import { finalize, first } from "rxjs/internal/operators";
 import { UserService } from "../../../../../api/services/user.service";
 import { AccountService } from "../../../../../api/services/account.service";
@@ -151,8 +151,6 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     this.currentQuestionName = name;
 
     if (name == 'projectImages') {
-      // retrieve questionary answers before final confirm
-      this.getQuestionaryAnswers()
       this.nextStep();
       return
     }
@@ -259,8 +257,10 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
       this.disabledNextAction = true;
       this.postOrderProcessing = true;
       const location = this.defaultQuestionaryForm.get(formGroupName).value;
-      const requestOrder = RequestOrder.build(this.questionaryControlService.mainForm.getRawValue(), this.questionaryControlService.serviceType, this.isAddressManual);
+      const requestOrder = RequestOrder.build(this.questionaryControlService.mainForm.getRawValue(),
+        this.questionaryControlService.questionary.questions, this.questionaryControlService.serviceType, this.isAddressManual);
       this.orderServiceType = requestOrder.serviceName;
+      this.questionaryAnswers = requestOrder.questionary;
       if (this.questionaryControlService.projectId){
         requestOrder.projectId = this.questionaryControlService.projectId;
       }
@@ -414,23 +414,6 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
       this.registrationProcessing = false;
     }
 
-  }
-
-  getQuestionaryAnswers() {
-    let questionaryAnswers = [];
-    for (const field in this.questionaryControlService.mainForm.get('questionaryGroup').controls) { // 'field' is a string
-      let control = this.questionaryControlService.mainForm.get('questionaryGroup').get(field); // 'control' is a FormControl
-      let key: any = field.split('_');
-      key.shift();
-      key = capitalize(key.join(' '));
-      let value = control.value;
-      if(!Array.isArray(value)) {
-        value = [value]
-      }
-      questionaryAnswers.push({key: key, value: value})
-    }
-    this.questionaryAnswers = questionaryAnswers
-    return questionaryAnswers;
   }
 
   resolveCaptcha(captcha) {

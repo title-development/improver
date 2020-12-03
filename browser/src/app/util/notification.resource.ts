@@ -111,17 +111,12 @@ export class NotificationResource {
     this.unreadMessagesInterval = setInterval(() => this.publishUnreadMessagesRequest(), this.INTERVAL_DELAY + randDelay);
   }
 
-/*  private getUnreadMessages(): void {
-    this.notificationService.getUnreadMessages().pipe(first()).subscribe((notifications: Array<Notification>) => {
-      this.unreadMessagesCount = notifications.length;
-      this.unreadMessages = notifications;
-      this.unreadMessages$.next(this.unreadMessages);
-      this.unreadMessagesCount$.next(this.unreadMessagesCount);
-    });
-  }*/
-
   private publishUnreadMessagesRequest(): void {
-    this.myStompService.publish({destination: `/app/users/${this.securityService.getLoginModel().id}/unread`}, );
+    if (!this.securityService.isAuthenticated()) {
+      this.destroyUnreadMessagesFlow()
+      return
+    }
+    this.myStompService.publish({destination: `/app/users/${this.securityService.getLoginModel().id}/unread`});
   }
 
   private destroyUnreadMessagesFlow() {

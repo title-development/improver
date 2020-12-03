@@ -41,7 +41,7 @@
                       Cancel Project
                     </button>
                     <!-- Menu for Uncompleted Order -->
-                    <button mat-menu-item (click)="projectActionService.resubmitOrder(project.id)"
+                    <button mat-menu-item (click)="projectActionService.openSubmitOrderModal(project)"
                             *ngIf="project.status == Project.Status.UNCOMPLETED">
                       Submit Project
                     </button>
@@ -189,7 +189,7 @@
             </div>
 
             <div *ngIf="project.status == Project.Status.UNCOMPLETED; else noRequests">
-              Project is not active. Please submit project so can look for the best Professionals
+              Project is not active. Please submit project so we can look for the best Professionals.
             </div>
 
             <ng-template #noRequests>
@@ -233,7 +233,7 @@
 
             <ng-template ngFor let-detail [ngForOf]="project.details">
               <div class="question-block">
-                <div class="question">{{detail.name}}</div>
+                <div class="question">{{detail.title}}</div>
                 <div class="answers">
                   <ng-template ngFor let-result let-last="last" [ngForOf]="detail.results">
                     <div class="answer">{{result}}</div>
