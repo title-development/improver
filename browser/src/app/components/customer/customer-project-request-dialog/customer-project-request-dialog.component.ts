@@ -12,7 +12,7 @@ import { ProjectRequestService } from '../../../api/services/project-request.ser
 import { Project } from "../../../api/models/Project";
 import { ProjectRequest } from '../../../api/models/ProjectRequest';
 import { take, takeUntil } from "rxjs/internal/operators";
-import { Subject, Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
 import { MediaQuery, MediaQueryService } from "../../../api/services/media-query.service";
 import { NavigationHelper } from "../../../util/helpers/navigation-helper";
 
@@ -38,7 +38,6 @@ export class CustomerProjectRequestDialogComponent implements OnInit, OnDestroy 
   projectRequest: ProjectRequest;
   onCompanyHire: EventEmitter<any>;
   onCompanyDecline: EventEmitter<any>;
-  private onProjectsUpdate$: Subscription;
   mediaQuery: MediaQuery;
   companyNameTruncate: number = this.COMPANY_NAME_TRUNCATE_DEFAULT;
 

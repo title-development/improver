@@ -67,9 +67,9 @@ export class ProjectActionService {
     this.projectRequestDialogRef
       .afterClosed()
       .subscribe(result => {
-        this.onCloseProjectRequestDialog.emit();
         this.projectRequestDialogRef = null;
         this.navigationHelper.removeHash();
+        this.onCloseProjectRequestDialog.emit();
       });
 
     this.projectRequestDialogRef.componentInstance.projectRequest = projectRequest;

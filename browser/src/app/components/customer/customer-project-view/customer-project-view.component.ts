@@ -76,10 +76,9 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy, Componen
     this.projectActionService.onCloseProjectRequestDialog
       .pipe(takeUntil(this.destroyed$))
       .subscribe(() => {
-      this.projectDialogOpened = false;
-      this.navigationHelper.removeHash();
-      this.getProject();
-    });
+        this.projectDialogOpened = false;
+        this.getProject();
+      });
 
     this.notificationResource.notifiedProjectId$
       .pipe(takeUntil(this.destroyed$), filter(projectId => projectId && this.projectId == projectId))
