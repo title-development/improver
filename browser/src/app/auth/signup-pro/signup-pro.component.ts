@@ -12,7 +12,7 @@ import { clone, getErrorMessage, removePhoneMask } from '../../util/functions';
 import { MediaQuery, MediaQueryService } from '../../api/services/media-query.service';
 import { Subject, throwError } from 'rxjs';
 import { ActivatedRoute, Params } from '@angular/router';
-import { finalize, mergeMap, takeUntil, timeoutWith } from 'rxjs/operators';
+import { finalize, first, mergeMap, takeUntil, timeoutWith } from 'rxjs/operators';
 import { RecaptchaComponent } from 'ng-recaptcha';
 import { dialogsMap } from "../../shared/dialogs/dialogs.state";
 import { phoneValidationDialogConfig } from "../../shared/dialogs/dialogs.configs";
@@ -93,12 +93,14 @@ export class SignupProComponent implements OnDestroy {
         this.processing = false;
       });
       registrationObservable = this.captcha.resolved.pipe(
+        first(),
         timeoutWith(this.constants.ONE_MINUTE, throwError({error: {message: 'Timeout error please try again later'}})),
         mergeMap((captcha: string | null) => {
           if (!captcha) {
             return throwError({error: {message: 'Captcha is expired please try again later'}});
           }
-          this.user.captcha = captcha;
+
+          registrationUserModel.captcha = captcha;
 
           return this.registrationService.registerContractor(registrationUserModel);
         }),
