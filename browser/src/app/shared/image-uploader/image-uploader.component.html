@@ -20,8 +20,8 @@
         <div class="add-photo-button-text">Add photo</div>
       </div>
     </div>
-    <input type="file" id="file-uploader" ng2FileSelect [uploader]="uploader" multiple/>
-    <label for="file-uploader"
+    <input type="file" id="image-file-uploader" ng2FileSelect [uploader]="uploader" multiple/>
+    <label for="image-file-uploader"
            ng2FileDrop
            [ngClass]="{'nv-file-over': hasBaseDropZoneOver}"
            (fileOver)="fileOverBase($event)"

@@ -1,5 +1,5 @@
-<input type="file" id="file-uploader" ng2FileSelect [uploader]="uploader" multiple/>
-<label for="file-uploader"
+<input type="file" id="questionary-image-file-uploader" ng2FileSelect [uploader]="uploader" multiple/>
+<label for="questionary-image-file-uploader"
        ng2FileDrop
        [ngClass]="{'nv-file-over': hasBaseDropZoneOver, 'inactive': (projectActionService.projectImages.length + uploader?.queue?.length) >= PROJECT_ATTACHED_IMAGES_LIMIT}"
        (fileOver)="fileOverBase($event)"

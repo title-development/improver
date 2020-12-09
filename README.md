@@ -15,9 +15,9 @@ java -jar improver/target/improver.jar
 
 ## Setup development configuration
 
-#### 1. Install Node.js (10.10 version) [https://nodejs.org](https://nodejs.org)
+#### 1. Install Node.js (12.15.0 version) [https://nodejs.org](https://nodejs.org)
 
-Download and install 10.10 version. 
+Download and install 12.15.0 version. 
 
 Or via **Chocolatey** run the following command:
 ```
