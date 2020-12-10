@@ -1,4 +1,14 @@
-import { Component, ElementRef, EventEmitter, Inject, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Inject,
+  OnDestroy,
+  OnInit,
+  Renderer2,
+  ViewChild
+} from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { CompanyProfile } from '../../../model/data-model';
 import { SecurityService } from '../../../auth/security.service';
@@ -12,7 +22,7 @@ import { ProjectRequestService } from '../../../api/services/project-request.ser
 import { Project } from "../../../api/models/Project";
 import { ProjectRequest } from '../../../api/models/ProjectRequest';
 import { take, takeUntil } from "rxjs/internal/operators";
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { MediaQuery, MediaQueryService } from "../../../api/services/media-query.service";
 import { NavigationHelper } from "../../../util/helpers/navigation-helper";
 
@@ -22,7 +32,7 @@ import { NavigationHelper } from "../../../util/helpers/navigation-helper";
   styleUrls: ['./customer-project-request-dialog.component.scss']
 })
 
-export class CustomerProjectRequestDialogComponent implements OnInit, OnDestroy {
+export class CustomerProjectRequestDialogComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly COMPANY_NAME_TRUNCATE_DEFAULT = 50;
   private readonly COMPANY_NAME_TRUNCATE_XS = 30;
   private readonly destroyed$: Subject<void> = new Subject();
@@ -31,13 +41,15 @@ export class CustomerProjectRequestDialogComponent implements OnInit, OnDestroy 
   ProjectRequest = ProjectRequest;
   Project = Project;
   companyProfile: CompanyProfile;
+  projectRequestId: number;
   showAddReviewForm: boolean = false;
   isLeaveReviewButtonDisabled: boolean = false;
   openMessage: boolean = false;
   isReviewSend = false;
   projectRequest: ProjectRequest;
-  onCompanyHire: EventEmitter<any>;
-  onCompanyDecline: EventEmitter<any>;
+  onCompanyHire: EventEmitter<any> = new EventEmitter<any>();
+  onCompanyDecline: EventEmitter<any> = new EventEmitter<any>();
+  clearHash: BehaviorSubject<any> = new BehaviorSubject<any>(true);
   mediaQuery: MediaQuery;
   companyNameTruncate: number = this.COMPANY_NAME_TRUNCATE_DEFAULT;
 
@@ -76,12 +88,15 @@ export class CustomerProjectRequestDialogComponent implements OnInit, OnDestroy 
   }
 
   ngOnInit(): void {
-    this.loadOverview();
   }
 
   ngOnDestroy(): void {
     this.destroyed$.next();
     this.destroyed$.complete();
+  }
+
+  ngAfterViewInit(): void {
+    this.getProjectRequest(this.projectRequestId);
   }
 
   reviewSend(event): void {
@@ -113,6 +128,7 @@ export class CustomerProjectRequestDialogComponent implements OnInit, OnDestroy 
     this.projectRequestService.getProjectRequest(projectRequestId).subscribe(
       projectRequest => {
         this.projectRequest = projectRequest;
+        this.loadOverview();
       },
       err => {
         console.error(err);
@@ -142,5 +158,11 @@ export class CustomerProjectRequestDialogComponent implements OnInit, OnDestroy 
 
   trackByFn(index, item) {
     return item.id;
+  }
+
+  openCompanyPage(id: string) {
+    this.clearHash.next(false);
+    this.router.navigate(['/companies', id]);
+    this.close();
   }
 }

@@ -156,19 +156,6 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy, Componen
     this.router.navigate([], {fragment: projectRequest.id.toString()})
   }
 
-  openProjectRequestByUrlFragment(projectRequestId: string) {
-    this.projectRequestService.getProjectRequest(projectRequestId).subscribe(
-      projectRequest => {
-        this.projectDialogOpened = true;
-        this.projectActionService.openProjectRequest(projectRequest);
-      },
-      err => {
-        this.projectDialogOpened = false;
-        this.navigationHelper.removeHash()
-      }
-    );
-  }
-
   getProject() {
     this.projectService
       .getForCustomer(this.projectId)
@@ -180,7 +167,7 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy, Componen
           if (this.projectActionService.projectRequestDialogRef) {
             this.projectActionService.projectRequestDialogRef.componentInstance.projectRequest =
               project.projectRequests.find((item) =>
-                item.id == this.projectActionService.projectRequestDialogRef.componentInstance.projectRequest.id);
+                item.id == this.projectActionService.projectRequestDialogRef.componentInstance.projectRequestId);
           }
           if (!this.changeDetectorRef['destroyed']) {
             this.changeDetectorRef.detectChanges();
@@ -205,7 +192,7 @@ export class CustomerProjectViewComponent implements OnInit, OnDestroy, Componen
           if (projectRequestIndex >= 0) {
             this.project.projectRequests[projectRequestIndex].unreadMessages = 0;
           }
-          this.openProjectRequestByUrlFragment(fragment);
+          this.projectActionService.openProjectRequest(fragment);
         }
       });
     }

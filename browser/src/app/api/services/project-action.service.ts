@@ -61,20 +61,23 @@ export class ProjectActionService {
     this.onProjectsUpdate = this.projectUpdateSubject.pipe(debounceTime(this.DEBOUNCE_TIME))
   }
 
-  openProjectRequest(projectRequest) {
+  openProjectRequest(projectRequestId) {
     this.dialog.closeAll();
     this.projectRequestDialogRef = this.dialog.open(dialogsMap['customer-project-request-dialog'], customerProjectRequestDialogConfig);
+    let clearHash = this.projectRequestDialogRef.componentInstance.clearHash;
     this.projectRequestDialogRef
       .afterClosed()
       .subscribe(result => {
         this.projectRequestDialogRef = null;
-        this.navigationHelper.removeHash();
         this.onCloseProjectRequestDialog.emit();
+        clearHash.subscribe( clearHash => {
+          if (clearHash) {
+            this.navigationHelper.removeHash();
+          }
+        });
       });
 
-    this.projectRequestDialogRef.componentInstance.projectRequest = projectRequest;
-    this.projectRequestDialogRef.componentInstance.onCompanyHire = new EventEmitter<any>();
-    this.projectRequestDialogRef.componentInstance.onCompanyDecline = new EventEmitter<any>();
+    this.projectRequestDialogRef.componentInstance.projectRequestId = projectRequestId;
     this.projectRequestDialogRef.componentInstance.onCompanyHire.subscribe(
       projectRequest => {
         this.hireCompanyConfirm(projectRequest);

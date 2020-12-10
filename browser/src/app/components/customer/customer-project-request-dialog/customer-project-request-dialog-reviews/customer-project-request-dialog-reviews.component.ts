@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Pagination, Review } from '../../../../model/data-model';
 import { ReviewService } from '../../../../api/services/review.service';
@@ -43,7 +43,7 @@ import { distinctUntilChanged } from 'rxjs/internal/operators';
     ])
   ]
 })
-export class CustomerProjectRequestDialogReviewsComponent implements OnInit, OnChanges, OnDestroy {
+export class CustomerProjectRequestDialogReviewsComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
 
   @Input() newReviewStatus: false;
   @Input() projectRequest;
@@ -74,6 +74,10 @@ export class CustomerProjectRequestDialogReviewsComponent implements OnInit, OnC
   }
 
   ngOnInit() {
+    this.loadReviews();
+  }
+
+  ngAfterViewInit(): void {
     this.loadReviews();
   }
 
