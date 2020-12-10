@@ -170,17 +170,22 @@ public class ImageService {
     }
 
     public ResponseEntity<Resource> getImageByName(String name) {
-        if (this.tradeImagesCacheExpirationTime == null || ZonedDateTime.now().isAfter(this.tradeImagesCacheExpirationTime)) {
-            this.tradeImages = imageRepository.findAllTradeImages();
-            resetTradeImagesCacheExpiration();
-        }
+//        if (this.tradeImagesCacheExpirationTime == null || ZonedDateTime.now().isAfter(this.tradeImagesCacheExpirationTime)) {
+//            this.tradeImages = imageRepository.findAllTradeImages();
+//            resetTradeImagesCacheExpiration();
+//        }
+//
+//        NameDataTuple nameDataTuple = this.tradeImages.stream()
+//            .filter(cacheImage -> cacheImage.getName().equals(name))
+//            .findFirst()
+//            .orElseGet(() -> new NameDataTuple(imageRepository.findByName(name).orElseThrow(NotFoundException::new)));
+//
+//        return addCacheControl(nameDataTuple.getData());
 
-        NameDataTuple nameDataTuple = this.tradeImages.stream()
-            .filter(cacheImage -> cacheImage.getName().equals(name))
-            .findFirst()
-            .orElseGet(() -> new NameDataTuple(imageRepository.findByName(name).orElseThrow(NotFoundException::new)));
-
-        return addCacheControl(nameDataTuple.getData());
+        Image image = imageRepository.findByName(name)
+            .orElseThrow(NotFoundException::new);
+        byte[] media = image.getData();
+        return addCacheControl(media);
     }
 
     private ResponseEntity<Resource> redirectToResourceURL(String iconUrl) {
