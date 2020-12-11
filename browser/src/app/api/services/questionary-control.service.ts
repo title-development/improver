@@ -60,8 +60,10 @@ export class QuestionaryControlService {
               private popUpService: PopUpMessageService,
               private projectService: ProjectService) {
 
-    securityService.onUserInit.subscribe(() => {
-      this.getAccountData()
+    this.securityService.isUserLoggedIn.subscribe(isUserInSystem => {
+      if (isUserInSystem) {
+        this.getAccountData()
+      }
     })
 
     securityService.onLogout.subscribe(() => {

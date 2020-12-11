@@ -34,9 +34,11 @@ export class BillingService {
               private router: Router,
               private securityService: SecurityService) {
 
-    this.securityService.onUserInit.subscribe(() => {
-      this.initBilling();
-    });
+    this.securityService.isUserLoggedIn.subscribe(isUserInSystem => {
+      if (isUserInSystem) {
+        this.initBilling();
+      }
+    })
 
   }
 

@@ -92,12 +92,13 @@ export class MainSearchBarComponent implements OnInit, OnChanges, AfterViewInit 
 
     this.zipCodeCtrl.setValue(localStorage.getItem('zipCode'));
 
-    this.securityService.onUserInit.subscribe(() => {
+    this.securityService.isUserLoggedIn.subscribe(isUserInSystem => {
+      if (isUserInSystem) {
         if (this.securityService.hasRole(Role.CUSTOMER)) {
           this.getLastCustomerZipCode();
         }
       }
-    );
+    })
   }
 
   ngOnChanges(changes: SimpleChanges): void {

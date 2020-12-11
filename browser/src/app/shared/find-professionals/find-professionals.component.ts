@@ -53,11 +53,13 @@ export class FindProfessionalsComponent implements OnInit {
     this.createFormGroup();
     this.getSuggestedTrades();
     this.getPopularServiceTypes();
-    this.securityService.onUserInit.subscribe(() => {
-      if (this.securityService.hasRole(Role.CUSTOMER)) {
-        this.getLastCustomerZipCode();
+    this.securityService.isUserLoggedIn.subscribe(isUserInSystem => {
+      if (isUserInSystem) {
+        if (this.securityService.hasRole(Role.CUSTOMER)) {
+          this.getLastCustomerZipCode();
+        }
       }
-    });
+    })
     this.subscribeForMediaQuery();
   }
 

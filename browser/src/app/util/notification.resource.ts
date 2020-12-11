@@ -32,7 +32,11 @@ export class NotificationResource {
               public popUpService: PopUpMessageService,
               private myStompService: MyStompService) {
 
-    this.securityService.onUserInit.subscribe(this.init);
+    this.securityService.isUserLoggedIn.subscribe(isUserInSystem => {
+      if (isUserInSystem) {
+        this.init();
+      }
+    })
 
     this.securityService.onLogout.subscribe(() => {
       this.notificationsObservable = null;
@@ -83,7 +87,7 @@ export class NotificationResource {
   }
 
 
-  init = () => {
+  init() {
     if (this.securityService.isAuthenticated()) {
       this.myStompService.restartBroker();
       this.notificationService.countUnread().subscribe(

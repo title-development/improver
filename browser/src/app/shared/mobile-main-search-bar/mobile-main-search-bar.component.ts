@@ -73,12 +73,13 @@ export class MobileMainSearchBarComponent implements OnInit, AfterViewInit, OnDe
 
     this.zipCodeCtrl.setValue(localStorage.getItem('zipCode'));
 
-    this.securityService.onUserInit.subscribe(() => {
+    this.securityService.isUserLoggedIn.subscribe(isUserInSystem => {
+      if (isUserInSystem) {
         if (this.securityService.hasRole(Role.CUSTOMER)) {
           this.getLastCustomerZipCode();
         }
       }
-    );
+    })
   }
 
   ngAfterViewInit(): void {

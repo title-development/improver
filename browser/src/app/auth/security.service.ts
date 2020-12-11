@@ -22,8 +22,9 @@ export class SecurityService {
   public static readonly tokenRefreshUrl = 'api/token/access';
   private static readonly BEARER_TOKEN_PREFIX = 'Bearer ';
 
-  public onUserInit: ReplaySubject<any> = new ReplaySubject(1);
+  public onUserInit: EventEmitter<any> = new EventEmitter<any>();
   public onLogout: EventEmitter<any> = new EventEmitter();
+  public isUserLoggedIn: ReplaySubject<any> = new ReplaySubject<any>(1);
   localStorageHandler = (e) => this.onLocalStorageChange(e);
   private _returnUrl: string;
 
@@ -40,6 +41,7 @@ export class SecurityService {
     if (this.isAuthenticated()) {
       this.window.addEventListener('storage', this.localStorageHandler, false);
     }
+    this.isUserInSystem();
     this.captchaEnabled = environment.captchaEnabled;
   }
 
@@ -52,11 +54,19 @@ export class SecurityService {
       account => {
         this.setLoginModel(account);
         if (isAppInit) {
-          this.onUserInit.next(null);
+          this.onUserInit.emit();
         }
       });
   }
 
+  isUserInSystem() {
+      this.onUserInit.subscribe(() => {
+        this.isUserLoggedIn.next(true);
+      })
+      this.onLogout.subscribe(() => {
+        this.isUserLoggedIn.next(false);
+      })
+  }
 
   public isAuthenticated(): boolean {
     return this.isUserExistInLocalStorage() && this.getLoginModel().role != Role.INCOMPLETE_PRO;
@@ -105,7 +115,7 @@ export class SecurityService {
     this.setLoginModel(user);
     if (user.role != Role.INCOMPLETE_PRO) {
       this.window.addEventListener('storage', this.localStorageHandler, false);
-      this.onUserInit.next(null);
+      this.onUserInit.emit();
 
     }
     if (redirect) {
