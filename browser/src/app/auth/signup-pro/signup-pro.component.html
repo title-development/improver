@@ -169,10 +169,13 @@
                                trim
                                pattern="{{constants.patterns.password}}"
                                required>
-                        <cv-field-error>
-                            <cv-password-hint [checkedInputRef]="passwordInput">
-                            </cv-password-hint>
-                        </cv-field-error>
+                      <cv-field-error>
+                          <span *ngIf="(passwordEl.dirty || passwordEl.touched || accountForm.submitted) && passwordEl.errors?.required">
+                                {{messages.errors.password.required}}
+                          </span>
+                        <cv-password-hint [checkedInputRef]="passwordInput">
+                        </cv-password-hint>
+                      </cv-field-error>
                     </cv-input-field>
                 </div>
 

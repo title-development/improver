@@ -1,14 +1,14 @@
 import {
-	AfterViewInit,
-	ChangeDetectionStrategy,
-	ChangeDetectorRef,
-	Component,
-	Input,
-	OnDestroy,
-	OnInit,
-	Optional,
-	Renderer2,
-	SkipSelf
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component, Host,
+  Input,
+  OnDestroy,
+  OnInit,
+  Optional,
+  Renderer2,
+  SkipSelf
 } from '@angular/core';
 import { ControlContainer, NgForm, NgModel } from "@angular/forms";
 import { Constants } from "../../../util/constants";
@@ -108,8 +108,8 @@ export class CvPasswordHintComponent implements OnInit, AfterViewInit, OnDestroy
 
   private subscribeOnFormSubmit() {
     if (this.controlContainer && (this.controlContainer as NgForm).ngSubmit) {
-      (this.controlContainer as any).ngSubmit.subscribe(() => {
-        if (!this.isFormSubmitted) {
+      (this.controlContainer as NgForm).ngSubmit.subscribe(() => {
+        if (!this.isFormSubmitted && this.hasError) {
           this.isFormSubmitted = true;
           this.animationState = 'active';
         }

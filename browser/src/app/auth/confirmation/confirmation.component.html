@@ -27,6 +27,9 @@
                maxlength="32"
                pattern="{{constants.patterns.password}}">
         <cv-field-error>
+          <span *ngIf="(passwordInput.dirty || passwordInput.touched || confirmationForm.submitted) && passwordInput.errors?.required">
+            {{messages.errors.password.required}}
+          </span>
           <cv-password-hint [checkedInputRef]="passwordInputRef"></cv-password-hint>
         </cv-field-error>
       </cv-input-field>
