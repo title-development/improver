@@ -32,7 +32,7 @@ export class ConfirmationComponent implements OnDestroy {
   processing = false;
 
   get isConfirmationError(): boolean {
-    return !(this.activationSuccess && this.emailConfirmationSuccess);
+    return !this.activationSuccess && !this.emailConfirmationSuccess;
   }
 
   private readonly destroyed$ = new Subject<void>();

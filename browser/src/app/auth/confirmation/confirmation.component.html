@@ -65,9 +65,9 @@
 
   <ng-container *ngIf="step == 2">
 
-    <div class="confirmation-result-wrapper">
+    <div class="confirmation-result-wrapper" [cvSpinner]="processing" [cvSpinnerSize]="32" [cvSpinnerBackground]="true" cvSpinnerBackgroundColor="#fafafa">
 
-      <div class="confirmation-error-card card" *ngIf="isConfirmationError">
+      <div class="confirmation-error-card card" *ngIf="!processing && isConfirmationError">
         <img src="assets/img/round-icons/email-error.svg" alt="ERROR" class="image">
         <h3>Error!</h3>
         <h3>Confirmation link is invalid</h3>
