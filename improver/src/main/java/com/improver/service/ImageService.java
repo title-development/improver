@@ -47,6 +47,7 @@ public class ImageService {
     private static final char FILE_EXTENSION_SEPARATOR = '.';
     private ZonedDateTime tradeImagesCacheExpirationTime;
     private List<NameDataTuple> tradeImages;
+    private static final Object lock = new Object(); //object for locking synchronized thread
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -170,22 +171,22 @@ public class ImageService {
     }
 
     public ResponseEntity<Resource> getImageByName(String name) {
-//        if (this.tradeImagesCacheExpirationTime == null || ZonedDateTime.now().isAfter(this.tradeImagesCacheExpirationTime)) {
-//            this.tradeImages = imageRepository.findAllTradeImages();
-//            resetTradeImagesCacheExpiration();
-//        }
-//
-//        NameDataTuple nameDataTuple = this.tradeImages.stream()
-//            .filter(cacheImage -> cacheImage.getName().equals(name))
-//            .findFirst()
-//            .orElseGet(() -> new NameDataTuple(imageRepository.findByName(name).orElseThrow(NotFoundException::new)));
-//
-//        return addCacheControl(nameDataTuple.getData());
+        if (this.tradeImagesCacheExpirationTime == null || ZonedDateTime.now().isAfter(this.tradeImagesCacheExpirationTime)) {
+            // creation a synchronized thread for caching all the trade images
+            synchronized (lock) {
+                if (this.tradeImagesCacheExpirationTime == null || ZonedDateTime.now().isAfter(this.tradeImagesCacheExpirationTime)) {
+                    this.tradeImages = imageRepository.findAllTradeImages();
+                    resetTradeImagesCacheExpiration();
+                }
+            }
+        }
 
-        Image image = imageRepository.findByName(name)
-            .orElseThrow(NotFoundException::new);
-        byte[] media = image.getData();
-        return addCacheControl(media);
+        NameDataTuple nameDataTuple = this.tradeImages.stream()
+            .filter(cacheImage -> cacheImage.getName().equals(name))
+            .findFirst()
+            .orElseGet(() -> new NameDataTuple(imageRepository.findByName(name).orElseThrow(NotFoundException::new)));
+
+        return addCacheControl(nameDataTuple.getData());
     }
 
     private ResponseEntity<Resource> redirectToResourceURL(String iconUrl) {
