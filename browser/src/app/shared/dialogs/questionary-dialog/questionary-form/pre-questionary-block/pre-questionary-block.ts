@@ -67,13 +67,11 @@ export class PreQuestionaryBlock implements OnInit, AfterViewInit {
 
     this.lastZipCode = localStorage.getItem('zipCode');
 
-    this.securityService.isUserLoggedIn.subscribe(isUserInSystem => {
-      if (isUserInSystem) {
-        if (this.securityService.hasRole(Role.CUSTOMER)) {
-          this.getLastCustomerZipCode();
-        }
+    this.securityService.onUserInit.subscribe(() => {
+      if (this.securityService.hasRole(Role.CUSTOMER)) {
+        this.getLastCustomerZipCode();
       }
-    })
+    });
 
     if (this.questionaryControlService.trade) {
       this.filteredServices = this.services = this.questionaryControlService.trade.services;

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { QuestionaryControlService } from '../../../../../api/services/questionary-control.service';
 import { RequestOrder } from '../../../../../model/order-model';
@@ -36,7 +36,7 @@ import { MediaQuery, MediaQueryService } from "../../../../../api/services/media
   styleUrls: ['./default-questionary-block.component.scss'],
 })
 
-export class DefaultQuestionaryBlockComponent implements OnInit {
+export class DefaultQuestionaryBlockComponent implements OnInit, OnDestroy {
 
   private readonly destroyed$ = new Subject<void>();
 
@@ -113,17 +113,9 @@ export class DefaultQuestionaryBlockComponent implements OnInit {
     this.emailIsChecked = false;
     this.filteredStates = constants.states;
 
-    securityService.onUserInit.subscribe(() => {
-      this.loginProcessing = false;
-      this.phoneValid = false;
-      if (this.userAddresses.length == 0) {
-        this.loadUserAddress();
-      }
-    });
-
-    if (securityService.isAuthenticated()) {
-      this.loadUserAddress();
-    }
+    this.securityService.onUserInit
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(() => this.loadUserAddress());
 
     this.mediaQueryService.screen
       .subscribe(mediaQuery => this.media = mediaQuery);

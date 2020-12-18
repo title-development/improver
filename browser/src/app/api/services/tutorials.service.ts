@@ -13,12 +13,7 @@ export class TutorialsService {
 
   constructor(private http: HttpClient,
               private securityService: SecurityService) {
-    this.securityService.isUserLoggedIn.subscribe(isUserInSystem => {
-      if (isUserInSystem) {
-        this.getTutorials().pipe(first()).subscribe(() => {
-        });
-      }
-    })
+    this.securityService.onUserInit.subscribe(() => this.getTutorials().pipe(first()).subscribe(() => {}));
     this.securityService.onLogout.subscribe(() => {
       this.tutorialsState = null;
       this.tutorials$.next(null);

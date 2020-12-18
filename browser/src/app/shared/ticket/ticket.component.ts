@@ -40,11 +40,7 @@ export class TicketComponent {
               public popUpService: PopUpMessageService) {
 
     this.initForm();
-    this.securityService.isUserLoggedIn.subscribe(isUserInSystem => {
-      if (isUserInSystem) {
-        this.initForm();
-      }
-    })
+    this.securityService.onUserInit.subscribe(() => this.initForm());
 
   }
 

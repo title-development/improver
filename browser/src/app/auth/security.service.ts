@@ -2,7 +2,7 @@ import { ApplicationRef, EventEmitter, Inject, Injectable } from '@angular/core'
 import { Credentials, LoginModel, Role } from '../model/security-model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CompanyService } from '../api/services/company.service';
-import { Observable, of, ReplaySubject } from 'rxjs';
+import { Observable, of, ReplaySubject, Subscription } from 'rxjs';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { switchMap } from 'rxjs/operators';
 import * as jwt_decode from 'jwt-decode';
@@ -22,11 +22,10 @@ export class SecurityService {
   public static readonly tokenRefreshUrl = 'api/token/access';
   private static readonly BEARER_TOKEN_PREFIX = 'Bearer ';
 
-  public onUserInit: EventEmitter<any> = new EventEmitter<any>();
-  public onLogout: EventEmitter<any> = new EventEmitter();
-  public isUserLoggedIn: ReplaySubject<any> = new ReplaySubject<any>(1);
-  localStorageHandler = (e) => this.onLocalStorageChange(e);
   private _returnUrl: string;
+  public onUserInit: ReplaySubject<any> = new ReplaySubject<any>(1);
+  public onLogout: EventEmitter<any> = new EventEmitter<any>();
+  localStorageHandler = (e) => this.onLocalStorageChange(e);
 
   captchaEnabled: boolean = true;
 
@@ -41,7 +40,7 @@ export class SecurityService {
     if (this.isAuthenticated()) {
       this.window.addEventListener('storage', this.localStorageHandler, false);
     }
-    this.isUserInSystem();
+    this.onLogout.subscribe(this.resetUserInitSubject)
     this.captchaEnabled = environment.captchaEnabled;
   }
 
@@ -54,18 +53,16 @@ export class SecurityService {
       account => {
         this.setLoginModel(account);
         if (isAppInit) {
-          this.onUserInit.emit();
+          this.onUserInit.next();
         }
       });
   }
 
-  isUserInSystem() {
-      this.onUserInit.subscribe(() => {
-        this.isUserLoggedIn.next(true);
-      })
-      this.onLogout.subscribe(() => {
-        this.isUserLoggedIn.next(false);
-      })
+  private resetUserInitSubject = () => {
+    let observers = this.onUserInit.observers;
+    this.onUserInit.unsubscribe();
+    this.onUserInit = new ReplaySubject<any>(1);
+    this.onUserInit.observers = observers;
   }
 
   public isAuthenticated(): boolean {
@@ -115,7 +112,7 @@ export class SecurityService {
     this.setLoginModel(user);
     if (user.role != Role.INCOMPLETE_PRO) {
       this.window.addEventListener('storage', this.localStorageHandler, false);
-      this.onUserInit.emit();
+      this.onUserInit.next();
 
     }
     if (redirect) {
@@ -166,13 +163,13 @@ export class SecurityService {
     this.router.navigate(['/']);
   }
 
-  public cleanUserLoginData() {
+  public cleanUserLoginData(): void {
     this.logoutFrontend();
     this.logoutBackend()
   }
 
   // TODO: Check usage of this method, replace to cleanUserLoginData() if needed
-  public logoutFrontend() {
+  public logoutFrontend(): void {
     if (this.isUserExistInLocalStorage()) {
       localStorage.removeItem(SecurityService.TOKEN_STORAGE_KEY);
       localStorage.removeItem(SecurityService.USER_STORAGE_KEY);
@@ -181,10 +178,10 @@ export class SecurityService {
     }
   }
 
-  private logoutBackend() {
+  private logoutBackend(): Subscription {
     console.info('about to perform logout request to server');
     return this.http
-      .post<HttpResponse<any>>(SecurityService.logoutUrl, {}, {observe: 'response'})
+      .post(SecurityService.logoutUrl, {}, {observe: 'response'})
       .subscribe();
   }
 
@@ -194,7 +191,7 @@ export class SecurityService {
   }
 
 
-  private setTokenHeader(tokenHeader: string) {
+  private setTokenHeader(tokenHeader: string): void {
     localStorage.setItem(SecurityService.TOKEN_STORAGE_KEY, tokenHeader);
   }
 
@@ -209,7 +206,7 @@ export class SecurityService {
     }
   }
 
-  private onLocalStorageChange(event) {
+  private onLocalStorageChange(event): void {
     if (event.storageArea == localStorage) {
       if (!this.isAuthenticated()) {
         this.logout();

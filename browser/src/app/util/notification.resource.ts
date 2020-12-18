@@ -32,11 +32,7 @@ export class NotificationResource {
               public popUpService: PopUpMessageService,
               private myStompService: MyStompService) {
 
-    this.securityService.isUserLoggedIn.subscribe(isUserInSystem => {
-      if (isUserInSystem) {
-        this.init();
-      }
-    })
+    this.securityService.onUserInit.subscribe(() => this.init());
 
     this.securityService.onLogout.subscribe(() => {
       this.notificationsObservable = null;

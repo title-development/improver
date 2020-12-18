@@ -62,11 +62,7 @@ export class QuestionaryControlService {
               private popUpService: PopUpMessageService,
               private projectService: ProjectService) {
 
-    this.securityService.isUserLoggedIn.subscribe(isUserInSystem => {
-      if (isUserInSystem) {
-        this.getAccountData()
-      }
-    })
+    this.securityService.onUserInit.subscribe(() => this.getAccountData());
 
     securityService.onLogout.subscribe(() => {
       this.resetCustomerAccount()
