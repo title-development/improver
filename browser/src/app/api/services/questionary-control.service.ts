@@ -12,6 +12,7 @@ import { finalize, first } from "rxjs/operators";
 import { AccountService } from "./account.service";
 import { ReplaySubject } from "rxjs";
 import { ProjectService } from "./project.service";
+import { FileUploader } from "ng2-file-upload";
 
 @Injectable()
 export class QuestionaryControlService {
@@ -51,6 +52,7 @@ export class QuestionaryControlService {
   questionary: ServiceQuestionaryModel;
   hasUnsavedChanges: boolean = false;
   projectId
+  imageUploader: FileUploader
 
   public onAccountDataLoaded: ReplaySubject<any> = new ReplaySubject(1);
 
@@ -159,6 +161,7 @@ export class QuestionaryControlService {
     this.customerAccountDataFilled = false;
     this.customerAccountIsLoading = false;
     this.resetCustomerAccount();
+    this.imageUploader = null;
   }
 
   updateQuestionaryParams(questionaryLength = this.questionaryLength, hasPhone = this.customerHasPhone) {

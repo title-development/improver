@@ -1,4 +1,13 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, Renderer2, } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  Renderer2,
+} from '@angular/core';
 import { FileItem, FileLikeObject, FileUploader } from 'ng2-file-upload';
 import { HttpClient } from '@angular/common/http';
 import { Subject } from 'rxjs/internal/Subject';
@@ -19,13 +28,14 @@ import { first } from "rxjs/operators";
 import { ProjectActionService } from "../../../../../api/services/project-action.service";
 import { BehaviorSubject } from "rxjs";
 import { getErrorMessage } from "../../../../../util/functions";
+import { QuestionaryControlService } from "../../../../../api/services/questionary-control.service";
 
 @Component({
   selector: 'questionary-image-uploader',
   templateUrl: './questionary-image-uploader.component.html',
   styleUrls: ['./questionary-image-uploader.component.scss', './image-preview.scss'],
 })
-export class QuestionaryImageUploaderComponent implements OnInit {
+export class QuestionaryImageUploaderComponent implements OnInit, OnDestroy {
 
   PROJECT_ATTACHED_IMAGES_LIMIT = PROJECT_ATTACHED_IMAGES_LIMIT;
 
@@ -47,37 +57,40 @@ export class QuestionaryImageUploaderComponent implements OnInit {
               private http: HttpClient,
               private securityService: SecurityService,
               private changeDetectorRef: ChangeDetectorRef,
-              public projectActionService: ProjectActionService) {
+              public projectActionService: ProjectActionService,
+              private questionaryControlService: QuestionaryControlService) {
   }
 
   ngOnInit(): void {
     this.apiUrl = this.apiUrl ? this.apiUrl : `/api/customers/projects/${this.projectId}/images`
-    this.updateHasElements();
 
-    this.uploader = new FileUploader({
-      url: this.apiUrl,
-      authToken: this.securityService.getTokenHeader(),
-      allowedMimeType: FILE_MIME_TYPES.images,
-      maxFileSize: FILE_SIZE_MAX.bytes,
-      queueLimit: PROJECT_ATTACHED_IMAGES_LIMIT,
-    });
+    this.initImageUploader()
+    this.updateHasElements()
+    this.processing.emit(false)
+
     this.uploader.onWhenAddingFileFailed = (item: FileLikeObject, filter: any, options: any) => {
       this.handleError(item, filter);
     };
-    this.uploader.onAfterAddingAll = (items: Array<FileItem>) => {
-      this.uploader.queue.forEach((item: FileItem) => {
+    this.uploader.onAfterAddingFile = (item: FileItem) => {
+        item['processing'] = true;
         this.resizeImage(item._file).subscribe((blob: Blob) => {
           item._file = (blob as File);
+          item['processing'] = false;
           this.changeDetectorRef.detectChanges()
         });
-      });
-    };
-    this.uploader.onProgressItem = (item: FileItem) => {
-      this.checkAccessToken(item);
     };
     this.uploader.onBeforeUploadItem = (item: FileItem) => {
       this.checkAccessToken(item);
     };
+    this.uploader.onCompleteAll = () => {
+      //uploading canceled item
+      if (this.uploader.getNotUploadedItems().length > 0) {
+        setTimeout(() => {
+          this.uploader.uploadAll();
+        }, 300);
+      } else {
+        this.processing.emit(false)
+      }};
     this.uploader.onErrorItem = (item: FileItem, response: string, status: number,) => {
       if (status == 401) {
         //resetting image to upload again
@@ -90,6 +103,31 @@ export class QuestionaryImageUploaderComponent implements OnInit {
     };
   }
 
+  ngOnDestroy(): void {
+    if (this.uploader) {
+      this.uploader.onWhenAddingFileFailed = null
+      this.uploader.onAfterAddingFile= null
+      this.uploader.onBeforeUploadItem = null
+      this.uploader.onCompleteAll = null
+      this.uploader.onErrorItem = null
+    }
+  }
+
+  initImageUploader() {
+    if (this.questionaryControlService.imageUploader) {
+      this.uploader = this.questionaryControlService.imageUploader
+    } else {
+      this.uploader = new FileUploader({
+        url: this.apiUrl,
+        authToken: this.securityService.getTokenHeader(),
+        allowedMimeType: FILE_MIME_TYPES.images,
+        maxFileSize: FILE_SIZE_MAX.bytes,
+        queueLimit: PROJECT_ATTACHED_IMAGES_LIMIT,
+      })
+      this.questionaryControlService.imageUploader = this.uploader;
+    }
+  }
+
   hasUnsavedImages(): boolean {
     return this.uploader.getNotUploadedItems().length > 0;
   }
@@ -98,52 +136,41 @@ export class QuestionaryImageUploaderComponent implements OnInit {
     this.hasBaseDropZoneOver = event;
   }
 
-  removeImageFromProject(event, imageUrl) {
+  removeImage(event, item: FileItem) {
+    this.uploader.removeFromQueue(item)
+    this.updateHasElements()
+    let imageUrl = item._xhr.responseText
     event.preventDefault();
     event.stopPropagation();
-    this.projectActionService.projectImages = this.projectActionService.projectImages.filter(image => image != imageUrl);
+
     this.projectService.deleteImage(this.projectId, imageUrl)
       .pipe(first())
       .subscribe(() => {
-        this.updateHasElements()
       })
   }
 
   onProcessDone(event: Event, item): void {
-    this.processing.next(true);
     item.processing = false;
     this.changeDetectorRef.detectChanges()
     this.uploadAllImages()
   }
 
   uploadAllImages(url?: string): void {
+    this.processing.emit(true)
+    this.updateHasElements()
     if (url) {
       let options = this.uploader.options;
       options.url = url;
       this.uploader.setOptions(options)
     }
-    this.uploader.uploadAll();
-    this.uploader.onCompleteAll = () => {
-      //uploading canceled item
-      if (this.uploader.getNotUploadedItems().length > 0) {
-        setTimeout(() => {
-          this.uploader.uploadAll();
-        }, 500);
-      } else {
-        setTimeout(() => {
-          this.getProjectImages();
-        }, 500);
-      }
-    };
-  }
 
-  private getProjectImages(): void {
-    this.http.get<Array<string>>(this.apiUrl).subscribe(images => {
-      this.projectActionService.projectImages = images
-      this.uploader.clearQueue();
-      this.updateHasElements()
-      this.processing.next(false);
-    });
+    if (this.uploader.getNotUploadedItems().length == 0) {
+      this.processing.emit(false)
+      return
+    }
+
+    this.uploader.uploadAll();
+
   }
 
   private resizeImage(file: File): Observable<Blob> {
@@ -229,7 +256,7 @@ export class QuestionaryImageUploaderComponent implements OnInit {
   }
 
   updateHasElements () {
-    this.hasElements.next(this.uploader?.queue?.length > 0 || this.projectActionService.projectImages.length > 0)
+    this.hasElements.next(this.uploader?.queue?.length > 0)
   }
 
   onFileDrop($event: File[]) {

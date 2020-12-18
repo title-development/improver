@@ -95,7 +95,7 @@ public class CustomerProjectController {
     }
 
     @PostMapping(ID_PATH_VARIABLE + IMAGES)
-    public ResponseEntity<Void> addProjectImage(@PathVariable long id, MultipartFile file) {
+    public ResponseEntity<String> addProjectImage(@PathVariable long id, MultipartFile file) {
         Project project = projectService.getProject(id);
         Integer projectImagesCount = projectImageRepository.countByProjectId(project.getId());
         if (projectImagesCount >= projectImagesAmountMax) {
@@ -107,7 +107,7 @@ public class CustomerProjectController {
             project.setCoverUrl(imageUrl);
         }
         projectRepository.save(project.setUpdated(ZonedDateTime.now()));
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(imageUrl, HttpStatus.OK);
     }
 
     @DeleteMapping(ID_PATH_VARIABLE + IMAGES)

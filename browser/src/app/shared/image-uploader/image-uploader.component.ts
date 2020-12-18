@@ -12,8 +12,8 @@ import { FileItem, FileLikeObject, FileUploader } from 'ng2-file-upload';
 import { ProjectService } from '../../api/services/project.service';
 import {
   FILE_MIME_TYPES,
-  PROJECT_ATTACHED_IMAGES_LIMIT,
   FILE_SIZE_MAX,
+  PROJECT_ATTACHED_IMAGES_LIMIT,
   UPLOAD_IMAGE_COMPRESS_RATIO,
   UPLOAD_IMAGE_MAX_HEIGHT,
   UPLOAD_IMAGE_MAX_WIDTH
@@ -203,6 +203,7 @@ export class ImagesUploaderComponent implements OnInit {
 
   onProcessDone(event: Event, item): void {
     item['processing'] = false;
+    this.changeDetectorRef.detectChanges();
   }
 
   uploadAllImages(url?: string): void {

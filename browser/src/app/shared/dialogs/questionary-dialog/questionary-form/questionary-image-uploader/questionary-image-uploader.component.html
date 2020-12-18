@@ -1,49 +1,41 @@
 <input type="file" id="questionary-image-file-uploader" ng2FileSelect [uploader]="uploader" multiple/>
 <label for="questionary-image-file-uploader"
        ng2FileDrop
-       [ngClass]="{'nv-file-over': hasBaseDropZoneOver, 'inactive': (projectActionService.projectImages.length + uploader?.queue?.length) >= PROJECT_ATTACHED_IMAGES_LIMIT}"
+       [ngClass]="{'nv-file-over': hasBaseDropZoneOver, 'inactive': uploader?.queue?.length >= PROJECT_ATTACHED_IMAGES_LIMIT}"
        (fileOver)="fileOverBase($event)"
        (onFileDrop)="onFileDrop($event)"
        [uploader]="uploader"
        class="drop-zone-holder">
 
-  <div class="drop-zone-label" [ngClass]="{'with-images': uploader?.queue?.length > 0 || projectActionService.projectImages.length > 0}">
-    <span *ngIf="(projectActionService.projectImages.length + uploader?.queue?.length) < PROJECT_ATTACHED_IMAGES_LIMIT; else altDropZoneTitle">
+  <div class="drop-zone-label" [ngClass]="{'with-images': uploader?.queue?.length > 0}">
+    <span *ngIf="uploader?.queue?.length < PROJECT_ATTACHED_IMAGES_LIMIT; else altDropZoneTitle">
       Drop pictures to attach, or click here
     </span>
     <ng-template #altDropZoneTitle>Attached pictures</ng-template>
   </div>
 
-  <div class="image-list-wrapper" [ngClass]="{'with-images': uploader?.queue?.length > 0 || projectActionService.projectImages.length > 0}">
-    <div class="images-list" *ngIf="uploader?.queue?.length > 0 || projectActionService.projectImages.length > 0">
-
-      <ng-template ngFor let-item [ngForOf]="projectActionService.projectImages" let-index="index">
-
-        <div class="image-wrapper" (click)="$event.preventDefault()">
-          <div class="image-holder" [ngClass]="{'-processing': item?.processing}">
-            <div class="actions">
-              <mat-icon class="md-18" title="Remove picture"
-                        (click)="removeImageFromProject($event, item);">delete
-              </mat-icon>
-            </div>
-            <img [src]="item" alt="Loading...">
-
-          </div>
-        </div>
-
-      </ng-template>
+  <div class="image-list-wrapper" [ngClass]="{'with-images': uploader?.queue?.length > 0}">
+    <div class="images-list" *ngIf="uploader?.queue?.length > 0">
 
       <ng-template ngFor let-item [ngForOf]="uploader.queue" let-index="index">
 
         <div class="image-wrapper" (click)="$event.preventDefault()">
-          <div class="image-holder" [ngClass]="{'-processing': $any(item)?.processing}">
-            <img src="" imgPreview [image]="item?._file" (processDone)="onProcessDone($event, item)"
-                 alt="Loading...">
-            <div class="progress-holder" *ngIf="item.progress || item.isError">
+          <div class="image-holder" [ngClass]="{'-processing': item.progress < 100 && !item.isError, '-uploaded': item.progress == 100}" [cvSpinner]="item['processing']" [cvSpinnerSize]="32" [cvSpinnerBackground]="true">
+
+            <img imgPreview [emitOnlyFirstChange]="true" [image]="item._file" (processDone)="onProcessDone($event, item)" >
+
+            <div class="actions">
+              <mat-icon class="md-18" title="Remove picture"
+                        (click)="removeImage($event, item);">delete
+              </mat-icon>
+            </div>
+
+            <div class="progress-holder" *ngIf="item.progress < 100">
               <div class="state" [ngClass]="{'-error': item.isError, '-done': item.isSuccess}"></div>
               <div class="progress-bar" role="progressbar"
                    [ngStyle]="{ 'width': item.progress + '%' }"></div>
             </div>
+
           </div>
         </div>
 
@@ -54,6 +46,6 @@
   </div>
 
 
-  <label class="add-photo-button-mobile" *ngIf="(uploader?.queue?.length > 0 || projectActionService.projectImages.length > 0) && (projectActionService.projectImages.length + uploader?.queue?.length) < PROJECT_ATTACHED_IMAGES_LIMIT" cv-button size="small" for="file-uploader">Add another photo</label>
+  <label class="add-photo-button-mobile" *ngIf="(uploader?.queue?.length > 0) && (uploader?.queue?.length < PROJECT_ATTACHED_IMAGES_LIMIT)" cv-button size="small" for="questionary-image-file-uploader">Add another photo</label>
 
 </label>

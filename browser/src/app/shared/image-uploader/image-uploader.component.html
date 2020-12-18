@@ -32,7 +32,7 @@
       </div>
       <div class="images-list" *ngIf="uploader?.queue?.length">
         <div class="col" *ngFor="let item of uploader.queue; let index = index" (click)="$event.preventDefault()">
-          <div class="image-holder" [ngClass]="{'-processing': item?.processing}">
+          <div class="image-holder" [ngClass]="{'-processing': item['processing']}">
             <div class="actions">
               <div class="rotate-image" title="Rotate photo 90 degrees"
                    (click)="rotateImage($event, item)"></div>
@@ -50,7 +50,7 @@
           </div>
         </div>
       </div>
-      <label  *ngIf="uploader?.queue?.length && projectImages.length < PROJECT_ATTACHED_IMAGES_LIMIT" cv-button size="small" for="file-uploader">Add another photo</label>
+      <label  *ngIf="uploader?.queue?.length && projectImages.length < PROJECT_ATTACHED_IMAGES_LIMIT" cv-button size="small" for="image-file-uploader">Add another photo</label>
     </label>
 
   </div>

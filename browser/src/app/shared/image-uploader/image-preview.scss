@@ -139,7 +139,7 @@
     height: 100%;
     width: 0;
     transition: width .3s ease;
-    background-image: linear-gradient(to left, #fd9926, #fd6e26);
+    background-image: linear-gradient(to left, $primary-400, $primary-600);
     border-radius: 4px;
   }
 }

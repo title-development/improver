@@ -180,6 +180,11 @@
             ]
           }
         }
+      },
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
       }
     },
     "improver-e2e": {

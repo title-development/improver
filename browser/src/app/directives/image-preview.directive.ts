@@ -14,6 +14,7 @@ import {
 export class ImagePreviewDirective {
 
   @Input() image: any;
+  @Input() emitOnlyFirstChange: boolean = false;
   @Output() processDone: EventEmitter<boolean> = new EventEmitter<boolean>();
   private maxHeight: number = 300;
   private maxWidth: number = 300;
@@ -24,7 +25,6 @@ export class ImagePreviewDirective {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-
     let reader = new FileReader();
     let el = this.el;
     let img = new Image();
@@ -52,7 +52,16 @@ export class ImagePreviewDirective {
         let ctr = canvas.getContext("2d");
         ctr.drawImage(img, 0, 0, width, height);
         el.nativeElement.src = canvas.toDataURL("image/jpg");
-        this.processDone.emit(true);
+
+        if (this.emitOnlyFirstChange) {
+          if (changes.image.isFirstChange()) {
+            this.processDone.emit(true);
+          }
+        } else {
+          this.processDone.emit(true);
+        }
+
+
       };
     };
 

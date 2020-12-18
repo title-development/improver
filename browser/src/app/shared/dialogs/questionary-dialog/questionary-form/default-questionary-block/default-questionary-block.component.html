@@ -37,7 +37,7 @@
                   formControlName="notes"
                   [cv_trim]="defaultQuestionaryForm.get('notes').value"
                   (cv_trimChange)="defaultQuestionaryForm.get('notes').setValue($event)"
-                  rows="4"
+                  rows="6"
                   type="text"
                   [minlength]="questionaryControlService.questionaryLength == 0 ? constants.PROJECT_DESCRIPTION_MIN_LENGTH : undefined"
                   maxlength="1500"
