@@ -107,7 +107,7 @@ export class CvRadioGroup extends CvSelection implements AfterContentInit, Contr
     this.onChange(this.getValueKey(model, this.valueKey));
     this.changeDetectorRef.markForCheck();
     if (this.radios) {
-      this.radios.forEach(radio => radio.checked = this.existsSelection(radio.value, this.valueKey));
+      this.radios.forEach(radio => radio.selected = this.existsSelection(radio.value, this.valueKey));
     }
   }
 

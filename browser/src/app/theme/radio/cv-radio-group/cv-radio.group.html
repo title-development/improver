@@ -3,7 +3,7 @@
   <ng-content select="cv-radio"></ng-content>
   <ng-container *ngIf="items && !itemTemplate">
     <ng-template ngFor [ngForOf]="items" let-item>
-      <cv-radio (click)="select(item)" [disabled]="item?.disabled" [checked]="isSelected(item)" [readonly]="item?.readonly" [value]="item">{{labelKey ? item[labelKey] : item}}</cv-radio>
+      <cv-radio (click)="select(item)" [disabled]="item?.disabled" [selected]="isSelected(item)" [readonly]="item?.readonly" [value]="item">{{labelKey ? item[labelKey] : item}}</cv-radio>
     </ng-template>
   </ng-container>
   <ul *ngIf="itemTemplate && items">

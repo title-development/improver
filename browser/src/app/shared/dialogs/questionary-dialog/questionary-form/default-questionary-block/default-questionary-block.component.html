@@ -6,7 +6,11 @@
     <div class="radio-button-group fill-flex-space">
 
       <cv-radio-group formControlName="startExpectation" required>
-        <cv-radio *ngFor="let option of startExpectationOptions" [value]="option" [checked]="defaultQuestionaryForm.get('startExpectation').value == option">{{option}}</cv-radio>
+        <cv-radio *ngFor="let option of startExpectationOptions"
+                  [value]="option"
+                  [selected]="defaultQuestionaryForm.get('startExpectation').value == option">
+          {{option}}
+        </cv-radio>
       </cv-radio-group>
 
       <div class="question-general-error"
@@ -249,8 +253,7 @@
         <cv-radio-group formGroupName="projectLocation"  required>
           <cv-radio class="address-item-wrapper" *ngFor="let address of userAddresses; let i=index"
                     [value]="address"
-                    [checked]="defaultQuestionaryForm.get('projectLocation').value == address"
-                    [isDefaultValue]="i == 0 && !isAddressSelected"
+                    [selected]="hasAddressMatches(address)"
                     (onSelect)="selectAddress($event, false)">
             {{address.streetAddress}}<br>
             {{address.city}} {{address.state}} {{address.zip}}
@@ -393,7 +396,7 @@
          [cvSpinnerSize]="20">
       <button cv-button-empty
               class="questionary-previous-button"
-              (click)="questionaryControlService.previousQuestion(); isAddressSelected = false; canEnterManualAddress = false"
+              (click)="questionaryControlService.previousQuestion(); userAddresses.length > 0 && !isAddressSelected && selectAddress(userAddresses[0], false); canEnterManualAddress = false"
               type="button"
               *ngIf="!hideNextAction && !postOrderProcessing">Back
       </button>
@@ -415,7 +418,7 @@
     </div>
 
     <div class="questionary-dialog-footer" fxLayoutAlign="end center">
-      <button cv-button-empty class="questionary-previous-button" (click)="questionaryControlService.previousQuestion(); isAddressSelected = false" type="button">Back</button>
+      <button cv-button-empty class="questionary-previous-button" (click)="questionaryControlService.previousQuestion()" type="button">Back</button>
       <div fxFlex=""></div>
       <button cv-button class="questionary-next-button" (click)="nextQuestion('projectImages')" type="button" [disabled]="imageUploader.processing | async">{{(imageUploader.hasElements | async) ? 'Next' : 'Skip'}}</button>
     </div>

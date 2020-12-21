@@ -1,10 +1,11 @@
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component, EventEmitter,
+  Component,
+  EventEmitter,
   HostListener,
-  Input, Output
+  Input,
+  Output
 } from '@angular/core';
 
 @Component({
@@ -14,15 +15,14 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     'class': 'cv-radio',
-    '[class.-checked]': 'checked',
+    '[class.-checked]': 'selected',
     '[class.-disabled]': 'disabled',
     '[class.-readonly]': 'readonly',
   },
 })
-export class CvRadioButton implements AfterViewInit{
+export class CvRadioButton {
 
   @Input() value: any;
-  @Input() isDefaultValue: boolean = false;
 
   @Input()
   set disabled(value) {
@@ -41,12 +41,12 @@ export class CvRadioButton implements AfterViewInit{
   private _readonly: boolean = false;
 
   @Input()
-  set checked(value: boolean) {
-    this._checked = value;
+  set selected(value: boolean) {
+    this._selected = value;
     this.changeDetectorRef.markForCheck();
   }
-  get checked(): boolean {return this._checked}
-  private _checked: boolean = false;
+  get selected(): boolean {return this._selected}
+  private _selected: boolean = false;
 
   @Output() onSelect: EventEmitter<any>  = new EventEmitter();
 
@@ -57,15 +57,6 @@ export class CvRadioButton implements AfterViewInit{
   check(event: MouseEvent) {
     if (this.readonly || this.disabled) return;
     this.onSelect.emit(this.value);
-  }
-
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-      if (this.isDefaultValue) {
-        this.onSelect.emit(this.value);
-      }
-    })
-
   }
 
 }

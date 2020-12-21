@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, OnDestroy, Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { QuestionaryControlService } from '../../../../../api/services/questionary-control.service';
 import { RequestOrder } from '../../../../../model/order-model';
@@ -30,12 +30,14 @@ import { RegistrationService } from "../../../../../api/services/registration.se
 import { UserAddressService } from "../../../../../api/services/user-address.service";
 import { MediaQuery, MediaQueryService } from "../../../../../api/services/media-query.service";
 
+type NextStepFn = (incrementIndex?: number) => void;
+type NextQuestionHandlerFn = (name: string, nextStepFn: NextStepFn) => void;
+
 @Component({
   selector: 'default-questionary-block',
   templateUrl: './default-questionary-block.component.html',
   styleUrls: ['./default-questionary-block.component.scss'],
 })
-
 export class DefaultQuestionaryBlockComponent implements OnInit, OnDestroy {
 
   private readonly destroyed$ = new Subject<void>();
@@ -81,6 +83,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit, OnDestroy {
   loadingUserAddresses: boolean = false;
   canEnterManualAddress: boolean = false;
   isAddressSelected: boolean = false;
+  selectedUserAddress: UserAddress;
 
   socialButtonsMessageType
   socialButtonsMessageText
@@ -101,6 +104,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit, OnDestroy {
               public popUpMessageService: PopUpMessageService,
               public captchaTrackingService: CaptchaTrackingService,
               public deviceControlService: DeviceControlService,
+              private changeDetectorRef: ChangeDetectorRef,
               private accountService: AccountService,
               private router: Router,
               private locationValidate: LocationValidateService,
@@ -121,7 +125,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit, OnDestroy {
       .subscribe(mediaQuery => this.media = mediaQuery);
   }
 
-  submitUserInfo() {
+  submitUserInfo(): void {
     if (this.securityService.hasRole(Role.ANONYMOUS) && !this.emailIsChecked) {
       this.checkEmail(this.defaultQuestionaryForm.get('customerPersonalInfo.email').value)
     } else if (this.securityService.hasRole(Role.ANONYMOUS) && this.emailIsChecked && !this.emailIsUnique){
@@ -135,26 +139,26 @@ export class DefaultQuestionaryBlockComponent implements OnInit, OnDestroy {
     this.defaultQuestionaryForm = this.questionaryControlService.mainForm.get('defaultQuestionaryGroup');
   }
 
-  isValid(name) {
-    return this.defaultQuestionaryForm.get(name).valid;
+  isValid(formControlName: string): boolean {
+    return this.defaultQuestionaryForm.get(formControlName).valid;
   }
 
-  nextQuestion(name, handler?: Function) {
-    this.currentQuestionName = name;
+  nextQuestion(formControlName: string, handler?: NextQuestionHandlerFn): void {
+    this.currentQuestionName = formControlName;
 
-    if (name == 'projectImages') {
+    if (formControlName == 'projectImages') {
       this.nextStep();
       return
     }
 
-    if (this.isValid(name)) {
+    if (this.isValid(formControlName)) {
       if (handler !== undefined) {
-        handler.call(this, name, this.nextStep);
+        handler.call(this, formControlName, this.nextStep);
       } else {
         this.nextStep();
       }
     } else {
-      markAsTouched(<FormGroup> this.defaultQuestionaryForm.get(name));
+      markAsTouched(<FormGroup> this.defaultQuestionaryForm.get(formControlName));
     }
   }
 
@@ -163,16 +167,25 @@ export class DefaultQuestionaryBlockComponent implements OnInit, OnDestroy {
     this.dialog.closeAll();
   }
 
-  loadUserAddress() {
+  loadUserAddress(): void {
     this.loadingUserAddresses = true;
     this.userAddressService.getUserAddress()
       .pipe(finalize(() => this.loadingUserAddresses = false))
-      .subscribe((userAddress: UserAddress[]) => {
-      this.userAddresses = userAddress;
-    }, error => console.log(error))
+      .subscribe((userAddresses: UserAddress[]) => {
+        this.userAddresses = userAddresses;
+        if (userAddresses && userAddresses.length > 0) {
+          this.selectAddress(userAddresses[0], false)
+        }
+      }, error => console.log(error))
   }
 
-  checkEmail(email) {
+  hasAddressMatches(selectedUserAddress: UserAddress): boolean {
+    let location: UserAddress = this.defaultQuestionaryForm.get('projectLocation').value;
+    return location.streetAddress == selectedUserAddress.streetAddress && location.city == selectedUserAddress.city &&
+      location.state == selectedUserAddress.state && location.zip == selectedUserAddress.zip;
+  }
+
+  checkEmail(email: string): void {
     if(this.defaultQuestionaryForm.get('customerPersonalInfo.email').invalid) {
       this.defaultQuestionaryForm.get('customerPersonalInfo.email').markAsTouched();
       return
@@ -223,7 +236,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit, OnDestroy {
     }
   }
 
-  nextStep(incrementIndex = 1): void {
+  nextStep(incrementIndex: number = 1): void {
     if (this.questionaryControlService.currentQuestionIndex + incrementIndex
       <
       this.questionaryControlService.questionaryLength + this.questionaryControlService.defaultQuestionaryLength) {
@@ -235,7 +248,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit, OnDestroy {
    * Location
    */
 
-  autocompleteStateSearch(search): void {
+  autocompleteStateSearch(search: string): void {
     if (search && search.length > 0) {
       const regExp: RegExp = new RegExp(`^${search.trim()}`, 'i');
       this.filteredStates = this.constants.states.filter(state => Object.values(state).some(str => regExp.test(str as string)));
@@ -244,11 +257,18 @@ export class DefaultQuestionaryBlockComponent implements OnInit, OnDestroy {
     }
   }
 
-  validateLocation(formGroupName: string, callback?: Function): void {
+  validateLocation(formGroupName: string, nextStepFn: NextStepFn): void {
+    // check whether the user's address has changed
+    if (this.selectedUserAddress && this.hasAddressMatches(this.selectedUserAddress)) {
+      nextStepFn.call(this);
+      return;
+    }
+
     if (this.questionaryControlService.hasUnsavedChanges) {
       this.disabledNextAction = true;
       this.postOrderProcessing = true;
       const location = this.defaultQuestionaryForm.get(formGroupName).value;
+      this.selectedUserAddress = location;
       const requestOrder = RequestOrder.build(this.questionaryControlService.mainForm.getRawValue(),
         this.questionaryControlService.questionary.questions, this.questionaryControlService.serviceType, this.isAddressManual);
       this.orderServiceType = requestOrder.serviceName;
@@ -268,7 +288,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit, OnDestroy {
           if (orderValidationResult.validatedLocation.valid) {
             this.locationValidation = '';
             this.disabledNextAction = false;
-            callback.call(this);
+            nextStepFn.call(this);
           } else {
             if (orderValidationResult.validatedLocation.suggested) {
               this.hideNextAction = true;
@@ -298,7 +318,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit, OnDestroy {
           this.disabledNextAction = false;
         });
     } else {
-      callback.call(this);
+      nextStepFn.call(this);
     }
 
   }
@@ -310,7 +330,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit, OnDestroy {
     const location: FormGroup = this.defaultQuestionaryForm.get('projectLocation');
   }
 
-  selectAddress(address, isAddressManual: boolean) {
+  selectAddress(address: UserAddress, isAddressManual: boolean): void {
     this.isAddressSelected = true;
     const location: FormGroup = this.defaultQuestionaryForm.get('projectLocation');
     this.isAddressManual = isAddressManual;
@@ -322,16 +342,17 @@ export class DefaultQuestionaryBlockComponent implements OnInit, OnDestroy {
     });
   }
 
-  clearUserAddressForm() {
+  clearUserAddressForm(): void {
     const location: FormGroup = this.defaultQuestionaryForm.get('projectLocation');
     this.canEnterManualAddress = true;
     this.isAddressSelected = false;
+    this.changeDetectorRef.detectChanges();
     location.reset({
       'zip': location.get('zip').value,
     });
   }
 
-  chooseAddress(address: any, isAddressManual: boolean): void {
+  chooseAddress(address: UserAddress, isAddressManual: boolean): void {
     const location: FormGroup = this.defaultQuestionaryForm.get('projectLocation');
     this.isAddressManual = isAddressManual;
     this.processingAddressValidation = true;
@@ -354,19 +375,19 @@ export class DefaultQuestionaryBlockComponent implements OnInit, OnDestroy {
 
   }
 
-  validatePhone(formGroupName: string, callback?: Function) {
+  validatePhone(formGroupName: string, callback?: Function): void {
     this.nextStepFn = callback;
     this.disabledNextAction = true;
     this.waitingPhoneConfirmation = true;
   }
 
-  editPhoneAgain() {
+  editPhoneAgain(): void {
     this.nextStepFn = null;
     this.disabledNextAction = false;
     this.waitingPhoneConfirmation = false;
   }
 
-  onPhoneValidated() {
+  onPhoneValidated(): void {
     this.disabledNextAction = false;
     this.waitingPhoneConfirmation = false;
     this.phoneValid = true;
@@ -378,11 +399,11 @@ export class DefaultQuestionaryBlockComponent implements OnInit, OnDestroy {
 
   }
 
-  personalInfoRequired() {
+  personalInfoRequired(): boolean {
     return (this.securityService.hasRole(Role.ANONYMOUS) || (this.securityService.hasRole(Role.CUSTOMER) && !this.questionaryControlService.customerHasPhone))
   }
 
-  authorize() {
+  authorize(): void {
     if (this.captcha) {
       this.captcha.execute()
     } else {
@@ -408,7 +429,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit, OnDestroy {
 
   }
 
-  resolveCaptcha(captcha) {
+  resolveCaptcha(captcha): void {
     if(captcha) {
       this.handleAnonymousUser(captcha)
     } else {
@@ -417,7 +438,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit, OnDestroy {
     }
   }
 
-  handleAnonymousUser(captcha?) {
+  handleAnonymousUser(captcha?): void {
     if(this.emailIsChecked && this.emailIsUnique) {
       this.register(captcha)
     } else {
@@ -425,7 +446,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit, OnDestroy {
     }
   }
 
-  loginCustomer(captcha?) {
+  loginCustomer(captcha?): void {
     let credentials = new Credentials(this.defaultQuestionaryForm.get('customerPersonalInfo.email').value, this.defaultQuestionaryForm.get('customerPersonalInfo.password').value, captcha);
     this.loginProcessing = true;
     this.securityService.sendLoginRequest(credentials)
@@ -461,7 +482,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit, OnDestroy {
       })
   }
 
-  register(captcha?) {
+  register(captcha?): void {
     let registrationUserModel: RegistrationUserModel = new RegistrationUserModel();
     registrationUserModel.captcha = captcha;
     registrationUserModel.email = this.defaultQuestionaryForm.get('customerPersonalInfo.email').value
@@ -487,13 +508,13 @@ export class DefaultQuestionaryBlockComponent implements OnInit, OnDestroy {
       })
   }
 
-  showLoginResponseMessage(messageText, messageType) {
+  showLoginResponseMessage(messageText: string, messageType: any): void {
     this.loginMessageText = messageText;
     this.loginMessageType = messageType;
     this.showLoginMessage = true;
   }
 
-  onLoginMessageHide(event) {
+  onLoginMessageHide(event): void {
     this.showLoginMessage = event;
   }
 
@@ -503,13 +524,13 @@ export class DefaultQuestionaryBlockComponent implements OnInit, OnDestroy {
     this.resetCaptcha();
   }
 
-  resetCaptcha() {
+  resetCaptcha(): void {
     if (this.captcha) {
       this.captcha.reset()
     }
   }
 
-  onSocialButtonsMessageHide(event) {
+  onSocialButtonsMessageHide(event): void {
     this.socialButtonsShowMessage = event;
   }
 
