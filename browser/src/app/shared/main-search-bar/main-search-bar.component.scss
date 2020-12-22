@@ -204,6 +204,10 @@
       font-size: 24px;
       border-radius: 0;
 
+      &::placeholder {
+        color: $placeholder
+      }
+
       @include response-to(md) {
         font-size: 18px;
       }
