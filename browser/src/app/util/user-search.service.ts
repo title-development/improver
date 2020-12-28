@@ -56,7 +56,7 @@ export class UserSearchService {
 
   autocompleteSearchResult(searchTerm): Array<ServiceType> {
     let filteredServiceTypes: Array<ServiceType> = [];
-      if (searchTerm && searchTerm.length > 1) {
+      if (searchTerm && searchTerm.length >= 1) {
         filteredServiceTypes = this.getSearchResults(searchTerm.trim());
       } else {
         filteredServiceTypes = this.popularServiceTypes;
