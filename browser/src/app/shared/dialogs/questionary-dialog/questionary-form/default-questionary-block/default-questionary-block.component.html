@@ -352,7 +352,7 @@
       </cv-input-field>
       <cv-field-error class="location-error">{{locationValidation | lowercase}}</cv-field-error>
       <div *ngIf="originalAddress?.streetAddress && suggestedAddress?.streetAddress" class="address-validation"
-           [ngClass]="{'-invalid': locationInvalid}">
+           [ngClass]="{'-invalid': hasLocationInvalidMessage}">
         <div class="row">
           <div class="col-xs-12 col-sm-6">
             <div class="address">

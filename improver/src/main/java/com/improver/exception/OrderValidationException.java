@@ -14,7 +14,7 @@ public class OrderValidationException extends RuntimeException {
         this.validationResult = new OrderValidationResult().setValidatedLocation(validatedLocation);
     }
 
-    public OrderValidationException(ValidatedLocation validatedLocation, long projectId) {
+    public OrderValidationException(ValidatedLocation validatedLocation, Long projectId) {
         super(validatedLocation.getError());
         this.validationResult = new OrderValidationResult()
             .setValidatedLocation(validatedLocation)

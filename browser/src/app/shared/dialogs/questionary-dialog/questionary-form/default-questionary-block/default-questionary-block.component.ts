@@ -66,7 +66,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit, OnDestroy {
   originalAddress: any = {};
   suggestedAddress: any = {};
   isAddressManual: boolean = false;
-  locationInvalid: boolean;
+  hasLocationInvalidMessage: boolean;
   phoneValid: boolean;
   hideNextAction: boolean;
   disabledNextAction: boolean;
@@ -84,6 +84,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit, OnDestroy {
   canEnterManualAddress: boolean = false;
   isAddressSelected: boolean = false;
   selectedUserAddress: UserAddress;
+  isLocationValid: boolean;
 
   socialButtonsMessageType
   socialButtonsMessageText
@@ -181,8 +182,10 @@ export class DefaultQuestionaryBlockComponent implements OnInit, OnDestroy {
 
   hasAddressMatches(selectedUserAddress: UserAddress): boolean {
     let location: UserAddress = this.defaultQuestionaryForm.get('projectLocation').value;
-    return location.streetAddress == selectedUserAddress.streetAddress && location.city == selectedUserAddress.city &&
-      location.state == selectedUserAddress.state && location.zip == selectedUserAddress.zip;
+    return location.streetAddress.toLowerCase() == selectedUserAddress.streetAddress.toLowerCase()
+      && location.city.toLowerCase() == selectedUserAddress.city.toLowerCase()
+      && location.state.toLowerCase() == selectedUserAddress.state.toLowerCase()
+      && location.zip.toLowerCase() == selectedUserAddress.zip.toLowerCase();
   }
 
   checkEmail(email: string): void {
@@ -259,7 +262,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit, OnDestroy {
 
   validateLocation(formGroupName: string, nextStepFn: NextStepFn): void {
     // check whether the user's address has changed
-    if (this.selectedUserAddress && this.hasAddressMatches(this.selectedUserAddress)) {
+    if (this.selectedUserAddress && this.hasAddressMatches(this.selectedUserAddress) && this.isLocationValid) {
       nextStepFn.call(this);
       return;
     }
@@ -282,6 +285,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit, OnDestroy {
           this.processingAddressValidation = false;
         }))
         .subscribe((orderValidationResult: OrderValidationResult) => {
+          this.isLocationValid = orderValidationResult.validatedLocation.valid;
           this.questionaryControlService.projectId = orderValidationResult.projectId;
           this.questionaryControlService.hasUnsavedChanges = false;
 
@@ -292,13 +296,13 @@ export class DefaultQuestionaryBlockComponent implements OnInit, OnDestroy {
           } else {
             if (orderValidationResult.validatedLocation.suggested) {
               this.hideNextAction = true;
-              this.locationInvalid = true;
+              this.hasLocationInvalidMessage = true;
               this.originalAddress = location;
               this.originalAddress.canUseManual = orderValidationResult.validatedLocation.canUseManual;
               this.suggestedAddress = orderValidationResult.validatedLocation.suggested;
               this.validationMessage = orderValidationResult.validatedLocation.validationMsg;
             } else {
-              this.locationInvalid = false;
+              this.hasLocationInvalidMessage = false;
               this.disabledNextAction = true;
             }
             this.locationValidation = orderValidationResult.validatedLocation.error;
@@ -313,6 +317,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit, OnDestroy {
           }
         }, err => {
           console.error(err);
+          this.isLocationValid = false;
           this.locationValidation = 'Address Not found';
           this.resetLocationQuestion();
           this.disabledNextAction = false;
@@ -324,7 +329,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit, OnDestroy {
   }
 
   resetLocationQuestion(): void {
-    this.locationInvalid = false;
+    this.hasLocationInvalidMessage = false;
     this.hideNextAction = false;
     this.disabledNextAction = true;
     const location: FormGroup = this.defaultQuestionaryForm.get('projectLocation');
@@ -357,7 +362,7 @@ export class DefaultQuestionaryBlockComponent implements OnInit, OnDestroy {
     this.isAddressManual = isAddressManual;
     this.processingAddressValidation = true;
     this.hideNextAction = false;
-    this.locationInvalid = false;
+    this.hasLocationInvalidMessage = false;
     this.locationValidation = '';
     location.setValue({
       streetAddress: address.streetAddress,

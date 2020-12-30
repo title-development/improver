@@ -101,7 +101,7 @@ public class OrderService {
                 if (validatedAddress.isValid()) {
                     project.setLocation(order.getAddress());
                 } else {
-                    thrownException = new OrderValidationException(validatedAddress);
+                    thrownException = new OrderValidationException(validatedAddress, order.getProjectId());
                     if (validatedAddress.getSuggested() == null){
                         throw thrownException;
                     }
