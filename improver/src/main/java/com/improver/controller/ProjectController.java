@@ -32,6 +32,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import static com.improver.application.properties.Path.*;
@@ -84,8 +87,10 @@ public class ProjectController {
                                                           @RequestParam(required = false) Project.Status status,
                                                           @RequestParam(required = false) Project.Reason reason,
                                                           @RequestParam(required = false) String location,
+                                                          @RequestParam(required = false) ZonedDateTime createdFrom,
+                                                          @RequestParam(required = false) ZonedDateTime createdTo,
                                                           @PageableDefault(sort = "created",page = 0, size = 10, direction = Sort.Direction.DESC) Pageable pageRequest){
-        Page<AdminProject> projects = projectRepository.findBy(id, customerEmail, serviceType, status, reason, location, pageRequest)
+        Page<AdminProject> projects = projectRepository.findBy(id, customerEmail, serviceType, status, reason, location, createdFrom, createdTo, pageRequest)
             .map(AdminProject::from);
 
         return new ResponseEntity<>(projects, HttpStatus.OK);

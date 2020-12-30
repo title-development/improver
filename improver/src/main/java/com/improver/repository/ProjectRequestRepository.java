@@ -66,8 +66,11 @@ public interface ProjectRequestRepository extends JpaRepository<ProjectRequest, 
         "AND (:customerEmail IS null OR LOWER(proj.customer.email) LIKE CONCAT('%', LOWER(cast(:customerEmail as string)), '%')) " +
         "AND (:serviceType IS null OR LOWER(proj.serviceType.name) LIKE CONCAT('%', LOWER(cast(:serviceType as string)), '%')) " +
         "AND (:status IS null OR con.status = :status) " +
-        "AND (:projectStatus IS null OR proj.status = :projectStatus) ")
-    Page<AdminProjectRequest> getAll(Long id, String contractorEmail, String customerEmail, String serviceType, ProjectRequest.Status status, Project.Status projectStatus, Pageable pageable);
+        "AND (:projectStatus IS null OR proj.status = :projectStatus) " +
+        "AND ((CAST(:createdFrom AS date) IS null OR CAST(:createdTo AS date) IS null) OR con.created BETWEEN :createdFrom AND :createdTo) ")
+    Page<AdminProjectRequest> getAll(Long id, String contractorEmail, String customerEmail, String serviceType,
+                                     ProjectRequest.Status status, Project.Status projectStatus,
+                                     ZonedDateTime createdFrom, ZonedDateTime createdTo, Pageable pageable);
 
     @Query("SELECT  pc FROM com.improver.entity.ProjectRequest pc WHERE pc.contractor.id =?1 ORDER BY pc.created ASC")
     List<ProjectRequest> findByContractorId(long contractorId);

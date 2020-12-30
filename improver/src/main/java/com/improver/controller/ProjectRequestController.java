@@ -50,9 +50,11 @@ public class ProjectRequestController {
         @RequestParam(required = false) String serviceType,
         @RequestParam(required = false) ProjectRequest.Status status,
         @RequestParam(required = false) Project.Status projectStatus,
+        @RequestParam(required = false) ZonedDateTime createdFrom,
+        @RequestParam(required = false) ZonedDateTime createdTo,
         @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageRequest) {
 
-        Page<AdminProjectRequest> projectRequests = projectRequestRepository.getAll(id, contractorEmail, customerEmail, serviceType, status, projectStatus, pageRequest);
+        Page<AdminProjectRequest> projectRequests = projectRequestRepository.getAll(id, contractorEmail, customerEmail, serviceType, status, projectStatus, createdFrom, createdTo, pageRequest);
         return new ResponseEntity<>(projectRequests, HttpStatus.OK);
     }
 

@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 import { Ticket } from "../../../../api/models/Ticket";
 import { TicketService } from "../../../../api/services/ticket.service";
 import { PopUpMessageService } from "../../../../api/services/pop-up-message.service";
-import { getErrorMessage, getKeyFromEnum } from "../../../../util/functions";
+import { getErrorMessage, getKeyFromEnum, ngPrimeFiltersToParams } from "../../../../util/functions";
 import { Priority } from "../../../../api/models/Priority";
 import { UserService } from "../../../../api/services/user.service";
 import { Role } from "../../../../model/security-model";
@@ -30,6 +30,7 @@ export class TicketsListComponent {
   ticketStatusFilter: Array<SelectItem> = [];
   ticketPriorityFilter: Array<SelectItem> = [];
   selected: Ticket;
+  createdFilters;
 
   columns = [
     {field: 'id', header: 'Id', active: true},
@@ -80,7 +81,7 @@ export class TicketsListComponent {
   }
 
   onLazyLoad(event: any) {
-    this.loadDataLazy(filtersToParams(event.filters), new Pagination().fromPrimeNg(event));
+    this.loadDataLazy(ngPrimeFiltersToParams(event.filters), new Pagination().fromPrimeNg(event));
   }
 
   refresh(): void {

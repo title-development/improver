@@ -5,7 +5,7 @@ import { MenuItem } from 'primeng/api';
 import { ProjectService } from '../../../../api/services/project.service';
 import { SecurityService } from '../../../../auth/security.service';
 import { PopUpMessageService } from '../../../../api/services/pop-up-message.service';
-import { getErrorMessage } from '../../../../util/functions';
+import { getErrorMessage, ngPrimeFiltersToParams } from '../../../../util/functions';
 import { Project } from '../../../../api/models/Project';
 import { SelectItem } from "primeng";
 import { CamelCaseHumanPipe } from "../../../../pipes/camelcase-to-human.pipe";
@@ -28,7 +28,7 @@ export class AdminProjectsValidationComponent {
   projectStatusesFilter: Array<SelectItem> = [];
   projectInfo;
   toLocationValidate: Location;
-  selectedProject: Project;
+  selected: Project;
   displayLocationDialog: boolean = false;
   displayChangeOwnerDialog: boolean = false;
   displayValidationDialog: boolean = false;
@@ -36,6 +36,7 @@ export class AdminProjectsValidationComponent {
   displayCancelDialog: boolean = false;
   displayCompleteDialog: boolean = false;
   projectValidation: Project.ValidationRequest = {};
+  createdFilters;
 
   columns = [
     {field: 'id', header: 'Id', active: true},
@@ -80,39 +81,39 @@ export class AdminProjectsValidationComponent {
         label: 'Update Location',
         icon: 'fa fa-map-marker',
         command: () => this.openLocationValidationPopup(),
-        visible: this.selectedProject && this.selectedProject.status == Project.Status.VALIDATION && !this.selectedProject.hasProjectRequests
+        visible: this.selected && this.selected.status == Project.Status.VALIDATION && !this.selected.hasProjectRequests
       },
       {
         label: 'Add Comment',
         icon: 'fa fa-comments',
         command: () => this.addComment(),
-        visible: this.selectedProject && this.selectedProject.status == Project.Status.VALIDATION
+        visible: this.selected && this.selected.status == Project.Status.VALIDATION
       },
       {
         label: 'Validate',
         icon: 'fas fa-clipboard-check',
         command: () => this.validate(),
-        visible: this.selectedProject && this.selectedProject.status == Project.Status.VALIDATION
+        visible: this.selected && this.selected.status == Project.Status.VALIDATION
       },
       {
         label: 'Invalidate',
         icon: 'fa fa-minus-circle',
         command: () => this.invalidate(),
-        visible: this.selectedProject && this.selectedProject.status == Project.Status.VALIDATION,
+        visible: this.selected && this.selected.status == Project.Status.VALIDATION,
         styleClass: 'danger-menu-button'
       },
       {
         label: 'Cancel',
         icon: 'fas fa-ban',
         command: () => this.cancel(),
-        visible: this.selectedProject && this.selectedProject.status == Project.Status.VALIDATION,
+        visible: this.selected && this.selected.status == Project.Status.VALIDATION,
         styleClass: 'danger-menu-button'
       },
       {
         label: 'Complete',
         icon: 'fas fa-check-circle',
         command: () => this.complete(),
-        visible: this.selectedProject && this.selectedProject.status == Project.Status.VALIDATION,
+        visible: this.selected && this.selected.status == Project.Status.VALIDATION,
       }
     ]
   }
@@ -128,7 +129,7 @@ export class AdminProjectsValidationComponent {
   }
 
   onLazyLoad(event: any) {
-    this.loadDataLazy(filtersToParams(event.filters), new Pagination().fromPrimeNg(event));
+    this.loadDataLazy(ngPrimeFiltersToParams(event.filters), new Pagination().fromPrimeNg(event));
   }
 
   refresh(): void {
@@ -152,12 +153,12 @@ export class AdminProjectsValidationComponent {
   }
 
   openLocationValidationPopup(): void {
-    this.toLocationValidate = {...this.selectedProject.location}; //clone object
+    this.toLocationValidate = {...this.selected.location}; //clone object
     this.displayLocationDialog = true;
   }
 
   updateLocation(location: Location): void {
-    this.projectService.updateLocation(this.selectedProject.id, location).subscribe(
+    this.projectService.updateLocation(this.selected.id, location).subscribe(
       res => {
         this.refresh();
         this.popUpMessageService.showSuccess('Project location has been updated');
@@ -175,15 +176,15 @@ export class AdminProjectsValidationComponent {
     this.displayValidationDialog = true;
     this.projectValidation = {
       status: Project.Status.INVALID,
-      reason: this.selectedProject.reason ? this.selectedProject.reason : Project.Reason.INVALID_LOCATION
+      reason: this.selected.reason ? this.selected.reason : Project.Reason.INVALID_LOCATION
     }
   }
 
   validate() {
     this.displayValidationDialog = true;
     this.projectValidation = {
-      status: this.selectedProject.hasProjectRequests ? Project.Status.IN_PROGRESS : Project.Status.ACTIVE,
-      reason: this.selectedProject.reason
+      status: this.selected.hasProjectRequests ? Project.Status.IN_PROGRESS : Project.Status.ACTIVE,
+      reason: this.selected.reason
     }
   }
 

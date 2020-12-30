@@ -8,6 +8,7 @@ import { toHttpParams } from '../../util/functions';
 
 import { RestPage } from '../models/RestPage';
 import { ProRequestReview } from '../models/ProRequestReview';
+import { HttpParamsEncoder } from "../../util/http-param-encoder";
 
 @Injectable()
 export class ReviewService {
@@ -22,11 +23,12 @@ export class ReviewService {
   private accept = '/accept';
   private decline = '/decline';
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+              private encoder: HttpParamsEncoder) {
   }
 
-  getAllReviews(filters: any, pagination: Pagination): Observable<RestPage<Review>> {
-    const params = toHttpParams({...filters, ...pagination});
+  getAllReviews(params: any, pagination: Pagination): Observable<RestPage<Review>> {
+    params = new HttpParams({ fromObject: {...params, ...pagination}, encoder: this.encoder });
     return this.http.get<RestPage<Review>>(`${this.reviewUrl}`, {params});
   }
 

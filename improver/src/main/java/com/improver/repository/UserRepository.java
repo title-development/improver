@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import javax.transaction.Transactional;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,22 +30,33 @@ public interface UserRepository extends JpaRepository<User, Long> {
         "(:id IS null OR u.id = :id) AND " +
         "(:email IS null OR LOWER(u.email) LIKE CONCAT('%', LOWER(cast(:email as string)), '%')) AND " +
         "(:displayName IS null OR LOWER(u.displayName) LIKE CONCAT('%', LOWER(cast(:displayName as string)), '%')) AND " +
-        "(:role IS null OR u.role = :role)")
+        "(:role IS null OR u.role = :role) AND" +
+        "((CAST(:createdFrom AS date) IS null OR CAST(:createdTo AS date) IS null) OR u.created BETWEEN :createdFrom AND :createdTo) AND " +
+        "((CAST(:updatedFrom AS date) IS null OR CAST(:updatedTo AS date) IS null) OR u.updated BETWEEN :updatedFrom AND :updatedTo)")
     Page<User> findBy(Long id,
                       String email,
                       String displayName,
                       User.Role role,
+                      ZonedDateTime createdFrom,
+                      ZonedDateTime createdTo,
+                      ZonedDateTime updatedFrom,
+                      ZonedDateTime updatedTo,
                       Pageable pageable);
-
 
     @Query("SELECT c from com.improver.entity.Contractor c WHERE " +
         "c.role = 'CONTRACTOR' AND c.company.id = null AND " +
         "(:id IS null OR c.id = :id) AND " +
         "(:email IS null OR LOWER(c.email) LIKE CONCAT('%', LOWER(cast(:email as string)), '%')) AND " +
-        "(:displayName IS null OR LOWER(c.displayName) LIKE CONCAT('%', LOWER(cast(:displayName as string)), '%'))")
+        "(:displayName IS null OR LOWER(c.displayName) LIKE CONCAT('%', LOWER(cast(:displayName as string)), '%')) AND " +
+        "((CAST(:createdFrom AS date) IS null OR CAST(:createdTo AS date) IS null) OR c.created BETWEEN :createdFrom AND :createdTo) AND " +
+        "((CAST(:updatedFrom AS date) IS null OR CAST(:updatedTo AS date) IS null) OR c.updated BETWEEN :updatedFrom AND :updatedTo)")
     Page<User> findIncompleteProsBy(Long id,
                                     String email,
                                     String displayName,
+                                    ZonedDateTime createdFrom,
+                                    ZonedDateTime createdTo,
+                                    ZonedDateTime updatedFrom,
+                                    ZonedDateTime updatedTo,
                                     Pageable pageable);
 
 
@@ -64,8 +76,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
         "FROM com.improver.entity.Contractor pro WHERE " +
         "(:id IS null OR pro.id = :id) AND " +
         "(:displayName IS null OR LOWER(pro.displayName) LIKE CONCAT('%', LOWER(cast(:displayName as string)),'%')) AND " +
-        "(:email IS null OR LOWER(pro.email) LIKE CONCAT('%', LOWER(cast(:email as string)), '%'))")
-    Page<AdminContractor> getAllContractors(Long id, String displayName, String email, Pageable pageable);
+        "(:email IS null OR LOWER(pro.email) LIKE CONCAT('%', LOWER(cast(:email as string)), '%')) AND " +
+        "((CAST(:createdFrom AS date) IS null OR CAST(:createdTo AS date) IS null) OR pro.created BETWEEN :createdFrom AND :createdTo) AND " +
+        "((CAST(:updatedFrom AS date) IS null OR CAST(:updatedTo AS date) IS null) OR pro.updated BETWEEN :updatedFrom AND :updatedTo)")
+    Page<AdminContractor> getAllContractors(Long id, String displayName, String email,
+                                            ZonedDateTime createdFrom, ZonedDateTime createdTo,
+                                            ZonedDateTime updatedFrom, ZonedDateTime updatedTo,
+                                            Pageable pageable);
 
 
     @Query("SELECT new com.improver.model.admin.AdminContractor(pro, c) " +
@@ -75,16 +92,26 @@ public interface UserRepository extends JpaRepository<User, Long> {
         "(:id IS null OR pro.id = :id) AND " +
         "(:displayName IS null OR LOWER(pro.displayName) LIKE CONCAT('%', LOWER(cast(:displayName as string)),'%')) AND " +
         "(:email IS null OR LOWER(pro.email) LIKE CONCAT('%', LOWER(cast(:email as string)), '%')) AND " +
-        "(:companyName IS null OR LOWER(c.name) LIKE CONCAT('%', LOWER(cast(:companyName as string)), '%'))")
-    Page<AdminContractor> getAllContractorsJoinCompanies(Long id, String displayName, String email, String companyName, Pageable pageable);
+        "(:companyName IS null OR LOWER(c.name) LIKE CONCAT('%', LOWER(cast(:companyName as string)), '%')) AND " +
+        "((CAST(:createdFrom AS date) IS null OR CAST(:createdTo AS date) IS null) OR pro.created BETWEEN :createdFrom AND :createdTo) AND " +
+        "((CAST(:updatedFrom AS date) IS null OR CAST(:updatedTo AS date) IS null) OR pro.updated BETWEEN :updatedFrom AND :updatedTo)")
+    Page<AdminContractor> getAllContractorsJoinCompanies(Long id, String displayName, String email, String companyName,
+                                                         ZonedDateTime createdFrom, ZonedDateTime createdTo,
+                                                         ZonedDateTime updatedFrom, ZonedDateTime updatedTo,
+                                                         Pageable pageable);
 
     @Query("SELECT u  " +
         "FROM com.improver.entity.Customer u " +
         "WHERE " +
         "(:id IS null OR u.id = :id) AND " +
         "(:displayName IS null OR LOWER(u.displayName) LIKE CONCAT('%', LOWER(cast(:displayName as string)), '%')) AND " +
-        "(:email IS null OR LOWER(u.email) LIKE CONCAT('%', LOWER(cast(:email as string)), '%')) ")
-    Page<User> getAllCustomers(Long id, String displayName, String email, Pageable pageable);
+        "(:email IS null OR LOWER(u.email) LIKE CONCAT('%', LOWER(cast(:email as string)), '%')) AND " +
+        "((CAST(:createdFrom AS date) IS null OR CAST(:createdTo AS date) IS null) OR u.created BETWEEN :createdFrom AND :createdTo) AND " +
+        "((CAST(:updatedFrom AS date) IS null OR CAST(:updatedTo AS date) IS null) OR u.updated BETWEEN :updatedFrom AND :updatedTo)")
+    Page<User> getAllCustomers(Long id, String displayName, String email,
+                               ZonedDateTime createdFrom, ZonedDateTime createdTo,
+                               ZonedDateTime updatedFrom, ZonedDateTime updatedTo,
+                               Pageable pageable);
 
     User findByRefreshId(String refreshToken);
 

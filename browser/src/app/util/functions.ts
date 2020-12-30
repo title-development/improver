@@ -2,6 +2,7 @@ import { HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { httpStatusCodeResponses } from './text-messages';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { RestPage } from '../api/models/RestPage';
+import * as moment from 'moment';
 
 /**
  Works only for new angular httpClient
@@ -238,4 +239,44 @@ export function removeDuplicatesFromArray(array, uniqueFieldName, skipFilterFn?)
 
   result.push(...unfilteredArray)
   return result
+}
+
+export function ngPrimeFiltersToParams(filters): any {
+  const FROM = "From"
+  const TO = "To"
+  const DATE_FORMAT = "YYYY-MM-DD";
+  const FIRST_DAY_SECOND = "00:00:00"
+  const LAST_DAY_SECOND = "23:59:59"
+  let params = {};
+  Object.keys(filters).forEach(key => {
+    let filterObject = filters[key];
+    let value = filterObject.value;
+    if (filterObject.matchMode == 'range') {
+      params[key + FROM] = value[0];
+      params[key + TO] = value[1];
+    } else if (filterObject.matchMode == 'rangeMoney') {
+      params[key + FROM] = value[0] * 100;
+      params[key + TO] = value[1] * 100;
+    } else if (filterObject.matchMode == 'dateTimeRange') {
+      if (value[0] && value[1]) {
+        params[key + FROM] = moment(value[0]).format(DATE_FORMAT) + "T" + FIRST_DAY_SECOND;
+        params[key + TO] = moment(value[1]).format(DATE_FORMAT) + "T" + LAST_DAY_SECOND;
+      }
+    } else if (filterObject.matchMode == 'zonedDateTimeRange') {
+      if (value[0] && value[1]) {
+        console.log(moment(value[0]).format('Z'))
+        console.log(moment(value[0]).format('ZZ'))
+        params[key + FROM] = moment(value[0]).format(DATE_FORMAT) + "T" + FIRST_DAY_SECOND + moment(value[0]).format('Z');
+        params[key + TO] = moment(value[1]).format(DATE_FORMAT) + "T" + LAST_DAY_SECOND + moment(value[1]).format('Z');
+      }
+    } else if (filterObject.matchMode == 'dateRange') {
+      if (value[0] && value[1]) {
+        params[key + FROM] = moment(value[0]).format(DATE_FORMAT);
+        params[key + TO] = moment(value[1]).format(DATE_FORMAT);
+      }
+    } else {
+      params[key] = value;
+    }
+  });
+  return params;
 }

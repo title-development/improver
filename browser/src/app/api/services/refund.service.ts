@@ -6,17 +6,19 @@ import { toHttpParams } from '../../util/functions';
 import { Refund } from '../models/Refund';
 import { RestPage } from '../models/RestPage';
 import { RefundAction } from '../models/RefundAction';
+import { SecurityService } from "../../auth/security.service";
+import { HttpParamsEncoder } from "../../util/http-param-encoder";
 
 @Injectable()
 export class RefundService {
   private url: string = 'api/refund';
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+              private encoder: HttpParamsEncoder) {
   }
 
-  getAll(filters: any, pagination: Pagination): Observable<RestPage<Refund>> {
-    const params = toHttpParams({...filters, ...pagination});
-
+  getAll(params: any, pagination: Pagination): Observable<RestPage<Refund>> {
+    params = new HttpParams({ fromObject: {...params, ...pagination}, encoder: this.encoder });
     return this.http.get<RestPage<Refund>>(this.url, {params});
   }
 

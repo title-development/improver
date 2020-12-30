@@ -24,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import static com.improver.application.properties.Path.*;
@@ -74,8 +75,12 @@ public class UserController {
                                                     @RequestParam(required = false) String email,
                                                     @RequestParam(required = false) String displayName,
                                                     @RequestParam(required = false) User.Role role,
+                                                    @RequestParam(required = false) ZonedDateTime createdFrom,
+                                                    @RequestParam(required = false) ZonedDateTime createdTo,
+                                                    @RequestParam(required = false) ZonedDateTime updatedFrom,
+                                                    @RequestParam(required = false) ZonedDateTime updatedTo,
                                                     @PageableDefault(sort = "email", direction = Sort.Direction.DESC) Pageable pageRequest) {
-        Page<UserModel> users = userService.findBy(id, email, displayName, role, pageRequest)
+        Page<UserModel> users = userService.findBy(id, email, displayName, role, createdFrom, createdTo, updatedFrom, updatedTo, pageRequest)
             .map(UserModel::new);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
@@ -141,9 +146,14 @@ public class UserController {
         @RequestParam(required = false) String displayName,
         @RequestParam(required = false) String email,
         @RequestParam(required = false) String companyName,
+        @RequestParam(required = false) ZonedDateTime createdFrom,
+        @RequestParam(required = false) ZonedDateTime createdTo,
+        @RequestParam(required = false) ZonedDateTime updatedFrom,
+        @RequestParam(required = false) ZonedDateTime updatedTo,
         @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageRequest) {
 
-        Page<AdminContractor> contractor = this.userService.getAllContractors(id, displayName, email, companyName, pageRequest);
+        Page<AdminContractor> contractor = this.userService.getAllContractors(id, displayName, email, companyName,
+            createdFrom, createdTo, updatedFrom, updatedTo, pageRequest);
         return new ResponseEntity<>(contractor, HttpStatus.OK);
     }
 
@@ -158,9 +168,14 @@ public class UserController {
         @RequestParam(required = false) Long id,
         @RequestParam(required = false) String displayName,
         @RequestParam(required = false) String email,
+        @RequestParam(required = false) ZonedDateTime createdFrom,
+        @RequestParam(required = false) ZonedDateTime createdTo,
+        @RequestParam(required = false) ZonedDateTime updatedFrom,
+        @RequestParam(required = false) ZonedDateTime updatedTo,
         @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageRequest) {
 
-        Page<UserModel> customers = this.userService.getAllCustomers(id, displayName, email, pageRequest)
+        Page<UserModel> customers = this.userService.getAllCustomers(id, displayName, email,
+            createdFrom, createdTo, updatedFrom, updatedTo, pageRequest)
             .map(UserModel::new);
         return new ResponseEntity<>(customers, HttpStatus.OK);
     }

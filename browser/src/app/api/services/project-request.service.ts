@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Constants } from '../../util/constants';
 import { Pagination } from '../../model/data-model';
 import { Observable } from 'rxjs';
-import { HttpClient, HttpRequest } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpRequest } from '@angular/common/http';
 import { jsonParse } from '../../util/functions';
 import { MessengerDocument } from '../models/MessengerDocument';
 
@@ -13,19 +13,22 @@ import { ProjectRequest } from '../models/ProjectRequest';
 import { ProjectMessage } from '../models/ProjectMessage';
 import { map } from "rxjs/internal/operators";
 import { SecurityService } from '../../auth/security.service';
+import { HttpParamsEncoder } from "../../util/http-param-encoder";
 
 @Injectable()
 export class ProjectRequestService {
   readonly projectRequestsUrl: string = 'api/project-requests';
   ProjectRequest = ProjectRequest;
 
-  constructor(private httpClient: HttpClient, private constants: Constants, private securityService: SecurityService) {
+  constructor(private httpClient: HttpClient,
+              private constants: Constants,
+              private securityService: SecurityService,
+              private encoder: HttpParamsEncoder) {
     this.constants = constants;
   }
 
-  getAll(filters: any, pagination: Pagination): Observable<RestPage<AdminProjectRequest>> {
-    const params = {...filters, ...pagination};
-
+  getAll(params: any, pagination: Pagination): Observable<RestPage<AdminProjectRequest>> {
+    params = new HttpParams({ fromObject: {...params, ...pagination}, encoder: this.encoder });
     return this.httpClient.get<RestPage<AdminProjectRequest>>(this.projectRequestsUrl, {params});
   }
 

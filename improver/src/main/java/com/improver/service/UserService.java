@@ -101,14 +101,20 @@ public class UserService {
     }
 
 
-    public Page<AdminContractor> getAllContractors(Long id, String displayName, String email, String companyName, Pageable pageable) {
+    public Page<AdminContractor> getAllContractors(Long id, String displayName, String email, String companyName,
+                                                   ZonedDateTime createdFrom, ZonedDateTime createdTo,
+                                                   ZonedDateTime updatedFrom, ZonedDateTime updatedTo,
+                                                   Pageable pageable) {
         return (null == companyName || companyName.isEmpty())
-            ? userRepository.getAllContractors(id, displayName, email, pageable)
-            : userRepository.getAllContractorsJoinCompanies(id, displayName, email, companyName, pageable);
+            ? userRepository.getAllContractors(id, displayName, email, createdFrom, createdTo, updatedFrom, updatedTo, pageable)
+            : userRepository.getAllContractorsJoinCompanies(id, displayName, email, companyName, createdFrom, createdTo, updatedFrom, updatedTo, pageable);
     }
 
-    public Page<User> getAllCustomers(Long id, String displayName, String email, Pageable pageable) {
-        return userRepository.getAllCustomers(id, displayName, email, pageable);
+    public Page<User> getAllCustomers(Long id, String displayName, String email,
+                                      ZonedDateTime createdFrom, ZonedDateTime createdTo,
+                                      ZonedDateTime updatedFrom, ZonedDateTime updatedTo,
+                                      Pageable pageable) {
+        return userRepository.getAllCustomers(id, displayName, email, createdFrom, createdTo, updatedFrom, updatedTo, pageable);
     }
 
     public void updateAdminUser(long id, UserModel toUpdate) {
@@ -176,11 +182,16 @@ public class UserService {
 
 
 
-    public Page<User> findBy(Long id, String email, String displayName, User.Role role, Pageable pageRequest) {
+    public Page<User> findBy(Long id, String email, String displayName, User.Role role,
+                             ZonedDateTime createdFrom, ZonedDateTime createdTo,
+                             ZonedDateTime updatedFrom, ZonedDateTime updatedTo,
+                             Pageable pageRequest) {
         if (User.Role.INCOMPLETE_PRO.equals(role)) {
-            return userRepository.findIncompleteProsBy(id, email, displayName, pageRequest);
+            return userRepository.findIncompleteProsBy(id, email, displayName, createdFrom, createdTo,
+                updatedFrom, updatedTo, pageRequest);
         }
-        return userRepository.findBy(id, email, displayName, role, pageRequest);
+        return userRepository.findBy(id, email, displayName, role, createdFrom, createdTo,
+            updatedFrom, updatedTo, pageRequest);
     }
 
 

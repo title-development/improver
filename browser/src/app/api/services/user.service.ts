@@ -3,10 +3,9 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { User } from '../models/User';
 import { RestPage } from '../models/RestPage';
-import { ContractorNotificationSettings, CustomerNotificationSettings } from '../models/NotificationSettings';
 import { Pagination } from '../../model/data-model';
 import { AdminContractor } from '../models/AdminContractor';
-import { RegistrationUserModel } from '../../model/security-model';
+import { HttpParamsEncoder } from "../../util/http-param-encoder";
 
 
 @Injectable()
@@ -14,11 +13,12 @@ export class UserService {
 
   private url = 'api/users';
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+              private encoder: HttpParamsEncoder) {
   }
 
   getAll(params, pagination): Observable<RestPage<User>> {
-    params = Object.assign(params, pagination);
+    params = new HttpParams({ fromObject: {...params, ...pagination}, encoder: this.encoder });
     return this.http.get<RestPage<User>>(this.url, {params: params});
   }
 
@@ -31,9 +31,8 @@ export class UserService {
   }
 
 
-  getAllContractors(filters: any, pagination: Pagination): Observable<RestPage<AdminContractor>> {
-    const params = {...filters, ...pagination};
-
+  getAllContractors(params: any, pagination: Pagination): Observable<RestPage<AdminContractor>> {
+    params = new HttpParams({ fromObject: {...params, ...pagination}, encoder: this.encoder });
     return this.http.get<RestPage<AdminContractor>>(`${this.url}/contractors`, {params});
   }
 
@@ -42,8 +41,8 @@ export class UserService {
     return this.http.put(`${this.url}/${contractorId}/contractors`, contractor);
   }
 
-  getAllCustomers(filters: any, pagination: Pagination): Observable<RestPage<User>> {
-    const params = {...filters, ...pagination};
+  getAllCustomers(params: any, pagination: Pagination): Observable<RestPage<User>> {
+    params = new HttpParams({ fromObject: {...params, ...pagination}, encoder: this.encoder });
     return this.http.get<RestPage<User>>(`${this.url}/customers`, {params});
   }
 

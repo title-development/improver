@@ -9,6 +9,7 @@ import { StaffAction } from "../../../api/models/StaffAction";
 import { StaffService } from "../../../api/services/staff.service";
 import { Role } from "../../../model/security-model";
 import { SecurityService } from "../../../auth/security.service";
+import { ngPrimeFiltersToParams } from "../../../util/functions";
 
 @Component({
   selector: 'staff-actions',
@@ -21,6 +22,7 @@ export class StaffActionsComponent {
   staffActions: RestPage<StaffAction> = new RestPage<StaffAction>();
   rowsPerPage: Array<number> = [10, 50, 100];
   selected: StaffAction;
+  createdFilters;
 
   columns = [
     {field: 'id', header: 'Id', active: true},
@@ -66,7 +68,7 @@ export class StaffActionsComponent {
   }
 
   onLazyLoad(event: any) {
-    this.loadDataLazy(filtersToParams(event.filters), new Pagination().fromPrimeNg(event));
+    this.loadDataLazy(ngPrimeFiltersToParams(event.filters), new Pagination().fromPrimeNg(event));
   }
 
   refresh(): void {

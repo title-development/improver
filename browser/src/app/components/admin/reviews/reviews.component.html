@@ -68,6 +68,20 @@
           {{this.scoreFromTo[0]}} — {{this.scoreFromTo[1]}}
           <p-slider [style]="{'width':'100%','margin-top':'8px'}" [(ngModel)]="scoreFromTo" [min]="scoreMinMax[0]"
                     [max]="scoreMinMax[1]" [step]="1" (onSlideEnd)="dt.filter(scoreFromTo, col.field, 'range')" [range]="true"></p-slider>
+
+          <div *ngSwitchCase="'created'">
+            <p-calendar
+              [(ngModel)]="createdFilters"
+              appendTo="body"
+              selectionMode="range"
+              [readonlyInput]="true"
+              dateFormat="dd.mm.yy"
+              (onSelect)="dt.filter(createdFilters, col.field, 'zonedDateTimeRange')"
+              (onClearClick)="dt.filter(createdFilters, col.field, 'zonedDateTimeRange')"
+              [showButtonBar]="true">
+            </p-calendar>
+          </div>
+
         </div>
 
       </th>

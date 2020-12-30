@@ -10,7 +10,7 @@ import { filtersToParams } from '../../../../api/services/tricks.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../../../../api/services/user.service';
 import { dataTableFilter } from '../../util';
-import { getErrorMessage } from "../../../../util/functions";
+import { getErrorMessage, ngPrimeFiltersToParams } from "../../../../util/functions";
 import { Role } from "../../../../model/security-model";
 
 @Component({
@@ -28,6 +28,8 @@ export class ContractorsComponent {
   displayEditDialog: boolean = false;
   filters: { [s: string]: FilterMetadata };
   Role = Role;
+  createdFilters;
+  updatedFilters;
 
 
   columns = [
@@ -93,7 +95,7 @@ export class ContractorsComponent {
   }
 
   onLazyLoad(event: any) {
-    this.loadDataLazy(filtersToParams(event.filters), new Pagination().fromPrimeNg(event));
+    this.loadDataLazy(ngPrimeFiltersToParams(event.filters), new Pagination().fromPrimeNg(event));
   }
 
   refresh(): void {

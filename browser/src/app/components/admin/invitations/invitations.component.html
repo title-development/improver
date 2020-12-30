@@ -62,7 +62,20 @@
         <div *ngSwitchCase="'bonus'">
           ${{this.bonusFromTo[0]}} — ${{this.bonusFromTo[1]}}
           <p-slider [style]="{'width':'100%','margin-top':'8px'}" [(ngModel)]="bonusFromTo" [min]="bonusMinMax[0]"
-                    [max]="bonusMinMax[1]" [step]="1" (onSlideEnd)="dt.filter(bonusFromTo, col.field, 'range')" [range]="true"></p-slider>
+                    [max]="bonusMinMax[1]" [step]="1" (onSlideEnd)="dt.filter(bonusFromTo, col.field, 'rangeMoney')" [range]="true"></p-slider>
+        </div>
+
+        <div *ngSwitchCase="'created'">
+          <p-calendar
+            [(ngModel)]="createdFilters"
+            appendTo="body"
+            selectionMode="range"
+            [readonlyInput]="true"
+            dateFormat="dd.mm.yy"
+            (onSelect)="dt.filter(createdFilters, col.field, 'zonedDateTimeRange')"
+            (onClearClick)="dt.filter(createdFilters, col.field, 'zonedDateTimeRange')"
+            [showButtonBar]="true">
+          </p-calendar>
         </div>
 
       </th>
@@ -84,6 +97,10 @@
 
         <span *ngSwitchCase="'bonus'">
           {{row[col.field] / 100 | currency:'USD'}}
+        </span>
+
+        <span *ngSwitchCase="'created'">
+          {{row[col.field] | date: 'MMM d, y, h:mm a'}}
         </span>
 
         <span *ngSwitchCase="'activated'">

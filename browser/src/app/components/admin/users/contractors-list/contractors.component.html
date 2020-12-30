@@ -54,6 +54,32 @@
         <input *ngSwitchCase="'email'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
         <input *ngSwitchCase="'displayName'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" class="table-filter">
 
+        <div *ngSwitchCase="'created'">
+          <p-calendar
+            [(ngModel)]="createdFilters"
+            appendTo="body"
+            selectionMode="range"
+            [readonlyInput]="true"
+            dateFormat="dd.mm.yy"
+            (onSelect)="dt.filter(createdFilters, col.field, 'zonedDateTimeRange')"
+            (onClearClick)="dt.filter(createdFilters, col.field, 'zonedDateTimeRange')"
+            [showButtonBar]="true">
+          </p-calendar>
+        </div>
+
+        <div *ngSwitchCase="'updated'">
+          <p-calendar
+            [(ngModel)]="updatedFilters"
+            appendTo="body"
+            selectionMode="range"
+            [readonlyInput]="true"
+            dateFormat="dd.mm.yy"
+            (onSelect)="dt.filter(updatedFilters, col.field, 'zonedDateTimeRange')"
+            (onClearClick)="dt.filter(updatedFilters, col.field, 'zonedDateTimeRange')"
+            [showButtonBar]="true">
+          </p-calendar>
+        </div>
+
       </th>
 
     </tr>

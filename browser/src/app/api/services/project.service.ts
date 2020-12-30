@@ -23,6 +23,7 @@ import { Refund } from '../models/Refund';
 import { map } from 'rxjs/internal/operators';
 import { OrderValidationResult } from "../models/LocationsValidation";
 import Receipt = Billing.Receipt;
+import { HttpParamsEncoder } from "../../util/http-param-encoder";
 
 @Injectable()
 export class ProjectService {
@@ -38,7 +39,8 @@ export class ProjectService {
 
   constructor(private http: HttpClient,
               private constants: Constants,
-              private securityService: SecurityService) {
+              private securityService: SecurityService,
+              private encoder: HttpParamsEncoder) {
     this.constants = constants;
   }
 
@@ -59,8 +61,8 @@ export class ProjectService {
   }
 
   getAll(params, pagination): Observable<RestPage<Project>> {
-    params = Object.assign(params, pagination);
-    return this.http.get<RestPage<Project>>(`${this.API}${this.PROJECTS}`, {params: params});
+    params = new HttpParams({ fromObject: {...params, ...pagination}, encoder: this.encoder });
+    return this.http.get<RestPage<Project>>(`${this.API}${this.PROJECTS}`, {params});
   }
 
   getProject(id): Observable<any> {

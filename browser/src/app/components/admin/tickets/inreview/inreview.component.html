@@ -64,6 +64,19 @@
         <p-dropdown *ngSwitchCase="'status'" [options]="ticketStatusFilter" (onChange)="dt.filter($event.value, col.field, 'equals')" styleClass="ui-column-filter"></p-dropdown>
         <p-dropdown *ngSwitchCase="'priority'" [options]="ticketPriorityFilter" (onChange)="dt.filter($event.value, col.field, 'equals')" styleClass="ui-column-filter"></p-dropdown>
 
+        <div *ngSwitchCase="'created'">
+          <p-calendar
+            [(ngModel)]="createdFilters"
+            appendTo="body"
+            selectionMode="range"
+            [readonlyInput]="false"
+            dateFormat="dd.mm.yy"
+            (onSelect)="dt.filter(createdFilters, col.field, 'zonedDateTimeRange')"
+            (onClearClick)="dt.filter(createdFilters, col.field, 'zonedDateTimeRange')"
+            [showButtonBar]="true">
+          </p-calendar>
+        </div>
+
       </th>
 
     </tr>

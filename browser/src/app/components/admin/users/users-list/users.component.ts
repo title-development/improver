@@ -5,7 +5,7 @@ import { ConfirmationService, FilterMetadata, MenuItem, SelectItem } from 'prime
 import { Role } from '../../../../model/security-model';
 import { enumToArrayList, filtersToParams } from '../../../../api/services/tricks.service';
 import { Pagination } from '../../../../model/data-model';
-import { clone, getErrorMessage } from '../../../../util/functions';
+import { clone, getErrorMessage, ngPrimeFiltersToParams } from '../../../../util/functions';
 import { PopUpMessageService } from '../../../../api/services/pop-up-message.service';
 import { CamelCaseHumanPipe } from '../../../../pipes/camelcase-to-human.pipe';
 import { RestPage } from '../../../../api/models/RestPage';
@@ -52,6 +52,8 @@ export class AdminUsersComponent {
   roles: Array<SelectItem> = [];
   contextMenuItems: Array<MenuItem>;
   filters: { [s: string]: FilterMetadata };
+  createdFilters;
+  updatedFilters;
 
   constructor(private userService: UserService,
               private confirmationService: ConfirmationService,
@@ -119,7 +121,7 @@ export class AdminUsersComponent {
   }
 
   onLazyLoad(event: any) {
-    this.loadDataLazy(filtersToParams(event.filters), new Pagination().fromPrimeNg(event));
+    this.loadDataLazy(ngPrimeFiltersToParams(event.filters), new Pagination().fromPrimeNg(event));
   }
 
   refresh(): void {

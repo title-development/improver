@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { toHttpParams } from "../../util/functions";
 import { RestPage } from "../models/RestPage";
 import { Ticket } from "../models/Ticket";
+import { SecurityService } from "../../auth/security.service";
+import { HttpParamsEncoder } from "../../util/http-param-encoder";
 
 
 @Injectable()
@@ -12,16 +14,17 @@ export class TicketService {
   private ticketUrl = 'api/tickets';
   private statusUrl = '/status';
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+              private encoder: HttpParamsEncoder) {
   }
 
-  getAll(filters, pagination): Observable<RestPage<Ticket>> {
-    const params = toHttpParams({...filters, ...pagination});
+  getAll(params, pagination): Observable<RestPage<Ticket>> {
+    params = new HttpParams({ fromObject: {...params, ...pagination}, encoder: this.encoder });
     return this.http.get<RestPage<Ticket>>(`${this.ticketUrl}`, {params});
   }
 
-  getMy(filters, pagination): Observable<RestPage<Ticket>> {
-    const params = toHttpParams({...filters, ...pagination});
+  getMy(params, pagination): Observable<RestPage<Ticket>> {
+    params = new HttpParams({ fromObject: {...params, ...pagination}, encoder: this.encoder });
     return this.http.get<RestPage<Ticket>>(`${this.ticketUrl}/my`, {params});
   }
 

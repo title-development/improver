@@ -6,11 +6,11 @@
 <p-table class="projectRequests-table" [lazy]="true" [loading]="processing" #dt
          dataKey="id"
          [value]="projectRequests.content"
-         selectionMode="single" sortMode="single"
+         selectionMode="single"
          [responsive]="true" [contextMenu]="cm" [paginator]="true"
          [tableStyle]="{'table-layout':'auto'}"
          [rows]="rowsPerPage[0]" [totalRecords]="projectRequests.totalElements" [rowsPerPageOptions]="rowsPerPage"
-         sortField="id" [sortOrder]="1"
+         sortMode="single" sortField="created" [sortOrder]="-1"
          (onRowExpand)="expandRow($event)"
          [(contextMenuSelection)]="selected"
          (onLazyLoad)="onLazyLoad($event)">
@@ -53,6 +53,19 @@
         <input *ngSwitchCase="'serviceType'" pInputText type="text" (input)="dt.filter($event.target.value, 'serviceType', 'equals')" class="table-filter">
         <p-dropdown *ngSwitchCase="'status'" [options]="projectRequestStatuses" (onChange)="dt.filter($event.value, col.field, 'equals')" styleClass="ui-column-filter"></p-dropdown>
         <p-dropdown *ngSwitchCase="'projectStatus'" [options]="projectStatuses" (onChange)="dt.filter($event.value, col.field, 'equals')" styleClass="ui-column-filter"></p-dropdown>
+
+        <div *ngSwitchCase="'created'">
+          <p-calendar
+            [(ngModel)]="createdFilters"
+            appendTo="body"
+            selectionMode="range"
+            [readonlyInput]="false"
+            dateFormat="dd.mm.yy"
+            (onSelect)="dt.filter(createdFilters, col.field, 'zonedDateTimeRange')"
+            (onClearClick)="dt.filter(createdFilters, col.field, 'zonedDateTimeRange')"
+            [showButtonBar]="true">
+          </p-calendar>
+        </div>
 
       </th>
 

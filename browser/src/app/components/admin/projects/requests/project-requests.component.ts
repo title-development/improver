@@ -10,7 +10,7 @@ import { Project } from '../../../../api/models/Project';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProjectRequest } from '../../../../api/models/ProjectRequest';
 import { ProjectMessage } from '../../../../api/models/ProjectMessage';
-import { getErrorMessage } from '../../../../util/functions';
+import { getErrorMessage, ngPrimeFiltersToParams } from '../../../../util/functions';
 import { PopUpMessageService } from '../../../../api/services/pop-up-message.service';
 import { ProjectService } from '../../../../api/services/project.service';
 
@@ -33,6 +33,7 @@ export class ProjectRequestsComponent {
   projectRequestStatuses: Array<SelectItem> = [];
   projectStatuses: Array<SelectItem> = [];
   selected: AdminProjectRequest;
+  createdFilters;
 
   columns = [
     {field: 'id', header: 'Id', active: true},
@@ -96,7 +97,7 @@ export class ProjectRequestsComponent {
   }
 
   onLazyLoad(event: any) {
-    this.loadDataLazy(filtersToParams(event.filters), new Pagination().fromPrimeNg(event));
+    this.loadDataLazy(ngPrimeFiltersToParams(event.filters), new Pagination().fromPrimeNg(event));
   }
 
   refresh(): void {

@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 public interface TicketRepository extends JpaRepository<Ticket, Long>{
@@ -27,9 +28,11 @@ public interface TicketRepository extends JpaRepository<Ticket, Long>{
         "OR LOWER(u.role) LIKE CONCAT('%', LOWER(cast(:author as string)), '%')) AND " +
         "((:unassignedOnly = true AND t.assignee IS null) OR " +
         "(:unassignedOnly = false AND :assignee IS null OR LOWER(su.email) LIKE CONCAT('%', LOWER(cast(:assignee as string)), '%') " +
-        "OR LOWER(su.displayName) LIKE CONCAT('%', LOWER(cast(:assignee as string)), '%')))" )
+        "OR LOWER(su.displayName) LIKE CONCAT('%', LOWER(cast(:assignee as string)), '%'))) AND " +
+        "((CAST(:createdFrom AS date) IS null OR CAST(:createdTo AS date) IS null) OR t.created BETWEEN :createdFrom AND :createdTo) ")
     Page<StaffTicket> getAll(Long id, String email, String name, String businessName, Ticket.Subject subject,
-                             List<Ticket.Status> statuses, Priority priority, String assignee, String author, Boolean unassignedOnly, Pageable pageable);
+                             List<Ticket.Status> statuses, Priority priority, String assignee, String author,
+                             Boolean unassignedOnly, ZonedDateTime createdFrom, ZonedDateTime createdTo, Pageable pageable);
 
 
     Integer countAllByStatusInAndAuthorId(List<Ticket.Status> statuses, Long userId);

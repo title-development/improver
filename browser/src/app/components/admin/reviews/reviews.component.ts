@@ -9,7 +9,7 @@ import { CamelCaseHumanPipe } from '../../../pipes/camelcase-to-human.pipe';
 import { Router } from '@angular/router';
 import { finalize } from "rxjs/operators";
 import { PopUpMessageService } from "../../../api/services/pop-up-message.service";
-import { clone, getErrorMessage } from "../../../util/functions";
+import { clone, getErrorMessage, ngPrimeFiltersToParams } from "../../../util/functions";
 
 @Component({
   selector: 'admin-reviews',
@@ -23,6 +23,7 @@ export class AdminReviewsComponent {
   reviews: RestPage<Review> = new RestPage<Review>();
   rowsPerPage: Array<number> = [10, 50, 100];
   selected: Review;
+  createdFilters
 
   columns = [
     {field: 'id', header: 'Id', active: true},
@@ -82,7 +83,7 @@ export class AdminReviewsComponent {
   }
 
   onLazyLoad(event: any) {
-    this.loadDataLazy(filtersToParams(event.filters), new Pagination().fromPrimeNg(event));
+    this.loadDataLazy(ngPrimeFiltersToParams(event.filters), new Pagination().fromPrimeNg(event));
   }
 
   refresh(): void {

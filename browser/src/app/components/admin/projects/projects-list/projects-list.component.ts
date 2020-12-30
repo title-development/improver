@@ -8,7 +8,7 @@ import { StatusToString } from '../../../../pipes/status-to-string.pipe';
 import { Constants } from '../../../../util/constants';
 import { ServiceTypeService } from '../../../../api/services/service-type.service';
 import { RestPage } from '../../../../api/models/RestPage';
-import { getErrorMessage } from '../../../../util/functions';
+import { getErrorMessage, ngPrimeFiltersToParams } from '../../../../util/functions';
 import { enumToArrayList, filtersToParams, TricksService } from '../../../../api/services/tricks.service';
 import { CamelCaseHumanPipe } from '../../../../pipes/camelcase-to-human.pipe';
 import { Project } from '../../../../api/models/Project';
@@ -37,6 +37,7 @@ export class AdminProjectsComponent {
   displayCommentDialog: boolean = false;
   projectValidation: Project.ValidationRequest = {};
   contextMenuItems = [];
+  createdFilters;
 
   columns = [
     {field: 'id', header: 'Id', active: true},
@@ -112,7 +113,7 @@ export class AdminProjectsComponent {
   }
 
   onLazyLoad(event: any) {
-    this.loadDataLazy(filtersToParams(event.filters), new Pagination().fromPrimeNg(event));
+    this.loadDataLazy(ngPrimeFiltersToParams(event.filters), new Pagination().fromPrimeNg(event));
   }
 
   refresh(): void {

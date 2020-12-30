@@ -32,8 +32,10 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
         "WHERE (:id IS null OR r.id = :id) " +
         "AND (:customerName IS null OR LOWER(r.customer.displayName) LIKE CONCAT('%', LOWER(cast(:customerName as string)), '%')) " +
         "AND (:companyName IS null OR LOWER(c.name) LIKE CONCAT('%', LOWER(cast(:companyName as string)), '%'))" +
-        "AND (:scoreFrom IS null OR r.score BETWEEN :scoreFrom AND :scoreTo)")
-    Page<CompanyReview> findAllBy(Long id, String customerName, String companyName, Integer scoreFrom, Integer scoreTo, Pageable pageable);
+        "AND (:scoreFrom IS null OR r.score BETWEEN :scoreFrom AND :scoreTo) " +
+        "AND ((CAST(:updatedFrom AS date) IS null OR CAST(:updatedTo AS date) IS null) OR r.updated BETWEEN :updatedFrom AND :updatedTo)")
+    Page<CompanyReview> findAllBy(Long id, String customerName, String companyName, Integer scoreFrom, Integer scoreTo,
+                                  ZonedDateTime updatedFrom, ZonedDateTime updatedTo, Pageable pageable);
 
     @Query("SELECT new com.improver.model.out.review.CompanyReviewRevision(r, r.company, st.name, rr.comment)" +
         " FROM com.improver.entity.Review r" +

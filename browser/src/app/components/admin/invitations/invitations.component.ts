@@ -12,7 +12,7 @@ import { Pagination } from "../../../model/data-model";
 import { Invitation } from "../../../api/models/Invitation";
 import { InvitationService } from "../../../api/services/invitation.service";
 import { PopUpMessageService } from "../../../api/services/pop-up-message.service";
-import { clone, getErrorMessage } from "../../../util/functions";
+import { clone, getErrorMessage, ngPrimeFiltersToParams } from "../../../util/functions";
 import { NgForm } from "@angular/forms";
 
 @Component({
@@ -50,6 +50,7 @@ export class InvitationsComponent {
   filters: { [s: string]: FilterMetadata };
   invitation = new Invitation();
   processing = false;
+  createdFilters;
 
   constructor(private invitationService: InvitationService,
               private confirmationService: ConfirmationService,
@@ -103,10 +104,7 @@ export class InvitationsComponent {
   }
 
   onLazyLoad(event: any) {
-    const filters = filtersToParams(event.filters);
-    if (filters.bonusFrom) filters.bonusFrom *= 100;
-    if (filters.bonusTo) filters.bonusTo *= 100;
-    this.loadDataLazy(filters, new Pagination().fromPrimeNg(event));
+    this.loadDataLazy(ngPrimeFiltersToParams(event.filters), new Pagination().fromPrimeNg(event));
   }
 
   refresh(): void {

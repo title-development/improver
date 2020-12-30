@@ -18,6 +18,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.ZonedDateTime;
+
 import static com.improver.application.properties.Path.ID_PATH_VARIABLE;
 import static com.improver.application.properties.Path.INVITATIONS_PATH;
 
@@ -36,8 +38,10 @@ public class InvitationController {
         @RequestParam(required = false) String email,
         @RequestParam(required = false) Integer bonusFrom,
         @RequestParam(required = false) Integer bonusTo,
+        @RequestParam(required = false) ZonedDateTime createdFrom,
+        @RequestParam(required = false) ZonedDateTime createdTo,
         @PageableDefault(sort = "created", direction = Sort.Direction.DESC) Pageable pageRequest) {
-        Page<Invitation> invitations = invitationRepository.getAll(id, email, bonusFrom, bonusTo, pageRequest);
+        Page<Invitation> invitations = invitationRepository.getAll(id, email, bonusFrom, bonusTo, createdFrom, createdTo, pageRequest);
         return new ResponseEntity<>(invitations, HttpStatus.OK);
     }
 

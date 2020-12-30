@@ -25,6 +25,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -54,10 +55,12 @@ public class TicketController {
                                                     @RequestParam(required = false) String assignee,
                                                     @RequestParam(required = false) String author,
                                                     @RequestParam(required = false) boolean unassignedOnly,
+                                                    @RequestParam(required = false) ZonedDateTime createdFrom,
+                                                    @RequestParam(required = false) ZonedDateTime createdTo,
                                                     @PageableDefault(sort = "created", direction = Sort.Direction.DESC) Pageable pageRequest) {
         List<Ticket.Status> statuses = status != null ? Collections.singletonList(status) : null;
         Page<StaffTicket> tickets = ticketRepository.getAll(id, email, name, businessName, subject,
-            statuses, priority, assignee, author, unassignedOnly, pageRequest);
+            statuses, priority, assignee, author, unassignedOnly, createdFrom, createdTo, pageRequest);
         return new ResponseEntity<>(tickets, HttpStatus.OK);
     }
 
@@ -71,6 +74,8 @@ public class TicketController {
                                                    @RequestParam(required = false) Ticket.Subject subject,
                                                    @RequestParam(required = false) Priority priority,
                                                    @RequestParam(required = false) String author,
+                                                   @RequestParam(required = false) ZonedDateTime createdFrom,
+                                                   @RequestParam(required = false) ZonedDateTime createdTo,
                                                    @PageableDefault(direction = Sort.Direction.DESC)
                                                      @SortDefault.SortDefaults({
                                                          @SortDefault(sort = "status", direction = Sort.Direction.DESC),
@@ -78,7 +83,7 @@ public class TicketController {
                                                      }) Pageable pageRequest) {
         Staff staff = userSecurityService.currentStaffOrNull();
         Page<StaffTicket> tickets = ticketRepository.getAll(id, email, name, businessName, subject,
-            Ticket.Status.getActive(), priority, staff.getEmail(), author,false, pageRequest);
+            Ticket.Status.getActive(), priority, staff.getEmail(), author,false, createdFrom, createdTo, pageRequest);
         return new ResponseEntity<>(tickets, HttpStatus.OK);
 
     }

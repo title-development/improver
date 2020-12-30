@@ -1,21 +1,23 @@
 import { Injectable } from '@angular/core';
 
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Pagination } from "../../model/data-model";
 import { Observable } from "rxjs";
 import { RestPage } from "../models/RestPage";
 import { Invitation } from "../models/Invitation";
+import { HttpParamsEncoder } from "../../util/http-param-encoder";
 
 @Injectable()
 export class InvitationService {
 
   invitationsUrl = 'api/invitations';
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+              private encoder: HttpParamsEncoder) {
   }
 
-  getAll(filters, pagination: Pagination): Observable<RestPage<Invitation>> {
-    const params = {...filters, ...pagination};
+  getAll(params, pagination: Pagination): Observable<RestPage<Invitation>> {
+    params = new HttpParams({ fromObject: {...params, ...pagination}, encoder: this.encoder });
     return this.http.get<RestPage<Invitation>>(`${this.invitationsUrl}`, {params});
   }
 

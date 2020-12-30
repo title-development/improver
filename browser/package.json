@@ -86,7 +86,8 @@
     "typescript": "4.0.5",
     "web-animations-js": "2.3.2",
     "webdriver-manager": "12.1.7",
-    "zone.js": "0.11.3"
+    "zone.js": "0.11.3",
+    "moment": "2.29.1"
   },
   "devDependencies": {
     "@angular/language-service": "11.0.2",

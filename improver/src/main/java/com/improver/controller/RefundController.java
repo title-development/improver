@@ -48,8 +48,13 @@ public class RefundController {
         @RequestParam(required = false) Refund.Issue issue,
         @RequestParam(required = false) Refund.Option option,
         @RequestParam(required = false) Refund.Status status,
+        @RequestParam(required = false) ZonedDateTime createdFrom,
+        @RequestParam(required = false) ZonedDateTime createdTo,
+        @RequestParam(required = false) ZonedDateTime updatedFrom,
+        @RequestParam(required = false) ZonedDateTime updatedTo,
         @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageRequest) {
-        Page<AdminRefund> refunds = refundRepository.getAll(id, contractorEmail, customerEmail, issue, option, status, pageRequest);
+        Page<AdminRefund> refunds = refundRepository.getAll(id, contractorEmail, customerEmail, issue, option, status,
+            createdFrom, createdTo, updatedFrom, updatedTo, pageRequest);
         return new ResponseEntity<>(refunds, HttpStatus.OK);
     }
 

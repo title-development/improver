@@ -8,7 +8,7 @@ import { Refund } from '../../../../api/models/Refund';
 import { CamelCaseHumanPipe } from '../../../../pipes/camelcase-to-human.pipe';
 import { Router } from '@angular/router';
 import { Project } from '../../../../api/models/Project';
-import { capitalize, getErrorMessage } from '../../../../util/functions';
+import { capitalize, getErrorMessage, ngPrimeFiltersToParams } from '../../../../util/functions';
 import { ProjectService } from '../../../../api/services/project.service';
 import { PopUpMessageService } from '../../../../api/services/pop-up-message.service';
 import { RefundAction } from '../../../../api/models/RefundAction';
@@ -36,6 +36,8 @@ export class RefundsInreviewComponent {
   refundStatuses: Array<SelectItem> = [];
   refundIssues: Array<SelectItem> = [];
   refundOptions: Array<SelectItem> = [];
+  createdFilters
+  updatedFilters
 
   columns = [
     {field: 'id', header: 'Id', active: true},
@@ -132,7 +134,7 @@ export class RefundsInreviewComponent {
   }
 
   onLazyLoad(event: any) {
-    this.loadDataLazy(filtersToParams(event.filters), new Pagination().fromPrimeNg(event));
+    this.loadDataLazy(ngPrimeFiltersToParams(event.filters), new Pagination().fromPrimeNg(event));
   }
 
   refresh(): void {

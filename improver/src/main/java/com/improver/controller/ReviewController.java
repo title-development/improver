@@ -29,6 +29,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
 
+import java.time.ZonedDateTime;
+
 import static com.improver.application.properties.Path.*;
 import static com.improver.application.properties.Path.REVIEWS;
 import static com.improver.util.database.DataRestrictions.REVIEW_MESSAGE_MAX_SIZE;
@@ -55,8 +57,11 @@ public class ReviewController {
         @RequestParam(required = false) String companyName,
         @RequestParam(required = false) Integer scoreFrom,
         @RequestParam(required = false) Integer scoreTo,
+        @RequestParam(required = false) ZonedDateTime updatedFrom,
+        @RequestParam(required = false) ZonedDateTime updatedTo,
         @PageableDefault(sort = "created", direction = Sort.Direction.DESC) Pageable pageRequest) {
-        Page<CompanyReview> reviews = reviewRepository.findAllBy(id, customerName, companyName, scoreFrom, scoreTo, pageRequest);
+        Page<CompanyReview> reviews = reviewRepository.findAllBy(id, customerName, companyName, scoreFrom, scoreTo,
+            updatedFrom, updatedTo, pageRequest);
         return new ResponseEntity<>(reviews, HttpStatus.OK);
     }
 

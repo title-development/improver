@@ -11,6 +11,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -82,11 +84,13 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
         " AND (:serviceType IS null OR LOWER(p.serviceType.name) LIKE CONCAT('%', LOWER(cast(:serviceType as string)), '%'))" +
         " AND (:status IS null OR p.status = :status)" +
         " AND (:reason IS null OR p.reason = :reason)" +
+        " AND ((CAST(:createdFrom AS date) IS null OR CAST(:createdTo AS date) IS null) OR p.created BETWEEN :createdFrom AND :createdTo)" +
         " AND (:location IS null OR (LOWER(p.location.streetAddress) LIKE CONCAT('%', LOWER(cast(:location as string)), '%'))" +
         " OR (LOWER(p.location.city) LIKE CONCAT('%', LOWER(cast(:location as string)), '%')) " +
         " OR (LOWER(p.location.state) LIKE CONCAT('%', LOWER(cast(:location as string)), '%')) " +
         " OR (LOWER(p.location.zip) LIKE CONCAT('%', LOWER(cast(:location as string)), '%'))) ")
-    Page<Project> findBy(Long id, String customerEmail, String serviceType, Project.Status status, Project.Reason reason, String location, Pageable pageRequest);
+    Page<Project> findBy(Long id, String customerEmail, String serviceType, Project.Status status, Project.Reason reason,
+                         String location, ZonedDateTime createdFrom, ZonedDateTime createdTo, Pageable pageRequest);
 
 
     @Query("SELECT new com.improver.model.out.project.ProjectRequestDetailed(p, p.serviceType.name, p.customer, pr, pr.refund.id, r.id )" +

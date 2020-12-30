@@ -20,6 +20,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.ZonedDateTime;
+
 import static com.improver.application.properties.Path.ACTIONS;
 import static com.improver.application.properties.Path.STAFF_PATH;
 
@@ -48,8 +50,10 @@ public class StaffController {
         @RequestParam(required = false) String author,
         @RequestParam(required = false) User.Role authorRole,
         @RequestParam(required = false) StaffAction.Action action,
+        @RequestParam(required = false) ZonedDateTime createdFrom,
+        @RequestParam(required = false) ZonedDateTime createdTo,
         @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageRequest) {
-        Page<StaffActionModel> actions = this.staffActionRepository.getAllBy(id, author, authorRole, action, pageRequest);
+        Page<StaffActionModel> actions = this.staffActionRepository.getAllBy(id, author, authorRole, action, createdFrom, createdTo, pageRequest);
         return new ResponseEntity<>(actions, HttpStatus.OK);
     }
 

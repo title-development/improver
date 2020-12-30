@@ -11,7 +11,7 @@ import { CamelCaseHumanPipe } from '../../../../pipes/camelcase-to-human.pipe';
 import { UserService } from '../../../../api/services/user.service';
 import { User } from '../../../../api/models/User';
 import { dataTableFilter } from '../../util';
-import { getErrorMessage } from "../../../../util/functions";
+import { getErrorMessage, ngPrimeFiltersToParams } from "../../../../util/functions";
 import { Role } from "../../../../model/security-model";
 
 @Component({
@@ -31,6 +31,8 @@ export class CustomersListComponent {
   filters: { [s: string]: FilterMetadata } = {};
   contextMenuItems: Array<MenuItem> = [];
   Role = Role;
+  createdFilters;
+  updatedFilters;
 
   columns = [
     {field: 'id', header: 'Id', active: true},
@@ -84,7 +86,7 @@ export class CustomersListComponent {
   }
 
   onLazyLoad(event: any) {
-    this.loadDataLazy(filtersToParams(event.filters), new Pagination().fromPrimeNg(event));
+    this.loadDataLazy(ngPrimeFiltersToParams(event.filters), new Pagination().fromPrimeNg(event));
   }
 
   refresh(): void {
