@@ -47,6 +47,12 @@ import { NgTakePipeModule } from "angular-pipes";
     GeolocationService,
     QuestionaryControlService
   ],
+  exports: [
+    MainGuideComponent,
+    AdvertisementBlockComponent,
+    HiwWizardComponent,
+    GeneralInfoComponent
+  ],
   bootstrap: [
     HomeComponent,
     MainSearchComponent,

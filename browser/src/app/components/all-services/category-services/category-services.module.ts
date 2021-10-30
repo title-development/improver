@@ -4,6 +4,7 @@ import { CategoryServicesComponent } from "./category-services.component";
 import { CvInputModule } from "../../../theme/input/cv-input.module";
 import { SharedModule } from "../../../shared/shared.module";
 import { LayoutModule } from "../../../layout/layout.module";
+import { HomeModule } from "../../home/home.module";
 
 
 const routes = RouterModule.forChild([
@@ -21,7 +22,8 @@ const routes = RouterModule.forChild([
     routes,
     SharedModule,
     CvInputModule,
-    LayoutModule
+    LayoutModule,
+    HomeModule
   ],
   declarations: [
     CategoryServicesComponent
