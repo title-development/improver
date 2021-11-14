@@ -6,8 +6,9 @@
                      onerror="this.src = 'assets/trades/icons/default.svg';">
                 <div class="header-title-text">
                     <div class="title">{{trade.name}}</div>
-                    <div class="sub-title">Here you can find list of all services related to {{trade.name}}. Just type what you need.
-                    </div>
+                    <div class="sub-title" *ngIf="trade.description; else defaultDescription">{{trade.description}}</div>
+                    <ng-template class="sub-title" #defaultDescription>Here you can find list of all services related to {{trade.name}}. Just type what you need.
+                    </ng-template>
                 </div>
             </div>
             <div class="search-wrapper">

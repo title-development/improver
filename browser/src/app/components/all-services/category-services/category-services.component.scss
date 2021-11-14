@@ -54,13 +54,11 @@ layout-footer {
 
   @include response(xs) {
     padding: 0 20px;
-    height: 377px;
     min-height: 377px;
   }
 
   @include response(sm) {
     padding: 0 24px;
-    height: 377px;
     min-height: 377px;
   }
 
@@ -252,7 +250,7 @@ layout-footer {
   }
 
   @include response-to(lg) {
-    padding-left: 24px;
+    padding: 24px;
   }
 
   .main-block {
