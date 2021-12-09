@@ -50,7 +50,7 @@
     "@stomp/ng2-stompjs": "7.2.0",
     "@types/cropperjs": "1.1.0",
     "@types/googlemaps": "3.39.2",
-    "@types/gtag.js": "0.0.3",
+    "@types/gtag.js": "0.0.8",
     "@types/node": "12.12.6",
     "@types/swiper": "3.4.2",
     "angular-pipes": "10.0.0",

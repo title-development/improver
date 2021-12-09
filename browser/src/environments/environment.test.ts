@@ -7,6 +7,7 @@ export const environment = {
   facebookPixelId: '3320760744600703',
   googleClientId: '1078841939849-an19r4o58srgq6cu9d86flt70darg1f4.apps.googleusercontent.com',
   googleAnalyticsTrackingId: 'UA-148193868-3',
+  googleTagsManagerId: 'GTM-T77TXNX',
   hotJarTrackingId: 1490374,
   googleReCaptchaSiteKey: '6Lc777YUAAAAAFh8rjprTYyJkduY6pcrK-UHB8uh',
   captchaEnabled: false

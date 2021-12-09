@@ -10,6 +10,7 @@ export class GoogleAnalyticsService {
               @Inject('Window') private window: Window,
               @Inject(DOCUMENT) private document: Document) {
     // if (!environment.production) return;
+    this.injectGtmScript();
     this.injectScript();
     router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
@@ -45,6 +46,29 @@ export class GoogleAnalyticsService {
 
     const head: HTMLHeadElement = this.document.getElementsByTagName('head')[0];
     head.appendChild(script);
+
+  }
+
+  private injectGtmScript() {
+    (function (w, d, s, l, i) {
+      w[l] = w[l] || [];
+      w[l].push({
+        'gtm.start':
+          new Date().getTime(), event: 'gtm.js'
+      });
+      var f = d.getElementsByTagName(s)[0],
+        j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';
+      (<any> j).async = true;
+      (<any> j).src =
+        'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+      f.parentNode.insertBefore(j, f);
+    })(this.window, this.document, 'script', 'dataLayer', environment.googleTagsManagerId);
+
+    const body: HTMLBodyElement = this.document.getElementsByTagName('body')[0];
+    const noscript: HTMLElement = this.document.createElement('noscript');
+    noscript.innerHTML = `<iframe src="https://www.googletagmanager.com/ns.html?id=${environment.googleTagsManagerId}"
+                            height="0" width="0" style="display:none;visibility:hidden"></iframe>`
+    body.prepend(noscript)
 
   }
 }
