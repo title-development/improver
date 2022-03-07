@@ -56,6 +56,21 @@
 
     <profiles>
         <profile>
+            <id>heroku</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>env.DYNO</name>
+                </property>
+            </activation>
+            <properties>
+                <npm.argumenrs>install --production</npm.argumenrs>
+                <npm.build.cmd>run build:prod</npm.build.cmd>
+                <environment>prod,heroku,initdb</environment>
+            </properties>
+        </profile>
+
+        <profile>
             <id>dev</id>
             <properties>
                 <environment>dev</environment>
