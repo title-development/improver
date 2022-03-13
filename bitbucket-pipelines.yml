@@ -170,13 +170,24 @@ pipelines:
 
 # Pipelines that are triggered manually
   custom:
-    push-to-heroku:
+    push-to-heroku-prod:
       - step:
+          name: Deploy master to heroku PROD
           caches:
              - maven
              - node-cache
           script:
              - git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git HEAD
+
+    push-branch-to-heroku-prod:
+      - step:
+          name: Deploy branch to heroku
+          caches:
+             - maven
+             - node-cache
+          script:
+            # - git pull https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git
+             - git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git HEAD:master
 
     ####################################################################################################################
     #################################################       AWS        #################################################
