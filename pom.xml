@@ -56,7 +56,7 @@
 
     <profiles>
         <profile>
-            <id>heroku</id>
+            <id>prod</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
                 <property>
@@ -66,7 +66,24 @@
             <properties>
                 <npm.argumenrs>install --production</npm.argumenrs>
                 <npm.build.cmd>run build:prod</npm.build.cmd>
+                <environment>prod,heroku</environment>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>qa</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <!-- for AWS environment -->
+                <!-- <property>
+                    <name>environment</name>
+                    <value>qa</value>
+                </property>-->
+            </activation>
+            <properties>
                 <environment>qa,heroku,initdb</environment>
+                <npm.arguments>install --production</npm.arguments>
+                <npm.build.cmd>run build:qa</npm.build.cmd>
             </properties>
         </profile>
 
@@ -108,183 +125,6 @@
             </activation>
         </profile>
 
-        <profile>
-            <id>qa</id>
-            <activation>
-                <property>
-                    <name>environment</name>
-                    <value>qa</value>
-                </property>
-            </activation>
-            <properties>
-                <environment>qa</environment>
-                <npm.arguments>install --production</npm.arguments>
-                <npm.build.cmd>run build:qa</npm.build.cmd>
-            </properties>
-        </profile>
-
-        <profile>
-            <id>prod</id>
-            <activation>
-                <property>
-                    <name>environment</name>
-                    <value>prod</value>
-                </property>
-            </activation>
-            <properties>
-                <environment>prod</environment>
-                <npm.arguments>install --production</npm.arguments>
-                <npm.build.cmd>run build:prod</npm.build.cmd>
-            </properties>
-        </profile>
-<!--
-        <profile>
-            &lt;!&ndash; Check is bound to verify phase, so this should be run via
-                 mvn verify -P owasp-dependency-check in a separate bitbucket step &ndash;&gt;
-            <id>owasp-dependency-check</id>
-            <properties>
-                <owasp.check.skip>false</owasp.check.skip>
-                &lt;!&ndash; No need to run tests during this build. It's only for checking dependencies. &ndash;&gt;
-                <skipTests>true</skipTests>
-            </properties>
-        </profile>
-
-        <profile>
-            <id>javadoc</id>
-            <build>
-                <plugins>
-                    &lt;!&ndash; Explicitly enable the maven-javadoc-plugin for this profile &ndash;&gt;
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>attach-javadocs</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <profile>
-            <id>coverage</id>
-            &lt;!&ndash; for generating code coverage reports on all modules &ndash;&gt;
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>${surefire.version}</version>
-                        <configuration>
-                            <argLine>${argLine}</argLine>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.jacoco</groupId>
-                        <artifactId>jacoco-maven-plugin</artifactId>
-                        <version>${jacoco.version}</version>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>prepare-agent</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>report</id>
-                                <phase>prepare-package</phase>
-                                <goals>
-                                    <goal>report</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <executions>
-                            &lt;!&ndash; Copy the ant tasks jar. Needed for ts.jacoco.report-ant . &ndash;&gt;
-                            <execution>
-                                <id>jacoco-dependency-ant</id>
-                                <goals>
-                                    <goal>copy</goal>
-                                </goals>
-                                <phase>process-test-resources</phase>
-                                <inherited>false</inherited>
-                                <configuration>
-                                    <artifactItems>
-                                        <artifactItem>
-                                            <groupId>org.jacoco</groupId>
-                                            <artifactId>org.jacoco.ant</artifactId>
-                                            <version>${jacoco.version}</version>
-                                        </artifactItem>
-                                    </artifactItems>
-                                    <stripVersion>true</stripVersion>
-                                    <outputDirectory>${basedir}/target/jacoco-jars</outputDirectory>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                        <version>1.6</version>
-                        <executions>
-                            <execution>
-                                <id>default-cli</id>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                                <configuration>
-                                    <target>
-                                        &lt;!&ndash; Execute an ant task within maven &ndash;&gt;
-                                        <echo message="Generating JaCoCo Reports" />
-                                        <taskdef name="report" classname="org.jacoco.ant.ReportTask">
-                                            <classpath path="${basedir}/target/jacoco-jars/org.jacoco.ant.jar" />
-                                        </taskdef>
-                                        <mkdir dir="${basedir}/target/coverage-report" />
-                                        <report>
-                                            &lt;!&ndash; execution data is a file created by Jacoco for code coverage &ndash;&gt;
-                                            <executiondata>
-                                                <fileset dir="${user.dir}/improver/target">
-                                                    <include name="jacoco.exec" />
-                                                </fileset>
-                                            </executiondata>
-                                            <structure name="JaCoCo-Multi Project">
-                                                <group name="JaCoCo-Multi">
-                                                    &lt;!&ndash; class files in each target directory &ndash;&gt;
-                                                    <classfiles>
-                                                        <fileset dir="${user.dir}/improver/target/classes" />
-                                                    </classfiles>
-                                                    <sourcefiles encoding="UTF-8">
-                                                        &lt;!&ndash; source classes &ndash;&gt;
-                                                        <fileset dir="${user.dir}/improver/src/main/java" />
-                                                    </sourcefiles>
-                                                </group>
-                                            </structure>
-                                            &lt;!&ndash; coverage report location &ndash;&gt;
-                                            <html destdir="${basedir}/target/coverage-report/html" />
-                                            <xml destfile="${basedir}/target/coverage-report/coverage-report.xml" />
-                                            <csv destfile="${basedir}/target/coverage-report/coverage-report.csv" />
-                                        </report>
-                                    </target>
-                                </configuration>
-                            </execution>
-                        </executions>
-                        <dependencies>
-                            <dependency>
-                                <groupId>org.jacoco</groupId>
-                                <artifactId>org.jacoco.ant</artifactId>
-                                <version>${jacoco.version}</version>
-                            </dependency>
-                        </dependencies>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>-->
     </profiles>
 
     <build>

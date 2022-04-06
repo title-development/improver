@@ -38,7 +38,7 @@ import static java.util.Objects.nonNull;
  */
 @Slf4j
 @Component
-@Profile({INITDB, QA})
+@Profile({INITDB})
 public class TestDataInitializer {
 
 
