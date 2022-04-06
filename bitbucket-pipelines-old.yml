@@ -1,0 +1,312 @@
+# This is a sample build configuration for Java (Maven).
+# Check our guides at https://confluence.atlassian.com/x/zd-5Mw for more examples.
+# Only use spaces to indent your .yml configuration.
+# -----
+# You can specify a custom docker image from Docker Hub as your build environment.
+
+# Custom image with maven (3.3.9), JDK and awscli
+
+# These environment variables that should be added into bitbucket repository:
+# AWS_ACCOUNT_ID (for docker image reference in AWS ECR), ENVIRONMENT (prod, stg, qa, dev)
+
+image:
+  name: 815041732288.dkr.ecr.us-east-1.amazonaws.com/prod/mvn-awscli-alpine:latest
+  aws:
+    access-key: $AWS_ACCESS_KEY_ID
+    secret-key: $AWS_SECRET_ACCESS_KEY
+
+# enable Docker for our repository
+options:
+    docker: true
+
+clone:
+  # Doing a full clone to be able to push back to Heroku.
+  depth: full
+
+stepdefinitions:
+
+  - export-app-params: &params |
+      export AWS_DEFAULT_REGION=us-east-1 && USER=bitbucket && DOMAIN_NAME=homeimprove.com
+      export APP_VERSION=$(egrep -o -m1 '<version>.*</version>' pom.xml | sed -E 's%</?version>%%g')
+      aws s3 cp s3://improver/configs/$ENVIRONMENT/application-secured.properties application-secured.properties
+      eval $(cat application-secured.properties | grep datasource\.name | cut -d'=' -f2 | sed 's/^/export DB_NAME=/')
+      eval $(cat application-secured.properties | grep spring\.datasource\.username | cut -d'=' -f2 | sed 's/^/export DB_USER_NAME=/')
+      eval $(cat application-secured.properties | grep spring\.datasource\.password | cut -d'=' -f2 | sed 's/^/export DB_PASSWORD=/')
+      rm application-secured.properties
+
+  - update-dev-cfn-ecs: &devCfnEcsDeploy |
+        export AWS_DEFAULT_REGION=us-east-1 && USER=bitbucket && DOMAIN_NAME=homeimprove.com
+        bash provisioning/scripts/update_cfn.sh ecs-$USER-$ENVIRONMENT-cluster $ENVIRONMENT $USER --template-body \
+        file://provisioning/aws/ecs.cfn.json \
+        "ParameterKey=AccountId,UsePreviousValue=true \
+                              ParameterKey=AlbHealthCheckPath,UsePreviousValue=true \
+                              ParameterKey=AsgDesiredSize,UsePreviousValue=true
+                              ParameterKey=CreateElasticLoadBalancer,UsePreviousValue=true \
+                              ParameterKey=DomainName,UsePreviousValue=true \
+                              ParameterKey=EcsClusterName,UsePreviousValue=true \
+                              ParameterKey=EcsEndpoint,UsePreviousValue=true \
+                              ParameterKey=EcsEnvironmentName,UsePreviousValue=true \
+                              ParameterKey=EcsInstanceType,UsePreviousValue=true \
+                              ParameterKey=EcsPort,UsePreviousValue=true \
+                              ParameterKey=ElbForTrustedOfficeOnly,UsePreviousValue=true \
+                              ParameterKey=ElbHttpPort,UsePreviousValue=true \
+                              ParameterKey=ElbHttpsPort,UsePreviousValue=true \
+                              ParameterKey=EcsInstanceAsgMaxSize,UsePreviousValue=true \
+                              ParameterKey=ElbSslCertificateArn,UsePreviousValue=true \
+                              ParameterKey=HostedZoneId,UsePreviousValue=true \
+                              ParameterKey=KeyName,UsePreviousValue=true \
+                              ParameterKey=S3Bucket,UsePreviousValue=true \
+                              ParameterKey=SubnetIds,UsePreviousValue=true \
+                              ParameterKey=SourceCidr,UsePreviousValue=true \
+                              ParameterKey=TrustedOfficeIp,UsePreviousValue=true \
+                              ParameterKey=VpcAvailabilityZones,UsePreviousValue=true \
+                              ParameterKey=Version,UsePreviousValue=true \
+                              ParameterKey=VpcId,UsePreviousValue=true"
+
+  - update-cfn-ecs: &update-ecs-env |
+        bash provisioning/scripts/update_cfn.sh ecs-$USER-$ENVIRONMENT-cluster $ENVIRONMENT $USER --template-url \
+        https://s3.amazonaws.com/improver/configs/$ENVIRONMENT/ecs.cfn.json \
+        "ParameterKey=AccountId,UsePreviousValue=true \
+                      ParameterKey=AlbHealthCheckPath,UsePreviousValue=true \
+                      ParameterKey=AsgDesiredSize,UsePreviousValue=true
+                      ParameterKey=CreateElasticLoadBalancer,UsePreviousValue=true \
+                      ParameterKey=DomainName,UsePreviousValue=true \
+                      ParameterKey=EcsClusterName,UsePreviousValue=true \
+                      ParameterKey=EcsEndpoint,UsePreviousValue=true \
+                      ParameterKey=EcsEnvironmentName,UsePreviousValue=true \
+                      ParameterKey=EcsInstanceType,UsePreviousValue=true \
+                      ParameterKey=EcsPort,UsePreviousValue=true \
+                      ParameterKey=EcsInstanceAsgMaxSize,UsePreviousValue=true \
+                      ParameterKey=ElbForTrustedOfficeOnly,UsePreviousValue=true \
+                      ParameterKey=ElbHttpPort,UsePreviousValue=true \
+                      ParameterKey=ElbHttpsPort,UsePreviousValue=true \
+                      ParameterKey=ElbSslCertificateArn,UsePreviousValue=true \
+                      ParameterKey=HostedZoneId,UsePreviousValue=true \
+                      ParameterKey=KeyName,UsePreviousValue=true \
+                      ParameterKey=S3Bucket,UsePreviousValue=true \
+                      ParameterKey=SubnetIds,UsePreviousValue=true \
+                      ParameterKey=SourceCidr,UsePreviousValue=true \
+                      ParameterKey=TrustedOfficeIp,UsePreviousValue=true \
+                      ParameterKey=VpcAvailabilityZones,UsePreviousValue=true \
+                      ParameterKey=Version,UsePreviousValue=true \
+                      ParameterKey=VpcId,UsePreviousValue=true"
+
+  - deploy-app: &deployApp
+      name: Deploy new application and docker image versions into AWS
+      caches:
+        - maven
+        - node-cache
+      # Regular steps have 4096 MB of memory in total, that is not enough for ng build --prod or ng build --configuration=stg
+      # So we allocate additional resources for this step
+      size: 2x
+      script:
+        - *params
+        - mvn clean deploy -B -Dmaven.wagon.http.pool=false -Denvironment=$ENVIRONMENT
+      artifacts:
+        - improver/target/classes/**
+
+  - build-push-docker-image: &pushDockerImage |
+      provisioning/scripts/build_and_push_docker_image.sh improver $APP_VERSION $ENVIRONMENT
+      provisioning/scripts/build_and_push_docker_image.sh mvn-awscli-alpine $APP_VERSION $ENVIRONMENT
+
+  - create-ecs: &deployEcs
+      name: Create new ECS cluster within existed VPC within specified subnets
+      script:
+        - *params
+        - mvn s3-upload:s3-upload@configs-deploy -pl provisioning
+        - export ECS_CLUSTER_NAME=improver
+        - export VpcId=$(aws cloudformation list-stack-resources --stack-name vpc-$USER-$ENVIRONMENT --query 'StackResourceSummaries[?LogicalResourceId==`Vpc`].PhysicalResourceId' --output text)
+        - export HostedZoneId=$(aws route53 list-hosted-zones-by-name --query "HostedZones[?Name=='$DOMAIN_NAME.'].Id" --output text | cut -d'/' -f3)
+        - export SubnetId1=$(aws cloudformation list-stack-resources --stack-name vpc-$USER-$ENVIRONMENT --query 'StackResourceSummaries[?LogicalResourceId==`PubSubnetAz1`].PhysicalResourceId' --output text)
+        - export SubnetId2=$(aws cloudformation list-stack-resources --stack-name vpc-$USER-$ENVIRONMENT --query 'StackResourceSummaries[?LogicalResourceId==`PubSubnetAz2`].PhysicalResourceId' --output text)
+        - export ElbSslCertificate=$(aws acm list-certificates --query "CertificateSummaryList[?DomainName=='$DOMAIN_NAME'].CertificateArn" --output text)
+        - aws cloudformation validate-template --template-url https://s3.amazonaws.com/improver/configs/$ENVIRONMENT/ecs.cfn.json
+        - aws cloudformation create-stack --stack-name ecs-$USER-$ENVIRONMENT-cluster --template-url https://s3.amazonaws.com/improver/configs/$ENVIRONMENT/ecs.cfn.json  --capabilities CAPABILITY_IAM  --tags Key=name,Value=ecs-$USER-$ENVIRONMENT-cluster --parameters ParameterKey=AccountId,ParameterValue=$AWS_ACCOUNT_ID ParameterKey=DomainName,ParameterValue=$DOMAIN_NAME ParameterKey=EcsClusterName,ParameterValue=$ECS_CLUSTER_NAME ParameterKey=EcsEnvironmentName,ParameterValue=$ENVIRONMENT ParameterKey=ElbSslCertificateArn,ParameterValue=$ElbSslCertificate ParameterKey=HostedZoneId,ParameterValue=$HostedZoneId ParameterKey=SubnetIds,ParameterValue=$SubnetId1\\,$SubnetId2 ParameterKey=VpcId,ParameterValue=$VpcId
+
+  - delete-ecs: &deleteEcs
+      name: Delete ECS stack
+      script:
+        - *params
+        - aws cloudformation delete-stack --stack-name ecs-$USER-$ENVIRONMENT-cluster
+
+  - create-vpc: &deployEnv
+      name: Create new VPC, Hosted zone, NAT and DB instances
+      script:
+        - *params
+        - mvn s3-upload:s3-upload@configs-deploy -pl provisioning
+        - export HostedZoneId=$(aws route53 list-hosted-zones-by-name --query "HostedZones[?Name=='$DOMAIN_NAME.'].Id" --output text | cut -d'/' -f3)
+        - aws cloudformation validate-template --template-url https://s3.amazonaws.com/improver/configs/$ENVIRONMENT/vpc.cfn.json
+        - aws cloudformation create-stack --stack-name vpc-$USER-$ENVIRONMENT --template-url https://s3.amazonaws.com/improver/configs/$ENVIRONMENT/vpc.cfn.json  --capabilities CAPABILITY_IAM  --tags Key=name,Value=vpc-$USER-$ENVIRONMENT --parameters ParameterKey=DBName,ParameterValue=$DB_NAME ParameterKey=DBUsername,ParameterValue=$DB_USER_NAME ParameterKey=DBPassword,ParameterValue=$DB_PASSWORD ParameterKey=DomainName,ParameterValue=$DOMAIN_NAME ParameterKey=EnvironmentName,ParameterValue=$ENVIRONMENT ParameterKey=HostedZoneId,ParameterValue=$HostedZoneId
+
+  - delete-vpc: &deleteEnv
+      name: Delete VPC stack
+      script:
+        - *params
+        - aws cloudformation delete-stack --stack-name vpc-$USER-$ENVIRONMENT
+
+pipelines:
+
+# Pipelines that run automatically on a commit to a branch
+  branches:
+    IMP-*:
+      - step:
+          caches:
+            - node-cache
+            - maven
+          size: 2x
+          script:
+            - mvn clean test -P qa -B -Dmaven.wagon.http.pool=false
+
+    master:
+      - step:
+          caches:
+            - maven
+            - node-cache
+          size: 2x
+          script:
+            # Should run integration tests in FUTURE
+            - mvn clean test -P qa -B -Dmaven.wagon.http.pool=false
+
+
+# Pipelines that are triggered manually
+  custom:
+    push-to-heroku-prod:
+      - step:
+          name: Deploy master to heroku PROD
+          caches:
+             - maven
+             - node-cache
+          script:
+             - git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git HEAD
+
+    push-branch-to-heroku-prod:
+      - step:
+          name: Deploy branch to heroku
+          caches:
+             - maven
+             - node-cache
+          script:
+            # - git pull https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git
+             - git push -f https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git HEAD:master
+
+    ####################################################################################################################
+    #################################################       AWS        #################################################
+    ####################################################################################################################
+
+    ops-redeploy-app-qa:
+      - step:
+          name: Deploy new application to QA env and docker image versions into AWS
+          caches:
+             - maven
+             - node-cache
+           # Regular steps have 4096 MB of memory in total, that is not enough for ng build --prod or ng build --configuration=stg
+           # So we allocate additional resources for this step
+          size: 2x
+          script:
+            - export ENVIRONMENT=qa
+            - *params
+            - mvn clean deploy -B -Dmaven.wagon.http.pool=false -Denvironment=qa
+          artifacts:
+            - improver/target/classes/**
+
+      - step:
+          name: Restart ECS cluster for QA  within existed VPC within specified subnets
+          deployment: test
+          script:
+            - export ENVIRONMENT=qa
+            - *params
+            - *update-ecs-env
+
+
+    release:
+      - step:
+          name: Release
+          script:
+            - mvn --batch-mode release:clean release:prepare release:perform -B -Dresume=false -Dmaven.wagon.http.pool=false
+
+    ops-deploy-app:
+      - step: *deployApp
+      - step: *deployEcs
+
+    ops-delete-app:
+      - step: *deleteEcs
+
+    ops-redeploy-app:
+      - step: *deployApp
+      - step:
+          name: Stop ecs task for automatic application redeployment
+          script:
+            - *params
+            - *update-ecs-env
+
+    ops-redeploy-esc-cfn:
+        - step:
+              name: Apply cloudformation stack change set without app redeployment
+              script:
+                  - *devCfnEcsDeploy
+
+    ops-redeploy-app-blue-green:
+      - step: *deployApp
+      - step:
+          name: Execute blue/green deployment for ECS cluster
+          script:
+            - *params
+            - export AUTO_SCALING_GROUP_NAME=$(aws cloudformation describe-stack-resources --stack-name ecs-$USER-$ENVIRONMENT-cluster | jq -c '.["StackResources"][] | select(.ResourceType == "AWS::AutoScaling::AutoScalingGroup") | .PhysicalResourceId' | tr -d '"')
+            - export LAUNCH_CONFIG_NAME=$(aws cloudformation describe-stack-resources --stack-name ecs-$USER-$ENVIRONMENT-cluster | jq -c '.["StackResources"][] | select(.ResourceType == "AWS::AutoScaling::LaunchConfiguration") | .PhysicalResourceId' | tr -d '"')
+            - export CLUSTER_NAME=$(aws ecs list-clusters --query "clusterArns[?contains(@,'ecs-$USER-$ENVIRONMENT-cluster')]" --output text)
+            - export SERVICE_NAME=$(aws ecs list-services --cluster $CLUSTER_NAME --query "serviceArns[?contains(@,'ecs-$USER-$ENVIRONMENT-cluster')]" --output text | egrep ":service/" | tr "/" " " |  awk '{print $2}' | sed 's/"$//')
+            # Set minimumPercent to 50 in order to deploy one task on one ec2 instance at a time - setting to 0 would stop both old revisions and start two new ones in that order.
+            - bash provisioning/scripts/blue_green_deployment.sh $AUTO_SCALING_GROUP_NAME $CLUSTER_NAME $SERVICE_NAME 2 100 50 true
+            - if [ $? -eq 0 ]; then echo "Service updated successfully. Scaling back to one ec2 instance" && bash provisioning/scripts/blue_green_deployment.sh $AUTO_SCALING_GROUP_NAME $CLUSTER_NAME $SERVICE_NAME 1 100 0 false; elif [ $? -gt 0 ]; then  echo "Service failed to stabilize. Please verify ECS logs"; fi
+
+    ops-deploy-env:
+      - step: *deployEnv
+
+    ops-delete-env:
+      - step: *deleteEnv
+
+    ops-update-docker-and-ecs:
+      - step: *deployApp
+      - step:
+          name: Update ECS to gather the latest docker image
+          script:
+          - *params
+          - *pushDockerImage
+          # Our updated docker image uses the same tag as what is in the existing task definition (:latest ),
+          # so we can only update the service using the force-new-deployment option. The new tasks launched by the deployment
+          # pull the current image/tag combination from our repository when they start.
+          - export CLUSTER_NAME=$(aws ecs list-clusters --query "clusterArns[?contains(@,'ecs-$USER-$ENVIRONMENT-cluster')]" --output text)
+          - export SERVICE_NAME=$(aws ecs list-services --cluster $CLUSTER_NAME --query "serviceArns[?contains(@,'ecs-$USER-$ENVIRONMENT-cluster')]" --output text | egrep ":service/" | tr "/" " " |  awk '{print $2}' | sed 's/"$//')
+          - aws ecs update-service --service $SERVICE_NAME --cluster $CLUSTER_NAME --force-new-deployment
+
+    ops-push-docker:
+      - step:
+          name: Build docker image, tag it with current and latest verion, push it into AWS ECR and update ECS service
+          script:
+            - *params
+            - *pushDockerImage
+
+    ops-generate-ssl-certificate:
+      - step:
+          name: Request new SSL certificate for all environments
+          script:
+          - *params
+          - aws acm request-certificate --domain-name $DOMAIN_NAME --validation-method DNS --idempotency-token 1234 --options CertificateTransparencyLoggingPreference=DISABLED --subject-alternative-names www.$DOMAIN_NAME www.prod.$DOMAIN_NAME www.stg.$DOMAIN_NAME www.qa.$DOMAIN_NAME www.dev.$DOMAIN_NAME prod.$DOMAIN_NAME stg.$DOMAIN_NAME qa.$DOMAIN_NAME dev.$DOMAIN_NAME
+
+    owasp-check:
+    - step:
+          name: OWASP dependency check (better to be scheduled)
+          script:
+          - mvn clean verify -P owasp-dependency-check -Dmaven.test.failure.ignore=false
+
+    code-coverage:
+    - step:
+          name: Run code coverage
+          script:
+          - mvn clean verify -P coverage antrun:run
+
+
+# Define node_modules cache for build
+definitions:
+  caches:
+    node-cache: browser/node_modules
