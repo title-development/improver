@@ -78,7 +78,7 @@
           [modal]="true">
   <question-preview [toggle]="preview" [question]="selectedQuestion"></question-preview>
   <form action="" #addEditQuestionForm="ngForm"
-        (ngSubmit)="addEditQuestionForm.valid && addEditQuestionForm.dirty && addUpdateQuestion(selectedQuestion)" *ngIf="selectedQuestion">
+        (ngSubmit)="addEditQuestionForm.valid && addUpdateQuestion(selectedQuestion)" *ngIf="selectedQuestion">
     <div class="ui-grid ui-grid-responsive ui-fluid question-edit" *ngIf="selectedQuestion && !preview">
       <div class="ui-grid-row ui-grid-field">
         <div class="ui-grid-col-3"><label for="question">Question</label></div>
