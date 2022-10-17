@@ -60,7 +60,8 @@
             <activation>
                 <activeByDefault>false</activeByDefault>
                 <property>
-                    <name>env.DYNO</name>
+                    <name>env.profile</name>
+                    <value>prod</value>
                 </property>
             </activation>
             <properties>
@@ -71,14 +72,29 @@
         </profile>
 
         <profile>
+            <id>prod-init</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>env.profile</name>
+                    <value>prod-init</value>
+                </property>
+            </activation>
+            <properties>
+                <npm.argumenrs>install --production</npm.argumenrs>
+                <npm.build.cmd>run build:prod</npm.build.cmd>
+                <environment>prod,heroku,initdb</environment>
+            </properties>
+        </profile>
+
+        <profile>
             <id>qa</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
-                <!-- for AWS environment -->
-                <!-- <property>
-                    <name>environment</name>
+                <property>
+                    <name>env.profile</name>
                     <value>qa</value>
-                </property>-->
+                </property>
             </activation>
             <properties>
                 <environment>qa,heroku,initdb</environment>
@@ -101,15 +117,15 @@
 
         <profile>
             <id>initdb</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
             <properties>
                 <!--first load dev profile then override by initdb properties-->
                 <environment>dev,initdb</environment>
                 <npm.arguments>install</npm.arguments>
                 <npm.build.cmd>run build</npm.build.cmd>
             </properties>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
         </profile>
 
         <profile>
