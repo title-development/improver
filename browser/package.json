@@ -6,7 +6,7 @@
     "clean": "rimraf ./target/classes",
     "pretest": "webdriver-manager update",
     "start": "ng serve --prod",
-    "serve": "ng serve --hmr",
+    "serve": "ng serve",
     "serve:test": "ng serve --configuration=test",
     "build": "ng build",
     "build:test": "ng build --configuration=test",
