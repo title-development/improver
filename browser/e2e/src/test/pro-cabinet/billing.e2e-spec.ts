@@ -1,5 +1,5 @@
 import { $, $$, browser, by, element } from 'protractor';
-import { users } from "../../../test.data";
+import { users, validPaymentCard } from "../../../test.data";
 import { closeNotificationPopup, login, logout, sendKeysByOne } from "./../../utils/common.functions";
 import { BillingHelper } from "../../utils/billing.helper";
 import {
@@ -10,7 +10,6 @@ import {
   pageLink,
   SECOND,
   THREE_SECONDS,
-  validPaymentCard,
 } from "../../utils/constants";
 
 
@@ -153,10 +152,10 @@ describe('Billing', () => {
       let iframe = by.css('[name="payment-card-form"] iframe');
       let iframeHtmlElement = driver.findElement(iframe);
       browser.switchTo().frame(iframeHtmlElement);
-      sendKeysByOne(driver.findElement(by.tagName('[name="cardnumber"]')), 4242424242424242);
-      sendKeysByOne(driver.findElement(by.tagName('[name="exp-date"]')), 1122);
-      sendKeysByOne(driver.findElement(by.tagName('[name="cvc"]')), 1111);
-      sendKeysByOne(driver.findElement(by.tagName('[name="postal"]')), 10022);
+      sendKeysByOne(driver.findElement(by.tagName('[name="cardnumber"]')), validPaymentCard.cardNumber);
+      sendKeysByOne(driver.findElement(by.tagName('[name="exp-date"]')), validPaymentCard.expDate);
+      sendKeysByOne(driver.findElement(by.tagName('[name="cvc"]')), validPaymentCard.cvc);
+      sendKeysByOne(driver.findElement(by.tagName('[name="postal"]')), validPaymentCard.postal);
       browser.sleep(SECOND);
       browser.switchTo().defaultContent();
       $$('.payment-card-form .cv-button').filter(item => item.isDisplayed()).first().click();

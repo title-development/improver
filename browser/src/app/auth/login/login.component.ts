@@ -71,7 +71,9 @@ export class LoginComponent implements OnDestroy {
     this.securityService.sendLoginRequest(this.credentials)
       .pipe(
         takeUntil(this.destroyed$),
-        finalize(() => this.recaptcha.reset())
+        finalize(() => {
+          if (this.credentials.captcha) this.recaptcha.reset();
+        })
       )
       .subscribe(response => {
         this.securityService.loginUser(response.body as LoginModel, response.headers.get('authorization'), true);

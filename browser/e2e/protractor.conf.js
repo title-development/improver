@@ -21,7 +21,7 @@ exports.config = {
         'browserName': 'chrome',
         chromeOptions: {
             args: [
-                '--window-size=1200,800',
+                '--start-maximized'
                 // '--auto-open-devtools-for-tabs'
             ]
         }

@@ -100,5 +100,10 @@ export const unsupportedArea = {
   comingSoonMessage: "We are coming to your area soon."
 };
 
-
+export const validPaymentCard = {
+  cardNumber: 4242424242424242,
+  expDate: 1130,
+  cvc: 1111,
+  postal: 10022
+};
 

@@ -1,23 +1,7 @@
 import { browser, by, element, protractor } from 'protractor';
 import { partlyValidLocation, users } from "../../../test.data";
-import {
-  errorMessages,
-  FIVE_SECONDS,
-  SECOND,
-  signUpProHints,
-  successTitle,
-  THREE_SECONDS
-} from "../../utils/constants";
-import {
-  findInputErrorElementByName,
-  insertPhoneValidationCode,
-  logout,
-  validateEmailInputs,
-  validateFirstLastNameInputs,
-  validatePasswordAndConfirmPassword,
-  validatePhoneInputs,
-  validateRegisteredEmail
-} from "../../utils/common.functions";
+import { errorMessages, FIVE_SECONDS, SECOND, signUpProHints, successTitle, THIRTY_SECONDS, THREE_SECONDS } from "../../utils/constants";
+import { findInputErrorElementByName, insertPhoneValidationCode, logout, validateEmailInputs, validateFirstLastNameInputs, validatePasswordAndConfirmPassword, validatePhoneInputs, validateRegisteredEmail } from "../../utils/common.functions";
 
 describe('Sign up Pro', () => {
 
@@ -126,7 +110,7 @@ describe('Sign up Pro', () => {
     browser.sleep(SECOND);
     expect(element(by.css('.content .hint')).getText()).toEqual(signUpProHints.checkService);
     buttonNext.click();
-    browser.sleep(FIVE_SECONDS);
+    browser.sleep(THIRTY_SECONDS);
     expect(element(by.css("email-verification-hint-card .explanation span")).getText()).toEqual(successTitle.registeredUser);
     browser.sleep(FIVE_SECONDS);
 

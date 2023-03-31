@@ -3,6 +3,8 @@ export const TWO_SECONDS = 2000;
 export const THREE_SECONDS = 3000;
 export const FIVE_SECONDS = 5000;
 export const TEN_SECONDS = 10000;
+export const TWENTY_SECONDS = 20000;
+export const THIRTY_SECONDS = 30000;
 export const WRONG_EMAIL_PASSWORD_MESSAGE = "Email or password is incorrect";
 
 export const successTitle = {
@@ -92,13 +94,6 @@ export const signUpProHints = {
   offeredServices: "Select services you offer and want to receive leads for. You can always change offered services in your account settings.",
   businessCategories: "Services are grouped into Trades for easier configuration. Add the entire Trades or select particular Services.",
   checkService: "Please check any Service that applies to you"
-};
-
-export const validPaymentCard = {
-  cardNumber: 4242424242424242,
-  expDate: 1122,
-  cvc: 1111,
-  postal: 10022
 };
 
 export const phoneValidationCode = "1111";
