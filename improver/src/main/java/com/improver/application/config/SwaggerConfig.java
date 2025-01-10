@@ -1,7 +1,6 @@
 package com.improver.application.config;
 
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
+import java.util.function.Predicate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -9,7 +8,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spring.web.paths.AbstractPathProvider;
+import springfox.documentation.spring.web.paths.DefaultPathProvider;
 import springfox.documentation.spring.web.paths.Paths;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -49,23 +48,18 @@ public class SwaggerConfig {
     }
 
     private Predicate<String> blockBasicErrorPath() {
-        return Predicates.not(PathSelectors.regex("/error"));
+        return PathSelectors.regex("/error").negate();
     }
 
     private Predicate<String> apiPath() {
         return regex("/api"+".*");
     }
 
-    class BasePathAwareRelativePathProvider extends AbstractPathProvider {
-        private String basePath;
+    static class BasePathAwareRelativePathProvider extends DefaultPathProvider {
+        private final String basePath;
 
         public BasePathAwareRelativePathProvider(String basePath) {
             this.basePath = basePath;
-        }
-
-        @Override
-        protected String applicationPath() {
-            return basePath;
         }
 
         @Override

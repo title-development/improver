@@ -75,8 +75,8 @@ public class CompanyConfigService {
                 .setCenterLng(lng);
         } else {
             coverageConfig
-                .setCenterLat(company.getLocation().getLat())
-                .setCenterLng(company.getLocation().getLng());
+                .setCenterLat(company.getExtendedLocation().getLat())
+                .setCenterLng(company.getExtendedLocation().getLng());
         }
         companyConfigRepository.save(companyConfig);
     }
@@ -86,7 +86,7 @@ public class CompanyConfigService {
         coverageConfig.setZips(areaRepository.getZipCodesByCompanyId(company.getId()));
         return new CompanyCoverageConfig()
             .setCoverageConfig(coverageConfig)
-            .setCompanyLocation(company.getLocation());
+            .setCompanyLocation(company.getExtendedLocation());
     }
 
     public void updateCompanyLocation(Company company, Location location, Admin currentAdmin) {

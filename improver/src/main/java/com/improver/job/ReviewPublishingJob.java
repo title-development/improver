@@ -6,7 +6,7 @@ import com.improver.service.WsNotificationService;
 import com.improver.service.ReviewService;
 import com.improver.util.mail.MailService;
 import lombok.extern.slf4j.Slf4j;
-import net.javacrumbs.shedlock.core.SchedulerLock;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -23,7 +23,7 @@ public class ReviewPublishingJob implements OnesPerNodeTask {
 
 
     @Scheduled(cron = "${job.review.publish.cron}")
-    @SchedulerLock(name = "publishReview", lockAtLeastFor = MAX_CLOCK_DIFF_BETWEEN_NODES, lockAtMostFor = MAX_TASK_DELAY)
+    @SchedulerLock(name = "publishReview", lockAtLeastFor = "PT1S", lockAtMostFor = "PT1M")
     public void publishReview(){
         log.info("Job 3 started => Review publishing");
         ZonedDateTime now = ZonedDateTime.now();

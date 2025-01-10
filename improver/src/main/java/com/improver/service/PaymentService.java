@@ -9,24 +9,21 @@ import com.improver.model.out.billing.PaymentCard;
 import com.improver.repository.BillRepository;
 import com.improver.repository.ContractorRepository;
 import com.improver.repository.TransactionRepository;
+import com.improver.util.PaymentCardsHandler;
 import com.improver.util.mail.MailService;
 import com.improver.util.serializer.SerializationUtil;
-import com.stripe.exception.*;
+import com.stripe.exception.CardException;
+import com.stripe.exception.StripeException;
 import com.stripe.model.Card;
 import com.stripe.model.Charge;
-import com.stripe.model.ExternalAccount;
-import com.stripe.model.ExternalAccountCollection;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.stripe.net.StripeResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.improver.application.properties.BusinessProperties.MAX_AVAILABLE_CARDS_COUNT;
 import static com.improver.application.properties.BusinessProperties.REFERRAL_BONUS_AMOUNT;
@@ -37,14 +34,19 @@ import static com.improver.util.TextMessages.REFERRAL_BONUS_MESSAGE;
 @Service
 public class PaymentService {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
-
-    @Autowired private WsNotificationService wsNotificationService;
-    @Autowired private TransactionRepository transactionRepository;
-    @Autowired private BillRepository billRepository;
-    @Autowired private MailService mailService;
-    @Autowired private BillingService billingService;
-    @Autowired private ContractorRepository contractorRepository;
+    @Autowired
+    private WsNotificationService wsNotificationService;
+    @Autowired
+    private TransactionRepository transactionRepository;
+    @Autowired
+    private BillRepository billRepository;
+    @Autowired
+    private MailService mailService;
+    @Autowired
+    private BillingService billingService;
+    @Autowired
+    private ContractorRepository contractorRepository;
+    private final PaymentCardsHandler paymentCardsHandler = new PaymentCardsHandler();
 
     public enum ChargeStatus {
         SUCCEEDED("succeeded"),
@@ -133,7 +135,7 @@ public class PaymentService {
             charge = Charge.create(chargeParams);
         } catch (CardException e) {
             throw new PaymentFailureException("Payment cannot be proceed due to card issue. Please check your billing information and try again.", e);
-        } catch (AuthenticationException | InvalidRequestException | APIConnectionException | APIException e) {
+        } catch (StripeException e) {
             throw new InternalServerException("Payment cannot be proceed:  " + e.getMessage(), e);
         }
         if (ChargeStatus.FAILED.equalsValue(charge.getStatus())) {
@@ -151,7 +153,7 @@ public class PaymentService {
     public void addCard(Contractor contractor, String token) throws ConflictException {
         Company company = contractor.getCompany();
         Billing bill = company.getBilling();
-        List<PaymentCard> cards = getCards(company);
+        List<PaymentCard> cards = paymentCardsHandler.getCards(company);
         if (cards.size() >= MAX_AVAILABLE_CARDS_COUNT) {
             throw new ConflictException("You can add only " + MAX_AVAILABLE_CARDS_COUNT + " cards");
         }
@@ -170,49 +172,9 @@ public class PaymentService {
             }
         } catch (CardException e) {
             throw new InternalServerException("Payment card was declined", e);
-        } catch (AuthenticationException | InvalidRequestException | APIConnectionException | APIException e) {
+        } catch (StripeException e) {
             throw new InternalServerException("Payment Card cannot be proceed due to connectivity issue. Try again in a while", e);
         }
-
-    }
-
-    /**
-     * Get all card from Stripe Customer
-     */
-    public List<PaymentCard> getCards(Company company) {
-        Billing bill = company.getBilling();
-        if (bill.getStripeId() == null) {
-            return new ArrayList<>();
-        }
-        com.stripe.model.Customer stripeCustomer;
-        List<PaymentCard> cards;
-
-        try {
-            stripeCustomer = com.stripe.model.Customer.retrieve(bill.getStripeId());
-            HashMap<String, Object> sourcesParams = new HashMap<>();
-            sourcesParams.put("object", "card");
-            sourcesParams.put("limit", MAX_AVAILABLE_CARDS_COUNT);
-            ExternalAccountCollection externalAccountCollection = stripeCustomer.getSources().list(sourcesParams);
-            List<ExternalAccount> externalAccounts = externalAccountCollection.getData();
-            cards = externalAccounts.stream()
-                .map(c -> SerializationUtil.mapper().convertValue(c, PaymentCard.class))
-                .collect(Collectors.toList());
-        } catch (CardException e) {
-            log.error("Cannot retrieve payment cards", e);
-            throw new InternalServerException(e.getMessage());
-        } catch (AuthenticationException | InvalidRequestException | APIConnectionException | APIException e) {
-            // TODO: change to third party
-            throw new InternalServerException("Cannot retrieve payment cards: " + e.getMessage(), e);
-        }
-        return cards;
-    }
-
-    public PaymentCard getDefaultCard(Company company) {
-        List<PaymentCard> cards = getCards(company);
-        if (cards.isEmpty()) {
-            return null;
-        }
-        return cards.get(0);
     }
 
     /**
@@ -231,7 +193,7 @@ public class PaymentService {
             stripeCustomer.update(params);
         } catch (CardException e) {
             throw new InternalServerException("Your card was declined", e);
-        } catch (AuthenticationException | InvalidRequestException | APIConnectionException | APIException e) {
+        } catch (StripeException e) {
             throw new InternalServerException("Payment Card cannot be proceed due to connectivity issue. Try again in a while", e);
         }
     }
@@ -247,10 +209,13 @@ public class PaymentService {
 
         try {
             com.stripe.model.Customer stripeCustomer = com.stripe.model.Customer.retrieve(bill.getStripeId());
-            stripeCustomer.getSources().retrieve(cardId).delete();
-        } catch (CardException e) {
-            throw new InternalServerException("Your card was declined", e);
-        } catch (AuthenticationException | InvalidRequestException | APIConnectionException | APIException e) {
+            StripeResponse response = stripeCustomer.getSources().retrieve(cardId).getLastResponse();
+
+            if (response.code() != 200) {
+                throw new InternalServerException("Your card was declined.");
+            }
+
+        } catch (StripeException e) {
             throw new InternalServerException("Payment Card cannot be proceed due to connectivity issue. Try again in a while", e);
         }
     }

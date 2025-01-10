@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.List;
 
 import static com.improver.application.properties.BusinessProperties.DEFAULT_COMPANY_COVERAGE_RADIUS;
@@ -30,7 +30,7 @@ public class CompanyConfig {
 
     public static CompanyConfig defaultSettings(Company company) {
         return new CompanyConfig().setCompany(company)
-            .setCoverageConfig(CoverageConfig.ofLocation(company.getLocation(), DEFAULT_COMPANY_COVERAGE_RADIUS));
+            .setCoverageConfig(CoverageConfig.ofLocation(company.getExtendedLocation(), DEFAULT_COMPANY_COVERAGE_RADIUS));
     }
 
     public CompanyConfig updateCoverageConfigTo(CoverageConfig source){

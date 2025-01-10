@@ -8,6 +8,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -22,18 +23,25 @@ public class MailClient {
 
     private final static String DUMMY_VALUE = "dummyValue";
 
-    @Autowired private TemplateEngine templateEngine;
-    @Autowired private JavaMailSender mailSenderNoreply;
-    @Autowired private JavaMailSender mailSenderSupport;
-    @Autowired private ScheduledExecutorService scheduledExecutorService;
+    @Autowired
+    private TemplateEngine templateEngine;
+    @Autowired
+    private JavaMailSender mailSenderNoreply;
+    @Autowired
+    private JavaMailSender mailSenderSupport;
+    @Autowired
+    private ThreadPoolTaskScheduler threadPoolTaskScheduler;
 
-    @Value("${mail.sendername}") private String senderName;
-    @Value("${mail.resend.maxattempts}") private Integer maxResendAttempts;
-    @Value("${task.mail.resend.timeout}") private Duration mailResendTimeout;
+    @Value("${mail.sendername}")
+    private String senderName;
+    @Value("${mail.resend.maxattempts}")
+    private Integer maxResendAttempts;
+    @Value("${task.mail.resend.timeout}")
+    private Duration mailResendTimeout;
 
     @Async
     public void sendMailsSeparate(String subject, String template, Context context, MailHolder.MessageType messageType, String... recipients) {
-        for (String recipient: recipients) {
+        for (String recipient : recipients) {
             prepareAndSend(subject, template, context, messageType, recipient);
         }
     }
@@ -64,28 +72,31 @@ public class MailClient {
 
     private void send(MailHolder mailHolder) {
         log.trace("Sending email");
-            switch (mailHolder.getMessageType()) {
-                case INFO:
-                    mailSenderNoreply.send(mailHolder.getMimeMessagePreparator());
-                    break;
-                case BILLING:
-                    mailSenderNoreply.send(mailHolder.getMimeMessagePreparator());
-                    break;
-                case SUPPORT:
-                    mailSenderSupport.send(mailHolder.getMimeMessagePreparator());
-                    break;
-                case NOREPLY:
-                default:
-                    mailSenderNoreply.send(mailHolder.getMimeMessagePreparator());
-                    break;
-            }
+        switch (mailHolder.getMessageType()) {
+            case INFO:
+                mailSenderNoreply.send(mailHolder.getMimeMessagePreparator());
+                break;
+            case BILLING:
+                mailSenderNoreply.send(mailHolder.getMimeMessagePreparator());
+                break;
+            case SUPPORT:
+                mailSenderSupport.send(mailHolder.getMimeMessagePreparator());
+                break;
+            case NOREPLY:
+            default:
+                mailSenderNoreply.send(mailHolder.getMimeMessagePreparator());
+                break;
+        }
     }
 
     private void scheduledUnsentMail(MailHolder mailHolder, String subject, String... recipient) {
         if (mailHolder.getAttempts() > maxResendAttempts) {
             return;
         }
-        scheduledExecutorService.schedule(() -> sendUnsentEmail(mailHolder, subject, recipient), mailResendTimeout.getSeconds(), TimeUnit.SECONDS);
+        threadPoolTaskScheduler.scheduleWithFixedDelay(
+            () -> sendUnsentEmail(mailHolder, subject, recipient),
+            Duration.ofSeconds(mailResendTimeout.getSeconds())
+        );
     }
 
     private void sendUnsentEmail(MailHolder mailHolder, String subject, String... recipient) {

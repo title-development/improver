@@ -1,16 +1,10 @@
 package com.improver.model.out.review;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.improver.entity.Review;
 import com.improver.entity.ReviewRevisionRequest;
-import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import javax.persistence.*;
 import java.time.ZonedDateTime;
 
 import static com.improver.util.serializer.SerializationUtil.DATE_TIME_PATTERN;

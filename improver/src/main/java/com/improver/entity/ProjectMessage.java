@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 
-import javax.persistence.*;
-import javax.validation.constraints.Size;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 

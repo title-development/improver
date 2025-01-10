@@ -11,6 +11,7 @@ import com.improver.service.*;
 import com.improver.model.in.StripeToken;
 import com.improver.repository.BillRepository;
 import com.improver.repository.CompanyRepository;
+import com.improver.util.PaymentCardsHandler;
 import com.improver.util.annotation.PageableSwagger;
 import com.improver.security.annotation.CompanyMemberOrSupportAccess;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,7 @@ public class BillingController {
     @Autowired private BillRepository billRepository;
     @Autowired private CompanyService companyService;
     @Autowired private UserSecurityService userSecurityService;
+    private final PaymentCardsHandler paymentCardsHandler = new PaymentCardsHandler();
 
 
 
@@ -96,7 +98,7 @@ public class BillingController {
     public ResponseEntity<List<PaymentCard>> getCards(@PathVariable long companyId) {
         Company company = companyRepository.findById(companyId)
             .orElseThrow(NotFoundException::new);
-        List<PaymentCard> cards = paymentService.getCards(company);
+        List<PaymentCard> cards = paymentCardsHandler.getCards(company);
         return new ResponseEntity<>(cards, HttpStatus.OK);
     }
 

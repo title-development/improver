@@ -5,14 +5,13 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity(name = "user_address")
 @Data
 @Accessors(chain = true)
 @NoArgsConstructor
-public class UserAddress extends Location {
+public class UserAddress {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +21,9 @@ public class UserAddress extends Location {
 
     private Boolean isDefault = false;
 
+    @Embedded
+    private Location location;
+
     @ManyToOne
     @JoinColumn(name = "customer_id", foreignKey = @ForeignKey(name = "addresses_customer_fkey"))
     private Customer customer;
@@ -29,11 +31,16 @@ public class UserAddress extends Location {
 
     public UserAddress(Customer customer, Location location) {
         this.customer = customer;
-        setStreetAddress(location.getStreetAddress())
-            .setCity(location.getCity())
-            .setState(location.getState())
-            .setZip(location.getZip())
-            .setIsAddressManual(location.getIsAddressManual());
+        this.location = location;
         this.name = location.asText();
+    }
+
+    public boolean equalsIgnoreCase(Location o) {
+        if (this.getLocation() == o) return true;
+        if (o == null) return false;
+        return this.location.getState().equalsIgnoreCase(o.getState()) &&
+            this.location.getCity().equalsIgnoreCase(o.getCity()) &&
+            this.location.getStreetAddress().equalsIgnoreCase(o.getStreetAddress()) &&
+            this.location.getZip().equals(o.getZip());
     }
 }

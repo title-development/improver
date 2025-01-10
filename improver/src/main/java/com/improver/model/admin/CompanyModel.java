@@ -33,7 +33,7 @@ public class CompanyModel {
         this.iconUrl = company.getIconUrl();
         this.backgroundUrl = company.getBackgroundUrl();
         this.description = company.getDescription();
-        this.location = company.getLocation();
+        this.location = company.getExtendedLocation();
         this.founded = company.getFounded();
         this.siteUrl = company.getSiteUrl();
         this.created = company.getCreated();

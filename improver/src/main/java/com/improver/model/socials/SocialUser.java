@@ -4,7 +4,7 @@ import com.google.api.client.auth.openidconnect.IdToken;
 import com.improver.entity.SocialConnection;
 import lombok.*;
 
-import javax.validation.constraints.Email;
+import jakarta.validation.constraints.Email;
 
 import static com.improver.util.ErrorMessages.EMAIL_VALIDATION_ERROR_MESSAGE;
 

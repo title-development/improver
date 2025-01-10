@@ -30,7 +30,7 @@ import static com.improver.model.in.CloseProjectRequest.Action.INVALIDATE;
 @Service
 public class ProjectService {
 
-    @Autowired private ProjectService self;
+    // @Autowired private ProjectService self;
     @Autowired private ProjectRepository projectRepository;
     @Autowired private ProjectRequestRepository projectRequestRepository;
     @Autowired private ImageService imageService;
@@ -106,18 +106,18 @@ public class ProjectService {
         switch (newStatus) {
             case VALIDATION:
                 log.info("Project {} to validation", project.getId());
-                self.toValidationProject(project, request.getReason(), request.getComment(), support);
+                toValidationProject(project, request.getReason(), request.getComment(), support);
                 break;
 
             case ACTIVE:
             case IN_PROGRESS:
                 log.info("Project {} validation", project.getId());
-                self.validateProject(project, request.getComment(), support);
+                validateProject(project, request.getComment(), support);
                 break;
 
             case INVALID:
                 log.info("Project {} invalidation", project.getId());
-                self.invalidateProject(project, request.getReason(), request.getComment(), support);
+                invalidateProject(project, request.getReason(), request.getComment(), support);
                 break;
 
             default:
@@ -125,7 +125,6 @@ public class ProjectService {
         }
     }
 
-    @Transactional
     public void toValidationProject(Project project, Project.Reason reason, String comment, User support) {
         projectRepository.save(project.setUpdated(ZonedDateTime.now())
             .setStatus(Project.Status.VALIDATION)
@@ -137,7 +136,6 @@ public class ProjectService {
         wsNotificationService.projectToValidation(project.getCustomer(), project.getServiceType().getName(), project.getId());
     }
 
-    @Transactional
     public void validateProject(Project project, String text, User support) {
 
         if (!project.getStatus().equals(Project.Status.VALIDATION)) {

@@ -3,7 +3,7 @@ package com.improver.model.in.registration;
 import com.improver.model.TradesServicesCollection;
 import lombok.Data;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 @Data
 public class CompanyRegistration {

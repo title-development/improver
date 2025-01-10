@@ -84,11 +84,11 @@ public class OrderService {
         }
 
         // 1. Address
-        if (isNewOrder || !project.getLocation().equalsIgnoreCase(order.getAddress())) {
+        if (isNewOrder || !project.getLocation().equalsIgnoreCase(order.getAddress().getLocation())) {
             if (order.getAddress().getId() != null) {
                 UserAddress savedAddress = userAddressRepository.findByIdAndCustomer(order.getAddress().getId(), customer)
                     .orElseThrow(() -> new ValidationException("User address not exist"));
-                project.setLocation(savedAddress);
+                project.setLocation(savedAddress.getLocation());
             } else {
                 // 1.1. New UserAddress
                 ValidatedLocation validatedAddress;
@@ -99,7 +99,7 @@ public class OrderService {
                     throw new InternalServerException("Address is not validated due to Shippo error");
                 }
                 if (validatedAddress.isValid()) {
-                    project.setLocation(order.getAddress());
+                    project.setLocation(order.getAddress().getLocation());
                 } else {
                     thrownException = new OrderValidationException(validatedAddress, order.getProjectId());
                     if (validatedAddress.getSuggested() == null){
@@ -107,7 +107,7 @@ public class OrderService {
                     }
                     // 1.2. Pre-save order with suggested address
                     log.info("Order address seem not be valid. Using suggested address");
-                    project.setLocation(validatedAddress.getSuggested());
+                    project.setLocation(validatedAddress.getSuggested().getLocation());
                 }
             }
 
@@ -221,8 +221,8 @@ public class OrderService {
                 throw new InternalServerException("Address is not validated due to Shippo error");
             }
         }
-        Centroid centroid = servedZipRepository.findByZip(order.getAddress().getZip())
-            .orElseThrow(() -> new ValidationException(order.getAddress().getZip() + " ZIP Code is not in service area"))
+        Centroid centroid = servedZipRepository.findByZip(order.getAddress().getLocation().getZip())
+            .orElseThrow(() -> new ValidationException(order.getAddress().getLocation().getZip() + " ZIP Code is not in service area"))
             .getCentroid();
 
 
@@ -248,7 +248,7 @@ public class OrderService {
             .setServiceType(serviceType)
             .setServiceName(serviceType.getName())
             .setLeadPrice(serviceType.getLeadPrice())
-            .setLocation(savedAddress != null ? savedAddress : order.getAddress())
+            .setLocation(savedAddress != null ? savedAddress.getLocation() : order.getAddress().getLocation())
             .setStartDate(order.getBaseLeadInfo().getStartExpectation())
             .setNotes(order.getBaseLeadInfo().getNotes())
             .setDetails(order.getQuestionary() != null ? SerializationUtil.toJson(order.getQuestionary()) : null )

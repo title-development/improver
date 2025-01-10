@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.security.Principal;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;

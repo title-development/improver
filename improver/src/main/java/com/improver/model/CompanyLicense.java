@@ -5,7 +5,7 @@ import com.improver.util.enums.State;
 import com.improver.util.serializer.SerializationUtil;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 

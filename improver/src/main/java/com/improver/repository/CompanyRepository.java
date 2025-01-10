@@ -12,7 +12,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -34,7 +34,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
 
     @Modifying
     @Transactional
-    @Query("UPDATE com.improver.entity.Company c SET c.location.streetAddress = ?2, c.location.city = ?3,  c.location.state = ?4, c.location.zip = ?5, c.location.lat = ?6, c.location.lng = ?7  WHERE c.id = ?1")
+    @Query("UPDATE com.improver.entity.Company c SET c.extendedLocation.location.streetAddress = ?2, c.extendedLocation.location.city = ?3,  c.extendedLocation.location.state = ?4, c.extendedLocation.location.zip = ?5, c.extendedLocation.lat = ?6, c.extendedLocation.lng = ?7  WHERE c.id = ?1")
     void updateCompanyLocation(long companyId, String streetAddress, String city, String state, String zip, double lat, double lng);
 
 
@@ -45,10 +45,10 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
     @Query("SELECT c FROM com.improver.entity.Company c WHERE " +
         "(:id IS null OR c.id = :id) AND " +
         "(:name IS null OR (LOWER(c.name) LIKE CONCAT('%', LOWER(cast(:name as string)), '%'))) " +
-        " AND (:location IS null OR (LOWER(c.location.streetAddress) LIKE CONCAT('%', LOWER(cast(:location as string)), '%'))" +
-        " OR (LOWER(c.location.city) LIKE CONCAT('%', LOWER(cast(:location as string)), '%')) " +
-        " OR (LOWER(c.location.state) LIKE CONCAT('%', LOWER(cast(:location as string)), '%')) " +
-        " OR (LOWER(c.location.zip) LIKE CONCAT('%', LOWER(cast(:location as string)), '%'))) ")
+        " AND (:location IS null OR (LOWER(c.extendedLocation.location.streetAddress) LIKE CONCAT('%', LOWER(cast(:location as string)), '%'))" +
+        " OR (LOWER(c.extendedLocation.location.city) LIKE CONCAT('%', LOWER(cast(:location as string)), '%')) " +
+        " OR (LOWER(c.extendedLocation.location.state) LIKE CONCAT('%', LOWER(cast(:location as string)), '%')) " +
+        " OR (LOWER(c.extendedLocation.location.zip) LIKE CONCAT('%', LOWER(cast(:location as string)), '%'))) ")
     Page<Company> findBy(Long id, String name, String location, Pageable pageable);
 
     boolean existsByServiceTypesId(long id);

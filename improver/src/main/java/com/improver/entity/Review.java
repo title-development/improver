@@ -4,7 +4,7 @@ package com.improver.entity;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.ZonedDateTime;
 
 import static com.improver.util.database.DataRestrictions.REVIEW_MESSAGE_MAX_SIZE;

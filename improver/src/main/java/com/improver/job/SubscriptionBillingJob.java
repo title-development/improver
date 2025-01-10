@@ -8,7 +8,7 @@ import com.improver.repository.CompanyRepository;
 import com.improver.service.SubscriptionService;
 import com.improver.util.mail.MailService;
 import lombok.extern.slf4j.Slf4j;
-import net.javacrumbs.shedlock.core.SchedulerLock;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -33,7 +33,7 @@ public class SubscriptionBillingJob implements OnesPerNodeTask {
 
 
     @Scheduled(cron = "${job.subscription.billing.cron}")
-    @SchedulerLock(name = "updateSubscription", lockAtLeastFor = MAX_CLOCK_DIFF_BETWEEN_NODES, lockAtMostFor = MAX_SUBSCRIPTION_BILLING_JOB_DELAY)
+    @SchedulerLock(name = "updateSubscription", lockAtLeastFor = "PT1S", lockAtMostFor = "PT2M")
     public void updateSubscription(){
         log.info("Job 2 started => Subscription billing");
         ZonedDateTime now = ZonedDateTime.now();

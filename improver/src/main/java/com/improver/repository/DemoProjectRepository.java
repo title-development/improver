@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 public interface DemoProjectRepository extends JpaRepository<DemoProject, Long> {
 

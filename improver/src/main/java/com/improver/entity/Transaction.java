@@ -5,7 +5,7 @@ import com.improver.util.DecimalConverter;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.ZonedDateTime;
 
 import static com.improver.application.properties.SystemProperties.TRANSACTIONS_NUMBER_MAX_LENGTH;

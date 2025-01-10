@@ -2,7 +2,7 @@ package com.improver.model.in;
 
 import lombok.Data;
 
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Size;
 
 import static com.improver.util.ErrorMessages.CUSTOMER_REVIEW_SIZE_ERROR_MESSAGE;
 import static com.improver.util.database.DataRestrictions.REVIEW_MESSAGE_MAX_SIZE;

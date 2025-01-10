@@ -23,8 +23,8 @@ import net.ricecode.similarity.StringSimilarityServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
-import javax.validation.Valid;
+import jakarta.annotation.PostConstruct;
+import jakarta.validation.Valid;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,11 +53,11 @@ public class LocationService {
 
 
     public ValidatedLocation validateProjectAddress(UserAddressModel address) throws ThirdPartyException {
-        Location projectLoc = new Location().setStreetAddress(address.getStreetAddress())
-            .setCity(address.getCity())
-            .setState(address.getState())
-            .setZip(address.getZip());
-        return validate(projectLoc,  false, true, address.getIsAddressManual());
+        Location projectLoc = new Location().setStreetAddress(address.getLocation().getStreetAddress())
+            .setCity(address.getLocation().getCity())
+            .setState(address.getLocation().getState())
+            .setZip(address.getLocation().getZip());
+        return validate(projectLoc,  false, true, address.getLocation().getIsAddressManual());
     }
 
 
@@ -86,23 +86,23 @@ public class LocationService {
 
                 // check the address
                 String errorMsg;
-                if (!validated.getState().equalsIgnoreCase(toValidate.getState())) {
+                if (!validated.getLocation().getState().equalsIgnoreCase(toValidate.getState())) {
                     log.trace("State doesn't match");
                     errorMsg = "State is not valid for provided address";
                     return suggestion(validated, errorMsg, validationMsg, checkCoverage);
                 }
-                if (!validated.getCity().equalsIgnoreCase(toValidate.getCity())) {
+                if (!validated.getLocation().getCity().equalsIgnoreCase(toValidate.getCity())) {
                     log.trace("City doesn't match");
                     errorMsg = "City is not valid for provided address";
                     return suggestion(validated, errorMsg, validationMsg, checkCoverage);
                 }
-                if (!validated.getZip().equalsIgnoreCase(toValidate.getZip())) {
+                if (!validated.getLocation().getZip().equalsIgnoreCase(toValidate.getZip())) {
                     log.trace("Zip doesn't match");
                     errorMsg = "Zip code is not valid for provided address";
                     return suggestion(validated, errorMsg, validationMsg, checkCoverage);
                 }
 
-                String suggestedStreet = validated.getStreetAddress().toLowerCase();
+                String suggestedStreet = validated.getLocation().getStreetAddress().toLowerCase();
                 String inputStreet = toValidate.getStreetAddress().toLowerCase();
                 double similarityScore = similarityService.score(inputStreet, suggestedStreet);
                 if (similarityScore < ADDRESS_VALIDATION_SCORE) {
@@ -126,14 +126,14 @@ public class LocationService {
     }
 
     private ValidatedLocation suggestion(ExtendedLocation suggested, String errorMsg, String validationMsg, boolean checkCoverage){
-        if (checkCoverage && !servedZipRepository.isZipServed(suggested.getZip())){
+        if (checkCoverage && !servedZipRepository.isZipServed(suggested.getLocation().getZip())){
             return ValidatedLocation.invalid(errorMsg);
         }
         return ValidatedLocation.suggestion(suggested, errorMsg, validationMsg, false);
     }
 
     private ValidatedLocation suggestion(ExtendedLocation suggested, String errorMsg, String validationMsg, boolean checkCoverage, boolean canUseManual){
-        if (checkCoverage && !servedZipRepository.isZipServed(suggested.getZip())){
+        if (checkCoverage && !servedZipRepository.isZipServed(suggested.getLocation().getZip())){
             return ValidatedLocation.invalid(errorMsg);
         }
         return ValidatedLocation.suggestion(suggested, errorMsg, validationMsg, canUseManual);

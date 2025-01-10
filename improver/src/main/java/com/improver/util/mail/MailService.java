@@ -9,16 +9,17 @@ import com.improver.model.tmp.UnreadProjectMessageInfo;
 import com.improver.repository.AdminRepository;
 import com.improver.security.JwtUtil;
 import com.improver.service.PaymentService;
+import com.improver.util.PaymentCardsHandler;
 import com.improver.util.serializer.SerializationUtil;
 import lombok.extern.slf4j.Slf4j;
-import nz.net.ultraq.thymeleaf.LayoutDialect;
+import nz.net.ultraq.thymeleaf.layoutdialect.LayoutDialect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -68,9 +69,9 @@ public class MailService {
 
     @Autowired private MailClient mailClient;
     @Autowired private TemplateEngine templateEngine;
-    @Autowired private PaymentService paymentService;
     @Autowired private AdminRepository adminRepository;
     @Autowired private JwtUtil jwtUtil;
+    private final PaymentCardsHandler paymentCardsHandler = new PaymentCardsHandler();
 
     @Value("${site.url}") private String siteUrl;
 
@@ -526,7 +527,7 @@ public class MailService {
     }
 
     private String getLast4DigitsSilent(Company company) {
-        PaymentCard card = paymentService.getDefaultCard(company);
+        PaymentCard card = paymentCardsHandler.getDefaultCard(company);
         return Optional.ofNullable(card).map(PaymentCard::getLast4).
             orElse("not defined");
     }
@@ -562,7 +563,7 @@ public class MailService {
         Context context = contextTemplate();
         String subject = "Payment failed for Home Improve subscription";
         String date = endDate.format(DateTimeFormatter.ISO_LOCAL_DATE);
-        PaymentCard card = paymentService.getDefaultCard(company);
+        PaymentCard card = paymentCardsHandler.getDefaultCard(company);
         context.setVariable(TITLE, subject);
         StringBuilder body = new StringBuilder(String.format("Your monthly subscription has expired on %s.", highlight(date)))
             .append("<br/>")
@@ -750,6 +751,4 @@ public class MailService {
     private String wrapLink(String phrase, String link) {
         return "<a href= " + link + ">" + phrase + "</a>";
     }
-
-
 }

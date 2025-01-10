@@ -5,7 +5,7 @@ import com.improver.model.tmp.UnreadProjectMessageInfo;
 import com.improver.repository.ProjectMessageRepository;
 import com.improver.util.mail.MailService;
 import lombok.extern.slf4j.Slf4j;
-import net.javacrumbs.shedlock.core.SchedulerLock;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -26,7 +26,7 @@ public class UnreadMessagesMailNotificationJob implements OnesPerNodeTask {
 
 
     @Scheduled(cron = "${job.unread.messages.cron}")
-    @SchedulerLock(name = "unreadMessagesMailNotification", lockAtLeastFor = MAX_CLOCK_DIFF_BETWEEN_NODES, lockAtMostFor = MAX_TASK_DELAY)
+    @SchedulerLock(name = "unreadMessagesMailNotification", lockAtLeastFor = "PT1S", lockAtMostFor = "PT1M")
     public void unreadMessagesMailNotification(){
         log.info("Job 1 started => Unread messages mail");
         ZonedDateTime now = ZonedDateTime.now();

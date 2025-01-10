@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.ZonedDateTime;
 
 import static com.improver.util.database.DataRestrictions.STAFF_ACTION_DESCRIPTION_MAX_SIZE;

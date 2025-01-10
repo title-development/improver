@@ -1,17 +1,14 @@
 package com.improver.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.improver.model.in.registration.UserRegistration;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
 import java.time.ZonedDateTime;
-import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = true)

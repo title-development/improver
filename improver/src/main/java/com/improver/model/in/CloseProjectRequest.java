@@ -4,7 +4,7 @@ import com.improver.entity.Project;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 @Data
 @Accessors(chain = true)

@@ -3,7 +3,7 @@ package com.improver.entity;
 import com.improver.model.admin.AdminTrade;
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

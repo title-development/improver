@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
@@ -31,7 +31,7 @@ import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 public class BillingService {
 
     // Required for same instance Transactional method call
-    @Autowired private BillingService self;
+    //@Autowired private BillingService self;
     @Autowired private BillRepository billRepository;
     @Autowired private TransactionRepository transactionRepository;
     @Autowired private WsNotificationService wsNotificationService;
@@ -48,7 +48,7 @@ public class BillingService {
 
     public void addBonus(Company company, int amount, String comment, Staff currentStaff) {
         comment = comment != null && !comment.equals("") ? comment : BONUS_MESSAGE;
-        self.addBonusTransactional(company, amount, comment);
+        addBonusTransactional(company, amount, comment);
         wsNotificationService.updateBalance(company, company.getBilling());
         wsNotificationService.bonusReceived(company, amount);
         if(currentStaff != null) {
@@ -57,7 +57,6 @@ public class BillingService {
         mailService.sendBonus(company, amount);
     }
 
-    @Transactional
     public void addBonusTransactional(Company company, int amount, String comment) {
         if(amount < MIN_INVITATION_BONUS || amount > MAX_INVITATION_BONUS) {
             throw new ValidationException("The bonus amount is out of limits (" + MIN_INVITATION_BONUS / 100 + " - " + MAX_INVITATION_BONUS / 100 + " )");
@@ -73,7 +72,7 @@ public class BillingService {
         Optional<Invitation> invitationOptional = invitationRepository.findByEmailAndActivatedIsNull(email);
         if (invitationOptional.isPresent()) {
             Invitation invitation = invitationOptional.get();
-            self.addBonusTransactional(company, invitation.getBonus(), INITIAL_BONUS_MESSAGE);
+            addBonusTransactional(company, invitation.getBonus(), INITIAL_BONUS_MESSAGE);
             invitation.setActivated(ZonedDateTime.now());
             invitationRepository.save(invitation);
         }

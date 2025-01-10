@@ -24,11 +24,6 @@ public class MvcConfiguration implements WebMvcConfigurer {
     }
 
     @Override
-    public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
-        configurer.enable();
-    }
-
-    @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         // handles home url
         registry.addViewController("/").setViewName(LAYOUT);
@@ -44,7 +39,8 @@ public class MvcConfiguration implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         //  For SWAGGER
-        registry.addResourceHandler("swagger-ui.html").addResourceLocations("classpath:/META-INF/resources/");
+        registry.addResourceHandler("swagger-ui.html")
+            .addResourceLocations("classpath:/META-INF/resources/");
     }
 
     @Override

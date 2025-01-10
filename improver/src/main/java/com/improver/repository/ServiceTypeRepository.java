@@ -71,7 +71,7 @@ public interface ServiceTypeRepository extends JpaRepository<ServiceType, Long> 
     List<OfferedService> getAllActiveAsModels();
 
     @Query("SELECT new com.improver.model.NameIdParentTuple(s.id, s.name, q.id) FROM com.improver.entity.ServiceType s " +
-        "INNER JOIN s.questionary q WHERE q.id = s.questionary ORDER BY s.name ASC")
+        "INNER JOIN s.questionary q WHERE q.id = s.questionary.id ORDER BY s.name ASC")
     List<NameIdParentTuple> getAllWithQuestionary();
 
     @Query("SELECT new com.improver.model.NameIdTuple(s.id, s.name) FROM com.improver.entity.ServiceType s WHERE s.questionary IS NOT NULL ORDER BY s.name ASC")

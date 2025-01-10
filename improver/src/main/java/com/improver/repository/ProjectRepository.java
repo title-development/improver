@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
@@ -109,8 +109,8 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     @Query("SELECT p from com.improver.entity.Project p WHERE " +
         "p.id <> ?1 " +
         "AND (((p.created BETWEEN ?2 AND ?3) AND p.serviceType.name = ?4) " +
-        "OR ((p.created BETWEEN ?2 AND ?3) AND street_address = ?5) " +
-        "OR (p.serviceType.name = ?4 AND street_address = ?5))"
+        "OR ((p.created BETWEEN ?2 AND ?3) AND p.location.streetAddress = ?5) " +
+        "OR (p.serviceType.name = ?4 AND p.location.streetAddress = ?5))"
     )
     List<Project> findDuplicationCandidates(long originalId, ZonedDateTime dateFrom, ZonedDateTime dateTo, String serviceType, String streetAddress);
 

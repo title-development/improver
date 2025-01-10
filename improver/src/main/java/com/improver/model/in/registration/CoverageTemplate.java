@@ -4,7 +4,7 @@ import com.google.maps.model.LatLng;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 import static com.improver.util.ErrorMessages.COMPANY_COVERAGE_RADIUS_ERROR_MESSAGE;
 import static com.improver.util.database.DataRestrictions.COMPANY_COVERAGE_MAX_RADIUS;

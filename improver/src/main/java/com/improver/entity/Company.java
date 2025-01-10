@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -32,7 +32,7 @@ public class Company {
     private String description;
 
     @Embedded
-    private ExtendedLocation location;
+    private ExtendedLocation extendedLocation;
 
     private int founded;
 
@@ -118,10 +118,8 @@ public class Company {
             .setIconUrl(iconUrl)
             .setFounded(details.getFounded())
             .setSiteUrl(details.getSiteUrl())
-            .setLocation(details.getLocation())
+            .setExtendedLocation(details.getLocation())
             .setCreated(created)
             .setUpdated(created);
     }
-
-
 }

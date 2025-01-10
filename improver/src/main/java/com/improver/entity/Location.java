@@ -1,13 +1,12 @@
 package com.improver.entity;
 
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.MappedSuperclass;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-
-import javax.persistence.Embeddable;
-import javax.persistence.MappedSuperclass;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 
 import static com.improver.util.serializer.SerializationUtil.ZIP_PATTERN_STRING;
 
@@ -18,10 +17,14 @@ import static com.improver.util.serializer.SerializationUtil.ZIP_PATTERN_STRING;
 @Embeddable
 public class Location {
 
-    @NotNull private String streetAddress;
-    @NotNull private String city;
-    @NotNull private String state;
-    @Pattern(regexp = ZIP_PATTERN_STRING) private String zip;
+    @NotNull
+    private String streetAddress;
+    @NotNull
+    private String city;
+    @NotNull
+    private String state;
+    @Pattern(regexp = ZIP_PATTERN_STRING)
+    private String zip;
     private Boolean isAddressManual = false;
 
 
@@ -38,8 +41,8 @@ public class Location {
     }
 
     public Location(UserAddress userAddress) {
-        this(userAddress.getStreetAddress(), userAddress.getCity(), userAddress.getState(), userAddress.getZip());
-        this.isAddressManual = userAddress.getIsAddressManual();
+        this(userAddress.getLocation().getStreetAddress(), userAddress.getLocation().getCity(), userAddress.getLocation().getState(), userAddress.getLocation().getZip());
+        this.isAddressManual = userAddress.getLocation().getIsAddressManual();
     }
 
     public String asText() {
@@ -56,13 +59,12 @@ public class Location {
     }
 
 
-    public <T extends Location> boolean equalsIgnoreCase(T o){
+    public boolean equalsIgnoreCase(Location o) {
         if (this == o) return true;
         if (o == null) return false;
-        Location location = o;
-        return state.equalsIgnoreCase(location.state) &&
-            city.equalsIgnoreCase(location.city) &&
-            streetAddress.equalsIgnoreCase(location.streetAddress) &&
-            zip.equals(location.zip);
+        return state.equalsIgnoreCase(o.state) &&
+            city.equalsIgnoreCase(o.city) &&
+            streetAddress.equalsIgnoreCase(o.streetAddress) &&
+            zip.equals(o.zip);
     }
 }

@@ -25,7 +25,7 @@ public class CompanyInfo {
         this.iconUrl = company.getIconUrl();
         this.name = company.getName();
         this.description = company.getDescription();
-        this.location = company.getLocation();
+        this.location = company.getExtendedLocation();
         this.founded = company.getFounded();
         this.siteUrl  = company.getSiteUrl();
     }

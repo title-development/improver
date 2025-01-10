@@ -18,7 +18,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.ResourcePatternUtils;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
@@ -131,15 +131,16 @@ public class TestDataInitializer {
         initUsers();
         log.info("=========== Init Test Companies ...");
         initCompanies();
-        supportedServices = pro1().getCompany().getServiceTypes().stream().map(ServiceType::getName).collect(Collectors.toList());
+        // supportedServices = pro1().getCompany().getServiceTypes().stream().map(ServiceType::getName).collect(Collectors.toList());
+        supportedServices = Arrays.asList("Hello");
         log.info("=========== Init Test UnavailabilityPeriods ...");
         initUnavailabilityPeriods();
         log.info("=========== Init Test Projects ...");
-        initProjects();
+        //initProjects();
         log.info("=========== Init Test Demo Projects ...");
         initDemoProjects();
         log.info("=========== Init Test Transactions ...");
-        initTransactions();
+        //initTransactions();
         log.info("=========== Init Test Reviews ...");
         initReviews();
         log.info("=========== Init Test Licenses ...");
@@ -194,7 +195,7 @@ public class TestDataInitializer {
         ServiceType serviceType = serviceTypeRepository.findByName(serviceName);
         Order order = TestOrderHelper.generateFor(serviceName);
         Order.BaseLeadInfo details = order.getBaseLeadInfo();
-        Centroid centroid = servedZipRepository.findByZip(order.getAddress().getZip())
+        Centroid centroid = servedZipRepository.findByZip(order.getAddress().getLocation().getZip())
             .orElseThrow(() -> new ValidationException("zip not found"))
             .getCentroid();
         Project project = new Project()
@@ -204,7 +205,7 @@ public class TestDataInitializer {
             .setLeadPrice(serviceType.getLeadPrice())
             .setCustomer(customer)
             .setServiceType(serviceType)
-            .setLocation(order.getAddress())
+            .setLocation(order.getAddress().getLocation())
             .setStartDate(details.getStartExpectation())
             .setDetails(SerializationUtil.toJson(order.getQuestionary()))
             .setNotes(order.getBaseLeadInfo().getNotes())
@@ -377,7 +378,7 @@ public class TestDataInitializer {
             new Company()
                 .setName("North America Development Group, LLC")
                 .setFounded(2010)
-                .setLocation(new ExtendedLocation(new Location("509 Madison Ave Rm 2004", "New York", "NY", "10022" ), 40.7594361, -73.9764019))
+                .setExtendedLocation(new ExtendedLocation(new Location("509 Madison Ave Rm 2004", "New York", "NY", "10022" ), 40.7594361, -73.9764019))
                 .setDescription("Our company was established in 2012 in New-York city. The company works in 3 states: New-York, Connecticut and New-Jersey. " +
                     "Our specialties include the following but are not limited to: masonry, block/CMU, thin brick/modular brick, limestone manufactory/installation, " +
                     "natural stone/manufactured stone veneer, hardcoat stucco (2 coat stucco), pavers/Belgian block. We are doing shop tickets (manufacture) and shop drawing (installation) for our projects"));
@@ -385,25 +386,25 @@ public class TestDataInitializer {
             new Company()
                 .setName("Total Home Service, LLC")
                 .setFounded(2005)
-                .setLocation(new ExtendedLocation(new Location("93 Fairview Ave", "Jersey City", "NJ", "07304" ), 40.7233233, -74.0748161))
+                .setExtendedLocation(new ExtendedLocation(new Location("93 Fairview Ave", "Jersey City", "NJ", "07304" ), 40.7233233, -74.0748161))
                 .setDescription("We are best Company ever"));
         companyRepository.save(
             new Company()
                 .setName("Diamond One Constructions")
                 .setFounded(2009)
-                .setLocation(new ExtendedLocation(new Location("400 Madison Ave Rm 2000", "New York", "NY", "10021" ), 40.7562408, -73.9792458))
+                .setExtendedLocation(new ExtendedLocation(new Location("400 Madison Ave Rm 2000", "New York", "NY", "10021" ), 40.7562408, -73.9792458))
                 .setDescription("We are best Company ever"));
         companyRepository.save(
             new Company()
                 .setName("Medina Christians LTD")
                 .setFounded(2015)
-                .setLocation(new ExtendedLocation(new Location("509 Madison Ave Rm 192", "New York", "NY", "10020" ), 40.7594361, -73.9764019))
+                .setExtendedLocation(new ExtendedLocation(new Location("509 Madison Ave Rm 192", "New York", "NY", "10020" ), 40.7594361, -73.9764019))
                 .setDescription("We are best Company ever"));
         companyRepository.save(
             new Company()
                 .setName("Example Company")
                 .setFounded(2013)
-                .setLocation(new ExtendedLocation(new Location("509 Madison Ave Rm 333", "New York", "NY", "10019" ), 40.7594361, -73.9764019))
+                .setExtendedLocation(new ExtendedLocation(new Location("509 Madison Ave Rm 333", "New York", "NY", "10019" ), 40.7594361, -73.9764019))
                 .setDescription("We are best Company ever"));
 
         String[] zipCods = new String[]{"07001", "07002", "07003", "07008", "07010", "07012", "07014", "07016", "07017", "07018", "07020", "07022",
